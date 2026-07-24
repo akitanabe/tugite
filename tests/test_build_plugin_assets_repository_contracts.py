@@ -1464,16 +1464,20 @@ class BuildPluginAssetsRepositoryContractsTest(
         """Select delegation modes while keeping direct work outside the skill."""
         workflows = self._repository_workflow_texts()
         required_rules = (
+            "委譲の決定は次の3層に分ける。層をまたいで並列に選ばない。",
+            "経路の選択 — `direct`（この skill の外）か、委譲（この skill）か。",
+            "配分方針の選択 — 委譲する場合に、配分方針 `policy` と基準 `baseline` を決める。",
+            "枝 mode の導出 — `policy`、`baseline`、枝の `risk.level` から枝ごとの mode を導く。",
             "`direct` は親が実装する、この skill の外にある経路である。",
+            "委譲 mode ではないため、配分方針や枝 mode と同じ層に並べて選ばない。",
             "タスク規模だけでこの skill を発火しない。",
             "`direct` が明示された場合も、この skill を発火しない。",
-            "`lite` / `standard` / `strict` の明示は委譲要求を兼ねる。",
-            "委譲だけが明示され mode が指定されていない場合は `standard` を選ぶ。",
+            "`lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` の明示は"
+            "委譲要求を兼ねる。",
+            "委譲だけが明示され mode が指定されていない場合は `{adaptive, standard}` を選ぶ。",
             "`lite` を自動選択しない。",
             "`direct` と委譲が同時に指定された場合は、実装前にユーザーへ確認する。",
             "委譲 mode の強度は `lite < standard < strict` とする。",
-            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
-            "ユーザーが明示した mode を親都合で引き下げない。",
             "`direct` から委譲へ変更する場合は、ユーザーへ確認する。",
             "仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。",
             "`lite` の選択条件を満たさなくなった場合は `standard` 以上へ引き上げる。",
@@ -1481,21 +1485,9 @@ class BuildPluginAssetsRepositoryContractsTest(
         )
         route_contracts = (
             (
-                "| `direct` |",
-                "委譲要求がなく、仕様が明確で影響範囲が閉じ、親が直接処理する変更。",
-            ),
-            (
-                "| `lite` |",
-                "ユーザーが明示し、仕様が明確で影響範囲が局所的、容易に戻せる変更。",
-            ),
-            (
-                "| `standard` |",
-                "通常の実装委譲、または mode 未指定の明示的な委譲。",
-            ),
-            (
-                "| `strict` |",
-                "`strict` が明示された変更、または高リスク、影響範囲が広い、"
-                "誤実装の代償が大きい変更。",
+                "| `direct` | — | — |",
+                "この skill を発火しない skill 外の経路。委譲要求がなく、仕様が明確で"
+                "影響範囲が閉じ、親が直接処理する変更。",
             ),
         )
         obsolete_classifications = (
@@ -1516,6 +1508,123 @@ class BuildPluginAssetsRepositoryContractsTest(
                     self.assertIn("".join(contract.split()), normalized_workflow)
                 for classification in obsolete_classifications:
                     self.assertNotIn(classification, workflow)
+
+    def test_repository_workflows_split_delegation_mode_into_policy_and_baseline(
+        self,
+    ) -> None:
+        """Treat adaptive as an allocation policy over the existing branch modes."""
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "配分方針  policy   : fixed | adaptive",
+            "基準      baseline : lite | standard | strict",
+            "枝 mode            : lite | standard | strict",
+            "policy / baseline と枝の risk.level から導出する",
+            "`adaptive` は新しい実装フローではなく、既存の `lite` / `standard` / `strict` を"
+            "枝へ割り当てる配分方針である。",
+            "枝へ割り当てられた後は、その枝を既存の各 mode のフローで実行する。",
+            "`policy: fixed` は、全枝固定であることを明示的に表現する語彙だけに割り当てる。",
+            "それ以外の語彙と mode 未指定はすべて `adaptive` へ写す。",
+            "今後語彙を追加する場合の既定も `adaptive` とする。",
+            "`policy: adaptive` では、`baseline` と枝の `risk.level` の決定表で"
+            "枝ごとの mode を導出する。",
+            "決定表の正本は [Branch Plan の受け入れ](references/branch-plan-intake.md) とする。",
+            "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
+        )
+        vocabulary_rows = (
+            (
+                "| 指定なし | `adaptive` | `standard` |",
+                "通常利用のデフォルト。mode 未指定の明示的な委譲でもこれを選ぶ。",
+            ),
+            (
+                "| `standard` / `standard-adaptive` | `adaptive` | `standard` |",
+                "通常の実装委譲。",
+            ),
+            (
+                "| `strict` / `strict-adaptive` | `adaptive` | `strict` |",
+                "全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` に"
+                "しない。`standard-adaptive` より保守的に導出する。",
+            ),
+            (
+                "| `strict-full` | `fixed` | `strict` |",
+                "全枝へ `strict` を固定適用する。枝ごとの導出を行わない。",
+            ),
+            (
+                "| `lite` | `fixed` | `lite` |",
+                "全枝を軽量フローで処理する。枝ごとの導出を行わない。ユーザーが明示し、"
+                "仕様が明確で影響範囲が局所的、容易に戻せる変更にだけ選ぶ。",
+            ),
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+                for row, contract in vocabulary_rows:
+                    self.assertIn(row, workflow)
+                    self.assertIn("".join(contract.split()), normalized_workflow)
+
+    def test_repository_workflows_bound_mode_downgrade_ban_to_allocation_policy(
+        self,
+    ) -> None:
+        """Ban downgrades of the allocation policy, not of derived branch modes."""
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "引き下げ禁止の対象は配分方針 `{policy, baseline}` とする。",
+            "ユーザーが明示した `baseline` を親都合で引き下げない。",
+            "`policy` を親都合で `fixed` から `adaptive` へ変えない。",
+            "枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。",
+            "導出表を逸脱した割り当てだけを引き上げ / 引き下げとして扱う。",
+            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
+            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的なリスクを"
+            "ユーザーへ報告する。",
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+
+    def test_repository_workflows_present_branch_allocation_before_delegating(
+        self,
+    ) -> None:
+        """Show the resolved allocation before delegating and gate strict-full."""
+        skills = self._repository_skill_texts()
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "## 実行前サマリー",
+            "導出後、委譲開始前に次を提示する。",
+            "解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` "
+            "として解釈されたことを確認できるようにする。",
+            "枝 mode ごとの件数。",
+            "各枝の `risk.level`、導出した mode、手動上書きの有無。",
+            "Mode: strict-adaptive  (policy: adaptive / baseline: strict)",
+            "Branch allocation:",
+            "5. label-text            low     → standard  (override: lite / 理由あり)",
+            "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
+            "枝数を明示したユーザー確認を委譲開始条件とする。",
+            "確認が得られるまで委譲を開始しない。",
+            "実行前サマリーを提示する。",
+            "`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。",
+            "会話上の最終報告を行う。採用した配分方針と枝ごとの mode を含める。",
+            "導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して"
+            "最終報告で報告する。",
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+
+        for main in (skills.source_main, skills.claude_main, skills.codex_main):
+            with self.subTest(main=main[:40]):
+                self.assertLess(
+                    main.index("実行前サマリーを提示する"),
+                    main.index("先頭の枝だけを委譲する"),
+                )
 
     def test_repository_workflows_apply_mode_specific_qa_and_parent_verification(
         self,
