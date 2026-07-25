@@ -4,8 +4,8 @@ description: >-
   実装作業をサブエージェントに委譲しつつ、親エージェントが計画、受け入れ条件、worktree 隔離、
   返却 diff の QA、テスト網羅性レビュー、副作用と責務境界の確認、最終検証、最終報告の責任を
   持つためのワークフロー。ユーザーが実装委譲、マネージャーとしての進行、サブエージェント分担を
-  求めたとき、または `lite` / `standard` / `strict` を明示したときに使う。`direct` の明示時や、
-  委譲指示なしにタスク規模だけを理由として使わない。
+  求めたとき、または `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` を
+  明示したときに使う。`direct` の明示時や、委譲指示なしにタスク規模だけを理由として使わない。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -97,19 +97,23 @@ mode を引き上げた場合は、その具体的なリスクをユーザーへ
 - 各枝の `risk.level`、導出した mode、手動上書きの有無。
 
 ```text
-Mode: strict-adaptive  (policy: adaptive / baseline: strict)
+Mode: standard-adaptive  (policy: adaptive / baseline: standard)
 
 Branch allocation:
-  strict   2
-  standard 2
+  strict   1
+  standard 3
   lite     1
 
-1. authorization-policy  high    → strict
-2. data-update-service   high    → strict
-3. api-response          medium  → strict
-4. admin-ui              medium  → strict
-5. label-text            low     → standard  (override: lite / 理由あり)
+1. authorization-check  high    → strict
+2. domain-logic         medium  → standard
+3. repository-update    medium  → standard
+4. api-response         low     → lite → standard  (override)
+5. label-text           low     → lite
 ```
+
+枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。実行コストは実効 mode で決まるため、
+導出 mode の集計では提示の目的を果たさない。各枝の行では、上書きがある場合に
+「導出 mode → 上書き後の mode」の両方を示す。
 
 枝 mode ごとの件数は常に提示する。`strict` 枝が一定数を超えた場合の段階警告は持たない。閾値の根拠が
 単一事例であり、枝の重さと repository 規模に依存するため、固定値を契約として持てない。明示的な判断を
