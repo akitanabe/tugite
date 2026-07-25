@@ -171,7 +171,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         required_contracts = (
             "会話上の最終報告は常に行う。",
             "永続 QA レポートは任意",
-            "`lite` / `standard` / `strict`",
+            "入力語彙 `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full`",
             "`direct` は対象外",
             "既定では生成しない",
             "ユーザーの明示的な要求",
@@ -340,10 +340,12 @@ class BuildPluginAssetsRepositoryContractsTest(
         """Expose every decision and verification gap needed for parent acceptance."""
         required_fields = (
             "Sanitized task ID / title",
-            "Mode",
+            "Delegation policy",
             "Base commit",
             "Logical checkout ID / commit",
             "Implementation branches",
+            "導出 mode と上書き後の mode の両方が読み取れるように",
+            "降格には理由の記録を必須とする",
             "Acceptance Criteria → test",
             "Changed files",
             "Verification",
@@ -377,6 +379,9 @@ class BuildPluginAssetsRepositoryContractsTest(
                     "Logical worktree ID",
                     "Branch (sanitized or omitted)",
                     "Implementer role",
+                    "Risk level",
+                    "Derived mode",
+                    "Manual override",
                     "Sanitized command",
                     "Status",
                     "Short summary",
@@ -1814,6 +1819,69 @@ class BuildPluginAssetsRepositoryContractsTest(
             with self.subTest(name=name):
                 self.assertIn(f"agents/{name}.md", claude_readme)
                 self.assertIn(f"`{name}`", codex_readme)
+
+    def test_repository_does_not_reference_retired_flat_mode_contract_text(
+        self,
+    ) -> None:
+        """Detect leftover flat lite/standard/strict contract text from before adaptive mode."""
+        scan_roots = (
+            REPOSITORY_ROOT / "shared",
+            REPOSITORY_ROOT / "plugins",
+            REPOSITORY_ROOT / "scripts",
+            REPOSITORY_ROOT / "tests",
+            REPOSITORY_ROOT / "evals",
+            REPOSITORY_ROOT / "README.md",
+        )
+        # Each phrase below was the pre-adaptive-mode contract text superseded by the
+        # {policy, baseline} vocabulary across the three branches this branch depends
+        # on. A survivor means one of those branches missed a reference, not that this
+        # branch should silently rewrite it. Phrases are built by concatenation (like
+        # the retired agent name above) so this literal does not self-match the scan.
+        retired_phrases = (
+            "requested_mode: null | lite | standard" + " | strict",
+            "propose: " + "strict",
+            "- 委譲 mode: <lite / standard" + " / strict>",
+            "| route / mode | " + "選択条件 |",
+            "Executor が standard" + " を選ぶ",
+            "委譲だけが明示され mode が指定されていない場合は `standard`" + " を選ぶ。",
+        )
+
+        for root in scan_roots:
+            file_paths = [root] if root.is_file() else list(root.rglob("*"))
+            for file_path in file_paths:
+                if not file_path.is_file():
+                    continue
+                content = file_path.read_text(encoding="utf-8")
+                for phrase in retired_phrases:
+                    with self.subTest(path=file_path, phrase=phrase):
+                        self.assertNotIn(phrase, content)
+
+    def test_repository_delegate_skill_description_names_the_input_vocabulary(
+        self,
+    ) -> None:
+        """Fire on the five input tokens and keep the direct exclusion in the description."""
+        vocabulary_tokens = (
+            "`lite`",
+            "`standard(-adaptive)`",
+            "`strict(-adaptive)`",
+            "`strict-full`",
+            "`direct`",
+        )
+        exclusion_contract = (
+            "`direct` の明示時や、委譲指示なしにタスク規模だけを理由として使わない。"
+        )
+
+        for platform in ("claude", "codex"):
+            with self.subTest(platform=platform):
+                content = self._repository_text(GENERATED_SKILL_PATHS[platform])
+                frontmatter = content.split("---", 2)[1]
+                self.assertIn("description:", frontmatter)
+                normalized_frontmatter = "".join(frontmatter.split())
+                for token in vocabulary_tokens:
+                    self.assertIn(token, frontmatter)
+                self.assertIn(
+                    "".join(exclusion_contract.split()), normalized_frontmatter
+                )
 
 
 class PlanImplementationBranchesContractsTest(
