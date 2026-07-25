@@ -1390,8 +1390,8 @@ class BuildPluginAssetsRepositoryContractsTest(
                 with self.subTest(section=section_name, contract=contract):
                     self.assertIn(contract, eval_sections[section_name])
 
-    def test_repository_writing_review_gate_accepts_no_change_result(self) -> None:
-        """Treat a review with no findings as a successful gate result."""
+    def test_repository_mandatory_gates_accept_no_change_result(self) -> None:
+        """Pass any mandatory gate whose review reports no findings."""
         skills = self._repository_skill_texts()
         qa_workflows = {
             "shared": skills.source_references["qa-and-integration.md"],
