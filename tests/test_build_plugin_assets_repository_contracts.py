@@ -356,6 +356,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             "Responsibility boundaries",
             "Test quality",
             "Writing principles",
+            "Over-engineering",
             "Security / side effects",
             "Integrated diff review",
             "Residual risks",
@@ -1141,10 +1142,10 @@ class BuildPluginAssetsRepositoryContractsTest(
             for contract in required_contracts:
                 self.assertIn(contract, content, path)
 
-    def test_repository_workflows_route_specialists_and_require_mandatory_writing_review_gate(
+    def test_repository_workflows_route_specialists_and_require_mandatory_completion_gates(
         self,
     ) -> None:
-        """Require writing review without making risk-based specialists mandatory."""
+        """Require both completion gates without making risk-based specialists mandatory."""
         workflows = self._repository_workflow_texts()
         risk_routes = {
             "responsibility-boundary-reviewer": "責務混在、設計境界、分散した副作用",
@@ -1160,11 +1161,17 @@ class BuildPluginAssetsRepositoryContractsTest(
             "専門 reviewer は mode 名だけを理由に一律起動しない。",
             "対象リスクがない専門 reviewer を無条件で起動しない。",
             "対象リスクと review 範囲を明示する。",
+            "- 必須完了ゲート",
+            "この表の2本は必須の完了ゲートであり、上記の任意起動条件の対象外とする。",
             (
                 "`writing-principles-reviewer` は `lite` / `standard` / `strict` の"
                 "すべてで、各実装枝を受け入れる前に必ず起動する。"
             ),
-            "`writing-principles-reviewer` は必須の完了ゲート",
+            (
+                "`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、"
+                "受け入れる前に必ず起動し"
+            ),
+            "ゲート間の起動順は定めない。",
             "reviewer は最終的な受け入れ判断を行わない。",
             "親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。",
         )
@@ -1178,6 +1185,45 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized_workflow)
                 self.assertNotIn("`writing-principles-refactorer`", workflow)
+
+    def test_repository_over_engineering_gate_applies_only_to_standard_and_strict(
+        self,
+    ) -> None:
+        """Apply the over-engineering gate to standard and strict branches only."""
+        skills = self._repository_skill_texts()
+        qa_workflows = {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+        # 適用 mode の正本はゲート表なので、表の行と mode 文言だけを pin する。
+        # `lite` を除外する根拠の散文は、文言の微修正だけで red になる割に
+        # 「`lite` へ誤って適用される」欠陥をこの2つより先に検出しない。
+        gate_rows = (
+            (
+                "| 記述原則 | `writing-principles-reviewer` "
+                "| `lite` / `standard` / `strict` "
+                "| How/What/Why/Why Not の配置、命名、説明 |"
+            ),
+            (
+                "| 過剰実装 | `over-engineering-reviewer` "
+                "| `standard` / `strict` "
+                "| 除去しても AC と制約を満たせるテストと実装 |"
+            ),
+        )
+        mode_rules = (
+            "適用 mode の正本はこの表とする。",
+            (
+                "`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、"
+                "受け入れる前に必ず起動し、`lite` では起動しない。"
+            ),
+        )
+
+        for platform, workflow in qa_workflows.items():
+            with self.subTest(platform=platform):
+                normalized_workflow = "".join(workflow.split())
+                for contract in gate_rows + mode_rules:
+                    self.assertIn("".join(contract.split()), normalized_workflow)
 
     def test_repository_workflow_passes_selected_reviewer_context(self) -> None:
         """Pass baseline review data plus purpose-selected context, never the whole repo."""
@@ -1364,7 +1410,7 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
-    def test_repository_writing_review_gate_receives_parent_collected_bounded_data(
+    def test_repository_mandatory_gates_receive_parent_collected_bounded_data(
         self,
     ) -> None:
         """Review only changed behavior using evidence collected by the parent."""
@@ -1380,7 +1426,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             "commit log",
             "テスト結果",
             "親が取得",
-            "Data として `writing-principles-reviewer` へ渡す",
+            "Data として各必須完了ゲートの reviewer へ渡す",
             "基準 commit からの diff が導入または悪化させた問題",
             "既存問題を広く探索しない",
         )
@@ -1391,7 +1437,7 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
-    def test_repository_writing_review_gate_resolves_structured_findings_before_acceptance(
+    def test_repository_mandatory_gates_resolve_structured_findings_before_acceptance(
         self,
     ) -> None:
         """Block acceptance until every identified finding has a recorded outcome."""
@@ -1412,7 +1458,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             "親が不採用とした指摘について、理由が記録",
             "未解決または判断未記録の指摘がある枝を受け入れない",
             "`review-patch-refactorer` による修正後",
-            "`writing-principles-reviewer` を再実行",
+            "その枝で適用されるすべての必須完了ゲートを再実行",
         )
 
         for platform, workflow in qa_workflows.items():
@@ -1511,10 +1557,10 @@ class BuildPluginAssetsRepositoryContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn(contract, eval_08)
 
-    def test_repository_writing_review_gate_rechecks_every_fix_before_acceptance(
+    def test_repository_mandatory_gates_recheck_every_fix_before_acceptance(
         self,
     ) -> None:
-        """Return every fix route to parent QA and the mandatory review gate."""
+        """Return every fix route to parent QA and the mandatory completion gates."""
         skills = self._repository_skill_texts()
         qa_workflows = {
             "shared": skills.source_references["qa-and-integration.md"],
@@ -1524,7 +1570,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         required_contracts = (
             "`review-patch-refactorer` または元 Implementer による修正後",
             "親が変更後の diff とテスト結果を確認",
-            "`writing-principles-reviewer` を再実行",
+            "その枝で適用されるすべての必須完了ゲートを再実行",
             "再確認を通過",
             "枝を受け入れない",
         )
