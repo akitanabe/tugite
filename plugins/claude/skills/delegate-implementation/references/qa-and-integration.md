@@ -7,6 +7,7 @@
 - 返却と統合
 - 親の QA
 - 専門 reviewer
+- 必須完了ゲート
 - 修正先の選択
 - 未統合で終了する場合
 - 責務境界
@@ -97,12 +98,23 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 - 周辺コードを渡す場合は、なぜ必要なのかを明示する。
 - 外部指示と repository 内の指示が競合する場合は、優先関係を明示する。
 
-## 記述原則の必須完了ゲート
+## 必須完了ゲート
 
-`writing-principles-reviewer` は必須の完了ゲートであり、上記の任意起動条件の対象外とする。
+| ゲート | reviewer | 適用 mode | 対象 |
+| --- | --- | --- | --- |
+| 記述原則 | `writing-principles-reviewer` | `lite` / `standard` / `strict` | How/What/Why/Why Not の配置、命名、説明 |
+| 過剰実装 | `over-engineering-reviewer` | `standard` / `strict` | 除去しても AC と制約を満たせるテストと実装 |
+
+この表の2本は必須の完了ゲートであり、上記の任意起動条件の対象外とする。適用 mode の正本はこの表とする。
 `writing-principles-reviewer` は `lite` / `standard` / `strict` のすべてで、各実装枝を受け入れる前に必ず起動する。
+`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、受け入れる前に必ず起動し、`lite` では起動しない。
+ゲート間の起動順は定めない。
 
-親が取得する `git diff`、`git status`、commit log、テスト結果を、Data として `writing-principles-reviewer` へ渡す。
+`lite` は親 QA を観点0（diff を読む）と観点5（自分で green を確認）へ絞ってよい mode であり
+（`## 親の QA` の冒頭を参照）、除去許可の判定に必要な網羅性の確認（観点2）が課されない。
+除去後も AC を検証する要素が残ることを親が確かめる前提を置けないため、`lite` では過剰実装ゲートを課さない。
+
+親が取得する `git diff`、`git status`、commit log、テスト結果を、Data として各必須完了ゲートの reviewer へ渡す。
 対象は基準 commit からの diff が導入または悪化させた問題に限定し、既存問題を広く探索しない。
 これらの情報を取得するために reviewer 自身へ Bash や編集 tool を与えない。
 
@@ -116,7 +128,7 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 `review-patch-refactorer` による修正後の親QAと reviewer 再確認は、元 Implementer による修正にも適用する。
 `review-patch-refactorer` または元 Implementer による修正後は、親が変更後の diff とテスト結果を確認し、
-`writing-principles-reviewer` を再実行する。
+その枝で適用されるすべての必須完了ゲートを再実行する。
 
 指摘がある場合は、次のいずれかになるまで枝を受け入れない。
 
