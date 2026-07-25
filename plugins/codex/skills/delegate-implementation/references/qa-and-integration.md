@@ -141,7 +141,7 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 次の条件をすべて満たす場合に限り `review-patch-refactorer` を起動する。
 
-- 専門 reviewer（必須の `writing-principles-reviewer` を含む）の具体的な指摘が存在する。
+- 専門 reviewer（必須完了ゲートの reviewer を含む）の具体的な指摘が存在する。
 - 親が指摘を確認し、修正対象として採用している。
 - Acceptance Criteria は満たされている。
 - Acceptance Criteria を変更する必要がない。
