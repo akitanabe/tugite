@@ -162,10 +162,6 @@ report を生成しない。
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 |  |  |  |  |  |  |  |  | `Accepted` / `Rejected` / `Needs revision` |
 
-上書きがある枝は、導出 mode と上書き後の mode の両方が読み取れるように `Manual override` へ記録する。
-降格には理由の記録を必須とする。上書きの規約(引き上げ / 降格の条件)自体は Branch Plan の受け入れ
-(delegate-implementation/references/branch-plan-intake.md)を正本とし、ここでは記録項目としてだけ扱う。
-
 ## Acceptance Criteria → test
 
 | AC | Test | Expected basis | Result |
@@ -229,6 +225,11 @@ report を生成しない。
 
 - Action:
 ```
+
+`Implementation branches` 表の `Manual override` 列は、上書きがある枝について導出 mode と上書き後の
+mode の両方が読み取れるように記録する。降格には理由の記録を必須とする。上書きの規約(引き上げ / 降格の
+条件)自体は [Branch Plan の受け入れ](branch-plan-intake.md) を正本とし、ここでは記録項目としてだけ
+扱う。
 
 reviewer を起動しなかった場合も理由を記録する。対象 risk がないことは有効な理由である。
 最終判断は親だけが記入する。
