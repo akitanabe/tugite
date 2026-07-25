@@ -1471,7 +1471,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         """Patch only green implementations with concrete, behavior-preserving findings."""
         workflows = self._repository_workflow_texts()
         startup_conditions = (
-            "専門 reviewer（必須の `writing-principles-reviewer` を含む）の具体的な指摘が存在する。",
+            "専門 reviewer（必須完了ゲートの reviewer を含む）の具体的な指摘が存在する。",
             "Acceptance Criteria は満たされている。",
             "機能的なテストは green である。",
             "修正範囲が局所的である。",
