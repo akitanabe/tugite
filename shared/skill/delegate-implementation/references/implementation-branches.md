@@ -4,7 +4,7 @@
 
 - Implementer context と枝の lifecycle
 - worktree と基準 commit
-- mode に応じた TDD/QA
+- 委譲 mode に応じた TDD/QA
 - Implementer の選択
 - 委譲 prompt
 
@@ -57,7 +57,7 @@ worker は指定 worktree の外を編集しない。cleanup は親が `git work
 - 委譲直前に基準 commit で既存 test、build、typecheck、lint を実行し、green を確認する。
 - 基準が red の場合は委譲を開始せず、既存失敗として切り分ける。
 
-## mode に応じた TDD/QA
+## 委譲 mode に応じた TDD/QA
 
 表の `委譲 mode` は枝ごとに導出された枝 mode であり、配分方針 `{policy, baseline}` ではない。
 導出は [Branch Plan の受け入れ](branch-plan-intake.md) の「枝 mode の決定表」に従う。

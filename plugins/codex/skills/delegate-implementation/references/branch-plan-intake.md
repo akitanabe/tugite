@@ -11,7 +11,7 @@
 
 `plan-implementation-branches` が出力した確定済み Branch Plan を
 `delegate-implementation` の入力として受け入れるための規約を定める。親は
-Branch Plan の自己申告を信用せず、再検証してから枝と mode の入力にする。
+Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。
 Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正本は
 [Branch Plan 正規スキーマ](../../plan-implementation-branches/references/branch-plan-schema.md)
 であり、本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。
