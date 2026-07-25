@@ -17,7 +17,7 @@
 中間ゲートは [実装枝の準備と委譲](implementation-branches.md) に従い、未完成の枝を統合しない。
 直列受け入れは、commit 単位で返し、親が diff を読んでから1枝ずつ取り込む。
 
-1. Implementer は worktree path、branch、基準 commit、返却 commit SHA range、変更ファイル、
+1. Implementer は worktree path、git branch、基準 commit、返却 commit SHA range、変更ファイル、
    実行した command と結果、未コミット変更を返す。
 2. 親は `git -C <worktree> status --short` と `git -C <worktree> diff <base>...HEAD` を確認する。
    併せて親の checkout を `git -C <親 checkout> status --short` で確認し、worker の変更が worktree の外へ
@@ -27,7 +27,7 @@
 5. 専門 reviewer には task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
    周辺コンテキストの追加は「reviewer へ渡すコンテキスト」の選択基準に従う。
    {{new_worker}} は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
-6. 受け入れ後は統合 branch で `git cherry-pick <sha>` または commit range を取り込み、focused test と
+6. 受け入れ後は統合先の git branch で `git cherry-pick <sha>` または commit range を取り込み、focused test と
    関連する build、typecheck、lint を再実行する。
 7. 統合後の green commit を次の枝の基準にする。枝 worktree の green と統合後の green の片方を省略しない。
 
@@ -142,7 +142,7 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 - 指摘元 reviewer、対象となる指摘ID、指摘本文
 - 親が採用した修正条件
-- 対象 worktree、branch、基準 commit、対象 commit 範囲
+- 対象 worktree、git branch、基準 commit、対象 commit 範囲
 - Acceptance Criteria
 - 変更を許可するファイルと変更を禁止するファイル
 - 削除・移動・新規作成の可否と commit の要否

@@ -4,11 +4,24 @@
 
 ## 目次
 
+- 用語
 - Implementer context と枝の lifecycle
 - worktree と基準 commit
 - mode に応じた TDD/QA
 - Implementer の選択
 - 委譲 prompt
+
+## 用語
+
+- **実装枝** — 委譲単位。外部から観測可能な振る舞いの縦割りで、単独の Acceptance Criteria、
+  検証、受け入れ判断、revert が可能な大きさを持つ。Branch Plan の `branches[]` 1件に対応する。
+  文脈が実装枝に限定される箇所では「枝」と略す。
+- **git branch** — 実装枝を載せる VCS 上の branch。1実装枝 = 1 git branch = 1 専用 worktree で
+  対応させる。日本語文中では常に `git branch` と書き、単独の `branch` 表記を使わない。
+  実装枝と同じ文に現れるため、修飾なしでは指示対象が確定しないため。
+- **Branch Plan** — `plan-implementation-branches` が出力する Data。`branches[]`、
+  `branch_criteria`、`branch-without-primary-ac` などの key と code は実装枝を指し、
+  git branch を指さない。
 
 ## Implementer context と枝の lifecycle
 
@@ -34,10 +47,11 @@ Acceptance Criteria 未達、仕様誤解、機能欠落、テスト失敗、正
 各実装枝は専用 worktree で隔離する。worktree を用意できない場合は委譲を開始しない。
 worktree の目的は並列速度ではなく、枝ごとの diff、検証、差し戻し、revert を独立させることにある。
 
-親が最新の基準 commit から枝専用 worktree と branch を作成し、絶対 worktree path、branch、基準 commit を
-Implementer へ渡す。Implementer はファイル変更前に、作業場所が指定 worktree であること(`pwd -P`)、
-branch 一致、HEAD が基準 commit と一致すること、`git status --short` が空であることの開始条件4点を
-確認し、1つでも不成立なら何も変更せず親へ返す。reset / merge / checkout などで自力修復しない。
+親が最新の基準 commit から実装枝専用の worktree と git branch を作成し、絶対 worktree path、
+git branch、基準 commit を Implementer へ渡す。Implementer はファイル変更前に、作業場所が指定
+worktree であること(`pwd -P`)、git branch 一致、HEAD が基準 commit と一致すること、
+`git status --short` が空であることの開始条件4点を確認し、1つでも不成立なら何も変更せず親へ返す。
+reset / merge / checkout などで自力修復しない。
 worker は指定 worktree の外を編集しない。cleanup は親が `git worktree remove` で行う。
 
 
@@ -132,7 +146,7 @@ custom agent が不足する場合は `$install-custom-agents` を使い、scope
 - Acceptance Criteria
 - 変更を許可する物理的範囲、変更を禁止する物理的範囲、この枝でやらないこと
 - 最新の基準コミット
-- 絶対 worktree path と branch 名
+- 絶対 worktree path と git branch 名
 - コードから読み取れない確定済みの設計判断や制約
 - 委譲 mode と TDD 要件
 - 検証 command
@@ -150,7 +164,7 @@ custom agent の developer instructions にある安定契約を長く再掲せ�
 - 委譲 mode: <lite / standard / strict>
 - 現在の段階: <一括実装 / test plan / Red / Green / Refactor>
 - 最新の基準コミット: <green を確認した SHA>
-- 絶対 worktree path と branch 名: <path / branch>
+- 絶対 worktree path と git branch 名: <path / git branch>
 - 確定済みの設計判断と制約: <なければ「なし」>
 - 検証 command: <focused test / build / typecheck / lint>
 

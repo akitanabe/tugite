@@ -204,7 +204,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         required_contracts = (
             "repository root 相対の `.agentic-qa/reports/<slug>.md`",
             "task ID または title",
-            "空なら branch",
+            "空なら git branch",
             "Unicode NFKC",
             "前後の空白を除去",
             "ASCII lowercase",
@@ -220,8 +220,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "絶対 path を許可しない",
             "reports 直下以外を許可しない",
             "`ＡＢＣ １２３` は `abc-123`",
-            "title が `日本語`、branch が `Feature QA` なら `feature-qa`",
-            "title と branch が `日本語` なら `delegated-implementation`",
+            "title が `日本語`、git branch が `Feature QA` なら `feature-qa`",
+            "title と git branch が `日本語` なら `delegated-implementation`",
             "`CON` は `qa-con`",
             "既存 file を上書きしない",
             "`<slug>-2.md`, `<slug>-3.md`",
@@ -300,12 +300,12 @@ class BuildPluginAssetsRepositoryContractsTest(
         )
         sanitized_evidence_contracts = (
             "file は repository 相対 path",
-            "worktree は論理 ID、branch、cleanup 状態",
+            "worktree は論理 ID、git branch、cleanup 状態",
             "Implementer は role 名",
             "command は sanitize 済み文字列、status、短い要約",
             "次の機密情報と生の証跡を保存しない",
             "絶対 path と local checkout path を保存しない",
-            "branch と file が敏感なら省略または sanitize",
+            "git branch と file が敏感なら省略または sanitize",
             "保存直前に親が report 全体を確認",
         )
 
@@ -578,7 +578,7 @@ class BuildPluginAssetsRepositoryContractsTest(
     ) -> None:
         """Give both platforms a parent-managed worktree and start-condition gate."""
         start_condition_contracts = (
-            "絶対 worktree path と branch",
+            "絶対 worktree path と git branch",
             "`pwd -P`",
             "`git status --short` が空",
             "基準 commit",
@@ -601,7 +601,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             with self.subTest(name=name, platform="claude", check="no-isolation"):
                 self.assertNotIn('isolation: "worktree"', claude)
                 self.assertNotIn(
-                    "起動後に実際の worktree path と branch を確認",
+                    "起動後に実際の worktree path と git branch を確認",
                     claude,
                 )
 
@@ -716,10 +716,27 @@ class BuildPluginAssetsRepositoryContractsTest(
             for skill in skills.all_texts():
                 self.assertIn(item, skill)
 
-        self.assertIn("絶対 worktree path と branch 名", skills.source)
-        self.assertIn("絶対 worktree path と branch 名", skills.claude)
-        self.assertIn("絶対 worktree path と branch 名", skills.codex)
+        self.assertIn("絶対 worktree path と git branch 名", skills.source)
+        self.assertIn("絶対 worktree path と git branch 名", skills.claude)
+        self.assertIn("絶対 worktree path と git branch 名", skills.codex)
         self.assertNotIn("worktree の隔離条件", skills.claude)
+
+    def test_repository_implementation_branches_reference_defines_branch_terminology(
+        self,
+    ) -> None:
+        """Define 実装枝, git branch, and Branch Plan as distinct terms in one glossary."""
+        skills = self._repository_skill_texts()
+        required_glossary_content = (
+            "## 用語",
+            "**実装枝**",
+            "**git branch**",
+            "**Branch Plan**",
+            "単独の `branch` 表記を使わない",
+        )
+
+        for item in required_glossary_content:
+            for skill in skills.all_texts():
+                self.assertIn(item, skill)
 
     def test_repository_codex_agents_use_role_appropriate_model_profiles(
         self,
@@ -941,7 +958,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             "対象となる指摘ID",
             "指摘本文",
             "親が採用した修正条件",
-            "対象 worktree、branch、基準 commit、対象 commit 範囲",
+            "対象 worktree、git branch、基準 commit、対象 commit 範囲",
             "Acceptance Criteria",
             "変更を許可するファイル",
             "変更を禁止するファイル",
@@ -1796,6 +1813,22 @@ class PlanImplementationBranchesContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
                 for section in excluded:
                     self.assertNotIn("".join(section.split()), normalized)
+
+    def test_plan_schema_reference_points_terminology_to_the_implementation_branches_glossary(
+        self,
+    ) -> None:
+        """Route branch terminology to the delegate-implementation glossary, not a local copy."""
+        required = (
+            "用語",
+            "delegate-implementation",
+            "../../delegate-implementation/references/implementation-branches.md",
+        )
+        for platform, text in self._plan_reference_texts(
+            "branch-plan-schema.md"
+        ).items():
+            with self.subTest(platform=platform):
+                for contract in required:
+                    self.assertIn(contract, text)
 
     def test_plan_skill_matches_confirmed_schema_contract(self) -> None:
         """Separate approval from delegation and never start delegation from the skill."""
