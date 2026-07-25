@@ -1121,6 +1121,44 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for contract in return_contracts:
                     self.assertIn("".join(contract.split()), normalized_agent)
 
+    def test_repository_review_patch_refactorer_removes_only_parent_approved_targets(
+        self,
+    ) -> None:
+        """Remove only the excess elements the parent approved per finding id."""
+        # 例外を書き足しても無条件規則の本文が残ることを別 pin で押さえる。
+        # 例外句だけを pin すると、無条件規則ごと差し替えた版も green になる。
+        unconditional_rule = "既存テストを削除、skip、弱体化しない。"
+        # 無条件性を担うのは「だけ」なので、自己限定句を含む形で pin する。
+        removal_exception = (
+            "必須完了ゲートの指摘に基づき親が指摘IDごとに個別許可した"
+            "重複テストの削除だけを例外とする"
+        )
+        removal_targets = (
+            "親が指摘IDと対象を特定して個別許可した過剰要素（重複テスト、未使用要素、"
+            "除去しても外部から観測可能な振る舞いが変わらない分岐・pass-through 層）の除去。"
+        )
+        approved_removal_constraints = (
+            "### 除去を許可された場合",
+            "許可された指摘IDと明示された除去対象だけを取り除く",
+            "重複テストでは、残す側として指定されたテストを変更しない",
+            "除去後に対象 AC を満たす実装と検証が残ることを実行結果で示す",
+            "検証が失われる、または必須検証 command を green に保てない場合は、"
+            "除去せず理由を親へ返す",
+        )
+        removal_report = (
+            "除去した要素と、除去後も対象 AC を満たす実装と検証が残っている根拠"
+        )
+
+        for platform, agent in self._review_patch_refactorer_texts().items():
+            with self.subTest(platform=platform):
+                normalized_agent = "".join(agent.split())
+                self.assertIn("".join(unconditional_rule.split()), normalized_agent)
+                for contract in (
+                    (removal_exception, removal_targets, removal_report)
+                    + approved_removal_constraints
+                ):
+                    self.assertIn("".join(contract.split()), normalized_agent)
+
     def test_security_reviewer_is_defensive_and_detection_only(self) -> None:
         """Keep security review defensive, actionable, and inside its assigned scope."""
         paths = (
@@ -1223,6 +1261,55 @@ class BuildPluginAssetsRepositoryContractsTest(
             with self.subTest(platform=platform):
                 normalized_workflow = "".join(workflow.split())
                 for contract in gate_rows + mode_rules:
+                    self.assertIn("".join(contract.split()), normalized_workflow)
+
+    def test_repository_over_engineering_gate_bounds_parent_approved_removal(
+        self,
+    ) -> None:
+        """Approve each removal per finding id and return unlocatable coverage."""
+        skills = self._repository_skill_texts()
+        qa_workflows = {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+        approval_conditions = (
+            "### 過剰実装ゲートの除去許可",
+            "親は指摘IDごとに次をすべて確認する。",
+            "除去後も対象 AC を満たす実装と検証が残ること",
+            "除去しても外部から観測可能な振る舞いと公開契約が変わらないこと",
+            "除去する操作が局所的で、周辺の再設計を必要としないこと",
+            "1つでも満たさない場合は元 Implementer へ差し戻す",
+        )
+        type_c_route = (
+            "類型 C（残る検証を特定できないテスト）は `review-patch-refactorer` へ渡さず、"
+            "元 Implementer へ差し戻す"
+        )
+        duplicate_test_identification = (
+            "削除する側と残す側をファイルとテスト名で特定",
+            "個別許可のない除去を行わせない",
+        )
+        launch_inputs = (
+            "除去を許可する場合の、指摘IDごとの除去対象と残す対象",
+            "pass-through 層の除去では、付け替えが必要な呼び出し箇所のファイルを"
+            "変更許可リストへ含める",
+        )
+        # 「テストケースの削除」単体は親の再確認リストにも現れるため、
+        # 変更制約側へ入ったことは文全体で pin しないと判定できない。
+        scope_constraint = (
+            "新規作成・削除・移動、指摘外のテストケース追加、テストケースの削除、"
+            "fixture や helper の追加をさせない。"
+        )
+
+        for platform, workflow in qa_workflows.items():
+            with self.subTest(platform=platform):
+                normalized_workflow = "".join(workflow.split())
+                for contract in (
+                    approval_conditions
+                    + duplicate_test_identification
+                    + launch_inputs
+                    + (type_c_route, scope_constraint)
+                ):
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
     def test_repository_workflow_passes_selected_reviewer_context(self) -> None:
@@ -1493,6 +1580,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "設計変更",
             "振る舞い判断",
             "`strict` mode の Red / Green / Refactor 継続",
+            "過剰要素の除去に仕様判断、AC の再解釈、振る舞い変更が必要",
+            "失う AC が特定できないテストの除去",
         )
 
         for path, workflow in workflows.items():
@@ -1524,14 +1613,25 @@ class BuildPluginAssetsRepositoryContractsTest(
             "必須検証 command",
             "推測で補わず、ファイルを変更せず親へ返す",
         )
+        # 正規化比較は行境界を消すため、行単体の pin は限定句を行全体へ前置した
+        # 劣化版も部分一致で通してしまう。前の bullet と `-` マーカーまで含めて
+        # 行頭を固定する。
         parent_scope_qa = (
             "自己申告だけを信用せず",
             "基準 commit からの変更ファイル一覧と diff",
-            "許可範囲外の変更がないこと",
-            "ファイルの追加・削除・移動がないこと",
+            "- 許可範囲外の変更がないこと\n"
+            "- 親が個別に許可していないファイルの追加・削除・移動がないこと",
             "reviewer 指摘外の変更がないこと",
-            "テストケース、期待値、skip 設定の変更がないこと",
+            "- 親が個別に許可していないテストケースの削除がないこと\n"
+            "- テストケースの追加・変更、期待値、skip 設定の変更がないこと",
+            "除去を許可した場合は、除去対象が許可した指摘IDと一致し、"
+            "対象 AC を満たす実装と検証が残っていること",
             "focused test と関連する全体検証が green であること",
+        )
+        relaxations_beyond_removal = (
+            "親が個別に許可していないテストケースの追加",
+            "親が個別に許可していない期待値",
+            "親が個別に許可していないskip",
         )
 
         for platform, workflow in qa_workflows.items():
@@ -1539,6 +1639,10 @@ class BuildPluginAssetsRepositoryContractsTest(
                 normalized_workflow = "".join(workflow.split())
                 for contract in launch_contracts + parent_scope_qa:
                     self.assertIn("".join(contract.split()), normalized_workflow)
+                for relaxation in relaxations_beyond_removal:
+                    self.assertNotIn(
+                        "".join(relaxation.split()), normalized_workflow
+                    )
 
     def test_repository_decision_corpus_bounds_review_patch_scope(self) -> None:
         """Evaluate bounded refactorer inputs and zero out-of-scope changes."""
