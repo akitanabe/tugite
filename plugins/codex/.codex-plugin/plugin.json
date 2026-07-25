@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "Agentic QA Workflow",
     "shortDescription": "Install agents and delegate with parent QA.",
-    "longDescription": "Codex skills for safely installing or updating bundled custom agents and for splitting implementation work into serial worktree branches, delegating focused slices, reviewing returned diffs and tests, and keeping final quality responsibility with the parent agent.",
+    "longDescription": "Codex skills for safely installing or updating bundled custom agents and for splitting implementation work into serial implementation branches, each in its own worktree, delegating focused slices, reviewing returned diffs and tests, and keeping final quality responsibility with the parent agent.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [

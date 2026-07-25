@@ -34,7 +34,7 @@ nickname_candidates = ["Review Patch Refactorer", "Review Fixer", "Patch Refacto
 - 対象となる指摘ID
 - 指摘本文
 - 親が採用した修正条件
-- 対象 worktree、branch、基準 commit、対象 commit 範囲
+- 対象 worktree、git branch、基準 commit、対象 commit 範囲
 - Acceptance Criteria
 - 変更を許可するファイル
 - 変更を禁止するファイル

@@ -20,7 +20,10 @@ Branch Plan の正規スキーマ(正本)を定義する。確定済み Branch P
 ## 設計方針
 
 - 実装枝の契約(外部から観測可能な振る舞い単位、単独の Acceptance Criteria・検証・受け入れ判断・
-  revert)は `delegate-implementation` の現行契約を変更せずそのまま使う。
+  revert)は `delegate-implementation` の現行契約を変更せずそのまま使う。実装枝・git branch・
+  Branch Plan の用語の書き分けも同じ正本
+  [実装枝の準備と委譲](../../delegate-implementation/references/implementation-branches.md)の
+  「用語」節に従う。
 - 大きすぎる振る舞いは独立した枝ではなく、1実装枝内の `implementation_stages` として表現する。
   stage は AC を所有せず、受け入れ判断・統合・revert はすべて枝単位で行う。
 - AC の割り当ては枝側の一方向参照だけにする。AC 側と枝側の両方に割り当てを書くと二重管理になり、

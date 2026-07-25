@@ -42,18 +42,18 @@ task ID または title を候補にして、次の順で正規化する。
 5. 連続する `-` と前後の `-` を除去する。
 6. base は最大64文字になるよう末尾を切る。
 
-base が空なら branch を候補にして同じ手順を繰り返す。branch も空なら `delegated-implementation` を使う。
+base が空なら git branch を候補にして同じ手順を繰り返す。git branch も空なら `delegated-implementation` を使う。
 機密な入力名は使わず fallback へ進む。Windows 予約名には `qa-` prefix を付ける。予約名は
 `con`, `prn`, `aux`, `nul`, `com1`〜`com9`, `lpt1`〜`lpt9` とする。
 
 境界例は次のとおり。
 
 - `ＡＢＣ １２３` は `abc-123`。
-- title が `日本語`、branch が `Feature QA` なら `feature-qa`。
-- title と branch が `日本語` なら `delegated-implementation`。
+- title が `日本語`、git branch が `Feature QA` なら `feature-qa`。
+- title と git branch が `日本語` なら `delegated-implementation`。
 - `CON` は `qa-con`。
 
-raw task ID、title、branch に含まれる separator は slug の正規化対象にできる。path 制約は、正規化した slug から
+raw task ID、title、git branch に含まれる separator は slug の正規化対象にできる。path 制約は、正規化した slug から
 構築後の target path へ適用する。target は reports 直下の単一 Markdown file でなければならない。固定の
 `.agentic-qa/reports/` prefix を除く file name component に path separator を許可しない。`.` または `..` を
 許可しない。絶対 path を許可しない。reports 直下以外を許可しない。
@@ -116,12 +116,12 @@ report は親の統合 checkout へ保存し、削除予定の worker worktree �
 必要な証跡は次の Data に縮約する。
 
 - file は repository 相対 path
-- worktree は論理 ID、branch、cleanup 状態
+- worktree は論理 ID、git branch、cleanup 状態
 - checkout は論理 ID と commit
 - Implementer は role 名
 - command は sanitize 済み文字列、status、短い要約
 
-branch と file が敏感なら省略または sanitize する。絶対 path と local checkout path を保存しない。
+git branch と file が敏感なら省略または sanitize する。絶対 path と local checkout path を保存しない。
 
 untrusted field は保存前に次の順で正規化する。
 

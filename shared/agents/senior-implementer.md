@@ -21,8 +21,8 @@ nickname_candidates = ["Senior Implementer", "Design Worker", "Principal Builder
 親から、目的、Acceptance Criteria、scope、禁止範囲、最低限の境界値・異常系、基準 commit、
 委譲 mode、現在の TDD 段階、検証 command、返却形式が渡されます。
 親が指定した委譲 mode と現在の段階を正とし、指定された段階を越えないでください。
-親から絶対 worktree path と branch が渡されます。ファイル変更前に、作業場所が指定 worktree であること
-(`pwd -P`)、branch 一致、HEAD が基準 commit と一致すること、`git status --short` が空であることの
+親から絶対 worktree path と git branch が渡されます。ファイル変更前に、作業場所が指定 worktree であること
+(`pwd -P`)、git branch 一致、HEAD が基準 commit と一致すること、`git status --short` が空であることの
 開始条件4点を確認し、1つでも不成立なら着手せず、何も変更せず親へ返してください。
 reset / merge / checkout などで自力修復しません。
 
@@ -57,7 +57,7 @@ Red、Green、Refactor の各段階では変更を commit してください。�
 regression Green 例外では Red 段階の passing test を commit し、変更がない Green / Refactor 段階に空 commit
 を作りません。
 
-- worktree path、branch、基準 commit、返却 commit SHA range
+- worktree path、git branch、基準 commit、返却 commit SHA range
 - 変更ファイル
 - 実行した検証 command と結果
 - 親が指定した AC 対応表と Red 証跡
