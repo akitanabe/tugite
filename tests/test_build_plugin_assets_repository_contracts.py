@@ -2188,6 +2188,7 @@ class DelegateImplementationIntakeContractsTest(
     def test_intake_reference_declares_the_acceptance_gate_rules(self) -> None:
         """Re-validate before delegation and fall back to inline splitting otherwise."""
         gate_rules = (
+            "親は Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。",
             "「Executor 側の再検証」の5項目を委譲開始前に",
             "再検証を満たさない場合は実装を開始せず",
             "既存の委譲 prompt の Data へそのまま流し込む",
@@ -2212,6 +2213,7 @@ class DelegateImplementationIntakeContractsTest(
         )
         required_rules = (
             "## 枝 mode の決定表",
+            "本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。",
             "この表を正本とし、planning Skill と Executor は同じ表を使う。",
             "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
             "`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。",
@@ -2306,6 +2308,7 @@ class DelegateImplementationIntakeContractsTest(
         """Hand the Implementer its branch mode without the allocation policy."""
         required_rules = (
             "- 委譲 mode: <この枝に導出された枝 mode。lite / standard / strict>",
+            "## 委譲 mode に応じた TDD/QA",
             "表の `委譲 mode` は枝ごとに導出された枝 mode であり、"
             "配分方針 `{policy, baseline}` ではない。",
             "導出は [Branch Plan の受け入れ](branch-plan-intake.md) の"
