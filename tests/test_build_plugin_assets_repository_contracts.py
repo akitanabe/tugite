@@ -1406,7 +1406,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         eval_08 = corpus.split(
             "## EVAL-08: 機能的に green だが記述原則を外す差分",
             1,
-        )[1].split("## EVAL-09:", 1)[0]
+        )[1].split("## EVAL-24:", 1)[0]
 
         section_boundaries = {
             "expected decision": ("**期待する判断**", "**必須動作**"),
