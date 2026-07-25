@@ -76,6 +76,7 @@ required_agents=(
   responsibility-boundary-reviewer.toml
   test-quality-reviewer.toml
   writing-principles-reviewer.toml
+  over-engineering-reviewer.toml
   security-side-effect-reviewer.toml
   review-patch-refactorer.toml
 )
@@ -172,6 +173,7 @@ Installed agents:
   responsibility-boundary-reviewer
   test-quality-reviewer
   writing-principles-reviewer
+  over-engineering-reviewer
   security-side-effect-reviewer
   review-patch-refactorer
 

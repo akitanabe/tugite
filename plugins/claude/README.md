@@ -26,6 +26,8 @@
   - 追加・変更されたテストの仕様対応、振る舞い、網羅性を確認します。
 - `agents/writing-principles-reviewer.md`
   - `How / What / Why / Why Not` の配置、命名、説明をread-onlyで確認し、ID付きの指摘Dataを返します。
+- `agents/over-engineering-reviewer.md`
+  - 基準 commit からの diff のうち、取り除いても AC と制約を満たせるテストと実装をread-onlyで特定し、ID付きの指摘Dataを返します。
 - `agents/security-side-effect-reviewer.md`
   - 外部 I/O、破壊的操作、機密データ、セキュリティ影響を確認します。
 - `agents/review-patch-refactorer.md`

@@ -39,6 +39,7 @@ AGENT_NAMES = (
     "responsibility-boundary-reviewer",
     "test-quality-reviewer",
     "writing-principles-reviewer",
+    "over-engineering-reviewer",
     "security-side-effect-reviewer",
     "review-patch-refactorer",
 )
