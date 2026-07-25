@@ -858,7 +858,15 @@ class BuildPluginAssetsRepositoryContractsTest(
     def test_repository_specialized_reviewers_define_their_review_contracts(self) -> None:
         """Expose each review focus, common verdicts, and a read-only Codex role."""
         expected_focus = {
-            "test-quality-reviewer": ("観測可能な振る舞い", "境界値", "異常系"),
+            # 「過不足なく」は「不足なく」を部分文字列として含むため、過剰側を
+            # 切り出した改訂は前後の語まで含めないと固定できない。
+            "test-quality-reviewer": (
+                "観測可能な振る舞い",
+                "境界値",
+                "異常系",
+                "必要なテスト範囲が不足なく",
+                "テストの過剰と重複の除去は `over-engineering-reviewer` の責務です",
+            ),
             "security-side-effect-reviewer": ("認証", "冪等", "path traversal"),
         }
 
@@ -901,6 +909,69 @@ class BuildPluginAssetsRepositoryContractsTest(
         for contract in review_scope + finding_fields:
             self.assertIn(contract, source)
         self.assertIn("自身はファイルを変更しない", source)
+
+    def test_repository_over_engineering_reviewer_defines_marginal_necessity_scope_and_finding_contract(
+        self,
+    ) -> None:
+        """Judge removability by marginal necessity and return typed findings only."""
+        source = self._repository_text(
+            Path("shared/agents/over-engineering-reviewer.md")
+        )
+        normalized = "".join(source.split())
+        review_scope = (
+            "その要素を取り除いたとき、検証または実装を失う Acceptance Criteria・"
+            "明示された制約・repository の既存規約が存在するか。",
+            "traceability",
+            "重複した 2 本のテストはどちらも AC へ辿れる",
+            "指摘は **基準 commit からの diff が導入した要素に限ります**",
+            "自身はファイルを変更しない",
+            "抽象化の粒度や配置の良し悪しは `responsibility-boundary-reviewer` の責務です",
+            "`## 返却形式` の各項目を具体的に埋められない指摘は返さないでください",
+            "取り除いた後も残る実装または検証」を具体的に特定できない場合",
+        )
+        finding_fields = (
+            "指摘ID",
+            "対象ファイルと該当箇所",
+            "過剰の類型",
+            "除去しても失われる AC・制約が無いと判断した根拠",
+            "取り除いた後も残る実装または検証とそれが担保する AC",
+            "外部から観測可能な振る舞いへの影響有無",
+            "局所的かつ振る舞いを変えずに取り除けるか",
+            "推奨する修正先",
+        )
+        finding_types = (
+            "A: 重複した検証",
+            "B: 除去可能な実装要素",
+            "C: 残る検証を特定できないテスト",
+        )
+
+        for contract in review_scope + finding_fields + finding_types:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
+        self.assertNotIn("Needs attention", source)
+
+    def test_repository_over_engineering_reviewer_excludes_structural_extraction_from_removal(
+        self,
+    ) -> None:
+        """Keep extracted functions, partial overlap, and adapting layers out of removal."""
+        source = self._repository_text(
+            Path("shared/agents/over-engineering-reviewer.md")
+        )
+        normalized = "".join(source.split())
+        exclusions = (
+            "関数分割による構造化は、呼び出し元が 1 つであることだけを理由に指摘しない",
+            "部分重複（どちらも相手の検出範囲を完全には包含しない 2 つのテスト）は指摘しない",
+            "引数の詰め替えや型変換を行う層は pass-through ではありません",
+        )
+        removable_implementation_tiers = (
+            "除去してもいかなる呼び出し側の変更も要しない要素",
+            "除去に伴う呼び出し側の変更が委譲先への機械的な付け替えに限られ、"
+            "引数、意味、振る舞いの変更を伴わない、純粋な pass-through 層",
+        )
+
+        for contract in exclusions + removable_implementation_tiers:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
 
     def test_repository_writing_principles_reviewer_platforms_reject_file_modification(
         self,

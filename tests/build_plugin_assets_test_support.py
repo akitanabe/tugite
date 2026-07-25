@@ -24,6 +24,7 @@ AGENT_NAMES = (
     "responsibility-boundary-reviewer",
     "test-quality-reviewer",
     "writing-principles-reviewer",
+    "over-engineering-reviewer",
     "security-side-effect-reviewer",
     "review-patch-refactorer",
 )
@@ -32,7 +33,15 @@ REVIEWER_NAMES = (
     "responsibility-boundary-reviewer",
     "test-quality-reviewer",
     "writing-principles-reviewer",
+    "over-engineering-reviewer",
     "security-side-effect-reviewer",
+)
+# Reviewers whose read-only role is enforced by Claude tool metadata, not only by
+# the Codex sandbox. Fixtures and policy assertions iterate this set so adding a
+# gate reviewer does not require touching each assertion site.
+READ_ONLY_TOOL_AGENT_NAMES = (
+    "writing-principles-reviewer",
+    "over-engineering-reviewer",
 )
 REFACTORER_NAMES = (
     "review-patch-refactorer",
@@ -128,6 +137,7 @@ CODEX_MODEL_PROFILES = {
     "responsibility-boundary-reviewer": ModelProfile("gpt-5.6-sol", "medium"),
     "test-quality-reviewer": ModelProfile("gpt-5.6-sol", "medium"),
     "writing-principles-reviewer": ModelProfile("gpt-5.6-luna", "xhigh"),
+    "over-engineering-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "security-side-effect-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "review-patch-refactorer": ModelProfile("gpt-5.6-luna", "high"),
 }
@@ -139,6 +149,7 @@ CLAUDE_MODEL_PROFILES = {
     "responsibility-boundary-reviewer": ModelProfile("opus", "high"),
     "test-quality-reviewer": ModelProfile("opus", "high"),
     "writing-principles-reviewer": ModelProfile("sonnet", "high"),
+    "over-engineering-reviewer": ModelProfile("opus", "high"),
     "security-side-effect-reviewer": ModelProfile("fable", "high"),
     "review-patch-refactorer": ModelProfile("sonnet", "medium"),
 }
@@ -353,7 +364,7 @@ class IsolatedRepositorySupport:
                 self._agent_source(
                     name,
                     sandbox_mode=sandbox_mode,
-                    read_only_tools=name == "writing-principles-reviewer",
+                    read_only_tools=name in READ_ONLY_TOOL_AGENT_NAMES,
                 ),
             )
 
