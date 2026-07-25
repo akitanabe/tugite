@@ -6,20 +6,21 @@
 
 - 受け入れ口の規定
 - Executor 側の再検証
+- 枝 mode の決定表
 - implementation_stages の実行規約
 
 `plan-implementation-branches` が出力した確定済み Branch Plan を
 `delegate-implementation` の入力として受け入れるための規約を定める。親は
-Branch Plan の自己申告を信用せず、再検証してから枝と mode の入力にする。
+Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。
 Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正本は
 [Branch Plan 正規スキーマ](../../plan-implementation-branches/references/branch-plan-schema.md)
-であり、本 reference は実行規約と Executor 側の再検証の正本を担う。
+であり、本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。
 
 ## 受け入れ口の規定
 
 確定済み Branch Plan が渡された場合、親は次の手順で受け入れる。
 
-- 自己申告を信用せず、本 reference「Executor 側の再検証」の4項目を委譲開始前に
+- 自己申告を信用せず、本 reference「Executor 側の再検証」の5項目を委譲開始前に
   確認する。blocking violation code 表は planning Skill と同じ規則を入力 Data から
   再計算する。code 表の正本は
   [Branch Plan 正規スキーマ](../../plan-implementation-branches/references/branch-plan-schema.md)
@@ -39,8 +40,8 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
   既存挙動を固定する regression test なのかを委譲前に確認する。後者だけが Red 証跡の Green 例外を
   利用できる。分類できない場合は Green 例外を適用せず判断点として返す。regression と確認できた場合は、
   [実装枝の準備と委譲](implementation-branches.md) の4項目の根拠を返却条件へ追加する。
-- `implementation_stages` を宣言した枝は `strict` の段階ゲート機構で実行する。
-  `delegation.requested_mode` が `strict` でない場合の引き上げは、SKILL.md
+- `implementation_stages` を宣言した枝は、導出した枝 mode に関わらず `strict` の段階ゲート機構で
+  実行する。導出結果が `strict` 未満の場合の枝単位の引き上げは、SKILL.md
   「workflow mode の選択」の mode 引き上げ契約に従う。
 - Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。分割
   シグナルに該当する場合は `plan-implementation-branches` の使用を推奨する
@@ -54,19 +55,76 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
 2. `delegation.authorized: true` かつ `authorized_by: user` である。
 3. `unresolved_decisions` が空である。
 4. blocking violation code 表のすべての検査規則を入力 Data から再計算し、違反が0件である。
+5. 全枝の `risk.level` が `low` / `medium` / `high` のいずれかである。欠落または3値以外の枝が
+   ある場合は決定的に導出できないため、委譲を開始せず Branch Plan の修正を要求する。
 
 いずれかを満たさない場合は実装を開始せず、Branch Plan の修正(または委譲要求の有無の確認)を
 要求する。
+
+5項目を満たした後、委譲開始前に枝ごとの mode を導出する。
+
+- `delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、`null` の場合は
+  `{adaptive, standard}` を採用する。
+- 「枝 mode の決定表」から枝ごとの mode を再計算する。planning Skill 側の申告や
+  `delegation_mode_proposal` の内容を根拠にしない。
+- 導出結果は実行 Data として保持し、Branch Plan へ書き戻さない。
+
+## 枝 mode の決定表
+
+配分方針 `policy`、基準 `baseline`、枝の `risk.level` から枝ごとの mode を導出する。
+この表を正本とし、planning Skill と Executor は同じ表を使う。
+
+| policy | baseline | `risk.level: low` | `medium` | `high` |
+| --- | --- | --- | --- | --- |
+| `fixed` | `lite` | `lite` | `lite` | `lite` |
+| `fixed` | `strict` | `strict` | `strict` | `strict` |
+| `adaptive` | `standard` | `lite` | `standard` | `strict` |
+| `adaptive` | `strict` | `standard` | `strict` | `strict` |
+
+`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。`fixed` の2行は、
+`risk.level` を読まずに `baseline` を適用することを表の上で確認できるように置く。
+
+`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。「判断に迷う場合は基準側へ
+倒す」方針を `strict` baseline では `low` にも適用するのが一貫するためである。この結果
+`{adaptive, strict}` は `risk.level` の3値に対して2値しか使わず、`{adaptive, standard}` との差は
+`medium` だけでなく `low` にも現れる。`{adaptive, strict}` で `lite` が必要な枝は、理由を記録した
+手動上書きで降格する。表の側で `low → lite` に戻すと、`strict` を指定したユーザーの意図に反して
+低リスク判定の誤りが無検証のまま通る。
+
+`shared_foundation` は親が委譲前に実装する明示的な例外であり委譲枝ではないため、枝 mode の
+導出対象外とする。親は現行どおり `verification` を実行して基準 commit にする。実行前サマリーの
+枝一覧にも配分対象として並べない。
+
+### 手動上書き
+
+導出結果はユーザーまたは親エージェントが上書きできる。上書きは実行 Data であり、Branch Plan の
+フィールドではない。
+
+- 引き上げ(`lite → standard`、`standard → strict`)は理由の記録を必須としない。
+- 降格は理由の記録を必須とする。理由なしの降格は受け付けない。
+- `risk.level: high` の枝を `lite` へ直接降格させない。
+- 判断材料が不足している場合は `baseline` 側へ倒す。
+- 上書きは最終報告に含める。
+
+`risk.level` そのものが誤っていると判断した場合は、上書きではなく Branch Plan の `risk` を修正して
+再検証する。上書きを risk 修正の代用にしない。実行 Data 側だけを書き換えると、誤った `risk` が
+Branch Plan に残り、後続枝の導出と `delegation_mode_proposal` の再計算がその誤りを根拠に続く。
+
+上書きを受け付ける入力経路は本 reference で規定しない。Branch Plan の受け渡しと同じく親エージェントの
+責務とする。
 
 ## implementation_stages の実行規約
 
 `implementation_stages` は Domain / Repository / Endpoint のような実装上の中間段階であり、
 `strict` の Test plan / Red / Green / Refactor とは別の軸である。両者の関係を次のとおり定める。
 
-- stages を宣言した枝は `strict` の段階ゲート機構で実行する。`delegation.requested_mode` が
-  `strict` でない場合(mode 未指定の `null` を含む)、Executor は現行の mode 引き上げ契約に従い、
-  具体的なリスクを報告して `strict` へ引き上げる。引き上げが受け入れられない場合は stages を
-  実行せず、枝の再分割または stages の削除を要求する。
+- stages を宣言した枝は、決定表の導出結果に関わらず `strict` の段階ゲート機構で実行する。
+  導出結果が `strict` 未満の場合、これは枝単位の mode 引き上げに当たる。Executor は SKILL.md の
+  引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。引き上げが受け入れられない
+  場合は stages を実行せず、枝の再分割または stages の削除を要求する。
+- stages を宣言する枝は実質的に `risk.level` が `low` ではない。`{adaptive, standard}` かつ
+  `risk.level: low` かつ stages 宣言という組み合わせが出た場合は、stages 側ではなく `risk.level` の
+  付け方を疑い、planning へ差し戻すかどうかを判断する。
 - 各 stage を `strict` の1サイクル(テスト計画 → Red → Green → Refactor)として実行する。
   stage の Red は `stage_tests` のテストだけを対象とし、後続 stage のテストを先に書かない。
   このため「後続 stage のテストが red のまま進む」状態は発生しない。
