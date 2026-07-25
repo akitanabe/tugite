@@ -14,7 +14,8 @@
 ## 位置づけと出力条件
 
 会話上の最終報告は常に行う。永続 QA レポートは任意の追加成果物であり、会話上の最終報告を
-置き換えない。対象は `lite` / `standard` / `strict` の委譲 workflow で、`direct` は対象外とする。
+置き換えない。対象は入力語彙 `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` に
+よる委譲 workflow で、`direct` は対象外とする。
 
 永続 QA レポートは既定では生成しない。次のいずれかが要求した場合だけ出力対象にする。
 
@@ -151,15 +152,19 @@ report を生成しない。
 ## Task
 
 - Sanitized task ID / title:
-- Mode: `lite` / `standard` / `strict`
+- Delegation policy: `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full`
 - Base commit:
 - Logical checkout ID / commit:
 
 ## Implementation branches
 
-| Logical worktree ID | Branch (sanitized or omitted) | Implementer role | Cleanup state / reason | Integration state | Decision |
-| --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  | `Accepted` / `Rejected` / `Needs revision` |
+| Logical worktree ID | Branch (sanitized or omitted) | Implementer role | Risk level | Derived mode | Manual override | Cleanup state / reason | Integration state | Decision |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  | `Accepted` / `Rejected` / `Needs revision` |
+
+上書きがある枝は、導出 mode と上書き後の mode の両方が読み取れるように `Manual override` へ記録する。
+降格には理由の記録を必須とする。上書きの規約(引き上げ / 降格の条件)自体は Branch Plan の受け入れ
+(delegate-implementation/references/branch-plan-intake.md)を正本とし、ここでは記録項目としてだけ扱う。
 
 ## Acceptance Criteria → test
 
