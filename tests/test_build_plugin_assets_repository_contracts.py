@@ -171,7 +171,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         required_contracts = (
             "会話上の最終報告は常に行う。",
             "永続 QA レポートは任意",
-            "`lite` / `standard` / `strict`",
+            "入力語彙 `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full`",
             "`direct` は対象外",
             "既定では生成しない",
             "ユーザーの明示的な要求",
@@ -340,10 +340,12 @@ class BuildPluginAssetsRepositoryContractsTest(
         """Expose every decision and verification gap needed for parent acceptance."""
         required_fields = (
             "Sanitized task ID / title",
-            "Mode",
+            "Delegation policy",
             "Base commit",
             "Logical checkout ID / commit",
             "Implementation branches",
+            "導出 mode と上書き後の mode の両方が読み取れるように",
+            "降格には理由の記録を必須とする",
             "Acceptance Criteria → test",
             "Changed files",
             "Verification",
@@ -377,6 +379,9 @@ class BuildPluginAssetsRepositoryContractsTest(
                     "Logical worktree ID",
                     "Branch (sanitized or omitted)",
                     "Implementer role",
+                    "Risk level",
+                    "Derived mode",
+                    "Manual override",
                     "Sanitized command",
                     "Status",
                     "Short summary",
@@ -384,6 +389,20 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for field in required_template_fields:
                     self.assertIn(field, template)
                 self._assert_qa_report_template_excludes_raw_fields(template)
+
+                # The manual-override recording note is prose guidance for the parent,
+                # not a field the parent copies into every report; it must live outside
+                # the fenced template body (paired with the required_fields presence
+                # check above, this proves the note is present but not inside the fence).
+                normalized_template = "".join(template.split())
+                manual_override_note = (
+                    "導出 mode と上書き後の mode の両方が読み取れるように",
+                    "降格には理由の記録を必須とする",
+                )
+                for fragment in manual_override_note:
+                    self.assertNotIn(
+                        "".join(fragment.split()), normalized_template
+                    )
 
     def test_repository_writes_qa_report_after_cleanup_and_before_chat_report(
         self,
@@ -1481,16 +1500,20 @@ class BuildPluginAssetsRepositoryContractsTest(
         """Select delegation modes while keeping direct work outside the skill."""
         workflows = self._repository_workflow_texts()
         required_rules = (
+            "委譲の決定は次の3層に分ける。層をまたいで並列に選ばない。",
+            "経路の選択 — `direct`（この skill の外）か、委譲（この skill）か。",
+            "配分方針の選択 — 委譲する場合に、配分方針 `policy` と基準 `baseline` を決める。",
+            "枝 mode の導出 — `policy`、`baseline`、枝の `risk.level` から枝ごとの mode を導く。",
             "`direct` は親が実装する、この skill の外にある経路である。",
+            "委譲 mode ではないため、配分方針や枝 mode と同じ層に並べて選ばない。",
             "タスク規模だけでこの skill を発火しない。",
             "`direct` が明示された場合も、この skill を発火しない。",
-            "`lite` / `standard` / `strict` の明示は委譲要求を兼ねる。",
-            "委譲だけが明示され mode が指定されていない場合は `standard` を選ぶ。",
+            "`lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` の明示は"
+            "委譲要求を兼ねる。",
+            "委譲だけが明示され mode が指定されていない場合は `{adaptive, standard}` を選ぶ。",
             "`lite` を自動選択しない。",
             "`direct` と委譲が同時に指定された場合は、実装前にユーザーへ確認する。",
             "委譲 mode の強度は `lite < standard < strict` とする。",
-            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
-            "ユーザーが明示した mode を親都合で引き下げない。",
             "`direct` から委譲へ変更する場合は、ユーザーへ確認する。",
             "仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。",
             "`lite` の選択条件を満たさなくなった場合は `standard` 以上へ引き上げる。",
@@ -1498,21 +1521,9 @@ class BuildPluginAssetsRepositoryContractsTest(
         )
         route_contracts = (
             (
-                "| `direct` |",
-                "委譲要求がなく、仕様が明確で影響範囲が閉じ、親が直接処理する変更。",
-            ),
-            (
-                "| `lite` |",
-                "ユーザーが明示し、仕様が明確で影響範囲が局所的、容易に戻せる変更。",
-            ),
-            (
-                "| `standard` |",
-                "通常の実装委譲、または mode 未指定の明示的な委譲。",
-            ),
-            (
-                "| `strict` |",
-                "`strict` が明示された変更、または高リスク、影響範囲が広い、"
-                "誤実装の代償が大きい変更。",
+                "| `direct` | — | — |",
+                "この skill を発火しない skill 外の経路。委譲要求がなく、仕様が明確で"
+                "影響範囲が閉じ、親が直接処理する変更。",
             ),
         )
         obsolete_classifications = (
@@ -1534,6 +1545,127 @@ class BuildPluginAssetsRepositoryContractsTest(
                 for classification in obsolete_classifications:
                     self.assertNotIn(classification, workflow)
 
+    def test_repository_workflows_split_delegation_mode_into_policy_and_baseline(
+        self,
+    ) -> None:
+        """Treat adaptive as an allocation policy over the existing branch modes."""
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "配分方針  policy   : fixed | adaptive",
+            "基準      baseline : lite | standard | strict",
+            "枝 mode            : lite | standard | strict",
+            "policy / baseline と枝の risk.level から導出する",
+            "`adaptive` は新しい実装フローではなく、既存の `lite` / `standard` / `strict` を"
+            "枝へ割り当てる配分方針である。",
+            "枝へ割り当てられた後は、その枝を既存の各 mode のフローで実行する。",
+            "`policy: fixed` は、全枝固定であることを明示的に表現する語彙だけに割り当てる。",
+            "それ以外の語彙と mode 未指定はすべて `adaptive` へ写す。",
+            "今後語彙を追加する場合の既定も `adaptive` とする。",
+            "`policy: adaptive` では、`baseline` と枝の `risk.level` の決定表で"
+            "枝ごとの mode を導出する。",
+            "決定表の正本は [Branch Plan の受け入れ](references/branch-plan-intake.md) とする。",
+            "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
+        )
+        vocabulary_rows = (
+            (
+                "| 指定なし | `adaptive` | `standard` |",
+                "通常利用のデフォルト。mode 未指定の明示的な委譲でもこれを選ぶ。",
+            ),
+            (
+                "| `standard` / `standard-adaptive` | `adaptive` | `standard` |",
+                "通常の実装委譲。",
+            ),
+            (
+                "| `strict` / `strict-adaptive` | `adaptive` | `strict` |",
+                "全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` に"
+                "しない。`standard-adaptive` より保守的に導出する。",
+            ),
+            (
+                "| `strict-full` | `fixed` | `strict` |",
+                "全枝へ `strict` を固定適用する。枝ごとの導出を行わない。",
+            ),
+            (
+                "| `lite` | `fixed` | `lite` |",
+                "全枝を軽量フローで処理する。枝ごとの導出を行わない。ユーザーが明示し、"
+                "仕様が明確で影響範囲が局所的、容易に戻せる変更にだけ選ぶ。",
+            ),
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+                for row, contract in vocabulary_rows:
+                    self.assertIn(row, workflow)
+                    self.assertIn("".join(contract.split()), normalized_workflow)
+
+    def test_repository_workflows_bound_mode_downgrade_ban_to_allocation_policy(
+        self,
+    ) -> None:
+        """Ban downgrades of the allocation policy, not of derived branch modes."""
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "引き下げ禁止の対象は配分方針 `{policy, baseline}` とする。",
+            "ユーザーが明示した `baseline` を親都合で引き下げない。",
+            "`policy` を親都合で `fixed` から `adaptive` へ変えない。",
+            "枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。",
+            "導出表を逸脱した割り当てだけを引き上げ / 引き下げとして扱う。",
+            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
+            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的なリスクを"
+            "ユーザーへ報告する。",
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+
+    def test_repository_workflows_present_branch_allocation_before_delegating(
+        self,
+    ) -> None:
+        """Show the resolved allocation before delegating and gate strict-full."""
+        skills = self._repository_skill_texts()
+        workflows = self._repository_workflow_texts()
+        required_rules = (
+            "## 実行前サマリー",
+            "導出後、委譲開始前に次を提示する。",
+            "解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` "
+            "として解釈されたことを確認できるようにする。",
+            "枝 mode ごとの件数。",
+            "各枝の `risk.level`、導出した mode、手動上書きの有無。",
+            "Mode: standard-adaptive  (policy: adaptive / baseline: standard)",
+            "Branch allocation:\n  strict   1\n  standard 3\n  lite     1",
+            "1. authorization-check  high    → strict",
+            "4. api-response         low     → lite → standard  (override)",
+            "5. label-text           low     → lite",
+            "枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。",
+            "各枝の行では、上書きがある場合に「導出 mode → 上書き後の mode」の両方を示す。",
+            "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
+            "枝数を明示したユーザー確認を委譲開始条件とする。",
+            "確認が得られるまで委譲を開始しない。",
+            "実行前サマリーを提示する。",
+            "`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。",
+            "会話上の最終報告を行う。採用した配分方針と枝ごとの mode を含める。",
+            "導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して"
+            "最終報告で報告する。",
+        )
+
+        for path, workflow in workflows.items():
+            with self.subTest(path=path):
+                normalized_workflow = "".join(workflow.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized_workflow)
+
+        for main in (skills.source_main, skills.claude_main, skills.codex_main):
+            with self.subTest(main=main[:40]):
+                self.assertLess(
+                    main.index("実行前サマリーを提示する"),
+                    main.index("先頭の枝だけを委譲する"),
+                )
+
     def test_repository_workflows_apply_mode_specific_qa_and_parent_verification(
         self,
     ) -> None:
@@ -1554,7 +1686,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             ),
         )
         required_rules = (
-            "- 委譲 mode: <lite / standard / strict>",
+            "- 委譲 mode: <この枝に導出された枝 mode。lite / standard / strict>",
             "`lite` では、親が明示した場合だけ AC 対応表と Red 時点の失敗出力を付けること。",
             "`standard` では、Red 時点の失敗出力と",
             "「AC-n → それを検証するテスト名 → 期待値の根拠（仕様のどこから導いたか）」"
@@ -1719,6 +1851,76 @@ class BuildPluginAssetsRepositoryContractsTest(
                 self.assertIn(f"agents/{name}.md", claude_readme)
                 self.assertIn(f"`{name}`", codex_readme)
 
+    def test_repository_does_not_reference_retired_flat_mode_contract_text(
+        self,
+    ) -> None:
+        """Detect leftover flat lite/standard/strict contract text from before adaptive mode."""
+        scan_roots = (
+            REPOSITORY_ROOT / "shared",
+            REPOSITORY_ROOT / "plugins",
+            REPOSITORY_ROOT / "scripts",
+            REPOSITORY_ROOT / "tests",
+            REPOSITORY_ROOT / "evals",
+            REPOSITORY_ROOT / "README.md",
+        )
+        # Each phrase below was the pre-adaptive-mode contract text superseded by the
+        # {policy, baseline} vocabulary across the three branches this branch depends
+        # on. A survivor means one of those branches missed a reference, not that this
+        # branch should silently rewrite it. Phrases are built by concatenation (like
+        # the retired agent name above) so this literal does not self-match the scan.
+        retired_phrases = (
+            "requested_mode: null | lite | standard" + " | strict",
+            "propose: " + "strict",
+            "- 委譲 mode: <lite / standard" + " / strict>",
+            "| route / mode | " + "選択条件 |",
+            "Executor が standard" + " を選ぶ",
+            "委譲だけが明示され mode が指定されていない場合は `standard`" + " を選ぶ。",
+            # Bare flat-enum field assignments (e.g. from evals corpus examples
+            # written before the {policy, baseline} structure existed). Confirmed
+            # absent repository-wide before adding; the new structured form always
+            # writes "requested_mode: {" so it cannot collide with these literals.
+            "requested_mode: " + "lite",
+            "requested_mode: " + "standard",
+            "requested_mode: " + "strict",
+        )
+
+        for root in scan_roots:
+            file_paths = [root] if root.is_file() else list(root.rglob("*"))
+            for file_path in file_paths:
+                if not file_path.is_file():
+                    continue
+                content = file_path.read_text(encoding="utf-8")
+                for phrase in retired_phrases:
+                    with self.subTest(path=file_path, phrase=phrase):
+                        self.assertNotIn(phrase, content)
+
+    def test_repository_delegate_skill_description_names_the_input_vocabulary(
+        self,
+    ) -> None:
+        """Fire on the five input tokens and keep the direct exclusion in the description."""
+        vocabulary_tokens = (
+            "`lite`",
+            "`standard(-adaptive)`",
+            "`strict(-adaptive)`",
+            "`strict-full`",
+            "`direct`",
+        )
+        exclusion_contract = (
+            "`direct` の明示時や、委譲指示なしにタスク規模だけを理由として使わない。"
+        )
+
+        for platform in ("claude", "codex"):
+            with self.subTest(platform=platform):
+                content = self._repository_text(GENERATED_SKILL_PATHS[platform])
+                frontmatter = content.split("---", 2)[1]
+                self.assertIn("description:", frontmatter)
+                normalized_frontmatter = "".join(frontmatter.split())
+                for token in vocabulary_tokens:
+                    self.assertIn(token, frontmatter)
+                self.assertIn(
+                    "".join(exclusion_contract.split()), normalized_frontmatter
+                )
+
 
 class PlanImplementationBranchesContractsTest(
     RepositoryContractSupport,
@@ -1869,6 +2071,131 @@ class PlanImplementationBranchesContractsTest(
                     for contract in contracts:
                         self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_schema_holds_requested_mode_as_policy_and_baseline(self) -> None:
+        """Carry the requested delegation mode as an allocation policy and a baseline."""
+        required = (
+            "[issue #68](https://github.com/akitanabe/agentic-qa-workflow/issues/68)",
+            "policy: fixed | adaptive",
+            "baseline: lite | standard | strict",
+            "mode 未指定の明示的な委譲要求は null のまま保持し、"
+            "Executor が {adaptive, standard} を採用する。",
+            "`{adaptive, lite}` と `{fixed, standard}` は入力語彙が存在しないため無効とし、"
+            "表に含めない。",
+            "`baseline` を `lite` にすると low risk 枝の割り当て先が `lite` しかなく導出が"
+            "恒等写像になり、`medium` 以上を引き上げる用途は `{adaptive, standard}` と"
+            "同一になるため、独立した配分方針として意味を持たない。",
+            "`{fixed, standard}` は全枝固定を明示する入力語彙が存在しないため到達できない。"
+            "仮に語彙を足しても `{adaptive, standard}` は low risk 枝だけを `lite` に落とし"
+            "他は `standard` のままなので、品質面で下回らずコストだけが下がり、優位性がない。",
+        )
+        valid_combinations = (
+            "| `false` | `null` | `null` |",
+            "| `true` | `user` | `null`(mode 未指定の委譲要求。"
+            "Executor が `{adaptive, standard}` を選ぶ) |",
+            "| `true` | `user` | `{fixed, lite}` |",
+            "| `true` | `user` | `{adaptive, standard}` |",
+            "| `true` | `user` | `{adaptive, strict}` |",
+            "| `true` | `user` | `{fixed, strict}` |",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + valid_combinations:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_derives_branch_mode_from_risk_instead_of_a_field(
+        self,
+    ) -> None:
+        """Keep branch risk as the only source for the derived branch mode."""
+        required = (
+            "枝ごとの委譲 mode は schema に持たせず、`branches[].risk` を正として導出する。",
+            "枝側に `recommended_mode` を置くと `risk` と二重管理になり、矛盾したときに"
+            "どちらを正とするか決められないため。",
+            "AC 割り当てを枝側の一方向参照へ正規化したのと同じ理由である。",
+            "導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して"
+            "最終報告で報告する。",
+            "mode の判定理由は `risk.reasons` に書き、mode ごとの理由欄を別に設けない。",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_limits_mode_proposal_to_fixed_policy_mismatch(self) -> None:
+        """Propose an adaptive policy only where a fixed policy ignores branch risk."""
+        required = (
+            "propose:",
+            "policy: adaptive",
+            "baseline: standard | strict",
+            "`policy: adaptive` では枝の `risk.level` から mode を導出するため、"
+            "high risk 枝は決定表側で `strict` になる。",
+            "提案が必要なのは `policy: fixed` が枝の `risk` と整合しない場合だけである。",
+            "`{fixed, strict}` に対して降格を提案しない。",
+            "引き上げだけを提案する非対称性は、コストの削減より品質の担保を優先する"
+            "判断であり、low risk 枝から `lite` を提案しないのと同じ理由である。",
+        )
+        proposal_rows = (
+            "| `{fixed, lite}` | `high` を含む | `{adaptive, strict}` を提案 |",
+            "| `{fixed, lite}` | `medium` を含み `high` なし | "
+            "`{adaptive, standard}` を提案 |",
+            "| `{fixed, lite}` | 全枝 `low` | 出力しない |",
+            "| `{fixed, strict}` | 任意 | 出力しない |",
+            "| `{adaptive, *}` または `null` | 任意 | 出力しない |",
+        )
+        violation_recalculation = (
+            "`delegation_mode_proposal` の要否・内容が `requested_mode` と枝の "
+            "`risk.level` からの再計算(出力条件表)と一致しない",
+            "必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + proposal_rows + violation_recalculation:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_splitting_reference_defines_risk_level_criteria(self) -> None:
+        """Assign risk levels from failure impact rather than from change size."""
+        required = (
+            "## risk.level の判定観点",
+            "これは枝 mode を決める関数ではなく、`risk.level` の付け方を揃える"
+            "チェックリストである。",
+            "判定は実装量やファイル数ではなく、失敗したときの影響を中心に行う。",
+            "1. 失敗時の影響範囲",
+            "2. 変更の可逆性 / 切り戻しの容易さ",
+            "3. 外部副作用の有無と数",
+            "4. セキュリティ・権限への影響",
+            "5. データ整合性への影響",
+            "6. 後方互換性への影響",
+            "7. 仕様の明確さ",
+            "8. テストによる担保の可能性",
+            "9. 他の枝との依存関係",
+            "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
+            "判定に使った観点は `risk.reasons` に記録する。",
+            "決定表をここに再掲しない。",
+        )
+        level_rows = (
+            "| `low` | 表示文言のみの変更、設定値の追加、振る舞いに影響しないリネーム、"
+            "局所的な機械的修正。外部副作用がなく、容易に切り戻せる。 |",
+            "| `medium` | 通常の機能追加、既存ロジックの変更、API 内部処理の変更、"
+            "UI とバックエンドの通常連携。テストで十分に担保でき、失敗時の影響が限定的。 |",
+            "| `high` | 認証・認可・権限判定、データ削除・上書き・移行、"
+            "外部 API の契約変更、後方互換性への影響、決済・請求・金額計算、"
+            "機密情報への影響、複数の外部 I/O。失敗時の影響が広い、切り戻しが困難、"
+            "または仕様の曖昧さが重大な不具合につながる。 |",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + level_rows:
+                    self.assertIn("".join(contract.split()), normalized)
+
 
 INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
@@ -1965,7 +2292,7 @@ class DelegateImplementationIntakeContractsTest(
             "## Executor 側の再検証",
         )
         moved_body = (
-            "stages を宣言した枝は `strict` の段階ゲート機構で実行する。",
+            "`strict` の段階ゲート機構で実行する",
             "各 stage を `strict` の1サイクル(テスト計画 → Red → Green → Refactor)"
             "として実行する。",
             "`status: approved` であり、`approval.method` が設定済みである。",
@@ -1983,7 +2310,8 @@ class DelegateImplementationIntakeContractsTest(
     def test_intake_reference_declares_the_acceptance_gate_rules(self) -> None:
         """Re-validate before delegation and fall back to inline splitting otherwise."""
         gate_rules = (
-            "「Executor 側の再検証」の4項目を委譲開始前に",
+            "親は Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。",
+            "「Executor 側の再検証」の5項目を委譲開始前に",
             "再検証を満たさない場合は実装を開始せず",
             "既存の委譲 prompt の Data へそのまま流し込む",
             "委譲 prompt の必須テストと検証 command で",
@@ -1994,6 +2322,130 @@ class DelegateImplementationIntakeContractsTest(
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for rule in gate_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_holds_the_branch_mode_derivation_table(self) -> None:
+        """Map each allocation policy and risk level pair onto one branch mode."""
+        derivation_rows = (
+            "| policy | baseline | `risk.level: low` | `medium` | `high` |",
+            "| `fixed` | `lite` | `lite` | `lite` | `lite` |",
+            "| `fixed` | `strict` | `strict` | `strict` | `strict` |",
+            "| `adaptive` | `standard` | `lite` | `standard` | `strict` |",
+            "| `adaptive` | `strict` | `standard` | `strict` | `strict` |",
+        )
+        required_rules = (
+            "## 枝 mode の決定表",
+            "本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。",
+            "この表を正本とし、planning Skill と Executor は同じ表を使う。",
+            "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
+            "`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。",
+            "「判断に迷う場合は基準側へ倒す」方針を `strict` baseline では `low` にも"
+            "適用するのが一貫するためである。",
+            "`{adaptive, strict}` は `risk.level` の3値に対して2値しか使わず、"
+            "`{adaptive, standard}` との差は `medium` だけでなく `low` にも現れる。",
+            "`{adaptive, strict}` で `lite` が必要な枝は、理由を記録した手動上書きで降格する。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for row in derivation_rows:
+                    self.assertIn(row, text)
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_derives_branch_modes_before_delegating(self) -> None:
+        """Recompute branch modes from input Data instead of trusting the plan."""
+        required_rules = (
+            "全枝の `risk.level` が `low` / `medium` / `high` のいずれかである。",
+            "欠落または3値以外の枝がある場合は決定的に導出できないため、"
+            "委譲を開始せず Branch Plan の修正を要求する。",
+            "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
+            "`delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、"
+            "`null` の場合は `{adaptive, standard}` を採用する。",
+            "「枝 mode の決定表」から枝ごとの mode を再計算する。",
+            "planning Skill 側の申告や `delegation_mode_proposal` の内容を根拠にしない。",
+            "導出結果は実行 Data として保持し、Branch Plan へ書き戻さない。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_keeps_staged_branches_at_strict(self) -> None:
+        """Run staged branches at strict and treat the gap as a per-branch upgrade."""
+        required_rules = (
+            "stages を宣言した枝は、決定表の導出結果に関わらず `strict` の段階ゲート機構で"
+            "実行する。",
+            "導出結果が `strict` 未満の場合、これは枝単位の mode 引き上げに当たる。",
+            "SKILL.md の引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。",
+            "引き上げが受け入れられない場合は stages を実行せず、"
+            "枝の再分割または stages の削除を要求する。",
+            "stages を宣言する枝は実質的に `risk.level` が `low` ではない。",
+            "`{adaptive, standard}` かつ `risk.level: low` かつ stages 宣言という組み合わせが"
+            "出た場合は、stages 側ではなく `risk.level` の付け方を疑い、"
+            "planning へ差し戻すかどうかを判断する。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_excludes_shared_foundation_from_derivation(self) -> None:
+        """Keep the parent-built shared foundation out of the branch allocation."""
+        required_rules = (
+            "`shared_foundation` は親が委譲前に実装する明示的な例外であり委譲枝ではないため、"
+            "枝 mode の導出対象外とする。",
+            "親は現行どおり `verification` を実行して基準 commit にする。",
+            "実行前サマリーの枝一覧にも配分対象として並べない。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_bounds_manual_branch_mode_overrides(self) -> None:
+        """Allow overrides as execution Data while requiring reasons for downgrades."""
+        required_rules = (
+            "### 手動上書き",
+            "上書きは実行 Data であり、Branch Plan のフィールドではない。",
+            "引き上げ(`lite → standard`、`standard → strict`)は理由の記録を必須としない。",
+            "降格は理由の記録を必須とする。理由なしの降格は受け付けない。",
+            "`risk.level: high` の枝を `lite` へ直接降格させない。",
+            "判断材料が不足している場合は `baseline` 側へ倒す。",
+            "上書きは最終報告に含める。",
+            "`risk.level` そのものが誤っていると判断した場合は、上書きではなく Branch Plan の "
+            "`risk` を修正して再検証する。上書きを risk 修正の代用にしない。",
+            "上書きを受け付ける入力経路は本 reference で規定しない。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_delegate_prompt_declares_the_derived_branch_mode(self) -> None:
+        """Hand the Implementer its branch mode without the allocation policy."""
+        required_rules = (
+            "- 委譲 mode: <この枝に導出された枝 mode。lite / standard / strict>",
+            "## 委譲 mode に応じた TDD/QA",
+            "表の `委譲 mode` は枝ごとに導出された枝 mode であり、"
+            "配分方針 `{policy, baseline}` ではない。",
+            "導出は [Branch Plan の受け入れ](branch-plan-intake.md) の"
+            "「枝 mode の決定表」に従う。",
+            "委譲 prompt の「委譲 mode」欄には、その枝に導出された枝 mode を書き、"
+            "配分方針 `{policy, baseline}` を渡さない。",
+            "Implementer は枝 mode とその枝で要求される TDD 要件だけで作業でき、"
+            "配分方針を知る必要がないためである。",
+        )
+        for platform, text in self._delegate_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized)
 
     def test_delegate_references_preserve_branch_responsibility_exclusions(self) -> None:

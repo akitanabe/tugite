@@ -22,8 +22,9 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
   枝分割判断(縦割りか、分割過多でないか)、`status` 決定、承認と委譲開始の分離を含む権限の扱いを
   評価する。この Skill は実装も委譲も行わないため、委譲や `delegate-implementation` の起動を先取りしない。
 - `plan-intake`: 確定済みと称する Branch Plan が `delegate-implementation` へ渡された時点。Executor が
-  自己申告を信用せず再検証4項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
-  violation 再計算0件)と mode の妥当性を確認し、委譲を開始するか修正・引き上げ・確認を求めるかを評価する。
+  自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
+  violation 再計算0件、全枝の `risk.level` が3値のいずれか)と mode の妥当性を確認し、委譲を開始するか
+  修正・引き上げ・確認を求めるかを評価する。
 - `post-return QA`: Implementer から commit、diff、test 結果が返った時点。親が返却物を読んだ後の
   risk 特定、reviewer / refactorer の routing、修正先、受け入れ判断を評価する。
 
@@ -99,7 +100,7 @@ branch を一貫して撤去できた。
    AC 割り当て、`unresolved_decisions`、`validation.blocking`)と提示手順を証跡として保存し、実装・委譲・
    worktree 準備・Worker 起動を先取りしていないことを確認する。
 5. `plan-intake` case では、記載された確定済みと称する Branch Plan を一組の入力として与える。Executor が
-   自己申告を信用せず再検証4項目と violation 再計算を実行したか、実装開始前に委譲・修正要求・mode 引き上げ・
+   自己申告を信用せず再検証5項目と violation 再計算を実行したか、実装開始前に委譲・修正要求・mode 引き上げ・
    委譲要求確認のどれを選んだかを証跡として保存し、再検証を満たさないまま Worker を起動していないことを確認する。
 6. `post-return QA` case では、記載された最小 AC、synthetic diff 要約、返却 test 結果を一組の返却物として
    与える。親がそれらを読む前に agent を起動していないことを確認する。
@@ -588,6 +589,61 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 - [ ] `standard` が選ばれ、`lite` の自動選択がない。
 - [ ] diff 前の専門 reviewer / `writing-principles-reviewer` 起動がない。
 - [ ] 親の返却 QA、実行検証、最終判断が維持されている。
+
+## EVAL-20: strict-full 明示と枝数確認ゲート
+
+**目的**
+
+`strict-full`(`{fixed, strict}`)が明示された場合、枝数を明示したユーザー確認を委譲開始条件とし、
+確認が得られるまで委譲を開始しないことを確認する。
+
+**評価タイミング**
+
+`intake`。実行前サマリー提示から委譲開始までの段階。
+
+**入力**
+
+> strict-full で委譲してください。決済 API のリファクタリングとして、次の5つを別々の実装枝にしたいです。
+> (1) validation 層の分離 (2) 金額計算の calculation 化 (3) repository 層の抽出 (4) API response 整形の分離
+> (5) 監査 log の追加。
+
+**期待する判断**
+
+`strict-full`(`{fixed, strict}`)と判断し、全枝へ `strict` を固定適用する(枝ごとの `risk.level` による
+導出は行わない)。枝数が5であることを明示した確認を委譲開始前にユーザーへ求め、確認が得られるまで
+委譲を開始しない。
+
+**必須動作**
+
+- `{fixed, strict}` を採用し、枝ごとの `risk.level` による導出を行わない。
+- 実行前サマリーで枝数(5)と全枝 `strict` であることを明示し、`strict-full` の確認ゲートとして
+  ユーザー確認を要求する。
+- 確認が得られるまで worktree 準備や Worker 起動を行わない。
+- 確認が得られた後は、全枝を `strict` の段階ゲートで実行する契約を維持する。
+
+**禁止動作**
+
+- 確認を得ずに委譲を開始する、または最初の枝だけ確認して残りは省略する。
+- 枝数を示さずに「コストが高いので確認します」とだけ述べる。
+- risk.level の入力がないことを理由に `{adaptive, strict}` へ読み替える。
+- 一部の枝だけ `strict` 未満へ独自に下げる。
+
+**許容される差異**
+
+- 確認を得る具体的な UI や文言は変えてよい。
+- 5つの区切り方の呼称は変えてよいが、枝数の明示は変えない。
+
+**Claude/Codex 差**
+
+確認ゲートの判断は共通である。確認を得る手段は platform 固有の対話 mechanism に従う。
+
+**手動評価項目**
+
+- [ ] `{fixed, strict}`(strict-full)と判断している。
+- [ ] 枝ごとの risk.level 導出を行っていない。
+- [ ] 枝数(5)を明示した確認を委譲開始前に求めている。
+- [ ] 確認前に worktree 準備や Worker 起動をしていない。
+- [ ] 全枝 `strict` の段階ゲート契約を維持している。
 
 # Post-return QA cases
 
@@ -1234,6 +1290,64 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] 委譲要求がないため計画の確定で停止している。
 - [ ] `delegate-implementation` を起動していない。
 
+## EVAL-21: lite 明示と high risk 枝への mode 引き上げ提案
+
+**目的**
+
+`{fixed, lite}` の委譲要求を受けた `plan-implementation-branches` が、high risk 枝を含む場合に
+`delegation_mode_proposal` として `{adaptive, strict}` を提案することを確認する。
+
+**評価タイミング**
+
+`planning`。Branch Plan の生成・提示時点。
+
+**入力**
+
+> lite で、この実装プランの枝分割計画を作ってください。
+>
+> プラン: 決済 webhook の署名検証を追加する。(1) 署名 header の存在確認と format validation
+> (2) 秘密鍵を使った署名再計算と一致確認、不一致時は取引を拒否し監査 log を残す
+> (3) 検証成功時の既存処理呼び出しは変更しない。
+
+**期待する判断**
+
+`lite` の明示は `{fixed, lite}` の委譲要求を兼ねる。分割の結果、署名不一致時の取引拒否と監査 log
+要件を持つ枝の `risk.level` が `high` になる。出力条件表の `{fixed, lite}` かつ `high` を含む行に従い、
+`delegation_mode_proposal` として `{adaptive, strict}` を提案する。委譲は開始しない。
+
+**必須動作**
+
+- Branch Plan を生成し、少なくとも1枝の `risk.level: high` を判定根拠とともに示す。
+- 出力条件表から `delegation_mode_proposal.propose: { policy: adaptive, baseline: strict }` を
+  再計算して出力する。
+- `delegation.requested_mode` は `{fixed, lite}` のまま保持し、proposal はあくまで提案であって
+  自動採用しないことを示す。
+- 委譲を開始せず、Branch Plan Data の提示で止める。
+
+**禁止動作**
+
+- high risk 枝があるのに `delegation_mode_proposal` を省略する。
+- `{fixed, lite}` のまま委譲を開始する、または `requested_mode` を親が勝手に書き換える。
+- `{adaptive, standard}` など出力条件表と異なる baseline を提案する。
+- 委譲や Worker 起動を先取りする。
+
+**許容される差異**
+
+- 枝分割の粒度や AC 割り当ての具体は変わってよいが、high risk 枝の存在と proposal の内容
+  (`{adaptive, strict}`)は変えない。
+
+**Claude/Codex 差**
+
+提案判断は共通である。Skill 実行 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] `{fixed, lite}` を委譲要求として受理している。
+- [ ] high risk 枝を具体的根拠とともに判定している。
+- [ ] `delegation_mode_proposal` として `{adaptive, strict}` を出力条件表どおり提案している。
+- [ ] `requested_mode` を勝手に書き換えず、委譲を開始していない。
+- [ ] Branch Plan Data の提示で止まっている。
+
 # Plan-intake cases
 
 ## EVAL-17: 不正な Branch Plan の受領
@@ -1298,41 +1412,47 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 - [ ] 実装を開始せず修正 / 委譲要求確認を要求している。
 - [ ] Worker 起動・worktree 準備をしていない。
 
-## EVAL-18: implementation_stages 宣言枝を standard 要求で受領
+## EVAL-18: implementation_stages 宣言枝の adaptive standard 導出から strict への引き上げ
 
 **目的**
 
-`implementation_stages` を宣言した枝を `standard` 要求で受領した場合、具体的リスクを報告して `strict` へ
-引き上げ、黙って mode を変更しないこと、stage が AC を所有せず受け入れ・統合・revert が枝単位のままである
+`{adaptive, standard}` の決定表による導出結果が `standard` であっても、`implementation_stages` を
+宣言した枝は `strict` の段階ゲート機構で実行し、黙って mode を変更せず、枝単位の引き上げとして
+具体的なリスクを報告すること、また stage が AC を所有せず受け入れ・統合・revert が枝単位のままである
 ことを確認する。
 
 **評価タイミング**
 
-`plan-intake`。委譲開始前の受け入れ再検証の段階。
+`plan-intake`。委譲開始前の受け入れ再検証と mode 導出の段階。
 
 **入力**
 
 確定済みと称する Branch Plan(抜粋):
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
-- `delegation: { authorized: true, authorized_by: user, requested_mode: standard }`
-- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` を持ち、2つの `implementation_stages`
-  (`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の `tests` と一致
+- `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
+- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と `risk.level: medium` を持ち、2つの
+  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の
+  `tests` と一致
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > この Branch Plan で委譲を開始してください。
 
 **期待する判断**
 
-再検証4項目は満たす(`approved`、`delegation.authorized: true` / `authorized_by: user`、`unresolved_decisions`
-空、violation 再計算0件)。ただし `implementation_stages` を宣言した枝は `strict` の段階ゲート機構で実行する
-規約であり、`requested_mode: standard` では段階ゲートを保証できない。よって黙って mode を変えず、具体的リスクを
-報告して `standard` から `strict` へ引き上げる。引き上げが受け入れられない場合は stages を実行せず、枝の再分割
-または stages の削除を要求する。stage は AC を所有せず、受け入れ・統合・revert は枝単位のままとする。
+再検証5項目は満たす(`approved`、`delegation.authorized: true` / `authorized_by: user`、
+`unresolved_decisions` の空、violation 再計算0件、全枝の `risk.level` が3値のいずれか)。決定表により
+`{adaptive, standard}` × `medium` → `standard` が導出されるが、`implementation_stages` を宣言した枝は
+導出結果に関わらず `strict` の段階ゲート機構で実行する規約であるため、`standard` から `strict` への
+枝単位の引き上げとして扱い、具体的なリスク(`standard` では段階ゲートと中間ゲートの検証を保証できない
+こと)を報告する。黙って mode を変えない。引き上げが受け入れられない場合は stages を実行せず、枝の
+再分割または stages の削除を要求する。stage は AC を所有せず、受け入れ・統合・revert は枝単位のままと
+する。
 
 **必須動作**
 
-- 再検証4項目を満たすことを確認する。
+- 再検証5項目を満たすことを確認する。
+- 決定表から `b1`(medium)の導出結果が `standard` であることを示す。
 - `implementation_stages` 宣言枝は `strict` 実行が必要と判断し、具体的リスク(`standard` では段階ゲートと
   中間 gate の検証を保証できない)を報告して `standard` から `strict` へ引き上げる。
 - 引き上げ理由をユーザーへ明示し、黙って mode を変更しない。
@@ -1342,7 +1462,7 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 
 **禁止動作**
 
-- `standard` のまま段階ゲートなしで stages を実行する。
+- 決定表の導出結果(`standard`)のまま段階ゲートなしで stages を実行する。
 - ユーザーに知らせず黙って `strict` へ変更する。
 - stage に AC を所有させる、または stage 単位で受け入れ・revert する。
 - 引き上げが拒否されても無理に `standard` で stages を進める。
@@ -1358,11 +1478,133 @@ mode 引き上げの判断は共通である。段階を継続する platform �
 
 **手動評価項目**
 
-- [ ] 再検証4項目の充足を確認している。
+- [ ] 再検証5項目の充足を確認している。
+- [ ] 決定表から `b1`(medium)の導出結果が `standard` であることを確認している。
 - [ ] `implementation_stages` 宣言枝に `strict` が必要と判断している。
 - [ ] 具体的リスクを報告して `standard` から `strict` へ引き上げている。
 - [ ] 黙って mode を変更していない。
 - [ ] stage が AC を所有せず、受け入れ・revert が枝単位である。
+
+## EVAL-22: 混在 risk と mode 未指定委譲の決定表導出
+
+**目的**
+
+mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, standard}` を採用し、枝の
+`risk.level` から決定表どおりに枝ごとの mode を導出することを確認する。
+
+**評価タイミング**
+
+`plan-intake`。委譲開始前の受け入れ再検証と mode 導出の段階。
+
+**入力**
+
+確定済みと称する Branch Plan(抜粋):
+
+- `status: approved` / `approval.method: user` / `confirmation_mode: review`
+- `delegation: { authorized: true, authorized_by: user, requested_mode: null }`
+- `branches`: `b-auth`(`risk.level: high`)、`b-domain`(`risk.level: medium`)、
+  `b-label`(`risk.level: low`)
+- `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
+
+> この Branch Plan で委譲を開始してください。
+
+**期待する判断**
+
+再検証5項目を満たす。`requested_mode: null` なので `{adaptive, standard}` を採用する。決定表
+(`adaptive` / `standard`)に従い、`b-auth`(high)→ `strict`、`b-domain`(medium)→ `standard`、
+`b-label`(low)→ `lite` を導出する。導出結果は Branch Plan へ書き戻さず実行 Data として保持し、
+実行前サマリーで枝ごとの mode と件数を提示する。
+
+**必須動作**
+
+- 再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、violation
+  再計算0件、全枝の `risk.level` が3値のいずれか)を確認する。
+- `requested_mode: null` から `{adaptive, standard}` を採用する。
+- 決定表から `high → strict` / `medium → standard` / `low → lite` を枝ごとに導出する。
+- 実行前サマリーで採用した配分方針、枝ごとの `risk.level`、導出 mode、件数を提示する。
+
+**禁止動作**
+
+- `requested_mode: null` を理由に mode 選択を止める、または一律 `standard` を全枝へ適用する。
+- 決定表を使わず risk.level を無視して mode を決める。
+- 導出結果を Branch Plan へ書き戻す。
+- 再検証を経ずに委譲を開始する。
+
+**許容される差異**
+
+- 枝 id や purpose の具体は変えてよいが、`risk.level` の3値と導出結果の対応は変えない。
+
+**Claude/Codex 差**
+
+導出判断は共通である。Skill / agent の実行 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] 再検証5項目を満たしていることを確認している。
+- [ ] `{adaptive, standard}` を採用している。
+- [ ] `high → strict` / `medium → standard` / `low → lite` を決定表どおり導出している。
+- [ ] 導出結果を Branch Plan へ書き戻していない。
+- [ ] 実行前サマリーで枝ごとの mode と件数を提示している。
+
+## EVAL-23: strict 明示と low risk 枝の standard 導出
+
+**目的**
+
+`{adaptive, strict}` を要求された Executor が、`risk.level: low` の枝を `lite` へ落とさず
+`standard` として導出することを確認する。
+
+**評価タイミング**
+
+`plan-intake`。委譲開始前の受け入れ再検証と mode 導出の段階。
+
+**入力**
+
+確定済みと称する Branch Plan(抜粋):
+
+- `status: approved` / `approval.method: user` / `confirmation_mode: review`
+- `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: strict } }`
+- `branches`: `b-migration`(`risk.level: high`)、`b-format`(`risk.level: low`)
+- `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
+
+> strict-adaptive で委譲を開始してください。
+
+**期待する判断**
+
+再検証5項目を満たす。`{adaptive, strict}` を採用し、決定表に従い `b-migration`(high)→ `strict`、
+`b-format`(low)→ `standard`(`lite` ではない)を導出する。`{adaptive, strict}` では `low` を
+`lite` へ落とさない。
+
+**必須動作**
+
+- 再検証5項目を確認する。
+- `{adaptive, strict}` を採用する。
+- 決定表から `b-format`(low)を `standard` として導出する。
+- 実行前サマリーで枝ごとの `risk.level` と導出 mode を提示する。
+
+**禁止動作**
+
+- `risk.level: low` を根拠に `b-format` を `lite` へ導出する。
+- ユーザーが明示した `baseline: strict` を親都合で `standard` baseline へ引き下げる。
+- 表を使わず経験則で mode を決める。
+- 導出結果を Branch Plan へ書き戻す。
+
+**許容される差異**
+
+- 枝の purpose や id は変えてよいが、`{adaptive, strict}` での `low → standard` の対応は変えない。
+  `b-format` を `lite` にしたい場合は理由を記録した手動上書きとして扱ってよいが、この case では
+  表どおりの導出結果を評価する。
+
+**Claude/Codex 差**
+
+導出判断は共通である。Skill / agent の実行 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] `{adaptive, strict}` を採用している。
+- [ ] `b-migration`(high)を `strict` に導出している。
+- [ ] `b-format`(low)を `lite` ではなく `standard` に導出している。
+- [ ] ユーザーが明示した baseline を引き下げていない。
+- [ ] 導出結果を Branch Plan へ書き戻していない。
 
 # 結果記録
 

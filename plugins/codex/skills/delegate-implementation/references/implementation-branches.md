@@ -7,7 +7,7 @@
 - 用語
 - Implementer context と枝の lifecycle
 - worktree と基準 commit
-- mode に応じた TDD/QA
+- 委譲 mode に応じた TDD/QA
 - Implementer の選択
 - 委譲 prompt
 
@@ -62,7 +62,10 @@ worker は指定 worktree の外を編集しない。cleanup は親が `git work
 - 委譲直前に基準 commit で既存 test、build、typecheck、lint を実行し、green を確認する。
 - 基準が red の場合は委譲を開始せず、既存失敗として切り分ける。
 
-## mode に応じた TDD/QA
+## 委譲 mode に応じた TDD/QA
+
+表の `委譲 mode` は枝ごとに導出された枝 mode であり、配分方針 `{policy, baseline}` ではない。
+導出は [Branch Plan の受け入れ](branch-plan-intake.md) の「枝 mode の決定表」に従う。
 
 | 委譲 mode | TDD/QA の強度 |
 | --- | --- |
@@ -161,7 +164,7 @@ custom agent の developer instructions にある安定契約を長く再掲せ�
 - 実装内容: <実現する振る舞い>
 
 ## 実行 context
-- 委譲 mode: <lite / standard / strict>
+- 委譲 mode: <この枝に導出された枝 mode。lite / standard / strict>
 - 現在の段階: <一括実装 / test plan / Red / Green / Refactor>
 - 最新の基準コミット: <green を確認した SHA>
 - 絶対 worktree path と git branch 名: <path / git branch>
@@ -189,6 +192,10 @@ custom agent の developer instructions にある安定契約を長く再掲せ�
 
 `out_of_scope` はパス制約へ統合せず、各項目の意味を変えずに「この枝でやらないこと」へ列挙する。
 Implementer は、その責務・作業が枝の完成に必要になった場合は変更せず、必要性と理由を親へ報告する。
+
+委譲 prompt の「委譲 mode」欄には、その枝に導出された枝 mode を書き、配分方針 `{policy, baseline}` を
+渡さない。Implementer は枝 mode とその枝で要求される TDD 要件だけで作業でき、配分方針を知る必要が
+ないためである。
 
 `lite` では、親が明示した場合だけ AC 対応表と Red 時点の失敗出力を付けること。
 `standard` では、Red 時点の失敗出力と
