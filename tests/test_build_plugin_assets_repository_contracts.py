@@ -1650,7 +1650,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         eval_08 = corpus.split(
             "## EVAL-08: 機能的に green だが記述原則を外す差分",
             1,
-        )[1].split("## EVAL-09:", 1)[0]
+        )[1].split("## EVAL-24:", 1)[0]
         required_contracts = (
             "指摘元 reviewer、指摘ID、指摘本文、親が採用した修正条件、変更を許可するファイル",
             "指摘外変更、許可範囲外変更、ファイルの追加・削除・移動が0件",
