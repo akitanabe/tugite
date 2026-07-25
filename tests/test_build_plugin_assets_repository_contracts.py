@@ -15,6 +15,7 @@ from build_plugin_assets_test_support import (
     GENERATED_MARKDOWN_WARNING,
     GENERATED_SKILL_REFERENCE_PATHS,
     GENERATED_SKILL_PATHS,
+    READ_ONLY_TOOL_AGENT_NAMES,
     REPOSITORY_ROOT,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
@@ -973,30 +974,35 @@ class BuildPluginAssetsRepositoryContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
 
-    def test_repository_writing_principles_reviewer_platforms_reject_file_modification(
+    def test_repository_tool_restricted_reviewers_platforms_reject_file_modification(
         self,
     ) -> None:
-        """Publish platform-enforced read-only settings with the reviewer definition."""
-        name = "writing-principles-reviewer"
-        source_metadata = self._agent_source_metadata(name)
-        claude_artifact = self._repository_text(CLAUDE_PROFILE_PATH / f"{name}.md")
-        codex_artifact = self._codex_agent_artifact_metadata(name)
+        """Publish platform-enforced read-only settings with each reviewer definition."""
+        for name in READ_ONLY_TOOL_AGENT_NAMES:
+            with self.subTest(name=name):
+                source_metadata = self._agent_source_metadata(name)
+                claude_artifact = self._repository_text(
+                    CLAUDE_PROFILE_PATH / f"{name}.md"
+                )
+                codex_artifact = self._codex_agent_artifact_metadata(name)
 
-        self.assertEqual(
-            ["Read", "Grep", "Glob"],
-            source_metadata["claude"]["tools"],
-        )
-        self.assertEqual(
-            ["Bash", "Edit", "Write", "NotebookEdit"],
-            source_metadata["claude"]["disallowed_tools"],
-        )
-        self.assertIn("tools: Read, Grep, Glob\n", claude_artifact)
-        self.assertIn(
-            "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
-            claude_artifact,
-        )
-        self.assertEqual("read-only", source_metadata["codex"]["sandbox_mode"])
-        self.assertEqual("read-only", codex_artifact["sandbox_mode"])
+                self.assertEqual(
+                    ["Read", "Grep", "Glob"],
+                    source_metadata["claude"]["tools"],
+                )
+                self.assertEqual(
+                    ["Bash", "Edit", "Write", "NotebookEdit"],
+                    source_metadata["claude"]["disallowed_tools"],
+                )
+                self.assertIn("tools: Read, Grep, Glob\n", claude_artifact)
+                self.assertIn(
+                    "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
+                    claude_artifact,
+                )
+                self.assertEqual(
+                    "read-only", source_metadata["codex"]["sandbox_mode"]
+                )
+                self.assertEqual("read-only", codex_artifact["sandbox_mode"])
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,
