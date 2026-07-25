@@ -390,6 +390,20 @@ class BuildPluginAssetsRepositoryContractsTest(
                     self.assertIn(field, template)
                 self._assert_qa_report_template_excludes_raw_fields(template)
 
+                # The manual-override recording note is prose guidance for the parent,
+                # not a field the parent copies into every report; it must live outside
+                # the fenced template body (paired with the required_fields presence
+                # check above, this proves the note is present but not inside the fence).
+                normalized_template = "".join(template.split())
+                manual_override_note = (
+                    "導出 mode と上書き後の mode の両方が読み取れるように",
+                    "降格には理由の記録を必須とする",
+                )
+                for fragment in manual_override_note:
+                    self.assertNotIn(
+                        "".join(fragment.split()), normalized_template
+                    )
+
     def test_repository_writes_qa_report_after_cleanup_and_before_chat_report(
         self,
     ) -> None:
@@ -1844,6 +1858,13 @@ class BuildPluginAssetsRepositoryContractsTest(
             "| route / mode | " + "選択条件 |",
             "Executor が standard" + " を選ぶ",
             "委譲だけが明示され mode が指定されていない場合は `standard`" + " を選ぶ。",
+            # Bare flat-enum field assignments (e.g. from evals corpus examples
+            # written before the {policy, baseline} structure existed). Confirmed
+            # absent repository-wide before adding; the new structured form always
+            # writes "requested_mode: {" so it cannot collide with these literals.
+            "requested_mode: " + "lite",
+            "requested_mode: " + "standard",
+            "requested_mode: " + "strict",
         )
 
         for root in scan_roots:
