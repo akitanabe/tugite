@@ -1949,6 +1949,131 @@ class PlanImplementationBranchesContractsTest(
                     for contract in contracts:
                         self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_schema_holds_requested_mode_as_policy_and_baseline(self) -> None:
+        """Carry the requested delegation mode as an allocation policy and a baseline."""
+        required = (
+            "[issue #68](https://github.com/akitanabe/agentic-qa-workflow/issues/68)",
+            "policy: fixed | adaptive",
+            "baseline: lite | standard | strict",
+            "mode 未指定の明示的な委譲要求は null のまま保持し、"
+            "Executor が {adaptive, standard} を採用する。",
+            "`{adaptive, lite}` と `{fixed, standard}` は入力語彙が存在しないため無効とし、"
+            "表に含めない。",
+            "`baseline` を `lite` にすると low risk 枝の割り当て先が `lite` しかなく導出が"
+            "恒等写像になり、`medium` 以上を引き上げる用途は `{adaptive, standard}` と"
+            "同一になるため、独立した配分方針として意味を持たない。",
+            "`{fixed, standard}` は全枝固定を明示する入力語彙が存在しないため到達できない。"
+            "仮に語彙を足しても `{adaptive, standard}` は low risk 枝だけを `lite` に落とし"
+            "他は `standard` のままなので、品質面で下回らずコストだけが下がり、優位性がない。",
+        )
+        valid_combinations = (
+            "| `false` | `null` | `null` |",
+            "| `true` | `user` | `null`(mode 未指定の委譲要求。"
+            "Executor が `{adaptive, standard}` を選ぶ) |",
+            "| `true` | `user` | `{fixed, lite}` |",
+            "| `true` | `user` | `{adaptive, standard}` |",
+            "| `true` | `user` | `{adaptive, strict}` |",
+            "| `true` | `user` | `{fixed, strict}` |",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + valid_combinations:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_derives_branch_mode_from_risk_instead_of_a_field(
+        self,
+    ) -> None:
+        """Keep branch risk as the only source for the derived branch mode."""
+        required = (
+            "枝ごとの委譲 mode は schema に持たせず、`branches[].risk` を正として導出する。",
+            "枝側に `recommended_mode` を置くと `risk` と二重管理になり、矛盾したときに"
+            "どちらを正とするか決められないため。",
+            "AC 割り当てを枝側の一方向参照へ正規化したのと同じ理由である。",
+            "導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して"
+            "最終報告で報告する。",
+            "mode の判定理由は `risk.reasons` に書き、mode ごとの理由欄を別に設けない。",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_limits_mode_proposal_to_fixed_policy_mismatch(self) -> None:
+        """Propose an adaptive policy only where a fixed policy ignores branch risk."""
+        required = (
+            "propose:",
+            "policy: adaptive",
+            "baseline: standard | strict",
+            "`policy: adaptive` では枝の `risk.level` から mode を導出するため、"
+            "high risk 枝は決定表側で `strict` になる。",
+            "提案が必要なのは `policy: fixed` が枝の `risk` と整合しない場合だけである。",
+            "`{fixed, strict}` に対して降格を提案しない。",
+            "引き上げだけを提案する非対称性は、コストの削減より品質の担保を優先する"
+            "判断であり、low risk 枝から `lite` を提案しないのと同じ理由である。",
+        )
+        proposal_rows = (
+            "| `{fixed, lite}` | `high` を含む | `{adaptive, strict}` を提案 |",
+            "| `{fixed, lite}` | `medium` を含み `high` なし | "
+            "`{adaptive, standard}` を提案 |",
+            "| `{fixed, lite}` | 全枝 `low` | 出力しない |",
+            "| `{fixed, strict}` | 任意 | 出力しない |",
+            "| `{adaptive, *}` または `null` | 任意 | 出力しない |",
+        )
+        violation_recalculation = (
+            "`delegation_mode_proposal` の要否・内容が `requested_mode` と枝の "
+            "`risk.level` からの再計算(出力条件表)と一致しない",
+            "必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + proposal_rows + violation_recalculation:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_splitting_reference_defines_risk_level_criteria(self) -> None:
+        """Assign risk levels from failure impact rather than from change size."""
+        required = (
+            "## risk.level の判定観点",
+            "これは枝 mode を決める関数ではなく、`risk.level` の付け方を揃える"
+            "チェックリストである。",
+            "判定は実装量やファイル数ではなく、失敗したときの影響を中心に行う。",
+            "1. 失敗時の影響範囲",
+            "2. 変更の可逆性 / 切り戻しの容易さ",
+            "3. 外部副作用の有無と数",
+            "4. セキュリティ・権限への影響",
+            "5. データ整合性への影響",
+            "6. 後方互換性への影響",
+            "7. 仕様の明確さ",
+            "8. テストによる担保の可能性",
+            "9. 他の枝との依存関係",
+            "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
+            "判定に使った観点は `risk.reasons` に記録する。",
+            "決定表をここに再掲しない。",
+        )
+        level_rows = (
+            "| `low` | 表示文言のみの変更、設定値の追加、振る舞いに影響しないリネーム、"
+            "局所的な機械的修正。外部副作用がなく、容易に切り戻せる。 |",
+            "| `medium` | 通常の機能追加、既存ロジックの変更、API 内部処理の変更、"
+            "UI とバックエンドの通常連携。テストで十分に担保でき、失敗時の影響が限定的。 |",
+            "| `high` | 認証・認可・権限判定、データ削除・上書き・移行、"
+            "外部 API の契約変更、後方互換性への影響、決済・請求・金額計算、"
+            "機密情報への影響、複数の外部 I/O。失敗時の影響が広い、切り戻しが困難、"
+            "または仕様の曖昧さが重大な不具合につながる。 |",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + level_rows:
+                    self.assertIn("".join(contract.split()), normalized)
+
 
 INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
