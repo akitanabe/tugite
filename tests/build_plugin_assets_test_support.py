@@ -66,6 +66,12 @@ SKILL_REFERENCE_NAMES = {
         "branch-splitting.md",
         "plan-review.md",
     ),
+    "inventory-test-suite": (
+        "test-inventory-schema.md",
+        "gap-catalog.md",
+        "suite-scan.md",
+        "inventory-report.md",
+    ),
 }
 
 

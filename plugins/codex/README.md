@@ -12,6 +12,10 @@
   - 実装プランを委譲可能な Branch Plan へ正規化します。実装や委譲は行いません。
 - `skills/plan-implementation-branches/references/*.md`
   - Branch Plan スキーマ、枝分割判断、ユーザー確認の詳細を必要な段階で参照します。
+- `skills/inventory-test-suite/SKILL.md`
+  - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
+- `skills/inventory-test-suite/references/*.md`
+  - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
 - `skills/install-custom-agents/SKILL.md`
   - 同梱 custom agent のインストール状況を確認し、安全に導入・更新します。
 - `install/agents/*.toml`
