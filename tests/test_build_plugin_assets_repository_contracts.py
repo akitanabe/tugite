@@ -2833,5 +2833,95 @@ class DelegateImplementationIntakeContractsTest(
                 )
 
 
+INVENTORY_SKILL = "inventory-test-suite"
+INVENTORY_REPORT_REFERENCE = "inventory-report.md"
+
+
+class InventoryTestSuiteReportContractsTest(
+    RepositoryContractSupport,
+    unittest.TestCase,
+):
+    def _inventory_report_texts(self) -> dict[str, str]:
+        return {
+            "source": self._repository_text(
+                shared_skill_reference_path(
+                    INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                )
+            ),
+            "claude": self._repository_text(
+                generated_skill_reference_path(
+                    "claude", INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                )
+            ),
+            "codex": self._repository_text(
+                generated_skill_reference_path(
+                    "codex", INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                )
+            ),
+        }
+
+    def test_inventory_report_offers_end_or_plan_operations_like_plan_review(
+        self,
+    ) -> None:
+        """Offer plan-review's bulleted-operations-then-permission-boundary shape."""
+        required = (
+            "## 確認操作",
+            "報告のみで終了",
+            "既定。この操作を選んだ場合、この Skill は何も起こさない。",
+            "指摘の解消を計画",
+            "対象の gap 指摘 `G-*` をユーザーが指定し、`plan-implementation-branches` へ",
+            "渡して実装枝計画へ進める。",
+            "`plan-implementation-branches` へ渡すのは親エージェントの責務であり、この Skill は",
+            "`plan-implementation-branches` を直接起動しない。",
+        )
+        for platform, text in self._inventory_report_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_inventory_report_withholds_plan_operation_without_scanned_gaps(
+        self,
+    ) -> None:
+        """Withhold confirmation operations where no findings exist to act on."""
+        required = (
+            "gap 指摘が `該当なし` の場合は提示しない",
+            "`status: blocked` では確認操作自体を提示しない",
+            "`status: partial` では確認操作を提示するが、指定できる対象は走査できた範囲の",
+            "gap 指摘に限られることを明示する。",
+        )
+        for platform, text in self._inventory_report_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_inventory_report_presentation_order_places_confirmation_last(
+        self,
+    ) -> None:
+        """Present confirmation operations after the full report, not before it."""
+        required = (
+            "→ 確認操作の",
+            "最後に確認操作を",
+            "確認操作も提示しない",
+        )
+        for platform, text in self._inventory_report_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_inventory_report_table_of_contents_lists_confirmation_operations(
+        self,
+    ) -> None:
+        """Register the confirmation-operations section in the table of contents."""
+        toc_heading = "## 目次"
+        for platform, text in self._inventory_report_texts().items():
+            with self.subTest(platform=platform):
+                self.assertIn(toc_heading, text)
+                toc_section = text.split(toc_heading, 1)[1].split("##", 1)[0]
+                self.assertIn("確認操作", toc_section)
+
+
 if __name__ == "__main__":
     unittest.main()
