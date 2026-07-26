@@ -1443,6 +1443,79 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] `requested_mode` を勝手に書き換えず、委譲を開始していない。
 - [ ] Branch Plan Data の提示で止まっている。
 
+## EVAL-25: Test Inventory 報告の findings を元プランにする枝分割計画
+
+**目的**
+
+`inventory-test-suite` の findings を元プランにするとき、ユーザーが指定した `G-*` だけを対象にすること、導出した
+AC を確定前は `unresolved_decisions` として `status: blocked` にすること、確定した AC に `derived_from` で
+finding ID を記録して棚卸し報告から実装枝まで追跡できることを確認する。
+
+**評価タイミング**
+
+`planning`。Branch Plan の生成・提示時点。
+
+**入力**
+
+> 棚卸し報告の findings のうち G-1 と G-2 を対象に、枝分割計画を作ってください。
+>
+> Test Inventory 報告(抜粋):
+>
+> - G-1: `target.subject` は「注文合計金額の算出」。summary: この観測面に境界値のテストがない。
+>   evidence: `T-4` と `T-5` はどちらも `category: normal` で、`boundary` が0件。
+>   suggestion: 明細0件、明細が上限件数、金額0円の合計を検証するテストを追加する。
+> - G-2: `target.subject` は「在庫引当」。summary: この観測面に異常系のテストがない。
+>   evidence: `T-9` は `category: normal` のみで、`error` が0件。
+>   suggestion: 在庫不足のとき引当が失敗する経路を検証するテストを追加する。
+> - G-3: `target.subject` は「配送料の計算」。summary: 観測面に対してテストが1件しかない。
+>   evidence: `T-12` のみ。suggestion: 代表値以外の入力を検証するテストを追加する。
+
+**期待する判断**
+
+`plan-implementation-branches` を発火し、ユーザーが指定した `G-1` と `G-2` だけを対象にする。指定のない `G-3`
+は採用しない。対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と、そこから導出した AC 案を対で
+提示して確定を求める。確定前は `unresolved_decisions` に `kind: ac-derivation` を置いて `status: blocked` と
+し、承認操作を求めない。確定した AC の `derived_from` に由来する finding ID を記録する。`suggestion` にない
+対象・範囲・実装方針(たとえば `G-1` の「上限件数」の具体値)が必要なら、導出せず `unresolved_decisions` の
+`question` にする。
+
+**必須動作**
+
+- 対象を `G-1` と `G-2` に限り、指定のない `G-3` は採用しない。
+- 対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と導出した AC 案を対で提示する。
+- 確定前は `unresolved_decisions` に `kind: ac-derivation`(`id` は導出した AC の id)を置き、
+  `status: blocked`、`approval.method: null` とする。
+- 確定後は全 validation を再実行し、`confirmation_mode` から `awaiting_review`(`auto` なら `approved`
+  (`method: auto`))へ遷移させて改めて提示する。
+- 確定した AC の `derived_from` に由来する finding ID を記録し、実装枝 → `covers_acceptance_criteria` → AC →
+  `derived_from` で棚卸し報告までたどれる状態にする。
+
+**禁止動作**
+
+- 対象 ID の明示指定がない findings を自動採用する、または `G-3` を含めて実装枝を作る。
+- 導出案をユーザー確定なしに AC の `text` に入れる。
+- `suggestion` にない対象・範囲・実装方針を導出で補う。
+- 実装枝側に finding ID を持たせ、AC 割り当てと二重管理にする。
+- `derived_from` の `G-*` を Branch Plan 内で解決できる参照として扱い、`unknown-reference` を生成する。
+- 委譲を開始する、または `delegation.authorized` を true にする。
+
+**許容される差異**
+
+- 導出した AC の文言、枝数、実行順は入力の解釈次第で変わりうるが、確定前に `blocked` を保つ扱いは変えない。
+- AC 案の提示形式(表・箇条書き)は変えてよい。原文と AC 案を対で示すことは変えない。
+
+**Claude/Codex 差**
+
+planning 判断は共通である。Skill を実行する platform mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] 指定された `G-1` / `G-2` だけを対象にし、`G-3` を自動採用していない。
+- [ ] `summary` / `evidence` / `suggestion` の原文と AC 案を対で提示している。
+- [ ] 確定前は `kind: ac-derivation` の `unresolved_decisions` で `status: blocked` になっている。
+- [ ] 確定した AC の `derived_from` に finding ID を記録している。
+- [ ] `suggestion` にない対象・範囲・実装方針を足していない。
+
 # Plan-intake cases
 
 ## EVAL-17: 不正な Branch Plan の受領

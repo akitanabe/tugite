@@ -10,6 +10,7 @@
 - 提示の順序
 - 要約表
 - 確認操作
+- findings 由来 AC の確定
 - blocked の提示
 - assumptions と confirmation_mode
 
@@ -52,6 +53,20 @@ YAML 全文の前に、次の列を持つ要約表を表示する。
 
 承認は Branch Plan の確定だけを意味する。委譲開始は、ユーザーの明示的な委譲要求だけを根拠に
 親エージェントが `delegation` を設定した後に、`delegate-implementation` 側で行う。
+
+## findings 由来 AC の確定
+
+Test Inventory 報告の findings を元プランにした場合、AC の文言が確定するまで承認を求めない。
+
+- 対象 `G-*` ごとに、`summary` / `evidence` / `suggestion` の原文と、そこから導出した AC 案を
+  対で提示する。導出元を読み直さずに確定を判断できる提示にする。
+- AC の `text` にはユーザーが確定した文言だけを入れる。提示した AC 案は確定前の提示物であり、
+  そのまま採用する場合も確定操作を経る。
+- 未確定の間は `unresolved_decisions` に `kind: ac-derivation` の `affects` を置き、
+  `status: blocked` のまま承認操作を求めない。
+- 文言が確定したら AC の `text` を確定文言に置き換え、対応する `unresolved_decisions` を取り除く。
+- `suggestion` にない対象・範囲・実装方針を足す必要が生じた場合は、導出せず `unresolved_decisions` の
+  `question` としてユーザーへ確定を求める。
 
 ## blocked の提示
 

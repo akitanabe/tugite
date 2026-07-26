@@ -43,6 +43,15 @@ Branch Plan の正規スキーマ(正本)を定義する。確定済み Branch P
 - `allowed_paths` は変更を許可する物理的なファイル範囲、`forbidden_paths` は変更を禁止する物理的な
   ファイル範囲を表す。`out_of_scope` は許可範囲内でもこの枝では担当しない責務・作業を表し、
   パス制約とは独立して扱う。
+- Test Inventory 報告の findings から導出した AC は、由来する finding ID(`G-*`)を
+  `acceptance_criteria[].derived_from` に記録する。棚卸し報告までの追跡は
+  実装枝 → `covers_acceptance_criteria` → AC → `derived_from` の一方向参照でたどる。
+  実装枝側に finding ID を持たせない。枝側にも持つと AC 割り当てと二重管理になり、矛盾したときに
+  どちらを正とするか決められないため。
+- `derived_from` は blocking violation code の検査対象にしない。`G-*` は Branch Plan の外側にある
+  Test Inventory Data への参照であり、Branch Plan 内では参照先の存在を解決できない。解決できない
+  参照を `unknown-reference` の対象に見せると、承認可否の判定が実際には検査していない事実を根拠に
+  持つため。由来の妥当性は、AC の文言を確定するユーザー確認で担保する。
 
 ## スキーマ本体
 
@@ -80,18 +89,26 @@ delegation:                     # 承認とは独立した委譲開始権限
 
 implementation_plan:
   summary: <実装目的の1行要約>
-  source: <元プランの所在。path / issue URL / 「会話内」>   # 任意
+  source: <元プランの所在。path / issue URL / 「会話内」/ 「Test Inventory 報告」>   # 任意
 
-acceptance_criteria:            # 元プランの AC を原文のまま保持する。言い換え禁止
+acceptance_criteria:            # 元プランの AC を原文のまま保持する。言い換え禁止。
+                                # findings 由来の AC では、原文はユーザーが確定した文言を指す
   - id: AC-1                    # 安定 ID。枝の増減で振り直さない
     text: <元プランの原文>
+    derived_from: []            # 任意。既定は空配列。findings 由来のときだけ元の finding ID(`G-*`)を列挙する。
+                                # 空なら元プラン由来であり、findings 由来 AC と同一 Branch Plan 内で混在できる。
+                                # 検査対象にしない(「設計方針」を参照)
 
 unresolved_decisions:           # blocking のみ。1件でもあれば status: blocked
   - question: <確定が必要な問い>
     affects:                    # 型付き参照。kind ごとに id の必須・禁止が決まる
       - kind: branch            # id 必須。branch id の存在を検査する
         id: <branch id>
-      - kind: ac-assignment     # id 必須。AC id の存在を検査する
+      - kind: ac-assignment     # id 必須。AC id の存在を検査する。
+                                # どの枝へ割り当てるかが未確定であることを表す
+        id: <AC id>
+      - kind: ac-derivation     # id 必須。AC id の存在を検査する。
+                                # findings から導出した AC の文言が未確定であることを表す
         id: <AC id>
       - kind: execution-order   # id を持たない
     # default_assumption は持たない。仮定で進めてよい不足は assumptions へ
@@ -176,7 +193,7 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | code | 検査内容 |
 | --- | --- |
 | `duplicate-id` | branch / stage / AC の id 重複 |
-| `unknown-reference` | 存在しない branch id / AC id への参照(`depends_on`、`covers_acceptance_criteria`、`verifies_acceptance_criteria`、`execution.order`、`unresolved_decisions.affects`) |
+| `unknown-reference` | 存在しない branch id / AC id への参照(`depends_on`、`covers_acceptance_criteria`、`verifies_acceptance_criteria`、`execution.order`、`unresolved_decisions.affects` の `branch` / `ac-assignment` / `ac-derivation`) |
 | `ac-unassigned` | どの枝の `covers_acceptance_criteria` にも現れない AC |
 | `ac-duplicate-primary` | 複数枝の `covers_acceptance_criteria` に現れる AC |
 | `branch-without-primary-ac` | primary AC を1件も所有しない実装枝 |
