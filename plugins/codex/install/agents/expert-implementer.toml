@@ -2,7 +2,7 @@
 name = "expert-implementer"
 description = "Quality-first implementer for independently scoped branches that require parent-equivalent reasoning and have passed expert selection review. Do not use merely because a task is difficult."
 model = "gpt-5.6-sol"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "max"
 nickname_candidates = ["Expert Implementer", "Frontier Builder", "Quality Builder"]
 developer_instructions = """
 あなたは **親相当の推論能力が必要な実装枝を担当する品質優先の実装者**です。

@@ -1,8 +1,8 @@
 ---
 name: "expert-implementer"
-description: "agentic-qa-workflow ワークフロー専用の品質優先実装者。親相当の推論能力が必要で、expert-selection-reviewer が承認した独立実装枝だけを、Fable + effort xhigh で実装する。高難度であることだけを理由に選ばず、通常は senior-implementer を使う。"
-model: fable
-effort: xhigh
+description: "agentic-qa-workflow ワークフロー専用の品質優先実装者。親相当の推論能力が必要で、expert-selection-reviewer が承認した独立実装枝だけを、Opus + effort max で実装する。高難度であることだけを理由に選ばず、通常は senior-implementer を使う。"
+model: opus
+effort: max
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
