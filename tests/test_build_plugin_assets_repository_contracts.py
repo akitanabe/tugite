@@ -2064,6 +2064,29 @@ class BuildPluginAssetsRepositoryContractsTest(
         for contract in stale_contracts:
             self.assertNotIn("".join(contract.split()), normalized)
 
+    def test_repository_decision_corpus_covers_findings_sourced_planning(
+        self,
+    ) -> None:
+        """Evaluate findings-sourced planning as listed IDs, confirmed wording, and traceable origins."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        planning_cases = corpus.split("# Planning cases", 1)[1].split(
+            "# Plan-intake cases", 1
+        )[0]
+        required_contracts = (
+            "## EVAL-25: Test Inventory 報告の findings を元プランにする枝分割計画",
+            "指定のない `G-3` は採用しない。",
+            "対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と"
+            "導出した AC 案を対で提示する。",
+            "確定前は `unresolved_decisions` に `kind: ac-derivation`",
+            "確定した AC の `derived_from` に由来する finding ID を記録",
+            "導出案をユーザー確定なしに AC の `text` に入れる。",
+            "`suggestion` にない対象・範囲・実装方針を導出で補う。",
+        )
+        normalized = "".join(planning_cases.split())
+        for contract in required_contracts:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
+
     def test_repository_readmes_list_all_distributed_agents(self) -> None:
         """Make every bundled agent discoverable from both platform READMEs."""
         claude_readme = (REPOSITORY_ROOT / "plugins" / "claude" / "README.md").read_text(
@@ -2421,6 +2444,95 @@ class PlanImplementationBranchesContractsTest(
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in required + level_rows:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_skill_takes_inventory_findings_only_for_user_listed_ids(
+        self,
+    ) -> None:
+        """Accept inventory findings as a source plan only for explicitly listed finding IDs."""
+        required = (
+            "元プラン(path / issue URL / 会話内 / `inventory-test-suite` の "
+            "Test Inventory 報告の findings)",
+            "findings 由来の AC では、原文はユーザーが確定した文言を指す。",
+            "対象 findings の ID(`G-*`)をユーザーが明示的に指定する。"
+            "全 findings の自動採用はしない。",
+            "対象 ID の指定がないまま findings 全体を渡された場合は、"
+            "自動採用せず対象 ID の明示指定を求める。",
+            "対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と、"
+            "そこから導出した AC 案を対で提示する。",
+            "AC の `text` に入るのはユーザーが確定した文言だけである。",
+            "導出案は提示物であって AC ではなく、そのまま採用する場合も確定操作を経る。",
+            "導出は `suggestion` を受け入れ条件の形に整えることに限る。",
+            "findings にない対象・範囲・実装方針を足さない。",
+            "足す必要が生じた時点で導出せず、`unresolved_decisions` の question にする。",
+        )
+        for platform, main in self._plan_skill_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(main.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_traces_findings_through_derived_from_on_criteria(
+        self,
+    ) -> None:
+        """Trace an inventory finding to its branch through one-way references only."""
+        required = (
+            "path / issue URL / 「会話内」/ 「Test Inventory 報告」",
+            "derived_from: []",
+            "findings 由来のときだけ元の finding ID(`G-*`)を列挙する",
+            "空なら元プラン由来",
+            "実装枝 → `covers_acceptance_criteria` → AC → `derived_from` の一方向参照",
+            "実装枝側に finding ID を持たせない",
+            "`derived_from` は blocking violation code の検査対象にしない",
+            "Branch Plan 内では参照先の存在を解決できない",
+            "承認可否の判定が実際には検査していない事実を根拠に持つ",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_blocks_on_unconfirmed_findings_derived_criteria(
+        self,
+    ) -> None:
+        """Hold an unconfirmed derived wording as its own unresolved decision kind."""
+        required = (
+            "kind: ac-derivation",
+            "findings から導出した AC の文言が未確定であることを表す",
+            "`unresolved_decisions.affects` の `branch` / `ac-assignment` / "
+            "`ac-derivation`",
+        )
+        for platform, text in self._plan_reference_texts(
+            PLAN_SCHEMA_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_review_confirms_findings_derived_criteria_before_approval(
+        self,
+    ) -> None:
+        """Pair each finding with its draft criterion and confirm the wording before approval."""
+        required = (
+            "## findings 由来 AC の確定",
+            "対象 `G-*` ごとに、`summary` / `evidence` / `suggestion` の原文と、"
+            "そこから導出した AC 案を対で提示する。",
+            "AC の `text` にはユーザーが確定した文言だけを入れる。",
+            "`kind: ac-derivation` の `affects` を置き、`status: blocked` のまま"
+            "承認操作を求めない。",
+            "文言が確定したら AC の `text` を確定文言に置き換え、対応する "
+            "`unresolved_decisions` を取り除いて全 validation を再実行し、",
+            "`suggestion` にない対象・範囲・実装方針を足す必要が生じた場合は、"
+            "導出せず `unresolved_decisions` の `question` としてユーザーへ確定を求める。",
+        )
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
 
