@@ -2883,12 +2883,10 @@ class InventoryTestSuiteReportContractsTest(
     def test_inventory_report_withholds_plan_operation_without_scanned_gaps(
         self,
     ) -> None:
-        """Withhold confirmation operations where no findings exist to act on."""
+        """Withhold the plan-resolution operation once no gap finding exists to target."""
         required = (
             "gap 指摘が `該当なし` の場合は提示しない",
-            "`status: blocked` では確認操作自体を提示しない",
-            "`status: partial` では確認操作を提示するが、指定できる対象は走査できた範囲の",
-            "gap 指摘に限られることを明示する。",
+            "指定できる解消対象がないためである。",
         )
         for platform, text in self._inventory_report_texts().items():
             with self.subTest(platform=platform):
@@ -2896,10 +2894,10 @@ class InventoryTestSuiteReportContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_inventory_report_presentation_order_places_confirmation_last(
+    def test_inventory_report_presentation_order_governs_confirmation_visibility(
         self,
     ) -> None:
-        """Present confirmation operations after the full report, not before it."""
+        """Let `## 提示の順序` alone decide confirmation visibility and position per status."""
         required = (
             "→ 確認操作の",
             "最後に確認操作を",
