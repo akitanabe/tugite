@@ -48,16 +48,32 @@ description: >-
 着手前に次を確認する。不足が blocking なら補完せず `unresolved_decisions` にする。
 
 - 実装目的。
-- 元プラン(path / issue URL / 会話内)。
-- Acceptance Criteria(原文。言い換えない)。
+- 元プラン(path / issue URL / 会話内 / `inventory-test-suite` の Test Inventory 報告の findings)。
+- Acceptance Criteria(原文。言い換えない)。findings 由来の AC では、原文はユーザーが確定した文言を
+  指す。
 - 変更可能範囲と変更禁止範囲。
 - 既知の依存。
 - 確認モードの既定は `review` とし、`auto` はユーザーが明示した場合のみ使う。
 
+### findings を元プランにする場合
+
+- 対象 findings の ID(`G-*`)をユーザーが明示的に指定する。全 findings の自動採用はしない。
+  対象 ID の指定がないまま findings 全体を渡された場合は、自動採用せず対象 ID の明示指定を求める。
+- 対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と、そこから導出した AC 案を対で
+  提示する。
+- AC の `text` に入るのはユーザーが確定した文言だけである。導出案は提示物であって AC ではなく、
+  そのまま採用する場合も確定操作を経る。
+- 導出は `suggestion` を受け入れ条件の形に整えることに限る。findings にない対象・範囲・実装方針を
+  足さない。足す必要が生じた時点で導出せず、`unresolved_decisions` の question にする。
+- 導出した AC は `acceptance_criteria` に載せて ID を発行し、由来した finding ID を `derived_from`
+  に記録する。文言が未確定の間は `unresolved_decisions` に `kind: ac-derivation` を置き、
+  `status: blocked` のままにする。
+
 ## 全体の流れ
 
 1. 上の入力を確認する。
-2. 各 AC に安定 ID を付与する。枝の増減で振り直さない。原文をそのまま保持する。
+2. 各 AC に安定 ID を付与する。枝の増減で振り直さない。原文をそのまま保持する。findings 由来の AC は
+   [ユーザー確認](references/plan-review.md) に従って文言の確定を得る。
 3. [枝分割判断](references/branch-splitting.md) に従い、外部から観測可能な振る舞いの縦割りで
    実装枝へ分ける。分割しない場合は `decision.split: false` と理由を記録する。
 4. [Branch Plan 正規スキーマ](references/branch-plan-schema.md) に従い Branch Plan を生成する。
