@@ -3,13 +3,13 @@ name = "security-side-effect-reviewer"
 
 [claude]
 description = "外部 I/O、破壊的操作、認証・認可、機密データ、再試行や並行処理を含む変更のセキュリティと副作用を確認する専用 reviewer。コードは修正しない。"
-model = "fable"
-effort = "high"
+model = "opus"
+effort = "xhigh"
 
 [codex]
 description = "Review security-sensitive changes and external side effects, including destructive operations, secrets, authorization, retries, files, databases, and APIs. Report findings only and do not edit files."
 model = "gpt-5.6-sol"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Security Reviewer", "Side Effect Reviewer", "Risk Reviewer"]
 +++

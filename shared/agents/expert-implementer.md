@@ -2,14 +2,14 @@
 name = "expert-implementer"
 
 [claude]
-description = "agentic-qa-workflow ワークフロー専用の品質優先実装者。親相当の推論能力が必要で、expert-selection-reviewer が承認した独立実装枝だけを、Fable + effort xhigh で実装する。高難度であることだけを理由に選ばず、通常は senior-implementer を使う。"
-model = "fable"
-effort = "xhigh"
+description = "agentic-qa-workflow ワークフロー専用の品質優先実装者。親相当の推論能力が必要で、expert-selection-reviewer が承認した独立実装枝だけを、Opus + effort max で実装する。高難度であることだけを理由に選ばず、通常は senior-implementer を使う。"
+model = "opus"
+effort = "max"
 
 [codex]
 description = "Quality-first implementer for independently scoped branches that require parent-equivalent reasoning and have passed expert selection review. Do not use merely because a task is difficult."
 model = "gpt-5.6-sol"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "max"
 nickname_candidates = ["Expert Implementer", "Frontier Builder", "Quality Builder"]
 +++
 
