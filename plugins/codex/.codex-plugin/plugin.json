@@ -1,6 +1,6 @@
 {
   "name": "agentic-qa-workflow",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Install the bundled custom agents and delegate implementation while the parent Codex agent keeps responsibility for planning, QA, review, and final verification.",
   "author": {
     "name": "akitanabe"
@@ -25,6 +25,7 @@
       "Write"
     ],
     "defaultPrompt": [
+      "Use $draft-implementation-plan to draft and adversarially review an implementation plan without starting branch planning.",
       "Use $plan-implementation-branches to normalize a plan into a delegatable Branch Plan without starting delegation.",
       "Use $delegate-implementation to delegate this implementation with parent QA.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."

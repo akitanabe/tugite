@@ -16,6 +16,10 @@
   - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
 - `skills/inventory-test-suite/references/*.md`
   - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
+- `skills/draft-implementation-plan/SKILL.md`
+  - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返します。実装・委譲・枝分割は行いません。
+- `skills/draft-implementation-plan/references/*.md`
+  - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
 - `skills/install-custom-agents/SKILL.md`
   - 同梱 custom agent のインストール状況を確認し、安全に導入・更新します。
 - `install/agents/*.toml`
@@ -99,6 +103,7 @@ Custom agent の配置と設定形式については、[Codex subagents の公�
 | `test-quality-reviewer` | テストの仕様対応、振る舞い、網羅性のレビュー |
 | `writing-principles-reviewer` | `How / What / Why / Why Not` の配置、命名、説明のread-onlyレビュー |
 | `over-engineering-reviewer` | 取り除いても AC と制約を満たせるテストと実装のread-only検出 |
+| `plan-adversarial-reviewer` | 起草済み実装プランの具体的な失敗経路のread-only探索 |
 | `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響のレビュー |
 | `review-patch-refactorer` | 専門 reviewer が具体的に指摘した範囲の最小修正 |
 

@@ -12,8 +12,10 @@
   - `SKILL.md` に実装プランを委譲可能な Branch Plan へ正規化する planning skill の核、`references/*.md` にスキーマ、枝分割判断、ユーザー確認の詳細を分けた共通原稿です。
 - `shared/skill/inventory-test-suite/`
   - `SKILL.md` に既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告する skill の核、`references/*.md` に棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を分けた共通原稿です。
+- `shared/skill/draft-implementation-plan/`
+  - `SKILL.md` にユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返す planning skill の核、`references/*.md` にプランスキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を分けた共通原稿です。
 - `shared/agents/*.md`
-  - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 10 種類の agent の共通原稿です。
+  - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 11 種類の agent の共通原稿です。
 - `shared/terms.toml`
   - Claude Code と Codex で異なる用語を定義します。
 - `shared/VERSION`
@@ -27,6 +29,8 @@
 - `plugins/claude/skills/plan-implementation-branches/references/*.md`
 - `plugins/claude/skills/inventory-test-suite/SKILL.md`
 - `plugins/claude/skills/inventory-test-suite/references/*.md`
+- `plugins/claude/skills/draft-implementation-plan/SKILL.md`
+- `plugins/claude/skills/draft-implementation-plan/references/*.md`
 - `plugins/claude/agents/*.md`
 - `plugins/codex/skills/delegate-implementation/SKILL.md`
 - `plugins/codex/skills/delegate-implementation/references/*.md`
@@ -34,6 +38,8 @@
 - `plugins/codex/skills/plan-implementation-branches/references/*.md`
 - `plugins/codex/skills/inventory-test-suite/SKILL.md`
 - `plugins/codex/skills/inventory-test-suite/references/*.md`
+- `plugins/codex/skills/draft-implementation-plan/SKILL.md`
+- `plugins/codex/skills/draft-implementation-plan/references/*.md`
 - `plugins/codex/install/agents/*.toml`
 - 両 plugin の manifest version と `plugins/codex/install/VERSION`
 

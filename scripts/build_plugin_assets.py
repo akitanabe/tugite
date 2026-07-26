@@ -36,6 +36,12 @@ SKILL_REFERENCE_NAMES = {
         "suite-scan.md",
         "inventory-report.md",
     ),
+    "draft-implementation-plan": (
+        "implementation-plan-schema.md",
+        "plan-drafting.md",
+        "adversarial-review.md",
+        "overengineering-plan-review.md",
+    ),
 }
 AGENT_NAMES = (
     "implementer",
@@ -46,6 +52,7 @@ AGENT_NAMES = (
     "test-quality-reviewer",
     "writing-principles-reviewer",
     "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
     "review-patch-refactorer",
 )
