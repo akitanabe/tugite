@@ -16,6 +16,10 @@
   - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
 - `skills/inventory-test-suite/references/*.md`
   - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
+- `skills/draft-implementation-plan/SKILL.md`
+  - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返します。実装・委譲・枝分割は行いません。
+- `skills/draft-implementation-plan/references/*.md`
+  - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
 - `agents/implementer.md`
   - 仕様が明確で範囲が閉じた通常実装を担当します。
 - `agents/senior-implementer.md`
@@ -32,6 +36,8 @@
   - `How / What / Why / Why Not` の配置、命名、説明をread-onlyで確認し、ID付きの指摘Dataを返します。
 - `agents/over-engineering-reviewer.md`
   - 基準 commit からの diff のうち、取り除いても AC と制約を満たせるテストと実装をread-onlyで特定し、ID付きの指摘Dataを返します。
+- `agents/plan-adversarial-reviewer.md`
+  - 起草済みの実装プランに対し、AC 充足・検証可能性・実現可能性を壊す具体的な失敗経路をread-onlyで探索し、ID付きの指摘Dataを返します。
 - `agents/security-side-effect-reviewer.md`
   - 外部 I/O、破壊的操作、機密データ、セキュリティ影響を確認します。
 - `agents/review-patch-refactorer.md`

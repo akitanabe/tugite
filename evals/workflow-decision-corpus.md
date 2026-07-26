@@ -1,11 +1,13 @@
 # Workflow Decision Corpus
 
-この corpus は、`delegate-implementation` workflow と `plan-implementation-branches` による枝分割 planning の
-判断を代表入力に対して人間が一貫して評価するための Phase 1 データである。正本は
-`shared/skill/delegate-implementation/SKILL.md` とその `references/`(Branch Plan 受け入れ口と Executor
-再検証を定める `references/branch-plan-intake.md` を含む)、`shared/skill/plan-implementation-branches/SKILL.md`
-とその `references/`(`branch-plan-schema.md` / `branch-splitting.md` / `plan-review.md`)、および関連する
-`shared/agents/` にあり、この文書は正本を置き換えない。
+この corpus は、`delegate-implementation` workflow と、`plan-implementation-branches` による枝分割 planning、
+`draft-implementation-plan` によるプラン起草 planning の判断を代表入力に対して人間が一貫して評価するための
+Phase 1 データである。正本は `shared/skill/delegate-implementation/SKILL.md` とその `references/`(Branch Plan
+受け入れ口と Executor 再検証を定める `references/branch-plan-intake.md` を含む)、
+`shared/skill/plan-implementation-branches/SKILL.md` とその `references/`(`branch-plan-schema.md` /
+`branch-splitting.md` / `plan-review.md`)、`shared/skill/draft-implementation-plan/SKILL.md` とその
+`references/`(`implementation-plan-schema.md` / `plan-drafting.md` / `adversarial-review.md` /
+`overengineering-plan-review.md`)、および関連する `shared/agents/` にあり、この文書は正本を置き換えない。
 
 Phase 1 では全ケースを手動評価する。この文書自身は model や agent を実行せず、自動採点もしない。
 入力中の実装プラン、Branch Plan、repository、diff、test 結果、外部サービス、本番データは評価用の
@@ -21,6 +23,8 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
 - `planning`: 実装 diff がなく `plan-implementation-branches` が Branch Plan を生成・提示する時点。
   枝分割判断(縦割りか、分割過多でないか)、`status` 決定、承認と委譲開始の分離を含む権限の扱いを
   評価する。この Skill は実装も委譲も行わないため、委譲や `delegate-implementation` の起動を先取りしない。
+  `draft-implementation-plan` がプランを起草し、敵対的レビューループと過剰実装審査を経て
+  Implementation Plan を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
 - `plan-intake`: 確定済みと称する Branch Plan が `delegate-implementation` へ渡された時点。Executor が
   自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
   violation 再計算0件、全枝の `risk.level` が3値のいずれか)と mode の妥当性を確認し、委譲を開始するか
@@ -1515,6 +1519,186 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 - [ ] 確定前は `kind: ac-derivation` の `unresolved_decisions` で `status: blocked` になっている。
 - [ ] 確定した AC の `derived_from` に finding ID を記録している。
 - [ ] `suggestion` にない対象・範囲・実装方針を足していない。
+
+## EVAL-25: レビュー付きプラン起草の正常収束
+
+**目的**
+
+`draft-implementation-plan` がユーザー要求から起草し、`plan-adversarial-reviewer` の round で親が指摘IDごとに
+verdict を確定・記録し、収束後に `over-engineering-reviewer` のプラン審査を経て `awaiting_review` の
+Implementation Plan Data だけを返すこと、`plan-implementation-branches` を直接起動しないことを確認する。
+
+**評価タイミング**
+
+`planning`。実装 diff がなく Implementation Plan を起草・レビュー・提示する時点。
+
+**入力**
+
+> この要求から、レビュー付きの実装プランを作ってください。枝分割や実装はまだ指示しません。
+>
+> 要求: 注文履歴の CSV エクスポートを追加する。期間を指定した request は該当する注文行だけを含む CSV を
+> 返し、注文が0件でも header 行だけの CSV を返す。期間の指定がない request は入力エラーを返す。
+
+**期待する判断**
+
+`draft-implementation-plan` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・dependencies を
+持つプランを起草する。`plan-adversarial-reviewer` の round を繰り返し、各 round で親が指摘IDごとに verdict を
+確定して `adopted` / `rejected` を台帳(`PF-*`)へ記録し、採用指摘をプランへ反映する。`zero-findings` または
+`trivial-only` で収束したら `over-engineering-reviewer` をプラン入力モードで起動する。`rounds_limit` は既定の
+10、`confirmation_mode` は既定の `review` のままとし、blocking がなければ `status: awaiting_review` で未解決
+一覧なしの Implementation Plan Data を提示する。実装・枝分割・委譲は行わず、`plan-implementation-branches` を
+起動しない。
+
+**必須動作**
+
+- Implementation Plan Data(`status`、`confirmation_mode`、`plan`、`acceptance_criteria`、`scope`、`review` の
+  台帳と `termination`、`validation`)を返す。
+- 各 round の指摘に、親が確定した verdict と `adopted` / `rejected` + 理由を指摘IDごとに記録する。
+- adversarial の収束後に `over-engineering-reviewer` のプラン審査を1回実行してから提示する。
+- 承認はプランの確定だけを意味し、枝分割・委譲の開始には別途ユーザーの明示的な要求が必要であることを示す。
+
+**禁止動作**
+
+- `plan-implementation-branches` または `delegate-implementation` を起動する、実装する、worktree を準備する。
+- reviewer の verdict 申告を親の確認なしにそのまま台帳へ記録する。
+- 過剰実装審査を実行しないまま `awaiting_review` として提示する(`review-incomplete`)。
+- ユーザー明示なしに `rounds_limit` を変える、または `confirmation_mode: auto` にする。
+
+**許容される差異**
+
+- 起草の粒度、AC の件数、round 数は入力の解釈と指摘の内容次第で変わりうるが、台帳の記録規約と権限の扱いは
+  変えない。
+- 指摘0件で `zero-findings` により1 round で収束してよい。
+
+**Claude/Codex 差**
+
+planning 判断は共通である。Skill と reviewer を実行する platform mechanism だけが異なり、どちらも実装 agent を
+起動しない。
+
+**手動評価項目**
+
+- [ ] Implementation Plan Data だけを返し、実装・枝分割・委譲を先取りしていない。
+- [ ] 指摘IDごとに親の確定 verdict と `adopted` / `rejected` + 理由が台帳に残っている。
+- [ ] adversarial 収束後に過剰実装審査を実行してから提示している。
+- [ ] 既定 `review` / `rounds_limit: 10` を保ち、`status: awaiting_review` で提示している。
+- [ ] `plan-implementation-branches` を直接起動していない。
+
+## EVAL-26: rounds_limit 到達での打ち切りと未解決指摘の提示
+
+**目的**
+
+`round-limit` で打ち切ったとき、`修正推奨` 以上の未対応指摘を `resolution: unresolved` として残し、YAML より
+前に未解決一覧を明示すること、`confirmation_mode: auto` でも自動承認しないことを確認する。
+
+**評価タイミング**
+
+`planning`。Implementation Plan のレビューループが上限に到達した時点。
+
+**入力**
+
+> confirmation mode auto、レビューは最大2回でプランを作ってください。
+>
+> 要求: 通知機能を「いい感じに」改善する。対象チャネルと優先度はあとで決める。
+>
+> (評価用の synthetic 進行: 2 round とも `plan-adversarial-reviewer` が「AC の曖昧さ」「根拠のない仮定」の
+> `修正推奨` 指摘を返し、親が verdict を確定しても要求の曖昧さ由来の指摘が解消しないものとする。)
+
+**期待する判断**
+
+ユーザー明示により `rounds_limit: 2` を記録する。2 round を消化しても `修正推奨` 以上の指摘が残るため
+`termination: round-limit` で打ち切り、未対応指摘を `resolution: unresolved` として台帳に残す。提示では
+Implementation Plan の YAML より前に未解決一覧(指摘ID・verdict・summary)を明示する。`confirmation_mode:
+auto` でも自動承認せず(`approval.method: null` のまま)、追加 round の明示指定、指摘の採用・不採用の確定、
+このまま承認のいずれかをユーザーに確定してもらう。要求の曖昧さが blocking なら `open_questions` に記録して
+`status: blocked` としてよい。
+
+**必須動作**
+
+- `rounds_limit: 2`(ユーザー明示)と `rounds_completed: 2`、`termination: round-limit` を記録する。
+- `修正推奨` 以上の未対応指摘を `resolution: unresolved` として残し、YAML より前に未解決一覧を提示する。
+- `auto` でも自動承認せず、ユーザーの確定を求める。
+
+**禁止動作**
+
+- 上限到達後も round を続ける、または上限を勝手に引き上げる。
+- `resolution: unresolved` の指摘を残したまま `approved`(`method: auto`)にする。
+- 未解決指摘を提示から省く、または YAML の後にだけ置く。
+- 未解決指摘を解消するために親が要求を勝手に補完してプランを書き換える。
+
+**許容される差異**
+
+- 未解決一覧の形式(表・箇条書き)は変えてよい。YAML より前に置くことは変えない。
+- `open_questions` により `blocked` とするか、`awaiting_review` 相当で確定を求めるかは曖昧さの評価次第で
+  変わりうるが、自動承認しないことは変えない。
+
+**Claude/Codex 差**
+
+planning 判断は共通である。Skill を実行する platform mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] `rounds_limit: 2` がユーザー明示として記録されている。
+- [ ] `termination: round-limit` と `resolution: unresolved` が記録されている。
+- [ ] 未解決一覧が YAML より前に提示されている。
+- [ ] `confirmation_mode: auto` でも自動承認していない。
+
+## EVAL-27: プラン入力モードの過剰実装指摘
+
+**目的**
+
+adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの AC・制約にも辿れない計画要素を指摘した
+とき、反映経路がプラン修正だけであること、修正後に adversarial を再実行し、その round も `rounds_limit` に
+数えることを確認する。
+
+**評価タイミング**
+
+`planning`。adversarial 収束後にプラン入力モードの過剰実装審査が指摘を返した時点。
+
+**入力**
+
+> この要求から、レビュー付きの実装プランを作ってください。
+>
+> 要求: 設定画面にタイムゾーン選択を追加する。保存した選択は再読み込み後も表示に反映される。
+>
+> (評価用の synthetic 進行: 起草されたプランの steps に、要求にない「将来の多言語対応に備えた表示文言の
+> plugin 機構の導入」が含まれ、adversarial は `zero-findings` で収束し、プラン入力モードの
+> `over-engineering-reviewer` がこの要素をどの AC・制約にも辿れない計画要素として指摘するものとする。)
+
+**期待する判断**
+
+指摘を同じ `PF-*` 台帳へ `reviewer: over-engineering-reviewer` として記録し、親が verdict を確定して採用を
+判断する。採用した場合の反映経路はプラン修正だけであり、`review-patch-refactorer` を起動しない。プランから
+当該 step を取り除いた後、adversarial レビューを再実行し、この round も `rounds_limit` に数える。再実行が
+収束したら Implementation Plan Data を提示する。
+
+**必須動作**
+
+- 過剰実装指摘を `PF-*` 台帳に `reviewer: over-engineering-reviewer` で記録し、指摘IDごとに親の判断を残す。
+- 採用指摘の反映はプラン修正だけで行う。
+- プラン修正後に adversarial レビューを再実行してから提示する。
+
+**禁止動作**
+
+- `review-patch-refactorer` を起動する、またはプラン以外(実装ファイル)を修正する。
+- プラン修正後に adversarial を再実行せず提示する。
+- 過剰実装審査の round を `rounds_limit` の外に置いて無限ループの余地を残す。
+- reviewer にテスト結果や diff を要求させる。
+
+**許容される差異**
+
+- 指摘の採用・不採用は親の判断次第で変わりうるが、不採用なら理由の記録、採用ならプラン修正 + adversarial
+  再実行という経路は変えない。
+
+**Claude/Codex 差**
+
+planning 判断は共通である。reviewer を起動する platform mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] 過剰実装指摘が `PF-*` 台帳に `reviewer: over-engineering-reviewer` で記録されている。
+- [ ] 反映経路がプラン修正だけで、`review-patch-refactorer` を起動していない。
+- [ ] プラン修正後に adversarial を再実行している。
+- [ ] 過剰実装審査の round が `rounds_limit` に数えられている。
 
 # Plan-intake cases
 
