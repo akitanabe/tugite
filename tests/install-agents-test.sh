@@ -14,6 +14,7 @@ required_agents=(
   test-quality-reviewer
   writing-principles-reviewer
   over-engineering-reviewer
+  plan-adversarial-reviewer
   security-side-effect-reviewer
   review-patch-refactorer
 )

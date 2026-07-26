@@ -25,6 +25,7 @@ AGENT_NAMES = (
     "test-quality-reviewer",
     "writing-principles-reviewer",
     "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
     "review-patch-refactorer",
 )
@@ -34,6 +35,7 @@ REVIEWER_NAMES = (
     "test-quality-reviewer",
     "writing-principles-reviewer",
     "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
 )
 # Reviewers whose read-only role is enforced by Claude tool metadata, not only by
@@ -42,6 +44,7 @@ REVIEWER_NAMES = (
 READ_ONLY_TOOL_AGENT_NAMES = (
     "writing-principles-reviewer",
     "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
 )
 REFACTORER_NAMES = (
     "review-patch-refactorer",
@@ -71,6 +74,12 @@ SKILL_REFERENCE_NAMES = {
         "gap-catalog.md",
         "suite-scan.md",
         "inventory-report.md",
+    ),
+    "draft-implementation-plan": (
+        "implementation-plan-schema.md",
+        "plan-drafting.md",
+        "adversarial-review.md",
+        "overengineering-plan-review.md",
     ),
 }
 
@@ -144,6 +153,7 @@ CODEX_MODEL_PROFILES = {
     "test-quality-reviewer": ModelProfile("gpt-5.6-sol", "medium"),
     "writing-principles-reviewer": ModelProfile("gpt-5.6-luna", "xhigh"),
     "over-engineering-reviewer": ModelProfile("gpt-5.6-sol", "high"),
+    "plan-adversarial-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "security-side-effect-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "review-patch-refactorer": ModelProfile("gpt-5.6-luna", "high"),
 }
@@ -156,6 +166,7 @@ CLAUDE_MODEL_PROFILES = {
     "test-quality-reviewer": ModelProfile("opus", "high"),
     "writing-principles-reviewer": ModelProfile("sonnet", "high"),
     "over-engineering-reviewer": ModelProfile("opus", "high"),
+    "plan-adversarial-reviewer": ModelProfile("opus", "high"),
     "security-side-effect-reviewer": ModelProfile("fable", "high"),
     "review-patch-refactorer": ModelProfile("sonnet", "medium"),
 }
