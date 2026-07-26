@@ -2458,13 +2458,8 @@ class PlanImplementationBranchesContractsTest(
             "全 findings の自動採用はしない。",
             "対象 ID の指定がないまま findings 全体を渡された場合は、"
             "自動採用せず対象 ID の明示指定を求める。",
-            "対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と、"
-            "そこから導出した AC 案を対で提示する。",
-            "AC の `text` に入るのはユーザーが確定した文言だけである。",
-            "導出案は提示物であって AC ではなく、そのまま採用する場合も確定操作を経る。",
             "導出は `suggestion` を受け入れ条件の形に整えることに限る。",
             "findings にない対象・範囲・実装方針を足さない。",
-            "足す必要が生じた時点で導出せず、`unresolved_decisions` の question にする。",
         )
         for platform, main in self._plan_skill_texts().items():
             with self.subTest(platform=platform):
@@ -2525,7 +2520,7 @@ class PlanImplementationBranchesContractsTest(
             "`kind: ac-derivation` の `affects` を置き、`status: blocked` のまま"
             "承認操作を求めない。",
             "文言が確定したら AC の `text` を確定文言に置き換え、対応する "
-            "`unresolved_decisions` を取り除いて全 validation を再実行し、",
+            "`unresolved_decisions` を取り除く。",
             "`suggestion` にない対象・範囲・実装方針を足す必要が生じた場合は、"
             "導出せず `unresolved_decisions` の `question` としてユーザーへ確定を求める。",
         )

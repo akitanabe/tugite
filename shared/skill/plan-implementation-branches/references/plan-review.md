@@ -62,9 +62,7 @@ Test Inventory 報告の findings を元プランにした場合、AC の文言�
   そのまま採用する場合も確定操作を経る。
 - 未確定の間は `unresolved_decisions` に `kind: ac-derivation` の `affects` を置き、
   `status: blocked` のまま承認操作を求めない。
-- 文言が確定したら AC の `text` を確定文言に置き換え、対応する `unresolved_decisions` を取り除いて
-  全 validation を再実行し、`confirmation_mode` から `awaiting_review`(`auto` なら
-  `approved`(`method: auto`))へ遷移させて改めて提示する。
+- 文言が確定したら AC の `text` を確定文言に置き換え、対応する `unresolved_decisions` を取り除く。
 - `suggestion` にない対象・範囲・実装方針を足す必要が生じた場合は、導出せず `unresolved_decisions` の
   `question` としてユーザーへ確定を求める。
 
