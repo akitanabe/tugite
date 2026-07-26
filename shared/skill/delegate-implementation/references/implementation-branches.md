@@ -140,8 +140,8 @@ expert と迷う場合は senior を選び、expert 候補にする場合だけ
 <!-- codex-only:start -->
 worker を選ぶ前に Codex の custom agent リストを確認する。`implementer`、`senior-implementer`、
 `expert-implementer`、`expert-selection-reviewer`、`responsibility-boundary-reviewer`、
-`test-quality-reviewer`、`writing-principles-reviewer`、`security-side-effect-reviewer`、
-`review-patch-refactorer` がすべて表示されるなら、この確認だけで次へ進む。
+`test-quality-reviewer`、`writing-principles-reviewer`、`over-engineering-reviewer`、
+`security-side-effect-reviewer`、`review-patch-refactorer` がすべて表示されるなら、この確認だけで次へ進む。
 
 custom agent が不足する場合は `$install-custom-agents` を使い、scope と既存版を確認する。
 ユーザー確認なしに既存ファイルを上書きしない。インストールまたは更新後は Codex session の再起動を

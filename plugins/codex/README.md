@@ -94,6 +94,7 @@ Custom agent の配置と設定形式については、[Codex subagents の公�
 | `responsibility-boundary-reviewer` | 責務混在、境界違反、副作用分散のレビュー |
 | `test-quality-reviewer` | テストの仕様対応、振る舞い、網羅性のレビュー |
 | `writing-principles-reviewer` | `How / What / Why / Why Not` の配置、命名、説明のread-onlyレビュー |
+| `over-engineering-reviewer` | 取り除いても AC と制約を満たせるテストと実装のread-only検出 |
 | `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響のレビュー |
 | `review-patch-refactorer` | 専門 reviewer が具体的に指摘した範囲の最小修正 |
 

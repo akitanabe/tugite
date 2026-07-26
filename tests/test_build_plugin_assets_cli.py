@@ -16,6 +16,7 @@ from build_plugin_assets_test_support import (
     GENERATED_TOML_WARNING,
     IsolatedRepositorySupport,
     PLATFORMS,
+    READ_ONLY_TOOL_AGENT_NAMES,
     REFACTORER_NAMES,
     REVIEWER_NAMES,
     SHARED_SKILL_PATH,
@@ -515,7 +516,7 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
                     )
                     self.assertNotIn("sandbox_mode", refactorer)
 
-    def test_build_emits_claude_read_only_tool_policy_for_writing_reviewer(
+    def test_build_emits_claude_read_only_tool_policy_for_read_only_reviewers(
         self,
     ) -> None:
         """Expose only read operations and explicitly reject file-changing tools."""
@@ -523,14 +524,16 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             result = self._run(root)
             self.assertEqual(0, result.returncode, result)
 
-            reviewer = (
-                root / "plugins/claude/agents/writing-principles-reviewer.md"
-            ).read_text(encoding="utf-8")
-            self.assertIn("tools: Read, Grep, Glob\n", reviewer)
-            self.assertIn(
-                "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
-                reviewer,
-            )
+            for name in READ_ONLY_TOOL_AGENT_NAMES:
+                with self.subTest(name=name):
+                    reviewer = (
+                        root / f"plugins/claude/agents/{name}.md"
+                    ).read_text(encoding="utf-8")
+                    self.assertIn("tools: Read, Grep, Glob\n", reviewer)
+                    self.assertIn(
+                        "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
+                        reviewer,
+                    )
 
             refactorer = (
                 root / "plugins/claude/agents/review-patch-refactorer.md"

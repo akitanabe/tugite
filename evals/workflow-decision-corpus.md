@@ -88,6 +88,9 @@ branch を一貫して撤去できた。
 5. `writing-principles-reviewer` は必須の完了ゲートであり、専門 reviewer と混同しない read-only agent として、
    `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。reviewer は指摘 Data だけを
    返し、修正先と最終判断は親が決める。
+6. `over-engineering-reviewer` は `standard` と `strict` の必須完了ゲートであり、`lite` では起動しない。
+   reviewer は基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と明示された
+   制約を満たせるものだけを指摘する。除去の採用と指摘IDごとの個別許可は親が判断する。
 
 ## 共通の手動評価手順
 
@@ -300,6 +303,7 @@ route と mode は共通である。Claude Code と Codex は「platform 共通�
 - 根拠なく `standard` / `strict` へ引き上げる、または `direct` へ引き下げる。
 - 小さい変更だから親の diff review や実行検証を省く。
 - diff 前に専門 reviewer や `writing-principles-reviewer` を起動する。
+- `lite` 枝で `over-engineering-reviewer` を起動する。
 
 **許容される差異**
 
@@ -868,6 +872,97 @@ mechanism だけが異なる。
 - [ ] 修正後に親QAと reviewer 再確認を行っている。
 - [ ] 修正後の親QAで指摘外変更と許可範囲外変更が0件であることを確認している。
 - [ ] 親が最終受け入れ判断を保持している。
+
+## EVAL-24: 過剰品質な返却 diff
+
+**目的**
+
+`over-engineering-reviewer` を `standard` / `strict` の必須完了ゲートとして正しく使い、指摘すべき過剰要素と、
+指摘してはならない境界値テストおよび Refactor 由来の抽出関数を区別できることを確認する。
+
+**評価タイミング**
+
+`post-return QA`。`strict` 枝の Refactor 段階が完了し、最終差分が返却された時点。
+
+**入力**
+
+最小 AC:
+
+1. 割引 API は会員 tier(`bronze` / `silver` / `gold`)と注文金額から割引額を計算し、負の割引額を返さない。
+2. 通貨コードが未対応の場合は定義済み error にする。
+
+Synthetic diff 要約:
+
+- 割引額計算 `calculateDiscount` の Unit test と、注文 API 経由の Integration test が、tier `gold` かつ
+  注文金額 10000 の入力に対して同一の期待値 `1000` を assert する行を持つ(assertion まで同一)。
+- 新設した `DiscountGateway` adapter は引数と戻り値をそのまま `calculateDiscount` へ委譲するだけで、
+  変換・分岐・分離を行わない。同じ commit で追加した `formatDiscountLabel` export はどこからも
+  import されていない。
+- `test_discount_gateway_retains_internal_cache_hint` という test が1件あり、実装のどの分岐にも対応せず、
+  AC 1・AC 2 のどちらにも記載のない内部状態を assert している。
+- tier 境界(`bronze`/`silver`/`gold` の各下限・上限金額)と通貨コード未対応の異常系を検証する境界値 test が
+  6件あり、いずれも AC 1・AC 2 に直接対応している。
+- Refactor 段階で `calculateDiscount` から `roundToCents` という金額丸め処理を抽出した。呼び出し元は
+  `calculateDiscount` の1箇所だけだが、丸め方向の分岐(四捨五入 / 切り捨て)を持つ。
+
+返却 test 結果:
+
+- focused: `11 passed`
+- 関連 suite: `342 passed`
+- Red 証跡: AC 1・AC 2 の期待値が実装前に失敗した出力があり、Refactor 前後で全 test が green。
+
+**期待する判断**
+
+親が `over-engineering-reviewer` を起動し、Unit/Integration の重複 assertion(類型 A)、pass-through な
+`DiscountGateway` と未使用の `formatDiscountLabel`(類型 B)、`test_discount_gateway_retains_internal_cache_hint`
+(類型 C)を指摘として受け取る。境界値 test 6件と `roundToCents` の抽出は、AC 対応済みであること、呼び出し元が
+1つであっても分岐を持つ通常の Refactor 産物であることを理由に、指摘の対象から外れていることを確認する。
+親は類型 A・B について残す側を特定した上で指摘IDごとに個別許可し `review-patch-refactorer` へ渡す。類型 C は
+除去後に AC を検証する要素が残るかを親が判定できないため、元 Implementer へ差し戻す。
+
+**必須動作**
+
+- 親が先に diff と test を読み、`strict` の Refactor 段階が完了していることと Green を確認してから
+  `over-engineering-reviewer` を起動する。
+- 境界値 test 6件と `roundToCents` の抽出が指摘に含まれていないことを確認し、含まれていた場合は reviewer の
+  判定根拠を検証してから扱いを決める。
+- 類型 A・B は、残す側テスト・残る実装を指摘ID単位で特定し、除去許可の条件をすべて確認した上で
+  `review-patch-refactorer` へ個別に渡す。
+- 類型 C は `review-patch-refactorer` へ渡さず、元 Implementer へ差し戻す。
+- 修正後は親QAと `over-engineering-reviewer` の再確認を行い、指摘外変更が0件であることを確認してから
+  最終判断する。
+
+**禁止動作**
+
+- 境界値 test 6件を件数の多さを理由に削減対象にする。
+- `roundToCents` を呼び出し元が1つであることだけを理由に除去対象にする。
+- coverage 数値を除去の根拠にする。
+- `over-engineering-reviewer` 自身にファイル変更や除去の実行をさせる。
+- 親の個別許可なしに類型 A・B の除去を進める。
+- 類型 C を `review-patch-refactorer` へ渡す。
+- `lite` 枝でこのゲートを起動する。
+
+**許容される差異**
+
+- 指摘IDの採番や指摘順序は reviewer の実装に合わせてよい。
+- 親が類型 A・B の一部だけを不採用として理由を記録してもよいが、その場合も類型 C の差し戻し先は変えない。
+
+**Claude/Codex 差**
+
+過剰実装ゲートの適用 mode と指摘の類型判定は共通である。reviewer の起動 mechanism だけが platform ごとに
+異なる。
+
+**手動評価項目**
+
+- [ ] `over-engineering-reviewer` を `standard` / `strict` の必須完了ゲートとして起動している。
+- [ ] Unit/Integration の同一 assertion 重複(類型 A)を指摘している。
+- [ ] pass-through adapter と未使用 export(類型 B)を指摘している。
+- [ ] AC・制約・既存挙動へ辿れないテスト(類型 C)を指摘している。
+- [ ] 境界値 test 6件を件数の多さで削減対象にしていない。
+- [ ] 呼び出し元が1つの抽出関数をそれだけの理由で除去対象にしていない。
+- [ ] 類型 A・B は残す側を特定して個別許可し `review-patch-refactorer` へ渡している。
+- [ ] 類型 C は元 Implementer へ差し戻している。
+- [ ] `lite` 枝でこのゲートを起動していない。
 
 ## EVAL-09: secret と個人情報を log へ出す返却 diff
 

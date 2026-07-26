@@ -11,7 +11,7 @@
 - `shared/skill/plan-implementation-branches/`
   - `SKILL.md` に実装プランを委譲可能な Branch Plan へ正規化する planning skill の核、`references/*.md` にスキーマ、枝分割判断、ユーザー確認の詳細を分けた共通原稿です。
 - `shared/agents/*.md`
-  - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 9 種類の agent の共通原稿です。
+  - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 10 種類の agent の共通原稿です。
 - `shared/terms.toml`
   - Claude Code と Codex で異なる用語を定義します。
 - `shared/VERSION`
