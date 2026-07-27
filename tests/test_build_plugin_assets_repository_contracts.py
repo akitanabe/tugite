@@ -1263,11 +1263,23 @@ class BuildPluginAssetsRepositoryContractsTest(
                 "受け入れる前に必ず起動し、`lite` では起動しない。"
             ),
         )
+        # 根拠の散文は上記方針どおり広くは pin しない。`lite` の親 QA 範囲を広げたときに
+        # 除外根拠が旧範囲を指したまま残る矛盾だけを、根拠が依存する2点で検出する。
+        exclusion_grounds = (
+            (
+                "除去許可の判定に必要な網羅性の確認"
+                "（観点2: 境界値・異常系・例外経路・分岐・期待値の根拠）が課されない。"
+            ),
+            (
+                "`lite` で確かめるのは AC に対応する検証が存在することであり、"
+                "どの検証がどの AC をどこまで支えているかは確認しない。"
+            ),
+        )
 
         for platform, workflow in qa_workflows.items():
             with self.subTest(platform=platform):
                 normalized_workflow = "".join(workflow.split())
-                for contract in gate_rows + mode_rules:
+                for contract in gate_rows + mode_rules + exclusion_grounds:
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
     def test_repository_over_engineering_gate_bounds_parent_approved_removal(
@@ -1908,7 +1920,9 @@ class BuildPluginAssetsRepositoryContractsTest(
         mode_contracts = (
             (
                 "| `lite` |",
-                "親は返却の diff とテストを確認し、focused test で green を確認する。",
+                "親は返却の diff とテストを確認し、Acceptance Criteria に対応する振る舞いが"
+                "検証されていることを確かめ、focused test またはタスクで指定された成功条件で"
+                "green を確認する。",
             ),
             (
                 "| `standard` |",
@@ -1927,7 +1941,24 @@ class BuildPluginAssetsRepositoryContractsTest(
             "の対応表を必ず付けること。",
             "最終返却には `standard` と同じ AC 対応表と Red 証跡を含める。",
             "`standard` と `strict` では全観点を手を動かして確認する。",
-            "`lite` では観点0（diff を読む）と観点5（自分で green を確認）に絞ってよい。",
+            (
+                "`lite` では観点0（diff を読む）と観点5（自分で green を確認）に加えて、"
+                "Acceptance Criteria に対応する振る舞いが検証されていることの確認に絞ってよい。"
+            ),
+            (
+                "`lite` のこの確認は親が diff と検証結果から行うものであり、"
+                "Implementer への AC 対応表や Red 証跡の要求に置き換えない。"
+            ),
+            (
+                "検証手段はテストに限定せず、プロジェクトまたはタスクで指定された成功条件"
+                "（自動テスト、type check、lint、build、静的解析、実行結果の確認、"
+                "手動確認手順、snapshot 比較、API レスポンス確認など）を使う。"
+            ),
+            "検証 command が成功したことだけを完了根拠にしない。",
+            (
+                "親は「どの Acceptance Criteria を」「どのテストまたは確認手順で」"
+                "「どの結果によって」満たしたと判断したかを説明できる状態にする。"
+            ),
             "全ての委譲 mode で、親による統合後の検証と最終的な受け入れ判断を省略しない。",
             "`direct` でも、親は必要なテストと検証を実行し、diff review と最終報告を行う。",
         )
