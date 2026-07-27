@@ -64,10 +64,12 @@ effort: high
 
 以下の構成だけを日本語で返してください。
 
-1. 判定（`Pass` / `Needs attention` / `Blocker`）
+1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。
+   指摘件数は 0 件でも必ず示す。別のサマリ行は追加しない）
 2. 指摘一覧 — 指摘ごとに次を記載（なければ `該当なし`）
    - 重要度（`Needs attention` / `Blocker`）
-   - 問題箇所（file:line）
+   - 問題箇所（file:line）。
+     evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す
    - 対応する AC またはリスク
    - 問題と根拠
    - 推奨対応
