@@ -84,15 +84,20 @@ branch を一貫して撤去できた。
 `lite`、`standard`、`strict` のいずれでも、次は省略しない。
 
 1. 親が返却 commit の diff、変更された test、その実行結果を実際に読む。
-2. 親自身が focused test と必要な関連検証を実行し、返却報告だけで green とみなさない。
-3. 親が品質責任を保持し、`Accepted`、`Rejected`、`Needs revision` の最終判断を行う。Implementer、reviewer、
+2. 親自身が focused test と必要な関連検証を実行し、返却報告だけで green とみなさない。検証手段はテストに
+   限定せず、プロジェクトまたはタスクで指定された成功条件(自動テスト、type check、lint、build、静的解析、
+   実行結果の確認、手動確認手順、snapshot 比較、API レスポンス確認など)を使う。
+3. 親が Acceptance Criteria に対応する振る舞いが検証されていることを確認する。検証 command が成功したこと
+   だけを完了根拠にせず、「どの Acceptance Criteria を」「どのテストまたは確認手順で」「どの結果によって」
+   満たしたと判断したかを説明できる状態にする。
+4. 親が品質責任を保持し、`Accepted`、`Rejected`、`Needs revision` の最終判断を行う。Implementer、reviewer、
    refactorer に最終判断を委ねない。
-4. 専門 reviewer は、返却 diff を読んで責務と一致する具体的 risk を特定した場合だけ起動する。mode や
+5. 専門 reviewer は、返却 diff を読んで責務と一致する具体的 risk を特定した場合だけ起動する。mode や
    「念のため」を理由に全 reviewer を一律起動しない。
-5. `writing-principles-reviewer` は必須の完了ゲートであり、専門 reviewer と混同しない read-only agent として、
+6. `writing-principles-reviewer` は必須の完了ゲートであり、専門 reviewer と混同しない read-only agent として、
    `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。reviewer は指摘 Data だけを
    返し、修正先と最終判断は親が決める。
-6. `over-engineering-reviewer` は `standard` と `strict` の必須完了ゲートであり、`lite` では起動しない。
+7. `over-engineering-reviewer` は `standard` と `strict` の必須完了ゲートであり、`lite` では起動しない。
    reviewer は基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と明示された
    制約を満たせるものだけを指摘する。除去の採用と指摘IDごとの個別許可は親が判断する。
 
@@ -298,6 +303,8 @@ route と mode は共通である。Claude Code と Codex は「platform 共通�
 
 - 専用 worktree と新しい Implementer context で委譲し、返却 diff と focused test を親が確認する。
 - 親自身が focused test を実行し、品質責任と最終判断を保持する。
+- 親が diff と検証結果から、変更後の message を検証しているテストを特定し、Acceptance Criteria に対応する
+  振る舞いが検証されていることを確認する。既存 CLI test が green であることだけを完了根拠にしない。
 - 返却後、code / test の最終差分に対して `writing-principles-reviewer` の必須の read-only gate を実行する。
 - 専門 reviewer は具体的 risk が見つかった場合だけ起動する。
 
@@ -323,6 +330,8 @@ route と mode は共通である。Claude Code と Codex は「platform 共通�
 - [ ] 明示どおり `lite` が選ばれている。
 - [ ] lite の三条件が入力事実に結び付いている。
 - [ ] 親が diff と focused test を自分で確認している。
+- [ ] 親が、どの AC をどのテストのどの結果で満たしたと判断したかを説明している。
+- [ ] 親が Implementer へ AC 対応表や Red 証跡の提出を必須化せずに、上の確認を自分で行っている。
 - [ ] risk のない専門 reviewer を一律起動していない。
 - [ ] `writing-principles-reviewer` を diff 前に起動していない。
 

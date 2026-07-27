@@ -69,7 +69,7 @@ worker は指定 worktree の外を編集しない。cleanup は親が `git work
 
 | 委譲 mode | TDD/QA の強度 |
 | --- | --- |
-| `lite` | 親は返却の diff とテストを確認し、focused test で green を確認する。段階ゲート、AC 対応表、Red 証跡は親が明示した場合だけ要求する。 |
+| `lite` | 親は返却の diff とテストを確認し、Acceptance Criteria に対応する振る舞いが検証されていることを確かめ、focused test またはタスクで指定された成功条件で green を確認する。段階ゲート、AC 対応表、Red 証跡は親が明示した場合だけ要求する。 |
 | `standard` | AC→テスト対応表、境界値、異常系、Red 時点の失敗出力を要求する。返却物を QA ルーブリックの全観点で精査し、親が green を確認する。 |
 | `strict` | テスト計画→失敗テスト→実装→Refactor の段階ゲートに分ける。各段階を親が確認し、最終返却物には `standard` と同じ QA を行う。 |
 
