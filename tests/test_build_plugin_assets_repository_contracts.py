@@ -1271,8 +1271,8 @@ class BuildPluginAssetsRepositoryContractsTest(
                 "（観点2: 境界値・異常系・例外経路・分岐・期待値の根拠）が課されない。"
             ),
             (
-                "`lite` で確かめるのは AC に対応する検証が存在することであり、"
-                "どの検証がどの AC をどこまで支えているかは確認しない。"
+                "`lite` が課すのは AC と検証の対応の識別までであり、"
+                "その検証が AC をどこまで支えているかの判断は課さない。"
             ),
         )
 
@@ -1942,8 +1942,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "最終返却には `standard` と同じ AC 対応表と Red 証跡を含める。",
             "`standard` と `strict` では全観点を手を動かして確認する。",
             (
-                "`lite` では観点0（diff を読む）と観点5（自分で green を確認）に加えて、"
-                "Acceptance Criteria に対応する振る舞いが検証されていることの確認に絞ってよい。"
+                "`lite` では観点0（diff を読む）、観点5（自分で green を確認）、"
+                "Acceptance Criteria に対応する振る舞いが検証されていることの確認へ絞ってよい。"
             ),
             (
                 "`lite` のこの確認は親が diff と検証結果から行うものであり、"
