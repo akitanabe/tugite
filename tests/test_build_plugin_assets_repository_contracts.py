@@ -2568,6 +2568,27 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_review_applies_checkability_guidance_to_ac_wording_only(
+        self,
+    ) -> None:
+        """Scope drafting's checkability guidance to wording, routing scope growth elsewhere."""
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "[起草手順](../../draft-implementation-plan/references/plan-drafting.md)",
+                    text,
+                )
+                normalized = "".join(text.split())
+                required = (
+                    "の「AC の書き方」が定める判定可能性の指針を適用する。",
+                    "適用範囲は AC 案の文言整形までに限り、`suggestion` にない対象・範囲を"
+                    "新たに足す判断には使わない。",
+                    "対象・範囲を足す必要が生じた場合は、下記のとおり `unresolved_decisions` へ"
+                    "回す。",
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
 
 INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
@@ -3243,44 +3264,14 @@ class DraftImplementationPlanContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
 
-
-class AcCheckabilityGuidanceContractsTest(
-    RepositoryContractSupport,
-    unittest.TestCase,
-):
-    def _draft_reference_texts(self, name: str) -> dict[str, str]:
-        return {
-            "source": self._repository_text(
-                shared_skill_reference_path(DRAFT_SKILL, name)
-            ),
-            "claude": self._repository_text(
-                generated_skill_reference_path("claude", DRAFT_SKILL, name)
-            ),
-            "codex": self._repository_text(
-                generated_skill_reference_path("codex", DRAFT_SKILL, name)
-            ),
-        }
-
-    def _plan_reference_texts(self, name: str) -> dict[str, str]:
-        return {
-            "source": self._repository_text(
-                shared_skill_reference_path(PLAN_SKILL, name)
-            ),
-            "claude": self._repository_text(
-                generated_skill_reference_path("claude", PLAN_SKILL, name)
-            ),
-            "codex": self._repository_text(
-                generated_skill_reference_path("codex", PLAN_SKILL, name)
-            ),
-        }
-
     def test_plan_drafting_requires_quantifiable_or_observable_ac_wording(
         self,
     ) -> None:
         """Require every AC to name a count, an enumeration, or an observable event."""
         required = (
-            "AC は定量値・列挙・観測可能な事象のいずれかで書く。",
-            "AC の text には、充足を判定する観測点(何を確認すれば満たしたと言えるか)を含める。",
+            "AC は定量値・列挙・観測可能な事象のいずれかの形式で書く。",
+            "AC の text には、充足を判定する観測点(何を確認すれば、何が起きたら"
+            "満たしたと言えるか)を含める。",
             "観測点を text の外に置き、判定者の解釈に委ねない。",
         )
         for platform, text in self._draft_reference_texts("plan-drafting.md").items():
@@ -3304,28 +3295,6 @@ class AcCheckabilityGuidanceContractsTest(
         for platform, text in self._draft_reference_texts("plan-drafting.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
-                for contract in required:
-                    self.assertIn("".join(contract.split()), normalized)
-
-    def test_plan_review_applies_checkability_guidance_to_ac_wording_only(
-        self,
-    ) -> None:
-        """Scope drafting's checkability guidance to wording, routing scope growth elsewhere."""
-        for platform, text in self._plan_reference_texts("plan-review.md").items():
-            with self.subTest(platform=platform):
-                self.assertIn(
-                    "[起草手順](../../draft-implementation-plan/references/plan-drafting.md)",
-                    text,
-                )
-                normalized = "".join(text.split())
-                required = (
-                    "「AC の書き方」が定める判定可能性の指針(定量値・列挙・観測可能な事象で"
-                    "書くこと、充足を判定する観測点を text に含めること)を適用する。",
-                    "適用範囲は AC 案の文言整形までに限り、`suggestion` にない対象・範囲を"
-                    "新たに足す判断には使わない。",
-                    "対象・範囲を足す必要が生じた場合は、下記のとおり `unresolved_decisions` へ"
-                    "回す。",
-                )
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
