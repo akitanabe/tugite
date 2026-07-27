@@ -43,6 +43,50 @@ DRAFT_REFERENCE_NAMES = (
     "adversarial-review.md",
     "overengineering-plan-review.md",
 )
+REVIEWER_FINDINGS_REFERENCE = "reviewer-findings.md"
+# findings を返す reviewer だけが共通契約の対象。expert-selection-reviewer は起動可否の
+# 審査、review-patch-refactorer は修正担当であり、指摘 Data を返す役割ではない。
+FINDINGS_REVIEWER_NAMES = (
+    "responsibility-boundary-reviewer",
+    "test-quality-reviewer",
+    "security-side-effect-reviewer",
+    "writing-principles-reviewer",
+    "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
+)
+# 6 原稿で「示す」（判定項目を持つ3原稿）と「示します」（持たない3原稿）に語尾が割れる
+# ため、両方に共通する接頭辞までで値を切り詰めている。動詞を補うと、語尾が異なる側の
+# 原稿で test_findings_reviewers_require_a_count_summary_and_evidence が失敗する。
+FINDINGS_COUNT_REQUIREMENT = "指摘件数は0件でも必ず"
+FINDINGS_EVIDENCE_REQUIREMENT = (
+    "evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id の"
+    "いずれか）を示す"
+)
+# 出力形式の先頭に判定項目を持つ reviewer は、その項目へ件数を足す。判定項目と件数を
+# 別行に分けると、親が 1 行で読み取れるというサマリ行の目的が崩れる。
+VERDICT_LEADING_REVIEWER_SUMMARY_ITEMS = {
+    "responsibility-boundary-reviewer": (
+        "1. 全体判定と指摘件数（判定は指摘のうち最も重い判定に合わせる。指摘がなければ "
+        "`問題なし`。指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
+    ),
+    "test-quality-reviewer": (
+        "1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。"
+        "指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
+    ),
+    "security-side-effect-reviewer": (
+        "1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。"
+        "指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
+    ),
+}
+COUNT_ONLY_REVIEWER_SUMMARY_LINE = (
+    "応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。"
+    "判定項目は新設しません。"
+)
+COUNT_ONLY_REVIEWER_NAMES = (
+    "writing-principles-reviewer",
+    "over-engineering-reviewer",
+    "plan-adversarial-reviewer",
+)
 
 
 class BuildPluginAssetsRepositoryContractsTest(
@@ -1585,6 +1629,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "新機能追加ではない。",
             "振る舞いを維持したまま修正できる。",
             "reviewer が修正方針または問題箇所を明示している。",
+            "evidence を欠く指摘は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、"
+            "親が evidence を補って通常の判断へ戻している。",
         )
         implementer_routes = (
             "Acceptance Criteria 未達",
@@ -1696,6 +1742,32 @@ class BuildPluginAssetsRepositoryContractsTest(
             "その枝で適用されるすべての必須完了ゲートを再実行",
             "再確認を通過",
             "枝を受け入れない",
+        )
+
+        for platform, workflow in qa_workflows.items():
+            with self.subTest(platform=platform):
+                normalized_workflow = "".join(workflow.split())
+                for contract in required_contracts:
+                    self.assertIn("".join(contract.split()), normalized_workflow)
+
+    def test_repository_mandatory_gates_do_not_ground_passage_in_missing_evidence(
+        self,
+    ) -> None:
+        """Withhold gate passage on findings whose evidence the parent cannot verify."""
+        skills = self._repository_skill_texts()
+        qa_workflows = {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+        required_contracts = (
+            "[Reviewer findings の共通契約](reviewer-findings.md)",
+            "evidence を欠く指摘は、単独でゲート通過の根拠にしない。",
+            "該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、"
+            "自分が読んだ diff・テスト結果・repository の現状から特定できる場合は、"
+            "親が evidence を補って通常の判断へ戻す。",
+            "この扱いは必須完了ゲートの reviewer に限らず、"
+            "「専門 reviewer」節の reviewer を含む指摘全般に適用する。",
         )
 
         for platform, workflow in qa_workflows.items():
@@ -2568,6 +2640,27 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_review_applies_checkability_guidance_to_ac_wording_only(
+        self,
+    ) -> None:
+        """Scope drafting's checkability guidance to wording, routing scope growth elsewhere."""
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "[起草手順](../../draft-implementation-plan/references/plan-drafting.md)",
+                    text,
+                )
+                normalized = "".join(text.split())
+                required = (
+                    "の「AC の書き方」が定める判定可能性の指針を適用する。",
+                    "適用範囲は AC 案の文言整形までに限り、`suggestion` にない対象・範囲を"
+                    "新たに足す判断には使わない。",
+                    "対象・範囲を足す必要が生じた場合は、下記のとおり `unresolved_decisions` へ"
+                    "回す。",
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
 
 INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
@@ -3120,6 +3213,54 @@ class DraftImplementationPlanContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_draft_review_reference_withholds_plan_edits_from_missing_evidence(
+        self,
+    ) -> None:
+        """Reject findings lacking evidence unless the parent supplies it from primary sources."""
+        required = (
+            "[Reviewer findings の共通契約]"
+            "(../../delegate-implementation/references/reviewer-findings.md)",
+            "evidence を欠く指摘だけを根拠にプランを修正しない。",
+            "親自身が確認した",
+            "repository の現状・プラン本文・既存 manuscript から特定できる場合は",
+            "親が evidence を補って通常の",
+            "`軽微` の定義への照合と `adopted` / `rejected` の判断",
+            "指摘が成立したと仮定した場合の影響を影響基準に当てて verdict を確定した",
+            "指摘IDごとに不採用（理由: evidence 不足）として",
+            "`review.findings` に記録する",
+        )
+        for platform, text in self._draft_reference_texts(
+            "adversarial-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_review_reference_resolves_the_reviewer_findings_link(self) -> None:
+        """Resolve the cross-skill evidence contract link across shared and generated trees."""
+        relative_link = "../../delegate-implementation/references/reviewer-findings.md"
+        reference_paths = {
+            "source": shared_skill_reference_path(
+                DRAFT_SKILL, "adversarial-review.md"
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", DRAFT_SKILL, "adversarial-review.md"
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", DRAFT_SKILL, "adversarial-review.md"
+            ),
+        }
+        texts = self._draft_reference_texts("adversarial-review.md")
+        for structure, reference_path in reference_paths.items():
+            with self.subTest(structure=structure):
+                self.assertIn(relative_link, texts[structure])
+                resolved = (REPOSITORY_ROOT / reference_path).parent / relative_link
+                self.assertTrue(
+                    resolved.resolve().is_file(),
+                    f"unresolved cross-skill link from {reference_path}",
+                )
+
     def test_draft_overengineering_reference_confines_plan_review_routing(
         self,
     ) -> None:
@@ -3242,6 +3383,186 @@ class DraftImplementationPlanContractsTest(
         for contract in required:
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_drafting_requires_quantifiable_or_observable_ac_wording(
+        self,
+    ) -> None:
+        """Require every AC to name a quantitative value, an enumeration, or an observable event."""
+        required = (
+            "AC は定量値・列挙・観測可能な事象のいずれかの形式で書く。",
+            "AC の text には、充足を判定する観測点(何を確認すれば、何が起きたら"
+            "満たしたと言えるか)を含める。",
+            "観測点を text の外に置き、判定者の解釈に委ねない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_drafting_provides_checkable_ac_reference_examples(self) -> None:
+        """Pair each checkability pattern with a concrete example sentence."""
+        required = (
+            "## 判定可能な AC の参考例",
+            "ショートカットの先回り: 判定者が実物を確認せず要約や代替物で済ませられる抜け道を、"
+            "AC 側で先に塞ぐ書き方。",
+            "生成された出力ファイルそのものを確認対象とし、内容を要約した報告や動作説明では"
+            "代替しない。出力ファイルを開き、指定した項目がすべて含まれていることを確認する。",
+            "スコープ外の明示: AC が判定する範囲としない範囲を text 内で書き分ける書き方。",
+            "入力チェックはメールアドレス形式と必須項目の有無だけを判定する。"
+            "パスワード強度の判定はこの AC の対象にしない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+
+class ReviewerFindingsContractTest(
+    RepositoryContractSupport,
+    unittest.TestCase,
+):
+    def _reviewer_findings_reference_texts(self) -> dict[str, str]:
+        paths = {
+            "source": shared_skill_reference_path(
+                DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+            ),
+        }
+        for path in paths.values():
+            self.assertTrue(
+                (REPOSITORY_ROOT / path).is_file(),
+                f"missing reviewer findings reference: {path}",
+            )
+        return {key: self._repository_text(path) for key, path in paths.items()}
+
+    def _findings_reviewer_texts(self, name: str) -> dict[str, str]:
+        """Read one reviewer manuscript and both distributed agent artifacts."""
+        return {
+            "shared": self._repository_text(Path("shared/agents") / f"{name}.md"),
+            "claude": self._repository_text(CLAUDE_PROFILE_PATH / f"{name}.md"),
+            "codex": self._repository_text(CODEX_PROFILE_PATH / f"{name}.toml"),
+        }
+
+    def test_reviewer_findings_reference_is_distributed_with_warning_and_toc(
+        self,
+    ) -> None:
+        """Distribute the findings contract to both platforms from a warning-free source."""
+        texts = self._reviewer_findings_reference_texts()
+        self.assertTrue(texts["source"].startswith("# "))
+        self.assertFalse(texts["source"].startswith(GENERATED_MARKDOWN_WARNING))
+        self.assertIn("## 目次", texts["source"])
+        for platform in ("claude", "codex"):
+            with self.subTest(platform=platform):
+                self.assertTrue(
+                    texts[platform].startswith(f"{GENERATED_MARKDOWN_WARNING}\n\n")
+                )
+                self.assertIn("## 目次", texts[platform])
+        self.assertEqual(texts["claude"], texts["codex"])
+
+    def test_reviewer_findings_reference_defines_summary_line_and_evidence(
+        self,
+    ) -> None:
+        """Hold the canonical two-point findings contract and defer wording to each reviewer."""
+        required = (
+            "## 指摘件数のサマリ行",
+            "応答の冒頭に、指摘件数を1行で読み取れるサマリ行を置く。",
+            "出力形式の先頭に判定項目を持つ reviewer は、その判定項目と同じ行に件数を示す。",
+            "判定項目を持たない reviewer は、件数だけを示すサマリ行を冒頭に置く。",
+            "指摘0件でもサマリ行を省略しない。",
+            "0件であることを表す語は、各 reviewer が既に使っている語をそのまま使う。",
+            "## 指摘ごとの evidence",
+            "該当ファイルと行の引用",
+            "再現手順",
+            "参照した Data の path と id",
+            "いずれか1つを示せばよい。",
+            "evidence 専用の項目を新設しない。",
+            "判定語彙、0件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、"
+            "この reference では変更しない。",
+        )
+        for platform, text in self._reviewer_findings_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
+        """Reach the findings contract from the QA phase of the delegation workflow."""
+        main_texts = {
+            SHARED_SKILL_PATH: self._repository_text(SHARED_SKILL_PATH),
+            GENERATED_SKILL_PATHS["claude"]: self._repository_text(
+                GENERATED_SKILL_PATHS["claude"]
+            ),
+            GENERATED_SKILL_PATHS["codex"]: self._repository_text(
+                GENERATED_SKILL_PATHS["codex"]
+            ),
+        }
+        for path, main in main_texts.items():
+            with self.subTest(path=path):
+                self.assertIn(f"(references/{REVIEWER_FINDINGS_REFERENCE})", main)
+                self.assertLess(
+                    main.index("(references/qa-and-integration.md)"),
+                    main.index(f"(references/{REVIEWER_FINDINGS_REFERENCE})"),
+                )
+
+    def test_findings_reviewers_require_a_count_summary_and_evidence(self) -> None:
+        """Require the shared two points from every reviewer that returns findings."""
+        for name in FINDINGS_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(text.split())
+                    self.assertIn(
+                        "".join(FINDINGS_COUNT_REQUIREMENT.split()), normalized
+                    )
+                    self.assertIn(
+                        "".join(FINDINGS_EVIDENCE_REQUIREMENT.split()), normalized
+                    )
+
+    def test_verdict_leading_reviewers_carry_the_count_in_their_verdict_item(
+        self,
+    ) -> None:
+        """Add the count to the leading verdict item instead of a separate summary line."""
+        preserved_zero_finding_words = {
+            "responsibility-boundary-reviewer": "`問題なし`",
+            "test-quality-reviewer": "指摘がない場合は `Pass` としてください",
+            "security-side-effect-reviewer": "指摘がない場合は `Pass` とし",
+        }
+        for name, summary_item in VERDICT_LEADING_REVIEWER_SUMMARY_ITEMS.items():
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(text.split())
+                    self.assertIn("".join(summary_item.split()), normalized)
+                    self.assertNotIn(
+                        "".join(COUNT_ONLY_REVIEWER_SUMMARY_LINE.split()),
+                        normalized,
+                    )
+                    self.assertIn(
+                        "".join(preserved_zero_finding_words[name].split()),
+                        normalized,
+                    )
+
+    def test_count_only_reviewers_add_a_summary_line_without_a_verdict_item(
+        self,
+    ) -> None:
+        """Add a count-only summary line and keep the existing zero-finding wording."""
+        for name in COUNT_ONLY_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(text.split())
+                    self.assertIn(
+                        "".join(COUNT_ONLY_REVIEWER_SUMMARY_LINE.split()), normalized
+                    )
+                    self.assertIn("指摘0件", normalized)
+                    for summary_item in VERDICT_LEADING_REVIEWER_SUMMARY_ITEMS.values():
+                        self.assertNotIn(
+                            "".join(summary_item.split()), normalized
+                        )
 
 
 if __name__ == "__main__":

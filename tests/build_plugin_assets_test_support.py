@@ -63,6 +63,7 @@ SKILL_REFERENCE_NAMES = {
         "qa-and-integration.md",
         "qa-report.md",
         "branch-plan-intake.md",
+        "reviewer-findings.md",
     ),
     "plan-implementation-branches": (
         "branch-plan-schema.md",

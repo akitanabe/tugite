@@ -66,11 +66,13 @@ diff テキスト、対象システムの制約を根拠に判定してくださ
 
 以下の構成だけを日本語で返してください。
 
-1. 判定（`Pass` / `Needs attention` / `Blocker`）
+1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。
+   指摘件数は0件でも必ず示す。別のサマリ行は追加しない）
 2. リスク領域
 3. 指摘一覧 — 指摘ごとに次を記載（なければ `該当なし`）
    - 重要度（`Needs attention` / `Blocker`）
-   - 問題箇所（file:line）
+   - 問題箇所（file:line）。
+     evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す
    - リスクと成立条件
    - 想定される影響
    - 根拠

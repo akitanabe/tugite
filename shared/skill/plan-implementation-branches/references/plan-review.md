@@ -58,6 +58,10 @@ Test Inventory 報告の findings を元プランにした場合、AC の文言�
 
 - 対象 `G-*` ごとに、`summary` / `evidence` / `suggestion` の原文と、そこから導出した AC 案を
   対で提示する。導出元を読み直さずに確定を判断できる提示にする。
+- 提示する AC 案の文言には、[起草手順](../../draft-implementation-plan/references/plan-drafting.md)
+  の「AC の書き方」が定める判定可能性の指針を適用する。適用範囲は AC 案の文言整形までに限り、
+  `suggestion` にない対象・範囲を新たに足す判断には使わない。対象・範囲を足す必要が生じた
+  場合は、下記のとおり `unresolved_decisions` へ回す。
 - AC の `text` にはユーザーが確定した文言だけを入れる。提示した AC 案は確定前の提示物であり、
   そのまま採用する場合も確定操作を経る。
 - 未確定の間は `unresolved_decisions` に `kind: ac-derivation` の `affects` を置き、
