@@ -150,6 +150,16 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 未解決または判断未記録の指摘がある枝を受け入れない。
 
+### evidence を欠く指摘の扱い
+
+reviewer が示す evidence は [Reviewer findings の共通契約](reviewer-findings.md) の
+「指摘ごとの evidence」（該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれか）に従う。
+evidence を欠く指摘は、単独でゲート通過の根拠にしない。
+
+親が該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、自分が読んだ diff・
+テスト結果・repository の現状から特定できる場合は、親が evidence を補って通常の判断へ戻す。
+この扱いは必須完了ゲートの reviewer に限らず、「専門 reviewer」節の reviewer を含む指摘全般に適用する。
+
 ### 過剰実装ゲートの除去許可
 
 除去を許可する場合、親は指摘IDごとに次をすべて確認する。
@@ -180,6 +190,8 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 - 新機能追加ではない。
 - 振る舞いを維持したまま修正できる。
 - reviewer が修正方針または問題箇所を明示している。
+- 指摘が evidence を欠く場合は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、親が evidence を
+  補って通常の判断へ戻していること。
 
 起動 prompt には少なくとも次の Data を含める。
 

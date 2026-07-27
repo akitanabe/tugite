@@ -11,6 +11,7 @@
 
 - round の構成
 - 指摘台帳
+- evidence を欠く指摘の扱い
 - 打ち切り条件
 - 過剰実装審査との接続
 - round-limit 時の提示
@@ -35,6 +36,20 @@
   を書けるのは `round-limit` で打ち切る場合だけである。
 - 不採用（`rejected`）には理由を `resolution_note` に記録する。判断未記録の指摘を残したまま
   ループを終えない。
+
+## evidence を欠く指摘の扱い
+
+reviewer が示す evidence は
+[Reviewer findings の共通契約](../../delegate-implementation/references/reviewer-findings.md) の
+「指摘ごとの evidence」（該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれか）に従う。
+evidence を欠く指摘だけを根拠にプランを修正しない。
+
+親が該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、親自身が確認した
+repository の現状・プラン本文・既存 manuscript から特定できる場合は、親が evidence を補って通常の
+判断（`軽微` の定義への照合と `adopted` / `rejected` の判断）へ戻す。
+
+evidence を補えない指摘は、指摘が成立したと仮定した場合の影響を影響基準に当てて verdict を確定した
+うえで、指摘IDごとに不採用（理由: evidence 不足）として `review.findings` に記録する。
 
 ## 打ち切り条件
 
