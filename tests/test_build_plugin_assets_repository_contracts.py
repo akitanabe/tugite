@@ -54,7 +54,7 @@ FINDINGS_REVIEWER_NAMES = (
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
 )
-FINDINGS_COUNT_REQUIREMENT = "指摘件数は 0 件でも必ず示す"
+FINDINGS_COUNT_REQUIREMENT = "指摘件数は0件でも必ず"
 FINDINGS_EVIDENCE_REQUIREMENT = (
     "evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id の"
     "いずれか）を示す"
@@ -64,19 +64,19 @@ FINDINGS_EVIDENCE_REQUIREMENT = (
 VERDICT_LEADING_REVIEWER_SUMMARY_ITEMS = {
     "responsibility-boundary-reviewer": (
         "1. 全体判定と指摘件数（判定は指摘のうち最も重い判定に合わせる。指摘がなければ "
-        "`問題なし`。指摘件数は 0 件でも必ず示す。別のサマリ行は追加しない）"
+        "`問題なし`。指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
     ),
     "test-quality-reviewer": (
         "1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。"
-        "指摘件数は 0 件でも必ず示す。別のサマリ行は追加しない）"
+        "指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
     ),
     "security-side-effect-reviewer": (
         "1. 判定と指摘件数（`Pass` / `Needs attention` / `Blocker`。"
-        "指摘件数は 0 件でも必ず示す。別のサマリ行は追加しない）"
+        "指摘件数は0件でも必ず示す。別のサマリ行は追加しない）"
     ),
 }
 COUNT_ONLY_REVIEWER_SUMMARY_LINE = (
-    "応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は 0 件でも必ず示す。"
+    "応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。"
     "判定項目は新設しません。"
 )
 COUNT_ONLY_REVIEWER_NAMES = (
@@ -3393,18 +3393,18 @@ class ReviewerFindingsContractTest(
         """Hold the canonical two-point findings contract and defer wording to each reviewer."""
         required = (
             "## 指摘件数のサマリ行",
-            "応答の冒頭に、指摘件数を 1 行で読み取れるサマリ行を置く。",
+            "応答の冒頭に、指摘件数を1行で読み取れるサマリ行を置く。",
             "出力形式の先頭に判定項目を持つ reviewer は、その判定項目と同じ行に件数を示す。",
             "判定項目を持たない reviewer は、件数だけを示すサマリ行を冒頭に置く。",
-            "指摘 0 件でもサマリ行を省略しない。",
-            "0 件であることを表す語は、各 reviewer が既に使っている語をそのまま使う。",
+            "指摘0件でもサマリ行を省略しない。",
+            "0件であることを表す語は、各 reviewer が既に使っている語をそのまま使う。",
             "## 指摘ごとの evidence",
             "該当ファイルと行の引用",
             "再現手順",
             "参照した Data の path と id",
-            "いずれか 1 つを示せばよい。",
+            "いずれか1つを示せばよい。",
             "evidence 専用の項目を新設しない。",
-            "判定語彙、0 件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、"
+            "判定語彙、0件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、"
             "この reference では変更しない。",
         )
         for platform, text in self._reviewer_findings_reference_texts().items():
