@@ -3267,7 +3267,7 @@ class DraftImplementationPlanContractsTest(
     def test_plan_drafting_requires_quantifiable_or_observable_ac_wording(
         self,
     ) -> None:
-        """Require every AC to name a count, an enumeration, or an observable event."""
+        """Require every AC to name a quantitative value, an enumeration, or an observable event."""
         required = (
             "AC は定量値・列挙・観測可能な事象のいずれかの形式で書く。",
             "AC の text には、充足を判定する観測点(何を確認すれば、何が起きたら"
