@@ -1629,6 +1629,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "新機能追加ではない。",
             "振る舞いを維持したまま修正できる。",
             "reviewer が修正方針または問題箇所を明示している。",
+            "指摘が evidence を欠く場合は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、"
+            "親が evidence を補って通常の判断へ戻していること。",
         )
         implementer_routes = (
             "Acceptance Criteria 未達",
@@ -1740,6 +1742,32 @@ class BuildPluginAssetsRepositoryContractsTest(
             "その枝で適用されるすべての必須完了ゲートを再実行",
             "再確認を通過",
             "枝を受け入れない",
+        )
+
+        for platform, workflow in qa_workflows.items():
+            with self.subTest(platform=platform):
+                normalized_workflow = "".join(workflow.split())
+                for contract in required_contracts:
+                    self.assertIn("".join(contract.split()), normalized_workflow)
+
+    def test_repository_mandatory_gates_do_not_ground_passage_in_missing_evidence(
+        self,
+    ) -> None:
+        """Withhold gate passage on findings whose evidence the parent cannot verify."""
+        skills = self._repository_skill_texts()
+        qa_workflows = {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+        required_contracts = (
+            "[Reviewer findings の共通契約](reviewer-findings.md)",
+            "evidence を欠く指摘は、単独でゲート通過の根拠にしない。",
+            "該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、"
+            "自分が読んだ diff・テスト結果・repository の現状から特定できる場合は、"
+            "親が evidence を補って通常の判断へ戻す。",
+            "この扱いは必須完了ゲートの reviewer に限らず、"
+            "「専門 reviewer」節の reviewer を含む指摘全般に適用する。",
         )
 
         for platform, workflow in qa_workflows.items():
@@ -3184,6 +3212,54 @@ class DraftImplementationPlanContractsTest(
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_review_reference_withholds_plan_edits_from_missing_evidence(
+        self,
+    ) -> None:
+        """Reject findings lacking evidence unless the parent supplies it from primary sources."""
+        required = (
+            "[Reviewer findings の共通契約]"
+            "(../../delegate-implementation/references/reviewer-findings.md)",
+            "evidence を欠く指摘だけを根拠にプランを修正しない。",
+            "親自身が確認した",
+            "repository の現状・プラン本文・既存 manuscript から特定できる場合は",
+            "親が evidence を補って通常の",
+            "`軽微` の定義への照合と `adopted` / `rejected` の判断",
+            "指摘が成立したと仮定した場合の影響を影響基準に当てて verdict を確定した",
+            "指摘IDごとに不採用（理由: evidence 不足）として",
+            "`review.findings` に記録する",
+        )
+        for platform, text in self._draft_reference_texts(
+            "adversarial-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_review_reference_resolves_the_reviewer_findings_link(self) -> None:
+        """Resolve the cross-skill evidence contract link across shared and generated trees."""
+        relative_link = "../../delegate-implementation/references/reviewer-findings.md"
+        reference_paths = {
+            "source": shared_skill_reference_path(
+                DRAFT_SKILL, "adversarial-review.md"
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", DRAFT_SKILL, "adversarial-review.md"
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", DRAFT_SKILL, "adversarial-review.md"
+            ),
+        }
+        texts = self._draft_reference_texts("adversarial-review.md")
+        for structure, reference_path in reference_paths.items():
+            with self.subTest(structure=structure):
+                self.assertIn(relative_link, texts[structure])
+                resolved = (REPOSITORY_ROOT / reference_path).parent / relative_link
+                self.assertTrue(
+                    resolved.resolve().is_file(),
+                    f"unresolved cross-skill link from {reference_path}",
+                )
 
     def test_draft_overengineering_reference_confines_plan_review_routing(
         self,
