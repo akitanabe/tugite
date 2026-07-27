@@ -54,6 +54,9 @@ FINDINGS_REVIEWER_NAMES = (
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
 )
+# 6 原稿で「示す」（判定項目を持つ3原稿）と「示します」（持たない3原稿）に語尾が割れる
+# ため、両方に共通する接頭辞までで値を切り詰めている。動詞を補うと、語尾が異なる側の
+# 原稿で test_findings_reviewers_require_a_count_summary_and_evidence が失敗する。
 FINDINGS_COUNT_REQUIREMENT = "指摘件数は0件でも必ず"
 FINDINGS_EVIDENCE_REQUIREMENT = (
     "evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id の"
