@@ -1629,8 +1629,8 @@ class BuildPluginAssetsRepositoryContractsTest(
             "新機能追加ではない。",
             "振る舞いを維持したまま修正できる。",
             "reviewer が修正方針または問題箇所を明示している。",
-            "指摘が evidence を欠く場合は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、"
-            "親が evidence を補って通常の判断へ戻していること。",
+            "evidence を欠く指摘は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、"
+            "親が evidence を補って通常の判断へ戻している。",
         )
         implementer_routes = (
             "Acceptance Criteria 未達",

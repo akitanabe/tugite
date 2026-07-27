@@ -39,7 +39,7 @@
 
 reviewer が示す evidence は
 [Reviewer findings の共通契約](../../delegate-implementation/references/reviewer-findings.md) の
-「指摘ごとの evidence」（該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれか）に従う。
+「指摘ごとの evidence」に従う。
 evidence を欠く指摘だけを根拠にプランを修正しない。
 
 親が該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、親自身が確認した
