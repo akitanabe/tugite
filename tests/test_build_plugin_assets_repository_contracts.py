@@ -3244,5 +3244,91 @@ class DraftImplementationPlanContractsTest(
                 self.assertIn("".join(contract.split()), normalized)
 
 
+class AcCheckabilityGuidanceContractsTest(
+    RepositoryContractSupport,
+    unittest.TestCase,
+):
+    def _draft_reference_texts(self, name: str) -> dict[str, str]:
+        return {
+            "source": self._repository_text(
+                shared_skill_reference_path(DRAFT_SKILL, name)
+            ),
+            "claude": self._repository_text(
+                generated_skill_reference_path("claude", DRAFT_SKILL, name)
+            ),
+            "codex": self._repository_text(
+                generated_skill_reference_path("codex", DRAFT_SKILL, name)
+            ),
+        }
+
+    def _plan_reference_texts(self, name: str) -> dict[str, str]:
+        return {
+            "source": self._repository_text(
+                shared_skill_reference_path(PLAN_SKILL, name)
+            ),
+            "claude": self._repository_text(
+                generated_skill_reference_path("claude", PLAN_SKILL, name)
+            ),
+            "codex": self._repository_text(
+                generated_skill_reference_path("codex", PLAN_SKILL, name)
+            ),
+        }
+
+    def test_plan_drafting_requires_quantifiable_or_observable_ac_wording(
+        self,
+    ) -> None:
+        """Require every AC to name a count, an enumeration, or an observable event."""
+        required = (
+            "AC は定量値・列挙・観測可能な事象のいずれかで書く。",
+            "AC の text には、充足を判定する観測点(何を確認すれば満たしたと言えるか)を含める。",
+            "観測点を text の外に置き、判定者の解釈に委ねない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_drafting_provides_checkable_ac_reference_examples(self) -> None:
+        """Pair each checkability pattern with a concrete example sentence."""
+        required = (
+            "## 判定可能な AC の参考例",
+            "ショートカットの先回り: 判定者が実物を確認せず要約や代替物で済ませられる抜け道を、"
+            "AC 側で先に塞ぐ書き方。",
+            "生成された出力ファイルそのものを確認対象とし、内容を要約した報告や動作説明では"
+            "代替しない。出力ファイルを開き、指定した項目がすべて含まれていることを確認する。",
+            "スコープ外の明示: AC が判定する範囲としない範囲を text 内で書き分ける書き方。",
+            "入力チェックはメールアドレス形式と必須項目の有無だけを判定する。"
+            "パスワード強度の判定はこの AC の対象にしない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_review_applies_checkability_guidance_to_ac_wording_only(
+        self,
+    ) -> None:
+        """Scope drafting's checkability guidance to wording, routing scope growth elsewhere."""
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "[起草手順](../../draft-implementation-plan/references/plan-drafting.md)",
+                    text,
+                )
+                normalized = "".join(text.split())
+                required = (
+                    "「AC の書き方」が定める判定可能性の指針(定量値・列挙・観測可能な事象で"
+                    "書くこと、充足を判定する観測点を text に含めること)を適用する。",
+                    "適用範囲は AC 案の文言整形までに限り、`suggestion` にない対象・範囲を"
+                    "新たに足す判断には使わない。",
+                    "対象・範囲を足す必要が生じた場合は、下記のとおり `unresolved_decisions` へ"
+                    "回す。",
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+
 if __name__ == "__main__":
     unittest.main()
