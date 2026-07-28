@@ -1967,6 +1967,375 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 - [ ] ユーザーが明示した baseline を引き下げていない。
 - [ ] 導出結果を Branch Plan へ書き戻していない。
 
+## EVAL-28: 混在 diff の再分割と再承認
+
+**目的**
+
+返却 diff に複数の変更理由と受入単位が混ざった場合、親が固定行数ではなく変更理由、AC、責務、依存、受入、
+rollback、検証単位から再分割を判断し、承認済み契約を保つ整形と再承認が必要な再計画を区別することを確認する。
+
+**評価タイミング**
+
+`post-return QA`。Implementer の返却 commit、diff、test 結果を親が読んだ直後で、専門 reviewer 起動と受入の前。
+
+**入力**
+
+最小 AC:
+
+1. `POST /orders` は有効な request を一度だけ保存し、作成 event と `201` response を返す。
+2. 無効な request は `422` を返し、保存と event 発行を行わない。
+3. 保存失敗では部分保存と event 発行を行わず、retry 可能な error を返す。
+
+Synthetic diff 要約:
+
+- 一つの commit に request validation の変更、注文保存 repository の retry 実装、response label の文言変更、
+  監査 event の payload 追加が混在している。
+- validation と repository は別の責務・rollback・review・前提知識・検証単位を持ち、response label は AC 無関係。
+- diff は 80 行だが、行数だけでは混在の有無を判断できない。既存の注文枝の purpose と AC ownership は承認済み。
+
+返却 test 結果:
+
+- focused: `18 passed`
+- 関連 suite: `436 passed`
+- Red 証跡: AC 1〜3 の失敗経路を実装前に検出済み。
+
+> この返却物を QA し、必要なら再分割して reviewer へ進めてください。
+
+**期待する判断**
+
+親は reviewer 起動や受入の前に混在を検出し、変更理由・AC・責務・依存・受入・rollback・検証単位を理由として
+再分割を判断する。既存枝の purpose、AC 文言、AC ownership、scope、依存、risk を保った commit 分離や最小範囲の
+整形なら既存契約を維持する。独立した実装枝への分離、AC ownership・依存・risk の変更、または AC 文言の分解・
+再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または Implementation
+Plan の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
+
+**必須動作**
+
+- 親が focused / 関連 test と diff を先に読み、行数を閾値にしない。
+- 混在した diff をそのまま reviewer へ渡したり受け入れたりしない。
+- scope 逸脱の差戻し、承認済み契約を保つ commit 分離・最小範囲・別タスク化、または再計画のいずれかを選び、
+  選択理由を記録する。
+- Branch Plan または Implementation Plan を再確定する場合、再生成・再検証・ユーザー再承認の順序を守る。
+
+**禁止動作**
+
+- `80 行`を理由にだけ分割する、または `18 passed` を理由に混在を無視する。
+- 混在 diff を reviewer へ先に渡す、親が受入を先に決める。
+- AC ownership・依存・risk を変更した新枝を、ユーザー再承認前に委譲する。
+- 再承認前の新枝委譲を禁止する契約を無視する。
+- AC 文言を親の判断だけで分解・再定義する。
+
+**許容される差異**
+
+commit 分離の具体的な枝名や reviewer context は変えてよい。ただし変更単位の判断軸、再承認の順序、親の最終判断は
+共通である。
+
+**Claude/Codex 差**
+
+再分割と再承認の判断は共通であり、reviewer や新枝を起動する mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 固定行数を使わず、7つの判断軸を示している。
+- [ ] 混在 diff の直接 review / 受入を停止している。
+- [ ] 承認済み契約を保つ整形と、Branch Plan / Implementation Plan の再確定を区別している。
+- [ ] 再承認前の新枝委譲がない。
+- [ ] 親が reviewer の結果に先立って最終判断を保持している。
+
+## EVAL-29: 大きいが一変更として扱う diff
+
+**目的**
+
+diff が大きくても、依存が自然で検証可能な一つの外部振る舞いを実装している場合は、固定行数で再分割せず一変更
+として reviewer と受入へ進めることを確認する。分割で依存が不自然または検証不能になる場合も1変更として扱う。
+
+**評価タイミング**
+
+`post-return QA`。返却 diff と test を親が読み、変更単位を判定する段階。
+
+**入力**
+
+最小 AC:
+
+1. `GET /search?q=` は検索語を解析し、索引から候補を取得し、関連度順で最大20件を返す。
+2. 同じ snapshot と query に対して結果順序は安定し、索引取得失敗は定義済み `503` になる。
+
+Synthetic diff 要約:
+
+- parser、index query、ranking、HTTP response の変更が 420 行の一つの commit に含まれる。
+- 4つは一つの `GET /search` 振る舞いを構成し、共通 snapshot と query を受け、同じ integration test で AC 1〜2 と
+  failure rollback を検証できる。分割すると parser の出力契約または snapshot 境界が枝間の未承認依存になる。
+- 変更理由、rollback、受入、検証単位は一つであり、AC 無関係変更や別責務の横取りはない。
+
+返却 test 結果:
+
+- focused: `26 passed`
+- 関連 suite: `452 passed`
+- Red 証跡: parser、ranking、stable ordering、`503` の期待が実装前に失敗し、Green 後は全て成功。
+
+> この返却物を QA し、変更単位の判断と reviewer / 受入の順序を示してください。
+
+**期待する判断**
+
+親は diff が `420 行`と大きいことだけでは再分割しない。依存が自然で、1つの `GET /search` 振る舞いとして
+外部から検証可能であり、rollback・受入・検証単位も一致するため、1変更として扱う。親が diff と test を読み、
+必要な reviewer context を選択した後に reviewer を起動し、focused / 関連検証が green であることを確認してから
+受入を判断する。
+
+**必須動作**
+
+- 変更理由、AC、責務、依存、受入、rollback、検証単位を確認する。
+- 大きいだけでは分割しない。
+- 分割で依存が不自然または検証不能になることを理由として1変更として扱う。
+- 親が diff と test を先に読み、必要な reviewer のみを起動してから最終受入を決める。
+
+**禁止動作**
+
+- `420 行`を固定閾値として機械的に分割する。
+- parser / index / ranking / response を層ごとの作業枝へ分け、未承認依存や検証不能な境界を作る。
+- reviewer 起動前に受入を確定する。
+- 大きさだけを理由に Branch Plan 再生成やユーザー再承認を要求する。
+
+**許容される差異**
+
+reviewer の種類や context の選択は diff から特定される risk に応じて変えてよい。ただし一変更としての扱いと、
+親の QA・reviewer 起動・受入の順序は維持する。
+
+**Claude/Codex 差**
+
+変更単位の判断は共通で、reviewer 起動 mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 大きいだけという理由で分割していない。
+- [ ] 依存が自然で検証可能な一つの振る舞いであることを示している。
+- [ ] 1変更として reviewer 起動と受入へ進めている。
+- [ ] 固定行数の閾値や未承認の層別枝を導入していない。
+
+## EVAL-30: 同一 diff snapshot の reviewer 競合を親が解消する
+
+**目的**
+
+同じ diff snapshot を必須完了ゲートと risk により選択した専門 reviewer 全員が確認した後、相反する findings を
+親が安全に比較して変更することを確認する。reviewer の多数決ではなく、問題と修正案を分けた証拠比較を行い、
+diff 変更後の再実行を守る。
+
+**評価タイミング**
+
+`post-return QA`。全対象 reviewer の findings を親が受け取り、修正 routing または受入を決める前。
+
+**入力**
+
+最小 AC:
+
+1. `POST /payments` は冪等キーごとに一度だけ決済を確定し、監査 event を発行する。
+2. 承認失敗は `402` を返し、確定も event 発行も行わない。
+3. timeout は再試行可能な `503` とし、二重確定を起こさない。
+
+Synthetic diff と reviewer findings:
+
+- 同じ snapshot の diff は、決済 idempotency 判定と外部 payment gateway I/O を一つの `process_payment` service に
+  混在させ、gateway 呼び出しを pass-through する `PaymentGatewayService` を追加している。
+- `responsibility-boundary-reviewer` は、純粋な冪等性判定 Calculation と外部 gateway I/O Action を別 service へ分離し、
+  retry/rollback の境界を明示する修正案を返す。evidence は `payments.py:88-126` の判定・I/O 混在と、
+  `payments.py:140-151` の gateway 呼び出しである。
+- `over-engineering-reviewer` は、その分離案のうち既存 Action を一度呼ぶだけの `PaymentGatewayService` は純粋な
+  pass-through なので除去し、既存の gateway Action 境界へ直接渡す修正案を返す。evidence は
+  `payments.py:140-151` の引数転送だけの service である。この2つの修正案は同時には成立しないが、両方の問題は妥当である。
+- `test-quality-reviewer` は補助 finding として、同じ idempotency key の二重 gateway 呼び出し、gateway timeout の
+  `503`、承認拒否の `402` を境界 test で保護するよう要求する。これは競合当事者ではない。
+- 各指摘には上記の file / 行または再現手順の evidence があり、focused test は `21 passed`、関連 suite は `448 passed`。
+  返却 diff は一つの承認済み scope に収まっている。
+
+> すべての reviewer の findings を集めて、親として競合を解消し、受入可否を決めてください。
+
+**期待する判断**
+
+親は必須完了ゲートと risk により選択した専門 reviewer を同一 diff snapshot へ起動し、全 findings を収集するまで
+修正 routing を開始しない。多数決を使わず、各 finding の問題と修正案を分け、evidence、問題の妥当性、代替解法、
+AC、外部／repository 指示の優先順位、具体的失敗リスク、影響、発生可能性、検証可能性、scope、rollback、最小修正、
+保守性を比較する。両方の問題が妥当であることを確認し、責務混在と pass-through を残さず、AC、risk、検証可能性で
+説明できる最小方針と選択理由を記録する。純粋な Calculation と既存 Action 境界を保つ案はこの入力に対する一例であり、
+同等に安全で検証可能な代替解法を許容する。
+
+diff 変更ありの場合は、新しい同一 snapshot で親QA、必須完了ゲート、競合当事者の専門 reviewer、変更後も対象 risk が
+成立する全専門 reviewer を再実行してから受け入れる。
+
+**必須動作**
+
+- 全対象 reviewer を同じ diff snapshot へ起動し、全 findings と evidence を親が収集する。
+- 問題の妥当性と修正案の有効性を分離し、上記の比較軸と選択理由を記録する。
+- diff 変更ありの修正後は新しい同一 snapshot で親QA、必須完了ゲート、競合当事者、残存risk の専門 reviewer を再実行する。
+- 変更した場合は、選択した方針が同じ idempotency key の gateway 一回呼び出し、`402` / `503` の境界、外部 gateway
+  Action の integration を検証可能にする test を新しい snapshot で確認する。
+- reviewer の判定を親の最終受入判断へ置き換えない。
+
+**禁止動作**
+
+- reviewer の人数や多数決だけで競合を決める。
+- 全 findings の収集前に `review-patch-refactorer` または元 Implementer へ routing する。
+- 一部の findings だけを根拠に diff を変更し、同一 snapshot の再実行を省略する。
+- `responsibility-boundary-reviewer` の分離案をそのまま採用して pass-through service を残す、または
+  `over-engineering-reviewer` の除去案だけを採用して idempotency 判定と外部 I/O の混在を残す。
+
+**許容される差異**
+
+競合の具体的な reviewer 名、同等に安全で検証可能な代替解法、変更主体は入力の evidence と risk に応じて変えてよい。
+diff 変更ありと新しい同一 snapshot の再実行は固定し、親の比較責任、多数決禁止、同一 snapshot の収集は共通である。
+
+**Claude/Codex 差**
+
+比較、記録、再実行、受入判断は共通で、reviewer を起動・継続する mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 全対象 reviewer の findings を同一 diff snapshot から収集している。
+- [ ] 多数決を使わず、2つの競合案の問題と修正案を分け、file / 行 evidence を比較している。
+- [ ] 責務混在と pass-through を残さず、AC・risk・検証可能性で説明できる最小方針と選択理由を記録している。
+- [ ] diff 変更ありで新しい同一 snapshot の再実行がある。
+- [ ] 競合当事者と残存 risk の reviewer、および補助 test-quality finding の検証を再実行し、親が最終判断している。
+
+## EVAL-31: 安全に解消できない reviewer 競合を元 Implementer へ差し戻す
+
+**目的**
+
+親だけでは reviewer 競合を安全に解消できない場合に、局所修正を担う `review-patch-refactorer` へ送らず、必要な
+情報と再設計条件を添えて元 Implementer へ差し戻すことを確認する。
+
+**評価タイミング**
+
+`post-return QA`。同一 diff snapshot の全 findings を比較したが、AC と許容不能 risk の両立を親が説明できない段階。
+
+**入力**
+
+最小 AC:
+
+1. `DELETE /sessions/{id}` は session と refresh token を一つの transaction で失効させる。
+2. 外部監査 API が失敗した場合は rollback し、再実行可能な error を返す。
+
+Synthetic diff と reviewer findings:
+
+- `sessions.py:44-71` は DB transaction 内で session と refresh token を失効させ、`audit.py:18-28` は外部 audit API を
+  呼び出し、`sessions.py:72-90` が commit する。再現順序は「DB update → audit API 成功 → DB commit 失敗」であり、
+  audit 済みだが session/token 未失効の部分成功になる。
+- `security-side-effect-reviewer` は同期 audit API を commit 前に完了させる案を返すが、commit 失敗時に外部 side effect を
+  DB rollback できず、「audit済みだが未失効」の許容不能 risk と AC-1 違反を残す。evidence は上記の `audit.py:18-28` と
+  commit 失敗の再現手順である。
+- `responsibility-boundary-reviewer` は transaction 内 outbox から commit 後に audit API を送る案を返すが、外部 audit
+  失敗時に DB transaction を rollback するという AC-2 を満たさない。evidence は `sessions.py:60-90` の commit 境界と
+  outbox publish の失敗手順である。
+- `test-quality-reviewer` は両案を区別する integration test を要求する。親はどちらの順序を選んでも AC、許容不能 risk、
+  scope、rollback、検証可能性を同時に満たす証拠を確定できず、守る AC を変更しない protocol の再設計を元 Implementer に求める必要がある。
+
+> 親が安全に方針を選べない場合の差し戻し先と受け渡し Data を示してください。
+
+**期待する判断**
+
+親だけでは reviewer 競合を安全に解消できないため、`review-patch-refactorer` ではなく元 Implementer へ差し戻す。
+同期案は外部 side effect を rollback できず、outbox 案は外部 audit 失敗時の rollback AC を満たさないため、親が安全な
+順序を選べない。差し戻しには競合している reviewer 名、指摘を識別できる情報と内容、守る AC、優先指示、許容不能リスク、
+必要な検証、守る AC を変更しない protocol 再設計条件を渡し、この節の変更後 snapshot 再実行契約に従う。再設計後の新しい同一 snapshot で
+親QA、必須完了ゲート、競合当事者、
+変更後も対象 risk が成立する全専門 reviewer を再実行してから受け入れる。
+
+守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねず Implementation Plan の AC 確定とユーザー確認へ
+停止し、その後 Branch Plan を再生成・再検証・再承認する。
+
+**必須動作**
+
+- 競合している reviewer 名と、指摘を識別できる情報 / evidence / 内容を特定して記録する。
+- 守る AC、外部／repository の優先指示、許容不能リスク、必要な検証、再設計条件を元 Implementer へ渡す。
+- 差し戻し後は元 Implementer の protocol 再設計（守る AC は変更しない）と実装を待ち、新しい同一 snapshot でこの節の変更後 snapshot 再実行契約を満たす。
+- 守る AC の分解・再定義が必要なら、Implementation Plan の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認まで停止する。
+- 親が再実行結果を読んで最終受入判断を行う。
+
+**禁止動作**
+
+- 安全に解消できない競合を `review-patch-refactorer` の局所修正へ送る。
+- reviewer の多数決、親の推測、または一方の修正案だけで許容不能 risk を受け入れる。
+- 競合情報、守る AC、優先指示、必要な検証、再設計条件を省略して差し戻す。
+- 再設計後の同一 snapshot reviewer 再実行なしに受け入れる。
+
+**許容される差異**
+
+差し戻し prompt の構造、reviewer の起動 mechanism、守る AC を変更しない protocol の具体的な実装案は platform と入力に応じて変えてよい。
+ただし元 Implementer への routing と受け渡し Data、この節の変更後 snapshot 再実行、親の最終判断は変えない。守る AC の分解・再定義が必要なら
+Implementation Plan の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認へ停止する。
+
+**Claude/Codex 差**
+
+差し戻しの判断と Data は共通で、元 Implementer の継続起動 mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 親だけでは安全に解消できないと判断した根拠がある。
+- [ ] `review-patch-refactorer` ではなく元 Implementer へ差し戻している。
+- [ ] 競合 reviewer 名、指摘内容、AC、優先指示、許容不能 risk、検証、守る AC を変更しない protocol 再設計条件を渡している。
+- [ ] この節の変更後 snapshot 再実行契約と親の最終判断を確認している。
+- [ ] 多数決や推測による即時受入がない。
+
+## EVAL-32: evidence 不成立 finding の理由付き不採用
+
+**目的**
+
+同一 diff snapshot の全 reviewer 結果を収集した後、evidence が成立せず問題を検証できない finding を、親が理由付きで
+不採用にして完了する境界を確認する。修正 routing や snapshot 変更を行わない。
+
+**評価タイミング**
+
+`post-return QA`。全対象 reviewer の findings を受け取り、採否または修正 routing を決める前。
+
+**入力**
+
+最小 AC:
+
+1. `GET /profiles/{id}` は認証済み利用者の profile を `200` で返し、他利用者の profile は `404` にする。
+2. token や個人情報を response log に出力しない。
+
+Synthetic diff と reviewer findings:
+
+- 同じ diff snapshot の変更は profile response の serializer だけで、focused test と関連 suite は green である。
+- `writing-principles-reviewer` と `over-engineering-reviewer` は `no-change` を返す。
+- `security-side-effect-reviewer` は「token が log に出る可能性がある」と指摘するが、file / 行、再現手順、参照 Data の
+  path / id のいずれも示さず、repository の現状からも該当出力を確認できない。これは evidence 不成立 finding である。
+
+> 全 reviewer 結果を比較し、修正なしで安全に完了できるかを判断してください。
+
+**期待する判断**
+
+親は全対象 reviewer の結果を同一 snapshot から収集し、evidence 不成立の finding は問題を検証できないため、finding ごとの
+理由付き不採用として完了する。修正 routing をせず、snapshot 変更なしで親の最終判断を記録する。
+
+**必須動作**
+
+- 全対象 reviewer の `no-change` と findings を収集する。
+- evidence 不成立であること、補えなかった一次情報、採用しない理由を finding ごとの理由として記録する。
+- 修正 routing をしない、snapshot 変更なしで完了し、AC 1〜2 の既存 green 検証を親が確認する。
+
+**禁止動作**
+
+- 欠けた evidence を親が推測して補い、問題成立として扱う。
+- `review-patch-refactorer` または元 Implementer へ修正 routing する。
+- finding を理由なしに消す、または多数決で不採用にする。
+- snapshot を変更して reviewer を再実行する。
+
+**許容される差異**
+
+不採用理由の記録形式、evidence を確認した repository path、no-change reviewer の組み合わせは変えてよい。ただし
+evidence 不成立の確認、finding ごとの理由、修正 routing なし、snapshot 変更なしは共通である。
+
+**Claude/Codex 差**
+
+採否と完了判断は共通で、reviewer 結果を収集する mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 全対象 reviewer の結果を同一 snapshot から収集している。
+- [ ] evidence 不成立 finding を理由付きで不採用としている。
+- [ ] 修正 routing と snapshot 変更がない。
+- [ ] 親が既存 green 検証と最終判断を記録している。
+- [ ] evidence の推測補完や多数決がない。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、
