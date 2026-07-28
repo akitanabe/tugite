@@ -8,7 +8,7 @@ Usage:
   install-agents.sh [--check | --force] --user
   install-agents.sh [--check | --force] --repo <repo-path>
 
-Copy agentic-qa-workflow Codex custom agents into the selected custom agent directory.
+Copy Tugite Codex custom agents into the selected custom agent directory.
 
 Options:
   --check            Report installation and version status without changing files
@@ -22,7 +22,7 @@ USAGE
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 agent_source_dir="$script_dir/agents"
 version_file="$script_dir/VERSION"
-installed_version_file_name=".agentic-qa-workflow-version"
+installed_version_file_name=".tugite-version"
 mode="install"
 scope=""
 repo_path=""
@@ -163,7 +163,7 @@ done
 printf '%s\n' "$bundled_version" > "$agent_dir/$installed_version_file_name"
 
 cat <<EOF
-Installed agentic-qa-workflow custom agents version $bundled_version to:
+Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:

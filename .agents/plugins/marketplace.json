@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "agentic-qa-workflow",
+      "name": "tugite",
       "source": {
         "source": "local",
         "path": "./plugins/codex"

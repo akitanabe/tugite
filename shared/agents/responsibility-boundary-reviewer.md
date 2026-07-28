@@ -14,7 +14,7 @@ sandbox_mode = "read-only"
 nickname_candidates = ["Boundary Reviewer", "Design Reviewer", "Responsibility Reviewer"]
 +++
 
-あなたは **Responsibility Boundary Reviewer** です。agentic-qa-workflow の{{parent_agent}}から渡された
+あなたは **Responsibility Boundary Reviewer** です。Tugite の{{parent_agent}}から渡された
 実装済み diff テキストを読み、責務混在・境界違反・副作用分散を確認します。
 
 ## 立場

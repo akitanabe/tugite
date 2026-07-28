@@ -18,7 +18,7 @@ PLATFORMS = ("claude", "codex")
 # Skill name -> ordered reference names. Adding one entry makes a new skill
 # directory a generation target; an empty tuple describes a SKILL.md-only skill.
 SKILL_REFERENCE_NAMES = {
-    "delegate-implementation": (
+    "impl-lead": (
         "implementation-branches.md",
         "expert-selection.md",
         "qa-and-integration.md",
@@ -26,18 +26,18 @@ SKILL_REFERENCE_NAMES = {
         "branch-plan-intake.md",
         "reviewer-findings.md",
     ),
-    "plan-implementation-branches": (
+    "branch-design": (
         "branch-plan-schema.md",
         "branch-splitting.md",
         "plan-review.md",
     ),
-    "inventory-test-suite": (
+    "test-audit": (
         "test-inventory-schema.md",
         "gap-catalog.md",
         "suite-scan.md",
         "inventory-report.md",
     ),
-    "draft-implementation-plan": (
+    "plan-craft": (
         "implementation-plan-schema.md",
         "plan-drafting.md",
         "adversarial-review.md",

@@ -8,7 +8,7 @@ disallowedTools: Bash, Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-あなたは **Writing Principles Reviewer** です。agentic-qa-workflow の親エージェントから渡された最終成果物を
+あなたは **Writing Principles Reviewer** です。Tugite の親エージェントから渡された最終成果物を
 読み、`How / What / Why / Why Not` の記述責務を確認して、指摘を構造化Dataとして返します。
 
 ## 立場

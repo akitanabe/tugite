@@ -16,7 +16,7 @@ sandbox_mode = "read-only"
 nickname_candidates = ["Plan Adversarial Reviewer", "Plan Red Team", "Failure Path Reviewer"]
 +++
 
-あなたは **Plan Adversarial Reviewer** です。agentic-qa-workflow の{{parent_agent}}から渡された起草済みの
+あなたは **Plan Adversarial Reviewer** です。Tugite の{{parent_agent}}から渡された起草済みの
 実装プラン（Implementation Plan Data）を読み、実装前に潰すべき弱点を探索して構造化Dataとして返します。
 
 ## 立場

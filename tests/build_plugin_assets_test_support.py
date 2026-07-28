@@ -52,12 +52,12 @@ REFACTORER_NAMES = (
 GENERATED_MARKDOWN_WARNING = "<!-- Generated from shared/. Do not edit directly. -->"
 GENERATED_TOML_WARNING = "# Generated from shared/. Do not edit directly."
 PLATFORMS = ("claude", "codex")
-DELEGATE_SKILL = "delegate-implementation"
+IMPL_LEAD_SKILL = "impl-lead"
 SHARED_SKILL_ROOT = Path("shared/skill")
 # Mirror the generator's skill-name -> reference-name mapping so fixtures and
 # path derivation stay data-driven per skill instead of hardcoding one skill.
 SKILL_REFERENCE_NAMES = {
-    DELEGATE_SKILL: (
+    IMPL_LEAD_SKILL: (
         "implementation-branches.md",
         "expert-selection.md",
         "qa-and-integration.md",
@@ -65,18 +65,18 @@ SKILL_REFERENCE_NAMES = {
         "branch-plan-intake.md",
         "reviewer-findings.md",
     ),
-    "plan-implementation-branches": (
+    "branch-design": (
         "branch-plan-schema.md",
         "branch-splitting.md",
         "plan-review.md",
     ),
-    "inventory-test-suite": (
+    "test-audit": (
         "test-inventory-schema.md",
         "gap-catalog.md",
         "suite-scan.md",
         "inventory-report.md",
     ),
-    "draft-implementation-plan": (
+    "plan-craft": (
         "implementation-plan-schema.md",
         "plan-drafting.md",
         "adversarial-review.md",
@@ -103,19 +103,19 @@ def generated_skill_reference_path(platform: str, skill: str, name: str) -> Path
 
 # Single-skill aliases for the sole distributed skill keep the real-repository
 # contract assertions concise; both derive from the per-skill builders above.
-SHARED_SKILL_PATH = shared_skill_path(DELEGATE_SKILL)
+SHARED_SKILL_PATH = shared_skill_path(IMPL_LEAD_SKILL)
 SHARED_SKILL_REFERENCE_PATHS = {
-    name: shared_skill_reference_path(DELEGATE_SKILL, name)
-    for name in SKILL_REFERENCE_NAMES[DELEGATE_SKILL]
+    name: shared_skill_reference_path(IMPL_LEAD_SKILL, name)
+    for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]
 }
 GENERATED_SKILL_PATHS = {
-    platform: generated_skill_path(platform, DELEGATE_SKILL)
+    platform: generated_skill_path(platform, IMPL_LEAD_SKILL)
     for platform in PLATFORMS
 }
 GENERATED_SKILL_REFERENCE_PATHS = {
     platform: {
-        name: generated_skill_reference_path(platform, DELEGATE_SKILL, name)
-        for name in SKILL_REFERENCE_NAMES[DELEGATE_SKILL]
+        name: generated_skill_reference_path(platform, IMPL_LEAD_SKILL, name)
+        for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]
     }
     for platform in PLATFORMS
 }
@@ -196,7 +196,7 @@ class RepositoryContractSupport:
 
         def combine(main: str, references: dict[str, str]) -> str:
             return main + "\n" + "\n".join(
-                references[name] for name in SKILL_REFERENCE_NAMES[DELEGATE_SKILL]
+                references[name] for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]
             )
 
         return RepositorySkillTexts(
@@ -294,7 +294,7 @@ class IsolatedRepositorySupport:
             "<!-- codex-only:end -->\n"
         )
 
-    def _skill_source(self, skill: str = DELEGATE_SKILL) -> str:
+    def _skill_source(self, skill: str = IMPL_LEAD_SKILL) -> str:
         """Return a common skill source covering frontmatter and body markers."""
         return (
             "<!-- claude-only:start -->\n"
@@ -396,7 +396,7 @@ class IsolatedRepositorySupport:
                 manifest,
                 json.dumps(
                     {
-                        "name": "agentic-qa-workflow",
+                        "name": "tugite",
                         "version": "0.9.0",
                         "description": f"fixture for {manifest}",
                     },
@@ -437,12 +437,12 @@ class IsolatedRepositorySupport:
         )
         self._write(
             root,
-            "plugins/codex/skills/delegate-implementation/agents/openai.yaml",
+            "plugins/codex/skills/impl-lead/agents/openai.yaml",
             "interface: outside\n",
         )
         self._write(
             root,
-            "plugins/codex/skills/delegate-implementation/references/local.md",
+            "plugins/codex/skills/impl-lead/references/local.md",
             "outside local reference\n",
         )
         self._write(

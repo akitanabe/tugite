@@ -1,4 +1,4 @@
-# agentic-qa-workflow
+# Tugite
 
 実装作業をサブエージェントへ委譲しつつ、親エージェントがマネージャー兼 QA として品質責任を持つための Claude / Codex 向けスキル定義です。共通原稿から各 platform の plugin 配布物を生成します。
 
@@ -6,13 +6,13 @@
 
 編集元は `shared/` に集約しています。
 
-- `shared/skill/delegate-implementation/`
+- `shared/skill/impl-lead/`
   - `SKILL.md` に workflow の核、`references/*.md` に実装枝、expert 選択、QA・統合の詳細を分けた共通原稿です。
-- `shared/skill/plan-implementation-branches/`
+- `shared/skill/branch-design/`
   - `SKILL.md` に実装プランを委譲可能な Branch Plan へ正規化する planning skill の核、`references/*.md` にスキーマ、枝分割判断、ユーザー確認の詳細を分けた共通原稿です。
-- `shared/skill/inventory-test-suite/`
+- `shared/skill/test-audit/`
   - `SKILL.md` に既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告する skill の核、`references/*.md` に棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を分けた共通原稿です。
-- `shared/skill/draft-implementation-plan/`
+- `shared/skill/plan-craft/`
   - `SKILL.md` にユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返す planning skill の核、`references/*.md` にプランスキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を分けた共通原稿です。
 - `shared/agents/*.md`
   - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 11 種類の agent の共通原稿です。
@@ -23,23 +23,23 @@
 
 `scripts/build_plugin_assets.py` が共通原稿を platform ごとに変換し、次の配布物を生成します。
 
-- `plugins/claude/skills/delegate-implementation/SKILL.md`
-- `plugins/claude/skills/delegate-implementation/references/*.md`
-- `plugins/claude/skills/plan-implementation-branches/SKILL.md`
-- `plugins/claude/skills/plan-implementation-branches/references/*.md`
-- `plugins/claude/skills/inventory-test-suite/SKILL.md`
-- `plugins/claude/skills/inventory-test-suite/references/*.md`
-- `plugins/claude/skills/draft-implementation-plan/SKILL.md`
-- `plugins/claude/skills/draft-implementation-plan/references/*.md`
+- `plugins/claude/skills/impl-lead/SKILL.md`
+- `plugins/claude/skills/impl-lead/references/*.md`
+- `plugins/claude/skills/branch-design/SKILL.md`
+- `plugins/claude/skills/branch-design/references/*.md`
+- `plugins/claude/skills/test-audit/SKILL.md`
+- `plugins/claude/skills/test-audit/references/*.md`
+- `plugins/claude/skills/plan-craft/SKILL.md`
+- `plugins/claude/skills/plan-craft/references/*.md`
 - `plugins/claude/agents/*.md`
-- `plugins/codex/skills/delegate-implementation/SKILL.md`
-- `plugins/codex/skills/delegate-implementation/references/*.md`
-- `plugins/codex/skills/plan-implementation-branches/SKILL.md`
-- `plugins/codex/skills/plan-implementation-branches/references/*.md`
-- `plugins/codex/skills/inventory-test-suite/SKILL.md`
-- `plugins/codex/skills/inventory-test-suite/references/*.md`
-- `plugins/codex/skills/draft-implementation-plan/SKILL.md`
-- `plugins/codex/skills/draft-implementation-plan/references/*.md`
+- `plugins/codex/skills/impl-lead/SKILL.md`
+- `plugins/codex/skills/impl-lead/references/*.md`
+- `plugins/codex/skills/branch-design/SKILL.md`
+- `plugins/codex/skills/branch-design/references/*.md`
+- `plugins/codex/skills/test-audit/SKILL.md`
+- `plugins/codex/skills/test-audit/references/*.md`
+- `plugins/codex/skills/plan-craft/SKILL.md`
+- `plugins/codex/skills/plan-craft/references/*.md`
 - `plugins/codex/install/agents/*.toml`
 - 両 plugin の manifest version と `plugins/codex/install/VERSION`
 
@@ -83,7 +83,7 @@
 
 委譲 mode の強度は `lite < standard < strict` です。導出結果より高い mode で枝を実行する場合、具体的なリスクをユーザーへ報告します。ユーザーが明示した `baseline` を親都合で引き下げません。`direct` から委譲への変更は強度の変更ではなく責務境界の変更であるため、ユーザーに確認します。
 
-詳細な選択条件と委譲手順は、共通原稿の正本である [shared/skill/delegate-implementation/SKILL.md](shared/skill/delegate-implementation/SKILL.md) と [shared/skill/delegate-implementation/references/branch-plan-intake.md](shared/skill/delegate-implementation/references/branch-plan-intake.md) を参照してください。
+詳細な選択条件と委譲手順は、共通原稿の正本である [shared/skill/impl-lead/SKILL.md](shared/skill/impl-lead/SKILL.md) と [shared/skill/impl-lead/references/branch-plan-intake.md](shared/skill/impl-lead/references/branch-plan-intake.md) を参照してください。
 
 ### v1 からの移行
 

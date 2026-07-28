@@ -1,0 +1,436 @@
+# QA・修正・統合
+
+## 目次
+
+- 返却と統合
+- 親の QA
+- 専門 reviewer
+- reviewer 起動テンプレート
+- diff artifact の作成
+- diff artifact の受け渡しと停止条件
+- 必須完了ゲート
+- 修正先の選択
+- 未統合で終了する場合
+- 責務境界
+- 統合済み diff review
+- 後始末と最終報告
+
+## 返却と統合
+
+ここでは Green / Refactor まで完了した枝の最終返却を扱う。`strict` のテスト計画、Red、Green の
+中間ゲートは [実装枝の準備と委譲](implementation-branches.md) に従い、未完成の枝を統合しない。
+直列受け入れは、commit 単位で返し、親が diff を読んでから1枝ずつ取り込む。
+
+1. Implementer は worktree path、git branch、基準 commit、返却 commit SHA range、変更ファイル、
+   実行した command と結果、未コミット変更を返す。
+2. 親は `git -C <worktree> status --short` と `git -C <worktree> diff <base>...HEAD` を確認する。
+   併せて親の checkout を `git -C <親 checkout> status --short` で確認し、worker の変更が worktree の外へ
+   混入していないことを確かめる。親の統合 checkout に生成した diff artifact
+   (`.tugite-qa/reports/<slug>-diff.patch`)は親自身が書き出した既知の untracked file であり、
+   この確認によって worker の変更の混入と誤認しない。作成規約は「diff artifact の作成」節に従う。
+3. 報告だけで受け入れず、対象 test と実装 diff を開く。
+4. QA hard reject は同じ枝へ {{continuation_mechanism}} で差し戻し、修正 commit を追加させる。
+5. 専門 reviewer には task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
+   周辺コンテキストの追加は「reviewer へ渡すコンテキスト」の選択基準に従う。
+   {{new_worker}} は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
+   ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を
+   reviewer が Read することとは矛盾しない。diff の受け渡しは「reviewer 起動テンプレート」に従い、
+   diff artifact の絶対 path を渡すことを既定とし、artifact を生成できない場合だけ diff text 欄へ
+   本文を直接記入する。
+6. 受け入れ後は統合先の git branch で `git cherry-pick <sha>` または commit range を取り込み、focused test と
+   関連する build、typecheck、lint を再実行する。
+7. 統合後の green commit を次の枝の基準にする。枝 worktree の green と統合後の green の片方を省略しない。
+
+## 親の QA
+
+`standard` と `strict` では全観点を手を動かして確認する。`lite` では観点0（diff を読む）、観点5
+（自分で green を確認）、Acceptance Criteria に対応する振る舞いが検証されていることの確認へ絞ってよい。
+`lite` のこの確認は親が diff と検証結果から行うものであり、Implementer への AC 対応表や
+Red 証跡の要求に置き換えない。`lite` の前提が崩れた場合は mode を引き上げる。
+
+委譲 mode によらず、次を判定原則とする。
+
+- 検証手段はテストに限定せず、プロジェクトまたはタスクで指定された成功条件（自動テスト、type check、
+  lint、build、静的解析、実行結果の確認、手動確認手順、snapshot 比較、API レスポンス確認など）を使う。
+- 検証 command が成功したことだけを完了根拠にしない。
+- 親は「どの Acceptance Criteria を」「どのテストまたは確認手順で」「どの結果によって」満たしたと
+  判断したかを説明できる状態にする。
+
+0. **実装 diff** — 基準 commit からの diff を開き、物理的な scope 逸脱に加えて、枝の
+   `out_of_scope` に列挙された責務・作業を含まないことを確認する。既存設計からの逸脱、公開契約の破壊、
+   既存 test の弱体化、未承認依存、error handling、resource 解放、concurrency、security も確認する。
+1. **振る舞い** — test が private API や実装手順ではなく、外部から観測可能な振る舞いを検証しているか。
+2. **網羅性** — AC、境界値、異常系、例外経路、分岐、期待値の根拠が実際の test と一致するか。
+3. **TDD** — 新機能または未実装仕様なら Red 出力または段階 commit を確認し、test を実装へ合わせて
+   弱めていないか。既存挙動を固定する regression test が追加時点で Green なら、親は AC、test、期待値の
+   根拠、既存挙動の対応を実際の test と実装から確認し、既存実装がすでに仕様を満たすという返却根拠が
+   妥当か判断する。形式的な Red のための本番 code 変更がなく、mutation を使った場合は親が明示した
+   一時検証だけであること、mutation が commit されておらず、変更禁止範囲や本番 code に接触していない
+   ことも確認する。
+4. **記述原則** — Code=How、test=What、commit=Why、comment=Why Not の配置になっているか。
+5. **親の実行** — focused test と関連する全体検証を親が実行し、green を確認する。
+
+## 専門 reviewer
+
+専門 reviewer は特定の risk を深く確認する役割であり、専門 reviewer を汎用コードレビューの代替にしない。
+専門 reviewer は mode 名だけを理由に一律起動しない。原則として次の場合だけ使用する。
+
+- ユーザーが専門 reviewer を明示的に要求した場合。
+- 親が reviewer の責務と一致する具体的なリスクを特定した場合。
+
+| Reviewer | 対象リスク |
+| --- | --- |
+| `responsibility-boundary-reviewer` | 責務混在、設計境界、分散した副作用 |
+| `test-quality-reviewer` | 弱いテスト、欠けているケース、実装詳細に依存したテスト |
+| `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響 |
+
+対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
+reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
+
+### reviewer へ渡すコンテキスト
+
+親は、レビュー対象とリスクに応じて、必要な周辺コンテキストを選択して reviewer へ渡す。
+各 reviewer には原則として次の基本情報を渡す。
+
+- タスクの目的と Acceptance Criteria
+- 変更対象と commit 範囲
+- 変更ファイル一覧と diff text
+- reviewer に確認させる具体的な観点
+
+この基本情報は「reviewer 起動テンプレート」の各欄に対応する。diff の受け渡しは同テンプレートに従い、
+diff artifact の絶対 path を渡すことを既定とする。
+
+diff だけでは関連する既存設計や利用箇所を判断できない場合は、次を必要に応じて追加する。
+
+- 関連する interface、type、schema
+- 主要な呼び出し元
+- 関連する既存テスト
+- 周辺の directory 構造
+- generated file とその生成元
+- 変更対象に関係する既存実装
+- 外部指示と、`AGENTS.md`、`CLAUDE.md`、`README.md` の関連部分
+
+コンテキストの選択では次を守る。
+
+- repository 全体を無条件に渡さない。
+- reviewer の役割に関係しない情報を過剰に渡さない。
+- 親の結論だけを渡さず、reviewer が独立して判断できる一次情報を渡す。
+- 周辺コードを渡す場合は、なぜ必要なのかを明示する。
+- 外部指示と repository 内の指示が競合する場合は、優先関係を明示する。
+
+## reviewer 起動テンプレート
+
+必須完了ゲートの reviewer と専門 reviewer のどちらを起動する場合も、次のテンプレートの全欄を
+1項目ずつ埋めて渡す。該当がない欄は「なし」と記入する。欄を空欄のまま残すことと、欄自体を
+削除することを禁じる。
+
+```text
+- 対象 reviewer: <reviewer 名>
+- 確認させる観点: <reviewer に確認させる具体的な観点>
+- 対象リスク: <この reviewer が確認すべき対象リスク>
+- review 範囲: <対象ファイル・commit 範囲>
+- タスクの目的: <実装枝の目的>
+- Acceptance Criteria: <AC>
+- 親が明示した制約: <なければ「なし」>
+- 基準 commit: <SHA>
+- 対象 commit 範囲: <SHA range>
+- commit log: <対象 commit 範囲の commit log>
+- 変更ファイル一覧: <変更ファイル一覧>
+- diff artifact の絶対 path: <path。渡さない場合は「なし」>
+- diff text（artifact を生成できない場合）: <本文。artifact を渡す場合は「なし」>
+- `git status` の結果: <`git status --short` の結果>
+- テスト結果: <検証 command の結果>
+- 親が選択した周辺コンテキスト: <選択した context。なければ「なし」>
+- そのコンテキストを渡す理由: <理由。なければ「なし」>
+- 返却してほしい判定: <reviewer に返してほしい判定区分>
+- 前回の指摘と親の採否（ゲート再実行時）: <前回指摘IDと採否。初回起動なら「なし」>
+```
+
+artifact の作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の
+受け渡しと停止条件」節に従う。
+
+「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・commit 範囲・
+変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
+欄として吸収する。テンプレート外に残る起動時 Data はない。
+
+## diff artifact の作成
+
+reviewer 起動テンプレートの diff artifact 欄へ渡す本文は、基準 commit からの diff をあらかじめ
+file へ書き出しておく。
+
+保存先は repository root 相対の `.tugite-qa/reports/<slug>-diff.patch` に固定する。slug の base の
+候補順と正規化手順、Windows 予約名の扱い、衝突時の suffix 選択、ancestor 検査、削除時の再検査、Git
+管理と保持は [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。Markdown file を
+前提とする path 制約は継承しない。artifact の path 制約は次のとおり本 manuscript で定義する。
+
+- target は `.tugite-qa/reports/` 直下の単一 file に限る。
+- 固定の `.tugite-qa/reports/` prefix を除く file name component に path separator を許可しない。
+- `.` または `..` を許可しない。
+- 絶対 path を許可しない。
+
+衝突時は `-diff` を保持したまま `<slug>-diff-2.patch` の順に最初の空きを選ぶ。
+
+本文は worker worktree で取得した `git -C <worktree> diff <base>...HEAD` の出力を、親が転記・要約
+せず1回の書き出しでそのまま保存する。保存先 path は親の統合 checkout の repository root を基準に
+解決し、ancestor 検査も同じ root で行う。
+
+同一の diff 状態（同じ実装枝、同じ commit 範囲、修正 commit の追加なし）に対する複数 reviewer の
+起動では同じ artifact を渡してよい。diff 状態が変わったとき（修正後のゲート再実行、別の実装枝）は
+新しい artifact を生成し、変化後に古い artifact を渡さない。
+
+書き出しには、候補 path が既存の場合に上書きせず失敗する Action（例: noclobber を有効にした
+redirect）を使う。候補 path の衝突による失敗は次の suffix を選び直す。衝突以外の書き出し失敗は
+「diff artifact の受け渡しと停止条件」の確認手順に従い、reviewer へ渡さず再生成するか diff text
+経路へ落ちる。artifact 経路を既定とし、diff text の直接受け渡しは同節の停止条件に該当する場合の
+例外とする。
+
+保存先 directory が存在しない場合は、ancestor 検査を行ったうえで作成し、作成後に同じ検査を再実行
+してから書き出す。
+
+## diff artifact の受け渡しと停止条件
+
+起動 prompt の diff artifact 欄には絶対 path を書く。永続 QA レポートと会話上の報告へ path を
+記録する場合は repository 相対 path だけを使う。verbatim 保存される diff 本文はこの記録規則の
+適用対象にしない。
+
+diff artifact の欄に path を記入した場合は、reviewer がその file を Read し全文を diff text として
+判定根拠にする旨の指示を添える。artifact を生成せず diff text 欄へ本文を直接記入した場合は、その
+text を判定根拠にする旨を添える。2つの欄は排他とし、採らなかった側の欄には「なし」と記入して、
+両方を同時に有効な指示として残さない。
+
+本文が token、password、cookie、Authorization、private key、`.env` の値、credential 付き URL、
+個人情報のいずれかを含む場合、または作成 Action を保証できない場合は artifact を生成せず、diff
+text 欄へ本文を直接記入して渡し、生成しなかった理由を記録する。repository 相対 path、コード中の
+文字列リテラル、prompt テンプレートの原稿は、diff が構造上含む要素として停止条件に該当しない。
+
+artifact の path を reviewer へ渡す前に、親は diff 全文を自分の context へ読み込まずに書き出し
+結果を確認する。確認は書き出し command の exit status が 0 であることと、artifact が空でないこと
+の2点で行う。commit を持つ実装枝に対して artifact が空になった場合は、取得元 worktree または基準
+commit の指定誤りとして扱う。満たさない artifact は reviewer へ渡さず、
+[永続 QA レポート](qa-report.md) の削除時の再検査に従って削除したうえで再生成し、再生成できない
+場合は diff text 経路へ落ちる。この削除は qa-report.md の「明示的な削除」に該当し、保持規約の
+違反にならない。
+
+## 必須完了ゲート
+
+| ゲート | reviewer | 適用 mode | 対象 |
+| --- | --- | --- | --- |
+| 記述原則 | `writing-principles-reviewer` | `lite` / `standard` / `strict` | How/What/Why/Why Not の配置、命名、説明 |
+| 過剰実装 | `over-engineering-reviewer` | `standard` / `strict` | 除去しても AC と制約を満たせるテストと実装 |
+
+この表の2本は必須の完了ゲートであり、上記の任意起動条件の対象外とする。適用 mode の正本はこの表とする。
+`writing-principles-reviewer` は `lite` / `standard` / `strict` のすべてで、各実装枝を受け入れる前に必ず起動する。
+`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、受け入れる前に必ず起動し、`lite` では起動しない。
+ゲート間の起動順は定めない。
+
+`lite` は親 QA を観点0（diff を読む）、観点5（自分で green を確認）、Acceptance Criteria に対応する
+振る舞いが検証されていることの確認へ絞ってよい mode であり（`## 親の QA` の冒頭を参照）、
+除去許可の判定に必要な網羅性の確認（観点2: 境界値・異常系・例外経路・分岐・期待値の根拠）が課されない。
+`lite` が課すのは AC と検証の対応の識別までであり、その検証が AC をどこまで支えているかの判断は
+課さない。除去後も AC を検証する要素が残ることを親が確かめる前提を置けないため、`lite` では
+過剰実装ゲートを課さない。
+
+親が取得する `git diff`、`git status`、commit log、テスト結果を、Data として各必須完了ゲートの reviewer へ渡す。
+対象は基準 commit からの diff が導入または悪化させた問題に限定し、既存問題を広く探索しない。
+これらの情報を取得するために reviewer 自身へ Bash や編集 tool を与えない。
+起動 prompt は「reviewer 起動テンプレート」の全欄を埋めて渡す。
+
+reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す。
+`no-change` は reviewer の指摘が0件である正常なゲート通過結果として扱う。
+指摘がある場合、親は各指摘IDについて内容を確認し、修正先または不採用を判断して、その判断を記録する。
+
+- 局所的で振る舞いを変えない修正は `review-patch-refactorer` へ渡す。
+- テストケース追加、期待値の再検討、仕様判断、設計変更、振る舞い判断が必要な修正は元 Implementer へ差し戻す。
+- 指摘を採用しない場合は、親が指摘IDと不採用理由を記録する。
+
+`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、元 Implementer による修正にも適用する。
+`review-patch-refactorer` または元 Implementer による修正後は、親が変更後の diff とテスト結果を確認し、
+その枝で適用されるすべての必須完了ゲートを再実行する。
+
+指摘がある場合は、次のいずれかになるまで枝を受け入れない。
+
+- すべての指摘が修正され、再確認を通過している。
+- 親が不採用とした指摘について、理由が記録されている。
+
+未解決または判断未記録の指摘がある枝を受け入れない。
+
+### evidence を欠く指摘の扱い
+
+reviewer が示す evidence は [Reviewer findings の共通契約](reviewer-findings.md) の
+「指摘ごとの evidence」に従う。
+evidence を欠く指摘は、単独でゲート通過の根拠にしない。
+
+親が該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、自分が読んだ diff・
+テスト結果・repository の現状から特定できる場合は、親が evidence を補って通常の判断へ戻す。
+この扱いは必須完了ゲートの reviewer に限らず、「専門 reviewer」節の reviewer を含む指摘全般に適用する。
+
+### 過剰実装ゲートの除去許可
+
+除去を許可する場合、親は指摘IDごとに次をすべて確認する。
+
+- 除去後も対象 AC を満たす実装と検証が残ること
+- 除去しても外部から観測可能な振る舞いと公開契約が変わらないこと
+- 除去する操作が局所的で、周辺の再設計を必要としないこと
+
+1つでも満たさない場合は元 Implementer へ差し戻す。
+
+除去後も対象 AC を検証する要素が残るかを親が判定できず、1つ目の条件をそもそも確認できないため、
+類型 C（残る検証を特定できないテスト）は `review-patch-refactorer` へ渡さず、元 Implementer へ差し戻す。
+
+重複テストの除去では、削除する側と残す側をファイルとテスト名で特定し、起動 prompt へ明示する。
+個別許可のない除去を行わせない。
+
+## 修正先の選択
+
+次の条件をすべて満たす場合に限り `review-patch-refactorer` を起動する。
+
+- 専門 reviewer（必須完了ゲートの reviewer を含む）の具体的な指摘が存在する。
+- 親が指摘を確認し、修正対象として採用している。
+- Acceptance Criteria は満たされている。
+- Acceptance Criteria を変更する必要がない。
+- 機能的なテストは green である。
+- 修正範囲が局所的である。
+- 仕様の再解釈を必要としない。
+- 新機能追加ではない。
+- 振る舞いを維持したまま修正できる。
+- reviewer が修正方針または問題箇所を明示している。
+- evidence を欠く指摘は、「必須完了ゲート」の evidence を欠く指摘の扱いに従い、親が evidence を補って
+  通常の判断へ戻している。
+
+起動 prompt には少なくとも次の Data を含める。
+
+- 指摘元 reviewer、対象となる指摘ID、指摘本文
+- 親が採用した修正条件
+- 対象 worktree、git branch、基準 commit、対象 commit 範囲
+- Acceptance Criteria
+- 変更を許可するファイルと変更を禁止するファイル
+- 削除・移動・新規作成の可否と commit の要否
+- 必須検証 command
+- 除去を許可する場合の、指摘IDごとの除去対象と残す対象。pass-through 層の除去では、付け替えが必要な
+  呼び出し箇所のファイルを変更許可リストへ含める
+
+入力が不足する場合、`review-patch-refactorer` は推測で補わず、ファイルを変更せず親へ返す。
+
+`review-patch-refactorer` は指摘範囲だけを修正し、新しい問題を探索しない。仕様変更、ついで修正、
+大規模再設計、新規依存追加、通常実装の代行をさせない。親が個別に許可しない限り、ファイルの
+新規作成・削除・移動、指摘外のテストケース追加、テストケースの削除、fixture や helper の追加をさせない。
+
+返却後、親は自己申告だけを信用せず、次を再確認する。
+
+- `git -C <worktree> status --short`
+- 基準 commit からの変更ファイル一覧と diff
+- 許可範囲外の変更がないこと
+- 親が個別に許可していないファイルの追加・削除・移動がないこと
+- reviewer 指摘外の変更がないこと
+- 親が個別に許可していないテストケースの削除がないこと
+- テストケースの追加・変更、期待値、skip 設定の変更がないこと
+- 除去を許可した場合は、除去対象が許可した指摘IDと一致し、対象 AC を満たす実装と検証が残っていること
+- Acceptance Criteria と外部から観測可能な振る舞いが維持されていること
+- focused test と関連する全体検証が green であること
+
+次は元 Implementer へ差し戻す。
+
+- Acceptance Criteria 未達
+- 仕様誤解
+- 機能欠落
+- テスト失敗
+- 正常系・異常系・境界値不足
+- security や副作用の修正に振る舞い変更が必要
+- test 品質の修正にケース追加や期待値の再検討が必要
+- 過剰要素の除去に仕様判断、AC の再解釈、振る舞い変更が必要
+- 失う AC が特定できないテストの除去
+- `strict` mode の Red / Green / Refactor 継続
+- 元の調査・実装判断が必要
+
+親がその場で直してよいのは、返却後の import 整理と formatter 適用だけとする。共有土台の作成は
+委譲前の明示的な例外であり、返却後の仕様判断、case 追加、命名、comment、test 名、設計修正を親が
+引き取る理由にはしない。
+
+## 未統合で終了する場合
+
+通常の `Needs revision` は上の修正先へ差し戻し、top-level workflow を継続する。
+親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、
+top-level workflow を終了する場合だけ、実行可能な検証を行い、未実行の検証、未統合の理由、
+worktree を保持する理由を Data として記録し、
+main の手順9へ戻る。
+
+## 責務境界
+
+返却物 QA を通過した diff は、最終検証前に親が次を軽量確認する。
+
+- 1つの function、class、module に複数の変更理由が混ざっていないか。
+- input validation、業務判断、永続化、外部 I/O、表示整形が同じ場所に詰め込まれていないか。
+- DB、API、HTTP、file、framework の具体実装を上位層が知りすぎていないか。
+- 副作用が分散し、再実行、test、失敗時の扱いが難しくなっていないか。
+- boolean flag や mode 引数で大きく責務を切り替えていないか。
+- 既存の責務配置、命名、directory 構成から不自然に外れていないか。
+- 分割や抽象化が過剰になっていないか。
+
+複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑いがある場合は
+`responsibility-boundary-reviewer` を起動する。
+
+- `問題なし`: 通過。
+- `軽微` / `修正推奨`: 局所的で全起動条件を満たす場合だけ `review-patch-refactorer`、それ以外は元 Implementer。
+- `修正必須`: 解消するまで完了しない。振る舞い変更や AC 再解釈が必要なら元 Implementer。
+
+`responsibility-boundary-reviewer` は修正しない。{{reviewer_invocation}} として diff text を渡し、
+全体判定と、指摘ごとの問題箇所、種類、理由、影響範囲、最小修正方針を返させる。
+diff にない既存問題は「既存課題」として判定から分ける。
+起動時は「reviewer 起動テンプレート」の全欄を埋め、diff artifact の絶対 path を渡すことを既定とする。
+
+## 統合済み diff review
+
+全枝の統合と検証後、後始末より前に統合済み diff を review する。
+
+<!-- claude-only:start -->
+親が統合済み diff、test、残存 risk を読み、最終受け入れ判断を記録する。
+<!-- claude-only:end -->
+<!-- codex-only:start -->
+環境が提供する場合は `/review` を実行し、利用できない場合は同等の統合済み diff review を親が行う。
+結果と対応内容を最終報告へ含める。
+<!-- codex-only:end -->
+
+## 後始末
+
+後始末は、受け入れ判断、最終検証、必要な統合済み diff review を含む最終ゲートをすべて通過した後にだけ行う。
+差し戻しまたは再検証の可能性がある間は始めない。
+
+<!-- codex-only:start -->
+親がこのワークフローで起動した agent を停止する。停止後は、後始末の対象にした agent が継続待機していないことを確認する。
+<!-- codex-only:end -->
+親がこのタスク用に作成した、統合済みで未コミット変更のない worktree を `git worktree remove <worktree path>`
+で削除する。削除できない worktree は理由と残った path を最終報告に含める。
+
+## 最終報告
+
+- 変更内容
+- Implementer が検証したこと
+- 統合後に親が検証したこと
+- 統合済み diff review で確認したこと
+- 追加・変更したテストの一覧
+- 未検証の残り
+
+追加・変更したテストの一覧は、追加されたテストを全て読まなくても何が検証されたかを確認できる
+ように、次の表で提示する。
+
+| テスト名 | 対象 | 分類 | 検証している振る舞い | 対応 AC |
+| --- | --- | --- | --- | --- |
+
+- 行は workflow が追加・変更したテストに限り、スイート全体は走査しない。既存スイートの棚卸しは
+  `test-audit` skill の責務であり、この表は語彙(対象・分類・検証している振る舞い)だけを
+  揃える。
+- 親が QA で読んだ diff から記入する。分類は `正常系` / `境界値` / `異常系` とし、判別できない
+  場合はその旨を記す。
+- 対象テストがない run は表を出さず `該当なし` と明記する。
+
+会話上の提示に加えて、同じ表を Markdown file としても保存する。会話ログが流れても一覧を後から
+参照できるようにするためであり、永続 QA レポートと異なり既定で生成する。
+
+- 保存先は `.tugite-qa/reports/<slug>-tests.md` とする。slug の正規化、衝突時の suffix 選択、
+  安全な作成 Action、untrusted field の sanitize、Git 管理と保持は
+  [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。衝突時の suffix は
+  `-tests` を保持したまま `<slug>-tests-2.md` の順に選ぶ。
+- file には見出しと上の表と同じ Data だけを記入し、それ以外の証跡を含めない。
+- 対象テストがない run は file を生成しない。
+- sanitize できない、または安全な作成 Action を保証できない場合は生成せず、理由を会話上の
+  最終報告へ含める。

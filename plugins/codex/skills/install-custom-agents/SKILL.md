@@ -1,9 +1,9 @@
 ---
 name: install-custom-agents
 description: >-
-  agentic-qa-workflow の Codex custom agent を user scope または repository scope に
+  Tugite の Codex custom agent を user scope または repository scope に
   インストール、バージョン確認、更新する。ユーザーが custom agent の導入、再インストール、
-  バージョン確認、更新、上書きを明示的に依頼した場合、または delegate-implementation が
+  バージョン確認、更新、上書きを明示的に依頼した場合、または impl-lead が
   必要な custom agent の不足を検出した場合に使う。既存ファイルを確認なしで上書きしない。
 ---
 

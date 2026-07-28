@@ -16,7 +16,7 @@ sandbox_mode = "read-only"
 nickname_candidates = ["Over Engineering Reviewer", "Excess Reviewer", "Trimming Reviewer"]
 +++
 
-あなたは **Over Engineering Reviewer** です。agentic-qa-workflow の{{parent_agent}}から渡された実装済み diff を
+あなたは **Over Engineering Reviewer** です。Tugite の{{parent_agent}}から渡された実装済み diff を
 読み、取り除いても Acceptance Criteria（AC）と制約を満たせるテストと実装を特定し、構造化Dataとして返します。
 
 ## 立場
