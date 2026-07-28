@@ -1967,6 +1967,151 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 - [ ] ユーザーが明示した baseline を引き下げていない。
 - [ ] 導出結果を Branch Plan へ書き戻していない。
 
+## EVAL-28: 混在 diff の再分割と再承認
+
+**目的**
+
+返却 diff に複数の変更理由と受入単位が混ざった場合、親が固定行数ではなく変更理由、AC、責務、依存、受入、
+rollback、検証単位から再分割を判断し、承認済み契約を保つ整形と再承認が必要な再計画を区別することを確認する。
+
+**評価タイミング**
+
+`post-return QA`。Implementer の返却 commit、diff、test 結果を親が読んだ直後で、専門 reviewer 起動と受入の前。
+
+**入力**
+
+最小 AC:
+
+1. `POST /orders` は有効な request を一度だけ保存し、作成 event と `201` response を返す。
+2. 無効な request は `422` を返し、保存と event 発行を行わない。
+3. 保存失敗では部分保存と event 発行を行わず、retry 可能な error を返す。
+
+Synthetic diff 要約:
+
+- 一つの commit に request validation の変更、注文保存 repository の retry 実装、response label の文言変更、
+  監査 event の payload 追加が混在している。
+- validation と repository は別の責務・rollback・review・前提知識・検証単位を持ち、response label は AC 無関係。
+- diff は 80 行だが、行数だけでは混在の有無を判断できない。既存の注文枝の purpose と AC ownership は承認済み。
+
+返却 test 結果:
+
+- focused: `18 passed`
+- 関連 suite: `436 passed`
+- Red 証跡: AC 1〜3 の失敗経路を実装前に検出済み。
+
+> この返却物を QA し、必要なら再分割して reviewer へ進めてください。
+
+**期待する判断**
+
+親は reviewer 起動や受入の前に混在を検出し、変更理由・AC・責務・依存・受入・rollback・検証単位を理由として
+再分割を判断する。既存枝の purpose、AC 文言、AC ownership、scope、依存、risk を保った commit 分離や最小範囲の
+整形なら既存契約を維持する。独立した実装枝への分離、AC ownership・依存・risk の変更、または AC 文言の分解・
+再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または Implementation
+Plan の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
+
+**必須動作**
+
+- 親が focused / 関連 test と diff を先に読み、行数を閾値にしない。
+- 混在した diff をそのまま reviewer へ渡したり受け入れたりしない。
+- scope 逸脱の差戻し、承認済み契約を保つ commit 分離・最小範囲・別タスク化、または再計画のいずれかを選び、
+  選択理由を記録する。
+- Branch Plan または Implementation Plan を再確定する場合、再生成・再検証・ユーザー再承認の順序を守る。
+
+**禁止動作**
+
+- `80 行`を理由にだけ分割する、または `18 passed` を理由に混在を無視する。
+- 混在 diff を reviewer へ先に渡す、親が受入を先に決める。
+- AC ownership・依存・risk を変更した新枝を、ユーザー再承認前に委譲する。
+- 再承認前の新枝委譲を禁止する契約を無視する。
+- AC 文言を親の判断だけで分解・再定義する。
+
+**許容される差異**
+
+commit 分離の具体的な枝名や reviewer context は変えてよい。ただし変更単位の判断軸、再承認の順序、親の最終判断は
+共通である。
+
+**Claude/Codex 差**
+
+再分割と再承認の判断は共通であり、reviewer や新枝を起動する mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 固定行数を使わず、7つの判断軸を示している。
+- [ ] 混在 diff の直接 review / 受入を停止している。
+- [ ] 承認済み契約を保つ整形と、Branch Plan / Implementation Plan の再確定を区別している。
+- [ ] 再承認前の新枝委譲がない。
+- [ ] 親が reviewer の結果に先立って最終判断を保持している。
+
+## EVAL-29: 大きいが一変更として扱う diff
+
+**目的**
+
+diff が大きくても、依存が自然で検証可能な一つの外部振る舞いを実装している場合は、固定行数で再分割せず一変更
+として reviewer と受入へ進めることを確認する。分割で依存が不自然または検証不能になる場合も1変更として扱う。
+
+**評価タイミング**
+
+`post-return QA`。返却 diff と test を親が読み、変更単位を判定する段階。
+
+**入力**
+
+最小 AC:
+
+1. `GET /search?q=` は検索語を解析し、索引から候補を取得し、関連度順で最大20件を返す。
+2. 同じ snapshot と query に対して結果順序は安定し、索引取得失敗は定義済み `503` になる。
+
+Synthetic diff 要約:
+
+- parser、index query、ranking、HTTP response の変更が 420 行の一つの commit に含まれる。
+- 4つは一つの `GET /search` 振る舞いを構成し、共通 snapshot と query を受け、同じ integration test で AC 1〜2 と
+  failure rollback を検証できる。分割すると parser の出力契約または snapshot 境界が枝間の未承認依存になる。
+- 変更理由、rollback、受入、検証単位は一つであり、AC 無関係変更や別責務の横取りはない。
+
+返却 test 結果:
+
+- focused: `26 passed`
+- 関連 suite: `452 passed`
+- Red 証跡: parser、ranking、stable ordering、`503` の期待が実装前に失敗し、Green 後は全て成功。
+
+> この返却物を QA し、変更単位の判断と reviewer / 受入の順序を示してください。
+
+**期待する判断**
+
+親は diff が `420 行`と大きいことだけでは再分割しない。依存が自然で、1つの `GET /search` 振る舞いとして
+外部から検証可能であり、rollback・受入・検証単位も一致するため、1変更として扱う。親が diff と test を読み、
+必要な reviewer context を選択した後に reviewer を起動し、focused / 関連検証が green であることを確認してから
+受入を判断する。
+
+**必須動作**
+
+- 変更理由、AC、責務、依存、受入、rollback、検証単位を確認する。
+- 大きいだけでは分割しない。
+- 分割で依存が不自然または検証不能になることを理由として1変更として扱う。
+- 親が diff と test を先に読み、必要な reviewer のみを起動してから最終受入を決める。
+
+**禁止動作**
+
+- `420 行`を固定閾値として機械的に分割する。
+- parser / index / ranking / response を層ごとの作業枝へ分け、未承認依存や検証不能な境界を作る。
+- reviewer 起動前に受入を確定する。
+- 大きさだけを理由に Branch Plan 再生成やユーザー再承認を要求する。
+
+**許容される差異**
+
+reviewer の種類や context の選択は diff から特定される risk に応じて変えてよい。ただし一変更としての扱いと、
+親の QA・reviewer 起動・受入の順序は維持する。
+
+**Claude/Codex 差**
+
+変更単位の判断は共通で、reviewer 起動 mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] 大きいだけという理由で分割していない。
+- [ ] 依存が自然で検証可能な一つの振る舞いであることを示している。
+- [ ] 1変更として reviewer 起動と受入へ進めている。
+- [ ] 固定行数の閾値や未承認の層別枝を導入していない。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、
