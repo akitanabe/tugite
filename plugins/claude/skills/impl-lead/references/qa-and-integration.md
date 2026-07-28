@@ -11,6 +11,7 @@
 - diff artifact の作成
 - diff artifact の受け渡しと停止条件
 - 必須完了ゲート
+- reviewer 間の競合解消
 - 修正先の選択
 - 未統合で終了する場合
 - 責務境界
@@ -255,6 +256,63 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 - 親が不採用とした指摘について、理由が記録されている。
 
 未解決または判断未記録の指摘がある枝を受け入れない。
+
+## reviewer 間の競合解消
+
+複数の reviewer が同じ diff に対して異なる指摘または修正方針を返した場合、親は修正先の routing 前に
+競合を解消する。ここでいう同一 diff snapshot は、同じ基準 commit から同じ commit 範囲で作成した diff artifact
+（artifact を使えない場合は同じ diff text）を指す。snapshot が変わった場合は、変更後の snapshot として扱い、
+前の snapshot の finding を新しいものとして混ぜない。
+
+### 全 findings の収集 barrier
+
+- 親は、適用する必須完了ゲートと risk により選択した専門 reviewer を、修正前に同一 diff snapshot へ起動する。
+  全対象 reviewer から `no-change` を含む全 findings と evidence を収集するまで、修正 routing を開始しない。
+- 全 findings を収集するまで、差し戻し、finding の採否、受入判断も開始しない。reviewer の起動順や返却順にかかわらず、
+  一部の reviewer の提案だけで作業を進めない。
+- 各 reviewer へ渡す snapshot の基準 commit、対象 commit 範囲、diff artifact または diff text、変更ファイル、テスト
+  結果は同一でなければならない。親は起動順にかかわらず、全対象 reviewer の返却 Data を同じ一覧へ集約する。
+
+### 問題と修正案の比較
+
+親は reviewer の人数や多数決を使わず、各 finding の問題と修正案を分け、evidence と問題の妥当性を確認して比較する。
+
+- 問題: reviewer 名、指摘を識別できる情報と内容、対象箇所、evidence、影響する AC と対象 risk。
+- 修正案: reviewer が提案した方針、代替解法、想定する変更主体、変更範囲、検証方法。
+
+親は各問題の妥当性を evidence と repository の一次情報から確認し、提案された修正案を問題そのものと同一視しない。
+競合する finding の問題が共に成立する場合は、代替解法を含めて次の判断軸を比較する。
+
+- Acceptance Criteria（AC）と、適用される外部／repository 指示の優先順位
+- 具体的失敗リスク、影響、発生可能性、対象 risk の残存
+- 検証可能性、scope、rollback
+- 最小修正と保守性
+
+親は比較結果、採用した解消方針、採用しなかった修正案と各理由、各 finding の最終状態を記録する。方針は最小かつ
+検証可能でなければならず、reviewer の判定を親の最終受入判断に置き換えない。
+
+### 不採用・変更後の再実行
+
+- diff 変更なしで finding を不採用とする場合は、finding ごとに問題を採用しない理由を記録する。その理由記録で完了
+  できるが、未解決または判断未記録の finding を残してはならない。
+- diff 変更ありの場合、変更主体が元 Implementer または `review-patch-refactorer` のどちらであっても、変更後に新しい
+  同一 snapshot を作成する。親はその snapshot で親QA、適用するすべての必須完了ゲート、競合当事者の専門 reviewer、
+  変更後も対象 risk が成立する全専門 reviewer を再実行し、結果を再び全 findings 一覧へ収集してから受け入れる。
+- 再実行では、前の snapshot の finding を自動的に解消済みとみなさない。前回の採否、変更後の evidence、新しい reviewer
+  結果を対応付ける。
+
+### 安全に解消できない場合の差し戻し
+
+親だけでは reviewer 競合を安全に解消できない場合（AC、優先指示、許容不能リスク、scope、rollback、検証可能性について、
+これらすべてを同時に満たす方針を説明できない場合）は、review-patch-refactorer ではなく元 Implementer へ差し戻す。
+差し戻し Data には、少なくとも次を含める。
+
+- 競合している reviewer 名、指摘を識別できる情報および内容、evidence
+- 守る AC、適用される優先指示、許容不能リスク
+- 必要な検証、rollback 条件、再設計条件、親が安全に決められない判断点
+
+元 Implementer はこの Data をもとに再設計・実装し、親は上記の変更後 snapshot 再実行契約に従う。再設計後も安全に解消できない場合は、同じ
+Data と未解決理由を更新して、ユーザー確認または計画の再確定へ停止する。
 
 ## 返却 diff の変更単位判定
 
