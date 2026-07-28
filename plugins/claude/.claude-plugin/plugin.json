@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "agentic-qa-workflow",
-  "displayName": "Agentic QA Workflow",
+  "name": "tugite",
+  "displayName": "Tugite",
   "description": "実装作業をサブエージェントへ委譲しつつ、親エージェントがマネージャー兼 QA として品質責任を持つためのプラグイン。",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "author": {
     "name": "akitanabe"
   },

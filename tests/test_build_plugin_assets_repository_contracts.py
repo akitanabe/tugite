@@ -11,7 +11,7 @@ from build_plugin_assets_test_support import (
     CLAUDE_PROFILE_PATH,
     CODEX_MODEL_PROFILES,
     CODEX_PROFILE_PATH,
-    DELEGATE_SKILL,
+    IMPL_LEAD_SKILL,
     GENERATED_MARKDOWN_WARNING,
     GENERATED_SKILL_REFERENCE_PATHS,
     GENERATED_SKILL_PATHS,
@@ -28,7 +28,7 @@ from build_plugin_assets_test_support import (
 )
 
 
-PLAN_SKILL = "plan-implementation-branches"
+BRANCH_DESIGN_SKILL = "branch-design"
 # 契約が要求する reference 構成をテスト側で明示的に宣言する。生成 mapping への
 # 依存を避け、原稿が未整備の状態を「必要ファイルの欠落」として検出させる。
 PLAN_REFERENCE_NAMES = (
@@ -36,7 +36,7 @@ PLAN_REFERENCE_NAMES = (
     "branch-splitting.md",
     "plan-review.md",
 )
-DRAFT_SKILL = "draft-implementation-plan"
+PLAN_CRAFT_SKILL = "plan-craft"
 DRAFT_REFERENCE_NAMES = (
     "implementation-plan-schema.md",
     "plan-drafting.md",
@@ -170,7 +170,7 @@ class BuildPluginAssetsRepositoryContractsTest(
         for path, main in main_texts.items():
             with self.subTest(path=path):
                 self.assertLess(len(main.splitlines()), 300)
-                for name in SKILL_REFERENCE_NAMES[DELEGATE_SKILL]:
+                for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]:
                     self.assertIn(f"(references/{name})", main)
                 for heading in reference_headings.values():
                     self.assertNotIn(heading, main)
@@ -254,7 +254,7 @@ class BuildPluginAssetsRepositoryContractsTest(
     ) -> None:
         """Reject traversal and links, and never overwrite an existing report."""
         required_contracts = (
-            "repository root 相対の `.agentic-qa/reports/<slug>.md`",
+            "repository root 相対の `.tugite-qa/reports/<slug>.md`",
             "task ID または title",
             "空なら git branch",
             "Unicode NFKC",
@@ -281,7 +281,7 @@ class BuildPluginAssetsRepositoryContractsTest(
             "suffix 込みの stem は最大80文字",
             "base の末尾を切る",
             "出力先または候補が symlink、directory、非通常 file なら停止",
-            "`.agentic-qa` と `reports` の各既存 ancestor component",
+            "`.tugite-qa` と `reports` の各既存 ancestor component",
             "symlink を追わない `lstat` 相当",
             "symlink または directory 以外なら停止",
             "canonical repository root 外へ解決される場合は停止",
@@ -311,7 +311,7 @@ class BuildPluginAssetsRepositoryContractsTest(
     ) -> None:
         """Leave Git management, retention, and deletion to explicit policy."""
         required_contracts = (
-            "`agentic-qa-workflow` repository の template source と generated asset は tracked 配布物",
+            "`tugite` repository の template source と generated asset は tracked 配布物",
             "利用先 repository で生成する report instance",
             "既定では untracked / unstaged / uncommitted",
             "`.gitignore` と `.git/info/exclude` を自動変更しない",
@@ -2288,25 +2288,25 @@ class PlanImplementationBranchesContractsTest(
 ):
     def _plan_skill_texts(self) -> dict[str, str]:
         return {
-            "source": self._repository_text(shared_skill_path(PLAN_SKILL)),
+            "source": self._repository_text(shared_skill_path(BRANCH_DESIGN_SKILL)),
             "claude": self._repository_text(
-                generated_skill_path("claude", PLAN_SKILL)
+                generated_skill_path("claude", BRANCH_DESIGN_SKILL)
             ),
             "codex": self._repository_text(
-                generated_skill_path("codex", PLAN_SKILL)
+                generated_skill_path("codex", BRANCH_DESIGN_SKILL)
             ),
         }
 
     def _plan_reference_texts(self, name: str) -> dict[str, str]:
         return {
             "source": self._repository_text(
-                shared_skill_reference_path(PLAN_SKILL, name)
+                shared_skill_reference_path(BRANCH_DESIGN_SKILL, name)
             ),
             "claude": self._repository_text(
-                generated_skill_reference_path("claude", PLAN_SKILL, name)
+                generated_skill_reference_path("claude", BRANCH_DESIGN_SKILL, name)
             ),
             "codex": self._repository_text(
-                generated_skill_reference_path("codex", PLAN_SKILL, name)
+                generated_skill_reference_path("codex", BRANCH_DESIGN_SKILL, name)
             ),
         }
 
@@ -2317,7 +2317,7 @@ class PlanImplementationBranchesContractsTest(
         for platform in ("claude", "codex"):
             main = self._plan_skill_texts()[platform]
             with self.subTest(platform=platform):
-                self.assertTrue(main.startswith(f"---\nname: {PLAN_SKILL}\n"))
+                self.assertTrue(main.startswith(f"---\nname: {BRANCH_DESIGN_SKILL}\n"))
                 self.assertLess(len(main.splitlines()), 300)
                 for name in PLAN_REFERENCE_NAMES:
                     self.assertIn(f"(references/{name})", main)
@@ -2379,11 +2379,11 @@ class PlanImplementationBranchesContractsTest(
     def test_plan_schema_reference_points_terminology_to_the_implementation_branches_glossary(
         self,
     ) -> None:
-        """Route branch terminology to the delegate-implementation glossary, not a local copy."""
+        """Route branch terminology to the impl-lead glossary, not a local copy."""
         required = (
             "用語",
-            "delegate-implementation",
-            "../../delegate-implementation/references/implementation-branches.md",
+            "impl-lead",
+            "../../impl-lead/references/implementation-branches.md",
         )
         for platform, text in self._plan_reference_texts(
             "branch-plan-schema.md"
@@ -2399,7 +2399,7 @@ class PlanImplementationBranchesContractsTest(
             "`delegation.authorized` は常に `false`",
             "確認モードの既定は `review`",
             "`auto` はユーザーが明示した場合のみ",
-            "`delegate-implementation` を直接起動しない",
+            "`impl-lead` を直接起動しない",
             "blocking な不足は `unresolved_decisions`",
             "minor な不足は `assumptions`",
         )
@@ -2434,7 +2434,7 @@ class PlanImplementationBranchesContractsTest(
     def test_plan_schema_holds_requested_mode_as_policy_and_baseline(self) -> None:
         """Carry the requested delegation mode as an allocation policy and a baseline."""
         required = (
-            "[issue #68](https://github.com/akitanabe/agentic-qa-workflow/issues/68)",
+            "[issue #68](https://github.com/akitanabe/tugite/issues/68)",
             "policy: fixed | adaptive",
             "baseline: lite | standard | strict",
             "mode 未指定の明示的な委譲要求は null のまま保持し、"
@@ -2561,7 +2561,7 @@ class PlanImplementationBranchesContractsTest(
     ) -> None:
         """Accept inventory findings as a source plan only for explicitly listed finding IDs."""
         required = (
-            "元プラン(path / issue URL / 会話内 / `inventory-test-suite` の "
+            "元プラン(path / issue URL / 会話内 / `test-audit` の "
             "Test Inventory 報告の findings)",
             "findings 由来の AC では、原文はユーザーが確定した文言を指す。",
             "対象 findings の ID(`G-*`)をユーザーが明示的に指定する。"
@@ -2647,7 +2647,7 @@ class PlanImplementationBranchesContractsTest(
         for platform, text in self._plan_reference_texts("plan-review.md").items():
             with self.subTest(platform=platform):
                 self.assertIn(
-                    "[起草手順](../../draft-implementation-plan/references/plan-drafting.md)",
+                    "[起草手順](../../plan-craft/references/plan-drafting.md)",
                     text,
                 )
                 normalized = "".join(text.split())
@@ -2672,9 +2672,9 @@ class DelegateImplementationIntakeContractsTest(
 ):
     def _assert_intake_reference_files_exist(self) -> None:
         paths = (
-            shared_skill_reference_path(DELEGATE_SKILL, INTAKE_REFERENCE),
-            generated_skill_reference_path("claude", DELEGATE_SKILL, INTAKE_REFERENCE),
-            generated_skill_reference_path("codex", DELEGATE_SKILL, INTAKE_REFERENCE),
+            shared_skill_reference_path(IMPL_LEAD_SKILL, INTAKE_REFERENCE),
+            generated_skill_reference_path("claude", IMPL_LEAD_SKILL, INTAKE_REFERENCE),
+            generated_skill_reference_path("codex", IMPL_LEAD_SKILL, INTAKE_REFERENCE),
         )
         for path in paths:
             self.assertTrue(
@@ -2686,41 +2686,41 @@ class DelegateImplementationIntakeContractsTest(
         self._assert_intake_reference_files_exist()
         return {
             "source": self._repository_text(
-                shared_skill_reference_path(DELEGATE_SKILL, INTAKE_REFERENCE)
+                shared_skill_reference_path(IMPL_LEAD_SKILL, INTAKE_REFERENCE)
             ),
             "claude": self._repository_text(
                 generated_skill_reference_path(
-                    "claude", DELEGATE_SKILL, INTAKE_REFERENCE
+                    "claude", IMPL_LEAD_SKILL, INTAKE_REFERENCE
                 )
             ),
             "codex": self._repository_text(
                 generated_skill_reference_path(
-                    "codex", DELEGATE_SKILL, INTAKE_REFERENCE
+                    "codex", IMPL_LEAD_SKILL, INTAKE_REFERENCE
                 )
             ),
         }
 
     def _delegate_skill_texts(self) -> dict[str, str]:
         return {
-            "source": self._repository_text(shared_skill_path(DELEGATE_SKILL)),
+            "source": self._repository_text(shared_skill_path(IMPL_LEAD_SKILL)),
             "claude": self._repository_text(
-                generated_skill_path("claude", DELEGATE_SKILL)
+                generated_skill_path("claude", IMPL_LEAD_SKILL)
             ),
             "codex": self._repository_text(
-                generated_skill_path("codex", DELEGATE_SKILL)
+                generated_skill_path("codex", IMPL_LEAD_SKILL)
             ),
         }
 
     def _delegate_reference_texts(self, name: str) -> dict[str, str]:
         return {
             "source": self._repository_text(
-                shared_skill_reference_path(DELEGATE_SKILL, name)
+                shared_skill_reference_path(IMPL_LEAD_SKILL, name)
             ),
             "claude": self._repository_text(
-                generated_skill_reference_path("claude", DELEGATE_SKILL, name)
+                generated_skill_reference_path("claude", IMPL_LEAD_SKILL, name)
             ),
             "codex": self._repository_text(
-                generated_skill_reference_path("codex", DELEGATE_SKILL, name)
+                generated_skill_reference_path("codex", IMPL_LEAD_SKILL, name)
             ),
         }
 
@@ -2781,7 +2781,7 @@ class DelegateImplementationIntakeContractsTest(
             "既存の委譲 prompt の Data へそのまま流し込む",
             "委譲 prompt の必須テストと検証 command で",
             "Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。",
-            "`plan-implementation-branches` の使用を",
+            "`branch-design` の使用を",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
@@ -2942,15 +2942,15 @@ class DelegateImplementationIntakeContractsTest(
     def test_intake_reference_resolves_the_cross_skill_schema_link(self) -> None:
         """Resolve the schema code table link across shared and generated trees."""
         relative_link = (
-            "../../plan-implementation-branches/references/branch-plan-schema.md"
+            "../../branch-design/references/branch-plan-schema.md"
         )
         intake_paths = {
-            "source": shared_skill_reference_path(DELEGATE_SKILL, INTAKE_REFERENCE),
+            "source": shared_skill_reference_path(IMPL_LEAD_SKILL, INTAKE_REFERENCE),
             "claude": generated_skill_reference_path(
-                "claude", DELEGATE_SKILL, INTAKE_REFERENCE
+                "claude", IMPL_LEAD_SKILL, INTAKE_REFERENCE
             ),
             "codex": generated_skill_reference_path(
-                "codex", DELEGATE_SKILL, INTAKE_REFERENCE
+                "codex", IMPL_LEAD_SKILL, INTAKE_REFERENCE
             ),
         }
         texts = self._intake_reference_texts()
@@ -2964,7 +2964,7 @@ class DelegateImplementationIntakeContractsTest(
                 )
 
 
-INVENTORY_SKILL = "inventory-test-suite"
+TEST_AUDIT_SKILL = "test-audit"
 INVENTORY_REPORT_REFERENCE = "inventory-report.md"
 
 
@@ -2976,17 +2976,17 @@ class InventoryTestSuiteReportContractsTest(
         return {
             "source": self._repository_text(
                 shared_skill_reference_path(
-                    INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                    TEST_AUDIT_SKILL, INVENTORY_REPORT_REFERENCE
                 )
             ),
             "claude": self._repository_text(
                 generated_skill_reference_path(
-                    "claude", INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                    "claude", TEST_AUDIT_SKILL, INVENTORY_REPORT_REFERENCE
                 )
             ),
             "codex": self._repository_text(
                 generated_skill_reference_path(
-                    "codex", INVENTORY_SKILL, INVENTORY_REPORT_REFERENCE
+                    "codex", TEST_AUDIT_SKILL, INVENTORY_REPORT_REFERENCE
                 )
             ),
         }
@@ -3000,10 +3000,10 @@ class InventoryTestSuiteReportContractsTest(
             "報告のみで終了",
             "既定。この操作を選んだ場合、この Skill は何も起こさない。",
             "指摘の解消を計画",
-            "対象の gap 指摘 `G-*` をユーザーが指定し、`plan-implementation-branches` へ",
+            "対象の gap 指摘 `G-*` をユーザーが指定し、`branch-design` へ",
             "渡して実装枝計画へ進める。",
-            "`plan-implementation-branches` へ渡すのは親エージェントの責務であり、この Skill は",
-            "`plan-implementation-branches` を直接起動しない。",
+            "`branch-design` へ渡すのは親エージェントの責務であり、この Skill は",
+            "`branch-design` を直接起動しない。",
         )
         for platform, text in self._inventory_report_texts().items():
             with self.subTest(platform=platform):
@@ -3058,25 +3058,25 @@ class DraftImplementationPlanContractsTest(
 ):
     def _draft_skill_texts(self) -> dict[str, str]:
         return {
-            "source": self._repository_text(shared_skill_path(DRAFT_SKILL)),
+            "source": self._repository_text(shared_skill_path(PLAN_CRAFT_SKILL)),
             "claude": self._repository_text(
-                generated_skill_path("claude", DRAFT_SKILL)
+                generated_skill_path("claude", PLAN_CRAFT_SKILL)
             ),
             "codex": self._repository_text(
-                generated_skill_path("codex", DRAFT_SKILL)
+                generated_skill_path("codex", PLAN_CRAFT_SKILL)
             ),
         }
 
     def _draft_reference_texts(self, name: str) -> dict[str, str]:
         return {
             "source": self._repository_text(
-                shared_skill_reference_path(DRAFT_SKILL, name)
+                shared_skill_reference_path(PLAN_CRAFT_SKILL, name)
             ),
             "claude": self._repository_text(
-                generated_skill_reference_path("claude", DRAFT_SKILL, name)
+                generated_skill_reference_path("claude", PLAN_CRAFT_SKILL, name)
             ),
             "codex": self._repository_text(
-                generated_skill_reference_path("codex", DRAFT_SKILL, name)
+                generated_skill_reference_path("codex", PLAN_CRAFT_SKILL, name)
             ),
         }
 
@@ -3087,7 +3087,7 @@ class DraftImplementationPlanContractsTest(
         for platform in ("claude", "codex"):
             main = self._draft_skill_texts()[platform]
             with self.subTest(platform=platform):
-                self.assertTrue(main.startswith(f"---\nname: {DRAFT_SKILL}\n"))
+                self.assertTrue(main.startswith(f"---\nname: {PLAN_CRAFT_SKILL}\n"))
                 self.assertLess(len(main.splitlines()), 300)
                 for name in DRAFT_REFERENCE_NAMES:
                     self.assertIn(f"(references/{name})", main)
@@ -3132,7 +3132,7 @@ class DraftImplementationPlanContractsTest(
             "rounds-invalid",
             "handoff-incomplete",
             "## 状態遷移と権限",
-            "## plan-implementation-branches への引き渡し",
+            "## branch-design への引き渡し",
         )
         for platform, text in self._draft_reference_texts(
             "implementation-plan-schema.md"
@@ -3145,11 +3145,11 @@ class DraftImplementationPlanContractsTest(
     def test_draft_schema_reference_points_terminology_to_the_implementation_branches_glossary(
         self,
     ) -> None:
-        """Route branch terminology to the delegate-implementation glossary, not a local copy."""
+        """Route branch terminology to the impl-lead glossary, not a local copy."""
         required = (
             "用語",
-            "delegate-implementation",
-            "../../delegate-implementation/references/implementation-branches.md",
+            "impl-lead",
+            "../../impl-lead/references/implementation-branches.md",
         )
         for platform, text in self._draft_reference_texts(
             "implementation-plan-schema.md"
@@ -3163,7 +3163,7 @@ class DraftImplementationPlanContractsTest(
         required = (
             "確認モードの既定は `review`",
             "`auto` はユーザーが明示した場合のみ",
-            "`plan-implementation-branches` を直接起動しない",
+            "`branch-design` を直接起動しない",
             "blocking な不足は `open_questions`",
             "minor な不足は `assumptions`",
             "`rounds_limit` の既定は 10",
@@ -3219,7 +3219,7 @@ class DraftImplementationPlanContractsTest(
         """Reject findings lacking evidence unless the parent supplies it from primary sources."""
         required = (
             "[Reviewer findings の共通契約]"
-            "(../../delegate-implementation/references/reviewer-findings.md)",
+            "(../../impl-lead/references/reviewer-findings.md)",
             "evidence を欠く指摘だけを根拠にプランを修正しない。",
             "親自身が確認した",
             "repository の現状・プラン本文・既存 manuscript から特定できる場合は",
@@ -3239,16 +3239,16 @@ class DraftImplementationPlanContractsTest(
 
     def test_draft_review_reference_resolves_the_reviewer_findings_link(self) -> None:
         """Resolve the cross-skill evidence contract link across shared and generated trees."""
-        relative_link = "../../delegate-implementation/references/reviewer-findings.md"
+        relative_link = "../../impl-lead/references/reviewer-findings.md"
         reference_paths = {
             "source": shared_skill_reference_path(
-                DRAFT_SKILL, "adversarial-review.md"
+                PLAN_CRAFT_SKILL, "adversarial-review.md"
             ),
             "claude": generated_skill_reference_path(
-                "claude", DRAFT_SKILL, "adversarial-review.md"
+                "claude", PLAN_CRAFT_SKILL, "adversarial-review.md"
             ),
             "codex": generated_skill_reference_path(
-                "codex", DRAFT_SKILL, "adversarial-review.md"
+                "codex", PLAN_CRAFT_SKILL, "adversarial-review.md"
             ),
         }
         texts = self._draft_reference_texts("adversarial-review.md")
@@ -3426,13 +3426,13 @@ class ReviewerFindingsContractTest(
     def _reviewer_findings_reference_texts(self) -> dict[str, str]:
         paths = {
             "source": shared_skill_reference_path(
-                DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+                IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
             ),
             "claude": generated_skill_reference_path(
-                "claude", DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+                "claude", IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
             ),
             "codex": generated_skill_reference_path(
-                "codex", DELEGATE_SKILL, REVIEWER_FINDINGS_REFERENCE
+                "codex", IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
             ),
         }
         for path in paths.values():
@@ -3669,13 +3669,13 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         """Fix the diff-artifact save path and inherit only the non-Markdown QA rules."""
         required_contracts = (
             "## diff artifact の作成",
-            "`.agentic-qa/reports/<slug>-diff.patch`",
+            "`.tugite-qa/reports/<slug>-diff.patch`",
             "slug の base の",
             "候補順と正規化手順、Windows 予約名の扱い、衝突時の suffix 選択、ancestor 検査、"
             "削除時の再検査、Git 管理と保持は",
             "[永続 QA レポート](qa-report.md)",
             "Markdown file を前提とする path 制約は継承しない",
-            "target は `.agentic-qa/reports/` 直下の単一 file に限る",
+            "target は `.tugite-qa/reports/` 直下の単一 file に限る",
             "file name component に path separator を許可しない",
             "`.` または `..` を許可しない",
             "絶対 path を許可しない",

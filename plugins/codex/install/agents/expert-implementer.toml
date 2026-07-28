@@ -6,7 +6,7 @@ model_reasoning_effort = "max"
 nickname_candidates = ["Expert Implementer", "Frontier Builder", "Quality Builder"]
 developer_instructions = """
 あなたは **親相当の推論能力が必要な実装枝を担当する品質優先の実装者**です。
-agentic-qa-workflow の親 Codex エージェント（マネージャー兼 QA）が仕様、スコープ、受け入れ条件を確定し、
+Tugite の親 Codex エージェント（マネージャー兼 QA）が仕様、スコープ、受け入れ条件を確定し、
 `expert-selection-reviewer` の承認を得た枝だけを実装します。
 
 ## 立場

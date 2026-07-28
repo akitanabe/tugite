@@ -10,7 +10,7 @@ import unittest
 
 from build_plugin_assets_test_support import (
     AGENT_NAMES,
-    DELEGATE_SKILL,
+    IMPL_LEAD_SKILL,
     GENERATED_SKILL_REFERENCE_PATHS,
     GENERATED_MARKDOWN_WARNING,
     GENERATED_TOML_WARNING,
@@ -62,13 +62,13 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             self.assertEqual(0, result.returncode, result)
 
             claude = (
-                root / "plugins/claude/skills/delegate-implementation/SKILL.md"
+                root / "plugins/claude/skills/impl-lead/SKILL.md"
             ).read_text(encoding="utf-8")
             codex = (
-                root / "plugins/codex/skills/delegate-implementation/SKILL.md"
+                root / "plugins/codex/skills/impl-lead/SKILL.md"
             ).read_text(encoding="utf-8")
-            self.assertTrue(claude.startswith("---\nname: delegate-implementation\n"))
-            self.assertTrue(codex.startswith("---\nname: delegate-implementation\n"))
+            self.assertTrue(claude.startswith("---\nname: impl-lead\n"))
+            self.assertTrue(codex.startswith("---\nname: impl-lead\n"))
             self.assertIn("Parent Claude agent uses SendMessage.", claude)
             self.assertIn("Claude-only instruction.", claude)
             self.assertNotIn("Codex-only instruction.", claude)
@@ -85,7 +85,7 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
 
             self.assertEqual(0, result.returncode, result)
             self.assertEqual("", result.stderr)
-            for name in SKILL_REFERENCE_NAMES[DELEGATE_SKILL]:
+            for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]:
                 claude = (
                     root / GENERATED_SKILL_REFERENCE_PATHS["claude"][name]
                 ).read_text(encoding="utf-8")
@@ -138,7 +138,7 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
                         )
                     )
                 self.assertTrue(
-                    (root / generated_skill_path(platform, DELEGATE_SKILL)).is_file()
+                    (root / generated_skill_path(platform, IMPL_LEAD_SKILL)).is_file()
                 )
 
     def test_build_generates_skill_without_references(self) -> None:
@@ -323,7 +323,7 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             self.assertEqual(0, result.returncode, result)
             for platform in ("claude", "codex"):
                 generated = (
-                    root / f"plugins/{platform}/skills/delegate-implementation/SKILL.md"
+                    root / f"plugins/{platform}/skills/impl-lead/SKILL.md"
                 ).read_text(encoding="utf-8")
                 self.assertIn(comment, generated)
 
@@ -334,12 +334,12 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             claude_frontmatter = (
                 "not Claude frontmatter\n"
                 if platform == "claude" and problem == "frontmatter"
-                else "---\nname: delegate-implementation\ndescription: Claude skill\n---\n"
+                else "---\nname: impl-lead\ndescription: Claude skill\n---\n"
             )
             codex_frontmatter = (
                 "not Codex frontmatter\n"
                 if platform == "codex" and problem == "frontmatter"
-                else "---\nname: delegate-implementation\ndescription: Codex skill\n---\n"
+                else "---\nname: impl-lead\ndescription: Codex skill\n---\n"
             )
             if problem == "frontmatter":
                 body = "\n{{parent_name}} uses {{followup_tool}}.\n"
@@ -756,13 +756,13 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             self.assertEqual(0, result.returncode, result)
             self.assertIn(
                 "Parent {{literal_name}} agent uses SendMessage.",
-                (root / "plugins/claude/skills/delegate-implementation/SKILL.md").read_text(
+                (root / "plugins/claude/skills/impl-lead/SKILL.md").read_text(
                     encoding="utf-8"
                 ),
             )
             self.assertIn(
                 "Parent {{literal_name}} agent uses followup_task.",
-                (root / "plugins/codex/skills/delegate-implementation/SKILL.md").read_text(
+                (root / "plugins/codex/skills/impl-lead/SKILL.md").read_text(
                     encoding="utf-8"
                 ),
             )
@@ -899,13 +899,13 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
                 path.write_text("[]\n", encoding="utf-8", newline="")
             elif problem == "missing version":
                 path.write_text(
-                    '{"name": "agentic-qa-workflow"}\n',
+                    '{"name": "tugite"}\n',
                     encoding="utf-8",
                     newline="",
                 )
             elif problem == "non-string version":
                 path.write_text(
-                    '{"name": "agentic-qa-workflow", "version": 1}\n',
+                    '{"name": "tugite", "version": 1}\n',
                     encoding="utf-8",
                     newline="",
                 )
@@ -947,8 +947,8 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             self.assertEqual(0, result.returncode, result)
 
             markdown_paths = [
-                root / "plugins/claude/skills/delegate-implementation/SKILL.md",
-                root / "plugins/codex/skills/delegate-implementation/SKILL.md",
+                root / "plugins/claude/skills/impl-lead/SKILL.md",
+                root / "plugins/codex/skills/impl-lead/SKILL.md",
                 *(root / f"plugins/claude/agents/{name}.md" for name in AGENT_NAMES),
             ]
             for path in markdown_paths:
@@ -1000,7 +1000,7 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             build = self._run(root)
             self.assertEqual(0, build.returncode, build)
 
-            stale_skill = root / "plugins/claude/skills/delegate-implementation/SKILL.md"
+            stale_skill = root / "plugins/claude/skills/impl-lead/SKILL.md"
             stale_reference = (
                 root
                 / GENERATED_SKILL_REFERENCE_PATHS["claude"][
@@ -1030,13 +1030,13 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
             self.assertEqual(1, result.returncode, result)
             self.assertEqual("", result.stdout)
             for relative_path in (
-                "plugins/claude/skills/delegate-implementation/SKILL.md",
+                "plugins/claude/skills/impl-lead/SKILL.md",
                 (
-                    "plugins/claude/skills/delegate-implementation/references/"
+                    "plugins/claude/skills/impl-lead/references/"
                     "implementation-branches.md"
                 ),
                 (
-                    "plugins/codex/skills/delegate-implementation/references/"
+                    "plugins/codex/skills/impl-lead/references/"
                     "expert-selection.md"
                 ),
                 "plugins/codex/install/agents/implementer.toml",
@@ -1159,10 +1159,10 @@ class BuildPluginAssetsCliTest(IsolatedRepositorySupport, unittest.TestCase):
                 root / "README.md",
                 root / "docs/plan.md",
                 root / "plugins/codex/install/install-agents.sh",
-                root / "plugins/codex/skills/delegate-implementation/agents/openai.yaml",
+                root / "plugins/codex/skills/impl-lead/agents/openai.yaml",
                 (
                     root
-                    / "plugins/codex/skills/delegate-implementation/references/local.md"
+                    / "plugins/codex/skills/impl-lead/references/local.md"
                 ),
                 root / "plugins/claude/agents/local-agent.md",
                 root / "plugins/codex/install/agents/local-agent.toml",

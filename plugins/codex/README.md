@@ -1,24 +1,24 @@
-# Agentic QA Workflow for Codex
+# Tugite for Codex
 
 実装を subagent へ委譲しながら、親 Codex エージェントが計画、受け入れ判断、QA、最終検証の責任を持つための Codex plugin です。
 
 ## 構成
 
-- `skills/delegate-implementation/SKILL.md`
+- `skills/impl-lead/SKILL.md`
   - タスク分割、worktree 隔離、委譲、返却 diff とテストの QA、最終検証を定義します。
-- `skills/delegate-implementation/references/*.md`
+- `skills/impl-lead/references/*.md`
   - 実装枝、expert 選択、QA・統合の詳細を必要な段階で参照します。
-- `skills/plan-implementation-branches/SKILL.md`
+- `skills/branch-design/SKILL.md`
   - 実装プランを委譲可能な Branch Plan へ正規化します。実装や委譲は行いません。
-- `skills/plan-implementation-branches/references/*.md`
+- `skills/branch-design/references/*.md`
   - Branch Plan スキーマ、枝分割判断、ユーザー確認の詳細を必要な段階で参照します。
-- `skills/inventory-test-suite/SKILL.md`
+- `skills/test-audit/SKILL.md`
   - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
-- `skills/inventory-test-suite/references/*.md`
+- `skills/test-audit/references/*.md`
   - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
-- `skills/draft-implementation-plan/SKILL.md`
+- `skills/plan-craft/SKILL.md`
   - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返します。実装・委譲・枝分割は行いません。
-- `skills/draft-implementation-plan/references/*.md`
+- `skills/plan-craft/references/*.md`
   - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
 - `skills/install-custom-agents/SKILL.md`
   - 同梱 custom agent のインストール状況を確認し、安全に導入・更新します。
@@ -27,22 +27,22 @@
 - `install/install-agents.sh`
   - 既存ファイルを確認なしに上書きせず、custom agent の導入・更新を行います。
 
-`delegate-implementation` skill と `install/agents/*.toml` はリポジトリの `shared/` から生成されています。生成済みファイルを直接編集せず、共通原稿を更新してください。開発方法は[ルート README](../../README.md)を参照してください。
+`impl-lead` skill と `install/agents/*.toml` はリポジトリの `shared/` から生成されています。生成済みファイルを直接編集せず、共通原稿を更新してください。開発方法は[ルート README](../../README.md)を参照してください。
 
 ## Plugin のインストール
 
 GitHub repository を marketplace として登録し、plugin をインストールします。
 
 ```text
-codex plugin marketplace add akitanabe/agentic-qa-workflow
-codex plugin add agentic-qa-workflow@personal
+codex plugin marketplace add akitanabe/tugite
+codex plugin add tugite@personal
 ```
 
 ローカル checkout を使う場合は、repository root で次を実行します。
 
 ```text
 codex plugin marketplace add .agents/plugins
-codex plugin add agentic-qa-workflow@personal
+codex plugin add tugite@personal
 ```
 
 登録状態は次のコマンドで確認できます。
@@ -109,10 +109,10 @@ Custom agent の配置と設定形式については、[Codex subagents の公�
 
 ## 使い方
 
-Custom agent の登録を確認した新しい session で、実装委譲を明示して `$delegate-implementation` を使います。
+Custom agent の登録を確認した新しい session で、実装委譲を明示して `$impl-lead` を使います。
 
 ```text
-$delegate-implementation を使い、この実装を subagent に委譲して親が QA まで担当してください。
+$impl-lead を使い、この実装を subagent に委譲して親が QA まで担当してください。
 ```
 
 タスクが大きいという理由だけでは自動的に委譲しません。親 Codex エージェントは返却報告だけで受け入れず、diff、テスト内容、副作用、責務境界を確認してから統合します。

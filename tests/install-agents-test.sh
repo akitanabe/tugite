@@ -41,7 +41,7 @@ printf '%s\n' 'name = "unrelated"' > "$target_repo/.codex/agents/unrelated.toml"
 install_output="$("$installer" --repo "$target_repo")"
 agent_dir="$target_repo/.codex/agents"
 [[ -f "$agent_dir/unrelated.toml" ]] || fail "unrelated agent was removed"
-[[ "$(cat "$agent_dir/.agentic-qa-workflow-version")" == "$expected_version" ]] || fail "version was not recorded"
+[[ "$(cat "$agent_dir/.tugite-version")" == "$expected_version" ]] || fail "version was not recorded"
 for agent in "${required_agents[@]}"; do
   assert_same "$repo_root/plugins/codex/install/agents/$agent.toml" "$agent_dir/$agent.toml"
   [[ "$install_output" == *"  $agent"* ]] || fail "install output did not list $agent"
@@ -112,7 +112,7 @@ test_force_update_replaces_retired_writing_principles_agent
 test_dangling_retired_agent_requires_approved_migration
 
 printf '%s\n' 'local customization' > "$agent_dir/implementer.toml"
-printf '%s\n' '0.9.0' > "$agent_dir/.agentic-qa-workflow-version"
+printf '%s\n' '0.9.0' > "$agent_dir/.tugite-version"
 before_hash="$(sha256sum "$agent_dir/implementer.toml")"
 
 set +e
@@ -124,7 +124,7 @@ set -e
 [[ "$(sha256sum "$agent_dir/implementer.toml")" == "$before_hash" ]] || fail "refused update changed an agent"
 
 "$installer" --force --repo "$target_repo"
-[[ "$(cat "$agent_dir/.agentic-qa-workflow-version")" == "$expected_version" ]] || fail "forced update did not record version"
+[[ "$(cat "$agent_dir/.tugite-version")" == "$expected_version" ]] || fail "forced update did not record version"
 assert_same "$repo_root/plugins/codex/install/agents/implementer.toml" "$agent_dir/implementer.toml"
 
 echo "PASS: install-agents"

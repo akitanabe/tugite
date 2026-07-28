@@ -1,11 +1,11 @@
 # Workflow Decision Corpus
 
-この corpus は、`delegate-implementation` workflow と、`plan-implementation-branches` による枝分割 planning、
-`draft-implementation-plan` によるプラン起草 planning の判断を代表入力に対して人間が一貫して評価するための
-Phase 1 データである。正本は `shared/skill/delegate-implementation/SKILL.md` とその `references/`(Branch Plan
+この corpus は、`impl-lead` workflow と、`branch-design` による枝分割 planning、
+`plan-craft` によるプラン起草 planning の判断を代表入力に対して人間が一貫して評価するための
+Phase 1 データである。正本は `shared/skill/impl-lead/SKILL.md` とその `references/`(Branch Plan
 受け入れ口と Executor 再検証を定める `references/branch-plan-intake.md` を含む)、
-`shared/skill/plan-implementation-branches/SKILL.md` とその `references/`(`branch-plan-schema.md` /
-`branch-splitting.md` / `plan-review.md`)、`shared/skill/draft-implementation-plan/SKILL.md` とその
+`shared/skill/branch-design/SKILL.md` とその `references/`(`branch-plan-schema.md` /
+`branch-splitting.md` / `plan-review.md`)、`shared/skill/plan-craft/SKILL.md` とその
 `references/`(`implementation-plan-schema.md` / `plan-drafting.md` / `adversarial-review.md` /
 `overengineering-plan-review.md`)、および関連する `shared/agents/` にあり、この文書は正本を置き換えない。
 
@@ -20,12 +20,12 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
 
 - `intake`: 実装 diff が存在しない初期依頼の時点。skill の発火、route / mode、確認の要否、最初の行動を
   評価する。返却後にだけ判断できる専門 review をこの時点で先取りしない。
-- `planning`: 実装 diff がなく `plan-implementation-branches` が Branch Plan を生成・提示する時点。
+- `planning`: 実装 diff がなく `branch-design` が Branch Plan を生成・提示する時点。
   枝分割判断(縦割りか、分割過多でないか)、`status` 決定、承認と委譲開始の分離を含む権限の扱いを
-  評価する。この Skill は実装も委譲も行わないため、委譲や `delegate-implementation` の起動を先取りしない。
-  `draft-implementation-plan` がプランを起草し、敵対的レビューループと過剰実装審査を経て
+  評価する。この Skill は実装も委譲も行わないため、委譲や `impl-lead` の起動を先取りしない。
+  `plan-craft` がプランを起草し、敵対的レビューループと過剰実装審査を経て
   Implementation Plan を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
-- `plan-intake`: 確定済みと称する Branch Plan が `delegate-implementation` へ渡された時点。Executor が
+- `plan-intake`: 確定済みと称する Branch Plan が `impl-lead` へ渡された時点。Executor が
   自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
   violation 再計算0件、全枝の `risk.level` が3値のいずれか)と mode の妥当性を確認し、委譲を開始するか
   修正・引き上げ・確認を求めるかを評価する。
@@ -50,7 +50,7 @@ mechanism だけである。
 ### worktree 契約の検証記録(issue #49)
 
 issue #49 では、Claude Code でも「platform 共通の期待」に記載した親管理 worktree 契約を採用できるかを
-検証した。正本は `shared/skill/delegate-implementation/SKILL.md` と
+検証した。正本は `shared/skill/impl-lead/SKILL.md` と
 `references/implementation-branches.md` にあり、この記録は検証結果と採用判断だけを示し、契約本文を
 再掲しない。
 
@@ -141,7 +141,7 @@ branch を一貫して撤去できた。
 
 **期待する判断**
 
-`delegate-implementation` skill は発火せず、親が直接処理する `direct` route と判断する。
+`impl-lead` skill は発火せず、親が直接処理する `direct` route と判断する。
 
 **必須動作**
 
@@ -556,7 +556,7 @@ regression Green 例外、根拠、親 QA は共通であり、strict の継続 
 
 **目的**
 
-明示的な委譲要求があっても、分割シグナルに該当しない小さな単一振る舞いでは `plan-implementation-branches`
+明示的な委譲要求があっても、分割シグナルに該当しない小さな単一振る舞いでは `branch-design`
 を発火させず、現行どおり親が inline に枝を扱うことを確認する。
 
 **評価タイミング**
@@ -571,13 +571,13 @@ regression Green 例外、根拠、親 QA は共通であり、strict の継続 
 **期待する判断**
 
 単一の観測可能な振る舞いで、テスト種別も Action 境界も単一、旧実装パリティと新振る舞いの同居もなく、分割
-シグナルに該当しない。よって `plan-implementation-branches` を発火せず Branch Plan Data を生成せず、現行どおり
+シグナルに該当しない。よって `branch-design` を発火せず Branch Plan Data を生成せず、現行どおり
 親が inline に枝を扱う(この規模では1枝)。mode は未指定の明示委譲なので `standard` とし、引き上げを要する
 具体的 risk はない。
 
 **必須動作**
 
-- `plan-implementation-branches` を発火せず、親が inline に枝を扱う。分割シグナルへの該当は使用の推奨条件で
+- `branch-design` を発火せず、親が inline に枝を扱う。分割シグナルへの該当は使用の推奨条件で
   あって強制ではないことに従う。
 - mode 未指定の明示委譲として `standard` を選び、選択理由を単一振る舞い・局所性に結び付ける。
 - green な基準 commit から専用 worktree と新しい Implementer context を用意し、返却後は親が diff と test を読み、
@@ -585,7 +585,7 @@ regression Green 例外、根拠、親 QA は共通であり、strict の継続 
 
 **禁止動作**
 
-- 分割シグナル非該当なのに `plan-implementation-branches` を発火して Branch Plan Data を作る。
+- 分割シグナル非該当なのに `branch-design` を発火して Branch Plan Data を作る。
 - 単一振る舞いを層別や作業種別で無理に複数枝へ割る。
 - 小さいことを理由に `lite` を自動選択する、または根拠なく `standard` 以外へ動かす。
 - diff 前に専門 reviewer や `writing-principles-reviewer` を起動する。
@@ -601,7 +601,7 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 
 **手動評価項目**
 
-- [ ] `plan-implementation-branches` を発火していない。
+- [ ] `branch-design` を発火していない。
 - [ ] 親が inline に枝を扱い、Branch Plan Data を生成していない。
 - [ ] `standard` が選ばれ、`lite` の自動選択がない。
 - [ ] diff 前の専門 reviewer / `writing-principles-reviewer` 起動がない。
@@ -1126,10 +1126,10 @@ branch 不一致、dirty status のいずれであっても同じ扱いとする
 
 **期待する判断**
 
-`plan-implementation-branches` を発火し、Branch Plan Data だけを返す。実装、テスト作成、worktree 準備、Worker
+`branch-design` を発火し、Branch Plan Data だけを返す。実装、テスト作成、worktree 準備、Worker
 起動は行わない。委譲要求がないため `delegation.authorized: false`(`authorized_by: null`、`requested_mode: null`)
 のままとする。`confirmation_mode` は既定の `review` で、blocking がなければ `status: awaiting_review`
-(`approval.method: null`)とする。要約表 → 確認操作 → Branch Plan の YAML の順で提示し、`delegate-implementation`
+(`approval.method: null`)とする。要約表 → 確認操作 → Branch Plan の YAML の順で提示し、`impl-lead`
 を直接起動しない。
 
 **必須動作**
@@ -1142,7 +1142,7 @@ branch 不一致、dirty status のいずれであっても同じ扱いとする
 
 **禁止動作**
 
-- `delegate-implementation` を起動する、worktree を準備する、Worker を起動する、実装する。
+- `impl-lead` を起動する、worktree を準備する、Worker を起動する、実装する。
 - 委譲要求がないのに `delegation.authorized: true` にする。
 - 既定を無視して `confirmation_mode: auto` にする、または `awaiting_review` で `approval.method` を非 null にする。
 
@@ -1160,7 +1160,7 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 - [ ] Branch Plan Data だけを返し、実装・委譲・worktree 準備・Worker 起動がない。
 - [ ] `delegation.authorized: false` を保っている。
 - [ ] 既定 `review` で `status: awaiting_review`、`approval.method: null` である。
-- [ ] `delegate-implementation` を直接起動していない。
+- [ ] `impl-lead` を直接起動していない。
 - [ ] 承認と委譲開始の分離を説明している。
 
 ## EVAL-13: 複数の観測可能な振る舞いを含むプラン
@@ -1366,7 +1366,7 @@ stage は AC を所有せず、`covers_acceptance_criteria` は枝が持つ。�
 blocking がなく `confirmation_mode: auto` なので `status: approved`(`approval.method: auto`)とする。ただし
 委譲要求がないため `delegation.authorized: false`(`authorized_by: null`、`requested_mode: null`)を保つ。auto が
 自動化したのは Branch Plan の承認だけで委譲開始を含まないことを明示し、計画の確定で停止して
-`delegate-implementation` を起動しない。approved(`method: auto`)の記録として要約表と Branch Plan を提示する。
+`impl-lead` を起動しない。approved(`method: auto`)の記録として要約表と Branch Plan を提示する。
 
 **必須動作**
 
@@ -1396,13 +1396,13 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] `delegation.authorized: false` を保っている。
 - [ ] 自動化が承認だけで委譲開始を含まないと明示している。
 - [ ] 委譲要求がないため計画の確定で停止している。
-- [ ] `delegate-implementation` を起動していない。
+- [ ] `impl-lead` を起動していない。
 
 ## EVAL-21: lite 明示と high risk 枝への mode 引き上げ提案
 
 **目的**
 
-`{fixed, lite}` の委譲要求を受けた `plan-implementation-branches` が、high risk 枝を含む場合に
+`{fixed, lite}` の委譲要求を受けた `branch-design` が、high risk 枝を含む場合に
 `delegation_mode_proposal` として `{adaptive, strict}` を提案することを確認する。
 
 **評価タイミング**
@@ -1460,7 +1460,7 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 
 **目的**
 
-`inventory-test-suite` の findings を元プランにするとき、ユーザーが指定した `G-*` だけを対象にすること、導出した
+`test-audit` の findings を元プランにするとき、ユーザーが指定した `G-*` だけを対象にすること、導出した
 AC を確定前は `unresolved_decisions` として `status: blocked` にすること、確定した AC に `derived_from` で
 finding ID を記録して棚卸し報告から実装枝まで追跡できることを確認する。
 
@@ -1485,7 +1485,7 @@ finding ID を記録して棚卸し報告から実装枝まで追跡できるこ
 
 **期待する判断**
 
-`plan-implementation-branches` を発火し、ユーザーが指定した `G-1` と `G-2` だけを対象にする。指定のない `G-3`
+`branch-design` を発火し、ユーザーが指定した `G-1` と `G-2` だけを対象にする。指定のない `G-3`
 は採用しない。対象 `G-*` ごとに `summary` / `evidence` / `suggestion` の原文と、そこから導出した AC 案を対で
 提示して確定を求める。確定前は `unresolved_decisions` に `kind: ac-derivation` を置いて `status: blocked` と
 し、承認操作を求めない。確定した AC の `derived_from` に由来する finding ID を記録する。`suggestion` にない
@@ -1533,9 +1533,9 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 
 **目的**
 
-`draft-implementation-plan` がユーザー要求から起草し、`plan-adversarial-reviewer` の round で親が指摘IDごとに
+`plan-craft` がユーザー要求から起草し、`plan-adversarial-reviewer` の round で親が指摘IDごとに
 verdict を確定・記録し、収束後に `over-engineering-reviewer` のプラン審査を経て `awaiting_review` の
-Implementation Plan Data だけを返すこと、`plan-implementation-branches` を直接起動しないことを確認する。
+Implementation Plan Data だけを返すこと、`branch-design` を直接起動しないことを確認する。
 
 **評価タイミング**
 
@@ -1550,12 +1550,12 @@ Implementation Plan Data だけを返すこと、`plan-implementation-branches` 
 
 **期待する判断**
 
-`draft-implementation-plan` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・dependencies を
+`plan-craft` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・dependencies を
 持つプランを起草する。`plan-adversarial-reviewer` の round を繰り返し、各 round で親が指摘IDごとに verdict を
 確定して `adopted` / `rejected` を台帳(`PF-*`)へ記録し、採用指摘をプランへ反映する。`zero-findings` または
 `trivial-only` で収束したら `over-engineering-reviewer` をプラン入力モードで起動する。`rounds_limit` は既定の
 10、`confirmation_mode` は既定の `review` のままとし、blocking がなければ `status: awaiting_review` で未解決
-一覧なしの Implementation Plan Data を提示する。実装・枝分割・委譲は行わず、`plan-implementation-branches` を
+一覧なしの Implementation Plan Data を提示する。実装・枝分割・委譲は行わず、`branch-design` を
 起動しない。
 
 **必須動作**
@@ -1568,7 +1568,7 @@ Implementation Plan Data だけを返すこと、`plan-implementation-branches` 
 
 **禁止動作**
 
-- `plan-implementation-branches` または `delegate-implementation` を起動する、実装する、worktree を準備する。
+- `branch-design` または `impl-lead` を起動する、実装する、worktree を準備する。
 - reviewer の verdict 申告を親の確認なしにそのまま台帳へ記録する。
 - 過剰実装審査を実行しないまま `awaiting_review` として提示する(`review-incomplete`)。
 - ユーザー明示なしに `rounds_limit` を変える、または `confirmation_mode: auto` にする。
@@ -1590,7 +1590,7 @@ planning 判断は共通である。Skill と reviewer を実行する platform 
 - [ ] 指摘IDごとに親の確定 verdict と `adopted` / `rejected` + 理由が台帳に残っている。
 - [ ] adversarial 収束後に過剰実装審査を実行してから提示している。
 - [ ] 既定 `review` / `rounds_limit: 10` を保ち、`status: awaiting_review` で提示している。
-- [ ] `plan-implementation-branches` を直接起動していない。
+- [ ] `branch-design` を直接起動していない。
 
 ## EVAL-26: rounds_limit 到達での打ち切りと未解決指摘の提示
 
