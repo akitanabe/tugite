@@ -261,8 +261,6 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 対応付けて行う。次のいずれかがある場合は、混在した diff のまま reviewer へ渡したり受け入れたりせず、
 「再分割・再承認ゲート」へ進む。
 
-判定軸は、変更理由・AC・責務・依存・受入・rollback・検証単位である。
-
 - 独立した変更理由、AC 無関係変更、または異なる責務・依存が混ざっている。
 - 異なる rollback・review・前提知識・責務・受入単位・検証単位があり、reviewer が一変更単位として判断しにくい。
 - 計画 scope の大幅超過、または承認済み scope と目的の対応を説明できない。
@@ -281,7 +279,6 @@ diff が大きいだけでは分割しない。固定行数だけでは分割し
 - scope 逸脱の差戻しを選ぶ。
 - 承認済み実装枝の purpose、AC 文言、AC ownership、scope、依存、risk を保てる場合は、commit を分離する、
   最小範囲だけを残す、または別タスク化する。この整形では、既存枝の契約と承認を変更しない。
-  承認済み実装枝の purpose・AC 文言・AC ownership・scope・依存・risk を保つ commit 分離である。
 - 独立した実装枝への分離、または AC ownership・依存・risk の変更が必要な場合は Branch Plan を再生成する。
   blocking violation と Executor 再検証5項目を再計算し、必要なユーザー再承認を得るまで新枝を委譲しない。
 - AC 文言自体の分解・再定義が必要な場合は Implementation Plan の AC 確定とユーザー確認へ戻る。その後
