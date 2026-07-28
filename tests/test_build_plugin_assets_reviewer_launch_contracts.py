@@ -109,13 +109,15 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         """Fix the diff-artifact save path and inherit only the non-Markdown QA rules."""
         required_contracts = (
             "## diff artifact の作成",
-            "`.tugite-qa/reports/<slug>-diff.patch`",
+            "`.tugite/diffs/<slug>-diff.patch`",
             "slug の base の",
             "候補順と正規化手順、Windows 予約名の扱い、衝突時の suffix 選択、ancestor 検査、"
-            "削除時の再検査、Git 管理と保持は",
+            "削除時の再検査、Git 管理は",
             "[永続 QA レポート](qa-report.md)",
+            "ancestor 検査の対象 component は `.tugite` と `diffs` に読み替える",
             "Markdown file を前提とする path 制約は継承しない",
-            "target は `.tugite-qa/reports/` 直下の単一 file に限る",
+            "保持と削除の規約も継承せず、「diff artifact の削除」節で定義する",
+            "target は `.tugite/diffs/` 直下の単一 file に限る",
             "file name component に path separator を許可しない",
             "`.` または `..` を許可しない",
             "絶対 path を許可しない",
@@ -136,6 +138,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "該当する場合の例外とする",
             "保存先 directory が存在しない場合は、ancestor 検査を行ったうえで作成し、"
             "作成後に同じ検査を再実行してから書き出す",
+            "report と別 directory に分けるのは",
+            "diff artifact は reviewer へ diff を渡すためだけの中間物で run 完了時に削除する",
+            "保持規約の異なる file を同じ directory へ混在させない",
         )
         for platform, reference in self._qa_and_integration_reference_texts().items():
             with self.subTest(platform=platform):
@@ -173,15 +178,46 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "commit を持つ実装枝に対して artifact が空になった場合は、取得元 worktree または"
             "基準 commit の指定誤りとして扱う",
             "満たさない artifact は reviewer へ渡さず",
-            "[永続 QA レポート](qa-report.md) の削除時の再検査に従って削除したうえで再生成し、"
+            "「diff artifact の削除」の手順で削除したうえで再生成し、"
             "再生成できない場合は diff text 経路へ落ちる",
-            "この削除は qa-report.md の「明示的な削除」に該当し、保持規約の違反にならない",
         )
         for platform, reference in self._qa_and_integration_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_diff_artifact_is_deleted_when_the_run_completes(
+        self,
+    ) -> None:
+        """Discard diff artifacts at cleanup instead of inheriting report retention."""
+        required_contracts = (
+            "## diff artifact の削除",
+            "diff artifact は run 完了時に削除する",
+            "「後始末」で、この run に生成した diff artifact をすべて破棄するとき",
+            "[永続 QA レポート](qa-report.md) の削除時の再検査を行い、"
+            "対象が `.tugite/diffs/` 配下の通常 file であることを確認する",
+            "symlink、directory、非通常 file は削除しない",
+            "`.tugite/diffs/` が空になった場合は directory も削除する",
+            "差し戻しまたは再検証の可能性がある間は後始末の削除を始めない",
+            "削除できない artifact は理由と repository 相対 path を最終報告に含める",
+        )
+        cleanup_contracts = (
+            "この run に生成した diff artifact を「diff artifact の削除」の手順で削除する",
+            "永続 QA レポートと `<slug>-tests.md` は削除しない",
+        )
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(reference.split())
+                for contract in required_contracts:
+                    self.assertIn("".join(contract.split()), normalized)
+
+                cleanup_section = reference.split("## 後始末", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized_cleanup = "".join(cleanup_section.split())
+                for contract in cleanup_contracts:
+                    self.assertIn("".join(contract.split()), normalized_cleanup)
 
     def test_repository_existing_reviewer_launch_sites_connect_to_diff_artifact_path(
         self,

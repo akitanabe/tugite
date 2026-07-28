@@ -183,7 +183,7 @@ class ImplLeadQaReportContractsTest(
     ) -> None:
         """Reject traversal and links, and never overwrite an existing report."""
         required_contracts = (
-            "repository root 相対の `.tugite-qa/reports/<slug>.md`",
+            "repository root 相対の `.tugite/reports/<slug>.md`",
             "task ID または title",
             "空なら git branch",
             "Unicode NFKC",
@@ -210,7 +210,7 @@ class ImplLeadQaReportContractsTest(
             "suffix 込みの stem は最大80文字",
             "base の末尾を切る",
             "出力先または候補が symlink、directory、非通常 file なら停止",
-            "`.tugite-qa` と `reports` の各既存 ancestor component",
+            "`.tugite` と `reports` の各既存 ancestor component",
             "symlink を追わない `lstat` 相当",
             "symlink または directory 以外なら停止",
             "canonical repository root 外へ解決される場合は停止",
