@@ -7,6 +7,9 @@
 - 返却と統合
 - 親の QA
 - 専門 reviewer
+- reviewer 起動テンプレート
+- diff artifact の作成
+- diff artifact の受け渡しと停止条件
 - 必須完了ゲート
 - 修正先の選択
 - 未統合で終了する場合
@@ -24,12 +27,18 @@
    実行した command と結果、未コミット変更を返す。
 2. 親は `git -C <worktree> status --short` と `git -C <worktree> diff <base>...HEAD` を確認する。
    併せて親の checkout を `git -C <親 checkout> status --short` で確認し、worker の変更が worktree の外へ
-   混入していないことを確かめる。
+   混入していないことを確かめる。親の統合 checkout に生成した diff artifact
+   (`.agentic-qa/reports/<slug>-diff.patch`)は親自身が書き出した既知の untracked file であり、
+   この確認によって worker の変更の混入と誤認しない。作成規約は「diff artifact の作成」節に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ `followup_task` で差し戻し、修正 commit を追加させる。
 5. 専門 reviewer には task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
    周辺コンテキストの追加は「reviewer へ渡すコンテキスト」の選択基準に従う。
    新しい worker は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
+   ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を
+   reviewer が Read することとは矛盾しない。diff の受け渡しは「reviewer 起動テンプレート」に従い、
+   diff artifact の絶対 path を渡すことを既定とし、artifact を生成できない場合だけ diff text 欄へ
+   本文を直接記入する。
 6. 受け入れ後は統合先の git branch で `git cherry-pick <sha>` または commit range を取り込み、focused test と
    関連する build、typecheck、lint を再実行する。
 7. 統合後の green commit を次の枝の基準にする。枝 worktree の green と統合後の green の片方を省略しない。
@@ -90,6 +99,9 @@ reviewer は最終的な受け入れ判断を行わない。親が diff、テス
 - 変更ファイル一覧と diff text
 - reviewer に確認させる具体的な観点
 
+この基本情報は「reviewer 起動テンプレート」の各欄に対応する。diff の受け渡しは同テンプレートに従い、
+diff artifact の絶対 path を渡すことを既定とする。
+
 diff だけでは関連する既存設計や利用箇所を判断できない場合は、次を必要に応じて追加する。
 
 - 関連する interface、type、schema
@@ -107,6 +119,99 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 - 親の結論だけを渡さず、reviewer が独立して判断できる一次情報を渡す。
 - 周辺コードを渡す場合は、なぜ必要なのかを明示する。
 - 外部指示と repository 内の指示が競合する場合は、優先関係を明示する。
+
+## reviewer 起動テンプレート
+
+必須完了ゲートの reviewer と専門 reviewer のどちらを起動する場合も、次のテンプレートの全欄を
+1項目ずつ埋めて渡す。該当がない欄は「なし」と記入する。欄を空欄のまま残すことと、欄自体を
+削除することを禁じる。
+
+```text
+- 対象 reviewer: <reviewer 名>
+- 確認させる観点: <reviewer に確認させる具体的な観点>
+- 対象リスク: <この reviewer が確認すべき対象リスク>
+- review 範囲: <対象ファイル・commit 範囲>
+- タスクの目的: <実装枝の目的>
+- Acceptance Criteria: <AC>
+- 親が明示した制約: <なければ「なし」>
+- 基準 commit: <SHA>
+- 対象 commit 範囲: <SHA range>
+- commit log: <対象 commit 範囲の commit log>
+- 変更ファイル一覧: <変更ファイル一覧>
+- diff artifact の絶対 path: <path。渡さない場合は「なし」>
+- diff text（artifact を生成できない場合）: <本文。artifact を渡す場合は「なし」>
+- `git status` の結果: <`git status --short` の結果>
+- テスト結果: <検証 command の結果>
+- 親が選択した周辺コンテキスト: <選択した context。なければ「なし」>
+- そのコンテキストを渡す理由: <理由。なければ「なし」>
+- 返却してほしい判定: <reviewer に返してほしい判定区分>
+- 前回の指摘と親の採否（ゲート再実行時）: <前回指摘IDと採否。初回起動なら「なし」>
+```
+
+artifact の作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の
+受け渡しと停止条件」節に従う。
+
+「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・commit 範囲・
+変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
+欄として吸収する。テンプレート外に残る起動時 Data はない。
+
+## diff artifact の作成
+
+reviewer 起動テンプレートの diff artifact 欄へ渡す本文は、基準 commit からの diff をあらかじめ
+file へ書き出しておく。
+
+保存先は repository root 相対の `.agentic-qa/reports/<slug>-diff.patch` に固定する。slug の base の
+候補順と正規化手順、Windows 予約名の扱い、衝突時の suffix 選択、ancestor 検査、削除時の再検査、Git
+管理と保持は [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。Markdown file を
+前提とする path 制約は継承しない。artifact の path 制約は次のとおり本 manuscript で定義する。
+
+- target は `.agentic-qa/reports/` 直下の単一 file に限る。
+- 固定の `.agentic-qa/reports/` prefix を除く file name component に path separator を許可しない。
+- `.` または `..` を許可しない。
+- 絶対 path を許可しない。
+
+衝突時は `-diff` を保持したまま `<slug>-diff-2.patch` の順に最初の空きを選ぶ。
+
+本文は worker worktree で取得した `git -C <worktree> diff <base>...HEAD` の出力を、親が転記・要約
+せず1回の書き出しでそのまま保存する。保存先 path は親の統合 checkout の repository root を基準に
+解決し、ancestor 検査も同じ root で行う。
+
+同一の diff 状態（同じ実装枝、同じ commit 範囲、修正 commit の追加なし）に対する複数 reviewer の
+起動では同じ artifact を渡してよい。diff 状態が変わったとき（修正後のゲート再実行、別の実装枝）は
+新しい artifact を生成し、変化後に古い artifact を渡さない。
+
+書き出しには、候補 path が既存の場合に上書きせず失敗する Action（例: noclobber を有効にした
+redirect）を使う。候補 path の衝突による失敗は次の suffix を選び直す。衝突以外の書き出し失敗は
+「diff artifact の受け渡しと停止条件」の確認手順に従い、reviewer へ渡さず再生成するか diff text
+経路へ落ちる。artifact 経路を既定とし、diff text の直接受け渡しは同節の停止条件に該当する場合の
+例外とする。
+
+保存先 directory が存在しない場合は、ancestor 検査を行ったうえで作成し、作成後に同じ検査を再実行
+してから書き出す。
+
+## diff artifact の受け渡しと停止条件
+
+起動 prompt の diff artifact 欄には絶対 path を書く。永続 QA レポートと会話上の報告へ path を
+記録する場合は repository 相対 path だけを使う。verbatim 保存される diff 本文はこの記録規則の
+適用対象にしない。
+
+diff artifact の欄に path を記入した場合は、reviewer がその file を Read し全文を diff text として
+判定根拠にする旨の指示を添える。artifact を生成せず diff text 欄へ本文を直接記入した場合は、その
+text を判定根拠にする旨を添える。2つの欄は排他とし、採らなかった側の欄には「なし」と記入して、
+両方を同時に有効な指示として残さない。
+
+本文が token、password、cookie、Authorization、private key、`.env` の値、credential 付き URL、
+個人情報のいずれかを含む場合、または作成 Action を保証できない場合は artifact を生成せず、diff
+text 欄へ本文を直接記入して渡し、生成しなかった理由を記録する。repository 相対 path、コード中の
+文字列リテラル、prompt テンプレートの原稿は、diff が構造上含む要素として停止条件に該当しない。
+
+artifact の path を reviewer へ渡す前に、親は diff 全文を自分の context へ読み込まずに書き出し
+結果を確認する。確認は書き出し command の exit status が 0 であることと、artifact が空でないこと
+の2点で行う。commit を持つ実装枝に対して artifact が空になった場合は、取得元 worktree または基準
+commit の指定誤りとして扱う。満たさない artifact は reviewer へ渡さず、
+[永続 QA レポート](qa-report.md) の削除時の再検査に従って削除したうえで再生成し、再生成できない
+場合は diff text 経路へ落ちる。この削除は qa-report.md の「明示的な削除」に該当し、保持規約の
+違反にならない。
 
 ## 必須完了ゲート
 
@@ -130,6 +235,7 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 親が取得する `git diff`、`git status`、commit log、テスト結果を、Data として各必須完了ゲートの reviewer へ渡す。
 対象は基準 commit からの diff が導入または悪化させた問題に限定し、既存問題を広く探索しない。
 これらの情報を取得するために reviewer 自身へ Bash や編集 tool を与えない。
+起動 prompt は「reviewer 起動テンプレート」の全欄を埋めて渡す。
 
 reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す。
 `no-change` は reviewer の指摘が0件である正常なゲート通過結果として扱う。
@@ -272,6 +378,7 @@ main の手順9へ戻る。
 `responsibility-boundary-reviewer` は修正しない。新しい reviewer worker として diff text を渡し、
 全体判定と、指摘ごとの問題箇所、種類、理由、影響範囲、最小修正方針を返させる。
 diff にない既存問題は「既存課題」として判定から分ける。
+起動時は「reviewer 起動テンプレート」の全欄を埋め、diff artifact の絶対 path を渡すことを既定とする。
 
 ## 統合済み diff review
 
