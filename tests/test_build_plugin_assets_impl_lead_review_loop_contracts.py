@@ -101,7 +101,9 @@ class ImplLeadReviewLoopContractsTest(
         """Keep EVAL-28 and EVAL-29 expectations independently assessable."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
         split_case = corpus.split("## EVAL-28:", 1)[1].split("## EVAL-29:", 1)[0]
-        no_split_case = corpus.split("## EVAL-29:", 1)[1]
+        no_split_case = corpus.split("## EVAL-29:", 1)[1].split(
+            "# 結果記録", 1
+        )[0]
 
         for case, contracts in (
             (
