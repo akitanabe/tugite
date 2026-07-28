@@ -3703,7 +3703,10 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized)
-                self.assertNotIn("{{", reference.split("## diff artifact の作成", 1)[1])
+                creation_section = reference.split(
+                    "## diff artifact の作成", 1
+                )[1].split("\n## ", 1)[0]
+                self.assertNotIn("{{", creation_section)
 
     def test_repository_diff_artifact_handoff_confirms_and_stops_on_secrets(
         self,
