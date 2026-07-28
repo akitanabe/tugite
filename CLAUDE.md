@@ -64,6 +64,19 @@ bash tests/install-agents-test.sh
 
 新しい skill を追加する場合は、`shared/skill/<name>/SKILL.md` と `references/*.md` を作り、生成器と test support 双方の `SKILL_REFERENCE_NAMES` に skill 名と reference 名の並びを登録します。空タプルは SKILL.md のみの skill を表します。
 
+## VERSION の更新規約
+
+配布物が変わる変更では、`shared/VERSION` を更新してから生成器を実行します。手で書き換えるのは `shared/VERSION` だけで、両 plugin の `plugin.json` と `plugins/codex/install/VERSION` へは生成器が同期します。
+
+- **更新が必要** — `shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更
+- **更新は不要** — `README.md` / `CLAUDE.md` / `AGENTS.md` / `tests/` / `evals/` だけの変更
+
+semver の割り当ては次のとおりです。
+
+- **major** — 既存の workflow 契約を壊す変更（mode や skill・agent の改名・削除など、利用者の呼び出しが通らなくなるもの）
+- **minor** — skill・agent の追加、契約の追加や拡張
+- **patch** — model/effort プロファイルの調整など、契約の意味を変えない修正
+
 ## テストの二層構造
 
 - **`tests/test_build_plugin_assets_cli.py`** — 生成器を CLI としてのみ扱う振る舞いテスト。tempdir に fixture repository を組み立てて実行するため、実リポジトリの原稿内容には依存しません。

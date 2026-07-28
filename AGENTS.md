@@ -22,6 +22,10 @@ Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な 
 
 Red、Green、Refactor の順で進めます。テストには `unittest` を使い、実装詳細ではなく観測可能な CLI の振る舞いや repository contract を記述してください。Python のテスト名は `test_<behavior>` とし、共通 fixture は `tests/build_plugin_assets_test_support.py` に置きます。installer の振る舞いは `tests/install-agents-test.sh` に追加します。最初に対象テストを実行し、再生成後に上記の全コマンドを実行してください。数値による coverage 基準はありませんが、関連する振る舞いと失敗経路を保護します。
 
+## Version 更新指針
+
+`shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更では、`shared/VERSION` を更新してから生成器を実行します。手で編集するのは `shared/VERSION` だけで、両 plugin の manifest と `plugins/codex/install/VERSION` へは生成器が同期します。既存の workflow 契約を壊す変更は major、skill・agent や契約の追加は minor、model/effort プロファイル調整のように契約の意味を変えない修正は patch を上げます。`README.md`・`AGENTS.md`・`CLAUDE.md`・`tests/`・`evals/` だけの変更は配布物が変わらないため、version は据え置きます。
+
 ## Commit・Pull Request 指針
 
 最近の commit は、`リポジトリとskillをTugiteへ改名する (#94)` のように、変更理由を表す簡潔な日本語件名へ PR 番号を付けています。`feat:`、`test:`、`docs:` などの prefix は必要に応じて使用できますが、必須ではありません。commit 本文では変更が必要な理由を説明してください。
