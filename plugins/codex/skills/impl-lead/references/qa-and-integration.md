@@ -10,6 +10,7 @@
 - reviewer 起動テンプレート
 - diff artifact の作成
 - diff artifact の受け渡しと停止条件
+- diff artifact の削除
 - 必須完了ゲート
 - reviewer 間の競合解消
 - 修正先の選択
@@ -29,7 +30,7 @@
 2. 親は `git -C <worktree> status --short` と `git -C <worktree> diff <base>...HEAD` を確認する。
    併せて親の checkout を `git -C <親 checkout> status --short` で確認し、worker の変更が worktree の外へ
    混入していないことを確かめる。親の統合 checkout に生成した diff artifact
-   (`.tugite-qa/reports/<slug>-diff.patch`)は親自身が書き出した既知の untracked file であり、
+   (`.tugite/diffs/<slug>-diff.patch`)は親自身が書き出した既知の untracked file であり、
    この確認によって worker の変更の混入と誤認しない。作成規約は「diff artifact の作成」節に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ `followup_task` で差し戻し、修正 commit を追加させる。
@@ -161,15 +162,21 @@ artifact の作成手順は「diff artifact の作成」節に、受け渡し・
 reviewer 起動テンプレートの diff artifact 欄へ渡す本文は、基準 commit からの diff をあらかじめ
 file へ書き出しておく。
 
-保存先は repository root 相対の `.tugite-qa/reports/<slug>-diff.patch` に固定する。slug の base の
+保存先は repository root 相対の `.tugite/diffs/<slug>-diff.patch` に固定する。slug の base の
 候補順と正規化手順、Windows 予約名の扱い、衝突時の suffix 選択、ancestor 検査、削除時の再検査、Git
-管理と保持は [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。Markdown file を
-前提とする path 制約は継承しない。artifact の path 制約は次のとおり本 manuscript で定義する。
+管理は [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。ancestor 検査の対象
+component は `.tugite` と `diffs` に読み替える。Markdown file を前提とする path 制約は継承しない。
+保持と削除の規約も継承せず、「diff artifact の削除」節で定義する。artifact の path 制約は次のとおり
+本 manuscript で定義する。
 
-- target は `.tugite-qa/reports/` 直下の単一 file に限る。
-- 固定の `.tugite-qa/reports/` prefix を除く file name component に path separator を許可しない。
+- target は `.tugite/diffs/` 直下の単一 file に限る。
+- 固定の `.tugite/diffs/` prefix を除く file name component に path separator を許可しない。
 - `.` または `..` を許可しない。
 - 絶対 path を許可しない。
+
+report と別 directory に分けるのは、永続 QA レポートが明示的な削除まで保持される成果物であるのに対し、
+diff artifact は reviewer へ diff を渡すためだけの中間物で run 完了時に削除するためである。保持規約の
+異なる file を同じ directory へ混在させない。
 
 衝突時は `-diff` を保持したまま `<slug>-diff-2.patch` の順に最初の空きを選ぶ。
 
@@ -209,10 +216,22 @@ text 欄へ本文を直接記入して渡し、生成しなかった理由を記
 artifact の path を reviewer へ渡す前に、親は diff 全文を自分の context へ読み込まずに書き出し
 結果を確認する。確認は書き出し command の exit status が 0 であることと、artifact が空でないこと
 の2点で行う。commit を持つ実装枝に対して artifact が空になった場合は、取得元 worktree または基準
-commit の指定誤りとして扱う。満たさない artifact は reviewer へ渡さず、
-[永続 QA レポート](qa-report.md) の削除時の再検査に従って削除したうえで再生成し、再生成できない
-場合は diff text 経路へ落ちる。この削除は qa-report.md の「明示的な削除」に該当し、保持規約の
-違反にならない。
+commit の指定誤りとして扱う。満たさない artifact は reviewer へ渡さず、「diff artifact の削除」の
+手順で削除したうえで再生成し、再生成できない場合は diff text 経路へ落ちる。
+
+## diff artifact の削除
+
+diff artifact は run 完了時に削除する。削除は次の2つの契機で行う。
+
+- 「diff artifact の受け渡しと停止条件」の確認を満たさない artifact を破棄するとき。
+- 「後始末」で、この run に生成した diff artifact をすべて破棄するとき。
+
+削除の前に [永続 QA レポート](qa-report.md) の削除時の再検査を行い、対象が `.tugite/diffs/` 配下の
+通常 file であることを確認する。symlink、directory、非通常 file は削除しない。削除後に
+`.tugite/diffs/` が空になった場合は directory も削除する。空でない場合は残す。
+
+差し戻しまたは再検証の可能性がある間は後始末の削除を始めない。削除できない artifact は理由と
+repository 相対 path を最終報告に含める。
 
 ## 必須完了ゲート
 
@@ -487,6 +506,9 @@ diff にない既存問題は「既存課題」として判定から分ける。
 親がこのタスク用に作成した、統合済みで未コミット変更のない worktree を `git worktree remove <worktree path>`
 で削除する。削除できない worktree は理由と残った path を最終報告に含める。
 
+この run に生成した diff artifact を「diff artifact の削除」の手順で削除する。永続 QA レポートと
+`<slug>-tests.md` は削除しない。
+
 ## 最終報告
 
 - 変更内容
@@ -512,7 +534,7 @@ diff にない既存問題は「既存課題」として判定から分ける。
 会話上の提示に加えて、同じ表を Markdown file としても保存する。会話ログが流れても一覧を後から
 参照できるようにするためであり、永続 QA レポートと異なり既定で生成する。
 
-- 保存先は `.tugite-qa/reports/<slug>-tests.md` とする。slug の正規化、衝突時の suffix 選択、
+- 保存先は `.tugite/reports/<slug>-tests.md` とする。slug の正規化、衝突時の suffix 選択、
   安全な作成 Action、untrusted field の sanitize、Git 管理と保持は
   [永続 QA レポート](qa-report.md) の規約を正本として同じ手順に従う。衝突時の suffix は
   `-tests` を保持したまま `<slug>-tests-2.md` の順に選ぶ。

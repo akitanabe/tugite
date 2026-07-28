@@ -34,7 +34,7 @@
 
 ## 保存先と slug
 
-保存先は repository root 相対の `.tugite-qa/reports/<slug>.md` に固定する。slug の base は、機密でない
+保存先は repository root 相対の `.tugite/reports/<slug>.md` に固定する。slug の base は、機密でない
 task ID または title を候補にして、次の順で正規化する。
 
 1. Unicode NFKC で正規化する。
@@ -57,10 +57,10 @@ base が空なら git branch を候補にして同じ手順を繰り返す。git
 
 raw task ID、title、git branch に含まれる separator は slug の正規化対象にできる。path 制約は、正規化した slug から
 構築後の target path へ適用する。target は reports 直下の単一 Markdown file でなければならない。固定の
-`.tugite-qa/reports/` prefix を除く file name component に path separator を許可しない。`.` または `..` を
+`.tugite/reports/` prefix を除く file name component に path separator を許可しない。`.` または `..` を
 許可しない。絶対 path を許可しない。reports 直下以外を許可しない。
 
-生成または削除の前に canonical repository root を確定する。`.tugite-qa` と `reports` の各既存 ancestor
+生成または削除の前に canonical repository root を確定する。`.tugite` と `reports` の各既存 ancestor
 component を symlink を追わない `lstat` 相当で検査し、symlink または directory 以外なら停止する。
 component または target が canonical repository root 外へ解決される場合は停止する。この検査を生成と削除の
 両方へ適用する。欠けている directory を作成した場合も、report を書き込む前に同じ検査を行う。
