@@ -148,9 +148,8 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 - 前回の指摘と親の採否（ゲート再実行時）: <前回指摘IDと採否。初回起動なら「なし」>
 ```
 
-diff artifact の絶対 path 欄と diff text（artifact を生成できない場合）欄は排他とする。artifact の
-作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の受け渡しと
-停止条件」節に従う。
+artifact の作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の
+受け渡しと停止条件」節に従う。
 
 「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・commit 範囲・
 変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの

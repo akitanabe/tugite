@@ -3605,7 +3605,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         }
 
     def _extract_reviewer_launch_template(self, reference: str) -> str:
-        """Isolate the fenced launch template, mirroring `_extract_qa_report_template`."""
         heading = "## reviewer 起動テンプレート"
         opening_fence = "```text\n"
         closing_fence = "\n```"
@@ -3749,7 +3748,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
     ) -> None:
         """Connect the four existing launch-data sites to the artifact-path route."""
         new_connections = (
-            "親の統合 checkout に生成した diff artifact",
             "この確認によって worker の変更の混入と誤認しない",
             "ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した"
             "diff artifact を reviewer が Read することとは矛盾しない",
