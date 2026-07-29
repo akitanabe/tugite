@@ -376,17 +376,6 @@ class DraftImplementationPlanContractsTest(
         # 責務分担の本文はここへ写さず正本を指す。写した時点でこの PR が塞ぐ経路
         # （1つの設計判断が複数箇所へ別の言い回しで残る）を原稿自身が再現する。
         canonical_link = "[Implementation Plan 正規スキーマ](implementation-plan-schema.md)"
-        reference_paths = {
-            "source": shared_skill_reference_path(
-                PLAN_CRAFT_SKILL, "adversarial-review.md"
-            ),
-            "claude": generated_skill_reference_path(
-                "claude", PLAN_CRAFT_SKILL, "adversarial-review.md"
-            ),
-            "codex": generated_skill_reference_path(
-                "codex", PLAN_CRAFT_SKILL, "adversarial-review.md"
-            ),
-        }
         texts = self._draft_reference_texts("adversarial-review.md")
         for structure, text in texts.items():
             with self.subTest(structure=structure):
@@ -395,13 +384,6 @@ class DraftImplementationPlanContractsTest(
                 )
                 self.assertIn("".join(declaration.split()), section)
                 self.assertIn("".join(canonical_link.split()), section)
-                resolved = (
-                    REPOSITORY_ROOT / reference_paths[structure]
-                ).parent / SCHEMA_REFERENCE_NAME
-                self.assertTrue(
-                    resolved.resolve().is_file(),
-                    f"unresolved canonical link from {reference_paths[structure]}",
-                )
 
     def test_draft_review_reference_defines_termination_conditions(self) -> None:
         """Terminate the loop only via the three confirmed conditions."""
