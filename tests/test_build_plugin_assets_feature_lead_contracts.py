@@ -5,13 +5,13 @@ from __future__ import annotations
 import unittest
 
 from build_plugin_assets_test_support import (
+    PLATFORMS,
     RepositoryContractSupport,
     generated_skill_path,
 )
 
 
 FEATURE_LEAD_SKILL = "feature-lead"
-PLATFORMS = ("claude", "codex")
 
 
 class FeatureLeadContractsTest(
@@ -87,7 +87,6 @@ class FeatureLeadContractsTest(
                 "当該操作を伴わずに到達できる範囲まで進め、当該操作を要した既存の判断点へ "
                 "`resolved_by: deferred` を付与し、操作が必要だった事実をその判断点の "
                 "`resolution` と `basis` へ記録して、未実施のままユーザーへ返す。",
-                "新しい台帳行を起こさない。",
             )
         )
 
@@ -130,8 +129,6 @@ class FeatureLeadContractsTest(
                 "non-resolvable は `origin: impl-lead-gate` と、ユーザーが `rounds_limit` の"
                 "値を指定した場合の `origin: round-limit` である。",
                 "`origin: impl-lead-gate` は一律 non-resolvable とする。",
-                "値を指定した場合の `origin: round-limit` を non-resolvable とするのは、"
-                "ユーザーが指定した上限の値を黙って超えないためである。",
                 "`mode-proposal-invalid` は「`delegation.requested_mode` の設定」の写像規約に"
                 "より `delegation` の設定時点で回避されるため、判断点として発生しない。",
                 "分類が一意に決まらない判断点は non-resolvable として扱い停止する。",
@@ -171,18 +168,18 @@ class FeatureLeadContractsTest(
             )
         )
 
-    def test_feature_lead_scopes_the_qa_report_and_states_reading_precedence(
+    def test_feature_lead_scopes_qa_report_justifies_assumed_and_ranks_the_reading(
         self,
     ) -> None:
-        """Keep QA report fields out of scope and rank the batch-request reading."""
+        """Scope out QA report fields, justify assumed basis, and rank the batch reading."""
         self._assert_contracts(
             (
                 "永続 QA レポートの記録項目の規定は本 skill の範囲外であり、正本は "
                 "`impl-lead` 側に置く。",
-                "起動前の blocking な不足は開始段の受け手（`open_questions` または "
-                "`unresolved_decisions`）へ渡し、この Skill が仮定で埋めない。",
-                "段が判断点として返してきた後に限り、`unattended` の授権のもとで仮定による"
-                "解決を許し、`assumed` として台帳に区別して残す。",
+                "後者は起動前の入力に掛かる規定（「入力の確認」）であり、前者は段が判断点として"
+                "返した後の記録区分（「自律解決の規律」）である。",
+                "両者を同じ「仮定の禁止」で扱うと、根拠を取れない判断点が必ず停止になり "
+                "`unattended` が成立しない。",
                 "一括実行の明示要求そのものが `confirmation_mode: auto` の明示指定と委譲要求を"
                 "兼ねる。",
                 "ユーザーが `confirmation_mode` または委譲の要否を明示した場合はその明示を"
