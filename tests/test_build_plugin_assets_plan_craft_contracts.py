@@ -585,6 +585,128 @@ class DraftImplementationPlanContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def _drafting_procedure(self, text: str) -> str:
+        return "".join(
+            "".join(self._section_lines(text, "## 起草の進め方")).split()
+        )
+
+    def test_plan_drafting_writes_the_design_body_before_approach_steps_and_ac(
+        self,
+    ) -> None:
+        """Draft the design body first, then apply, observe, and sequence it."""
+        # 手順の番号ではなく本文の出現位置で順序を測る。手順は複数行へ折り返され、
+        # 番号行だけを拾うと折り返した本文が落ちる。
+        ordered = (
+            "`plan.design` に",
+            "`plan.approach` を書く",
+            "AC を導出し",
+            "`plan.steps` に",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                procedure = self._drafting_procedure(text)
+                positions = []
+                for marker in ordered:
+                    position = procedure.find("".join(marker.split()))
+                    self.assertGreater(
+                        position, -1, f"drafting procedure must cover {marker}"
+                    )
+                    positions.append(position)
+                self.assertEqual(
+                    positions,
+                    sorted(positions),
+                    "the design body must be drafted before approach, AC, and steps",
+                )
+
+    def test_plan_drafting_defines_approach_as_applying_the_design_to_the_repository(
+        self,
+    ) -> None:
+        """Keep approach as where-and-with-what, never as a summary of the design."""
+        required = (
+            "`design` の規約を、対象 repository のどこへ、既存構造のどれを使って"
+            "当てはめるかを書き、`design` の要約にしない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                for contract in required:
+                    self.assertIn(
+                        "".join(contract.split()), self._drafting_procedure(text)
+                    )
+
+    def test_plan_drafting_defers_the_design_body_shape_to_the_schema(self) -> None:
+        """Point the design body's responsibility split and size at the schema reference."""
+        required = (
+            "[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とし、"
+            "ここでは再掲しない。",
+            # 章立てを課すと、決めた事項が少ないプランへ空章の作文を要求する読みが立ち、
+            # スキーマ側の分量の境界と衝突する。
+            "章立てと必須項目は固定しない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                procedure = self._drafting_procedure(text)
+                for contract in required:
+                    self.assertIn("".join(contract.split()), procedure)
+                # 分量の境界そのものを起草手順へ写すと、この PR が無くそうとしている
+                # 写しを起草手順側に再生産する。参照だけを残す。
+                self.assertNotIn(
+                    "".join("決めた事項が少なければ短くてよい".split()), procedure
+                )
+
+    def test_plan_drafting_keeps_convention_text_out_of_acceptance_criteria(
+        self,
+    ) -> None:
+        """Bar the convention body from AC text while keeping the observation point in it."""
+        required = (
+            "規約・設計の本文を AC の `text` へ再掲しない。",
+            "規約の正本は `plan.design` であり、AC は `design` の充足を外部から観測できる"
+            "条件として書く。",
+            # 「観測点を text に含める」既存規約と衝突して読まれないよう、含めるもの
+            # （観測点）と含めないもの（規約本文）を同じ項目内で書き分ける。
+            "text に含めるのは充足を判定する観測点であって、規約本文そのものではない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                section = "".join(
+                    "".join(self._section_lines(text, "## AC の書き方")).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
+
+    def test_plan_drafting_keeps_the_obligations_the_rewritten_steps_carried(
+        self,
+    ) -> None:
+        """Keep every obligation the drafting steps and AC rules carried before design."""
+        # #108 は、文を書き換えるときに同居する既存義務を巻き添えで落とす失敗を4件
+        # 実測している。design の追記で触れる手順と AC 規約の義務を個別に固定する。
+        procedure = (
+            "要求原文を言い換えずに保持し、`plan.source` に所在を記録する。",
+            "対象 repository の現状を読み、",
+            "現状を確認せずに",
+            "安定 ID を付与する。",
+            "scope、dependencies、constraints を確定し、確定できない事項を不足として"
+            "振り分ける。",
+        )
+        ac_rules = (
+            "AC は外部から観測可能な振る舞いとして書く。内部実装の手順や構造を AC にしない。",
+            "受け入れ判断が割れない判定可能な文言にする。",
+            "AC は定量値・列挙・観測可能な事象のいずれかの形式で書く。",
+            "AC の text には、充足を判定する観測点",
+            "ユーザーが文言を示した場合は原文のまま保持し、言い換えない。",
+            "ID は `AC-1` 形式の安定 ID とし、プラン修正で振り直さない。",
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                for contract in procedure:
+                    self.assertIn(
+                        "".join(contract.split()), self._drafting_procedure(text)
+                    )
+                section = "".join(
+                    "".join(self._section_lines(text, "## AC の書き方")).split()
+                )
+                for contract in ac_rules:
+                    self.assertIn("".join(contract.split()), section)
+
     def test_plan_drafting_provides_checkable_ac_reference_examples(self) -> None:
         """Pair each checkability pattern with a concrete example sentence."""
         required = (
