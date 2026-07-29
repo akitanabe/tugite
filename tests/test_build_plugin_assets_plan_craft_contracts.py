@@ -329,12 +329,15 @@ class DraftImplementationPlanContractsTest(
             "plan-adversarial-reviewer": "実装プラン本体"
             "（objective / design / approach / steps）",
         }
-        for name in ("overengineering-plan-review.md",):
-            for platform, text in self._draft_reference_texts(name).items():
-                with self.subTest(reference=name, platform=platform):
-                    self.assertIn(
-                        "".join(reference_contract.split()), "".join(text.split())
-                    )
+        for platform, text in self._draft_reference_texts(
+            "overengineering-plan-review.md"
+        ).items():
+            with self.subTest(
+                reference="overengineering-plan-review.md", platform=platform
+            ):
+                self.assertIn(
+                    "".join(reference_contract.split()), "".join(text.split())
+                )
         for agent, contract in agent_contracts.items():
             with self.subTest(agent=agent):
                 source = self._repository_text(Path("shared/agents") / f"{agent}.md")
