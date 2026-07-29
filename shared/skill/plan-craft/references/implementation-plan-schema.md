@@ -21,9 +21,12 @@ Implementation Plan の正規スキーマ（正本）を定義する。確定済
   この Skill でも複製せずそのまま使う。
 - Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務で
   あり、`plan.steps` は起草者が実装の道筋を示す順序付き作業であって、AC を所有しない。
-- `plan.design` は決めた規約の本体を1箇所に置く正本とする。`plan.approach` は `design` を
-  踏まえた要約、`plan.steps` は `design` を実現する作業、`acceptance_criteria` は `design` の
-  充足を判定する観測点であり、いずれも規約本文自体を保持しない。
+- `plan.design` は決めた規約の本体を1箇所に置く正本とする。`plan.approach` は `design` の規約を
+  対象 repository の現状へ当てはめる方針、`plan.steps` は `design` を実現する作業、
+  `acceptance_criteria` は `design` の充足を判定する観測点であり、いずれも規約本文自体を
+  保持しない。`approach` は `design` の要約ではなく、`design` が答えない「どこへ・どの順で・
+  既存構造のどれを使うか」を担当する。要約にすると `design` と変更理由を共有し、写しが要約の
+  粒度で残るためである。
 - 1つの設計判断を複数の field へ別々の言い回しで写すと、レビューは写しの不一致の同期に
   費やされる。`design` を正本に置くのはこの写しを無くすためであり、`plan.approach` を
   設計文書に据える案と別 artifact に分離する案は棄却した。
@@ -63,11 +66,11 @@ plan:
   objective: <実装目的の1行要約>
   source: <要求の所在。「会話内」/ path>
   design: <決めた規約の本体。設計判断の正本>
-                                # approach / steps / acceptance_criteria はこの本文を
-                                # 参照する位置づけで、規約本文を再掲しない。
                                 # 書くのは決めたことだけで、要求の再掲や背景の説明は含めない。
                                 # 分量はそのプランで実際に決めた事項の数に従い、決めた事項が少なければ短くてよい
-  approach: <design を踏まえた実装方針の要約>
+  approach: <design の規約を対象 repository の現状へ当てはめる方針>
+                                # どこへ・どの順で・既存構造のどれを使うかを書く。
+                                # design が答えた規約そのものは書かない
   steps: []                     # 順序付きの作業。実装枝への分割はしない。AC を所有しない。
                                 # 規約本文は持たず、plan.design を正本として参照する
 

@@ -104,9 +104,9 @@ class DraftImplementationPlanContractsTest(
             "review-incomplete",
             "resolution-missing",
             "rounds-invalid",
-            # violation code はここで全列挙し、表から code が落ちたことを検出する。
-            # 各 code の検査内容の文言は固定しない。表の網羅性と個々の検査内容の粒度は
-            # 別々の契約であり、後者は code ごとの専用テストが持つ。
+            # violation code をここで全列挙する。ただし素の部分文字列は本文の他所（Why Not
+            # 段落など）にも一致しうるため、この列挙は表の網羅性の目安であって行の存在証明
+            # ではない。行本文と表内での位置は code ごとの専用テストが固定する。
             "design-missing",
             "handoff-incomplete",
             "## 状態遷移と権限",
@@ -144,6 +144,16 @@ class DraftImplementationPlanContractsTest(
         lines = text.splitlines()
         return lines[lines.index("plan:") : lines.index("acceptance_criteria:")]
 
+    @staticmethod
+    def _section_lines(text: str, heading: str) -> list[str]:
+        lines = text.splitlines()
+        rest = lines[lines.index(heading) + 1 :]
+        end = next(
+            (index for index, line in enumerate(rest) if line.startswith("## ")),
+            len(rest),
+        )
+        return rest[:end]
+
     def test_draft_schema_reference_places_the_design_body_as_the_canonical_source(
         self,
     ) -> None:
@@ -180,7 +190,15 @@ class DraftImplementationPlanContractsTest(
     ) -> None:
         """Let approach, steps, and AC point at the design body instead of restating it."""
         required = (
-            "approach: <design を踏まえた実装方針の要約>",
+            # approach は design の要約ではなく、design が答えない問いを担当する。
+            # 要約にすると design と変更理由を共有し、写しが要約の粒度で残る。
+            "approach: <design の規約を対象 repository の現状へ当てはめる方針>",
+            "どこへ・どの順で・既存構造のどれを使うかを書く。",
+            "design が答えた規約そのものは書かない",
+            "`approach` は `design` の要約ではなく、`design` が答えない"
+            "「どこへ・どの順で・既存構造のどれを使うか」を担当する。",
+            "要約にすると `design` と変更理由を共有し、写しが要約の粒度で残るためである。",
+            "`plan.approach` は `design` の規約を対象 repository の現状へ当てはめる方針、",
             "規約本文は持たず、plan.design を正本として参照する",
             "規約本文の正本は plan.design。",
             "その充足を判定する観測可能な振る舞いだけを書く",
@@ -203,20 +221,31 @@ class DraftImplementationPlanContractsTest(
 
     def test_draft_schema_reference_blocks_a_plan_that_has_no_design_body(self) -> None:
         """Block an empty design from reaching awaiting_review or approved."""
-        required = (
+        design_missing_row = (
             "| `design-missing` | `plan.design` が未記載または空のまま "
-            "`awaiting_review` 以降へ遷移している |",
-            # approved は blocking が空であることを前提にしているため、design-missing が
-            # 立つ限り approved へ到達しない。この前提文が残ることで、遷移表へ design 専用の
-            # 行を足さずに「design が空のまま approved にできない」が成立する。
+            "`awaiting_review` 以降へ遷移している |"
+        )
+        # approved は blocking が空であることを前提にしているため、design-missing が
+        # 立つ限り approved へ到達しない。この前提文が残ることで、遷移表へ design 専用の
+        # 行を足さずに「design が空のまま approved にできない」が成立する。
+        approved_precondition = (
             "approved:         承認済み。open_questions と validation.blocking が"
-            "すべて空であることが前提",
+            "すべて空であることが前提"
         )
         for platform, text in self._schema_reference_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
-                for contract in required:
-                    self.assertIn("".join(contract.split()), normalized)
+                self.assertIn(
+                    "".join(approved_precondition.split()), "".join(text.split())
+                )
+                # 行が blocking violation code 節の中にあることまで固定する。design-missing が
+                # validation.blocking に載ることが approved 到達不能の第一リンクであり、
+                # 本文のどこかに同じ文字列があるだけではその連鎖は成立しない。
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                self.assertIn("".join(design_missing_row.split()), violation_section)
 
     def test_draft_schema_reference_keeps_restatement_detection_out_of_the_violation_codes(
         self,
@@ -240,9 +269,8 @@ class DraftImplementationPlanContractsTest(
         self,
     ) -> None:
         """Keep the handoff rows as branch-design's input requirements, without design."""
-        # 左列は branch-design の入力要件そのもの。design が表へ紛れ込んでいないことは
-        # assertNotIn("design") では確かめられない（本文の他所に plan.design がある）ため、
-        # 5行を全列挙して表の同一性で担保する。
+        # 左列は branch-design の入力要件そのもの。5行の全列挙は「行が消えないこと」しか
+        # 検出しないので、表の領域を切り出して行数も固定し、6行目の追加を落とす。
         rows = (
             "| 実装目的 | `plan.objective` |",
             "| 元プラン | `plan.source`（この Data 自体を渡す場合は本 Data の所在） |",
@@ -255,17 +283,54 @@ class DraftImplementationPlanContractsTest(
             "行を足すことは入力要件の変更になる",
             "`handoff-incomplete` と `design-missing` の検査対象が二重になり、"
             "1つの欠落に2つの code が立つ",
+            # handoff-incomplete の必須 field 列挙も固定する。ここへ plan.design を足すと、
+            # 上の Why Not が避けた「1つの欠落に2つの code」が表の外側で成立してしまう。
+            "| `handoff-incomplete` | 引き渡し必須 field（`plan.objective` / `plan.source` / "
+            "`acceptance_criteria` / `scope`）の欠落 |",
         )
         for platform, text in self._schema_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in rows + why_not:
                     self.assertIn("".join(contract.split()), normalized)
+                table = [
+                    line
+                    for line in self._section_lines(
+                        text, "## branch-design への引き渡し"
+                    )
+                    if line.startswith("|")
+                ]
                 self.assertEqual(
-                    normalized.count("|`plan.objective`|"),
-                    1,
-                    "the handoff map must stay a single table",
+                    len(table),
+                    len(rows) + 2,
+                    "the handoff map must keep exactly the branch-design input rows",
                 )
+                self.assertNotIn("plan.design", "".join(table))
+
+    def test_plan_review_inputs_carry_the_design_body_to_both_reviewers(self) -> None:
+        """Hand the design body to both plan reviewers along with the rest of the plan."""
+        # 規約本文が design にある以上、入力列挙が design を欠くと、必須ゲートである
+        # 過剰実装審査は通るのに審査対象の中心が reviewer へ渡らない。列挙はスキーマ本体の
+        # 並び（objective -> design -> approach -> steps）に合わせる。
+        reference_contract = (
+            "実装プラン本体（`plan.objective` / `plan.design` / "
+            "`plan.approach` / `plan.steps`）"
+        )
+        agent_contracts = {
+            "over-engineering-reviewer": "（objective / design / approach / steps）",
+            "plan-adversarial-reviewer": "実装プラン本体"
+            "（objective / design / approach / steps）",
+        }
+        for name in ("overengineering-plan-review.md", "adversarial-review.md"):
+            for platform, text in self._draft_reference_texts(name).items():
+                with self.subTest(reference=name, platform=platform):
+                    self.assertIn(
+                        "".join(reference_contract.split()), "".join(text.split())
+                    )
+        for agent, contract in agent_contracts.items():
+            with self.subTest(agent=agent):
+                source = self._repository_text(Path("shared/agents") / f"{agent}.md")
+                self.assertIn("".join(contract.split()), "".join(source.split()))
 
     def test_draft_skill_matches_confirmed_contract(self) -> None:
         """Separate plan approval from downstream work and keep drafting review-gated."""

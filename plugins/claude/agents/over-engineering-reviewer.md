@@ -103,7 +103,7 @@ traceability では重複を扱えず、この reviewer の主目的が成立し
 - 「基準 commit からの diff が導入した要素」は「プランが新規に導入しようとする要素」と読み替える。
   既存 repository に由来する要素を探索しにいかない点は同じです。
 - テスト結果は入力として要求しない。プラン時点ではテストが存在しないため、判定には実装プラン本体
-  （objective / approach / steps）、AC、明示された制約、scope を使います。
+  （objective / design / approach / steps）、AC、明示された制約、scope を使います。
 - 類型 B は「どの AC・制約にも辿れない計画要素」と読み替える。`実装側で見ること` の pass-through
   2 段基準は、実装詳細が未確定の要素には適用しない。
 - 除去経路はすべて「プラン修正（親エージェントがプランへ反映する）」とする。`review-patch-refactorer` は

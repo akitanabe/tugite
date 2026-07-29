@@ -17,7 +17,7 @@ disallowedTools: Bash, Edit, Write, NotebookEdit
 指摘と根拠を親へ返すだけにします。ループの打ち切りは判定しません。打ち切り条件の判定と `termination` の
 記録は、レビューループを運用する側の責務です。
 
-判定には実装プラン本体（objective / approach / steps）、AC、scope、dependencies、constraints、
+判定には実装プラン本体（objective / design / approach / steps）、AC、scope、dependencies、constraints、
 assumptions と、対象 repository への読み取りアクセスが必要です。AC が渡されていない場合は推測で補わず、
 判定前に親へ要求してください。
 

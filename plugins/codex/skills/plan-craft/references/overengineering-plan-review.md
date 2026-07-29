@@ -24,7 +24,7 @@
 
 ## 渡す入力
 
-- 実装プラン本体（`plan.objective` / `plan.approach` / `plan.steps`）。
+- 実装プラン本体（`plan.objective` / `plan.design` / `plan.approach` / `plan.steps`）。
 - AC の全文と、ユーザーが明示した constraints。
 - scope（`allowed_paths` / `forbidden_paths` / `out_of_scope`）。
 - テスト結果は渡さない。プラン時点では存在せず、reviewer も入力として要求しない。
