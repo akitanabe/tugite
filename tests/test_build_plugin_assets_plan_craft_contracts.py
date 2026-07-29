@@ -190,13 +190,11 @@ class DraftImplementationPlanContractsTest(
     ) -> None:
         """Let approach, steps, and AC point at the design body instead of restating it."""
         required = (
-            # approach は design の要約ではなく、design が答えない問いを担当する。
-            # 要約にすると design と変更理由を共有し、写しが要約の粒度で残る。
             "approach: <design の規約を対象 repository の現状へ当てはめる方針>",
-            "どこへ・どの順で・既存構造のどれを使うかを書く。",
+            "どこへ・既存構造のどれを使うかを書く。",
             "design が答えた規約そのものは書かない",
             "`approach` は `design` の要約ではなく、`design` が答えない"
-            "「どこへ・どの順で・既存構造のどれを使うか」を担当する。",
+            "「どこへ・既存構造のどれを使うか」を担当する。",
             "要約にすると `design` と変更理由を共有し、写しが要約の粒度で残るためである。",
             "`plan.approach` は `design` の規約を対象 repository の現状へ当てはめる方針、",
             "規約本文は持たず、plan.design を正本として参照する",
@@ -306,12 +304,22 @@ class DraftImplementationPlanContractsTest(
                     "the handoff map must keep exactly the branch-design input rows",
                 )
                 self.assertNotIn("plan.design", "".join(table))
+                # 表が別節へ丸ごと複製された場合は上の節 slice の行数固定だけでは検出できない
+                # （複製先の別 slice には現れない）。文書全体で単一の表であることも併せて担保する。
+                self.assertEqual(
+                    normalized.count("|`plan.objective`|"),
+                    1,
+                    "the handoff map must stay a single table",
+                )
 
     def test_plan_review_inputs_carry_the_design_body_to_both_reviewers(self) -> None:
         """Hand the design body to both plan reviewers along with the rest of the plan."""
         # 規約本文が design にある以上、入力列挙が design を欠くと、必須ゲートである
         # 過剰実装審査は通るのに審査対象の中心が reviewer へ渡らない。列挙はスキーマ本体の
         # 並び（objective -> design -> approach -> steps）に合わせる。
+        # adversarial-review.md は正本参照（`実装プラン本体` とだけ書く）のままとし、
+        # ここでは対象にしない。閉じた列挙だったのは他の3ファイル（本 reference と
+        # 下記2 agent）だけであり、正本参照だった箇所へ列挙を新設すると写しが増える。
         reference_contract = (
             "実装プラン本体（`plan.objective` / `plan.design` / "
             "`plan.approach` / `plan.steps`）"
@@ -321,7 +329,7 @@ class DraftImplementationPlanContractsTest(
             "plan-adversarial-reviewer": "実装プラン本体"
             "（objective / design / approach / steps）",
         }
-        for name in ("overengineering-plan-review.md", "adversarial-review.md"):
+        for name in ("overengineering-plan-review.md",):
             for platform, text in self._draft_reference_texts(name).items():
                 with self.subTest(reference=name, platform=platform):
                     self.assertIn(
