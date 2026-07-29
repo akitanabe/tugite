@@ -71,6 +71,16 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     f"`expert-selection-reviewer` を加えた reviewer {len(READ_ONLY_TOOL_AGENT_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
+    # Pins the reason the two platform settings must be kept in lockstep
+    # (TQ-6 round4): dropping this clause left the section's own rationale
+    # unverified even though the settings themselves were still checked above.
+    "同じ契約の担保の強さが platform で変わると、"
+    "どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。",
+    # Pins the scope disclaimer added in 「位置づけ」(TQ-6 round4): without it,
+    # a reader could mistake this section's reviewer count for the 「位置づけ」
+    # section's 2-point scope.
+    "ここで定めた対象は上記2点だけに適用する。"
+    "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。",
 )
 # The delegation pointer, not a second copy of the rule: qa-and-integration.md
 # keeps only why the parent hands diff and test results over as Data.
@@ -79,22 +89,25 @@ READ_ONLY_ENFORCEMENT_DELEGATION = (
     "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
 )
 # A restated read-only rule almost always names the concrete tools or the
-# platform config key it grants/withholds. Pin the absence of those names
-# across the whole document (not just the section the delegation pointer
-# lives in), so a restated rule placed in any other section still fails this
-# test. No verbatim sentence is pinned separately: any wording that restates
-# the rule ("reviewer 自身へ Bash や編集 tool を与えない" included) already
-# contains "Bash", so a literal pin here would just repeat the "Bash" marker
-# check below.
+# platform config key it grants/withholds. A paraphrase that names neither
+# falls outside what a negative assert can catch; that gap is accepted.
+# The absence of these markers is pinned across the whole document (not
+# just the section the delegation pointer lives in): AC-5's target is this
+# file in full, so a restated rule must fail this test regardless of which
+# section it lands in.
 # "Edit" is listed instead of "NotebookEdit" because it is already a
 # substring match for it, and listing both would just be the same check
 # twice. "disallowed_tools" / "sandbox_mode" are the platform config keys a
-# restated rule tends to leak. "編集" (Japanese for "edit") is deliberately
-# left out: it is a generic word used throughout this ~50KB document for
-# unrelated things (cleanup, parent QA, the review phases), so forbidding it
-# document-wide would fail this test for reasons unrelated to the delegation
-# it guards. A paraphrase that names neither the tool nor the config key
-# falls outside what a negative assert can catch; that gap is accepted.
+# restated rule tends to leak.
+# "編集" (Japanese for "edit") is deliberately left out, but not because it
+# is already in use: as of this change every marker below, "編集" included,
+# occurs zero times in this document, which now names no tool at all. The
+# exclusion is about future risk, not present occurrences: "編集" is a
+# generic Japanese word this ~50KB document is far more likely to need
+# legitimately (cleanup, parent QA, the review phases) than an English tool
+# name is, so a whole-document ban on it would cost authoring freedom the
+# English names don't, for a guard that only needs to catch a restated rule
+# reappearing.
 READ_ONLY_RULE_RESTATEMENT_MARKERS = (
     "Bash",
     "Edit",
@@ -151,15 +164,24 @@ class ReviewerFindingsContractTest(
     ) -> None:
         """Distribute the findings contract to both platforms from a warning-free source."""
         texts = self._reviewer_findings_reference_texts()
+        toc_heading = "## 目次"
+
+        def _toc_section(text: str) -> str:
+            return text.split(toc_heading, 1)[1].split("##", 1)[0]
+
         self.assertTrue(texts["source"].startswith("# "))
         self.assertFalse(texts["source"].startswith(GENERATED_MARKDOWN_WARNING))
-        self.assertIn("## 目次", texts["source"])
+        self.assertIn(toc_heading, texts["source"])
+        self.assertIn("read-only の担保", _toc_section(texts["source"]))
         for platform in ("claude", "codex"):
             with self.subTest(platform=platform):
                 self.assertTrue(
                     texts[platform].startswith(f"{GENERATED_MARKDOWN_WARNING}\n\n")
                 )
-                self.assertIn("## 目次", texts[platform])
+                self.assertIn(toc_heading, texts[platform])
+                self.assertIn(
+                    "read-only の担保", _toc_section(texts[platform])
+                )
         self.assertEqual(texts["claude"], texts["codex"])
 
     def test_reviewer_findings_reference_defines_summary_line_and_evidence(
@@ -202,12 +224,11 @@ class ReviewerFindingsContractTest(
         self,
     ) -> None:
         """Forbid a restated read-only rule anywhere in the document; require the delegation pointer inside its one section."""
-        # No-restatement is checked against the whole document: AC-5's target
-        # is this file in full, so a restated rule must fail this test
-        # regardless of which section it lands in. The delegation pointer is
-        # checked against "## 必須完了ゲート" only, since that pins the
-        # stronger claim that the pointer lives in that specific section, not
-        # merely somewhere in the document.
+        # The delegation pointer is checked only inside "## 必須完了ゲート",
+        # pinning the stronger claim that it lives in that specific section
+        # rather than merely somewhere in the document. Why the no-restatement
+        # check above is document-wide instead is explained where the markers
+        # are defined.
         for platform, text in self._skill_reference_texts(
             QA_AND_INTEGRATION_REFERENCE
         ).items():
@@ -216,10 +237,12 @@ class ReviewerFindingsContractTest(
                     with self.subTest(platform=platform, marker=marker):
                         self.assertFalse(
                             marker in text,
-                            f"'{marker}' unexpectedly found in {platform}'s "
-                            f"{QA_AND_INTEGRATION_REFERENCE}: see this marker's "
-                            "definition comment for why its presence means a "
-                            "restated rule; delegate to reviewer-findings.md instead.",
+                            f"{platform}'s {QA_AND_INTEGRATION_REFERENCE} must not "
+                            f"contain '{marker}': this document names no read-only "
+                            "tool or platform config key anywhere in it; the "
+                            "canonical rule lives only in reviewer-findings.md's "
+                            "「read-only の担保」 (see this marker's definition "
+                            "comment for why).",
                         )
 
                 section = "\n".join(
