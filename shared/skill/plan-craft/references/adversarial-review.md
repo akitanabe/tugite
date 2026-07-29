@@ -16,6 +16,10 @@
 
 ## round の構成
 
+レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない。`design` /
+`approach` / `steps` / AC の責務分担は
+[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とする。
+
 1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
 
 1. reviewer へ実装プラン本体、AC、scope、constraints、assumptions と、2 round 目以降は前 round
