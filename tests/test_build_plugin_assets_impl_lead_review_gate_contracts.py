@@ -146,8 +146,8 @@ class ImplLeadReviewGateContractsTest(
 
                 self.assertIn(
                     self._normalize_contract(
-                        "起動するかどうかは「専門 reviewer」節の起動条件だけで決まり、"
-                        "この手順は渡す Data と diff の受け渡しだけを定める"
+                        "この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。"
+                        "risk による起動条件は「専門 reviewer」節に従う"
                     ),
                     normalized_step_5,
                 )

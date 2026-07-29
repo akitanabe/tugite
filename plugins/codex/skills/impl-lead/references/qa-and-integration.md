@@ -36,8 +36,8 @@
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ `followup_task` で差し戻し、修正 commit を追加させる。
 5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
-   起動するかどうかは「専門 reviewer」節の起動条件だけで決まり、この手順は渡す Data と diff の
-   受け渡しだけを定める。
+   この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。
+   risk による起動条件は「専門 reviewer」節に従う。
    周辺コンテキストの追加は「reviewer へ渡すコンテキスト」の選択基準に従う。
    新しい worker は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
    ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を
