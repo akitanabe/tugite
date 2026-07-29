@@ -367,8 +367,11 @@ class DraftImplementationPlanContractsTest(
         """Point the loop at the design document instead of the acceptance criteria set."""
         # 判定対象の宣言は round の構成節に置く。文書全体を検索すると、後続で別節へ
         # 移動しても落ちないため、round 手順の先頭にあることまでを固定する。
+        # 同じ宣言を運用者向けと reviewer 向けの両方へ置くため、どちらが正本かを添えないと
+        # 語気の差が次の改訂で別の規定に見える。所有者の1語まで含めて固定する。
         declaration = (
-            "レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない。"
+            "レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない"
+            "（判定の軸の正本は `plan-adversarial-reviewer`）。"
         )
         # 責務分担の本文はここへ写さず正本を指す。写した時点でこの PR が塞ぐ経路
         # （1つの設計判断が複数箇所へ別の言い回しで残る）を原稿自身が再現する。
@@ -573,18 +576,25 @@ class DraftImplementationPlanContractsTest(
         source = self._repository_text(
             Path("shared/agents/plan-adversarial-reviewer.md")
         )
-        normalized = "".join(source.split())
+        section = "".join("".join(self._section_lines(source, "## 判定の軸")).split())
         required = (
+            # 抑止は「失敗経路を特定できないまま」で限定する。無条件に抑止すると、
+            # design を薄く言い換えて判定不能になった AC が、design と矛盾もせず
+            # design に無い決定も含まないまま上位層で消える。
             "`approach` / `steps` / `acceptance_criteria` の間の言い回しの差そのものを、"
-            "単独の指摘として返さない",
-            # 抑止だけを書くと、写しの不一致が本当に設計と食い違っている場合まで
-            # 沈黙する。残す2経路を同じ節に併記して、抑止の範囲を閉じる。
+            "失敗経路を特定できないまま単独の指摘として返さない",
+            # 残す経路は例示。閉じた列挙にすると、新しい救済条件が現れるたびに列を
+            # 伸ばすことになり、この原稿が塞ぐ「規約を分散して持つ」構造を再現する。
+            # 枠組み文を固定しないと「これらも指摘対象から外します」への反転が通る。
+            "たとえば次は指摘対象として残ります。",
             "`design` と矛盾する",
             "`design` に無い決定を含む",
         )
         for contract in required:
             with self.subTest(contract=contract):
-                self.assertIn("".join(contract.split()), normalized)
+                # 抑止と例示が同じ節に併記されることまでを検証する。文書全体を対象に
+                # すると、例示だけ別節へ散らす改訂が通る。
+                self.assertIn("".join(contract.split()), section)
 
     def test_plan_adversarial_reviewer_separates_return_scope_from_the_verdict(
         self,
@@ -604,29 +614,6 @@ class DraftImplementationPlanContractsTest(
                 ).split()
             ),
             normalized,
-        )
-        catalog = (
-            "文言・表現の好み",
-            "Data の整形・体裁（項目順、記法、表記ゆれ）",
-            "`assumptions` に記録済みの事項の再指摘",
-            "同義の言い換え提案",
-        )
-        escapes = (
-            "AC の判定可能性を損なう曖昧さを含む場合",
-            "スキーマ違反により後続工程が読み取れなくなる場合",
-            "仮定を覆す新しい根拠を伴う場合",
-            "現行の文言そのものが失敗経路の根拠になっている場合",
-        )
-        section_lines = self._section_lines(source, "## 判定区分と `軽微` の定義")
-        for contract in catalog + escapes:
-            with self.subTest(contract=contract):
-                self.assertIn(
-                    "".join(contract.split()), "".join("".join(section_lines).split())
-                )
-        self.assertEqual(
-            len([line for line in section_lines if line.startswith("- ")]),
-            len(catalog),
-            "the trivial catalog must keep exactly its four types",
         )
 
     def test_plan_adversarial_reviewer_keeps_the_six_finding_types(self) -> None:
@@ -676,6 +663,32 @@ class DraftImplementationPlanContractsTest(
         for contract in required:
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
+
+        catalog = (
+            "文言・表現の好み",
+            "Data の整形・体裁（項目順、記法、表記ゆれ）",
+            "`assumptions` に記録済みの事項の再指摘",
+            "同義の言い換え提案",
+        )
+        escapes = (
+            "AC の判定可能性を損なう曖昧さを含む場合",
+            "スキーマ違反により後続工程が読み取れなくなる場合",
+            "仮定を覆す新しい根拠を伴う場合",
+            "現行の文言そのものが失敗経路の根拠になっている場合",
+        )
+        # 件数を数えるスコープは `### 軽微類型カタログ` 以降に限る。`## 判定区分と
+        # `軽微` の定義` 全体で数えると、`### 影響基準` へ箇条書きを足しただけで
+        # カタログの契約違反として報告され、失敗メッセージから原因の節へ辿れない。
+        catalog_lines = self._section_lines(source, "### 軽微類型カタログ")
+        catalog_section = "".join("".join(catalog_lines).split())
+        for contract in catalog + escapes:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), catalog_section)
+        self.assertEqual(
+            len([line for line in catalog_lines if line.startswith("- ")]),
+            len(catalog),
+            "the trivial catalog must keep exactly its four types",
+        )
 
     def test_plan_adversarial_reviewer_consumes_the_ledger_without_resubmitting(
         self,
