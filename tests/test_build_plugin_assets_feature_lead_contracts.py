@@ -24,12 +24,7 @@ class FeatureLeadContractsTest(
     unittest.TestCase,
 ):
     def _generated_texts(self) -> dict[str, str]:
-        return {
-            platform: self._repository_text(
-                generated_skill_path(platform, FEATURE_LEAD_SKILL)
-            )
-            for platform in PLATFORMS
-        }
+        return self._generated_texts_for(FEATURE_LEAD_SKILL)
 
     def _generated_texts_for(self, skill: str) -> dict[str, str]:
         return {
