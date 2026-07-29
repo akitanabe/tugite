@@ -35,7 +35,9 @@
    この確認によって worker の変更の混入と誤認しない。作成規約は「diff artifact の作成」節に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ `followup_task` で差し戻し、修正 commit を追加させる。
-5. 専門 reviewer には task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
+5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
+   起動するかどうかは「専門 reviewer」節の起動条件だけで決まり、この手順は渡す Data と diff の
+   受け渡しだけを定める。
    周辺コンテキストの追加は「reviewer へ渡すコンテキスト」の選択基準に従う。
    新しい worker は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
    ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を
@@ -89,8 +91,14 @@ Red 証跡の要求に置き換えない。`lite` の前提が崩れた場合は
 | `test-quality-reviewer` | 弱いテスト、欠けているケース、実装詳細に依存したテスト |
 | `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響 |
 
+`responsibility-boundary-reviewer` の対象リスクは、複数層、複数の外部 I/O、新しい abstraction・adapter・service、
+責務混在の疑いのいずれかを認めたときに成立する。この具体例は「責務境界」節の軽量確認から持ち込まれる。
+
 対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
+
+専門 reviewer の起動条件はこの節だけが定める。他の節は、この節の起動条件の具体化、または起動時に渡す
+Data の受け渡し規約として書き、独立した起動条件を持たない。
 
 ### reviewer へ渡すコンテキスト
 
@@ -334,8 +342,8 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 - その枝で適用される必須完了ゲートのうち、`over-engineering-reviewer` を除いたもの。
 - 「専門 reviewer」節の起動条件により risk で選択した専門 reviewer。同節の起動条件は、この相の risk 選択と
-  レビューループ round の「再起動対象」の第2類型の双方へ効く。「返却と統合」手順5 と「責務境界」節が持つ
-  専門 reviewer の起動指示も、この相の risk 選択に属する。
+  レビューループ round の「再起動対象」の第2類型の双方へ効く。専門 reviewer の起動条件はこの1節だけが
+  定めるため、この相では他の節の起動指示を数え上げない。
 
 `writing-principles-reviewer` はこの相で枝あたり最低1回実施する。これは下限の保証であり、以降のループ round で
 「再起動対象」により再起動されることを排除しない。
@@ -607,8 +615,10 @@ main の手順9へ戻る。
 - 既存の責務配置、命名、directory 構成から不自然に外れていないか。
 - 分割や抽象化が過剰になっていないか。
 
-複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑いがある場合は
-`responsibility-boundary-reviewer` を起動する。
+この軽量確認で複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑いを認めた場合は、
+`responsibility-boundary-reviewer` の対象リスクが成立したものとして「専門 reviewer」節の起動条件に従って
+起動する。この節は専門 reviewer の起動条件を独自に定義しない。以下は起動した場合の判定区分ごとの
+修正先 routing である。
 
 - `問題なし`: 通過。
 - `軽微` / `修正推奨`: 局所的で全起動条件を満たす場合だけ `review-patch-refactorer`、それ以外は元 Implementer。
