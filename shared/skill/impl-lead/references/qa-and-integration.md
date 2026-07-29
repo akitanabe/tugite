@@ -397,8 +397,9 @@ evidence を欠く指摘は、単独でゲート通過の根拠にしない。
 
 親は reviewer が申告した重要度をそのまま採用しない。親が確定する根拠は、finding の evidence と、その
 finding が影響する Acceptance Criteria・対象 risk への影響である。reviewer 原稿が `軽微` / `修正推奨` /
-`修正必須` の意味を定めている範囲については、その記述を正本として照合する。現状この範囲は「責務境界」節が
-起動する reviewer の「修正コストに見合わない指摘は `軽微` として扱う」だけである。`Pass` / `Needs
+`修正必須` の意味を定めている範囲については、その記述を正本として照合する。現状、`impl-lead` が起動する
+reviewer に限れば、この範囲は「責務境界」節が起動する reviewer の「修正コストに見合わない指摘は `軽微`
+として扱う」だけである。`Pass` / `Needs
 attention` / `Blocker` のように3区分と異なる語彙で申告する reviewer の finding は、申告語彙から3区分への
 写像規則を定義しないため、evidence と AC・対象 risk への影響だけから確定する。判定区分に相当する項目を
 持たない reviewer の finding も同じ扱いとする。

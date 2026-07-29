@@ -496,62 +496,53 @@ class ImplLeadReviewGateContractsTest(
     def test_repository_workflow_requires_parent_confirmed_severity_before_routing(
         self,
     ) -> None:
-        """Derive every finding's severity from parent judgment before fix routing.
-
-        AC-1 の (a)〜(e) と1対1で対応する。「修正先の選択」節は各種 reviewer の finding を
-        受けて修正先または不採用を決める着地節であり、reviewer が自己申告した重要度をそのまま
-        使うと、3区分の意味を定義しない reviewer や判定区分を持たない reviewer の finding を
-        一貫した基準で扱えない。
-        """
+        """Derive every finding's severity from parent judgment before fix routing."""
         skills = self._repository_skill_texts()
         qa_workflows = {
             "shared": skills.source_references["qa-and-integration.md"],
             "claude": skills.claude_references["qa-and-integration.md"],
             "codex": skills.codex_references["qa-and-integration.md"],
         }
-        # AC-1 (d): 確定の対象はすべての reviewer の finding であり、修正先/不採用の判断より
-        # 前に確定する。節の起動条件（次の bullet 群）へ暗黙に従属させないことを本文で明示する。
+        heading = "## 修正先の選択"
+        # AC-1 (d)
         scope_and_timing = (
             "すべての reviewer の finding は、修正先または不採用のいずれを判断するより前に、"
             "親が重要度を確定する。",
             "この適用範囲とタイミングは、以下に列挙する起動条件など本節内の他の記述の"
             "適用有無に関わらず成立する。",
         )
-        # AC-1 (a): reviewer の自己申告をそのまま採用しない。
+        # AC-1 (a)
         not_self_reported = ("親は reviewer が申告した重要度をそのまま採用しない。",)
-        # AC-1 (b): 根拠は evidence と AC・対象 risk への影響。3区分の意味を定めている範囲
-        # （現状は責務境界 reviewer の「修正コストに見合わない指摘は `軽微` として扱う」のみ）は
-        # その記述を正本として照合し、異なる語彙（Pass/Needs attention/Blocker）や判定区分を
-        # 持たない reviewer の finding は evidence と AC・対象 risk への影響だけで確定する。
+        # AC-1 (b)
         evidence_based_grounds = (
-            "親が確定する根拠は、finding の evidence と、その\nfinding が影響する Acceptance"
+            "親が確定する根拠は、finding の evidence と、その finding が影響する Acceptance"
             " Criteria・対象 risk への影響である。",
-            "reviewer 原稿が `軽微` / `修正推奨` /\n`修正必須` の意味を定めている範囲については、"
+            "reviewer 原稿が `軽微` / `修正推奨` / `修正必須` の意味を定めている範囲については、"
             "その記述を正本として照合する。",
-            "現状この範囲は「責務境界」節が\n起動する reviewer の「修正コストに見合わない指摘は"
-            " `軽微` として扱う」だけである。",
-            "`Pass` / `Needs\nattention` / `Blocker` のように3区分と異なる語彙で申告する"
-            " reviewer の finding は、申告語彙から3区分への\n写像規則を定義しないため、"
+            "現状、`impl-lead` が起動する reviewer に限れば、この範囲は「責務境界」節が起動する"
+            " reviewer の「修正コストに見合わない指摘は `軽微` として扱う」だけである。",
+            "`Pass` / `Needs attention` / `Blocker` のように3区分と異なる語彙で申告する"
+            " reviewer の finding は、申告語彙から3区分への写像規則を定義しないため、"
             "evidence と AC・対象 risk への影響だけから確定する。",
-            "判定区分に相当する項目を\n持たない reviewer の finding も同じ扱いとする。",
+            "判定区分に相当する項目を持たない reviewer の finding も同じ扱いとする。",
         )
-        # AC-1 (c): 親が確定する値は常に3区分のいずれかであり、判定区分を持たない finding も
-        # 同じ3区分で確定する。
+        # AC-1 (c)
         always_three_way = (
             "親が確定する値は、重要度に相当する項目を持たない finding を含め、常に"
-            " `軽微` / `修正推奨` / `修正必須` の\nいずれかとする。",
+            " `軽微` / `修正推奨` / `修正必須` のいずれかとする。",
         )
-        # AC-1 (e): 原稿の他の記述が3区分で分岐する場合、その分岐は reviewer の申告値ではなく
-        # 親の確定値を指す。責務境界節の routing がこれに当たる。
+        # AC-1 (e)
         routing_points_at_confirmed_value = (
             "原稿の他の記述が `軽微` / `修正推奨` / `修正必須` で分岐する場合、その分岐は"
-            " reviewer の\n申告値ではなく親が確定したこの値を指す。",
+            " reviewer の申告値ではなく親が確定したこの値を指す。",
             "「責務境界」節の routing はこれに当たる。",
         )
 
         for platform, workflow in qa_workflows.items():
             with self.subTest(platform=platform):
-                normalized_workflow = "".join(workflow.split())
+                self.assertEqual(1, workflow.count(heading))
+                section = workflow.split(heading, 1)[1].split("\n## ", 1)[0]
+                normalized_section = "".join(section.split())
                 for contract in (
                     scope_and_timing
                     + not_self_reported
@@ -559,12 +550,7 @@ class ImplLeadReviewGateContractsTest(
                     + always_three_way
                     + routing_points_at_confirmed_value
                 ):
-                    self.assertIn("".join(contract.split()), normalized_workflow)
-
-                # 「責務境界」節は本文中で `## 責務境界` という見出しとしては1回しか
-                # 現れない。契約文が節見出しへ言及するときも「〜節」表記に揃っているかを
-                # 併せて固定する（別テストが `## 責務境界` の出現数を検査しているため）。
-                self.assertEqual(1, workflow.count("## 責務境界"))
+                    self.assertIn("".join(contract.split()), normalized_section)
 
     def test_repository_decision_corpus_bounds_review_patch_scope(self) -> None:
         """Evaluate bounded refactorer inputs and zero out-of-scope changes."""
