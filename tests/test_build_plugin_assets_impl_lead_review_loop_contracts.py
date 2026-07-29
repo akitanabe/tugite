@@ -12,9 +12,173 @@ class ImplLeadReviewLoopContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
 ):
-    @staticmethod
-    def _normalize_contract(text: str) -> str:
-        return "".join(text.replace("`", "").split())
+    def _three_phase_sections(self, reference: str) -> dict[str, str]:
+        heading = "## 枝レビューの3相"
+        self.assertEqual(1, reference.count(heading))
+        section = reference.split(heading, 1)[1].split("\n## ", 1)[0]
+        subsection_headings = (
+            "### 1 round の数え方",
+            "### 打ち切り条件",
+            "### 枝の受け入れ点",
+            "### initial レビュー群",
+            "### レビューループ",
+            "### 最終レビュー群",
+        )
+        for subheading in subsection_headings:
+            self.assertEqual(1, reference.count(subheading))
+        positions = [section.index(subheading) for subheading in subsection_headings]
+        self.assertEqual(sorted(positions), positions)
+        boundaries = positions + [len(section)]
+        return {
+            subheading: section[start:end]
+            for subheading, start, end in zip(
+                subsection_headings, boundaries, boundaries[1:]
+            )
+        } | {"__all__": section}
+
+    def test_workflows_split_branch_review_into_three_phases(self) -> None:
+        """Run the over-engineering gate only on a settled snapshot, once per convergence."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                sections = self._three_phase_sections(reference)
+                initial = self._normalize_contract(sections["### initial レビュー群"])
+                final = self._normalize_contract(sections["### 最終レビュー群"])
+
+                # 相への割り当ての正本はこの節だけとする。initial 群が
+                # over-engineering-reviewer を起動しないことが issue #103 の中核なので、
+                # 「含まれない」側も列挙の有無で判定できる形に固定する。
+                self.assertIn(
+                    "その枝で適用される必須完了ゲートのうち、over-engineering-reviewerを除いたもの",
+                    initial,
+                )
+                self.assertNotIn("over-engineering-reviewerを実施", initial)
+                self.assertIn(
+                    "settledに到達した確定snapshotに対してover-engineering-reviewerを実施する",
+                    final,
+                )
+                self.assertIn("実施の計数単位は収束ごとに1回とする", final)
+                # 収束後に置く根拠は判定軸の成立条件であってコストではない。
+                # コスト由来の根拠へ書き換わると、中間 snapshot へ戻す改訂を止められない。
+                self.assertIn("起動回数の削減のためではない", final)
+                self.assertIn(
+                    "diffの最終形に対してのみ安定して成立し、中間snapshotでの判定は後続の修正で無効化されうる",
+                    final,
+                )
+
+    def test_workflows_select_specialists_from_the_specialist_section_alone(
+        self,
+    ) -> None:
+        """Point the initial phase at one specialist section instead of enumerating sites."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                sections = self._three_phase_sections(reference)
+                initial = self._normalize_contract(sections["### initial レビュー群"])
+
+                self.assertIn(
+                    "「専門reviewer」節の起動条件によりriskで選択した専門reviewer",
+                    initial,
+                )
+                self.assertIn(
+                    "同節の起動条件は、この相のrisk選択とレビューループroundの"
+                    "「再起動対象」の第2類型の双方へ効く",
+                    initial,
+                )
+                # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
+                # 同期漏れを起こす。所在は「専門 reviewer」節ひとつに閉じる。
+                self.assertIn("riskによる専門reviewerの起動条件はこの1節だけが定める", initial)
+                for enumerated_site in ("「返却と統合」手順5", "「責務境界」節"):
+                    with self.subTest(enumerated_site=enumerated_site):
+                        self.assertNotIn(
+                            self._normalize_contract(enumerated_site), initial
+                        )
+
+    def test_workflows_bound_branch_review_rounds_and_define_termination(self) -> None:
+        """Count a round per phase run and bound the total at the limit plus one."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                sections = self._three_phase_sections(reference)
+                counting = self._normalize_contract(sections["### 1 round の数え方"])
+                termination = self._normalize_contract(sections["### 打ち切り条件"])
+
+                # 計数単位を snapshot ではなく相の実施に置く。同一 snapshot へ複数の相が
+                # 走るため、snapshot 基準では最終レビュー群が round を消費しなくなる。
+                self.assertIn("1roundは相の1回の実施とする", counting)
+                self.assertIn(
+                    "起動対象のreviewerが0名でも実施があれば1roundと数え、起動件数には依存しない",
+                    counting,
+                )
+                self.assertIn(
+                    "相の起動対象がないため実施しない場合（liteの最終レビュー群）はroundを消費しない",
+                    counting,
+                )
+                self.assertIn("通番は枝あたりとし", counting)
+                self.assertIn("枝の途中でリセットしない", counting)
+
+                for contract in (
+                    "settled",
+                    "rounds-exhausted",
+                    "branch_review_roundsは枝あたりのround上限で、既定は12とする",
+                    "親が修正必須として確定した指摘が解消されている。理由付き不採用だけではsettledにしない",
+                    "上限規則が発火するのは、枝の受け入れ点が未達のまま新たなroundが必要になった場合だけである",
+                    "settled済みsnapshotへの最終レビュー群の実施が未了である場合のその1回だけを",
+                    "この上界はroundの種類を問わず一様に掛かり、再構成起動もこれに従う",
+                    "枝あたりの総round数は上限＋1で有界になる",
+                    "rounds-exhaustedで打ち切った枝は受け入れない",
+                    "standard/strictの枝を過剰実装ゲート未実施のまま受け入れることはない",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), termination)
+
+                # 上限値は Branch Plan schema へ持ち出さない。持ち出すと branch-design 側の
+                # 契約変更を伴い、feature-lead の rounds_limit とも名前空間が交差する。
+                self.assertIn(
+                    "値はこの節に閉じて持ち、BranchPlanその他の外部Dataへfieldを追加しない",
+                    termination,
+                )
+
+    def test_workflows_narrow_relaunch_targets_and_keep_single_acceptance_point(
+        self,
+    ) -> None:
+        """Relaunch only finding owners and newly-risked reviewers, never the gate set."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                sections = self._three_phase_sections(reference)
+                loop = self._normalize_contract(sections["### レビューループ"])
+                acceptance = self._normalize_contract(sections["### 枝の受け入れ点"])
+
+                for contract in (
+                    "各roundにも全findingsの収集barrierが掛かる",
+                    "この規約はレビューループroundの起動対象を定める唯一の規約であり",
+                    "直前のdiff変更のきっかけとなった指摘を出したreviewer、"
+                    "および同じ競合解消で修正案が採用されなかった競合当事者",
+                    "指摘が出た相は問わず",
+                    "変更後に対象riskが新たに成立するreviewer",
+                    "この判定は専門reviewerだけでなく必須完了ゲートにも適用し",
+                    "この2類型は起動し、これ以外は起動しない",
+                    "唯一の例外はover-engineering-reviewerで、レビューループroundの起動対象に含めない",
+                    "最終レビュー群から復帰したroundではover-engineering-reviewerを起動せず",
+                    "その snapshot では initial レビュー群の起動集合を再構成し",
+                    "再構成起動は同一通番の1roundとして数え",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), loop)
+
+                # 受け入れ点はここだけに置く。必須完了ゲート節や責務境界節へ2つ目の
+                # 定義が戻ると、同じ状況に対して2つの受け入れ規約が同時に成立する。
+                for contract in (
+                    "受け入れ可否を決める条件はここだけに置き、他の節で別内容を定義しない",
+                    "レビューループがsettledに到達している",
+                    "その settled に対する最終レビュー群の実施が完了し、"
+                    "その指摘の採用による diff 変更が生じていない",
+                    "liteの枝は最終レビュー群に起動対象がないため実施せず、settledがそのまま受け入れ点になる",
+                    "最終レビュー群のものを含む全指摘に採否が記録され、不採用には理由が記録されている",
+                    "未解決または判断未記録の指摘を残していない",
+                    "親が修正必須として確定した指摘が解消されている。"
+                    "理由付き不採用だけでは受け入れ点を満たさない",
+                    "「責務境界」節の判定区分ごとの列挙は修正先のroutingだけを定める",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), acceptance)
 
     def test_workflows_classify_mixed_diff_before_reviewer_or_acceptance(self) -> None:
         """Judge a change unit by its contract boundaries, not a line-count threshold."""
@@ -173,7 +337,11 @@ class ImplLeadReviewLoopContractsTest(
                 barrier = "".join(subsections["### 全 findings の収集 barrier"].split())
                 for contract in (
                     "同一diffsnapshot",
-                    "必須完了ゲートとriskにより選択した専門reviewer",
+                    # barrier の起動対象は3相節が相ごとに定める。ここで reviewer 名や
+                    # ゲート集合を再掲すると起動対象の正本が二重化するため、参照だけを固定する。
+                    "その相で起動対象となるreviewer",
+                    "initialレビュー群では「枝レビューの3相」のinitialレビュー群が定める集合",
+                    "レビューループroundでは同節の「再起動対象」が定める集合",
                     "全対象reviewer",
                     "全findingsとevidenceを収集",
                     "修正前",
@@ -223,9 +391,11 @@ class ImplLeadReviewLoopContractsTest(
                     "diff変更あり",
                     "新しい同一snapshot",
                     "親QA",
-                    "必須完了ゲート",
-                    "競合当事者の専門reviewer",
-                    "変更後も対象riskが成立する全専門reviewer",
+                    # 再実行対象の列挙は3相節の「再起動対象」へ一本化した。ここに独自の
+                    # 列挙が戻ると、絞り込み規約と別内容の2規約が同じ状況へ指示を出す。
+                    "「枝レビューの3相」の「再起動対象」が定めるreviewerを起動して",
+                    "受け入れ可否は同節の「枝の受け入れ点」に従う",
+                    "前のsnapshotのfindingを自動的に解消済みとみなさない",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(contract, rerun)
@@ -296,28 +466,32 @@ class ImplLeadReviewLoopContractsTest(
                 "## EVAL-30:",
                 "## EVAL-31:",
                 (
-                    "同じ snapshot の diff は、決済 idempotency 判定と外部 payment gateway I/O",
-                    "responsibility-boundary-reviewer は、純粋な冪等性判定 Calculation と外部 gateway I/O Action を別 service へ分離し",
-                    "over-engineering-reviewer は、その分離案のうち既存 Action を一度呼ぶだけの PaymentGatewayService は純粋な pass-through",
-                    "この2つの修正案は同時には成立しないが、両方の問題は妥当である",
+                    "initial レビュー群で responsibility-boundary-reviewer が、純粋な冪等性判定 Calculation と外部 gateway I/O Action を別 service へ分離し",
+                    "親はこの指摘を採用し、gateway 呼び出しを委譲する PaymentGatewayService を切り出す修正を routing した",
+                    "その確定 snapshot に対する最終レビュー群で over-engineering-reviewer が、切り出された PaymentGatewayService は既存 Action を一度呼ぶだけの純粋な pass-through なので除去し",
+                    "この修正案は親が採用済みの分離判断と同時には成立しないが、両方の問題は妥当である",
                 ),
                 (
-                    "diff 変更ありの場合は、新しい同一 snapshot で親QA、必須完了ゲート、競合当事者の専門 reviewer、変更後も対象 risk が成立する全専門 reviewer を再実行してから受け入れる",
+                    "比較の相手は前の snapshot の finding ではなく、親が記録した分離採用の判断とその根拠である",
+                    "最終レビュー群の指摘を採用して diff が変わった場合はレビューループへ戻し、再起動対象が定める reviewer を起動する",
+                    "復帰した round で over-engineering-reviewer は起動しない",
                     "多数決を使わず、各 finding の問題と修正案を分け、evidence、問題の妥当性、代替解法、AC、外部／repository 指示の優先順位、具体的失敗リスク、影響、発生可能性、検証可能性、scope、rollback、最小修正、保守性を比較する",
                 ),
                 (
-                    "diff 変更ありの修正後は新しい同一 snapshot で親QA、必須完了ゲート、競合当事者、残存risk の専門 reviewer を再実行する",
-                    "全対象 reviewer を同じ diff snapshot へ起動し、全 findings と evidence を親が収集する",
+                    "diff 変更ありの修正後はレビューループへ戻し、新しい同一 snapshot で親QAと再起動対象の reviewer を実施する",
+                    "再収束後に最終レビュー群を再度実施する",
+                    "最終レビュー群の全 findings と evidence を親が収集してから routing を決める",
                     "問題の妥当性と修正案の有効性を分離し、上記の比較軸と選択理由を記録する",
                 ),
                 (
-                    "一部の findings だけを根拠に diff を変更し、同一 snapshot の再実行を省略する",
+                    "一部の findings だけを根拠に diff を変更し、レビューループへの復帰と再収束後の最終レビュー群を省略する",
+                    "復帰した round で over-engineering-reviewer を再起動する",
                     "reviewer の人数や多数決だけで競合を決める",
                 ),
                 (
                     "競合の具体的な reviewer 名",
                     "同等に安全で検証可能な代替解法",
-                    "diff 変更ありと新しい同一 snapshot の再実行は固定し、親の比較責任、多数決禁止、同一 snapshot の収集は共通である",
+                    "diff 変更ありでのレビューループ復帰と再収束後の最終レビュー群の再実施は固定し、親の比較責任、多数決禁止、相ごとの findings 収集は共通である",
                 ),
             ),
             (
@@ -333,7 +507,7 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "review-patch-refactorer ではなく元 Implementer へ差し戻す",
-                    "再設計後の新しい同一 snapshot で親QA、必須完了ゲート、競合当事者、変更後も対象 risk が成立する全専門 reviewer を再実行してから受け入れる",
+                    "再設計後の新しい同一 snapshot では initial レビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施してから受け入れる",
                 ),
                 (
                     "競合している reviewer 名",
@@ -345,7 +519,7 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "安全に解消できない競合を review-patch-refactorer の局所修正へ送る",
-                    "再設計後の同一 snapshot reviewer 再実行なしに受け入れる",
+                    "再設計後の snapshot で initial レビュー群の起動集合を再構成せずに受け入れる",
                 ),
                 (
                     "守る AC を変更しない",
@@ -392,7 +566,7 @@ class ImplLeadReviewLoopContractsTest(
                 with self.subTest(case=heading, section="input", contract=contract):
                     self.assertIn(self._normalize_contract(contract), input_section)
             if heading == "## EVAL-30:":
-                self.assertEqual(2, input_section.count("payments.py:140-151"))
+                self.assertEqual(1, input_section.count("payments.py:140-151"))
             for contract in expected:
                 with self.subTest(case=heading, section="expected", contract=contract):
                     self.assertIn(self._normalize_contract(contract), expected_section)

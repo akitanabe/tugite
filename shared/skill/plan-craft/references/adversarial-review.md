@@ -16,6 +16,11 @@
 
 ## round の構成
 
+レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない
+（判定の軸の正本は `plan-adversarial-reviewer`）。
+`design` / `approach` / `steps` / AC の責務分担は
+[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とする。
+
 1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
 
 1. reviewer へ実装プラン本体、AC、scope、constraints、assumptions と、2 round 目以降は前 round
@@ -64,8 +69,8 @@ evidence を補えない指摘は、指摘が成立したと仮定した場合�
 
 - adversarial の収束（`zero-findings` または `trivial-only`）後に、`over-engineering-reviewer` を
   プラン入力モードで1回起動する（[過剰実装のプラン審査](overengineering-plan-review.md)）。
-- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューを再実行する
-  （必須完了ゲートの「修正後は全ゲートを再実行する」流儀）。この round も `rounds_limit` に数える。
+- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューを再実行する。
+  この round も `rounds_limit` に数える。
   上限は両 reviewer の round を合算して適用し、無限ループを構造的に防ぐ。
 - 過剰実装審査の指摘も同じ `PF-*` 台帳へ記録し、`reviewer: over-engineering-reviewer` で区別する。
 

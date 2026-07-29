@@ -187,12 +187,12 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
    審査と準備が完了した先頭の枝だけを委譲する。
 6. Implementer の返答を待ち、返却 commit と実行結果を受け取る。
 7. [QA・修正・統合](references/qa-and-integration.md) を読み、diff、テスト、専門 review、修正経路を判断し、
-   その枝の mode で適用される必須完了ゲートを通す。`lite` は `writing-principles-reviewer` だけ、
-   `standard` / `strict` は `writing-principles-reviewer` と `over-engineering-reviewer` を通す。
+   その枝のレビューを initial レビュー群・レビューループ・最終レビュー群の3相で進める。どの相でどのゲートを
+   起動するか、1 round の数え方、打ち切り条件、枝の受け入れ点は同 reference の「枝レビューの3相」を正本とする。
    reviewer の findings は [Reviewer findings の共通契約](references/reviewer-findings.md) が要求する
    指摘件数のサマリ行と指摘ごとの evidence を備えた形で受け取る。
-8. QA 修正を続ける場合は手順7の修正経路を継続する。必須完了ゲートを通過して受け入れる場合は1枝だけを統合し、
-   統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
+8. QA 修正を続ける場合は手順7の修正経路を継続する。「枝レビューの3相」の枝の受け入れ点を満たして受け入れる
+   場合は1枝だけを統合し、統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
    親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を
    終了する場合は、手順9へ進む。
 9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、適用可能な統合済み diff review と
