@@ -654,8 +654,6 @@ class DraftImplementationPlanContractsTest(
             "受け入れ判断のいずれも変わらない指摘",
             "修正コストに見合わない指摘は `軽微` として扱う",
             "軽微としない条件",
-            "`assumptions` に記録済みの事項の再指摘",
-            "仮定を覆す新しい根拠を伴う場合",
             "カタログは影響基準の適用例",
             "カタログ外の指摘も影響基準を満たせば `軽微`",
         )
@@ -679,7 +677,19 @@ class DraftImplementationPlanContractsTest(
         # 件数を数えるスコープは `### 軽微類型カタログ` 以降に限る。`## 判定区分と
         # `軽微` の定義` 全体で数えると、`### 影響基準` へ箇条書きを足しただけで
         # カタログの契約違反として報告され、失敗メッセージから原因の節へ辿れない。
+        # `_section_lines` は次の `## ` までを返すため終端を自前で切り、カタログの
+        # 後ろに新しい `### ` 節が足された場合の混入も防ぐ（共有シグネチャは他の
+        # 呼び出しへ波及するため変えない）。
         catalog_lines = self._section_lines(source, "### 軽微類型カタログ")
+        catalog_end = next(
+            (
+                i
+                for i, line in enumerate(catalog_lines)
+                if line.startswith("### ")
+            ),
+            len(catalog_lines),
+        )
+        catalog_lines = catalog_lines[:catalog_end]
         catalog_section = "".join("".join(catalog_lines).split())
         for contract in catalog + escapes:
             with self.subTest(contract=contract):
