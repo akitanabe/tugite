@@ -493,6 +493,65 @@ class ImplLeadReviewGateContractsTest(
                         "".join(relaxation.split()), normalized_workflow
                     )
 
+    def test_repository_workflow_requires_parent_confirmed_severity_before_routing(
+        self,
+    ) -> None:
+        """Derive every finding's severity from parent judgment before fix routing."""
+        skills = self._repository_skill_texts()
+        qa_workflows = {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+        heading = "## 修正先の選択"
+        # AC-1 (d)
+        scope_and_timing = (
+            "すべての reviewer の finding は、修正先または不採用のいずれを判断するより前に、"
+            "親が重要度を確定する。",
+            "この適用範囲とタイミングは、以下に列挙する起動条件など本節内の他の記述の"
+            "適用有無に関わらず成立する。",
+        )
+        # AC-1 (a)
+        not_self_reported = ("親は reviewer が申告した重要度をそのまま採用しない。",)
+        # AC-1 (b)
+        evidence_based_grounds = (
+            "親が確定する根拠は、finding の evidence と、その finding が影響する Acceptance"
+            " Criteria・対象 risk への影響である。",
+            "reviewer 原稿が `軽微` / `修正推奨` / `修正必須` の意味を定めている範囲については、"
+            "その記述を正本として照合する。",
+            "現状、`impl-lead` が起動する reviewer に限れば、この範囲は「責務境界」節が起動する"
+            " reviewer の「修正コストに見合わない指摘は `軽微` として扱う」だけである。",
+            "`Pass` / `Needs attention` / `Blocker` のように3区分と異なる語彙で申告する"
+            " reviewer の finding は、申告語彙から3区分への写像規則を定義しないため、"
+            "evidence と AC・対象 risk への影響だけから確定する。",
+            "判定区分に相当する項目を持たない reviewer の finding も同じ扱いとする。",
+        )
+        # AC-1 (c)
+        always_three_way = (
+            "親が確定する値は、重要度に相当する項目を持たない finding を含め、常に"
+            " `軽微` / `修正推奨` / `修正必須` のいずれかとする。",
+        )
+        # AC-1 (e)
+        routing_points_at_confirmed_value = (
+            "原稿の他の記述が `軽微` / `修正推奨` / `修正必須` で分岐する場合、その分岐は"
+            " reviewer の申告値ではなく親が確定したこの値を指す。",
+            "「責務境界」節の routing はこれに当たる。",
+        )
+
+        for platform, workflow in qa_workflows.items():
+            with self.subTest(platform=platform):
+                self.assertEqual(1, workflow.count(heading))
+                section = workflow.split(heading, 1)[1].split("\n## ", 1)[0]
+                normalized_section = "".join(section.split())
+                for contract in (
+                    scope_and_timing
+                    + not_self_reported
+                    + evidence_based_grounds
+                    + always_three_way
+                    + routing_points_at_confirmed_value
+                ):
+                    self.assertIn("".join(contract.split()), normalized_section)
+
     def test_repository_decision_corpus_bounds_review_patch_scope(self) -> None:
         """Evaluate bounded refactorer inputs and zero out-of-scope changes."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
