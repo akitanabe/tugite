@@ -11,6 +11,16 @@ from build_plugin_assets_test_support import (
 )
 
 
+# 起動条件が複数節に分散すると、reviewer を1つ増やすたびに全節が同期点になる。
+# 具体的な判断材料（層・外部 I/O・abstraction・責務混在）は risk 表の直後の段落として
+# 正本側へ残す。文の1本化で判断材料まで失うと起動判断ができない。逆に派生側へ複製すると、
+# 所在を1本化しても列挙が同期点として残る。正本の所在と派生節での不在を同じ文字列で
+# 判定するため、定数として1箇所に置く。
+SPECIALIST_RISK_EXAMPLE = (
+    "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い"
+)
+
+
 class ImplLeadReviewGateContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -68,12 +78,13 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Keep the specialist launch conditions in one section and subordinate the rest."""
-        # 起動条件が複数節に分散すると、reviewer を1つ増やすたびに全節が同期点になる。
-        # 具体的な判断材料（層・外部 I/O・abstraction・責務混在）は risk 表1行目の
-        # 具体例として正本側へ残す。文の1本化で判断材料まで失うと起動判断ができない。
-        # 逆に派生側へ複製すると、所在を1本化しても列挙が同期点として残る。
-        specialist_risk_example = (
-            "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い"
+        # 正本宣言は risk 軸へ限定する。無限定にすると「再起動対象」節が持つ
+        # 「レビューループ round の起動対象を定める唯一の規約」と排他になり、
+        # risk 成立と無関係な第1類型の再起動が正本側の読みで打ち消される。
+        single_source_declaration = (
+            "risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
+            "起動時に渡す Data の受け渡し規約、または「枝レビューの3相」の"
+            "「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。"
         )
         subordination_contracts = (
             "「専門 reviewer」節の起動条件に従って起動する",
@@ -94,13 +105,16 @@ class ImplLeadReviewGateContractsTest(
                 specialist = self._qa_section(reference, "## 専門 reviewer")
                 responsibility = self._qa_section(reference, "## 責務境界")
 
-                normalized_example = self._normalize_contract(specialist_risk_example)
-                self.assertIn(
-                    normalized_example, self._normalize_contract(specialist)
-                )
+                normalized_specialist = self._normalize_contract(specialist)
+                normalized_example = self._normalize_contract(SPECIALIST_RISK_EXAMPLE)
+                self.assertIn(normalized_example, normalized_specialist)
                 self.assertEqual(
                     1,
                     self._normalize_contract(reference).count(normalized_example),
+                )
+                self.assertIn(
+                    self._normalize_contract(single_source_declaration),
+                    normalized_specialist,
                 )
 
                 normalized_responsibility = self._normalize_contract(responsibility)
@@ -146,17 +160,26 @@ class ImplLeadReviewGateContractsTest(
                     self.assertIn(
                         self._normalize_contract(handoff_data), normalized_step_5
                     )
+                # 宣言文と Data 列挙が残ったまま起動条件が書き戻される経路を塞ぐ。
+                # 手順5 は総称の「専門 reviewer」だけを扱い、個別 reviewer 名と
+                # risk の判断材料は正本節にしか現れない。
+                for launch_condition_marker in (
+                    "responsibility-boundary-reviewer",
+                    "test-quality-reviewer",
+                    "security-side-effect-reviewer",
+                    SPECIALIST_RISK_EXAMPLE,
+                ):
+                    with self.subTest(marker=launch_condition_marker):
+                        self.assertNotIn(
+                            self._normalize_contract(launch_condition_marker),
+                            normalized_step_5,
+                        )
 
     def test_repository_over_engineering_gate_applies_only_to_standard_and_strict(
         self,
     ) -> None:
         """Apply the over-engineering gate to standard and strict branches only."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         # 適用 mode の正本はゲート表なので、表の行と mode 文言だけを pin する。
         # `lite` を除外する根拠の散文は、文言の微修正だけで red になる割に
         # 「`lite` へ誤って適用される」欠陥をこの2つより先に検出しない。
@@ -202,12 +225,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Approve each removal per finding id and return unlocatable coverage."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         approval_conditions = (
             "### 過剰実装ゲートの除去許可",
             "親は指摘IDごとに次をすべて確認する。",
@@ -249,12 +267,7 @@ class ImplLeadReviewGateContractsTest(
 
     def test_repository_workflow_passes_selected_reviewer_context(self) -> None:
         """Pass baseline review data plus purpose-selected context, never the whole repo."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         baseline_inputs = (
             "レビュー対象とリスクに応じて、必要な周辺コンテキストを選択して reviewer へ渡す",
             "タスクの目的",
@@ -414,12 +427,7 @@ class ImplLeadReviewGateContractsTest(
 
     def test_repository_mandatory_gates_accept_no_change_result(self) -> None:
         """Pass any mandatory gate whose review reports no findings."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         required_contracts = (
             "no-change",
             "指摘が0件",
@@ -436,12 +444,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Review only changed behavior using evidence collected by the parent."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         required_contracts = (
             "`git diff`",
             "`git status`",
@@ -463,12 +466,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Block acceptance until every identified finding has a recorded outcome."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         required_contracts = (
             "指摘ID",
             "構造化 Data",
@@ -534,12 +532,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Launch the patch refactorer with bounded data and re-verify scope on return."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         launch_contracts = (
             "親が指摘を確認し、修正対象として採用している。",
             "Acceptance Criteria を変更する必要がない。",
@@ -585,12 +578,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Derive every finding's severity from parent judgment before fix routing."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         heading = "## 修正先の選択"
         # AC-1 (d)
         scope_and_timing = (
@@ -607,8 +595,11 @@ class ImplLeadReviewGateContractsTest(
             " Criteria・対象 risk への影響である。",
             "reviewer 原稿が `軽微` / `修正推奨` / `修正必須` の意味を定めている範囲については、"
             "その記述を正本として照合する。",
-            "現状、`impl-lead` が起動する reviewer に限れば、この範囲は「責務境界」節が起動する"
-            " reviewer の「修正コストに見合わない指摘は `軽微` として扱う」だけである。",
+            # 節名経由で reviewer を同定すると、「責務境界」節が起動条件を持つ節だと
+            # 読める。同節は起動条件を独自に定義しないため、reviewer 名で直接指す。
+            "現状、`impl-lead` が起動する reviewer に限れば、この範囲は"
+            " `responsibility-boundary-reviewer` の"
+            "「修正コストに見合わない指摘は `軽微` として扱う」だけである。",
             "`Pass` / `Needs attention` / `Blocker` のように3区分と異なる語彙で申告する"
             " reviewer の finding は、申告語彙から3区分への写像規則を定義しないため、"
             "evidence と AC・対象 risk への影響だけから確定する。",
@@ -661,12 +652,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Return every fix route to mode-scoped parent QA and the narrowed relaunch set."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         required_contracts = (
             "`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、"
             "元 Implementer による修正にも適用する。",
@@ -688,12 +674,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Withhold gate passage on findings whose evidence the parent cannot verify."""
-        skills = self._repository_skill_texts()
-        qa_workflows = {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
+        qa_workflows = self._qa_and_integration_reference_texts()
         required_contracts = (
             "[Reviewer findings の共通契約](reviewer-findings.md)",
             "evidence を欠く指摘は、単独でゲート通過の根拠にしない。",
