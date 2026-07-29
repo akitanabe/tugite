@@ -11,6 +11,7 @@ from build_plugin_assets_test_support import (
     IMPL_LEAD_SKILL,
     GENERATED_MARKDOWN_WARNING,
     GENERATED_SKILL_PATHS,
+    READ_ONLY_TOOL_AGENT_NAMES,
     REPOSITORY_ROOT,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
@@ -57,22 +58,34 @@ COUNT_ONLY_REVIEWER_NAMES = (
     "plan-adversarial-reviewer",
 )
 QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
+# "6本" is the FINDINGS_REVIEWER_NAMES set (findings を返す reviewer), and this
+# section's "7本" adds expert-selection-reviewer to it. Both counts are derived
+# from READ_ONLY_TOOL_AGENT_NAMES / FINDINGS_REVIEWER_NAMES so that adding an 8th
+# reviewer to those sets fails this test instead of leaving the manuscript's
+# literal count silently stale.
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "## read-only の担保",
     "read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。",
     "Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、"
     "Codex 向けは `sandbox_mode` で担保し、片方の platform にだけ制限が入っている状態を作らない。",
-    "この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。",
+    f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
+    f"`expert-selection-reviewer` を加えた reviewer {len(READ_ONLY_TOOL_AGENT_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
 )
 # The delegation pointer, not a second copy of the rule: qa-and-integration.md
 # keeps only why the parent hands diff and test results over as Data.
 READ_ONLY_ENFORCEMENT_DELEGATION = (
-    "reviewer に与える tool は "
+    "reviewer が read-only であることの担保は "
     "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
 )
 DUPLICATED_READ_ONLY_RULE = "reviewer 自身へ Bash や編集 tool を与えない"
+# A restated read-only rule almost always names the concrete tools or the Claude
+# frontmatter key it grants/withholds, even when the wording differs from
+# DUPLICATED_READ_ONLY_RULE verbatim. Pin the absence of those names too, so a
+# reworded duplicate (as the reviewer reproduced with "Bash や編集用の tool を
+# 渡さない") still fails this test instead of slipping past the literal pin.
+READ_ONLY_RULE_RESTATEMENT_MARKERS = ("Bash", "NotebookEdit", "disallowed_tools")
 
 
 class ReviewerFindingsContractTest(
@@ -174,6 +187,8 @@ class ReviewerFindingsContractTest(
                 self.assertNotIn(
                     "".join(DUPLICATED_READ_ONLY_RULE.split()), normalized
                 )
+                for marker in READ_ONLY_RULE_RESTATEMENT_MARKERS:
+                    self.assertNotIn(marker, text)
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
         """Reach the findings contract from the QA phase of the delegation workflow."""

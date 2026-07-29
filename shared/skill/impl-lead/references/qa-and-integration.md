@@ -262,7 +262,7 @@ repository 相対 path を最終報告に含める。
 親が取得する `git diff`、`git status`、commit log、テスト結果を、Data として各必須完了ゲートの reviewer へ渡す。
 対象は基準 commit からの diff が導入または悪化させた問題に限定し、既存問題を広く探索しない。
 これらの情報は親が取得して渡すものであり、reviewer 自身に取得させない。
-reviewer に与える tool は [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。
+reviewer が read-only であることの担保は [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。
 起動 prompt は「reviewer 起動テンプレート」の全欄を埋めて渡す。
 
 reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す。
