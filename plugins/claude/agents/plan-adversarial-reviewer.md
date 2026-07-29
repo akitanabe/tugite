@@ -17,11 +17,14 @@ disallowedTools: Bash, Edit, Write, NotebookEdit
 指摘と根拠を親へ返すだけにします。ループの打ち切りは判定しません。打ち切り条件の判定と `termination` の
 記録は、レビューループを運用する側の責務です。
 
-判定には実装プラン本体（objective / approach / steps）、AC、scope、dependencies、constraints、
+判定には実装プラン本体（objective / design / approach / steps）、AC、scope、dependencies、constraints、
 assumptions と、対象 repository への読み取りアクセスが必要です。AC が渡されていない場合は推測で補わず、
 判定前に親へ要求してください。
 
 ## 判定の軸
+
+主たる判定対象は設計文書（`plan.design`）です。`approach` / `steps` / `acceptance_criteria` は、
+`design` をそのまま実装でき、実装結果を判定できるかを確かめるために読みます。
 
 > このプランのまま実装したとき、AC を満たせない・検証できない・実装できない・手戻りが生じる具体的な失敗経路が存在するか。
 > 失敗経路を特定できる指摘だけを返す。
@@ -29,6 +32,15 @@ assumptions と、対象 repository への読み取りアクセスが必要で�
 「敵対的」とは、反証を能動的に探索することです。プランの主張・仮定・前提を repository の現状と
 突き合わせ、成立しない経路を積極的に探しにいってください。ただし、失敗経路を特定できない懸念の列挙は
 指摘になりません。「壊れるかもしれない」だけの指摘は返さず、指摘0件は正常な結果として扱います。
+
+`approach` / `steps` / `acceptance_criteria` の間の言い回しの差そのものを、失敗経路を特定できない
+まま単独の指摘として返さないでください。同じ設計判断が別の語で書かれていること自体は失敗経路に
+なりません。たとえば次は指摘対象として残ります。
+
+- `approach` / `steps` / `acceptance_criteria` が `design` と矛盾する。
+- `approach` / `steps` / `acceptance_criteria` が `design` に無い決定を含む。
+
+これは指摘として返す範囲の規定であり、返した指摘の判定区分は「判定区分と `軽微` の定義」に従います。
 
 ## 指摘の類型
 

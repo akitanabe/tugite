@@ -23,6 +23,15 @@ Implementation Plan の正規スキーマ（正本）を定義する。確定済
   この Skill でも複製せずそのまま使う。
 - Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務で
   あり、`plan.steps` は起草者が実装の道筋を示す順序付き作業であって、AC を所有しない。
+- `plan.design` は決めた規約の本体を1箇所に置く正本とする。`plan.approach` は `design` の規約を
+  対象 repository の現状へ当てはめる方針、`plan.steps` は `design` を実現する作業、
+  `acceptance_criteria` は `design` の充足を判定する観測点であり、いずれも規約本文自体を
+  保持しない。
+- 1つの設計判断を複数の field へ別々の言い回しで写すと、レビューは写しの不一致の同期に
+  費やされる。`design` を正本に置くのはこの写しを無くすためであり、`plan.approach` を
+  設計文書に据える案と別 artifact に分離する案は棄却した。`approach` は `design` の要約ではなく、
+  `design` が答えない「どこへ・既存構造のどれを使うか」を担当する。要約にすると `design` と
+  変更理由を共有し、写しが要約の粒度で残るためである。
 - AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま引き継げる形（観測可能な
   振る舞いの原文）で保持する。ID は round の増減やプラン修正で振り直さない。
 - レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。指摘 ID
@@ -58,12 +67,19 @@ approval:
 plan:
   objective: <実装目的の1行要約>
   source: <要求の所在。「会話内」/ path>
-  approach: <実装方針の要約>
-  steps: []                     # 順序付きの作業。実装枝への分割はしない。AC を所有しない
+  design: <決めた規約の本体。設計判断の正本>
+                                # 書くのは決めたことだけで、要求の再掲や背景の説明は含めない。
+                                # 分量はそのプランで実際に決めた事項の数に従い、決めた事項が少なければ短くてよい
+  approach: <design の規約を対象 repository の現状へ当てはめる方針>
+                                # どこへ・既存構造のどれを使うかを書く。
+                                # design が答えた規約そのものは書かない
+  steps: []                     # 順序付きの作業。実装枝への分割はしない。AC を所有しない。
+                                # 規約本文は持たず、plan.design を正本として参照する
 
 acceptance_criteria:
   - id: AC-1                    # 安定 ID。Branch Plan へそのまま引き継ぎ可能。振り直さない
-    text: <観測可能な振る舞い>
+    text: <観測可能な振る舞い>   # 規約本文の正本は plan.design。
+                                # AC はその充足を判定する観測可能な振る舞いだけを書く
 
 scope:
   allowed_paths: []             # 変更を許可する物理的なファイル範囲
@@ -116,7 +132,13 @@ validation:
 | `review-incomplete` | `termination` が null のまま、または過剰実装審査（`reviewer: over-engineering-reviewer` の round）未実行のまま `awaiting_review` 以降へ遷移している |
 | `resolution-missing` | `resolution` が未記録の finding、または `resolution: unresolved` が `termination: round-limit` 以外で残っている |
 | `rounds-invalid` | `rounds_completed` が `rounds_limit` を超えている、または `findings[].round` と矛盾する |
+| `design-missing` | `plan.design` が未記載または空のまま `awaiting_review` 以降へ遷移している |
 | `handoff-incomplete` | 引き渡し必須 field（`plan.objective` / `plan.source` / `acceptance_criteria` / `scope`）の欠落 |
+
+この表は、入力 Data から再計算できる検査だけで成り立つ。`approach` / `steps` /
+`acceptance_criteria` が `design` の規約本文を再掲しているかは意味判断であり、Data から
+再計算できない。表へ入れると表全体の再計算可能性が壊れるため、再掲の有無は code にしない。
+再掲の抑止は起草手順とレビューの判定が担う。
 
 トップレベル状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` を生成する。
@@ -158,3 +180,7 @@ validation:
 | 既知の依存 | `dependencies` |
 
 `handoff-incomplete` は、この表の左列を充足できない field 欠落を検査する。
+
+`plan.design` はこの表へ足さない。左列は `branch-design` の入力要件そのものであり、行を足す
+ことは入力要件の変更になる。加えて、足すと `handoff-incomplete` と `design-missing` の検査
+対象が二重になり、1つの欠落に2つの code が立つ。
