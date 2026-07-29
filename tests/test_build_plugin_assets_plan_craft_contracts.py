@@ -603,9 +603,14 @@ class DraftImplementationPlanContractsTest(
         source = self._repository_text(
             Path("shared/agents/plan-adversarial-reviewer.md")
         )
-        normalized = "".join(source.split())
+        section = "".join("".join(self._section_lines(source, "## 判定の軸")).split())
         # 返す範囲の規定と verdict の規定が同じ層に見えると、軽微類型カタログの
         # 「軽微としない条件」が返却前の抑止に飲まれる。層の別を明記させる。
+        # スコープは節に限る。文書全体を対象にすると、この一文が「判定区分と
+        # `軽微` の定義」節へ移された場合を検出できない。この一文は「返す範囲は
+        # ここ（判定の軸）にあり、判定区分は別節が持つ」という層の所在そのものの
+        # 宣言なので、意味が置かれた節に依存させる必要があり、移されると自己参照に
+        # なって層の別を表さなくなる。
         self.assertIn(
             "".join(
                 (
@@ -613,7 +618,7 @@ class DraftImplementationPlanContractsTest(
                     "「判定区分と `軽微` の定義」に従います。"
                 ).split()
             ),
-            normalized,
+            section,
         )
 
     def test_plan_adversarial_reviewer_keeps_the_six_finding_types(self) -> None:
