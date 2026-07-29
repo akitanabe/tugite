@@ -14,8 +14,8 @@ from build_plugin_assets_test_support import (
 # 起動条件が複数節に分散すると、reviewer を1つ増やすたびに全節が同期点になる。
 # 具体的な判断材料（層・外部 I/O・abstraction・責務混在）は risk 表の直後の段落として
 # 正本側へ残す。文の1本化で判断材料まで失うと起動判断ができない。逆に派生側へ複製すると、
-# 所在を1本化しても列挙が同期点として残る。正本の所在と派生節での不在を同じ文字列で
-# 判定するため、定数として1箇所に置く。
+# 所在を1本化しても列挙が同期点として残る。正本節に在ることと
+# reference 全体で出現が1回だけであることを同じ文字列で判定するため、定数として1箇所に置く。
 SPECIALIST_RISK_EXAMPLE = (
     "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い"
 )
@@ -167,7 +167,6 @@ class ImplLeadReviewGateContractsTest(
                     "responsibility-boundary-reviewer",
                     "test-quality-reviewer",
                     "security-side-effect-reviewer",
-                    SPECIALIST_RISK_EXAMPLE,
                 ):
                     with self.subTest(marker=launch_condition_marker):
                         self.assertNotIn(
