@@ -618,39 +618,59 @@ class DraftImplementationPlanContractsTest(
                     "the design body must be drafted before approach, AC, and steps",
                 )
 
-    def test_plan_drafting_defines_approach_as_applying_the_design_to_the_repository(
+    def test_plan_drafting_delegates_the_approach_responsibility_to_the_schema(
         self,
     ) -> None:
-        """Keep approach as where-and-with-what, never as a summary of the design."""
+        """Delegate what approach covers to the schema, keeping only the failure-mode ban."""
         required = (
-            "`design` の規約を、対象 repository のどこへ、既存構造のどれを使って"
-            "当てはめるかを書き、`design` の要約にしない。",
-        )
-        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
-            with self.subTest(platform=platform):
-                for contract in required:
-                    self.assertIn(
-                        "".join(contract.split()), self._drafting_procedure(text)
-                    )
-
-    def test_plan_drafting_defers_the_design_body_shape_to_the_schema(self) -> None:
-        """Point the design body's responsibility split and size at the schema reference."""
-        required = (
-            "[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とし、"
-            "ここでは再掲しない。",
-            # 章立てを課すと、決めた事項が少ないプランへ空章の作文を要求する読みが立ち、
-            # スキーマ側の分量の境界と衝突する。
-            "章立てと必須項目は固定しない。",
+            "担当する内容は手順3 と同じくスキーマを正本とし、ここでは再掲しない。",
+            # 担当範囲の定義はスキーマの担当だが、要約で書いてしまう失敗は起草時に起きる。
+            # 失敗モードの禁止だけを手順側に残す。
+            "`design` の要約にしない。",
         )
         for platform, text in self._draft_reference_texts("plan-drafting.md").items():
             with self.subTest(platform=platform):
                 procedure = self._drafting_procedure(text)
                 for contract in required:
                     self.assertIn("".join(contract.split()), procedure)
-                # 分量の境界そのものを起草手順へ写すと、この PR が無くそうとしている
-                # 写しを起草手順側に再生産する。参照だけを残す。
+                # 担当範囲をスキーマの言い回しで書き直すと、双方が別々のテストへ逐語固定され、
+                # スキーマ側だけの改訂で同期漏れが起きる。この PR が消そうとしている構造そのもの。
                 self.assertNotIn(
-                    "".join("決めた事項が少なければ短くてよい".split()), procedure
+                    "".join("どこへ・既存構造のどれを使う".split()), procedure
+                )
+
+    def _drafting_step(self, text: str, number: int) -> str:
+        lines = self._section_lines(text, "## 起草の進め方")
+        start = next(
+            index for index, line in enumerate(lines) if line.startswith(f"{number}. ")
+        )
+        rest = lines[start + 1 :]
+        end = next(
+            (
+                index
+                for index, line in enumerate(rest)
+                if line.strip() and not line.startswith("   ")
+            ),
+            len(rest),
+        )
+        return "".join("".join(lines[start : start + 1 + end]).split())
+
+    def test_plan_drafting_defers_the_design_body_shape_to_the_schema(self) -> None:
+        """Point the design body's responsibility split and size at the schema reference."""
+        # 章立てを課すと、決めた事項が少ないプランへ空章の作文を要求する読みが立ち、
+        # スキーマ側の分量の境界と衝突する。免責文の存在だけを assertIn で見ると、免責文を
+        # 残したまま必須項目を「追加」した自己矛盾を通してしまう。手順3 のブロック全体を
+        # 固定し、免責文の削除と必須項目の追加の両方を検出する。
+        expected = (
+            "3. `plan.design` に、そのプランで決めた規約の本体を書く。"
+            "`design` と `approach` / `steps` / AC の責務分担、および `design` の分量は"
+            "[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とし、"
+            "ここでは再掲しない。章立てと必須項目は固定しない。"
+        )
+        for platform, text in self._draft_reference_texts("plan-drafting.md").items():
+            with self.subTest(platform=platform):
+                self.assertEqual(
+                    self._drafting_step(text, 3), "".join(expected.split())
                 )
 
     def test_plan_drafting_keeps_convention_text_out_of_acceptance_criteria(
@@ -682,10 +702,12 @@ class DraftImplementationPlanContractsTest(
         procedure = (
             "要求原文を言い換えずに保持し、`plan.source` に所在を記録する。",
             "対象 repository の現状を読み、",
-            "現状を確認せずに",
+            # 前置詞句で切ると、禁止を許可へ反転させた原稿を通す。禁止条項は述部まで固定する。
+            "現状を確認せずに以降の手順へ進まない。",
             "安定 ID を付与する。",
             "scope、dependencies、constraints を確定し、確定できない事項を不足として"
             "振り分ける。",
+            "`plan.steps` に `design` を実現する実装の道筋を順序付きで書く。",
         )
         ac_rules = (
             "AC は外部から観測可能な振る舞いとして書く。内部実装の手順や構造を AC にしない。",

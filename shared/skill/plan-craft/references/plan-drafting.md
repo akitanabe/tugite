@@ -22,11 +22,11 @@
    責務分担、および `design` の分量は
    [Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とし、
    ここでは再掲しない。章立てと必須項目は固定しない。
-4. `plan.approach` を書く。`design` の規約を、対象 repository のどこへ、既存構造のどれを使って
-   当てはめるかを書き、`design` の要約にしない。
+4. `plan.approach` を書く。担当する内容は手順3 と同じくスキーマを正本とし、ここでは再掲しない。
+   `design` の要約にしない。
 5. `design` の充足を判定する観測点として、要求から AC を導出し、安定 ID を付与する。
 6. scope、dependencies、constraints を確定し、確定できない事項を不足として振り分ける。
-7. `plan.steps` に `design` を実現する道筋を順序付きで書く。
+7. `plan.steps` に `design` を実現する実装の道筋を順序付きで書く。
 
 ## AC の書き方
 
