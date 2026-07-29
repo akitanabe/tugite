@@ -7,6 +7,10 @@ description: >-
   エージェント分担を求めたとき、または `lite` / `standard(-adaptive)` / `strict(-adaptive)` /
   `strict-full` を明示したときに使う。`direct` の明示時や、委譲指示なしにタスク規模だけを
   理由として使わない。
+  ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
+  Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+  責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
+  通常どおり動作する。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -59,6 +63,11 @@ adaptive 化が必要になった場合の変更対象は、語彙の名前で�
 タスク規模だけでこの skill を発火しない。`direct` が明示された場合も、この skill を発火しない。
 `direct` でも、親は必要なテストと検証を実行し、diff review と最終報告を行う。
 
+ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
+Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
+通常どおり動作する。
+
 ### 配分方針の選択
 
 `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` の明示は委譲要求を兼ねる。
@@ -79,6 +88,12 @@ adaptive 化が必要になった場合の変更対象は、語彙の名前で�
 
 引き下げ禁止の対象は配分方針 `{policy, baseline}` とする。ユーザーが明示した `baseline` を親都合で
 引き下げない。`policy` を親都合で `fixed` から `adaptive` へ変えない。
+
+`feature-lead` の経路で、写像した `requested_mode` が `branch-design` の branch-plan-schema.md の
+出力条件表が proposal を要求する組み合わせになる場合に、表が提案する `{policy, baseline}` を
+設定することは、この親都合の変更に含めない。ユーザーが mode を明示して一括実行を要求したことが、
+この引き上げの授権を兼ねる。引き上げ先は出力条件表に委ね、この原稿で別の値を選ばない。
+引き上げ前後の `{policy, baseline}` を記録し、引き上げが生むリスクをユーザーへ報告する。
 
 枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。導出表を逸脱した割り当てだけを
 引き上げ / 引き下げとして扱う。
