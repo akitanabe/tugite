@@ -12,6 +12,11 @@ from build_plugin_assets_test_support import (
 
 
 FEATURE_LEAD_SKILL = "feature-lead"
+IMPL_LEAD_SKILL = "impl-lead"
+# The three skills that predate feature-lead and now have to decline a batch
+# request. Their manuscripts word the non-firing clause identically so a single
+# literal can be asserted against every generated file.
+PRE_EXISTING_STAGE_SKILLS = ("plan-craft", "branch-design", IMPL_LEAD_SKILL)
 
 
 class FeatureLeadContractsTest(
@@ -23,6 +28,12 @@ class FeatureLeadContractsTest(
             platform: self._repository_text(
                 generated_skill_path(platform, FEATURE_LEAD_SKILL)
             )
+            for platform in PLATFORMS
+        }
+
+    def _generated_texts_for(self, skill: str) -> dict[str, str]:
+        return {
+            platform: self._repository_text(generated_skill_path(platform, skill))
             for platform in PLATFORMS
         }
 
@@ -268,6 +279,77 @@ class FeatureLeadContractsTest(
             for contract in body_contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized_body)
+
+    def test_existing_skills_defer_batch_requests_to_feature_lead(self) -> None:
+        """Decline a direct batch request while still running as a feature-lead stage."""
+        # Asserted against the frontmatter and the body separately because the
+        # description lives in per-platform marker blocks while the body is shared.
+        # A whole-file match would let a body-only edit satisfy both platforms with
+        # an untouched description, which is exactly the miss AC-16 asks about.
+        contracts = (
+            "ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの "
+            "Implementation Plan を渡して実装までの一括実行を直接要求された場合は、"
+            "`feature-lead` の責務であり発火しない。",
+            "`feature-lead` の段として起動された場合はこの条件の対象外であり、"
+            "通常どおり動作する。",
+        )
+
+        for skill in PRE_EXISTING_STAGE_SKILLS:
+            for platform, text in self._generated_texts_for(skill).items():
+                frontmatter, body = self._generated_frontmatter_and_body(text)
+                for part, section in (
+                    ("frontmatter", frontmatter),
+                    ("body", body),
+                ):
+                    normalized = "".join(section.split())
+                    for contract in contracts:
+                        with self.subTest(
+                            skill=skill,
+                            platform=platform,
+                            part=part,
+                            contract=contract,
+                        ):
+                            self.assertIn("".join(contract.split()), normalized)
+
+    def test_impl_lead_keeps_the_downgrade_ban_wording_intact(self) -> None:
+        """Keep the allocation-policy downgrade ban worded as it already is."""
+        contracts = (
+            "引き下げ禁止の対象は配分方針 `{policy, baseline}` とする。",
+            "ユーザーが明示した `baseline` を親都合で引き下げない。",
+            "`policy` を親都合で `fixed` から `adaptive` へ変えない。",
+        )
+
+        for platform, text in self._generated_texts_for(IMPL_LEAD_SKILL).items():
+            normalized = "".join(text.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_impl_lead_exempts_the_feature_lead_upgrade_from_the_downgrade_ban(
+        self,
+    ) -> None:
+        """Let the batch route pick the table's proposal without calling it a downgrade."""
+        contracts = (
+            "`feature-lead` の経路で、写像した `requested_mode` が `branch-design` の "
+            "branch-plan-schema.md の出力条件表が proposal を要求する組み合わせになる場合に、"
+            "表が提案する `{policy, baseline}` を設定することは、この親都合の変更に含めない。",
+            "ユーザーが mode を明示して一括実行を要求したことが、この引き上げの授権を兼ねる。",
+            "引き上げ先は出力条件表に委ね、この原稿で別の値を選ばない。",
+            "引き上げ前後の `{policy, baseline}` を記録し、引き上げが生むリスクを"
+            "ユーザーへ報告する。",
+        )
+        # The exception applies in both autonomy settings, so the manuscript must not
+        # narrow it. A blanket ban on the word `autonomy` would also fail on unrelated
+        # future mentions, so only the narrowing sentence itself is excluded.
+        autonomy_narrowing = "この例外は `unattended` の場合にだけ適用する。"
+
+        for platform, text in self._generated_texts_for(IMPL_LEAD_SKILL).items():
+            normalized = "".join(text.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+            with self.subTest(platform=platform, contract=autonomy_narrowing):
+                self.assertNotIn("".join(autonomy_narrowing.split()), normalized)
 
 
 if __name__ == "__main__":
