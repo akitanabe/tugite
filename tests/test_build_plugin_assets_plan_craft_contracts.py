@@ -17,6 +17,7 @@ from build_plugin_assets_test_support import (
 
 
 PLAN_CRAFT_SKILL = "plan-craft"
+SCHEMA_REFERENCE_NAME = "implementation-plan-schema.md"
 DRAFT_REFERENCE_NAMES = (
     "implementation-plan-schema.md",
     "plan-drafting.md",
@@ -103,6 +104,10 @@ class DraftImplementationPlanContractsTest(
             "review-incomplete",
             "resolution-missing",
             "rounds-invalid",
+            # violation code はここで全列挙し、表から code が落ちたことを検出する。
+            # 各 code の検査内容の文言は固定しない。表の網羅性と個々の検査内容の粒度は
+            # 別々の契約であり、後者は code ごとの専用テストが持つ。
+            "design-missing",
             "handoff-incomplete",
             "## 状態遷移と権限",
             "## branch-design への引き渡し",
@@ -130,6 +135,137 @@ class DraftImplementationPlanContractsTest(
             with self.subTest(platform=platform):
                 for contract in required:
                     self.assertIn(contract, text)
+
+    def _schema_reference_texts(self) -> dict[str, str]:
+        return self._draft_reference_texts(SCHEMA_REFERENCE_NAME)
+
+    @staticmethod
+    def _plan_block(text: str) -> list[str]:
+        lines = text.splitlines()
+        return lines[lines.index("plan:") : lines.index("acceptance_criteria:")]
+
+    def test_draft_schema_reference_places_the_design_body_as_the_canonical_source(
+        self,
+    ) -> None:
+        """Hold the decided conventions once, in plan.design, sized to what was decided."""
+        # 期待値は1行に収まる単位で切り詰める。原稿の YAML コメントは複数行へ折り返され、
+        # 折り返し先頭の "#" が空白除去後も残るため、行をまたぐ連結文字列は原稿の
+        # 折り返し位置に依存して壊れる。
+        required = (
+            "design: <決めた規約の本体。設計判断の正本>",
+            "`plan.design` は決めた規約の本体を1箇所に置く正本とする。",
+            "いずれも規約本文自体を保持しない。",
+            "`plan.approach` を設計文書に据える案と別 artifact に分離する案は棄却した。",
+            # 空にはできないが、決めた量以上を書く必要もないという境界。design を
+            # blocking にする以上、この境界がないと小さなプランへ儀式的な作文を要求する
+            # 読みが成立する。
+            "書くのは決めたことだけで、要求の再掲や背景の説明は含めない",
+            "分量はそのプランで実際に決めた事項の数に従い、決めた事項が少なければ短くてよい",
+        )
+        for platform, text in self._schema_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertTrue(
+                    any(
+                        line.strip().startswith("design:")
+                        for line in self._plan_block(text)
+                    ),
+                    "plan.design must live inside the plan block of the schema body",
+                )
+
+    def test_draft_schema_reference_subordinates_approach_steps_and_ac_to_the_design_body(
+        self,
+    ) -> None:
+        """Let approach, steps, and AC point at the design body instead of restating it."""
+        required = (
+            "approach: <design を踏まえた実装方針の要約>",
+            "規約本文は持たず、plan.design を正本として参照する",
+            "規約本文の正本は plan.design。",
+            "その充足を判定する観測可能な振る舞いだけを書く",
+        )
+        # #108 は、文を書き換えるときに同居する既存義務を巻き添えで落とす失敗を4件
+        # 実測している。design の追記で書き換える3つの定義文が担っていた義務を個別に
+        # 固定し、置換で消えたことを検出する。
+        preserved = (
+            "実装枝への分割はしない。AC を所有しない",
+            "id: AC-1                    # 安定 ID。Branch Plan へそのまま引き継ぎ可能。振り直さない",
+            "text: <観測可能な振る舞い>",
+            "分割は `branch-design` の責務であり、`plan.steps` は起草者が実装の道筋を示す"
+            "順序付き作業であって、AC を所有しない。",
+        )
+        for platform, text in self._schema_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required + preserved:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_schema_reference_blocks_a_plan_that_has_no_design_body(self) -> None:
+        """Block an empty design from reaching awaiting_review or approved."""
+        required = (
+            "| `design-missing` | `plan.design` が未記載または空のまま "
+            "`awaiting_review` 以降へ遷移している |",
+            # approved は blocking が空であることを前提にしているため、design-missing が
+            # 立つ限り approved へ到達しない。この前提文が残ることで、遷移表へ design 専用の
+            # 行を足さずに「design が空のまま approved にできない」が成立する。
+            "approved:         承認済み。open_questions と validation.blocking が"
+            "すべて空であることが前提",
+        )
+        for platform, text in self._schema_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_schema_reference_keeps_restatement_detection_out_of_the_violation_codes(
+        self,
+    ) -> None:
+        """Record why a restatement check cannot join the recomputable violation codes."""
+        required = (
+            "入力 Data から再計算できる検査だけで成り立つ",
+            "意味判断であり、Data から再計算できない",
+            "表全体の再計算可能性が壊れる",
+            # 担い手は「起草手順とレビューの判定」の粒度に留める。どちらがどう担うかを
+            # ここで書き切ると、後続で決める配分の選択肢を先に潰す。
+            "再掲の抑止は起草手順とレビューの判定が担う",
+        )
+        for platform, text in self._schema_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_schema_reference_keeps_the_branch_design_handoff_map_unchanged(
+        self,
+    ) -> None:
+        """Keep the handoff rows as branch-design's input requirements, without design."""
+        # 左列は branch-design の入力要件そのもの。design が表へ紛れ込んでいないことは
+        # assertNotIn("design") では確かめられない（本文の他所に plan.design がある）ため、
+        # 5行を全列挙して表の同一性で担保する。
+        rows = (
+            "| 実装目的 | `plan.objective` |",
+            "| 元プラン | `plan.source`（この Data 自体を渡す場合は本 Data の所在） |",
+            "| Acceptance Criteria（原文） | `acceptance_criteria[].text`（ID ごと原文のまま） |",
+            "| 変更可能範囲と変更禁止範囲 | `scope.allowed_paths` / `scope.forbidden_paths` |",
+            "| 既知の依存 | `dependencies` |",
+        )
+        why_not = (
+            "左列は `branch-design` の入力要件そのものであり、"
+            "行を足すことは入力要件の変更になる",
+            "`handoff-incomplete` と `design-missing` の検査対象が二重になり、"
+            "1つの欠落に2つの code が立つ",
+        )
+        for platform, text in self._schema_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in rows + why_not:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertEqual(
+                    normalized.count("|`plan.objective`|"),
+                    1,
+                    "the handoff map must stay a single table",
+                )
 
     def test_draft_skill_matches_confirmed_contract(self) -> None:
         """Separate plan approval from downstream work and keep drafting review-gated."""
