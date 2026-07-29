@@ -17,7 +17,7 @@ python3 scripts/build_plugin_assets.py
 # 生成物が共通原稿と一致するか確認（ファイルを書き換えない）
 python3 scripts/build_plugin_assets.py --check
 
-# Python テスト一式（158件）
+# Python テスト一式
 python3 -B -m unittest discover -s tests -p 'test_build_plugin_assets*.py'
 
 # 単一テスト（tests/ を sys.path に載せる必要があるため tests/ で実行する）
@@ -86,7 +86,8 @@ semver の割り当ては次のとおりです。
 
 ## workflow の中身（原稿を読むときの地図）
 
-配布する skill は4つで、責務が分離されており、互いを直接起動しません。
+配布する skill は5つで、責務が分離されており、`feature-lead` が自身の段として `plan-craft` /
+`branch-design` / `impl-lead` を連結して起動する場合を除き、互いを直接起動しません。
 
 | skill | 責務 | 起動しないもの |
 | --- | --- | --- |
@@ -94,6 +95,7 @@ semver の割り当ては次のとおりです。
 | `branch-design` | 実装プランを委譲可能な Branch Plan Data へ正規化する | 実装・委譲・`impl-lead` |
 | `impl-lead` | 枝を worktree 隔離して委譲し、親が QA と最終検証を担う | — |
 | `test-audit` | 既存テストスイートを read-only で棚卸しし gap を報告する | 修正・テスト実行・受け入れ判断 |
+| `feature-lead` | `plan-craft` → `branch-design` → `impl-lead` を連結し、要求から実装完了までを一括で進める | 各段の判断基準の再定義・プラン起草・枝分割・実装自体 |
 
 `impl-lead` の mode は3層構造で決まります。`direct`（skill の外・親が直接実装）か委譲かをまず選び、委譲なら配分方針 `policy`（`fixed` / `adaptive`）と `baseline`（`lite` / `standard` / `strict`）を決め、枝ごとの `risk.level` から枝 mode を導出します。v2.0.0 で旧 `strict`（全枝固定）は `strict-full` へ改名され、`strict` は adaptive 配分を指すようになりました。詳細は README と `shared/skill/impl-lead/SKILL.md` を正本とします。
 

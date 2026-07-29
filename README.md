@@ -14,6 +14,8 @@
   - `SKILL.md` に既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告する skill の核、`references/*.md` に棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を分けた共通原稿です。
 - `shared/skill/plan-craft/`
   - `SKILL.md` にユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返す planning skill の核、`references/*.md` にプランスキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を分けた共通原稿です。
+- `shared/skill/feature-lead/`
+  - `SKILL.md` に `plan-craft` → `branch-design` → `impl-lead` の3段を連結し、要求から実装完了までを一括で進める orchestration skill の共通原稿です。references は持ちません。
 - `shared/agents/*.md`
   - 通常実装、高難度実装、expert 実装、専門レビュー、指摘範囲の最小修正を担当する 11 種類の agent の共通原稿です。
 - `shared/terms.toml`
@@ -31,6 +33,7 @@
 - `plugins/claude/skills/test-audit/references/*.md`
 - `plugins/claude/skills/plan-craft/SKILL.md`
 - `plugins/claude/skills/plan-craft/references/*.md`
+- `plugins/claude/skills/feature-lead/SKILL.md`
 - `plugins/claude/agents/*.md`
 - `plugins/codex/skills/impl-lead/SKILL.md`
 - `plugins/codex/skills/impl-lead/references/*.md`
@@ -40,6 +43,7 @@
 - `plugins/codex/skills/test-audit/references/*.md`
 - `plugins/codex/skills/plan-craft/SKILL.md`
 - `plugins/codex/skills/plan-craft/references/*.md`
+- `plugins/codex/skills/feature-lead/SKILL.md`
 - `plugins/codex/install/agents/*.toml`
 - 両 plugin の manifest version と `plugins/codex/install/VERSION`
 
