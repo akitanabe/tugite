@@ -361,6 +361,45 @@ class DraftImplementationPlanContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_draft_review_reference_targets_the_design_document_not_the_ac_set(
+        self,
+    ) -> None:
+        """Point the loop at the design document instead of the acceptance criteria set."""
+        # 判定対象の宣言は round の構成節に置く。文書全体を検索すると、後続で別節へ
+        # 移動しても落ちないため、round 手順の先頭にあることまでを固定する。
+        declaration = (
+            "レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない。"
+        )
+        # 責務分担の本文はここへ写さず正本を指す。写した時点でこの PR が塞ぐ経路
+        # （1つの設計判断が複数箇所へ別の言い回しで残る）を原稿自身が再現する。
+        canonical_link = "[Implementation Plan 正規スキーマ](implementation-plan-schema.md)"
+        reference_paths = {
+            "source": shared_skill_reference_path(
+                PLAN_CRAFT_SKILL, "adversarial-review.md"
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", PLAN_CRAFT_SKILL, "adversarial-review.md"
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", PLAN_CRAFT_SKILL, "adversarial-review.md"
+            ),
+        }
+        texts = self._draft_reference_texts("adversarial-review.md")
+        for structure, text in texts.items():
+            with self.subTest(structure=structure):
+                section = "".join(
+                    "".join(self._section_lines(text, "## round の構成")).split()
+                )
+                self.assertIn("".join(declaration.split()), section)
+                self.assertIn("".join(canonical_link.split()), section)
+                resolved = (
+                    REPOSITORY_ROOT / reference_paths[structure]
+                ).parent / SCHEMA_REFERENCE_NAME
+                self.assertTrue(
+                    resolved.resolve().is_file(),
+                    f"unresolved canonical link from {reference_paths[structure]}",
+                )
+
     def test_draft_review_reference_defines_termination_conditions(self) -> None:
         """Terminate the loop only via the three confirmed conditions."""
         required = (
@@ -505,6 +544,115 @@ class DraftImplementationPlanContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
         self.assertNotIn("Needs attention", source)
+
+    def test_plan_adversarial_reviewer_reviews_the_design_document_first(
+        self,
+    ) -> None:
+        """Judge the design document first while keeping the four failure modes."""
+        source = self._repository_text(
+            Path("shared/agents/plan-adversarial-reviewer.md")
+        )
+        section = "".join("".join(self._section_lines(source, "## 判定の軸")).split())
+        required = (
+            "主たる判定対象は設計文書（`plan.design`）です。",
+            # 判定対象を design へ寄せたときに、既存の失敗経路4種と「失敗経路を特定
+            # できる指摘だけ」の縛りが道連れで落ちるのを防ぐ。判定対象の変更であって
+            # 判定の緩和ではない。
+            "AC を満たせない・検証できない・実装できない・手戻りが生じる"
+            "具体的な失敗経路が存在するか。",
+            "失敗経路を特定できる指摘だけを返す",
+        )
+        for contract in required:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), section)
+
+    def test_plan_adversarial_reviewer_withholds_wording_differences_as_findings(
+        self,
+    ) -> None:
+        """Drop wording differences alone while keeping contradictions with the design."""
+        source = self._repository_text(
+            Path("shared/agents/plan-adversarial-reviewer.md")
+        )
+        normalized = "".join(source.split())
+        required = (
+            "`approach` / `steps` / `acceptance_criteria` の間の言い回しの差そのものを、"
+            "単独の指摘として返さない",
+            # 抑止だけを書くと、写しの不一致が本当に設計と食い違っている場合まで
+            # 沈黙する。残す2経路を同じ節に併記して、抑止の範囲を閉じる。
+            "`design` と矛盾する",
+            "`design` に無い決定を含む",
+        )
+        for contract in required:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_adversarial_reviewer_separates_return_scope_from_the_verdict(
+        self,
+    ) -> None:
+        """Keep the wording rule about what to return, not about how to grade it."""
+        source = self._repository_text(
+            Path("shared/agents/plan-adversarial-reviewer.md")
+        )
+        normalized = "".join(source.split())
+        # 返す範囲の規定と verdict の規定が同じ層に見えると、軽微類型カタログの
+        # 「軽微としない条件」が返却前の抑止に飲まれる。層の別を明記させる。
+        self.assertIn(
+            "".join(
+                (
+                    "これは指摘として返す範囲の規定であり、返した指摘の判定区分は"
+                    "「判定区分と `軽微` の定義」に従います。"
+                ).split()
+            ),
+            normalized,
+        )
+        catalog = (
+            "文言・表現の好み",
+            "Data の整形・体裁（項目順、記法、表記ゆれ）",
+            "`assumptions` に記録済みの事項の再指摘",
+            "同義の言い換え提案",
+        )
+        escapes = (
+            "AC の判定可能性を損なう曖昧さを含む場合",
+            "スキーマ違反により後続工程が読み取れなくなる場合",
+            "仮定を覆す新しい根拠を伴う場合",
+            "現行の文言そのものが失敗経路の根拠になっている場合",
+        )
+        section_lines = self._section_lines(source, "## 判定区分と `軽微` の定義")
+        for contract in catalog + escapes:
+            with self.subTest(contract=contract):
+                self.assertIn(
+                    "".join(contract.split()), "".join("".join(section_lines).split())
+                )
+        self.assertEqual(
+            len([line for line in section_lines if line.startswith("- ")]),
+            len(catalog),
+            "the trivial catalog must keep exactly its four types",
+        )
+
+    def test_plan_adversarial_reviewer_keeps_the_six_finding_types(self) -> None:
+        """Keep all six finding types when the review target moves to the design."""
+        source = self._repository_text(
+            Path("shared/agents/plan-adversarial-reviewer.md")
+        )
+        section_lines = self._section_lines(source, "## 指摘の類型")
+        types = (
+            "見落とし",
+            "根拠のない仮定",
+            "AC の曖昧さ",
+            "実現不能性",
+            "依存の見落とし",
+            "範囲の矛盾",
+        )
+        # 個々の名前の存在だけでは、類型を1つ落として別の1つを足した改訂を通す。
+        # 節内の項目数も併せて固定する。
+        self.assertEqual(
+            len([line for line in section_lines if line.startswith("- ")]),
+            len(types),
+            "the finding-type catalog must keep exactly its six types",
+        )
+        for name in types:
+            with self.subTest(name=name):
+                self.assertIn(f"- {name}: ", "\n".join(section_lines))
 
     def test_plan_adversarial_reviewer_owns_the_trivial_verdict_definition(
         self,
