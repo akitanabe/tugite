@@ -467,7 +467,11 @@ class ImplLeadModeContractsTest(
             "requested_mode: " + "strict",
         )
 
-        for file_path in self._iter_repository_text_asset_files(*scan_roots):
+        scanned_files = list(self._iter_repository_text_asset_files(*scan_roots))
+        # A silently empty scan would pass vacuously without checking anything.
+        self.assertTrue(scanned_files, scan_roots)
+
+        for file_path in scanned_files:
             content = file_path.read_text(encoding="utf-8")
             for phrase in retired_phrases:
                 with self.subTest(path=file_path, phrase=phrase):

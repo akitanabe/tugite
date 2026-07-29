@@ -706,7 +706,11 @@ class ImplLeadReviewGateContractsTest(
             "refactor-patch-" + "agent",
         )
 
-        for file_path in self._iter_repository_text_asset_files(*paths):
+        scanned_files = list(self._iter_repository_text_asset_files(*paths))
+        # A silently empty scan would pass vacuously without checking anything.
+        self.assertTrue(scanned_files, paths)
+
+        for file_path in scanned_files:
             content = file_path.read_text(encoding="utf-8")
             for name in retired_names:
                 self.assertNotIn(name, content, file_path)
