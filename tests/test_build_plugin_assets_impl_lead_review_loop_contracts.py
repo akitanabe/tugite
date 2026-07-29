@@ -85,7 +85,7 @@ class ImplLeadReviewLoopContractsTest(
                 )
                 # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
                 # 同期漏れを起こす。所在は「専門 reviewer」節ひとつに閉じる。
-                self.assertIn("専門reviewerの起動条件はこの1節だけが定める", initial)
+                self.assertIn("riskによる専門reviewerの起動条件はこの1節だけが定める", initial)
                 for enumerated_site in ("「返却と統合」手順5", "「責務境界」節"):
                     with self.subTest(enumerated_site=enumerated_site):
                         self.assertNotIn(

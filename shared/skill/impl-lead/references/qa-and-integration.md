@@ -340,7 +340,7 @@ reviewer は、指摘がある場合は指摘IDを含む構造化 Data を返す
 
 - その枝で適用される必須完了ゲートのうち、`over-engineering-reviewer` を除いたもの。
 - 「専門 reviewer」節の起動条件により risk で選択した専門 reviewer。同節の起動条件は、この相の risk 選択と
-  レビューループ round の「再起動対象」の第2類型の双方へ効く。専門 reviewer の起動条件はこの1節だけが
+  レビューループ round の「再起動対象」の第2類型の双方へ効く。risk による専門 reviewer の起動条件はこの1節だけが
   定めるため、この相では他の節の起動指示を数え上げない。
 
 `writing-principles-reviewer` はこの相で枝あたり最低1回実施する。これは下限の保証であり、以降のループ round で
