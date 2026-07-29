@@ -66,8 +66,8 @@ evidence を補えない指摘は、指摘が成立したと仮定した場合�
 
 - adversarial の収束（`zero-findings` または `trivial-only`）後に、`over-engineering-reviewer` を
   プラン入力モードで1回起動する（[過剰実装のプラン審査](overengineering-plan-review.md)）。
-- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューを再実行する
-  （必須完了ゲートの「修正後は全ゲートを再実行する」流儀）。この round も `rounds_limit` に数える。
+- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューを再実行する。
+  この round も `rounds_limit` に数える。
   上限は両 reviewer の round を合算して適用し、無限ループを構造的に防ぐ。
 - 過剰実装審査の指摘も同じ `PF-*` 台帳へ記録し、`reviewer: over-engineering-reviewer` で区別する。
 

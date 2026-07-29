@@ -44,7 +44,8 @@ class ImplLeadReviewGateContractsTest(
                 "`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、"
                 "受け入れる前に必ず起動し"
             ),
-            "ゲート間の起動順は定めない。",
+            "各ゲートを起動する相は「枝レビューの3相」で定める。",
+            "この節は適用 mode の正本であり、相への割り当てを持たない。",
             "reviewer は最終的な受け入れ判断を行わない。",
             "親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。",
         )
@@ -388,11 +389,11 @@ class ImplLeadReviewGateContractsTest(
             "修正先または不採用",
             "判断を記録",
             "reviewer の指摘が0件",
-            "すべての指摘が修正され、再確認を通過",
-            "親が不採用とした指摘について、理由が記録",
-            "未解決または判断未記録の指摘がある枝を受け入れない",
             "`review-patch-refactorer` による修正後",
-            "その枝で適用されるすべての必須完了ゲートを再実行",
+            # 受け入れ条件は「枝レビューの3相」の枝の受け入れ点へ一本化した。
+            # この節に残るのは参照だけで、条件本体を重ねて定義しないことまで固定する。
+            "枝の受け入れ可否は「枝レビューの3相」の「枝の受け入れ点」で定める。"
+            "この節では受け入れ条件を重ねて定義しない。",
         )
 
         for platform, workflow in qa_workflows.items():
@@ -572,7 +573,7 @@ class ImplLeadReviewGateContractsTest(
     def test_repository_mandatory_gates_recheck_every_fix_before_acceptance(
         self,
     ) -> None:
-        """Return every fix route to parent QA and the mandatory completion gates."""
+        """Return every fix route to mode-scoped parent QA and the narrowed relaunch set."""
         skills = self._repository_skill_texts()
         qa_workflows = {
             "shared": skills.source_references["qa-and-integration.md"],
@@ -580,11 +581,14 @@ class ImplLeadReviewGateContractsTest(
             "codex": skills.codex_references["qa-and-integration.md"],
         }
         required_contracts = (
+            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、"
+            "元 Implementer による修正にも適用する。",
             "`review-patch-refactorer` または元 Implementer による修正後",
             "親が変更後の diff とテスト結果を確認",
-            "その枝で適用されるすべての必須完了ゲートを再実行",
-            "再確認を通過",
-            "枝を受け入れない",
+            # 親 QA の再実行が観点0・5 だけへ縮退しないことは `## 親の QA` の mode 別規定へ
+            # 委ねる。ここでは委ね先を固定して、再実行義務が diff 確認だけへ痩せないようにする。
+            "`## 親の QA` の mode 別の適用範囲に従って親 QA を再実行する。",
+            "再確認する reviewer は\n「枝レビューの3相」の「再起動対象」で定める。",
         )
 
         for platform, workflow in qa_workflows.items():

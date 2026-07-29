@@ -28,7 +28,7 @@ REVIEWER_LAUNCH_TEMPLATE_FIELDS = (
     "親が選択した周辺コンテキスト",
     "そのコンテキストを渡す理由",
     "返却してほしい判定",
-    "前回の指摘と親の採否（ゲート再実行時）",
+    "前回の指摘と親の採否（再起動時）",
 )
 
 
@@ -129,7 +129,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "ancestor 検査も同じ root で行う",
             "同一の diff 状態（同じ実装枝、同じ commit 範囲、修正 commit の追加なし）に"
             "対する複数 reviewer の起動では同じ artifact を渡してよい",
-            "diff 状態が変わったとき（修正後のゲート再実行、別の実装枝）は新しい"
+            "diff 状態が変わったとき（修正後の再起動、別の実装枝）は新しい"
             "artifact を生成し、変化後に古い artifact を渡さない",
             "候補 path が既存の場合に上書きせず失敗する Action",
             "候補 path の衝突による失敗は次の suffix を選び直す",
