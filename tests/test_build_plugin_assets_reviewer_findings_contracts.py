@@ -56,30 +56,48 @@ COUNT_ONLY_REVIEWER_NAMES = (
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
 )
+QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
+READ_ONLY_ENFORCEMENT_CONTRACTS = (
+    "## read-only の担保",
+    "read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。",
+    "Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、"
+    "Codex 向けは `sandbox_mode` で担保し、片方の platform にだけ制限が入っている状態を作らない。",
+    "この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。",
+    "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
+    "この節でも対象外とする。",
+)
+# The delegation pointer, not a second copy of the rule: qa-and-integration.md
+# keeps only why the parent hands diff and test results over as Data.
+READ_ONLY_ENFORCEMENT_DELEGATION = (
+    "reviewer に与える tool は "
+    "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
+)
+DUPLICATED_READ_ONLY_RULE = "reviewer 自身へ Bash や編集 tool を与えない"
 
 
 class ReviewerFindingsContractTest(
     RepositoryContractSupport,
     unittest.TestCase,
 ):
-    def _reviewer_findings_reference_texts(self) -> dict[str, str]:
+    def _skill_reference_texts(self, reference: str) -> dict[str, str]:
         paths = {
-            "source": shared_skill_reference_path(
-                IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
-            ),
+            "source": shared_skill_reference_path(IMPL_LEAD_SKILL, reference),
             "claude": generated_skill_reference_path(
-                "claude", IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
+                "claude", IMPL_LEAD_SKILL, reference
             ),
             "codex": generated_skill_reference_path(
-                "codex", IMPL_LEAD_SKILL, REVIEWER_FINDINGS_REFERENCE
+                "codex", IMPL_LEAD_SKILL, reference
             ),
         }
         for path in paths.values():
             self.assertTrue(
                 (REPOSITORY_ROOT / path).is_file(),
-                f"missing reviewer findings reference: {path}",
+                f"missing skill reference: {path}",
             )
         return {key: self._repository_text(path) for key, path in paths.items()}
+
+    def _reviewer_findings_reference_texts(self) -> dict[str, str]:
+        return self._skill_reference_texts(REVIEWER_FINDINGS_REFERENCE)
 
     def _findings_reviewer_texts(self, name: str) -> dict[str, str]:
         """Read one reviewer manuscript and both distributed agent artifacts."""
@@ -130,6 +148,32 @@ class ReviewerFindingsContractTest(
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_reviewer_findings_reference_requires_read_only_on_both_platforms(
+        self,
+    ) -> None:
+        """Hold one canonical reason for enforcing read-only on every reviewer."""
+        for platform, text in self._reviewer_findings_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in READ_ONLY_ENFORCEMENT_CONTRACTS:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_qa_reference_delegates_read_only_enforcement_instead_of_restating_it(
+        self,
+    ) -> None:
+        """Leave the QA phase with the Data hand-off reason and no second rule copy."""
+        for platform, text in self._skill_reference_texts(
+            QA_AND_INTEGRATION_REFERENCE
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                self.assertIn(
+                    "".join(READ_ONLY_ENFORCEMENT_DELEGATION.split()), normalized
+                )
+                self.assertNotIn(
+                    "".join(DUPLICATED_READ_ONLY_RULE.split()), normalized
+                )
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
         """Reach the findings contract from the QA phase of the delegation workflow."""

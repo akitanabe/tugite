@@ -38,14 +38,13 @@ REVIEWER_NAMES = (
     "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
 )
-# Reviewers whose read-only role is enforced by Claude tool metadata, not only by
-# the Codex sandbox. Fixtures and policy assertions iterate this set so adding a
-# gate reviewer does not require touching each assertion site.
-READ_ONLY_TOOL_AGENT_NAMES = (
-    "writing-principles-reviewer",
-    "over-engineering-reviewer",
-    "plan-adversarial-reviewer",
-)
+# Reviewers whose read-only role is enforced by Claude tool metadata as well as by
+# the Codex sandbox. This alias must stay identical to REVIEWER_NAMES: a reviewer
+# restricted on only one platform is exactly the drift this set exists to reject,
+# so the two are deliberately not allowed to diverge. Fixtures and policy
+# assertions iterate this set so adding a reviewer does not require touching each
+# assertion site.
+READ_ONLY_TOOL_AGENT_NAMES = REVIEWER_NAMES
 REFACTORER_NAMES = (
     "review-patch-refactorer",
 )
