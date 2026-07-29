@@ -18,8 +18,8 @@
 
 1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
 
-1. reviewer へ実装プラン本体、AC、scope、constraints、assumptions と、2 round 目以降は
-   前 round までの指摘台帳を渡して起動する。
+1. reviewer へ実装プラン本体、AC、scope、constraints、assumptions と、2 round 目以降は前 round
+   までの指摘台帳を渡して起動する。
 2. 親が指摘IDごとに内容を確認し、`軽微` の定義（`plan-adversarial-reviewer` が持つ影響基準 +
    軽微類型カタログ）に照らして verdict を確定する。reviewer の verdict 申告をそのまま採用しない。
 3. 親が指摘IDごとに採用（`adopted`）/ 不採用（`rejected`）を判断し、確定 verdict・判断・理由を
