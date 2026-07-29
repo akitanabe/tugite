@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -642,15 +643,29 @@ class DraftImplementationPlanContractsTest(
     def _drafting_step(self, text: str, number: int) -> str:
         lines = self._section_lines(text, "## 起草の進め方")
         start = next(
-            index for index, line in enumerate(lines) if line.startswith(f"{number}. ")
-        )
-        rest = lines[start + 1 :]
-        end = next(
             (
                 index
-                for index, line in enumerate(rest)
-                if line.strip() and not line.startswith("   ")
+                for index, line in enumerate(lines)
+                if line.startswith(f"{number}. ")
             ),
+            None,
+        )
+        if start is None:
+            self.fail(f"drafting procedure step {number} was not found")
+        rest = lines[start + 1 :]
+        # 継続行のインデント幅では手順3 の範囲を区切らない。「3 空白以上」を境界にすると、
+        # 2 空白インデントの子箇条（例: M4c 相当の必須項目の追加）が手順3 の外側として
+        # すり抜け、次の手順の内容と誤認されないまま検出漏れになる。次の番号付き手順行の
+        # 直前までを手順3 の範囲とし、インデント幅に関わらず子箇条を取り込む。
+        #
+        # ここで機械的に塞ぐのは、手順3 の直後（インデント幅を問わない子箇条）へ必須項目を
+        # 書く経路（M4c 相当）までである。手順3 以外の遠い手順へ独立した必須項目を書く経路
+        # （M4d 相当、例: 手順7 に「章立てを固定する」文を新設する）はこの境界拡張では塞がらない。
+        # M4d を機械で塞ぐには節全体の語彙禁止（「必須」「固定する」等の語を全手順で禁止する）が
+        # 必要になり、正当な語彙まで巻き込む過剰検出になる。M4d はレビュー（reviewer による
+        # diff 精査）側の判断に残す。
+        end = next(
+            (index for index, line in enumerate(rest) if re.match(r"\d+\. ", line)),
             len(rest),
         )
         return "".join("".join(lines[start : start + 1 + end]).split())
@@ -661,6 +676,12 @@ class DraftImplementationPlanContractsTest(
         # スキーマ側の分量の境界と衝突する。免責文の存在だけを assertIn で見ると、免責文を
         # 残したまま必須項目を「追加」した自己矛盾を通してしまう。手順3 のブロック全体を
         # 固定し、免責文の削除と必須項目の追加の両方を検出する。
+        #
+        # ただしブロック等価固定が守るのは手順3 の**内側**の改変だけである。分量の境界の
+        # 写し（例:「design の分量は決めた事項が少なければ短くてよい」）は手順3 以外の
+        # 位置（手順6 など）へ書かれてもこの PR が塞ぎたい失敗であり、ブロック等価固定では
+        # 検出できない。節全体を対象にした assertNotIn を別途置き、写しの流入場所を手順3 に
+        # 限定しない形で塞ぐ。両者は守備範囲が異なるため重複ではない。
         expected = (
             "3. `plan.design` に、そのプランで決めた規約の本体を書く。"
             "`design` と `approach` / `steps` / AC の責務分担、および `design` の分量は"
@@ -671,6 +692,10 @@ class DraftImplementationPlanContractsTest(
             with self.subTest(platform=platform):
                 self.assertEqual(
                     self._drafting_step(text, 3), "".join(expected.split())
+                )
+                procedure = self._drafting_procedure(text)
+                self.assertNotIn(
+                    "".join("決めた事項が少なければ短くてよい".split()), procedure
                 )
 
     def test_plan_drafting_keeps_convention_text_out_of_acceptance_criteria(
