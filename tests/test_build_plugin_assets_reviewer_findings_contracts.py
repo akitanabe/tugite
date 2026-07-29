@@ -58,11 +58,10 @@ COUNT_ONLY_REVIEWER_NAMES = (
     "plan-adversarial-reviewer",
 )
 QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
-# "6本" is the FINDINGS_REVIEWER_NAMES set (findings を返す reviewer), and this
-# section's "7本" adds expert-selection-reviewer to it. Both counts are derived
-# from READ_ONLY_TOOL_AGENT_NAMES / FINDINGS_REVIEWER_NAMES so that adding an 8th
-# reviewer to those sets fails this test instead of leaving the manuscript's
-# literal count silently stale.
+QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
+# Both counts are derived from READ_ONLY_TOOL_AGENT_NAMES / FINDINGS_REVIEWER_NAMES
+# so that adding an 8th reviewer to those sets fails this test instead of leaving
+# the manuscript's literal count silently stale.
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "## read-only の担保",
     "read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。",
@@ -80,12 +79,23 @@ READ_ONLY_ENFORCEMENT_DELEGATION = (
     "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
 )
 DUPLICATED_READ_ONLY_RULE = "reviewer 自身へ Bash や編集 tool を与えない"
-# A restated read-only rule almost always names the concrete tools or the Claude
-# frontmatter key it grants/withholds, even when the wording differs from
+# A restated read-only rule almost always names the concrete tools or the
+# platform config key it grants/withholds, even when the wording differs from
 # DUPLICATED_READ_ONLY_RULE verbatim. Pin the absence of those names too, so a
 # reworded duplicate (as the reviewer reproduced with "Bash や編集用の tool を
 # 渡さない") still fails this test instead of slipping past the literal pin.
-READ_ONLY_RULE_RESTATEMENT_MARKERS = ("Bash", "NotebookEdit", "disallowed_tools")
+# The frontmatter line this guards against is
+# `disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]`; "Edit" is
+# listed instead of "NotebookEdit" because it is already a substring match for
+# it, and listing both would just be the same check twice. "sandbox_mode" adds
+# the Codex-side config key so a delegation that leaks that name is caught too.
+READ_ONLY_RULE_RESTATEMENT_MARKERS = (
+    "Bash",
+    "Edit",
+    "Write",
+    "disallowed_tools",
+    "sandbox_mode",
+)
 
 
 class ReviewerFindingsContractTest(
@@ -111,6 +121,16 @@ class ReviewerFindingsContractTest(
 
     def _reviewer_findings_reference_texts(self) -> dict[str, str]:
         return self._skill_reference_texts(REVIEWER_FINDINGS_REFERENCE)
+
+    @staticmethod
+    def _section_lines(text: str, heading: str) -> list[str]:
+        lines = text.splitlines()
+        rest = lines[lines.index(heading) + 1 :]
+        end = next(
+            (index for index, line in enumerate(rest) if line.startswith("## ")),
+            len(rest),
+        )
+        return rest[:end]
 
     def _findings_reviewer_texts(self, name: str) -> dict[str, str]:
         """Read one reviewer manuscript and both distributed agent artifacts."""
@@ -176,11 +196,20 @@ class ReviewerFindingsContractTest(
         self,
     ) -> None:
         """Leave the QA phase with the Data hand-off reason and no second rule copy."""
+        # Scope to "## 必須完了ゲート", the section the delegation pointer lives
+        # in, instead of the whole ~50KB document. The document also has
+        # sections about cleanup, parent QA, and the three review phases where
+        # an unrelated tool name could appear without being a restated rule;
+        # matching against the full text would fail this test for reasons that
+        # have nothing to do with the delegation it is meant to guard.
         for platform, text in self._skill_reference_texts(
             QA_AND_INTEGRATION_REFERENCE
         ).items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                normalized = "".join(section.split())
                 self.assertIn(
                     "".join(READ_ONLY_ENFORCEMENT_DELEGATION.split()), normalized
                 )
@@ -188,7 +217,17 @@ class ReviewerFindingsContractTest(
                     "".join(DUPLICATED_READ_ONLY_RULE.split()), normalized
                 )
                 for marker in READ_ONLY_RULE_RESTATEMENT_MARKERS:
-                    self.assertNotIn(marker, text)
+                    with self.subTest(platform=platform, marker=marker):
+                        self.assertFalse(
+                            marker in section,
+                            f"'{marker}' unexpectedly found in the "
+                            f"'{QA_AND_INTEGRATION_MUST_GATES_SECTION}' section "
+                            f"of {platform}: a restated read-only rule almost "
+                            "always names a concrete tool or config key, so "
+                            "this marker's presence means the section is "
+                            "restating the rule instead of delegating to "
+                            "reviewer-findings.md.",
+                        )
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
         """Reach the findings contract from the QA phase of the delegation workflow."""
