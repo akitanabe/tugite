@@ -161,8 +161,12 @@ class ImplLeadReviewGateContractsTest(
                         self._normalize_contract(handoff_data), normalized_step_5
                     )
                 # 宣言文と Data 列挙が残ったまま起動条件が書き戻される経路を塞ぐ。
-                # 手順5 は総称の「専門 reviewer」だけを扱い、個別 reviewer 名と
-                # risk の判断材料は正本節にしか現れない。
+                # ここで塞ぐのは reviewer 名を名指しした書き戻しだけとする。risk の
+                # 判断材料（4語の列挙）が手順5 へ複製・移動される経路は、この loop
+                # ではなく正本節側の
+                # test_repository_specialist_launch_conditions_live_only_in_specialist_section
+                # の出現回数検査（正本節に在ることの assertIn と reference 全体で
+                # 1回だけであることの assertEqual）が検出する。
                 for launch_condition_marker in (
                     "responsibility-boundary-reviewer",
                     "test-quality-reviewer",
