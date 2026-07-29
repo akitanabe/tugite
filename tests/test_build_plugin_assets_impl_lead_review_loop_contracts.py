@@ -77,6 +77,33 @@ class ImplLeadReviewLoopContractsTest(
                     final,
                 )
 
+    def test_workflows_select_specialists_from_the_specialist_section_alone(
+        self,
+    ) -> None:
+        """Point the initial phase at one specialist section instead of enumerating sites."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                sections = self._three_phase_sections(reference)
+                initial = self._normalize_contract(sections["### initial レビュー群"])
+
+                self.assertIn(
+                    "「専門reviewer」節の起動条件によりriskで選択した専門reviewer",
+                    initial,
+                )
+                self.assertIn(
+                    "同節の起動条件は、この相のrisk選択とレビューループroundの"
+                    "「再起動対象」の第2類型の双方へ効く",
+                    initial,
+                )
+                # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
+                # 同期漏れを起こす。所在は「専門 reviewer」節ひとつに閉じる。
+                self.assertIn("専門reviewerの起動条件はこの1節だけが定める", initial)
+                for enumerated_site in ("「返却と統合」手順5", "「責務境界」節"):
+                    with self.subTest(enumerated_site=enumerated_site):
+                        self.assertNotIn(
+                            self._normalize_contract(enumerated_site), initial
+                        )
+
     def test_workflows_bound_branch_review_rounds_and_define_termination(self) -> None:
         """Count a round per phase run and bound the total at the limit plus one."""
         for platform, reference in self._qa_and_integration_reference_texts().items():

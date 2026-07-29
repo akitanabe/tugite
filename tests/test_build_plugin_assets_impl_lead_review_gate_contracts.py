@@ -60,6 +60,100 @@ class ImplLeadReviewGateContractsTest(
                     self.assertIn("".join(rule.split()), normalized_workflow)
                 self.assertNotIn("`writing-principles-refactorer`", workflow)
 
+    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
+        skills = self._repository_skill_texts()
+        return {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+
+    @staticmethod
+    def _normalize_contract(text: str) -> str:
+        return "".join(text.replace("`", "").split())
+
+    def _qa_section(self, reference: str, heading: str) -> str:
+        self.assertEqual(1, reference.count(heading))
+        return reference.split(heading, 1)[1].split("\n## ", 1)[0]
+
+    def test_repository_specialist_launch_conditions_live_only_in_specialist_section(
+        self,
+    ) -> None:
+        """Keep the specialist launch conditions in one section and subordinate the rest."""
+        # 起動条件が複数節に分散すると、reviewer を1つ増やすたびに全節が同期点になる。
+        # 具体的な判断材料（層・外部 I/O・abstraction・責務混在）は risk 表1行目の
+        # 具体例として正本側へ残す。文の1本化で判断材料まで失うと起動判断ができない。
+        specialist_risk_examples = (
+            "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い",
+        )
+        subordination_contracts = (
+            "「専門 reviewer」節の起動条件に従って起動する",
+            "この節は専門 reviewer の起動条件を独自に定義しない",
+        )
+        # 起動条件の文を移す際に同居していた義務を巻き添えで落とさないための下限。
+        responsibility_obligations = (
+            "`問題なし`: 通過。",
+            "`軽微` / `修正推奨`: 局所的で全起動条件を満たす場合だけ "
+            "`review-patch-refactorer`、それ以外は元 Implementer。",
+            "`修正必須`: 解消するまで完了しない。",
+            "`responsibility-boundary-reviewer` は修正しない。",
+            "diff にない既存問題は「既存課題」として判定から分ける。",
+        )
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                specialist = self._qa_section(reference, "## 専門 reviewer")
+                responsibility = self._qa_section(reference, "## 責務境界")
+
+                normalized_specialist = self._normalize_contract(specialist)
+                for example in specialist_risk_examples:
+                    self.assertIn(
+                        self._normalize_contract(example), normalized_specialist
+                    )
+
+                normalized_responsibility = self._normalize_contract(responsibility)
+                for contract in subordination_contracts:
+                    self.assertIn(
+                        self._normalize_contract(contract), normalized_responsibility
+                    )
+                for obligation in responsibility_obligations:
+                    self.assertIn(
+                        self._normalize_contract(obligation), normalized_responsibility
+                    )
+                self.assertNotIn(
+                    self._normalize_contract(
+                        "責務混在の疑いがある場合は "
+                        "`responsibility-boundary-reviewer` を起動する"
+                    ),
+                    normalized_responsibility,
+                )
+
+    def test_repository_integration_step_five_only_defines_reviewer_handoff(
+        self,
+    ) -> None:
+        """Read step 5 as a handoff rule that never decides whether to launch."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                integration = self._qa_section(reference, "## 返却と統合")
+                step_5 = integration.split("\n5. ", 1)[1].split("\n6. ", 1)[0]
+                normalized_step_5 = self._normalize_contract(step_5)
+
+                self.assertIn(
+                    self._normalize_contract(
+                        "起動するかどうかは「専門 reviewer」節の起動条件だけで決まり、"
+                        "この手順は渡す Data と diff の受け渡しだけを定める"
+                    ),
+                    normalized_step_5,
+                )
+                # 渡す Data の列挙は「reviewer 起動テンプレート」節がこの手順を名指しで
+                # 参照しているため、受け渡し規約として保持する。
+                for handoff_data in (
+                    "task、AC、commit 範囲、変更ファイル、diff text、対象 risk",
+                    "diff artifact の絶対 path を渡すことを既定とし",
+                ):
+                    self.assertIn(
+                        self._normalize_contract(handoff_data), normalized_step_5
+                    )
+
     def test_repository_over_engineering_gate_applies_only_to_standard_and_strict(
         self,
     ) -> None:
