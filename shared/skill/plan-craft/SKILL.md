@@ -6,6 +6,10 @@ description: >-
   `over-engineering-reviewer` のプラン審査を経た Implementation Plan Data を返す planning skill。
   レビュー付きプラン作成の明示要求時に使う。実装・委譲・枝分割は行わず
   `branch-design` を直接起動しない。次工程の開始権限は含まない。
+  ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
+  Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+  責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
+  通常どおり動作する。
 ---
 <!-- claude-only:end -->
 <!-- codex-only:start -->
@@ -16,6 +20,10 @@ description: >-
   `over-engineering-reviewer` のプラン審査を経た Implementation Plan Data を返す planning skill。
   レビュー付きプラン作成の明示要求時に使う。実装・委譲・枝分割は行わず
   `branch-design` を直接起動しない。次工程の開始権限は含まない。
+  ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
+  Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+  責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
+  通常どおり動作する。
 ---
 <!-- codex-only:end -->
 
@@ -45,6 +53,11 @@ Implementation Plan は `branch-design` へ渡せるが、受け渡しは{{paren
 - 枝分割計画の要求（`branch-design` の責務）。
 - 実装・委譲の要求（`impl-lead` の責務）。
 - レビューを求めない相談・調査・回答だけの要求。
+
+ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
+Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
+通常どおり動作する。
 
 ## 入力の確認
 

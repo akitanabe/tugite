@@ -82,6 +82,7 @@ SKILL_REFERENCE_NAMES = {
         "adversarial-review.md",
         "overengineering-plan-review.md",
     ),
+    "feature-lead": (),
 }
 
 

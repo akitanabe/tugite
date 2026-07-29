@@ -20,6 +20,8 @@
   - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返します。実装・委譲・枝分割は行いません。
 - `skills/plan-craft/references/*.md`
   - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
+- `skills/feature-lead/SKILL.md`
+  - `plan-craft` → `branch-design` → `impl-lead` を順に連結し、要求から実装完了までを一括で進めます。判断点は既定で停止し、`unattended` 明示時のみ自律解決します。
 - `skills/install-custom-agents/SKILL.md`
   - 同梱 custom agent のインストール状況を確認し、安全に導入・更新します。
 - `install/agents/*.toml`
