@@ -5,6 +5,8 @@ name = "expert-selection-reviewer"
 description = "高コストな expert-implementer を起動する前に、親が提示した選択理由が所定の条件を満たすか審査する専用 reviewer。実装、仕様補完、worker 起動、最終判断は行わない。"
 model = "opus"
 effort = "medium"
+tools = ["Read", "Grep", "Glob"]
+disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review whether the parent supplied enough concrete evidence to justify the high cost of expert-implementer. Report a routing verdict only; do not edit files, design the implementation, or spawn workers."
