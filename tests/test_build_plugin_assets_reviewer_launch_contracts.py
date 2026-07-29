@@ -36,14 +36,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
 ):
-    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
-        skills = self._repository_skill_texts()
-        return {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
-
     def _extract_reviewer_launch_template(self, reference: str) -> str:
         heading = "## reviewer 起動テンプレート"
         opening_fence = "```text\n"

@@ -92,7 +92,7 @@ Red 証跡の要求に置き換えない。`lite` の前提が崩れた場合は
 | `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響 |
 
 `responsibility-boundary-reviewer` の対象リスクは、複数層、複数の外部 I/O、新しい abstraction・adapter・service、
-責務混在の疑いのいずれかを認めたときに成立する。この具体例は「責務境界」節の軽量確認から持ち込まれる。
+責務混在の疑いのいずれかを認めたときに成立する。
 
 対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
@@ -615,10 +615,9 @@ main の手順9へ戻る。
 - 既存の責務配置、命名、directory 構成から不自然に外れていないか。
 - 分割や抽象化が過剰になっていないか。
 
-この軽量確認で複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑いを認めた場合は、
-`responsibility-boundary-reviewer` の対象リスクが成立したものとして「専門 reviewer」節の起動条件に従って
-起動する。この節は専門 reviewer の起動条件を独自に定義しない。以下は起動した場合の判定区分ごとの
-修正先 routing である。
+この軽量確認で `responsibility-boundary-reviewer` の対象リスクが成立したと判断した場合は、「専門 reviewer」節の
+起動条件に従って起動する。対象リスクが成立する具体例も同節が定める。この節は専門 reviewer の起動条件を
+独自に定義しない。以下は起動した場合の判定区分ごとの修正先 routing である。
 
 - `問題なし`: 通過。
 - `軽微` / `修正推奨`: 局所的で全起動条件を満たす場合だけ `review-patch-refactorer`、それ以外は元 Implementer。

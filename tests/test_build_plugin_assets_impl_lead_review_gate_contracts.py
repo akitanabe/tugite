@@ -60,18 +60,6 @@ class ImplLeadReviewGateContractsTest(
                     self.assertIn("".join(rule.split()), normalized_workflow)
                 self.assertNotIn("`writing-principles-refactorer`", workflow)
 
-    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
-        skills = self._repository_skill_texts()
-        return {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
-        }
-
-    @staticmethod
-    def _normalize_contract(text: str) -> str:
-        return "".join(text.replace("`", "").split())
-
     def _qa_section(self, reference: str, heading: str) -> str:
         self.assertEqual(1, reference.count(heading))
         return reference.split(heading, 1)[1].split("\n## ", 1)[0]
@@ -83,11 +71,13 @@ class ImplLeadReviewGateContractsTest(
         # 起動条件が複数節に分散すると、reviewer を1つ増やすたびに全節が同期点になる。
         # 具体的な判断材料（層・外部 I/O・abstraction・責務混在）は risk 表1行目の
         # 具体例として正本側へ残す。文の1本化で判断材料まで失うと起動判断ができない。
-        specialist_risk_examples = (
-            "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い",
+        # 逆に派生側へ複製すると、所在を1本化しても列挙が同期点として残る。
+        specialist_risk_example = (
+            "複数層、複数の外部 I/O、新しい abstraction・adapter・service、責務混在の疑い"
         )
         subordination_contracts = (
             "「専門 reviewer」節の起動条件に従って起動する",
+            "対象リスクが成立する具体例も同節が定める",
             "この節は専門 reviewer の起動条件を独自に定義しない",
         )
         # 起動条件の文を移す際に同居していた義務を巻き添えで落とさないための下限。
@@ -104,11 +94,14 @@ class ImplLeadReviewGateContractsTest(
                 specialist = self._qa_section(reference, "## 専門 reviewer")
                 responsibility = self._qa_section(reference, "## 責務境界")
 
-                normalized_specialist = self._normalize_contract(specialist)
-                for example in specialist_risk_examples:
-                    self.assertIn(
-                        self._normalize_contract(example), normalized_specialist
-                    )
+                normalized_example = self._normalize_contract(specialist_risk_example)
+                self.assertIn(
+                    normalized_example, self._normalize_contract(specialist)
+                )
+                self.assertEqual(
+                    1,
+                    self._normalize_contract(reference).count(normalized_example),
+                )
 
                 normalized_responsibility = self._normalize_contract(responsibility)
                 for contract in subordination_contracts:

@@ -229,6 +229,18 @@ class RepositoryContractSupport:
             GENERATED_SKILL_PATHS["codex"]: skills.codex,
         }
 
+    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
+        skills = self._repository_skill_texts()
+        return {
+            "shared": skills.source_references["qa-and-integration.md"],
+            "claude": skills.claude_references["qa-and-integration.md"],
+            "codex": skills.codex_references["qa-and-integration.md"],
+        }
+
+    @staticmethod
+    def _normalize_contract(text: str) -> str:
+        return "".join(text.replace("`", "").split())
+
 
 class IsolatedRepositorySupport:
     def setUp(self) -> None:
