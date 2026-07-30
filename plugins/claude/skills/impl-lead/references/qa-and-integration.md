@@ -161,7 +161,7 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 ```
 
 artifact の作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の
-受け渡しと停止条件」節に従う。
+受け渡しと停止条件」節に従う。起動前後の記録は「reviewer 起動前後の worktree・親 checkout 照合」節に従う。
 
 「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・commit 範囲・
 変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
@@ -169,10 +169,12 @@ artifact の作成手順は「diff artifact の作成」節に、受け渡し・
 
 ## reviewer 起動前後の worktree・親 checkout 照合
 
-reviewer を起動する前に、対象 worktree の `git rev-parse HEAD` と `git status --short`、および
-親の統合 checkout の `git status --short` を親が記録する。親の統合 checkout の記録には
-「返却と統合」手順2 で取得する `git status --short` を使ってよい。
-reviewer の返却後に同じ3つを取り直し、起動前の記録と一致することを確認する。
+reviewer を起動する直前に、対象 worktree の `git rev-parse HEAD` と `git status --short`、および
+親の統合 checkout の `git rev-parse HEAD` と `git status --short` を親が記録する。親の統合 checkout の
+記録は diff artifact の書き出し後に取り直し、「返却と統合」手順2 で取得した値を使い回さない。run 開始時に
+存在しなかった `.tugite/` は手順2 時点では現れず、artifact 書き出し後に現れるため、手順2 の値をそのまま
+使うと reviewer が何もしなくても必ず不一致になる。
+reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。
 
 一致しない場合、その reviewer の findings を採用しない。差異の内容を最終報告へ記録する。
 findings は親が渡した時点の snapshot に対する判定として成立しており、判定の間に対象が動いていれば、

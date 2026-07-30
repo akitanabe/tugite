@@ -46,10 +46,16 @@ reviewer を増やすたび原稿と定義の2箇所を揃えることになり�
 
 `Bash` を渡した reviewer は、対象 worktree に限らず、自身が到達できるいかなる repository
 （対象 worktree、親の統合 checkout など）に対しても、読み取りと検証の実行だけを行い、追跡ファイルを
-変更しない。ミューテーション注入や検証用の複製のように書き込みを伴う検証は、対象とした repository の
-外の OS 一時領域配下へ複製して行う。複製は run 中に削除し、削除できない場合は path を返却物へ記録する。
-worktree を丸ごと複製すると非追跡の `.env` や credential も複製されかねないため、複製対象に非追跡
-ファイルを含めない。あわせて、HEAD・refs・object DB・git 設定・hooks を変更する操作、および到達可能性
+変更しない。書き込みは、対象とした repository の外の一時領域へ作成した複製に限り、それ以外の
+いかなる path へも書き込まない。書き込みを repository 単位でしか条件付けないと、`~/.bashrc` や
+`~/.ssh/config`、plugin の install 先のようにどの repository にも属さない書き込み先が射程外になり、
+親が突き合わせる git 状態にも現れないため、run 限りのはずの権限が run を越えて永続化しうる。
+ミューテーション注入や検証用の複製のように書き込みを伴う検証は、`mktemp -d` などで新規作成した
+一時 directory 配下へ複製して行う。固定名の directory を再利用すると、既存内容ごと再利用・削除する
+余地が残るためである。複製は run 中に削除し、削除の対象は自分が作成したその複製 directory に限る。
+削除できない場合は path を返却物へ記録する。worktree を丸ごと複製すると非追跡の `.env` や credential も
+複製されかねないため、複製対象に非追跡ファイルを含めない。あわせて、HEAD・refs・object DB・git 設定・
+hooks を変更する操作、および到達可能性
 や reflog を失わせる操作を行わない。例えば `commit` / `checkout` / `switch` / `reset` / `stash` /
 `rebase` / `merge` / `cherry-pick` / `worktree add` / `worktree remove` / `branch -d` /
 `branch -D` / `branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` /
@@ -59,9 +65,10 @@ worktree を丸ごと複製すると非追跡の `.env` や credential も複製
 
 この作業範囲は tool metadata では強制できない。`disallowed_tools` は tool 単位の指定であり、
 `Bash` で実行する command の中身までは選べないためである。したがってここで定めるのは契約であり、
-担保は各 reviewer 原稿の指示文と、親が起動前後で対象 worktree の HEAD と `git status --short`、および
-親の統合 checkout の `git status --short` を突き合わせる検査になる。検査の手順は
+担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。検査の対象と手順は
 [QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree・親 checkout 照合」に従う。
+この照合は `impl-lead` の委譲経路が対象 worktree を持つことを前提にした手順であり、`plan-craft` の
+プラン審査のように対象 worktree を持たない起動経路では、担保は各 reviewer 原稿の指示文だけになる。
 network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照（`~/.git-credentials`
 や `.env` の読み取りなど）は、この契約の担保対象外である。`push` の禁止にも上記の検査にも現れないため、
 機構的に扱われていると誤解しないこと。

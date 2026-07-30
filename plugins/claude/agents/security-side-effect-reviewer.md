@@ -34,9 +34,11 @@ diff テキスト、対象システムの制約を根拠に判定してくださ
 判定へ含めないでください。
 
 到達したいかなる repository に対して command を実行する場合であっても、読み取りと検証の実行だけを
-行い、追跡ファイルを変更しないでください。書き込みを伴う検証は、対象とした repository の外の OS
-一時領域配下へ複製して行い、run 中に削除してください。削除できない場合は path を返却物へ記録し、
-非追跡ファイルを複製対象に含めないでください。あわせて、HEAD・refs・object DB・git 設定・hooks を
+行い、追跡ファイルを変更しないでください。書き込みは、対象とした repository の外の一時領域へ
+作成した複製に限り、それ以外のいかなる path へも書き込まないでください。書き込みを伴う検証は、
+`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、削除はその directory に限って
+ください。削除できない場合は path を返却物へ記録し、非追跡ファイルを複製対象に含めないでください。
+あわせて、HEAD・refs・object DB・git 設定・hooks を
 変更する操作、および到達可能性や reflog を失わせる操作を行わないでください
 （`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
 `worktree add` / `worktree remove` / `branch -d` / `branch -D` / `branch -f` / `branch -m` /

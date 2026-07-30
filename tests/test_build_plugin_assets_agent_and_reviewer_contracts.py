@@ -30,8 +30,11 @@ from build_plugin_assets_test_support import (
 BASH_WORKING_LIMIT_CONTRACTS = (
     "到達したいかなる repository に対して command を実行する場合であっても、"
     "読み取りと検証の実行だけを行い、追跡ファイルを変更しないでください。",
-    "書き込みを伴う検証は、対象とした repository の外の OS 一時領域配下へ複製して行い、"
-    "run 中に削除してください。",
+    "書き込みは、対象とした repository の外の一時領域へ"
+    "作成した複製に限り、それ以外のいかなる path へも書き込まないでください。",
+    "書き込みを伴う検証は、"
+    "`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、削除はその directory に限って"
+    "ください。",
     "削除できない場合は path を返却物へ記録し、非追跡ファイルを複製対象に含めないでください。",
     "HEAD・refs・object DB・git 設定・hooks を変更する操作、"
     "および到達可能性や reflog を失わせる操作を行わないでください",
@@ -271,8 +274,11 @@ class AgentAndReviewerContractsTest(
         # reference alone because a subagent reads its own manuscript at run
         # time and never opens the skill reference. Reviewers without `Bash`
         # are deliberately left untouched: the same paragraph would be a rule
-        # they have no way to break.
-        for name in REVIEWER_NAMES:
+        # they have no way to break. Scanning all of AGENT_NAMES (not just
+        # REVIEWER_NAMES) also catches the paragraph leaking into a
+        # non-reviewer agent (implementer, refactorer) where it would be a
+        # rule that agent has no `Bash`-granted role to break either.
+        for name in AGENT_NAMES:
             texts = {
                 "shared": self._repository_text(Path("shared/agents") / f"{name}.md"),
                 "claude": self._repository_text(CLAUDE_PROFILE_PATH / f"{name}.md"),

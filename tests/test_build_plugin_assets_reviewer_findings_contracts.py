@@ -64,7 +64,9 @@ QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
 # manuscript's literal count silently stale.
 READ_ONLY_ENFORCEMENT_SECTION = "## read-only の担保"
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
-    READ_ONLY_ENFORCEMENT_SECTION,
+    # The heading itself is not pinned here: `_section_lines` already raises
+    # if the heading is missing, so a separate membership check on it would
+    # be redundant once every other contract below is scoped to the section.
     "指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。",
     # Pins that `tools`（allowlist）is the actual guarantor and
     # `disallowed_tools` is a restated overlay, not an independent guarantee.
@@ -103,9 +105,26 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "`Bash` を渡した reviewer は、対象 worktree に限らず、自身が到達できるいかなる repository"
     "（対象 worktree、親の統合 checkout など）に対しても、読み取りと検証の実行だけを行い、"
     "追跡ファイルを変更しない。",
-    "ミューテーション注入や検証用の複製のように書き込みを伴う検証は、"
-    "対象とした repository の外の OS 一時領域配下へ複製して行う。",
-    "複製は run 中に削除し、削除できない場合は path を返却物へ記録する。",
+    # Pins the effect-based write-destination rule (SEC-11): write is limited
+    # to a duplicate created outside the target repository, no matter what
+    # class of location it is — not just other repositories. Without this,
+    # destinations that belong to no repository (`~/.bashrc`, `~/.ssh/config`,
+    # a plugin's install path) fall outside the ban and outside what the
+    # HEAD/status check can observe.
+    "書き込みは、対象とした repository の外の一時領域へ作成した複製に限り、それ以外の"
+    "いかなる path へも書き込まない。",
+    "書き込みを repository 単位でしか条件付けないと、`~/.bashrc` や"
+    "`~/.ssh/config`、plugin の install 先のようにどの repository にも属さない書き込み先が射程外になり、"
+    "親が突き合わせる git 状態にも現れないため、run 限りのはずの権限が run を越えて永続化しうる。",
+    # Pins the duplicate-destination rule (SEC-12): a freshly created,
+    # unique directory, with deletion scoped to that directory only — not a
+    # reused fixed-name location.
+    "ミューテーション注入や検証用の複製のように書き込みを伴う検証は、`mktemp -d` などで新規作成した"
+    "一時 directory 配下へ複製して行う。",
+    "固定名の directory を再利用すると、既存内容ごと再利用・削除する"
+    "余地が残るためである。",
+    "複製は run 中に削除し、削除の対象は自分が作成したその複製 directory に限る。",
+    "削除できない場合は path を返却物へ記録する。",
     "worktree を丸ごと複製すると非追跡の `.env` や credential も複製されかねないため、"
     "複製対象に非追跡ファイルを含めない。",
     # Pins the effect-based principle as the primary rule, with the git
@@ -129,14 +148,19 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "この作業範囲は tool metadata では強制できない。",
     "`disallowed_tools` は tool 単位の指定であり、`Bash` で実行する command の中身までは"
     "選べないためである。",
-    # Pins that the pre/post check also covers the parent's own checkout, not
-    # only the target worktree — required because a `Bash`-granted reviewer
-    # reaches the parent's integrated checkout too.
-    "担保は各 reviewer 原稿の指示文と、親が起動前後で対象 worktree の HEAD と "
-    "`git status --short`、および親の統合 checkout の `git status --short` を"
-    "突き合わせる検査になる。",
-    "検査の手順は [QA・修正・統合](qa-and-integration.md) の"
+    # Pins that the guarantor is a delegated check rather than a restated
+    # list of observation points (RB-6): qa-and-integration.md's own section
+    # is the one place that enumerates what gets compared, so this file only
+    # points at it instead of keeping a second, driftable copy.
+    "担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。",
+    "検査の対象と手順は [QA・修正・統合](qa-and-integration.md) の"
     "「reviewer 起動前後の worktree・親 checkout 照合」に従う。",
+    # Pins the limit of this guarantee (SEC-10): the pre/post check assumes a
+    # target worktree exists, so a launch path without one (plan-craft's plan
+    # review) is left with manuscript instructions only.
+    "この照合は `impl-lead` の委譲経路が対象 worktree を持つことを前提にした手順であり、"
+    "`plan-craft` のプラン審査のように対象 worktree を持たない起動経路では、"
+    "担保は各 reviewer 原稿の指示文だけになる。",
     # Pins that network egress and credential access sit outside this
     # contract's guarantees: neither the `push` ban nor the HEAD/status check
     # observes them, so a reader must not assume they are mechanically covered.
@@ -146,11 +170,15 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
-    # Pins the scope disclaimer added in 「位置づけ」: without it, a reader
-    # could mistake this section's reviewer count for the 「位置づけ」
-    # section's 2-point scope.
+)
+# Lives in 「位置づけ」, not in 「read-only の担保」: the disclaimer keeps a
+# reader from mistaking the read-only section's 7-reviewer scope for
+# 「位置づけ」's own 2-point scope. Checked separately (whole document, not
+# section-scoped) because it belongs to a different section than the one
+# READ_ONLY_ENFORCEMENT_CONTRACTS is scoped to.
+READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION = (
     "ここで定めた対象は上記2点だけに適用する。"
-    "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。",
+    "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。"
 )
 # The delegation pointer, not a second copy of the rule: qa-and-integration.md
 # keeps only why the parent hands diff and test results over as Data.
@@ -286,9 +314,18 @@ class ReviewerFindingsContractTest(
         """Hold one canonical reason for enforcing read-only on every reviewer."""
         for platform, text in self._reviewer_findings_reference_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
+                section = "\n".join(
+                    self._section_lines(text, READ_ONLY_ENFORCEMENT_SECTION)
+                )
+                normalized = "".join(section.split())
                 for contract in READ_ONLY_ENFORCEMENT_CONTRACTS:
                     self.assertIn("".join(contract.split()), normalized)
+                self.assertIn(
+                    "".join(
+                        READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION.split()
+                    ),
+                    "".join(text.split()),
+                )
 
     def test_read_only_section_states_the_split_criterion_without_listing_members(
         self,

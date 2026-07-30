@@ -39,9 +39,16 @@ REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree・親 c
 # anything failing. Naming a tool here would also collide with the ban on
 # restating the read-only rule in this file.
 REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
-    "reviewer を起動する前に、対象 worktree の `git rev-parse HEAD` と "
-    "`git status --short`、および親の統合 checkout の `git status --short` を親が記録する。",
-    "reviewer の返却後に同じ3つを取り直し、起動前の記録と一致することを確認する。",
+    "reviewer を起動する直前に、対象 worktree の `git rev-parse HEAD` と `git status --short`、"
+    "および親の統合 checkout の `git rev-parse HEAD` と `git status --short` を親が記録する。",
+    # Pins that the parent-checkout record is retaken after the diff artifact
+    # is written, not reused from 返却と統合 手順2 (SEC-9): reusing 手順2's
+    # value would always mismatch once a run creates `.tugite/` after that
+    # step, discarding legitimate findings for a reason unrelated to the
+    # reviewer's own behavior.
+    "親の統合 checkout の記録は diff artifact の書き出し後に取り直し、"
+    "「返却と統合」手順2 で取得した値を使い回さない。",
+    "reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。",
     "一致しない場合、その reviewer の findings を採用しない。",
     "差異の内容を最終報告へ記録する。",
     "reviewer が到達するのは対象 worktree だけでなく親の統合 checkout でもあるため、"
