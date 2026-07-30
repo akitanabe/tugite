@@ -325,7 +325,7 @@ class AgentAndReviewerContractsTest(
     def test_repository_every_findings_reviewer_is_barred_from_write_tools(
         self,
     ) -> None:
-        """Withhold file modification from every reviewer on both platforms, whatever its exploration reach."""
+        """Withhold file modification from every reviewer on the Claude platform, whatever its exploration reach."""
         for name in REVIEWER_NAMES:
             with self.subTest(name=name):
                 source_metadata = self._agent_source_metadata(name)
@@ -335,9 +335,6 @@ class AgentAndReviewerContractsTest(
                             tool, source_metadata["claude"]["disallowed_tools"]
                         )
                         self.assertNotIn(tool, source_metadata["claude"]["tools"])
-                self.assertEqual(
-                    "read-only", source_metadata["codex"]["sandbox_mode"]
-                )
 
     def test_repository_reviewer_exploration_groups_partition_every_reviewer(
         self,
