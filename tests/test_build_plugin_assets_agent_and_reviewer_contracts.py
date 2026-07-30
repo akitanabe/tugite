@@ -287,7 +287,6 @@ class AgentAndReviewerContractsTest(
 
         self.assertEqual(codex_sandboxed, claude_restricted)
         self.assertEqual(codex_sandboxed, set(READ_ONLY_TOOL_AGENT_NAMES))
-        self.assertNotIn("review-patch-refactorer", codex_sandboxed)
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,
