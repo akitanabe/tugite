@@ -241,6 +241,28 @@ class RepositoryContractSupport:
     def _normalize_contract(text: str) -> str:
         return "".join(text.replace("`", "").split())
 
+    @staticmethod
+    def _iter_repository_text_asset_files(*roots: Path) -> Iterator[Path]:
+        """Yield the repository's authored and generated text assets under ``roots``.
+
+        Each root may be a directory (walked recursively) or a single file
+        (yielded as-is when it exists). Skips ``__pycache__`` directories found
+        below ``root``: their ``.pyc`` contents are bytecode caches unittest
+        regenerates on every import, never checked in and not reliably valid
+        UTF-8, so they are neither source the contracts govern nor a
+        distributed deliverable. Path components above ``root`` (e.g. from a
+        checkout path) are ignored, so checking the repository out under a
+        directory literally named ``__pycache__`` does not exclude it wholesale.
+        """
+        for root in roots:
+            candidates = [root] if root.is_file() else root.rglob("*")
+            for candidate in candidates:
+                if not candidate.is_file():
+                    continue
+                if "__pycache__" in candidate.relative_to(root).parts:
+                    continue
+                yield candidate
+
 
 class IsolatedRepositorySupport:
     def setUp(self) -> None:

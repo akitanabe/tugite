@@ -467,15 +467,15 @@ class ImplLeadModeContractsTest(
             "requested_mode: " + "strict",
         )
 
-        for root in scan_roots:
-            file_paths = [root] if root.is_file() else list(root.rglob("*"))
-            for file_path in file_paths:
-                if not file_path.is_file():
-                    continue
-                content = file_path.read_text(encoding="utf-8")
-                for phrase in retired_phrases:
-                    with self.subTest(path=file_path, phrase=phrase):
-                        self.assertNotIn(phrase, content)
+        scanned_files = list(self._iter_repository_text_asset_files(*scan_roots))
+        # A silently empty scan would pass vacuously without checking anything.
+        self.assertTrue(scanned_files, scan_roots)
+
+        for file_path in scanned_files:
+            content = file_path.read_text(encoding="utf-8")
+            for phrase in retired_phrases:
+                with self.subTest(path=file_path, phrase=phrase):
+                    self.assertNotIn(phrase, content)
 
     def test_repository_delegate_skill_description_names_the_input_vocabulary(
         self,
