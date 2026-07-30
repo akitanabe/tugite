@@ -58,8 +58,7 @@ hooks を変更する操作、および到達可能性
 `rebase` / `merge` / `cherry-pick` / `worktree add` / `worktree remove` / `branch -d` /
 `branch -D` / `branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` /
 `gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / `restore` /
-`push` が該当する。追跡ファイルの編集は親の `git status --short` 検査で気づけるが、これらは status を
-汚さずにレビュー対象の snapshot 自体を差し替えるため、その検査をすり抜けるためである。
+`push` が該当する。追跡ファイルの編集は親の照合で気づけるが、これらは状態を戻せば照合をすり抜けうるためである。
 
 この作業範囲は tool metadata では強制できない。`disallowed_tools` は tool 単位の指定であり、
 `Bash` で実行する command の中身までは選べないためである。したがってここで定めるのは契約であり、

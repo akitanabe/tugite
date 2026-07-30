@@ -33,8 +33,8 @@ BASH_WORKING_LIMIT_CONTRACTS = (
     "書き込みは、対象とした repository の外の一時領域へ"
     "作成した複製に限り、それ以外のいかなる path へも書き込まないでください。",
     "書き込みを伴う検証は、"
-    "`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、削除はその directory に限って"
-    "ください。",
+    "`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、run 中に、自分が作成した"
+    "その directory に限って削除してください。",
     "削除できない場合は path を返却物へ記録し、非追跡ファイルを複製対象に含めないでください。",
     "HEAD・refs・object DB・git 設定・hooks を変更する操作、"
     "および到達可能性や reflog を失わせる操作を行わないでください",
@@ -44,6 +44,12 @@ BASH_WORKING_LIMIT_CONTRACTS = (
     "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
     "`restore` / `push` など",
 )
+# A duplicate-cleanup obligation stated as "delete it" survives an appended
+# sentence that walks the obligation back for the *next* run, since assertIn
+# only checks the required text is present, not that nothing after it negates
+# it. This marker pins the negation absent so a manuscript cannot both say
+# "delete it" and "leaving it for the next run is fine" at once.
+BASH_WORKING_LIMIT_DELETION_DUTY_NEGATION_MARKER = "残してかまいません"
 
 
 class AgentAndReviewerContractsTest(
@@ -293,6 +299,10 @@ class AgentAndReviewerContractsTest(
                             self.assertIn("".join(contract.split()), normalized)
                         else:
                             self.assertNotIn("".join(contract.split()), normalized)
+                with self.subTest(name=name, platform=platform, marker="deletion-duty-negation"):
+                    self.assertNotIn(
+                        BASH_WORKING_LIMIT_DELETION_DUTY_NEGATION_MARKER, text
+                    )
 
     def test_repository_reviewer_platforms_grant_the_exploration_reach_of_their_group(
         self,

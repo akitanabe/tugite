@@ -62,6 +62,7 @@ QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
 # Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
 # adding an 8th reviewer to those sets fails this test instead of leaving the
 # manuscript's literal count silently stale.
+POSITIONING_SECTION = "## 位置づけ"
 READ_ONLY_ENFORCEMENT_SECTION = "## read-only の担保"
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # The heading itself is not pinned here: `_section_lines` already raises
@@ -139,9 +140,13 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
     "`restore` / `push` が該当する。",
     # Pins why the git operations are listed apart from file edits: they are
-    # the ones the parent's own check cannot see.
-    "追跡ファイルの編集は親の `git status --short` 検査で気づけるが、これらは status を"
-    "汚さずにレビュー対象の snapshot 自体を差し替えるため、その検査をすり抜けるためである。",
+    # the ones that can evade the parent's pre/post check by restoring state,
+    # unlike a tracked-file edit which the check observes directly. Named via
+    # the check itself (not a specific command) since `rev-parse HEAD` was
+    # added to that check after this sentence was first written, and a
+    # command-specific claim would go stale again the next time the check's
+    # observation points change.
+    "追跡ファイルの編集は親の照合で気づけるが、これらは状態を戻せば照合をすり抜けうるためである。",
     # Pins that the limits are a contract rather than an enforced setting, so a
     # later reader does not assume the tool metadata already blocks them and
     # drop the instruction as redundant.
@@ -173,9 +178,10 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
 )
 # Lives in 「位置づけ」, not in 「read-only の担保」: the disclaimer keeps a
 # reader from mistaking the read-only section's 7-reviewer scope for
-# 「位置づけ」's own 2-point scope. Checked separately (whole document, not
-# section-scoped) because it belongs to a different section than the one
-# READ_ONLY_ENFORCEMENT_CONTRACTS is scoped to.
+# 「位置づけ」's own 2-point scope. Checked against 「位置づけ」's own section
+# text (not the whole document) so that moving the disclaimer into
+# 「read-only の担保」 — which would restore the exact misreading this
+# disclaimer exists to prevent — fails this test.
 READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION = (
     "ここで定めた対象は上記2点だけに適用する。"
     "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。"
@@ -320,11 +326,14 @@ class ReviewerFindingsContractTest(
                 normalized = "".join(section.split())
                 for contract in READ_ONLY_ENFORCEMENT_CONTRACTS:
                     self.assertIn("".join(contract.split()), normalized)
+                positioning_section = "\n".join(
+                    self._section_lines(text, POSITIONING_SECTION)
+                )
                 self.assertIn(
                     "".join(
                         READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION.split()
                     ),
-                    "".join(text.split()),
+                    "".join(positioning_section.split()),
                 )
 
     def test_read_only_section_states_the_split_criterion_without_listing_members(
