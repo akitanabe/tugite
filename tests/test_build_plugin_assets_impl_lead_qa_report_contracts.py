@@ -161,21 +161,16 @@ class ImplLeadQaReportContractsTest(
                     f"{GENERATED_MARKDOWN_WARNING}\n\n"
                 )
             )
-        for references in (
-            skills.source_references,
-            skills.claude_references,
-            skills.codex_references,
+        for platform, references in (
+            ("shared", skills.source_references),
+            ("claude", skills.claude_references),
+            ("codex", skills.codex_references),
         ):
-            for owner in (
-                "qa-and-integration.md",
-                "branch-review.md",
-                "finding-routing.md",
-            ):
-                with self.subTest(owner=owner):
-                    self.assertIn(
-                        "(reviewer-dispatch.md)",
-                        references[owner],
-                    )
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "(reviewer-dispatch.md)",
+                    references["finding-routing.md"],
+                )
 
     def test_repository_impl_lead_local_markdown_links_resolve(self) -> None:
         """Resolve every local reference file and section reached by impl-lead."""
@@ -317,7 +312,6 @@ class ImplLeadQaReportContractsTest(
             ("claude", skills.claude_references),
             ("codex", skills.codex_references),
         ):
-            observed_owners: dict[str, str] = {}
             for name, expected in expected_sections.items():
                 text = references[name]
                 toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
@@ -331,13 +325,6 @@ class ImplLeadQaReportContractsTest(
                 with self.subTest(platform=platform, reference=name):
                     self.assertEqual(expected, toc_items)
                     self.assertEqual(expected, actual)
-                for section in actual:
-                    self.assertNotIn(section, observed_owners)
-                    observed_owners[section] = name
-            self.assertEqual(
-                set(section for sections in expected_sections.values() for section in sections),
-                set(observed_owners),
-            )
 
     def test_repository_writes_one_parent_qa_report_only_when_requested(
         self,

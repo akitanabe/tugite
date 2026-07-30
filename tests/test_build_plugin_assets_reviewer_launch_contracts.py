@@ -76,7 +76,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         self,
     ) -> None:
         """Require every reviewer-launch field on its own filled-in line inside one fence."""
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 template = self._extract_reviewer_launch_template(reference)
                 self.assertNotIn("{{", template)
@@ -98,9 +98,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "該当がない欄は「なし」と記入する",
             "欄を空欄のまま残すことと、欄自体を削除することを禁じる",
         )
-        branch_reviews = self._branch_review_reference_texts()
-        finding_routings = self._finding_routing_reference_texts()
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
+        finding_routings = self._impl_lead_reference_texts("finding-routing.md")
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in obligation_contracts:
@@ -163,7 +163,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "diff artifact は reviewer へ diff を渡すためだけの中間物で run 完了時に削除する",
             "保持規約の異なる file を同じ directory へ混在させない",
         )
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
@@ -202,7 +202,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "「diff artifact の削除」の手順で削除したうえで再生成し、"
             "再生成できない場合は diff text 経路へ落ちる",
         )
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
@@ -228,8 +228,8 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "[diff artifact の削除](reviewer-dispatch.md) の手順で削除する",
             "永続 QA レポートと `<slug>-tests.md` は削除しない",
         )
-        closeouts = self._run_closeout_reference_texts()
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        closeouts = self._impl_lead_reference_texts("run-closeout.md")
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
@@ -271,9 +271,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         }
         reference_groups = {
             "qa-and-integration.md": self._qa_and_integration_reference_texts(),
-            "reviewer-dispatch.md": self._reviewer_dispatch_reference_texts(),
-            "branch-review.md": self._branch_review_reference_texts(),
-            "finding-routing.md": self._finding_routing_reference_texts(),
+            "reviewer-dispatch.md": self._impl_lead_reference_texts("reviewer-dispatch.md"),
+            "branch-review.md": self._impl_lead_reference_texts("branch-review.md"),
+            "finding-routing.md": self._impl_lead_reference_texts("finding-routing.md"),
         }
         for name, references in reference_groups.items():
             for platform, reference in references.items():
@@ -286,7 +286,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         self,
     ) -> None:
         """Reject findings from a launch whose review target moved while the reviewer held it."""
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 self.assertEqual(
                     1, reference.count(REVIEWER_LAUNCH_SNAPSHOT_SECTION)

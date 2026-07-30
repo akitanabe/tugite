@@ -38,7 +38,7 @@ class ImplLeadReviewLoopContractsTest(
 
     def test_workflows_split_branch_review_into_three_phases(self) -> None:
         """Run the over-engineering gate only on a settled snapshot, once per convergence."""
-        for platform, reference in self._branch_review_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 initial = self._normalize_contract(sections["### initial レビュー群"])
@@ -69,7 +69,7 @@ class ImplLeadReviewLoopContractsTest(
         self,
     ) -> None:
         """Point the initial phase at one specialist section instead of enumerating sites."""
-        for platform, reference in self._branch_review_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 initial = self._normalize_contract(sections["### initial レビュー群"])
@@ -94,7 +94,7 @@ class ImplLeadReviewLoopContractsTest(
 
     def test_workflows_bound_branch_review_rounds_and_define_termination(self) -> None:
         """Count a round per phase run and bound the total at the limit plus one."""
-        for platform, reference in self._branch_review_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 counting = self._normalize_contract(sections["### 1 round の数え方"])
@@ -141,7 +141,7 @@ class ImplLeadReviewLoopContractsTest(
         self,
     ) -> None:
         """Relaunch only finding owners and newly-risked reviewers, never the gate set."""
-        for platform, reference in self._branch_review_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 loop = self._normalize_contract(sections["### レビューループ"])

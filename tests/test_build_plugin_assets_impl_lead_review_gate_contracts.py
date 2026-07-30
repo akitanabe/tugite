@@ -101,8 +101,8 @@ class ImplLeadReviewGateContractsTest(
             "`responsibility-boundary-reviewer` は修正しない。",
             "diff にない既存問題は「既存課題」として判定から分ける。",
         )
-        finding_routings = self._finding_routing_reference_texts()
-        for platform, reference in self._reviewer_dispatch_reference_texts().items():
+        finding_routings = self._impl_lead_reference_texts("finding-routing.md")
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 specialist = self._qa_section(reference, "## 専門 reviewer")
                 responsibility = self._qa_section(
@@ -187,7 +187,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Apply the over-engineering gate to standard and strict branches only."""
-        qa_workflows = self._branch_review_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("branch-review.md")
         # 適用 mode の正本はゲート表なので、表の行と mode 文言だけを pin する。
         # `lite` を除外する根拠の散文は、文言の微修正だけで red になる割に
         # 「`lite` へ誤って適用される」欠陥をこの2つより先に検出しない。
@@ -233,7 +233,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Approve each removal per finding id and return unlocatable coverage."""
-        qa_workflows = self._finding_routing_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
         approval_conditions = (
             "## 過剰実装ゲートの除去許可",
             "親は指摘IDごとに次をすべて確認する。",
@@ -275,7 +275,7 @@ class ImplLeadReviewGateContractsTest(
 
     def test_repository_workflow_passes_selected_reviewer_context(self) -> None:
         """Pass baseline review data plus purpose-selected context, never the whole repo."""
-        qa_workflows = self._reviewer_dispatch_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("reviewer-dispatch.md")
         baseline_inputs = (
             "レビュー対象とリスクに応じて、必要な周辺コンテキストを選択して reviewer へ渡す",
             "タスクの目的",
@@ -435,7 +435,7 @@ class ImplLeadReviewGateContractsTest(
 
     def test_repository_mandatory_gates_accept_no_change_result(self) -> None:
         """Pass any mandatory gate whose review reports no findings."""
-        qa_workflows = self._branch_review_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
             "no-change",
             "指摘が0件",
@@ -452,7 +452,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Review only changed behavior using evidence collected by the parent."""
-        qa_workflows = self._branch_review_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
             "`git diff`",
             "`git status`",
@@ -474,7 +474,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Block acceptance until every identified finding has a recorded outcome."""
-        qa_workflows = self._branch_review_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
             "指摘ID",
             "構造化 Data",
@@ -540,7 +540,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Launch the patch refactorer with bounded data and re-verify scope on return."""
-        qa_workflows = self._finding_routing_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
         launch_contracts = (
             "親が指摘を確認し、修正対象として採用している。",
             "Acceptance Criteria を変更する必要がない。",
@@ -586,7 +586,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Derive every finding's severity from parent judgment before fix routing."""
-        qa_workflows = self._finding_routing_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
         heading = "## 修正先の選択"
         # AC-1 (d)
         scope_and_timing = (
@@ -660,7 +660,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Return every fix route to mode-scoped parent QA and the narrowed relaunch set."""
-        branch_reviews = self._branch_review_reference_texts()
+        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
             "`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、"
             "元 Implementer による修正にも適用する。",
@@ -685,7 +685,7 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Withhold gate passage on findings whose evidence the parent cannot verify."""
-        qa_workflows = self._finding_routing_reference_texts()
+        qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
         required_contracts = (
             "[Reviewer findings の共通契約](reviewer-findings.md)",
             "evidence を欠く指摘は、単独でゲート通過の根拠にしない。",

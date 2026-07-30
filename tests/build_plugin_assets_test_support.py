@@ -264,18 +264,6 @@ class RepositoryContractSupport:
     def _qa_and_integration_reference_texts(self) -> dict[str, str]:
         return self._impl_lead_reference_texts("qa-and-integration.md")
 
-    def _reviewer_dispatch_reference_texts(self) -> dict[str, str]:
-        return self._impl_lead_reference_texts("reviewer-dispatch.md")
-
-    def _branch_review_reference_texts(self) -> dict[str, str]:
-        return self._impl_lead_reference_texts("branch-review.md")
-
-    def _finding_routing_reference_texts(self) -> dict[str, str]:
-        return self._impl_lead_reference_texts("finding-routing.md")
-
-    def _run_closeout_reference_texts(self) -> dict[str, str]:
-        return self._impl_lead_reference_texts("run-closeout.md")
-
     @staticmethod
     def _normalize_contract(text: str) -> str:
         return "".join(text.replace("`", "").split())
