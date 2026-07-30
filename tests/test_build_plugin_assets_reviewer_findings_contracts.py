@@ -11,8 +11,8 @@ from build_plugin_assets_test_support import (
     IMPL_LEAD_SKILL,
     GENERATED_MARKDOWN_WARNING,
     GENERATED_SKILL_PATHS,
-    READ_ONLY_TOOL_AGENT_NAMES,
     REPOSITORY_ROOT,
+    REVIEWER_NAMES,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
     generated_skill_reference_path,
@@ -59,28 +59,133 @@ COUNT_ONLY_REVIEWER_NAMES = (
 )
 QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
-# Both counts are derived from READ_ONLY_TOOL_AGENT_NAMES / FINDINGS_REVIEWER_NAMES
-# so that adding an 8th reviewer to those sets fails this test instead of leaving
-# the manuscript's literal count silently stale.
+# Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
+# adding an 8th reviewer to those sets fails this test instead of leaving the
+# manuscript's literal count silently stale.
+POSITIONING_SECTION = "## 位置づけ"
+READ_ONLY_ENFORCEMENT_SECTION = "## read-only の担保"
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
-    "## read-only の担保",
-    "read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。",
-    "Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、"
-    "Codex 向けは `sandbox_mode` で担保し、片方の platform にだけ制限が入っている状態を作らない。",
+    # The heading itself is not pinned here: `_section_lines` already raises
+    # if the heading is missing, so a separate membership check on it would
+    # be redundant once every other contract below is scoped to the section.
+    "指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。",
+    # Pins that `tools`（allowlist）is the actual guarantor and
+    # `disallowed_tools` is a restated overlay, not an independent guarantee.
+    # An earlier draft named `disallowed_tools` as co-equal with `tools`,
+    # which does not hold once a reviewer lacks `tools` altogether.
+    "担保の実体は Claude 向け agent frontmatter の `tools`（許可 tool の allowlist）であり、"
+    "`Edit` / `Write` / `NotebookEdit` を含めないことでこれらの tool が渡らない。",
+    "`disallowed_tools` にも同じ3つを重ねて書くが、これは意図を明示する重ね書きであり、"
+    "`tools` を伴わずに単独で担保になるものではない。",
+    "Codex 向けは `sandbox_mode` の `read-only` が同じ役割を果たす。",
+    # Pins the criterion that splits exploration reach. Without it the section
+    # would carry only the write-tool ban, and the reason one reviewer is given
+    # `Bash` while another is not would be recorded nowhere.
+    "判定に検証の実行や基準 commit 時点のファイル参照が必要な reviewer には `Bash` を渡し、"
+    "渡された Data のテキストだけで判定できる reviewer には渡さない。",
+    "どの reviewer がどちらに属するかはこの節に列挙せず、各 agent 定義を正本とする。",
+    # Pins the platform asymmetry the split introduces: a reviewer holding
+    # `Bash` can write through it, so on Claude the ban is manuscript text
+    # only. Recording it keeps a later reader from assuming both platforms
+    # enforce the ban mechanically and removing the instruction as redundant.
+    "`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。",
+    # Pins the tool-unit restriction as a general phrase (not just
+    # `disallowed_tools`), since `tools` allowlist exclusion is equally
+    # bypassable once `Bash` is granted.
+    "`Bash` からファイルを書けるため、tool 単位の制限"
+    "（`tools` の allowlist からの除外や `disallowed_tools`）はいずれも迂回でき、"
+    "Codex 側の `sandbox_mode` のように機構としては禁じられない。",
+    "担保の強さは platform 間で非対称であり、"
+    "これは `Bash` を渡す判断に伴う既知の制約として引き受ける。",
+    # Pins the working limits that apply once `Bash` is granted. The reach
+    # split alone leaves "may run commands" unbounded, and nothing on the
+    # Claude side stops a reviewer from rewriting what it is reviewing. The
+    # scope is unconditional reach (target worktree, parent's integrated
+    # checkout, or anywhere else the reviewer lands) rather than a condition
+    # keyed on "target worktree", which a reviewer cannot resolve on its own.
+    "`Bash` を渡した reviewer は、対象 worktree に限らず、自身が到達できるいかなる repository"
+    "（対象 worktree、親の統合 checkout など）に対しても、読み取りと検証の実行だけを行い、"
+    "追跡ファイルを変更しない。",
+    # Pins the effect-based write-destination rule (SEC-11): write is limited
+    # to a duplicate created outside the target repository, no matter what
+    # class of location it is — not just other repositories. Without this,
+    # destinations that belong to no repository (`~/.bashrc`, `~/.ssh/config`,
+    # a plugin's install path) fall outside the ban and outside what the
+    # HEAD/status check can observe.
+    "書き込みは、対象とした repository の外の一時領域へ作成した複製に限り、それ以外の"
+    "いかなる path へも書き込まない。",
+    "書き込みを repository 単位でしか条件付けないと、`~/.bashrc` や"
+    "`~/.ssh/config`、plugin の install 先のようにどの repository にも属さない書き込み先が射程外になり、"
+    "親が突き合わせる git 状態にも現れないため、run 限りのはずの権限が run を越えて永続化しうる。",
+    # Pins the duplicate-destination rule (SEC-12): a freshly created,
+    # unique directory, with deletion scoped to that directory only — not a
+    # reused fixed-name location.
+    "ミューテーション注入や検証用の複製のように書き込みを伴う検証は、`mktemp -d` などで新規作成した"
+    "一時 directory 配下へ複製して行う。",
+    "固定名の directory を再利用すると、既存内容ごと再利用・削除する"
+    "余地が残るためである。",
+    "複製は run 中に削除し、削除の対象は自分が作成したその複製 directory に限る。",
+    "削除できない場合は path を返却物へ記録する。",
+    "worktree を丸ごと複製すると非追跡の `.env` や credential も複製されかねないため、"
+    "複製対象に非追跡ファイルを含めない。",
+    # Pins the effect-based principle as the primary rule, with the git
+    # subcommand list kept only as an example. A closed enumeration alone
+    # missed `branch -D`/`-f`/`-m`, `update-ref`, `symbolic-ref`, `reflog
+    # expire`, `gc --prune=now`, `config`, hooks, `clean -fdx`, and `restore`.
+    "あわせて、HEAD・refs・object DB・git 設定・hooks を変更する操作、"
+    "および到達可能性や reflog を失わせる操作を行わない。",
+    "例えば `commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `branch -D` / "
+    "`branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` / "
+    "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
+    "`restore` / `push` が該当する。",
+    # Pins why the git operations are listed apart from file edits: they are
+    # the ones that can evade the parent's pre/post check by restoring state,
+    # unlike a tracked-file edit which the check observes directly. Named via
+    # the check itself (not a specific command) since `rev-parse HEAD` was
+    # added to that check after this sentence was first written, and a
+    # command-specific claim would go stale again the next time the check's
+    # observation points change.
+    "追跡ファイルの編集は親の照合で気づけるが、これらは状態を戻せば照合をすり抜けうるためである。",
+    # Pins that the limits are a contract rather than an enforced setting, so a
+    # later reader does not assume the tool metadata already blocks them and
+    # drop the instruction as redundant. The reasoning itself (`disallowed_tools`
+    # being tool-scoped, `Bash` command contents being unselectable) lives once,
+    # in the write-ban paragraph above; this second mention only points back to
+    # it instead of restating the same fact a second time in the same section.
+    "この作業範囲も上記と同じ理由で tool metadata では強制できない。",
+    # Pins that the guarantor is a delegated check rather than a restated
+    # list of observation points (RB-6): qa-and-integration.md's own section
+    # is the one place that enumerates what gets compared, so this file only
+    # points at it instead of keeping a second, driftable copy.
+    "担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。",
+    "検査の対象と手順は [QA・修正・統合](qa-and-integration.md) の"
+    "「reviewer 起動前後の worktree・親 checkout 照合」に従う。",
+    # Pins the limit of this guarantee (SEC-10): the pre/post check assumes a
+    # target worktree exists, so a launch path without one (plan-craft's plan
+    # review) is left with manuscript instructions only.
+    "この照合は `impl-lead` の委譲経路が対象 worktree を持つことを前提にした手順であり、"
+    "`plan-craft` のプラン審査のように対象 worktree を持たない起動経路では、"
+    "担保は各 reviewer 原稿の指示文だけになる。",
+    # Pins that network egress and credential access sit outside this
+    # contract's guarantees: neither the `push` ban nor the HEAD/status check
+    # observes them, so a reader must not assume they are mechanically covered.
+    "network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照"
+    "（`~/.git-credentials` や `.env` の読み取りなど）は、この契約の担保対象外である。",
     f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
-    f"`expert-selection-reviewer` を加えた reviewer {len(READ_ONLY_TOOL_AGENT_NAMES)}本とする。",
+    f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
-    # Pins the reason the two platform settings must be kept in lockstep:
-    # dropping this clause left the section's own rationale unverified even
-    # though the settings themselves were still checked above.
-    "同じ契約の担保の強さが platform で変わると、"
-    "どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。",
-    # Pins the scope disclaimer added in 「位置づけ」: without it, a reader
-    # could mistake this section's reviewer count for the 「位置づけ」
-    # section's 2-point scope.
+)
+# Lives in 「位置づけ」, not in 「read-only の担保」: the disclaimer keeps a
+# reader from mistaking the read-only section's 7-reviewer scope for
+# 「位置づけ」's own 2-point scope. Checked against 「位置づけ」's own section
+# text (not the whole document) so that moving the disclaimer into
+# 「read-only の担保」 — which would restore the exact misreading this
+# disclaimer exists to prevent — fails this test.
+READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION = (
     "ここで定めた対象は上記2点だけに適用する。"
-    "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。",
+    "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。"
 )
 # The delegation pointer, not a second copy of the rule: qa-and-integration.md
 # keeps only why the parent hands diff and test results over as Data.
@@ -216,9 +321,48 @@ class ReviewerFindingsContractTest(
         """Hold one canonical reason for enforcing read-only on every reviewer."""
         for platform, text in self._reviewer_findings_reference_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
+                section = "\n".join(
+                    self._section_lines(text, READ_ONLY_ENFORCEMENT_SECTION)
+                )
+                normalized = "".join(section.split())
                 for contract in READ_ONLY_ENFORCEMENT_CONTRACTS:
                     self.assertIn("".join(contract.split()), normalized)
+                positioning_section = "\n".join(
+                    self._section_lines(text, POSITIONING_SECTION)
+                )
+                self.assertIn(
+                    "".join(
+                        READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION.split()
+                    ),
+                    "".join(positioning_section.split()),
+                )
+
+    def test_read_only_section_states_the_split_criterion_without_listing_members(
+        self,
+    ) -> None:
+        """Leave each reviewer's exploration reach to its agent definition instead of copying the roster into the manuscript."""
+        # `expert-selection-reviewer` and `review-patch-refactorer` are named
+        # deliberately: the section has to say who it covers and who it does
+        # not, which is scope, not a per-reviewer tool assignment. Every other
+        # reviewer name appearing here would mean the roster is maintained in
+        # two places again.
+        listed_by_scope = {"expert-selection-reviewer", "review-patch-refactorer"}
+        for platform, text in self._reviewer_findings_reference_texts().items():
+            section = "\n".join(
+                self._section_lines(text, READ_ONLY_ENFORCEMENT_SECTION)
+            )
+            for name in REVIEWER_NAMES:
+                if name in listed_by_scope:
+                    continue
+                with self.subTest(platform=platform, name=name):
+                    self.assertNotIn(
+                        name,
+                        section,
+                        f"「{READ_ONLY_ENFORCEMENT_SECTION}」 must not name "
+                        f"'{name}': the section holds the criterion that splits "
+                        "exploration reach, and each agent definition holds "
+                        "which side a reviewer falls on.",
+                    )
 
     def test_qa_reference_delegates_read_only_enforcement_instead_of_restating_it(
         self,

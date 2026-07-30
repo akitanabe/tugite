@@ -38,16 +38,37 @@ REVIEWER_NAMES = (
     "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
 )
-# Reviewers whose read-only role is enforced by Claude tool metadata as well as by
-# the Codex sandbox. This alias must stay identical to REVIEWER_NAMES: a reviewer
-# restricted on only one platform is exactly the drift this set exists to reject,
-# so the two are deliberately not allowed to diverge. Fixtures and policy
-# assertions iterate this set so adding a reviewer does not require touching each
-# assertion site.
-READ_ONLY_TOOL_AGENT_NAMES = REVIEWER_NAMES
+# Every reviewer is barred from write tools; they differ only in exploration reach.
+# `Bash` goes to the reviewers whose verdict needs a command run or the base commit
+# read back, and is withheld from the ones that decide on the text of the Data they
+# were handed. The two groups are kept as separate tuples rather than one set plus a
+# predicate so a call site reads which reach it is asserting, and so a newly added
+# reviewer has to be placed in exactly one of them.
+BASH_GRANTED_REVIEWER_NAMES = (
+    "responsibility-boundary-reviewer",
+    "test-quality-reviewer",
+    "over-engineering-reviewer",
+    "security-side-effect-reviewer",
+)
+BASH_WITHHELD_REVIEWER_NAMES = (
+    "expert-selection-reviewer",
+    "writing-principles-reviewer",
+    "plan-adversarial-reviewer",
+)
+WRITE_TOOL_NAMES = ["Edit", "Write", "NotebookEdit"]
+READ_TOOL_NAMES = ["Read", "Grep", "Glob"]
 REFACTORER_NAMES = (
     "review-patch-refactorer",
 )
+
+
+def claude_reviewer_tool_policy(name: str) -> tuple[list[str], list[str]] | None:
+    """Return the (tools, disallowed_tools) an agent's Claude frontmatter must carry."""
+    if name in BASH_GRANTED_REVIEWER_NAMES:
+        return [*READ_TOOL_NAMES, "Bash"], list(WRITE_TOOL_NAMES)
+    if name in BASH_WITHHELD_REVIEWER_NAMES:
+        return list(READ_TOOL_NAMES), ["Bash", *WRITE_TOOL_NAMES]
+    return None
 GENERATED_MARKDOWN_WARNING = "<!-- Generated from shared/. Do not edit directly. -->"
 GENERATED_TOML_WARNING = "# Generated from shared/. Do not edit directly."
 PLATFORMS = ("claude", "codex")
@@ -282,18 +303,19 @@ class IsolatedRepositorySupport:
         name: str,
         *,
         sandbox_mode: str | None = None,
-        read_only_tools: bool = False,
+        claude_tool_policy: tuple[list[str], list[str]] | None = None,
     ) -> str:
         """Return a hand-written common agent source with platform metadata."""
         sandbox_line = (
             f'sandbox_mode = "{sandbox_mode}"\n' if sandbox_mode is not None else ""
         )
-        claude_tool_lines = (
-            'tools = ["Read", "Grep", "Glob"]\n'
-            'disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]\n'
-            if read_only_tools
-            else ""
-        )
+        claude_tool_lines = ""
+        if claude_tool_policy is not None:
+            tools, disallowed_tools = claude_tool_policy
+            claude_tool_lines = (
+                f"tools = {json.dumps(tools)}\n"
+                f"disallowed_tools = {json.dumps(disallowed_tools)}\n"
+            )
         return (
             "+++\n"
             f'name = "{name}"\n'
@@ -416,7 +438,7 @@ class IsolatedRepositorySupport:
                 self._agent_source(
                     name,
                     sandbox_mode=sandbox_mode,
-                    read_only_tools=name in READ_ONLY_TOOL_AGENT_NAMES,
+                    claude_tool_policy=claude_reviewer_tool_policy(name),
                 ),
             )
 

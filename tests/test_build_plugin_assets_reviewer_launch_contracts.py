@@ -32,6 +32,31 @@ REVIEWER_LAUNCH_TEMPLATE_FIELDS = (
 )
 
 
+REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree・親 checkout 照合"
+# The check is written for every launch rather than for the reviewers that can
+# run commands: which reviewers those are is decided in the agent definitions,
+# and a rule in this document that depends on that split would go stale without
+# anything failing. Naming a tool here would also collide with the ban on
+# restating the read-only rule in this file.
+REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
+    "reviewer を起動する直前に、対象 worktree の `git rev-parse HEAD` と `git status --short`、"
+    "および親の統合 checkout の `git rev-parse HEAD` と `git status --short` を親が記録する。",
+    # Pins that the parent-checkout record is retaken after the diff artifact
+    # is written, not reused from 返却と統合 手順2 (SEC-9): reusing 手順2's
+    # value would always mismatch once a run creates `.tugite/` after that
+    # step, discarding legitimate findings for a reason unrelated to the
+    # reviewer's own behavior.
+    "親の統合 checkout の記録は diff artifact の書き出し後に取り直し、"
+    "「返却と統合」手順2 で取得した値を使い回さない。",
+    "reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。",
+    "一致しない場合、その reviewer の findings を採用しない。",
+    "差異の内容を最終報告へ記録する。",
+    "reviewer が到達するのは対象 worktree だけでなく親の統合 checkout でもあるため、"
+    "照合はどちらか一方に絞らず両方に掛ける。",
+    "この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。",
+)
+
+
 class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -235,6 +260,29 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 normalized = "".join(reference.split())
                 for contract in new_connections:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_reviewer_launch_compares_the_worktree_before_and_after(
+        self,
+    ) -> None:
+        """Reject findings from a launch whose review target moved while the reviewer held it."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                self.assertEqual(
+                    1, reference.count(REVIEWER_LAUNCH_SNAPSHOT_SECTION)
+                )
+                self.assertIn(
+                    REVIEWER_LAUNCH_SNAPSHOT_SECTION.removeprefix("## "),
+                    reference.split("## 目次", 1)[1].split("\n## ", 1)[0],
+                )
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[
+                    1
+                ].split("\n## ", 1)[0]
+                normalized_section = "".join(section.split())
+                for contract in REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS:
+                    with self.subTest(contract=contract):
+                        self.assertIn(
+                            "".join(contract.split()), normalized_section
+                        )
 
     def test_repository_git_status_step_distinguishes_own_diff_artifact_from_worker_changes(
         self,

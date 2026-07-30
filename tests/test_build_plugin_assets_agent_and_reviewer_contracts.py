@@ -7,15 +7,42 @@ import unittest
 
 from build_plugin_assets_test_support import (
     AGENT_NAMES,
+    BASH_GRANTED_REVIEWER_NAMES,
+    BASH_WITHHELD_REVIEWER_NAMES,
     CLAUDE_MODEL_PROFILES,
     CLAUDE_PROFILE_PATH,
     CODEX_MODEL_PROFILES,
     CODEX_PROFILE_PATH,
     GENERATED_SKILL_PATHS,
-    READ_ONLY_TOOL_AGENT_NAMES,
+    REFACTORER_NAMES,
     REPOSITORY_ROOT,
+    REVIEWER_NAMES,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
+    WRITE_TOOL_NAMES,
+    claude_reviewer_tool_policy,
+)
+
+
+# The manuscript-side restatement of the working limits, kept minimal: the
+# reasoning behind each limit lives in reviewer-findings.md's 「read-only の担保」
+# and is not duplicated here.
+BASH_WORKING_LIMIT_CONTRACTS = (
+    "到達したいかなる repository に対して command を実行する場合であっても、"
+    "読み取りと検証の実行だけを行い、追跡ファイルを変更しないでください。",
+    "書き込みは、対象とした repository の外の一時領域へ"
+    "作成した複製に限り、それ以外のいかなる path へも書き込まないでください。",
+    "書き込みを伴う検証は、"
+    "`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、run 中に、自分が作成した"
+    "その directory に限って削除してください。",
+    "削除できない場合は path を返却物へ記録し、非追跡ファイルを複製対象に含めないでください。",
+    "HEAD・refs・object DB・git 設定・hooks を変更する操作、"
+    "および到達可能性や reflog を失わせる操作を行わないでください",
+    "`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `branch -D` / "
+    "`branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` / "
+    "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
+    "`restore` / `push` など",
 )
 
 
@@ -239,29 +266,55 @@ class AgentAndReviewerContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
 
-    def test_repository_tool_restricted_reviewers_platforms_reject_file_modification(
+    def test_repository_bash_granted_reviewers_carry_their_working_limits(
         self,
     ) -> None:
-        """Publish platform-enforced read-only settings with each reviewer definition."""
-        for name in READ_ONLY_TOOL_AGENT_NAMES:
+        """Write the working limits into the manuscripts the reviewers themselves read, and only into those that can run commands."""
+        # The limits are restated per manuscript rather than left in the
+        # reference alone because a subagent reads its own manuscript at run
+        # time and never opens the skill reference. Reviewers without `Bash`
+        # are deliberately left untouched: the same paragraph would be a rule
+        # they have no way to break. Scanning all of AGENT_NAMES (not just
+        # REVIEWER_NAMES) also catches the paragraph leaking into a
+        # non-reviewer agent (implementer, refactorer) where it would be a
+        # rule that agent has no `Bash`-granted role to break either.
+        for name in AGENT_NAMES:
+            texts = {
+                "shared": self._repository_text(Path("shared/agents") / f"{name}.md"),
+                "claude": self._repository_text(CLAUDE_PROFILE_PATH / f"{name}.md"),
+                "codex": self._repository_text(CODEX_PROFILE_PATH / f"{name}.toml"),
+            }
+            expected = name in BASH_GRANTED_REVIEWER_NAMES
+            for platform, text in texts.items():
+                normalized = "".join(text.split())
+                for contract in BASH_WORKING_LIMIT_CONTRACTS:
+                    with self.subTest(name=name, platform=platform, contract=contract):
+                        if expected:
+                            self.assertIn("".join(contract.split()), normalized)
+                        else:
+                            self.assertNotIn("".join(contract.split()), normalized)
+
+    def test_repository_reviewer_platforms_grant_the_exploration_reach_of_their_group(
+        self,
+    ) -> None:
+        """Publish the wider Bash-carrying reach only for the group whose verdict needs it."""
+        for name in REVIEWER_NAMES:
             with self.subTest(name=name):
+                tools, disallowed_tools = claude_reviewer_tool_policy(name)
                 source_metadata = self._agent_source_metadata(name)
                 claude_artifact = self._repository_text(
                     CLAUDE_PROFILE_PATH / f"{name}.md"
                 )
                 codex_artifact = self._codex_agent_artifact_metadata(name)
 
+                self.assertEqual(tools, source_metadata["claude"]["tools"])
                 self.assertEqual(
-                    ["Read", "Grep", "Glob"],
-                    source_metadata["claude"]["tools"],
-                )
-                self.assertEqual(
-                    ["Bash", "Edit", "Write", "NotebookEdit"],
+                    disallowed_tools,
                     source_metadata["claude"]["disallowed_tools"],
                 )
-                self.assertIn("tools: Read, Grep, Glob\n", claude_artifact)
+                self.assertIn(f"tools: {', '.join(tools)}\n", claude_artifact)
                 self.assertIn(
-                    "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
+                    f"disallowedTools: {', '.join(disallowed_tools)}\n",
                     claude_artifact,
                 )
                 self.assertEqual(
@@ -269,24 +322,48 @@ class AgentAndReviewerContractsTest(
                 )
                 self.assertEqual("read-only", codex_artifact["sandbox_mode"])
 
-    def test_repository_claude_tool_policy_covers_every_codex_sandboxed_agent(
+    def test_repository_every_findings_reviewer_is_barred_from_write_tools(
         self,
     ) -> None:
-        """Restrict on Claude exactly the agents the Codex sandbox already confines."""
+        """Withhold file modification from every reviewer on the Claude platform, whatever its exploration reach."""
+        for name in REVIEWER_NAMES:
+            with self.subTest(name=name):
+                source_metadata = self._agent_source_metadata(name)
+                for tool in WRITE_TOOL_NAMES:
+                    with self.subTest(tool=tool):
+                        self.assertIn(
+                            tool, source_metadata["claude"]["disallowed_tools"]
+                        )
+                        self.assertNotIn(tool, source_metadata["claude"]["tools"])
+
+    def test_repository_reviewer_exploration_groups_partition_every_reviewer(
+        self,
+    ) -> None:
+        """Place each reviewer in exactly one exploration group and keep writable agents out of both."""
+        granted = set(BASH_GRANTED_REVIEWER_NAMES)
+        withheld = set(BASH_WITHHELD_REVIEWER_NAMES)
+
+        self.assertEqual(set(REVIEWER_NAMES), granted | withheld)
+        self.assertEqual(set(), granted & withheld)
+        for name in REFACTORER_NAMES:
+            with self.subTest(name=name):
+                self.assertNotIn(name, granted | withheld)
+                self.assertIsNone(claude_reviewer_tool_policy(name))
+
+        claude_restricted = {
+            name
+            for name in AGENT_NAMES
+            if "tools" in self._agent_source_metadata(name)["claude"]
+        }
+        self.assertEqual(set(REVIEWER_NAMES), claude_restricted)
+
         codex_sandboxed = {
             name
             for name in AGENT_NAMES
             if self._agent_source_metadata(name)["codex"].get("sandbox_mode")
             == "read-only"
         }
-        claude_restricted = {
-            name
-            for name in AGENT_NAMES
-            if "tools" in self._agent_source_metadata(name)["claude"]
-        }
-
-        self.assertEqual(codex_sandboxed, claude_restricted)
-        self.assertEqual(codex_sandboxed, set(READ_ONLY_TOOL_AGENT_NAMES))
+        self.assertEqual(set(REVIEWER_NAMES), codex_sandboxed)
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,
