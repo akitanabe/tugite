@@ -71,13 +71,13 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     f"`expert-selection-reviewer` を加えた reviewer {len(READ_ONLY_TOOL_AGENT_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
-    # Pins the reason the two platform settings must be kept in lockstep
-    # (TQ-6 round4): dropping this clause left the section's own rationale
-    # unverified even though the settings themselves were still checked above.
+    # Pins the reason the two platform settings must be kept in lockstep:
+    # dropping this clause left the section's own rationale unverified even
+    # though the settings themselves were still checked above.
     "同じ契約の担保の強さが platform で変わると、"
     "どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。",
-    # Pins the scope disclaimer added in 「位置づけ」(TQ-6 round4): without it,
-    # a reader could mistake this section's reviewer count for the 「位置づけ」
+    # Pins the scope disclaimer added in 「位置づけ」: without it, a reader
+    # could mistake this section's reviewer count for the 「位置づけ」
     # section's 2-point scope.
     "ここで定めた対象は上記2点だけに適用する。"
     "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。",
@@ -162,7 +162,7 @@ class ReviewerFindingsContractTest(
     def test_reviewer_findings_reference_is_distributed_with_warning_and_toc(
         self,
     ) -> None:
-        """Distribute the findings contract to both platforms from a warning-free source."""
+        """Distribute the findings contract to both platforms from a warning-free source, with 「read-only の担保」 listed in each 目次."""
         texts = self._reviewer_findings_reference_texts()
         toc_heading = "## 目次"
 
