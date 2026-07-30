@@ -196,58 +196,85 @@ class ImplLeadQaReportContractsTest(
                 tuple(GENERATED_SKILL_REFERENCE_PATHS["codex"].values()),
             ),
         )
-        link_pattern = re.compile(
-            r"\[([^\]]+)\]\(([^)#]+\.md)(?:#([^)]+))?\)"
-        )
+        link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+\.md)(?:#([^)]+))?\)")
 
         for platform, main_path, reference_paths in document_sets:
             for source_path in (main_path, *reference_paths):
                 document = self._repository_text(source_path)
-                for label, target, anchor in link_pattern.findall(document):
+                for target, anchor in link_pattern.findall(document):
                     resolved = (
                         REPOSITORY_ROOT / source_path.parent / target
                     ).resolve()
                     with self.subTest(
                         platform=platform,
                         source=source_path,
-                        label=label,
                         target=target,
                         anchor=anchor,
                     ):
                         self.assertTrue(resolved.is_file(), resolved)
-                        target_text = resolved.read_text(encoding="utf-8")
-                        headings = re.findall(r"^#{1,6} (.+)$", target_text, re.M)
                         if anchor:
+                            target_text = resolved.read_text(encoding="utf-8")
+                            headings = re.findall(r"^#{1,6} (.+)$", target_text, re.M)
                             slugs = {
                                 re.sub(r"\s+", "-", heading.strip().lower())
                                 for heading in headings
                             }
                             self.assertIn(anchor, slugs)
-                        else:
-                            self.assertIn(label, headings)
 
         skills = self._repository_skill_texts()
-        expected_cross_file_links = {
-            "branch-review.md": (
-                "[専門 reviewer](reviewer-dispatch.md) の起動条件の対象外",
+        section_links = (
+            (
+                "qa-and-integration.md",
+                "reviewer へ渡すコンテキスト",
+                "reviewer-dispatch.md",
+                "reviewer へ渡すコンテキスト",
+                "",
             ),
-            "run-closeout.md": (
-                "[修正先の選択](finding-routing.md) へ差し戻し",
+            (
+                "branch-review.md",
+                "専門 reviewer",
+                "reviewer-dispatch.md",
+                "専門 reviewer",
+                " の起動条件の対象外",
             ),
-        }
+            (
+                "run-closeout.md",
+                "修正先の選択",
+                "finding-routing.md",
+                "修正先の選択",
+                " へ差し戻し",
+            ),
+            (
+                "reviewer-findings.md",
+                "Reviewer の起動と diff の受け渡し",
+                "reviewer-dispatch.md",
+                "reviewer 起動前後の worktree・親 checkout 照合",
+                " の\n「reviewer 起動前後の worktree・親 checkout 照合」",
+            ),
+        )
         for platform, references in (
             ("shared", skills.source_references),
             ("claude", skills.claude_references),
             ("codex", skills.codex_references),
         ):
-            for name, expected_links in expected_cross_file_links.items():
-                for expected_link in expected_links:
-                    with self.subTest(
-                        platform=platform,
-                        reference=name,
-                        expected_link=expected_link,
-                    ):
-                        self.assertIn(expected_link, references[name])
+            for source, label, target, target_heading, link_context in section_links:
+                with self.subTest(
+                    platform=platform,
+                    source=source,
+                    label=label,
+                    target=target,
+                    target_heading=target_heading,
+                ):
+                    self.assertIn(
+                        f"[{label}]({target}){link_context}",
+                        references[source],
+                    )
+                    target_headings = re.findall(
+                        r"^#{1,6} (.+)$",
+                        references[target],
+                        re.M,
+                    )
+                    self.assertIn(target_heading, target_headings)
 
     def test_repository_qa_sections_have_one_owner_and_matching_toc(self) -> None:
         """Keep each QA lifecycle section in one responsibility reference."""
