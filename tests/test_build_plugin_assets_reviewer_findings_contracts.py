@@ -82,6 +82,25 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。",
     "担保の強さは platform 間で非対称であり、"
     "これは `Bash` を渡す判断に伴う既知の制約として引き受ける。",
+    # Pins the working limits that apply once `Bash` is granted. The reach
+    # split alone leaves "may run commands" unbounded, and nothing on the
+    # Claude side stops a reviewer from rewriting what it is reviewing.
+    "`Bash` を渡した reviewer は、対象 worktree では読み取りと検証の実行だけを行い、"
+    "追跡ファイルを変更しない。",
+    "ミューテーション注入や検証用の複製のように書き込みを伴う検証は、"
+    "対象 worktree の外へ複製してそこで行う。",
+    "`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `push` を行わない。",
+    # Pins why the git operations are listed apart from file edits: they are
+    # the ones the parent's own check cannot see.
+    "追跡ファイルの編集は親の `git status --short` 検査で気づけるが、これらは status を"
+    "汚さずにレビュー対象の snapshot 自体を差し替えるため、その検査をすり抜けるためである。",
+    # Pins that the limits are a contract rather than an enforced setting, so a
+    # later reader does not assume the tool metadata already blocks them and
+    # drop the instruction as redundant.
+    "この作業範囲は tool metadata では強制できない。",
+    "`disallowed_tools` は tool 単位の指定であり、`Bash` で実行する command の中身までは"
+    "選べないためである。",
     f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
     f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"

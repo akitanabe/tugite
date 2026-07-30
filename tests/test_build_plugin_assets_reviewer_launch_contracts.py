@@ -32,6 +32,22 @@ REVIEWER_LAUNCH_TEMPLATE_FIELDS = (
 )
 
 
+REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree 照合"
+# The check is written for every launch rather than for the reviewers that can
+# run commands: which reviewers those are is decided in the agent definitions,
+# and a rule in this document that depends on that split would go stale without
+# anything failing. Naming a tool here would also collide with the ban on
+# restating the read-only rule in this file.
+REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
+    "reviewer を起動する前に、対象 worktree の `git rev-parse HEAD` と "
+    "`git status --short` を親が記録する。",
+    "reviewer の返却後に同じ2つを取り直し、起動前の記録と一致することを確認する。",
+    "一致しない場合、その reviewer の findings を採用しない。",
+    "差異の内容を最終報告へ記録する。",
+    "この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。",
+)
+
+
 class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -235,6 +251,29 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 normalized = "".join(reference.split())
                 for contract in new_connections:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_reviewer_launch_compares_the_worktree_before_and_after(
+        self,
+    ) -> None:
+        """Reject findings from a launch whose review target moved while the reviewer held it."""
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                self.assertEqual(
+                    1, reference.count(REVIEWER_LAUNCH_SNAPSHOT_SECTION)
+                )
+                self.assertIn(
+                    REVIEWER_LAUNCH_SNAPSHOT_SECTION.removeprefix("## "),
+                    reference.split("## 目次", 1)[1].split("\n## ", 1)[0],
+                )
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[
+                    1
+                ].split("\n## ", 1)[0]
+                normalized_section = "".join(section.split())
+                for contract in REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS:
+                    with self.subTest(contract=contract):
+                        self.assertIn(
+                            "".join(contract.split()), normalized_section
+                        )
 
     def test_repository_git_status_step_distinguishes_own_diff_artifact_from_worker_changes(
         self,

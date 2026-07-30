@@ -24,6 +24,19 @@ from build_plugin_assets_test_support import (
 )
 
 
+# The manuscript-side restatement of the working limits, kept minimal: the
+# reasoning behind each limit lives in reviewer-findings.md's 「read-only の担保」
+# and is not duplicated here.
+BASH_WORKING_LIMIT_CONTRACTS = (
+    "対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、"
+    "追跡ファイルを変更しないでください。",
+    "書き込みを伴う検証は対象 worktree の外へ複製して行ってください。",
+    "`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `push` は"
+    "行わないでください。",
+)
+
+
 class AgentAndReviewerContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -243,6 +256,31 @@ class AgentAndReviewerContractsTest(
         for contract in exclusions + removable_implementation_tiers:
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_bash_granted_reviewers_carry_their_working_limits(
+        self,
+    ) -> None:
+        """Write the working limits into the manuscripts the reviewers themselves read, and only into those that can run commands."""
+        # The limits are restated per manuscript rather than left in the
+        # reference alone because a subagent reads its own manuscript at run
+        # time and never opens the skill reference. Reviewers without `Bash`
+        # are deliberately left untouched: the same paragraph would be a rule
+        # they have no way to break.
+        for name in REVIEWER_NAMES:
+            texts = {
+                "shared": self._repository_text(Path("shared/agents") / f"{name}.md"),
+                "claude": self._repository_text(CLAUDE_PROFILE_PATH / f"{name}.md"),
+                "codex": self._repository_text(CODEX_PROFILE_PATH / f"{name}.toml"),
+            }
+            expected = name in BASH_GRANTED_REVIEWER_NAMES
+            for platform, text in texts.items():
+                normalized = "".join(text.split())
+                for contract in BASH_WORKING_LIMIT_CONTRACTS:
+                    with self.subTest(name=name, platform=platform, contract=contract):
+                        if expected:
+                            self.assertIn("".join(contract.split()), normalized)
+                        else:
+                            self.assertNotIn("".join(contract.split()), normalized)
 
     def test_repository_reviewer_platforms_grant_the_exploration_reach_of_their_group(
         self,
