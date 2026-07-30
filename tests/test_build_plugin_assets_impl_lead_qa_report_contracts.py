@@ -266,8 +266,8 @@ class ImplLeadQaReportContractsTest(
                     target_heading=target_heading,
                 ):
                     self.assertIn(
-                        self._normalize_contract(f"[{label}]({target}){link_context}"),
-                        self._normalize_contract(references[source]),
+                        "".join(f"[{label}]({target}){link_context}".split()),
+                        "".join(references[source].split()),
                     )
                     target_headings = re.findall(
                         r"^#{1,6} (.+)$",
