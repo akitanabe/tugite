@@ -11,8 +11,8 @@ from build_plugin_assets_test_support import (
     IMPL_LEAD_SKILL,
     GENERATED_MARKDOWN_WARNING,
     GENERATED_SKILL_PATHS,
-    READ_ONLY_TOOL_AGENT_NAMES,
     REPOSITORY_ROOT,
+    REVIEWER_NAMES,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
     generated_skill_reference_path,
@@ -59,23 +59,32 @@ COUNT_ONLY_REVIEWER_NAMES = (
 )
 QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
-# Both counts are derived from READ_ONLY_TOOL_AGENT_NAMES / FINDINGS_REVIEWER_NAMES
-# so that adding an 8th reviewer to those sets fails this test instead of leaving
-# the manuscript's literal count silently stale.
+# Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
+# adding an 8th reviewer to those sets fails this test instead of leaving the
+# manuscript's literal count silently stale.
+READ_ONLY_ENFORCEMENT_SECTION = "## read-only の担保"
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
-    "## read-only の担保",
-    "read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。",
-    "Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、"
-    "Codex 向けは `sandbox_mode` で担保し、片方の platform にだけ制限が入っている状態を作らない。",
+    READ_ONLY_ENFORCEMENT_SECTION,
+    "指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。",
+    "Claude 向けは agent frontmatter の `disallowed_tools` に "
+    "`Edit` / `Write` / `NotebookEdit` を置き、"
+    "Codex 向けは `sandbox_mode` の `read-only` が同じ役割を果たす。",
+    # Pins the criterion that splits exploration reach. Without it the section
+    # would carry only the write-tool ban, and the reason one reviewer is given
+    # `Bash` while another is not would be recorded nowhere.
+    "判定に検証の実行や基準 commit 時点のファイル参照が必要な reviewer には `Bash` を渡し、"
+    "渡された Data のテキストだけで判定できる reviewer には渡さない。",
+    "どの reviewer がどちらに属するかはこの節に列挙せず、各 agent 定義を正本とする。",
+    # Pins the platform asymmetry the split introduces: a reviewer holding
+    # `Bash` can write through it, so on Claude the ban is manuscript text
+    # only. Recording it keeps a later reader from assuming both platforms
+    # enforce the ban mechanically and removing the instruction as redundant.
+    "`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。",
+    "担保の強さは platform 間で非対称である。",
     f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
-    f"`expert-selection-reviewer` を加えた reviewer {len(READ_ONLY_TOOL_AGENT_NAMES)}本とする。",
+    f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
-    # Pins the reason the two platform settings must be kept in lockstep:
-    # dropping this clause left the section's own rationale unverified even
-    # though the settings themselves were still checked above.
-    "同じ契約の担保の強さが platform で変わると、"
-    "どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。",
     # Pins the scope disclaimer added in 「位置づけ」: without it, a reader
     # could mistake this section's reviewer count for the 「位置づけ」
     # section's 2-point scope.
@@ -219,6 +228,33 @@ class ReviewerFindingsContractTest(
                 normalized = "".join(text.split())
                 for contract in READ_ONLY_ENFORCEMENT_CONTRACTS:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_read_only_section_states_the_split_criterion_without_listing_members(
+        self,
+    ) -> None:
+        """Leave each reviewer's exploration reach to its agent definition instead of copying the roster into the manuscript."""
+        # `expert-selection-reviewer` and `review-patch-refactorer` are named
+        # deliberately: the section has to say who it covers and who it does
+        # not, which is scope, not a per-reviewer tool assignment. Every other
+        # reviewer name appearing here would mean the roster is maintained in
+        # two places again.
+        listed_by_scope = {"expert-selection-reviewer", "review-patch-refactorer"}
+        for platform, text in self._reviewer_findings_reference_texts().items():
+            section = "\n".join(
+                self._section_lines(text, READ_ONLY_ENFORCEMENT_SECTION)
+            )
+            for name in REVIEWER_NAMES:
+                if name in listed_by_scope:
+                    continue
+                with self.subTest(platform=platform, name=name):
+                    self.assertNotIn(
+                        name,
+                        section,
+                        f"「{READ_ONLY_ENFORCEMENT_SECTION}」 must not name "
+                        f"'{name}': the section holds the criterion that splits "
+                        "exploration reach, and each agent definition holds "
+                        "which side a reviewer falls on.",
+                    )
 
     def test_qa_reference_delegates_read_only_enforcement_instead_of_restating_it(
         self,

@@ -7,15 +7,20 @@ import unittest
 
 from build_plugin_assets_test_support import (
     AGENT_NAMES,
+    BASH_GRANTED_REVIEWER_NAMES,
+    BASH_WITHHELD_REVIEWER_NAMES,
     CLAUDE_MODEL_PROFILES,
     CLAUDE_PROFILE_PATH,
     CODEX_MODEL_PROFILES,
     CODEX_PROFILE_PATH,
     GENERATED_SKILL_PATHS,
-    READ_ONLY_TOOL_AGENT_NAMES,
+    REFACTORER_NAMES,
     REPOSITORY_ROOT,
+    REVIEWER_NAMES,
     RepositoryContractSupport,
     SHARED_SKILL_PATH,
+    WRITE_TOOL_NAMES,
+    claude_reviewer_tool_policy,
 )
 
 
@@ -239,29 +244,27 @@ class AgentAndReviewerContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn("".join(contract.split()), normalized)
 
-    def test_repository_tool_restricted_reviewers_platforms_reject_file_modification(
+    def test_repository_reviewer_platforms_grant_the_exploration_reach_of_their_group(
         self,
     ) -> None:
-        """Publish platform-enforced read-only settings with each reviewer definition."""
-        for name in READ_ONLY_TOOL_AGENT_NAMES:
+        """Publish the wider Bash-carrying reach only for the group whose verdict needs it."""
+        for name in REVIEWER_NAMES:
             with self.subTest(name=name):
+                tools, disallowed_tools = claude_reviewer_tool_policy(name)
                 source_metadata = self._agent_source_metadata(name)
                 claude_artifact = self._repository_text(
                     CLAUDE_PROFILE_PATH / f"{name}.md"
                 )
                 codex_artifact = self._codex_agent_artifact_metadata(name)
 
+                self.assertEqual(tools, source_metadata["claude"]["tools"])
                 self.assertEqual(
-                    ["Read", "Grep", "Glob"],
-                    source_metadata["claude"]["tools"],
-                )
-                self.assertEqual(
-                    ["Bash", "Edit", "Write", "NotebookEdit"],
+                    disallowed_tools,
                     source_metadata["claude"]["disallowed_tools"],
                 )
-                self.assertIn("tools: Read, Grep, Glob\n", claude_artifact)
+                self.assertIn(f"tools: {', '.join(tools)}\n", claude_artifact)
                 self.assertIn(
-                    "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
+                    f"disallowedTools: {', '.join(disallowed_tools)}\n",
                     claude_artifact,
                 )
                 self.assertEqual(
@@ -269,24 +272,43 @@ class AgentAndReviewerContractsTest(
                 )
                 self.assertEqual("read-only", codex_artifact["sandbox_mode"])
 
-    def test_repository_claude_tool_policy_covers_every_codex_sandboxed_agent(
+    def test_repository_every_findings_reviewer_is_barred_from_write_tools(
         self,
     ) -> None:
-        """Restrict on Claude exactly the agents the Codex sandbox already confines."""
-        codex_sandboxed = {
-            name
-            for name in AGENT_NAMES
-            if self._agent_source_metadata(name)["codex"].get("sandbox_mode")
-            == "read-only"
-        }
+        """Withhold file modification from every reviewer on both platforms, whatever its exploration reach."""
+        for name in REVIEWER_NAMES:
+            with self.subTest(name=name):
+                source_metadata = self._agent_source_metadata(name)
+                for tool in WRITE_TOOL_NAMES:
+                    with self.subTest(tool=tool):
+                        self.assertIn(
+                            tool, source_metadata["claude"]["disallowed_tools"]
+                        )
+                        self.assertNotIn(tool, source_metadata["claude"]["tools"])
+                self.assertEqual(
+                    "read-only", source_metadata["codex"]["sandbox_mode"]
+                )
+
+    def test_repository_reviewer_exploration_groups_partition_every_reviewer(
+        self,
+    ) -> None:
+        """Place each reviewer in exactly one exploration group and keep writable agents out of both."""
+        granted = set(BASH_GRANTED_REVIEWER_NAMES)
+        withheld = set(BASH_WITHHELD_REVIEWER_NAMES)
+
+        self.assertEqual(set(REVIEWER_NAMES), granted | withheld)
+        self.assertEqual(set(), granted & withheld)
+        for name in REFACTORER_NAMES:
+            with self.subTest(name=name):
+                self.assertNotIn(name, granted | withheld)
+                self.assertIsNone(claude_reviewer_tool_policy(name))
+
         claude_restricted = {
             name
             for name in AGENT_NAMES
             if "tools" in self._agent_source_metadata(name)["claude"]
         }
-
-        self.assertEqual(codex_sandboxed, claude_restricted)
-        self.assertEqual(codex_sandboxed, set(READ_ONLY_TOOL_AGENT_NAMES))
+        self.assertEqual(set(REVIEWER_NAMES), claude_restricted)
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,

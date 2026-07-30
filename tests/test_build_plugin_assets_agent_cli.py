@@ -6,9 +6,10 @@ import tomllib
 import unittest
 
 from build_plugin_assets_test_support import (
+    BASH_GRANTED_REVIEWER_NAMES,
+    BASH_WITHHELD_REVIEWER_NAMES,
     GENERATED_MARKDOWN_WARNING,
     IsolatedRepositorySupport,
-    READ_ONLY_TOOL_AGENT_NAMES,
     REFACTORER_NAMES,
     REVIEWER_NAMES,
 )
@@ -121,6 +122,11 @@ class BuildPluginAssetsAgentCliTest(IsolatedRepositorySupport, unittest.TestCase
                     reviewer = tomllib.loads(reviewer_text)
 
                     self.assertEqual("read-only", reviewer["sandbox_mode"])
+                    # The Claude-side tool policy now differs per reviewer, so a
+                    # leaked key would no longer look uniform enough to spot by
+                    # eye in the generated Codex artifact.
+                    self.assertNotIn("tools", reviewer)
+                    self.assertNotIn("disallowed_tools", reviewer)
                     self.assertLess(
                         reviewer_text.index("model_reasoning_effort ="),
                         reviewer_text.index("sandbox_mode ="),
@@ -139,24 +145,34 @@ class BuildPluginAssetsAgentCliTest(IsolatedRepositorySupport, unittest.TestCase
                     )
                     self.assertNotIn("sandbox_mode", refactorer)
 
-    def test_build_emits_claude_read_only_tool_policy_for_read_only_reviewers(
+    def test_build_emits_claude_tool_policy_split_by_reviewer_exploration_reach(
         self,
     ) -> None:
-        """Expose only read operations and explicitly reject file-changing tools."""
+        """Reject file-changing tools for every reviewer while granting Bash only to the wider-reach group."""
+        expected_tool_lines = {
+            name: (
+                "tools: Read, Grep, Glob, Bash\n",
+                "disallowedTools: Edit, Write, NotebookEdit\n",
+            )
+            for name in BASH_GRANTED_REVIEWER_NAMES
+        } | {
+            name: (
+                "tools: Read, Grep, Glob\n",
+                "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
+            )
+            for name in BASH_WITHHELD_REVIEWER_NAMES
+        }
         with self._temporary_repository() as root:
             result = self._run(root)
             self.assertEqual(0, result.returncode, result)
 
-            for name in READ_ONLY_TOOL_AGENT_NAMES:
+            for name, (tools_line, disallowed_line) in expected_tool_lines.items():
                 with self.subTest(name=name):
                     reviewer = (
                         root / f"plugins/claude/agents/{name}.md"
                     ).read_text(encoding="utf-8")
-                    self.assertIn("tools: Read, Grep, Glob\n", reviewer)
-                    self.assertIn(
-                        "disallowedTools: Bash, Edit, Write, NotebookEdit\n",
-                        reviewer,
-                    )
+                    self.assertIn(tools_line, reviewer)
+                    self.assertIn(disallowed_line, reviewer)
 
             refactorer = (
                 root / "plugins/claude/agents/review-patch-refactorer.md"
