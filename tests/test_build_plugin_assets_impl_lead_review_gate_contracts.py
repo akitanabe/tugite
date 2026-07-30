@@ -45,7 +45,8 @@ class ImplLeadReviewGateContractsTest(
             "対象リスクがない専門 reviewer を無条件で起動しない。",
             "対象リスクと review 範囲を明示する。",
             "- 必須完了ゲート",
-            "この表の2本は必須の完了ゲートであり、上記の任意起動条件の対象外とする。",
+            "この表の2本は必須の完了ゲートであり、"
+            "[専門 reviewer](reviewer-dispatch.md) の起動条件の対象外とする。",
             (
                 "`writing-principles-reviewer` は `lite` / `standard` / `strict` の"
                 "すべてで、各実装枝を受け入れる前に必ず起動する。"

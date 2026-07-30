@@ -9,7 +9,7 @@
 
 ## 未統合で終了する場合
 
-通常の `Needs revision` は上の修正先へ差し戻し、top-level workflow を継続する。
+通常の `Needs revision` は [修正先の選択](finding-routing.md) へ差し戻し、top-level workflow を継続する。
 親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、
 top-level workflow を終了する場合だけ、実行可能な検証を行い、未実行の検証、未統合の理由、
 worktree を保持する理由を Data として記録し、

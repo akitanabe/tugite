@@ -196,30 +196,58 @@ class ImplLeadQaReportContractsTest(
                 tuple(GENERATED_SKILL_REFERENCE_PATHS["codex"].values()),
             ),
         )
-        link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+\.md)(?:#([^)]+))?\)")
+        link_pattern = re.compile(
+            r"\[([^\]]+)\]\(([^)#]+\.md)(?:#([^)]+))?\)"
+        )
 
         for platform, main_path, reference_paths in document_sets:
             for source_path in (main_path, *reference_paths):
                 document = self._repository_text(source_path)
-                for target, anchor in link_pattern.findall(document):
+                for label, target, anchor in link_pattern.findall(document):
                     resolved = (
                         REPOSITORY_ROOT / source_path.parent / target
                     ).resolve()
                     with self.subTest(
                         platform=platform,
                         source=source_path,
+                        label=label,
                         target=target,
                         anchor=anchor,
                     ):
                         self.assertTrue(resolved.is_file(), resolved)
+                        target_text = resolved.read_text(encoding="utf-8")
+                        headings = re.findall(r"^#{1,6} (.+)$", target_text, re.M)
                         if anchor:
-                            target_text = resolved.read_text(encoding="utf-8")
-                            headings = re.findall(r"^#{1,6} (.+)$", target_text, re.M)
                             slugs = {
                                 re.sub(r"\s+", "-", heading.strip().lower())
                                 for heading in headings
                             }
                             self.assertIn(anchor, slugs)
+                        else:
+                            self.assertIn(label, headings)
+
+        skills = self._repository_skill_texts()
+        expected_cross_file_links = {
+            "branch-review.md": (
+                "[専門 reviewer](reviewer-dispatch.md) の起動条件の対象外",
+            ),
+            "run-closeout.md": (
+                "[修正先の選択](finding-routing.md) へ差し戻し",
+            ),
+        }
+        for platform, references in (
+            ("shared", skills.source_references),
+            ("claude", skills.claude_references),
+            ("codex", skills.codex_references),
+        ):
+            for name, expected_links in expected_cross_file_links.items():
+                for expected_link in expected_links:
+                    with self.subTest(
+                        platform=platform,
+                        reference=name,
+                        expected_link=expected_link,
+                    ):
+                        self.assertIn(expected_link, references[name])
 
     def test_repository_qa_sections_have_one_owner_and_matching_toc(self) -> None:
         """Keep each QA lifecycle section in one responsibility reference."""
@@ -606,7 +634,8 @@ class ImplLeadQaReportContractsTest(
             final_decision_invariant,
         )
         reference_contracts = (
-            "通常の `Needs revision` は上の修正先へ差し戻し、top-level workflow を継続する。",
+            "通常の `Needs revision` は [修正先の選択](finding-routing.md) へ差し戻し、"
+            "top-level workflow を継続する。",
             "親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を終了する場合だけ",
             "実行可能な検証を行い",
             "未実行の検証、未統合の理由、worktree を保持する理由",

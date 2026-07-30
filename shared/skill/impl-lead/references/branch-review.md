@@ -13,7 +13,8 @@
 | 記述原則 | `writing-principles-reviewer` | `lite` / `standard` / `strict` | How/What/Why/Why Not の配置、命名、説明 |
 | 過剰実装 | `over-engineering-reviewer` | `standard` / `strict` | 除去しても AC と制約を満たせるテストと実装 |
 
-この表の2本は必須の完了ゲートであり、上記の任意起動条件の対象外とする。適用 mode の正本はこの表とする。
+この表の2本は必須の完了ゲートであり、
+[専門 reviewer](reviewer-dispatch.md) の起動条件の対象外とする。適用 mode の正本はこの表とする。
 `writing-principles-reviewer` は `lite` / `standard` / `strict` のすべてで、各実装枝を受け入れる前に必ず起動する。
 `over-engineering-reviewer` は `standard` / `strict` の枝でだけ、受け入れる前に必ず起動し、`lite` では起動しない。
 各ゲートを起動する相は「枝レビューの3相」で定める。この節は適用 mode の正本であり、相への割り当てを持たない。
