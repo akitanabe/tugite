@@ -5,8 +5,8 @@ name = "over-engineering-reviewer"
 description = "基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と制約を満たせるテストと実装を検出し、ID付きの指摘Dataだけを返すread-only reviewer。"
 model = "opus"
 effort = "high"
-tools = ["Read", "Grep", "Glob"]
-disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]
+tools = ["Read", "Grep", "Glob", "Bash"]
+disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Detect tests and implementation the diff introduced that can be removed without losing any acceptance criterion or stated constraint. Return structured findings only and do not edit files."

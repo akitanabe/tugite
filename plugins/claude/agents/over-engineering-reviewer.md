@@ -3,8 +3,8 @@ name: "over-engineering-reviewer"
 description: "基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と制約を満たせるテストと実装を検出し、ID付きの指摘Dataだけを返すread-only reviewer。"
 model: opus
 effort: high
-tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit
+tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

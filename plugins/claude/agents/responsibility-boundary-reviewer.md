@@ -3,8 +3,8 @@ name: "responsibility-boundary-reviewer"
 description: "実装済み diff テキストを読み、責務混在・境界違反・副作用分散を確認する専用 reviewer。コード修正は行わず、判定と最小修正方針だけを返す。"
 model: opus
 effort: high
-tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit
+tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

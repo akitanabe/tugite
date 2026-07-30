@@ -24,10 +24,23 @@ findings を返すすべての reviewer が共通で満たす2点を定義する
 
 ## read-only の担保
 
-reviewer が read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。
-Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、Codex 向けは `sandbox_mode` で担保し、
-片方の platform にだけ制限が入っている状態を作らない。同じ契約の担保の強さが platform で変わると、
-どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。
+指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。
+Claude 向けは agent frontmatter の `disallowed_tools` に `Edit` / `Write` / `NotebookEdit` を置き、
+Codex 向けは `sandbox_mode` の `read-only` が同じ役割を果たす。原稿の指示文だけに委ねると、
+reviewer が指摘を返す代わりに対象を直してしまう余地が残るためである。
+
+探索手段は責務で分ける。判定に検証の実行や基準 commit 時点のファイル参照が必要な reviewer には
+`Bash` を渡し、渡された Data のテキストだけで判定できる reviewer には渡さない。実行できない reviewer が
+「実行すれば分かること」を推測で書く状態と、テキストで足りる reviewer に実行手段が余る状態の、
+どちらも避けるための分け方である。
+
+どの reviewer がどちらに属するかはこの節に列挙せず、各 agent 定義を正本とする。ここに一覧を置くと、
+reviewer を増やすたび原稿と定義の2箇所を揃えることになり、片方だけが古い状態を作るためである。
+
+`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。
+`Bash` からファイルを書けるため `disallowed_tools` は迂回でき、Codex 側の `sandbox_mode` のように
+機構としては禁じられない。担保の強さは platform 間で非対称であり、これは `Bash` を渡す判断に伴う
+既知の制約として引き受ける。
 
 この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
 `expert-selection-reviewer` は指摘 Data を返さないため上記2点の対象外だが、ファイルを変更しない点は

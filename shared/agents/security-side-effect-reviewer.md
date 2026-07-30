@@ -5,8 +5,8 @@ name = "security-side-effect-reviewer"
 description = "外部 I/O、破壊的操作、認証・認可、機密データ、再試行や並行処理を含む変更のセキュリティと副作用を確認する専用 reviewer。コードは修正しない。"
 model = "opus"
 effort = "xhigh"
-tools = ["Read", "Grep", "Glob"]
-disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]
+tools = ["Read", "Grep", "Glob", "Bash"]
+disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review security-sensitive changes and external side effects, including destructive operations, secrets, authorization, retries, files, databases, and APIs. Report findings only and do not edit files."

@@ -80,7 +80,8 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # only. Recording it keeps a later reader from assuming both platforms
     # enforce the ban mechanically and removing the instruction as redundant.
     "`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。",
-    "担保の強さは platform 間で非対称である。",
+    "担保の強さは platform 間で非対称であり、"
+    "これは `Bash` を渡す判断に伴う既知の制約として引き受ける。",
     f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
     f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
