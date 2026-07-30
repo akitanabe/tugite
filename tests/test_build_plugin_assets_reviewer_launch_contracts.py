@@ -32,7 +32,7 @@ REVIEWER_LAUNCH_TEMPLATE_FIELDS = (
 )
 
 
-REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree 照合"
+REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree・親 checkout 照合"
 # The check is written for every launch rather than for the reviewers that can
 # run commands: which reviewers those are is decided in the agent definitions,
 # and a rule in this document that depends on that split would go stale without
@@ -40,10 +40,12 @@ REVIEWER_LAUNCH_SNAPSHOT_SECTION = "## reviewer 起動前後の worktree 照合"
 # restating the read-only rule in this file.
 REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
     "reviewer を起動する前に、対象 worktree の `git rev-parse HEAD` と "
-    "`git status --short` を親が記録する。",
-    "reviewer の返却後に同じ2つを取り直し、起動前の記録と一致することを確認する。",
+    "`git status --short`、および親の統合 checkout の `git status --short` を親が記録する。",
+    "reviewer の返却後に同じ3つを取り直し、起動前の記録と一致することを確認する。",
     "一致しない場合、その reviewer の findings を採用しない。",
     "差異の内容を最終報告へ記録する。",
+    "reviewer が到達するのは対象 worktree だけでなく親の統合 checkout でもあるため、"
+    "照合はどちらか一方に絞らず両方に掛ける。",
     "この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。",
 )
 

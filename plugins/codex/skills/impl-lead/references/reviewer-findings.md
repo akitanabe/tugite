@@ -24,10 +24,12 @@ findings を返すすべての reviewer が共通で満たす2点を定義する
 
 ## read-only の担保
 
-指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。
-Claude 向けは agent frontmatter の `disallowed_tools` に `Edit` / `Write` / `NotebookEdit` を置き、
-Codex 向けは `sandbox_mode` の `read-only` が同じ役割を果たす。原稿の指示文だけに委ねると、
-reviewer が指摘を返す代わりに対象を直してしまう余地が残るためである。
+指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。担保の実体は Claude 向け
+agent frontmatter の `tools`（許可 tool の allowlist）であり、`Edit` / `Write` / `NotebookEdit` を
+含めないことでこれらの tool が渡らない。`disallowed_tools` にも同じ3つを重ねて書くが、これは意図を
+明示する重ね書きであり、`tools` を伴わずに単独で担保になるものではない。Codex 向けは `sandbox_mode` の
+`read-only` が同じ役割を果たす。原稿の指示文だけに委ねると、reviewer が指摘を返す代わりに対象を直して
+しまう余地が残るためである。
 
 探索手段は責務で分ける。判定に検証の実行や基準 commit 時点のファイル参照が必要な reviewer には
 `Bash` を渡し、渡された Data のテキストだけで判定できる reviewer には渡さない。実行できない reviewer が
@@ -38,21 +40,31 @@ reviewer が指摘を返す代わりに対象を直してしまう余地が残�
 reviewer を増やすたび原稿と定義の2箇所を揃えることになり、片方だけが古い状態を作るためである。
 
 `Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。
-`Bash` からファイルを書けるため `disallowed_tools` は迂回でき、Codex 側の `sandbox_mode` のように
-機構としては禁じられない。担保の強さは platform 間で非対称であり、これは `Bash` を渡す判断に伴う
-既知の制約として引き受ける。
+`Bash` からファイルを書けるため、tool 単位の制限（`tools` の allowlist からの除外や `disallowed_tools`）
+はいずれも迂回でき、Codex 側の `sandbox_mode` のように機構としては禁じられない。担保の強さは platform
+間で非対称であり、これは `Bash` を渡す判断に伴う既知の制約として引き受ける。
 
-`Bash` を渡した reviewer は、対象 worktree では読み取りと検証の実行だけを行い、追跡ファイルを変更しない。
-ミューテーション注入や検証用の複製のように書き込みを伴う検証は、対象 worktree の外へ複製してそこで行う。
-あわせて `commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
-`worktree add` / `worktree remove` / `branch -d` / `push` を行わない。追跡ファイルの編集は親の
-`git status --short` 検査で気づけるが、これらは status を汚さずにレビュー対象の snapshot 自体を
-差し替えるため、その検査をすり抜けるためである。
+`Bash` を渡した reviewer は、対象 worktree に限らず、自身が到達できるいかなる repository
+（対象 worktree、親の統合 checkout など）に対しても、読み取りと検証の実行だけを行い、追跡ファイルを
+変更しない。ミューテーション注入や検証用の複製のように書き込みを伴う検証は、対象とした repository の
+外の OS 一時領域配下へ複製して行う。複製は run 中に削除し、削除できない場合は path を返却物へ記録する。
+worktree を丸ごと複製すると非追跡の `.env` や credential も複製されかねないため、複製対象に非追跡
+ファイルを含めない。あわせて、HEAD・refs・object DB・git 設定・hooks を変更する操作、および到達可能性
+や reflog を失わせる操作を行わない。例えば `commit` / `checkout` / `switch` / `reset` / `stash` /
+`rebase` / `merge` / `cherry-pick` / `worktree add` / `worktree remove` / `branch -d` /
+`branch -D` / `branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` /
+`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / `restore` /
+`push` が該当する。追跡ファイルの編集は親の `git status --short` 検査で気づけるが、これらは status を
+汚さずにレビュー対象の snapshot 自体を差し替えるため、その検査をすり抜けるためである。
 
 この作業範囲は tool metadata では強制できない。`disallowed_tools` は tool 単位の指定であり、
 `Bash` で実行する command の中身までは選べないためである。したがってここで定めるのは契約であり、
-担保は各 reviewer 原稿の指示文と、親が起動前後で HEAD と `git status --short` を突き合わせる検査になる。
-検査の手順は [QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree 照合」に従う。
+担保は各 reviewer 原稿の指示文と、親が起動前後で対象 worktree の HEAD と `git status --short`、および
+親の統合 checkout の `git status --short` を突き合わせる検査になる。検査の手順は
+[QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree・親 checkout 照合」に従う。
+network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照（`~/.git-credentials`
+や `.env` の読み取りなど）は、この契約の担保対象外である。`push` の禁止にも上記の検査にも現れないため、
+機構的に扱われていると誤解しないこと。
 
 この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
 `expert-selection-reviewer` は指摘 Data を返さないため上記2点の対象外だが、ファイルを変更しない点は

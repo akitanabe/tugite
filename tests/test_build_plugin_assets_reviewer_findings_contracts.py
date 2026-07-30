@@ -66,8 +66,14 @@ READ_ONLY_ENFORCEMENT_SECTION = "## read-only の担保"
 READ_ONLY_ENFORCEMENT_CONTRACTS = (
     READ_ONLY_ENFORCEMENT_SECTION,
     "指摘 Data を返すだけの reviewer には、ファイルを書き換える tool を渡さない。",
-    "Claude 向けは agent frontmatter の `disallowed_tools` に "
-    "`Edit` / `Write` / `NotebookEdit` を置き、"
+    # Pins that `tools`（allowlist）is the actual guarantor and
+    # `disallowed_tools` is a restated overlay, not an independent guarantee.
+    # An earlier draft named `disallowed_tools` as co-equal with `tools`,
+    # which does not hold once a reviewer lacks `tools` altogether.
+    "担保の実体は Claude 向け agent frontmatter の `tools`（許可 tool の allowlist）であり、"
+    "`Edit` / `Write` / `NotebookEdit` を含めないことでこれらの tool が渡らない。",
+    "`disallowed_tools` にも同じ3つを重ねて書くが、これは意図を明示する重ね書きであり、"
+    "`tools` を伴わずに単独で担保になるものではない。",
     "Codex 向けは `sandbox_mode` の `read-only` が同じ役割を果たす。",
     # Pins the criterion that splits exploration reach. Without it the section
     # would carry only the write-tool ban, and the reason one reviewer is given
@@ -80,17 +86,39 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # only. Recording it keeps a later reader from assuming both platforms
     # enforce the ban mechanically and removing the instruction as redundant.
     "`Bash` を渡した reviewer について、Claude 側で書き込みを禁じているのは原稿の指示文だけである。",
+    # Pins the tool-unit restriction as a general phrase (not just
+    # `disallowed_tools`), since `tools` allowlist exclusion is equally
+    # bypassable once `Bash` is granted.
+    "`Bash` からファイルを書けるため、tool 単位の制限"
+    "（`tools` の allowlist からの除外や `disallowed_tools`）はいずれも迂回でき、"
+    "Codex 側の `sandbox_mode` のように機構としては禁じられない。",
     "担保の強さは platform 間で非対称であり、"
     "これは `Bash` を渡す判断に伴う既知の制約として引き受ける。",
     # Pins the working limits that apply once `Bash` is granted. The reach
     # split alone leaves "may run commands" unbounded, and nothing on the
-    # Claude side stops a reviewer from rewriting what it is reviewing.
-    "`Bash` を渡した reviewer は、対象 worktree では読み取りと検証の実行だけを行い、"
+    # Claude side stops a reviewer from rewriting what it is reviewing. The
+    # scope is unconditional reach (target worktree, parent's integrated
+    # checkout, or anywhere else the reviewer lands) rather than a condition
+    # keyed on "target worktree", which a reviewer cannot resolve on its own.
+    "`Bash` を渡した reviewer は、対象 worktree に限らず、自身が到達できるいかなる repository"
+    "（対象 worktree、親の統合 checkout など）に対しても、読み取りと検証の実行だけを行い、"
     "追跡ファイルを変更しない。",
     "ミューテーション注入や検証用の複製のように書き込みを伴う検証は、"
-    "対象 worktree の外へ複製してそこで行う。",
-    "`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
-    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `push` を行わない。",
+    "対象とした repository の外の OS 一時領域配下へ複製して行う。",
+    "複製は run 中に削除し、削除できない場合は path を返却物へ記録する。",
+    "worktree を丸ごと複製すると非追跡の `.env` や credential も複製されかねないため、"
+    "複製対象に非追跡ファイルを含めない。",
+    # Pins the effect-based principle as the primary rule, with the git
+    # subcommand list kept only as an example. A closed enumeration alone
+    # missed `branch -D`/`-f`/`-m`, `update-ref`, `symbolic-ref`, `reflog
+    # expire`, `gc --prune=now`, `config`, hooks, `clean -fdx`, and `restore`.
+    "あわせて、HEAD・refs・object DB・git 設定・hooks を変更する操作、"
+    "および到達可能性や reflog を失わせる操作を行わない。",
+    "例えば `commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `branch -D` / "
+    "`branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` / "
+    "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
+    "`restore` / `push` が該当する。",
     # Pins why the git operations are listed apart from file edits: they are
     # the ones the parent's own check cannot see.
     "追跡ファイルの編集は親の `git status --short` 検査で気づけるが、これらは status を"
@@ -101,6 +129,19 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "この作業範囲は tool metadata では強制できない。",
     "`disallowed_tools` は tool 単位の指定であり、`Bash` で実行する command の中身までは"
     "選べないためである。",
+    # Pins that the pre/post check also covers the parent's own checkout, not
+    # only the target worktree — required because a `Bash`-granted reviewer
+    # reaches the parent's integrated checkout too.
+    "担保は各 reviewer 原稿の指示文と、親が起動前後で対象 worktree の HEAD と "
+    "`git status --short`、および親の統合 checkout の `git status --short` を"
+    "突き合わせる検査になる。",
+    "検査の手順は [QA・修正・統合](qa-and-integration.md) の"
+    "「reviewer 起動前後の worktree・親 checkout 照合」に従う。",
+    # Pins that network egress and credential access sit outside this
+    # contract's guarantees: neither the `push` ban nor the HEAD/status check
+    # observes them, so a reader must not assume they are mechanically covered.
+    "network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照"
+    "（`~/.git-credentials` や `.env` の読み取りなど）は、この契約の担保対象外である。",
     f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
     f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"

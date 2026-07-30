@@ -28,12 +28,18 @@ from build_plugin_assets_test_support import (
 # reasoning behind each limit lives in reviewer-findings.md's 「read-only の担保」
 # and is not duplicated here.
 BASH_WORKING_LIMIT_CONTRACTS = (
-    "対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、"
-    "追跡ファイルを変更しないでください。",
-    "書き込みを伴う検証は対象 worktree の外へ複製して行ってください。",
+    "到達したいかなる repository に対して command を実行する場合であっても、"
+    "読み取りと検証の実行だけを行い、追跡ファイルを変更しないでください。",
+    "書き込みを伴う検証は、対象とした repository の外の OS 一時領域配下へ複製して行い、"
+    "run 中に削除してください。",
+    "削除できない場合は path を返却物へ記録し、非追跡ファイルを複製対象に含めないでください。",
+    "HEAD・refs・object DB・git 設定・hooks を変更する操作、"
+    "および到達可能性や reflog を失わせる操作を行わないでください",
     "`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / "
-    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `push` は"
-    "行わないでください。",
+    "`cherry-pick` / `worktree add` / `worktree remove` / `branch -d` / `branch -D` / "
+    "`branch -f` / `branch -m` / `update-ref` / `symbolic-ref` / `reflog expire` / "
+    "`gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / "
+    "`restore` / `push` など",
 )
 
 
@@ -347,6 +353,14 @@ class AgentAndReviewerContractsTest(
             if "tools" in self._agent_source_metadata(name)["claude"]
         }
         self.assertEqual(set(REVIEWER_NAMES), claude_restricted)
+
+        codex_sandboxed = {
+            name
+            for name in AGENT_NAMES
+            if self._agent_source_metadata(name)["codex"].get("sandbox_mode")
+            == "read-only"
+        }
+        self.assertEqual(set(REVIEWER_NAMES), codex_sandboxed)
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,

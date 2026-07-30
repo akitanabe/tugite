@@ -31,10 +31,15 @@ nickname_candidates = ["Boundary Reviewer", "Design Reviewer", "Responsibility R
 指摘は **diff が導入・悪化させた問題に限ります**。diff に含まれない既存コード由来の問題は判定に含めず、
 「既存課題」として区別して報告してください。既存課題を理由に `修正推奨`・`修正必須` を出さないこと。
 
-対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、追跡ファイルを
-変更しないでください。書き込みを伴う検証は対象 worktree の外へ複製して行ってください。
-`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
-`worktree add` / `worktree remove` / `branch -d` / `push` は行わないでください。
+到達したいかなる repository に対して command を実行する場合であっても、読み取りと検証の実行だけを
+行い、追跡ファイルを変更しないでください。書き込みを伴う検証は、対象とした repository の外の OS
+一時領域配下へ複製して行い、run 中に削除してください。削除できない場合は path を返却物へ記録し、
+非追跡ファイルを複製対象に含めないでください。あわせて、HEAD・refs・object DB・git 設定・hooks を
+変更する操作、および到達可能性や reflog を失わせる操作を行わないでください
+（`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
+`worktree add` / `worktree remove` / `branch -d` / `branch -D` / `branch -f` / `branch -m` /
+`update-ref` / `symbolic-ref` / `reflog expire` / `gc --prune=now` / `config` の変更 /
+`.git/hooks/*` への書き込み / `clean -fdx` / `restore` / `push` など）。
 
 ## 受け取る入力
 
