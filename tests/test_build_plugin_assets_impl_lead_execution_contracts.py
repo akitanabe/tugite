@@ -170,9 +170,9 @@ class ImplLeadExecutionContractsTest(
             "同等の統合済み diff review を親が行う。"
         )
 
-        self.assertIn(instruction, skills.source_references["qa-and-integration.md"])
-        self.assertIn(instruction, skills.codex_references["qa-and-integration.md"])
-        self.assertNotIn(instruction, skills.claude_references["qa-and-integration.md"])
+        self.assertIn(instruction, skills.source_references["run-closeout.md"])
+        self.assertIn(instruction, skills.codex_references["run-closeout.md"])
+        self.assertNotIn(instruction, skills.claude_references["run-closeout.md"])
 
     def test_repository_skills_clean_up_only_after_the_final_gate(self) -> None:
         """Clean up platform resources only after every final gate has passed."""

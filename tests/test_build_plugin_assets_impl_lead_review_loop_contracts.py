@@ -38,7 +38,7 @@ class ImplLeadReviewLoopContractsTest(
 
     def test_workflows_split_branch_review_into_three_phases(self) -> None:
         """Run the over-engineering gate only on a settled snapshot, once per convergence."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 initial = self._normalize_contract(sections["### initial レビュー群"])
@@ -69,13 +69,13 @@ class ImplLeadReviewLoopContractsTest(
         self,
     ) -> None:
         """Point the initial phase at one specialist section instead of enumerating sites."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 initial = self._normalize_contract(sections["### initial レビュー群"])
 
                 self.assertIn(
-                    "「専門reviewer」節の起動条件によりriskで選択した専門reviewer",
+                    "[専門reviewer](reviewer-dispatch.md)の起動条件によりriskで選択した専門reviewer",
                     initial,
                 )
                 self.assertIn(
@@ -94,7 +94,7 @@ class ImplLeadReviewLoopContractsTest(
 
     def test_workflows_bound_branch_review_rounds_and_define_termination(self) -> None:
         """Count a round per phase run and bound the total at the limit plus one."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 counting = self._normalize_contract(sections["### 1 round の数え方"])
@@ -118,7 +118,8 @@ class ImplLeadReviewLoopContractsTest(
                     "settled",
                     "rounds-exhausted",
                     "branch_review_roundsは枝あたりのround上限で、既定は12とする",
-                    "親が修正必須として確定した指摘が解消されている。理由付き不採用だけではsettledにしない",
+                    "親が[修正先の選択](finding-routing.md)で修正必須として確定した指摘が"
+                    "解消されている。理由付き不採用だけではsettledにしない",
                     "上限規則が発火するのは、枝の受け入れ点が未達のまま新たなroundが必要になった場合だけである",
                     "settled済みsnapshotへの最終レビュー群の実施が未了である場合のその1回だけを",
                     "この上界はroundの種類を問わず一様に掛かり、再構成起動もこれに従う",
@@ -140,7 +141,7 @@ class ImplLeadReviewLoopContractsTest(
         self,
     ) -> None:
         """Relaunch only finding owners and newly-risked reviewers, never the gate set."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
                 sections = self._three_phase_sections(reference)
                 loop = self._normalize_contract(sections["### レビューループ"])
@@ -173,9 +174,9 @@ class ImplLeadReviewLoopContractsTest(
                     "liteの枝は最終レビュー群に起動対象がないため実施せず、settledがそのまま受け入れ点になる",
                     "最終レビュー群のものを含む全指摘に採否が記録され、不採用には理由が記録されている",
                     "未解決または判断未記録の指摘を残していない",
-                    "親が修正必須として確定した指摘が解消されている。"
+                    "親が[修正先の選択](finding-routing.md)で修正必須として確定した指摘が解消されている。"
                     "理由付き不採用だけでは受け入れ点を満たさない",
-                    "「責務境界」節の判定区分ごとの列挙は修正先のroutingだけを定める",
+                    "[責務境界](finding-routing.md)の判定区分ごとの列挙は修正先のroutingだけを定める",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), acceptance)

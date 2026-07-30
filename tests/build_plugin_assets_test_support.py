@@ -81,6 +81,10 @@ SKILL_REFERENCE_NAMES = {
         "implementation-branches.md",
         "expert-selection.md",
         "qa-and-integration.md",
+        "reviewer-dispatch.md",
+        "branch-review.md",
+        "finding-routing.md",
+        "run-closeout.md",
         "qa-report.md",
         "branch-plan-intake.md",
         "reviewer-findings.md",
@@ -249,13 +253,16 @@ class RepositoryContractSupport:
             GENERATED_SKILL_PATHS["codex"]: skills.codex,
         }
 
-    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
+    def _impl_lead_reference_texts(self, name: str) -> dict[str, str]:
         skills = self._repository_skill_texts()
         return {
-            "shared": skills.source_references["qa-and-integration.md"],
-            "claude": skills.claude_references["qa-and-integration.md"],
-            "codex": skills.codex_references["qa-and-integration.md"],
+            "shared": skills.source_references[name],
+            "claude": skills.claude_references[name],
+            "codex": skills.codex_references[name],
         }
+
+    def _qa_and_integration_reference_texts(self) -> dict[str, str]:
+        return self._impl_lead_reference_texts("qa-and-integration.md")
 
     @staticmethod
     def _normalize_contract(text: str) -> str:

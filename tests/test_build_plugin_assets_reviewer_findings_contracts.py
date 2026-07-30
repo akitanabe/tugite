@@ -57,7 +57,7 @@ COUNT_ONLY_REVIEWER_NAMES = (
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
 )
-QA_AND_INTEGRATION_REFERENCE = "qa-and-integration.md"
+REVIEWER_DISPATCH_REFERENCE = "reviewer-dispatch.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
 # Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
 # adding an 8th reviewer to those sets fails this test instead of leaving the
@@ -155,11 +155,11 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # it instead of restating the same fact a second time in the same section.
     "この作業範囲も上記と同じ理由で tool metadata では強制できない。",
     # Pins that the guarantor is a delegated check rather than a restated
-    # list of observation points (RB-6): qa-and-integration.md's own section
+    # list of observation points (RB-6): reviewer-dispatch.md's own section
     # is the one place that enumerates what gets compared, so this file only
     # points at it instead of keeping a second, driftable copy.
     "担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。",
-    "検査の対象と手順は [QA・修正・統合](qa-and-integration.md) の"
+    "検査の対象と手順は [Reviewer の起動と diff の受け渡し](reviewer-dispatch.md) の"
     "「reviewer 起動前後の worktree・親 checkout 照合」に従う。",
     # Pins the limit of this guarantee (SEC-10): the pre/post check assumes a
     # target worktree exists, so a launch path without one (plan-craft's plan
@@ -187,7 +187,7 @@ READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION = (
     "ここで定めた対象は上記2点だけに適用する。"
     "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。"
 )
-# The delegation pointer, not a second copy of the rule: qa-and-integration.md
+# The delegation pointer, not a second copy of the rule: branch-review.md
 # keeps only why the parent hands diff and test results over as Data.
 READ_ONLY_ENFORCEMENT_DELEGATION = (
     "reviewer が read-only であることの担保は "
@@ -374,14 +374,14 @@ class ReviewerFindingsContractTest(
         # check above is document-wide instead is explained where the markers
         # are defined.
         for platform, text in self._skill_reference_texts(
-            QA_AND_INTEGRATION_REFERENCE
+            "branch-review.md"
         ).items():
             with self.subTest(platform=platform):
                 for marker in READ_ONLY_RULE_RESTATEMENT_MARKERS:
                     with self.subTest(platform=platform, marker=marker):
                         self.assertFalse(
                             marker in text,
-                            f"{platform}'s {QA_AND_INTEGRATION_REFERENCE} must not "
+                            f"{platform}'s branch-review.md must not "
                             f"contain '{marker}': this document names no read-only "
                             "tool or platform config key anywhere in it; the "
                             "canonical rule lives only in reviewer-findings.md's "
@@ -413,7 +413,7 @@ class ReviewerFindingsContractTest(
             with self.subTest(path=path):
                 self.assertIn(f"(references/{REVIEWER_FINDINGS_REFERENCE})", main)
                 self.assertLess(
-                    main.index("(references/qa-and-integration.md)"),
+                    main.index("(references/branch-review.md)"),
                     main.index(f"(references/{REVIEWER_FINDINGS_REFERENCE})"),
                 )
 

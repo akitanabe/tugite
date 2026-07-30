@@ -76,7 +76,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         self,
     ) -> None:
         """Require every reviewer-launch field on its own filled-in line inside one fence."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 template = self._extract_reviewer_launch_template(reference)
                 self.assertNotIn("{{", template)
@@ -98,26 +98,30 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "該当がない欄は「なし」と記入する",
             "欄を空欄のまま残すことと、欄自体を削除することを禁じる",
         )
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
+        finding_routings = self._impl_lead_reference_texts("finding-routing.md")
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in obligation_contracts:
                     self.assertIn("".join(contract.split()), normalized)
 
-                self.assertEqual(1, reference.count("## 必須完了ゲート"))
-                mandatory_gate_section = reference.split(
+                self.assertEqual(1, branch_reviews[platform].count("## 必須完了ゲート"))
+                mandatory_gate_section = branch_reviews[platform].split(
                     "## 必須完了ゲート", 1
                 )[1].split("\n## ", 1)[0]
                 self.assertIn(
-                    "「reviewer 起動テンプレート」", mandatory_gate_section
+                    "[reviewer 起動テンプレート](reviewer-dispatch.md)",
+                    mandatory_gate_section,
                 )
 
-                self.assertEqual(1, reference.count("## 責務境界"))
-                responsibility_section = reference.split("## 責務境界", 1)[
+                self.assertEqual(1, finding_routings[platform].count("## 責務境界"))
+                responsibility_section = finding_routings[platform].split("## 責務境界", 1)[
                     1
                 ].split("\n## ", 1)[0]
                 self.assertIn(
-                    "「reviewer 起動テンプレート」", responsibility_section
+                    "[reviewer 起動テンプレート](reviewer-dispatch.md)",
+                    responsibility_section,
                 )
 
     def test_repository_diff_artifact_creation_defines_path_and_inherited_rules(
@@ -159,7 +163,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "diff artifact は reviewer へ diff を渡すためだけの中間物で run 完了時に削除する",
             "保持規約の異なる file を同じ directory へ混在させない",
         )
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
@@ -198,7 +202,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "「diff artifact の削除」の手順で削除したうえで再生成し、"
             "再生成できない場合は diff text 経路へ落ちる",
         )
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
@@ -211,7 +215,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         required_contracts = (
             "## diff artifact の削除",
             "diff artifact は run 完了時に削除する",
-            "「後始末」で、この run に生成した diff artifact をすべて破棄するとき",
+            "[後始末](run-closeout.md) で、この run に生成した diff artifact をすべて破棄するとき",
             "[永続 QA レポート](qa-report.md) の削除時の再検査を行い、"
             "対象が `.tugite/diffs/` 配下の通常 file であることを確認する",
             "symlink、directory、非通常 file は削除しない",
@@ -220,16 +224,18 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "削除できない artifact は理由と repository 相対 path を最終報告に含める",
         )
         cleanup_contracts = (
-            "この run に生成した diff artifact を「diff artifact の削除」の手順で削除する",
+            "この run に生成した diff artifact を"
+            "[diff artifact の削除](reviewer-dispatch.md) の手順で削除する",
             "永続 QA レポートと `<slug>-tests.md` は削除しない",
         )
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        closeouts = self._impl_lead_reference_texts("run-closeout.md")
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(reference.split())
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized)
 
-                cleanup_section = reference.split("## 後始末", 1)[1].split(
+                cleanup_section = closeouts[platform].split("## 後始末", 1)[1].split(
                     "\n## ", 1
                 )[0]
                 normalized_cleanup = "".join(cleanup_section.split())
@@ -240,32 +246,47 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         self,
     ) -> None:
         """Connect the four existing launch-data sites to the artifact-path route."""
-        new_connections = (
-            "この確認によって worker の変更の混入と誤認しない",
-            "ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した"
-            "diff artifact を reviewer が Read することとは矛盾しない",
-            "diff artifact の絶対 path を渡すことを既定とし、artifact を生成できない場合だけ"
-            "diff text 欄へ本文を直接記入する",
-            "この基本情報は「reviewer 起動テンプレート」の各欄に対応する",
-            "起動 prompt は「reviewer 起動テンプレート」の全欄を埋めて渡す",
-            "起動時は「reviewer 起動テンプレート」の全欄を埋め、diff artifact の絶対 path を"
-            "渡すことを既定とする",
-            "「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・"
-            "commit 範囲・変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す"
-            "Data はすべてこのテンプレートの欄として吸収する",
-            "テンプレート外に残る起動時 Data はない",
-        )
-        for platform, reference in self._qa_and_integration_reference_texts().items():
-            with self.subTest(platform=platform):
-                normalized = "".join(reference.split())
-                for contract in new_connections:
-                    self.assertIn("".join(contract.split()), normalized)
+        owned_connections = {
+            "qa-and-integration.md": (
+                "この確認によって worker の変更の混入と誤認しない",
+                "ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した"
+                "diff artifact を reviewer が Read することとは矛盾しない",
+                "diff artifact の絶対 path を渡すことを既定とし、artifact を生成できない場合だけ"
+                "diff text 欄へ本文を直接記入する",
+            ),
+            "reviewer-dispatch.md": (
+                "この基本情報は「reviewer 起動テンプレート」の各欄に対応する",
+                "[返却と統合](qa-and-integration.md) 手順5 の task・AC・commit 範囲・変更ファイル・"
+                "diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべて"
+                "このテンプレートの欄として吸収する",
+                "テンプレート外に残る起動時 Data はない",
+            ),
+            "branch-review.md": (
+                "起動 prompt は [reviewer 起動テンプレート](reviewer-dispatch.md) の全欄を埋めて渡す",
+            ),
+            "finding-routing.md": (
+                "起動時は [reviewer 起動テンプレート](reviewer-dispatch.md) の全欄を埋め、"
+                "diff artifact の絶対 path を渡すことを既定とする",
+            ),
+        }
+        reference_groups = {
+            "qa-and-integration.md": self._qa_and_integration_reference_texts(),
+            "reviewer-dispatch.md": self._impl_lead_reference_texts("reviewer-dispatch.md"),
+            "branch-review.md": self._impl_lead_reference_texts("branch-review.md"),
+            "finding-routing.md": self._impl_lead_reference_texts("finding-routing.md"),
+        }
+        for name, references in reference_groups.items():
+            for platform, reference in references.items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(reference.split())
+                    for contract in owned_connections[name]:
+                        self.assertIn("".join(contract.split()), normalized)
 
     def test_repository_reviewer_launch_compares_the_worktree_before_and_after(
         self,
     ) -> None:
         """Reject findings from a launch whose review target moved while the reviewer held it."""
-        for platform, reference in self._qa_and_integration_reference_texts().items():
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 self.assertEqual(
                     1, reference.count(REVIEWER_LAUNCH_SNAPSHOT_SECTION)
@@ -300,7 +321,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     normalized_step_2,
                 )
                 self.assertIn(
-                    "".join("作成規約は「diff artifact の作成」節に従う".split()),
+                    "".join(
+                        "作成規約は [diff artifact の作成](reviewer-dispatch.md) に従う".split()
+                    ),
                     normalized_step_2,
                 )
 
