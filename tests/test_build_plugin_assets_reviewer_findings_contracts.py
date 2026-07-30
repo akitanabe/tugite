@@ -149,10 +149,11 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     "追跡ファイルの編集は親の照合で気づけるが、これらは状態を戻せば照合をすり抜けうるためである。",
     # Pins that the limits are a contract rather than an enforced setting, so a
     # later reader does not assume the tool metadata already blocks them and
-    # drop the instruction as redundant.
-    "この作業範囲は tool metadata では強制できない。",
-    "`disallowed_tools` は tool 単位の指定であり、`Bash` で実行する command の中身までは"
-    "選べないためである。",
+    # drop the instruction as redundant. The reasoning itself (`disallowed_tools`
+    # being tool-scoped, `Bash` command contents being unselectable) lives once,
+    # in the write-ban paragraph above; this second mention only points back to
+    # it instead of restating the same fact a second time in the same section.
+    "この作業範囲も上記と同じ理由で tool metadata では強制できない。",
     # Pins that the guarantor is a delegated check rather than a restated
     # list of observation points (RB-6): qa-and-integration.md's own section
     # is the one place that enumerates what gets compared, so this file only

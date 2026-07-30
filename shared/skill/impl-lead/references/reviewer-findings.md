@@ -60,8 +60,7 @@ hooks を変更する操作、および到達可能性
 `gc --prune=now` / `config` の変更 / `.git/hooks/*` への書き込み / `clean -fdx` / `restore` /
 `push` が該当する。追跡ファイルの編集は親の照合で気づけるが、これらは状態を戻せば照合をすり抜けうるためである。
 
-この作業範囲は tool metadata では強制できない。`disallowed_tools` は tool 単位の指定であり、
-`Bash` で実行する command の中身までは選べないためである。したがってここで定めるのは契約であり、
+この作業範囲も上記と同じ理由で tool metadata では強制できない。したがってここで定めるのは契約であり、
 担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。検査の対象と手順は
 [QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree・親 checkout 照合」に従う。
 この照合は `impl-lead` の委譲経路が対象 worktree を持つことを前提にした手順であり、`plan-craft` の

@@ -58,7 +58,7 @@ bash tests/install-agents-test.sh
 
 1. `shared/agents/<name>.md` を作成
 2. `scripts/build_plugin_assets.py` の `AGENT_NAMES` に追加
-3. `tests/build_plugin_assets_test_support.py` の `AGENT_NAMES`、必要に応じて `REVIEWER_NAMES` / `READ_ONLY_TOOL_AGENT_NAMES` / `REFACTORER_NAMES`、`CLAUDE_MODEL_PROFILES` / `CODEX_MODEL_PROFILES` に追加
+3. `tests/build_plugin_assets_test_support.py` の `AGENT_NAMES`、必要に応じて `REVIEWER_NAMES` / `BASH_GRANTED_REVIEWER_NAMES` / `BASH_WITHHELD_REVIEWER_NAMES` / `REFACTORER_NAMES`、`CLAUDE_MODEL_PROFILES` / `CODEX_MODEL_PROFILES` に追加
 4. `tests/install-agents-test.sh` の `required_agents` に追加
 5. 両 platform の README（`plugins/claude/README.md` / `plugins/codex/README.md`）に記載（契約テストが全 agent の記載を要求します）
 
