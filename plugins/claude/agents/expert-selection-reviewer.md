@@ -3,6 +3,8 @@ name: "expert-selection-reviewer"
 description: "高コストな expert-implementer を起動する前に、親が提示した選択理由が所定の条件を満たすか審査する専用 reviewer。実装、仕様補完、worker 起動、最終判断は行わない。"
 model: opus
 effort: medium
+tools: Read, Grep, Glob
+disallowedTools: Bash, Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

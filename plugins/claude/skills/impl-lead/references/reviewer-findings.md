@@ -5,6 +5,7 @@
 ## 目次
 
 - 位置づけ
+- read-only の担保
 - 指摘件数のサマリ行
 - 指摘ごとの evidence
 
@@ -18,6 +19,20 @@ findings を返すすべての reviewer が共通で満たす2点を定義する
 指摘 Data を返さない `expert-selection-reviewer` と `review-patch-refactorer` は対象外とする。
 
 判定語彙、0件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、この reference では変更しない。
+
+ここで定めた対象は上記2点だけに適用する。「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。
+
+## read-only の担保
+
+reviewer が read-only であることを原稿の指示文だけに委ねず、platform が強制できる設定として持つ。
+Claude 向けは agent frontmatter の `tools` と `disallowed_tools`、Codex 向けは `sandbox_mode` で担保し、
+片方の platform にだけ制限が入っている状態を作らない。同じ契約の担保の強さが platform で変わると、
+どちらの platform で起動したかによって reviewer が実際に取れる操作が変わってしまうためである。
+
+この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
+`expert-selection-reviewer` は指摘 Data を返さないため上記2点の対象外だが、ファイルを変更しない点は
+共通であり、この節では対象に含める。指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、
+この節でも対象外とする。
 
 ## 指摘件数のサマリ行
 

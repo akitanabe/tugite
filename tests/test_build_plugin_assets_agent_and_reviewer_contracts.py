@@ -6,6 +6,7 @@ from pathlib import Path
 import unittest
 
 from build_plugin_assets_test_support import (
+    AGENT_NAMES,
     CLAUDE_MODEL_PROFILES,
     CLAUDE_PROFILE_PATH,
     CODEX_MODEL_PROFILES,
@@ -267,6 +268,25 @@ class AgentAndReviewerContractsTest(
                     "read-only", source_metadata["codex"]["sandbox_mode"]
                 )
                 self.assertEqual("read-only", codex_artifact["sandbox_mode"])
+
+    def test_repository_claude_tool_policy_covers_every_codex_sandboxed_agent(
+        self,
+    ) -> None:
+        """Restrict on Claude exactly the agents the Codex sandbox already confines."""
+        codex_sandboxed = {
+            name
+            for name in AGENT_NAMES
+            if self._agent_source_metadata(name)["codex"].get("sandbox_mode")
+            == "read-only"
+        }
+        claude_restricted = {
+            name
+            for name in AGENT_NAMES
+            if "tools" in self._agent_source_metadata(name)["claude"]
+        }
+
+        self.assertEqual(codex_sandboxed, claude_restricted)
+        self.assertEqual(codex_sandboxed, set(READ_ONLY_TOOL_AGENT_NAMES))
 
     def test_repository_review_patch_refactorer_defines_writable_narrow_contract(
         self,
