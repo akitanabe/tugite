@@ -42,6 +42,18 @@ reviewer を増やすたび原稿と定義の2箇所を揃えることになり�
 機構としては禁じられない。担保の強さは platform 間で非対称であり、これは `Bash` を渡す判断に伴う
 既知の制約として引き受ける。
 
+`Bash` を渡した reviewer は、対象 worktree では読み取りと検証の実行だけを行い、追跡ファイルを変更しない。
+ミューテーション注入や検証用の複製のように書き込みを伴う検証は、対象 worktree の外へ複製してそこで行う。
+あわせて `commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
+`worktree add` / `worktree remove` / `branch -d` / `push` を行わない。追跡ファイルの編集は親の
+`git status --short` 検査で気づけるが、これらは status を汚さずにレビュー対象の snapshot 自体を
+差し替えるため、その検査をすり抜けるためである。
+
+この作業範囲は tool metadata では強制できない。`disallowed_tools` は tool 単位の指定であり、
+`Bash` で実行する command の中身までは選べないためである。したがってここで定めるのは契約であり、
+担保は各 reviewer 原稿の指示文と、親が起動前後で HEAD と `git status --short` を突き合わせる検査になる。
+検査の手順は [QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree 照合」に従う。
+
 この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
 `expert-selection-reviewer` は指摘 Data を返さないため上記2点の対象外だが、ファイルを変更しない点は
 共通であり、この節では対象に含める。指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、

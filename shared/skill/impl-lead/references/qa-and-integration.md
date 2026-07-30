@@ -6,6 +6,7 @@
 - 親の QA
 - 専門 reviewer
 - reviewer 起動テンプレート
+- reviewer 起動前後の worktree 照合
 - diff artifact の作成
 - diff artifact の受け渡しと停止条件
 - diff artifact の削除
@@ -163,6 +164,19 @@ artifact の作成手順は「diff artifact の作成」節に、受け渡し・
 「専門 reviewer」節の対象リスクと review 範囲、「返却と統合」手順5 の task・AC・commit 範囲・
 変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
 欄として吸収する。テンプレート外に残る起動時 Data はない。
+
+## reviewer 起動前後の worktree 照合
+
+reviewer を起動する前に、対象 worktree の `git rev-parse HEAD` と `git status --short` を親が記録する。
+reviewer の返却後に同じ2つを取り直し、起動前の記録と一致することを確認する。
+
+一致しない場合、その reviewer の findings を採用しない。差異の内容を最終報告へ記録する。
+findings は親が渡した時点の snapshot に対する判定として成立しており、判定の間に対象が動いていれば、
+返ってきた指摘が何に対するものかを親が確定できないためである。
+
+この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。reviewer が対象を動かしうるかは
+その reviewer の定義側の設定に依存するため、親はその設定を前提に置かず、自分で観測できる事実だけで
+採否を決める。
 
 ## diff artifact の作成
 

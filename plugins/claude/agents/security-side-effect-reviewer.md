@@ -33,6 +33,11 @@ diff テキスト、対象システムの制約を根拠に判定してくださ
 指摘は **diff が導入・悪化させたリスクに限ります**。変更と無関係な既存リスクは「既存課題」として区別し、
 判定へ含めないでください。
 
+対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、追跡ファイルを
+変更しないでください。書き込みを伴う検証は対象 worktree の外へ複製して行ってください。
+`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
+`worktree add` / `worktree remove` / `branch -d` / `push` は行わないでください。
+
 ## 利用対象
 
 - 認証、認可、session、credential

@@ -31,6 +31,11 @@ nickname_candidates = ["Boundary Reviewer", "Design Reviewer", "Responsibility R
 指摘は **diff が導入・悪化させた問題に限ります**。diff に含まれない既存コード由来の問題は判定に含めず、
 「既存課題」として区別して報告してください。既存課題を理由に `修正推奨`・`修正必須` を出さないこと。
 
+対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、追跡ファイルを
+変更しないでください。書き込みを伴う検証は対象 worktree の外へ複製して行ってください。
+`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
+`worktree add` / `worktree remove` / `branch -d` / `push` は行わないでください。
+
 ## 受け取る入力
 
 親から以下が渡される前提で判定します。

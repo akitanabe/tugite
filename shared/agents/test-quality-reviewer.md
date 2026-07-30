@@ -35,6 +35,11 @@ nickname_candidates = ["Test Quality Reviewer", "Test Reviewer", "Coverage Revie
 指摘は **diff が追加・変更・弱体化したテストと、その差分に必要なのに不足しているケースに限ります**。
 変更と無関係な既存テストの問題は「既存課題」として区別し、判定へ含めないでください。
 
+対象 worktree に対して command を実行する場合は、読み取りと検証の実行だけを行い、追跡ファイルを
+変更しないでください。書き込みを伴う検証は対象 worktree の外へ複製して行ってください。
+`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /
+`worktree add` / `worktree remove` / `branch -d` / `push` は行わないでください。
+
 ## 受け取る入力
 
 - タスク要約と AC
