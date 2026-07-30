@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -92,15 +93,31 @@ class ImplLeadQaReportContractsTest(
         reference_headings = {
             "implementation-branches.md": "# 実装枝の準備と委譲",
             "expert-selection.md": "# Expert 選択",
-            "qa-and-integration.md": "# QA・修正・統合",
+            "qa-and-integration.md": "# 返却の QA と統合",
+            "reviewer-dispatch.md": "# Reviewer の起動と diff の受け渡し",
+            "branch-review.md": "# 枝レビューの進行",
+            "finding-routing.md": "# Finding の修正 routing",
+            "run-closeout.md": "# Run の終了処理",
             "qa-report.md": "# 永続 QA レポート",
         }
+        direct_references = (
+            "implementation-branches.md",
+            "expert-selection.md",
+            "qa-and-integration.md",
+            "branch-review.md",
+            "finding-routing.md",
+            "run-closeout.md",
+            "qa-report.md",
+            "branch-plan-intake.md",
+            "reviewer-findings.md",
+        )
 
         for path, main in main_texts.items():
             with self.subTest(path=path):
                 self.assertLess(len(main.splitlines()), 300)
-                for name in SKILL_REFERENCE_NAMES[IMPL_LEAD_SKILL]:
+                for name in direct_references:
                     self.assertIn(f"(references/{name})", main)
+                self.assertNotIn("(references/reviewer-dispatch.md)", main)
                 for heading in reference_headings.values():
                     self.assertNotIn(heading, main)
                 self.assertLess(
@@ -143,6 +160,128 @@ class ImplLeadQaReportContractsTest(
                 skills.codex_references[name].startswith(
                     f"{GENERATED_MARKDOWN_WARNING}\n\n"
                 )
+            )
+        for references in (
+            skills.source_references,
+            skills.claude_references,
+            skills.codex_references,
+        ):
+            for owner in (
+                "qa-and-integration.md",
+                "branch-review.md",
+                "finding-routing.md",
+            ):
+                with self.subTest(owner=owner):
+                    self.assertIn(
+                        "(reviewer-dispatch.md)",
+                        references[owner],
+                    )
+
+    def test_repository_impl_lead_local_markdown_links_resolve(self) -> None:
+        """Resolve every local reference file and section reached by impl-lead."""
+        document_sets = (
+            (
+                "shared",
+                SHARED_SKILL_PATH,
+                tuple(SHARED_SKILL_REFERENCE_PATHS.values()),
+            ),
+            (
+                "claude",
+                GENERATED_SKILL_PATHS["claude"],
+                tuple(GENERATED_SKILL_REFERENCE_PATHS["claude"].values()),
+            ),
+            (
+                "codex",
+                GENERATED_SKILL_PATHS["codex"],
+                tuple(GENERATED_SKILL_REFERENCE_PATHS["codex"].values()),
+            ),
+        )
+        link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+\.md)(?:#([^)]+))?\)")
+
+        for platform, main_path, reference_paths in document_sets:
+            for source_path in (main_path, *reference_paths):
+                document = self._repository_text(source_path)
+                for target, anchor in link_pattern.findall(document):
+                    resolved = (
+                        REPOSITORY_ROOT / source_path.parent / target
+                    ).resolve()
+                    with self.subTest(
+                        platform=platform,
+                        source=source_path,
+                        target=target,
+                        anchor=anchor,
+                    ):
+                        self.assertTrue(resolved.is_file(), resolved)
+                        if anchor:
+                            target_text = resolved.read_text(encoding="utf-8")
+                            headings = re.findall(r"^#{1,6} (.+)$", target_text, re.M)
+                            slugs = {
+                                re.sub(r"\s+", "-", heading.strip().lower())
+                                for heading in headings
+                            }
+                            self.assertIn(anchor, slugs)
+
+    def test_repository_qa_sections_have_one_owner_and_matching_toc(self) -> None:
+        """Keep each QA lifecycle section in one responsibility reference."""
+        expected_sections = {
+            "qa-and-integration.md": (
+                "返却と統合",
+                "親の QA",
+                "返却 diff の変更単位判定",
+                "再分割・再承認ゲート",
+            ),
+            "reviewer-dispatch.md": (
+                "専門 reviewer",
+                "reviewer 起動テンプレート",
+                "reviewer 起動前後の worktree・親 checkout 照合",
+                "diff artifact の作成",
+                "diff artifact の受け渡しと停止条件",
+                "diff artifact の削除",
+            ),
+            "branch-review.md": (
+                "必須完了ゲート",
+                "枝レビューの3相",
+                "reviewer 間の競合解消",
+            ),
+            "finding-routing.md": (
+                "evidence を欠く指摘の扱い",
+                "過剰実装ゲートの除去許可",
+                "修正先の選択",
+                "責務境界",
+            ),
+            "run-closeout.md": (
+                "未統合で終了する場合",
+                "統合済み diff review",
+                "後始末",
+                "最終報告",
+            ),
+        }
+        skills = self._repository_skill_texts()
+        for platform, references in (
+            ("shared", skills.source_references),
+            ("claude", skills.claude_references),
+            ("codex", skills.codex_references),
+        ):
+            observed_owners: dict[str, str] = {}
+            for name, expected in expected_sections.items():
+                text = references[name]
+                toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
+                toc_items = tuple(
+                    line.removeprefix("- ")
+                    for line in toc.splitlines()
+                    if line.startswith("- ")
+                )
+                headings = tuple(re.findall(r"^## (.+)$", text, re.M))
+                actual = tuple(heading for heading in headings if heading != "目次")
+                with self.subTest(platform=platform, reference=name):
+                    self.assertEqual(expected, toc_items)
+                    self.assertEqual(expected, actual)
+                for section in actual:
+                    self.assertNotIn(section, observed_owners)
+                    observed_owners[section] = name
+            self.assertEqual(
+                set(section for sections in expected_sections.values() for section in sections),
+                set(observed_owners),
             )
 
     def test_repository_writes_one_parent_qa_report_only_when_requested(
@@ -431,11 +570,11 @@ class ImplLeadQaReportContractsTest(
         """Continue revisions; finalize only an explicit unintegrated decision."""
         skills = self._repository_skill_texts()
         main = "".join(skills.source_main.split())
-        qa_reference = skills.source_references["qa-and-integration.md"]
-        qa_and_integration = "".join(qa_reference.split())
-        unintegrated_section = qa_reference[
-            qa_reference.index("## 未統合で終了する場合") : qa_reference.index(
-                "## 責務境界"
+        closeout_reference = skills.source_references["run-closeout.md"]
+        run_closeout = "".join(closeout_reference.split())
+        unintegrated_section = closeout_reference[
+            closeout_reference.index("## 未統合で終了する場合") : closeout_reference.index(
+                "## 統合済み diff review"
             )
         ]
         normalized_unintegrated_section = "".join(unintegrated_section.split())
@@ -448,10 +587,12 @@ class ImplLeadQaReportContractsTest(
         )
         finalization = (
             "全枝を完了した場合、または手順8で未統合のまま終了する場合は、"
+            "[Run の終了処理](references/run-closeout.md) に従い、"
             "適用可能な統合済み diff review と最終検証を行い、親の最終判断を確定する。"
         )
         cleanup_decision = (
-            "最終 gate 後に、各 worker worktree の cleanup の実施可否と結果を確定する。"
+            "[Run の終了処理](references/run-closeout.md) に従い、最終 gate 後に、"
+            "各 worker worktree の cleanup の実施可否と結果を確定する。"
         )
         final_decision_invariant = (
             "全ての委譲 mode で、親の最終判断を省略しない。"
@@ -476,7 +617,7 @@ class ImplLeadQaReportContractsTest(
         for contract in main_contracts:
             self.assertIn("".join(contract.split()), main)
         for contract in reference_contracts:
-            self.assertIn("".join(contract.split()), qa_and_integration)
+            self.assertIn("".join(contract.split()), run_closeout)
         self.assertNotIn("cleanup", normalized_unintegrated_section)
         self.assertNotIn(
             "".join(

@@ -62,7 +62,8 @@ hooks を変更する操作、および到達可能性
 
 この作業範囲も上記と同じ理由で tool metadata では強制できない。したがってここで定めるのは契約であり、
 担保は各 reviewer 原稿の指示文と、親が起動前後に行う照合になる。検査の対象と手順は
-[QA・修正・統合](qa-and-integration.md) の「reviewer 起動前後の worktree・親 checkout 照合」に従う。
+[Reviewer の起動と diff の受け渡し](reviewer-dispatch.md) の
+「reviewer 起動前後の worktree・親 checkout 照合」に従う。
 この照合は `impl-lead` の委譲経路が対象 worktree を持つことを前提にした手順であり、`plan-craft` の
 プラン審査のように対象 worktree を持たない起動経路では、担保は各 reviewer 原稿の指示文だけになる。
 network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照（`~/.git-credentials`

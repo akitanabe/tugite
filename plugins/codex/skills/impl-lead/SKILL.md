@@ -168,21 +168,26 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
 5. 実行前サマリーを提示する。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
    審査と準備が完了した先頭の枝だけを委譲する。
 6. Implementer の返答を待ち、返却 commit と実行結果を受け取る。
-7. [QA・修正・統合](references/qa-and-integration.md) を読み、diff、テスト、専門 review、修正経路を判断し、
+7. [返却の QA と統合](references/qa-and-integration.md)、
+   [枝レビューの進行](references/branch-review.md)、
+   [Finding の修正 routing](references/finding-routing.md) を読み、diff、テスト、専門 review、修正経路を判断し、
    その枝のレビューを initial レビュー群・レビューループ・最終レビュー群の3相で進める。どの相でどのゲートを
-   起動するか、1 round の数え方、打ち切り条件、枝の受け入れ点は同 reference の「枝レビューの3相」を正本とする。
+   起動するか、1 round の数え方、打ち切り条件、枝の受け入れ点は「枝レビューの進行」を正本とする。
    reviewer の findings は [Reviewer findings の共通契約](references/reviewer-findings.md) が要求する
    指摘件数のサマリ行と指摘ごとの evidence を備えた形で受け取る。
 8. QA 修正を続ける場合は手順7の修正経路を継続する。「枝レビューの3相」の枝の受け入れ点を満たして受け入れる
    場合は1枝だけを統合し、統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
    親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を
    終了する場合は、手順9へ進む。
-9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、適用可能な統合済み diff review と
+9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、
+   [Run の終了処理](references/run-closeout.md) に従い、適用可能な統合済み diff review と
    最終検証を行い、親の最終判断を確定する。
-10. 最終 gate 後に、各 worker worktree の cleanup の実施可否と結果を確定する。
+10. [Run の終了処理](references/run-closeout.md) に従い、最終 gate 後に、
+    各 worker worktree の cleanup の実施可否と結果を確定する。
 11. 永続 QA レポートの出力条件を満たす場合だけ
     [永続 QA レポート](references/qa-report.md) を読む。
-12. 会話上の最終報告を行う。採用した配分方針と枝ごとの mode を含める。
+12. [Run の終了処理](references/run-closeout.md) に従い、会話上の最終報告を行う。
+    採用した配分方針と枝ごとの mode を含める。
 
 共有土台の作成は、実装枝の委譲前に親が行える明示的な例外とする。複数枝が同じ fixture、設定、
 テストデータ、生成物を必要とするときだけ先に確定し、検証して基準 commit にする。この例外は、
