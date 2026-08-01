@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -65,6 +66,15 @@ PARENT_DATA_LOWER_BOUND_DECLARATION = (
 )
 LEGACY_PARENT_DATA_EXPLORATION_BAN = (
     "これらの情報は親が取得して渡すものであり、reviewer 自身に取得させない。"
+)
+# Keep this finite and semantic: generic words such as 「探索」 or 「取得」 also
+# occur in legitimate lower-bound and diff-scope statements.  These combinations
+# cover the known regression where the reviewer is made the subject of a direct
+# information-acquisition ban, without attempting to enumerate natural-language
+# paraphrases indefinitely.
+REVIEWER_SIDE_EXPLORATION_BAN_PATTERNS = (
+    ("reviewer 自身", "追加情報を取得", "してはならない"),
+    ("reviewer 自身", "探索", "を禁止する"),
 )
 DIFF_SCOPE_DECLARATION = (
     "対象は基準 commit からの diff が導入または悪化させた問題に限定し、"
@@ -428,19 +438,51 @@ class ReviewerFindingsContractTest(
                     normalized,
                 )
 
-    def test_branch_review_rejects_legacy_parent_data_exploration_ban(self) -> None:
-        """Keep the former parent-only acquisition rule out of every distributed gate."""
+    def test_branch_review_rejects_reviewer_side_exploration_bans(self) -> None:
+        """Keep parent-only and reviewer-side exploration bans out of every distributed gate."""
         for platform, text in self._skill_reference_texts(
             "branch-review.md"
         ).items():
             with self.subTest(platform=platform):
-                section = "\n".join(
-                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                section_lines = self._section_lines(
+                    text, QA_AND_INTEGRATION_MUST_GATES_SECTION
                 )
+                section = "\n".join(section_lines)
                 self.assertNotIn(
                     "".join(LEGACY_PARENT_DATA_EXPLORATION_BAN.split()),
                     "".join(section.split()),
                 )
+                paragraphs: list[str] = []
+                paragraph_lines: list[str] = []
+                for line in (*section_lines, ""):
+                    if line.strip():
+                        paragraph_lines.append(line)
+                    elif paragraph_lines:
+                        paragraphs.append("".join(paragraph_lines))
+                        paragraph_lines = []
+                sentences = (
+                    sentence
+                    for paragraph in paragraphs
+                    for sentence in re.split(r"(?<=[。！？!?])", paragraph)
+                )
+                for sentence in sentences:
+                    normalized_sentence = "".join(sentence.split())
+                    for subject, target, polarity in (
+                        REVIEWER_SIDE_EXPLORATION_BAN_PATTERNS
+                    ):
+                        self.assertFalse(
+                            all(
+                                marker in normalized_sentence
+                                for marker in (
+                                    "".join(subject.split()),
+                                    "".join(target.split()),
+                                    "".join(polarity.split()),
+                                )
+                            ),
+                            f"{platform}'s mandatory gate must not prohibit "
+                            f"reviewer-side exploration with the semantic pattern "
+                            f"{subject!r}, {target!r}, {polarity!r}",
+                        )
 
     def test_branch_review_preserves_diff_scope_and_read_only_delegation(self) -> None:
         """Preserve the bounded diff scope and findings-contract delegation in the gate."""
