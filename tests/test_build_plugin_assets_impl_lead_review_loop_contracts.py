@@ -57,7 +57,7 @@ class ImplLeadReviewLoopContractsTest(
                 )
                 self.assertIn("standard/strict", initial)
                 self.assertIn("writing-principles-reviewer", initial)
-                self.assertIn("riskで選んだ専門reviewer", initial)
+                self.assertIn("failure_impact.reasonsで選んだ専門reviewer", initial)
                 self.assertIn("lite", initial)
                 self.assertIn("起動せず", initial)
                 self.assertNotIn("writing-principles-reviewerの枝あたり最低1回", initial)
@@ -105,17 +105,41 @@ class ImplLeadReviewLoopContractsTest(
                 initial = self._normalize_contract(sections["### initial レビュー群"])
 
                 self.assertIn(
-                    "[専門reviewer](reviewer-dispatch.md)の起動条件は、この相のrisk選択とレビューループroundの「再起動対象」の第2類型の双方へ効く",
+                    "[専門reviewer](reviewer-dispatch.md)の起動条件は、この相のfailure_impact.reasonsによる選択とレビューループroundの「再起動対象」の第2類型の双方へ効く",
                     initial,
                 )
                 # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
                 # 同期漏れを起こす。所在は「専門 reviewer」節ひとつに閉じる。
-                self.assertIn("riskによる専門reviewerの起動条件はこの1節だけが定める", initial)
+                self.assertIn(
+                    "failure_impact.reasonsによる専門reviewerの起動条件はこの1節だけが定める",
+                    initial,
+                )
                 for enumerated_site in ("「返却と統合」手順5", "「責務境界」節"):
                     with self.subTest(enumerated_site=enumerated_site):
                         self.assertNotIn(
                             self._normalize_contract(enumerated_site), initial
                         )
+
+    def test_workflows_use_failure_impact_reasons_for_review_and_rollback(self) -> None:
+        """Route safety review and rollback checks from recorded failure impact."""
+        contracts = {
+            "reviewer-dispatch.md": (
+                "`failure_impact.reasons` と責務が一致する専門 reviewer を選ぶ。",
+                "`implementation_complexity` や枝 mode だけを理由に専門 reviewer を選ばない。",
+            ),
+            "qa-and-integration.md": (
+                "`failure_impact.reasons` に記録された失敗伝播、部分成功、rollback 影響を確認する。",
+                "rollback の確認を `implementation_complexity` から導出しない。",
+            ),
+        }
+        for reference_name, required in contracts.items():
+            for platform, reference in self._impl_lead_reference_texts(
+                reference_name
+            ).items():
+                normalized = self._normalize_contract(reference)
+                with self.subTest(reference=reference_name, platform=platform):
+                    for contract in required:
+                        self.assertIn(self._normalize_contract(contract), normalized)
 
     def test_workflows_handle_zero_target_initial_phase_and_mode_specific_phase_skips(
         self,
@@ -127,8 +151,8 @@ class ImplLeadReviewLoopContractsTest(
                 initial = self._normalize_contract(sections["### initial レビュー群"])
                 counting = self._normalize_contract(sections["### 1 round の数え方"])
                 for contract in (
-                    "相1の起動対象が0名になった枝（liteかつriskによる専門reviewerが1本も成立しない枝）",
-                    "相1の起動対象が0名になった枝（liteかつriskによる専門reviewerが1本も成立しない枝）は、指摘0件のままsettledに到達したものとして扱い、相3へ進む",
+                    "相1の起動対象が0名になった枝（liteかつfailure_impact.reasonsによる専門reviewerが1本も成立しない枝）",
+                    "相1の起動対象が0名になった枝（liteかつfailure_impact.reasonsによる専門reviewerが1本も成立しない枝）は、指摘0件のままsettledに到達したものとして扱い、相3へ進む",
                     "この枝のround通番は、最初に実施した相の実施をround1とする",
                     "相3の起動対象がない場合は相3を実施せず、roundを消費せずに相4へ進む",
                 ):
@@ -768,7 +792,7 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "review-patch-refactorer ではなく元 Implementer へ差し戻す",
-                    "再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施する",
+                    "再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後もfailure_impact.reasonsの対象が成立する専門 reviewer を実施する",
                     "親の最終受入判断は相4の完了後に行う",
                 ),
                 (

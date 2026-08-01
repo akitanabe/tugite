@@ -206,18 +206,21 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required + valid_combinations:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_plan_schema_derives_branch_mode_from_risk_instead_of_a_field(
+    def test_plan_schema_derives_branch_mode_only_from_implementation_complexity(
         self,
     ) -> None:
-        """Keep branch risk as the only source for the derived branch mode."""
+        """Keep implementation complexity as the only source for derived mode."""
         required = (
-            "枝ごとの委譲 mode は schema に持たせず、`branches[].risk` を正として導出する。",
-            "枝側に `recommended_mode` を置くと `risk` と二重管理になり、矛盾したときに"
+            "枝ごとの委譲 mode は schema に持たせず、"
+            "`branches[].implementation_complexity` を正として導出する。",
+            "枝側に `recommended_mode` を置くと `implementation_complexity` と二重管理になり、"
+            "矛盾したときに"
             "どちらを正とするか決められないため。",
             "AC 割り当てを枝側の一方向参照へ正規化したのと同じ理由である。",
             "導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して"
             "最終報告で報告する。",
-            "mode の判定理由は `risk.reasons` に書き、mode ごとの理由欄を別に設けない。",
+            "mode の判定理由は `implementation_complexity.reasons` に書き、"
+            "mode ごとの理由欄を別に設けない。",
         )
         for platform, text in self._plan_reference_texts(
             PLAN_SCHEMA_REFERENCE
@@ -227,15 +230,15 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_plan_schema_limits_mode_proposal_to_fixed_policy_mismatch(self) -> None:
-        """Propose an adaptive policy only where a fixed policy ignores branch risk."""
+    def test_plan_schema_limits_fixed_lite_proposal_to_failure_impact(self) -> None:
+        """Use failure impact only for a fixed-lite safety proposal."""
         required = (
             "propose:",
             "policy: adaptive",
             "baseline: standard | strict",
-            "`policy: adaptive` では枝の `risk.level` から mode を導出するため、"
-            "high risk 枝は決定表側で `strict` になる。",
-            "提案が必要なのは `policy: fixed` が枝の `risk` と整合しない場合だけである。",
+            "`policy: adaptive` では枝の `implementation_complexity.level` から mode を導出する。",
+            "`failure_impact` は adaptive mode の直接導出には使わない。",
+            "提案が必要なのは `{fixed, lite}` が枝の `failure_impact` と整合しない場合だけである。",
             "`{fixed, strict}` に対して降格を提案しない。",
             "引き上げだけを提案する非対称性は、コストの削減より品質の担保を優先する"
             "判断であり、low risk 枝から `lite` を提案しないのと同じ理由である。",
@@ -250,7 +253,7 @@ class PlanImplementationBranchesContractsTest(
         )
         violation_recalculation = (
             "`delegation_mode_proposal` の要否・内容が `requested_mode` と枝の "
-            "`risk.level` からの再計算(出力条件表)と一致しない",
+            "`failure_impact.level` からの再計算(出力条件表)と一致しない",
             "必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案",
         )
         for platform, text in self._plan_reference_texts(
@@ -261,40 +264,95 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required + proposal_rows + violation_recalculation:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_plan_splitting_reference_defines_risk_level_criteria(self) -> None:
-        """Assign risk levels from failure impact rather than from change size."""
+    def test_plan_splitting_reference_defines_independent_impact_and_complexity_criteria(
+        self,
+    ) -> None:
+        """Assess failure impact and implementation complexity independently."""
         required = (
-            "## risk.level の判定観点",
-            "これは枝 mode を決める関数ではなく、`risk.level` の付け方を揃える"
-            "チェックリストである。",
-            "判定は実装量やファイル数ではなく、失敗したときの影響を中心に行う。",
+            "## failure_impact.level の判定観点",
+            "## implementation_complexity.level の判定観点",
             "1. 失敗時の影響範囲",
             "2. 変更の可逆性 / 切り戻しの容易さ",
             "3. 外部副作用の有無と数",
             "4. セキュリティ・権限への影響",
             "5. データ整合性への影響",
             "6. 後方互換性への影響",
-            "7. 仕様の明確さ",
-            "8. テストによる担保の可能性",
-            "9. 他の枝との依存関係",
+            "1. 仕様の明確さ",
+            "2. 適用できる既存 pattern の有無",
+            "3. component 間の責務・契約に残る判断",
+            "4. 依存関係の複雑性",
+            "5. 調査・仮説検証の必要性",
             "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
-            "判定に使った観点は `risk.reasons` に記録する。",
+            "判定に使った観点はそれぞれの `reasons` に記録する。",
             "決定表をここに再掲しない。",
         )
-        level_rows = (
-            "| `low` | 表示文言のみの変更、設定値の追加、振る舞いに影響しないリネーム、"
-            "局所的な機械的修正。外部副作用がなく、容易に切り戻せる。 |",
-            "| `medium` | 通常の機能追加、既存ロジックの変更、API 内部処理の変更、"
-            "UI とバックエンドの通常連携。テストで十分に担保でき、失敗時の影響が限定的。 |",
-            "| `high` | 認証・認可・権限判定、データ削除・上書き・移行、"
-            "外部 API の契約変更、後方互換性への影響、決済・請求・金額計算、"
-            "機密情報への影響、複数の外部 I/O。失敗時の影響が広い、切り戻しが困難、"
-            "または仕様の曖昧さが重大な不具合につながる。 |",
+        level_contracts = (
+            "failure_impact.level",
+            "implementation_complexity.level",
+            "`low`",
+            "`medium`",
+            "`high`",
         )
         for platform, text in self._plan_reference_texts("branch-splitting.md").items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
-                for contract in required + level_rows:
+                for contract in required + level_contracts:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_requires_and_validates_both_branch_assessment_axes(
+        self,
+    ) -> None:
+        """Block missing, malformed, empty, and legacy branch assessments."""
+        required = (
+            "failure_impact:",
+            "implementation_complexity:",
+            "level: low | medium | high",
+            "reasons: [<1件以上の具体的な理由>]",
+            "branch-assessment-missing",
+            "branch-assessment-invalid",
+            "legacy-risk-present",
+            "`reasons` の欠落、配列以外、空配列、空文字、非文字列要素",
+            "旧 `risk` が単独で存在する場合",
+            "旧 `risk` が新しい field と混在する場合",
+            "旧 `risk` から新しい2軸を推測しない",
+        )
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_splitting_reference_separates_dependency_and_scope_signals(
+        self,
+    ) -> None:
+        """Separate propagation impact from residual implementation judgment."""
+        required = (
+            "依存 edge があることだけでは level を上げない。",
+            "失敗伝播、部分成功、rollback への影響は `failure_impact` で評価する。",
+            "依存先との契約に残る判断は `implementation_complexity` で評価する。",
+            "確定済み依存の定型適用では `implementation_complexity` を上げない。",
+            "ファイル数、変更量、単なる module 波及だけでは "
+            "`implementation_complexity` を上げない。",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_schema_keeps_complexity_out_of_branch_contract_violations(
+        self,
+    ) -> None:
+        """Judge branch validity by acceptance boundaries, not complexity level."""
+        required = (
+            "`implementation_complexity.level: high` だけでは "
+            "`branch-contract-violation` にしない。",
+            "単独の Acceptance Criteria・検証・受け入れ判断・revert が閉じない場合だけ",
+        )
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
     def test_plan_skill_takes_inventory_findings_only_for_user_listed_ids(

@@ -143,10 +143,10 @@ class DelegateImplementationIntakeContractsTest(
                 for rule in gate_rules:
                     self.assertIn("".join(rule.split()), normalized)
 
-    def test_intake_reference_holds_the_branch_mode_derivation_table(self) -> None:
-        """Map each allocation policy and risk level pair onto one branch mode."""
+    def test_intake_reference_holds_the_complexity_mode_derivation_table(self) -> None:
+        """Map policy and implementation complexity onto one branch mode."""
         derivation_rows = (
-            "| policy | baseline | `risk.level: low` | `medium` | `high` |",
+            "| policy | baseline | `implementation_complexity.level: low` | `medium` | `high` |",
             "| `fixed` | `lite` | `lite` | `lite` | `lite` |",
             "| `fixed` | `strict` | `strict` | `strict` | `strict` |",
             "| `adaptive` | `standard` | `lite` | `standard` | `strict` |",
@@ -160,7 +160,7 @@ class DelegateImplementationIntakeContractsTest(
             "`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。",
             "「判断に迷う場合は基準側へ倒す」方針を `strict` baseline では `low` にも"
             "適用するのが一貫するためである。",
-            "`{adaptive, strict}` は `risk.level` の3値に対して2値しか使わず、"
+            "`{adaptive, strict}` は `implementation_complexity.level` の3値に対して2値しか使わず、"
             "`{adaptive, standard}` との差は `medium` だけでなく `low` にも現れる。",
             "`{adaptive, strict}` で `lite` が必要な枝は、理由を記録した手動上書きで降格する。",
         )
@@ -172,16 +172,20 @@ class DelegateImplementationIntakeContractsTest(
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized)
 
-    def test_intake_reference_derives_branch_modes_before_delegating(self) -> None:
-        """Recompute branch modes from input Data instead of trusting the plan."""
+    def test_intake_reference_derives_branch_modes_from_complexity_before_delegating(
+        self,
+    ) -> None:
+        """Recompute modes from complexity without using failure impact."""
         required_rules = (
-            "全枝の `risk.level` が `low` / `medium` / `high` のいずれかである。",
+            "全枝の `implementation_complexity.level` が `low` / `medium` / `high` の"
+            "いずれかである。",
             "欠落または3値以外の枝がある場合は決定的に導出できないため、"
             "委譲を開始せず Branch Plan の修正を要求する。",
             "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
             "`delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、"
             "`null` の場合は `{adaptive, standard}` を採用する。",
             "「枝 mode の決定表」から枝ごとの mode を再計算する。",
+            "`failure_impact` は枝 mode の直接導出に使わない。",
             "planning Skill 側の申告や `delegation_mode_proposal` の内容を根拠にしない。",
             "導出結果は実行 Data として保持し、Branch Plan へ書き戻さない。",
         )
@@ -200,9 +204,10 @@ class DelegateImplementationIntakeContractsTest(
             "SKILL.md の引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。",
             "引き上げが受け入れられない場合は stages を実行せず、"
             "枝の再分割または stages の削除を要求する。",
-            "stages を宣言する枝は実質的に `risk.level` が `low` ではない。",
-            "`{adaptive, standard}` かつ `risk.level: low` かつ stages 宣言という組み合わせが"
-            "出た場合は、stages 側ではなく `risk.level` の付け方を疑い、"
+            "stages を宣言する枝は実質的に `implementation_complexity.level` が `low` ではない。",
+            "`{adaptive, standard}` かつ `implementation_complexity.level: low` かつ "
+            "stages 宣言という組み合わせが出た場合は、stages 側ではなく "
+            "`implementation_complexity.level` の付け方を疑い、"
             "planning へ差し戻すかどうかを判断する。",
         )
         for platform, text in self._intake_reference_texts().items():
@@ -232,12 +237,46 @@ class DelegateImplementationIntakeContractsTest(
             "上書きは実行 Data であり、Branch Plan のフィールドではない。",
             "引き上げ(`lite → standard`、`standard → strict`)は理由の記録を必須としない。",
             "降格は理由の記録を必須とする。理由なしの降格は受け付けない。",
-            "`risk.level: high` の枝を `lite` へ直接降格させない。",
+            "`implementation_complexity.level: high` の枝を `lite` へ直接降格させない。",
             "判断材料が不足している場合は `baseline` 側へ倒す。",
             "上書きは最終報告に含める。",
-            "`risk.level` そのものが誤っていると判断した場合は、上書きではなく Branch Plan の "
-            "`risk` を修正して再検証する。上書きを risk 修正の代用にしない。",
+            "`implementation_complexity.level` そのものが誤っていると判断した場合は、"
+            "上書きではなく Branch Plan の `implementation_complexity` を修正して再検証する。",
+            "上書きを implementation complexity 修正の代用にしない。",
             "上書きを受け付ける入力経路は本 reference で規定しない。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_revalidates_both_branch_assessment_axes(self) -> None:
+        """Reject invalid assessments even when planning declared the plan valid."""
+        required_rules = (
+            "全枝に `failure_impact` と `implementation_complexity` が存在する。",
+            "両 field の `level` が `low` / `medium` / `high` のいずれかである。",
+            "両 field の `reasons` が欠落しておらず、非空の文字列配列である。",
+            "欠落、配列以外、空配列、空文字、非文字列要素",
+            "`branch-assessment-missing`",
+            "`branch-assessment-invalid`",
+            "`legacy-risk-present`",
+            "blocking violation code 表のすべての検査規則を入力 Data から再計算",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_rejects_legacy_risk_without_conversion(self) -> None:
+        """Reject legacy risk alone or mixed with either new assessment."""
+        required_rules = (
+            "旧 `risk` が単独で存在する場合",
+            "旧 `risk` が新しい field と混在する場合",
+            "`legacy-risk-present`",
+            "旧 `risk` から `failure_impact` または `implementation_complexity` を推測しない。",
+            "Branch Plan の修正を要求し、委譲を開始しない。",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):

@@ -89,6 +89,51 @@ class ImplLeadExecutionContractsTest(
                 source,
             )
 
+    def test_repository_workflow_selects_implementers_by_complexity_and_residual_judgment(
+        self,
+    ) -> None:
+        """Select senior workers for implementation difficulty, not failure impact."""
+        reference = self._repository_text(
+            SHARED_SKILL_REFERENCE_PATHS["implementation-branches.md"]
+        )
+        normalized = "".join(reference.split())
+        required = (
+            "難度は `implementation_complexity` と実装時に残る設計・推論判断で判断する。",
+            "| `implementer` | 仕様が明確で既存 pattern を適用でき、残る判断が少ない枝。 |",
+            "| `senior-implementer` | `implementation_complexity` が高い、または設計・"
+            "algorithm・concurrency に非自明な判断が残る枝。 |",
+            "単なる複数 module への波及、高い失敗コスト、誤実装の代償だけでは "
+            "`senior-implementer` を選ばない。",
+        )
+        for contract in required:
+            self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_implementer_profiles_separate_normal_and_high_complexity_branches(
+        self,
+    ) -> None:
+        """Keep source and generated implementer profiles aligned to complexity."""
+        for name in ("implementer", "senior-implementer"):
+            paths = (
+                Path("shared/agents") / f"{name}.md",
+                Path("plugins/claude/agents") / f"{name}.md",
+                Path("plugins/codex/install/agents") / f"{name}.toml",
+            )
+            for path in paths:
+                content = self._repository_text(path)
+                normalized = "".join(content.split())
+                with self.subTest(name=name, path=path):
+                    self.assertIn("implementation_complexity", content)
+                    if name == "senior-implementer":
+                        for excluded in (
+                            "複数 module への波及",
+                            "複数モジュールに波及",
+                            "broad module impact",
+                            "高い失敗コスト",
+                            "high cost of mistakes",
+                            "誤実装の代償",
+                        ):
+                            self.assertNotIn("".join(excluded.split()), normalized)
+
     def test_repository_implementer_worktree_inputs_use_parent_managed_contract(
         self,
     ) -> None:

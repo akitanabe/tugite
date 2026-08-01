@@ -327,19 +327,19 @@ class ImplLeadQaReportContractsTest(
                     self.assertEqual(expected, toc_items)
                     self.assertEqual(expected, actual)
 
-    def test_repository_distribution_version_is_3_8_1(self) -> None:
-        """Pin the reviewer data-boundary patch release to the synchronized version."""
+    def test_repository_distribution_version_is_4_0_0(self) -> None:
+        """Pin the incompatible Branch Plan contract to the synchronized major version."""
         shared_version = self._repository_text(Path("shared/VERSION")).strip()
-        self.assertEqual("3.8.1", shared_version)
+        self.assertEqual("4.0.0", shared_version)
         for manifest_path in (
             Path("plugins/claude/.claude-plugin/plugin.json"),
             Path("plugins/codex/.codex-plugin/plugin.json"),
         ):
             manifest = json.loads(self._repository_text(manifest_path))
             with self.subTest(path=manifest_path):
-                self.assertEqual("3.8.1", manifest["version"])
+                self.assertEqual("4.0.0", manifest["version"])
         self.assertEqual(
-            "3.8.1",
+            "4.0.0",
             self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
         )
 
@@ -523,6 +523,9 @@ class ImplLeadQaReportContractsTest(
             "Base commit",
             "Logical checkout ID / commit",
             "Implementation branches",
+            "Failure impact",
+            "Implementation complexity",
+            "mode は implementation complexity から導出する",
             "導出 mode と上書き後の mode の両方が読み取れるように",
             "降格には理由の記録を必須とする",
             "Acceptance Criteria → test",
@@ -543,7 +546,7 @@ class ImplLeadQaReportContractsTest(
             "判断理由",
             "Next action",
             "reviewer を起動しなかった場合も理由を記録",
-            "対象 risk がないことは有効な理由",
+            "対象となる failure impact がないことは有効な理由",
             "最終判断は親だけが記入",
         )
 
@@ -559,7 +562,8 @@ class ImplLeadQaReportContractsTest(
                     "Logical worktree ID",
                     "Branch (sanitized or omitted)",
                     "Implementer role",
-                    "Risk level",
+                    "Failure impact",
+                    "Implementation complexity",
                     "Derived mode",
                     "Manual override",
                     "Sanitized command",
