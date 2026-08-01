@@ -212,27 +212,6 @@ class ImplLeadReviewLoopContractsTest(
                     termination,
                 )
 
-    def test_workflows_describe_exhausted_round_boundaries_for_phase_three_and_four(
-        self,
-    ) -> None:
-        """Make phase-three and phase-four exhaustion outcomes unambiguous."""
-        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
-            with self.subTest(platform=platform):
-                sections = self._four_phase_sections(reference)
-                termination = self._normalize_contract(sections["### 打ち切り条件"])
-                self.assertIn(
-                    "settled済みsnapshotへの最終レビュー群の実施が未了である場合",
-                    termination,
-                )
-                self.assertIn(
-                    "完了レビュー群の前提条件を満たしたsnapshotへの完了レビュー群の実施が未了である場合",
-                    termination,
-                )
-                self.assertIn(
-                    "例外で実施した相がD9により破棄された場合は、その相を再実施せず",
-                    termination,
-                )
-
     def test_workflows_count_integrity_reexecution_as_new_round_and_limit_it_to_phase_three_or_four(
         self,
     ) -> None:

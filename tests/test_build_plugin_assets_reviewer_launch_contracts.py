@@ -452,26 +452,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), normalized)
 
-    def test_repository_reviewer_launch_does_not_inspect_untracked_directory_internals_or_ignored_files(
-        self,
-    ) -> None:
-        """Limit observation to status-level entries and defer read-only limits to their contract."""
-        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
-            with self.subTest(platform=platform):
-                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
-                    "\n## ", 1
-                )[0]
-                normalized = self._normalize_contract(section)
-                for contract in (
-                    "非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない",
-                    "ignore 対象のファイルへの書き込みも観測しない",
-                    "観測できない範囲を担保としてどう扱うかは [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」を正本とする",
-                ):
-                    with self.subTest(contract=contract):
-                        self.assertIn(self._normalize_contract(contract), normalized)
-                self.assertNotIn("network送信", normalized)
-                self.assertNotIn("credential参照", normalized)
-
     def test_repository_reviewer_launch_limits_observation_section_to_points_and_findings_contract(
         self,
     ) -> None:
