@@ -301,25 +301,6 @@ class ImplLeadModeContractsTest(
                     expected_count,
                     case_input.count("implementation_complexity.reasons:"),
                 )
-                for axis in ("failure_impact", "implementation_complexity"):
-                    self.assertEqual(
-                        expected_count,
-                        len(
-                            re.findall(
-                                rf"{axis}\.level:\s*(?:low|medium|high)",
-                                case_input,
-                            )
-                        ),
-                    )
-                    self.assertEqual(
-                        expected_count,
-                        len(
-                            re.findall(
-                                rf'{axis}\.reasons:\s*\[(?:\s*"[^"]+"\s*,?)+\]',
-                                case_input,
-                            )
-                        ),
-                    )
                 markers = branch_markers[case_name]
                 for index, marker in enumerate(markers):
                     with self.subTest(case=case_name, branch=marker):

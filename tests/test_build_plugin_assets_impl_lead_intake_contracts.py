@@ -177,8 +177,6 @@ class DelegateImplementationIntakeContractsTest(
     ) -> None:
         """Recompute modes from complexity without using failure impact."""
         required_rules = (
-            "全枝の `implementation_complexity.level` が `low` / `medium` / `high` の"
-            "いずれかである。",
             "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
             "`delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、"
             "`null` の場合は `{adaptive, standard}` を採用する。",

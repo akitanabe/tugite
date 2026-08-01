@@ -66,7 +66,6 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
 
 5項目を満たした後、委譲開始前に枝ごとの mode を導出する。
 
-- 全枝の `implementation_complexity.level` が `low` / `medium` / `high` のいずれかである。
 - `delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、`null` の場合は
   `{adaptive, standard}` を採用する。
 - 「枝 mode の決定表」から枝ごとの mode を再計算する。planning Skill 側の申告や

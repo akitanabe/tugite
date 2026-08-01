@@ -34,7 +34,6 @@ Branch Plan の `failure_impact.reasons` は安全性・失敗影響の事前 Da
 親 QA が実装結果から特定する Data である。前者は起動の有無にかかわらず reviewer context へ渡す。
 `security-side-effect-reviewer` と rollback の確認は主に `failure_impact.reasons` を入力にし、
 `test-quality-reviewer` と `responsibility-boundary-reviewer` は主に返却 diff 由来の対象リスクを入力にする。
-ユーザー明示、`failure_impact.reasons` との責務一致、または返却 diff 由来の対象リスクから専門 reviewer を選ぶ。
 `implementation_complexity` や枝 mode だけを理由に専門 reviewer を選ばない。3つの起動条件が成立しない専門 reviewer を
 無条件で起動しない。起動する場合は成立した起動条件、対象リスクまたは確認観点、review 範囲を明示する。
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
