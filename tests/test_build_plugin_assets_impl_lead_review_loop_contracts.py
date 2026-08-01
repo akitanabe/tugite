@@ -233,6 +233,43 @@ class ImplLeadReviewLoopContractsTest(
                     termination,
                 )
 
+    def test_workflows_count_integrity_reexecution_as_new_round_and_limit_it_to_phase_three_or_four(
+        self,
+    ) -> None:
+        """Make the post-exhaustion snapshot-reexecution boundary observable for phases three and four."""
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
+            with self.subTest(platform=platform):
+                sections = self._four_phase_sections(reference)
+                counting = self._normalize_contract(sections["### 1 round の数え方"])
+                termination = self._normalize_contract(sections["### 打ち切り条件"])
+
+                self.assertIn(
+                    self._normalize_contract(
+                        "照合不一致による対象 worktree の新規非追跡項目だけの削除後に同じ相を再実施する場合、再実施は新たな round を消費する"
+                    ),
+                    counting,
+                )
+                for contract in (
+                    "branch_review_roundsが12のstandard枝でround12に相4を実施し、その返却後照合が非追跡ファイルの増加だけで不一致になった場合は、例外1回でround13へ相4を再実施する",
+                    "同じ枝のround12が相2で同じ不一致になった場合は、例外を持たないため再実施せず、rounds-exhaustedで打ち切った枝として受け入れない",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), termination)
+
+    def test_workflows_reject_repeatedly_discarded_exception_reexecution(self) -> None:
+        """Do not loop after an exception-phase rerun is discarded a second time."""
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
+            with self.subTest(platform=platform):
+                termination = self._normalize_contract(
+                    self._four_phase_sections(reference)["### 打ち切り条件"]
+                )
+                for contract in (
+                    "rounds-exhausted到達後の例外で実施した相を再実施した場合、その再実施が再びD9により破棄されたときは、再々実施せず",
+                    "その枝をNeeds revisionとして統合しない",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), termination)
+
     def test_workflows_exclude_both_completion_gates_from_relaunch_targets_and_accept_only_after_completion(
         self,
     ) -> None:

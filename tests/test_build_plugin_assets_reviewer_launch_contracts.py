@@ -49,7 +49,8 @@ REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
     "親の統合 checkout の記録は diff artifact の書き出し後に取り直し、"
     "「返却と統合」手順2 で取得した値を使い回さない。",
     "reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。",
-    "一致しない場合、その reviewer の findings を採用しない。",
+    "一致しない場合、同一 snapshot へ一斉起動した全 reviewer の findings を採用せず破棄する。",
+    "破棄した事実と件数を差異の内容とあわせて最終報告へ記録する。",
     "差異の内容を最終報告へ記録する。",
     "reviewer が到達するのは対象 worktree だけでなく親の統合 checkout でもあるため、"
     "照合はどちらか一方に絞らず両方に掛ける。",
@@ -304,6 +305,190 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                         self.assertIn(
                             "".join(contract.split()), normalized_section
                         )
+                self.assertNotIn(
+                    "一致しない場合、そのreviewerのfindingsを採用しない",
+                    normalized_section,
+                )
+
+    def test_repository_reviewer_launch_hashes_absolute_artifact_before_and_after_only(
+        self,
+    ) -> None:
+        """Hash the handed-off artifact around a launch, excluding inline diff text."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                for contract in (
+                    "diff artifact の絶対 path を渡して起動した場合、親は起動直前と返却後にその artifact の内容 hash を記録し、一致することを確認する",
+                    "diff text 欄へ本文を直接記入して起動した場合は、この確認の対象外とする",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), normalized)
+                self.assertNotIn(
+                    self._normalize_contract(
+                        "diff text 欄へ本文を直接記入して起動した場合は、この確認の対象とする"
+                    ),
+                    normalized,
+                )
+
+    def test_repository_reviewer_launch_preserves_four_checkout_observations_and_status_deltas(
+        self,
+    ) -> None:
+        """Keep the four checkout observations while separating status and artifact changes."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                for contract in (
+                    "対象 worktree の git rev-parse HEAD",
+                    "対象 worktree の git status --short",
+                    "親の統合 checkout の git rev-parse HEAD",
+                    "親の統合 checkout の git status --short",
+                    "git status --short が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減",
+                    "渡した diff artifact の内容",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), normalized)
+
+    def test_repository_reviewer_launch_does_not_inspect_untracked_directory_internals_or_ignored_files(
+        self,
+    ) -> None:
+        """Limit observation to status-level entries and defer read-only limits to their contract."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                for contract in (
+                    "非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない",
+                    "ignore 対象のファイルへの書き込みも観測しない",
+                    "観測できない範囲を担保としてどう扱うかは [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」を正本とする",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), normalized)
+                self.assertNotIn("network送信", normalized)
+                self.assertNotIn("credential参照", normalized)
+
+    def test_repository_reviewer_launch_discards_all_snapshot_findings_and_reports_mismatch(
+        self,
+    ) -> None:
+        """Discard the whole launch batch and keep mismatch facts out of acceptance state."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                for contract in (
+                    "同一 snapshot へ一斉起動した全 reviewer の findings を採用せず破棄する",
+                    "破棄した findings は、settled の定義1番目が言う「その時点までに受け取った全指摘」にも、枝の受け入れ点が言う「未解決または判断未記録の指摘」にも含めない",
+                    "破棄した事実と件数を差異の内容とあわせて最終報告へ記録する",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), normalized)
+                self.assertNotIn(
+                    "一致しない場合、そのreviewerのfindingsを採用しない",
+                    normalized,
+                )
+
+    def test_repository_reviewer_launch_retries_after_target_only_untracked_addition_in_run_worktree(
+        self,
+    ) -> None:
+        """Restore only a run-local untracked addition and rerun the same phase."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                marker = self._normalize_contract(
+                    "対象 worktree の新規非追跡項目だけが差異である場合"
+                )
+                self.assertIn(marker, normalized)
+                target_addition = normalized.split(marker, 1)[1].split(
+                    self._normalize_contract("対象 worktree のその他の差異"), 1
+                )[0]
+                for contract in (
+                    "対象 worktree はこの run 専用に作成した一時領域",
+                    "起動前になかった非追跡の項目を親が削除して記録済み snapshot へ戻す",
+                    "同じ相を再実施する",
+                    "再実施は新たな round を消費する",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), target_addition)
+                self.assertNotIn("Needs revision", target_addition)
+
+    def test_repository_reviewer_launch_needs_revision_without_restore_for_target_head_tracked_or_untracked_removal(
+        self,
+    ) -> None:
+        """Stop without restoration when the target HEAD, tracked state, or untracked set regresses."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                marker = self._normalize_contract("対象 worktree のその他の差異")
+                self.assertIn(marker, normalized)
+                target_other = normalized.split(marker, 1)[1].split(
+                    self._normalize_contract("親の統合 checkout の差異"), 1
+                )[0]
+                for contract in (
+                    "HEAD または追跡ファイルが記録値と異なる場合",
+                    "非追跡の項目が減少・消失した場合",
+                    "復旧を試みず",
+                    "Needs revision として統合しない",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), target_other)
+                self.assertNotIn("同じ相を再実施する", target_other)
+
+    def test_repository_reviewer_launch_needs_revision_without_restore_for_parent_or_artifact_mismatch(
+        self,
+    ) -> None:
+        """Keep parent checkout and artifact mismatches unrepaired and out of later launches."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                marker = self._normalize_contract("親の統合 checkout の差異")
+                self.assertIn(marker, normalized)
+                parent_mismatch = normalized.split(marker, 1)[1]
+                for contract in (
+                    "HEAD または git status --short が記録値と異なる場合",
+                    "渡した diff artifact の内容 hash が一致しない場合",
+                    "親の統合 checkout にある項目を自動で復旧・削除せず",
+                    "Needs revision として統合しない",
+                    "不一致になった diff artifact は以後の reviewer 起動へ再利用せず",
+                    "run 完了時の通常の後始末で扱う",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), parent_mismatch)
+                self.assertNotIn("自動で復旧・削除する", parent_mismatch)
+
+    def test_repository_reviewer_launch_prioritizes_parent_disposition_when_both_checkouts_differ(
+        self,
+    ) -> None:
+        """Use the parent-checkout disposition when both observed checkouts differ."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                self.assertIn(
+                    self._normalize_contract(
+                        "両方に差異がある場合は、親の統合 checkout に差異がある側の処分を採る"
+                    ),
+                    normalized,
+                )
 
     def test_repository_git_status_step_distinguishes_own_diff_artifact_from_worker_changes(
         self,
