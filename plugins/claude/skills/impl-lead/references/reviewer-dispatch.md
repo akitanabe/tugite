@@ -127,9 +127,16 @@ reviewer の返却後に同じ4つを取り直し、起動前の記録と一致�
 処分は、差異が対象 worktree と親の統合 checkout のどちらに生じたかで決める。両方に差異がある場合は、親の統合 checkout に
 差異がある側の処分を採る。
 
-- **対象 worktree の新規非追跡項目だけが差異である場合** — 対象 worktree はこの `run` 専用に作成した一時領域であり、`reviewer` 起動中は
-  worker が停止しているため、起動前になかった非追跡の項目を親が削除して記録済み `snapshot` へ戻す。そのうえで同じ相を再実施する。
-  再実施は新たな `round` を消費する。
+- **対象 worktree の新規非追跡項目だけが差異である場合** — 対象 worktree はこの `run` 専用に作成した一時領域である。
+  親は、同一 `snapshot` で起動した全 `reviewer` の返却または停止を確認してから、起動前後の `git status --short` 差分から削除候補を再計算する。
+  候補は起動前になかった非追跡の項目のうち、正確な `run-created top-level untracked item` だけとし、削除対象を再検査する。候補 path は対象 worktree の root 内に限定し、
+  top-level ではない path、起動前から存在した path、または root 外へ解決される path は unsafe candidate として削除しない。
+  検査は symlink を辿らず、symlink はリンク自身だけを削除し、symlink のリンク先を削除しない。
+  削除後に対象 worktree の `git rev-parse HEAD` と `git status --short`、削除後に親の統合 checkout の `git rev-parse HEAD` と `git status --short` を
+  起動前の記録へ再照合する。diff artifact を渡した場合は、削除後に渡した diff artifact の内容 hash も起動前の記録へ再照合する。
+  削除候補について、起動前になかった非追跡の項目を親が削除して記録済み `snapshot` へ戻す。削除に失敗した場合、削除対象が残存する場合、追加差異がある場合、
+  または unsafe candidate がある場合は、`Needs revision` として統合せず、再実施せずに終了する。
+  全条件が成立した場合だけ同じ相を再実施する。再実施は新たな `round` を消費する。
 - **対象 worktree のその他の差異** — `HEAD` または追跡ファイルが記録値と異なる場合、および非追跡の項目が減少・消失した場合、
   親は復旧を試みず、当該枝を `Needs revision` として統合しない。
 - **親の統合 checkout の差異** — `HEAD` または `git status --short` が記録値と異なる場合、および渡した `diff artifact` の内容 `hash` が一致しない場合、
