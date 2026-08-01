@@ -40,11 +40,16 @@ class ImplLeadReviewGateContractsTest(
         }
         required_rules = (
             "ユーザーが専門 reviewer を明示的に要求した場合。",
-            "親が reviewer の責務と一致する具体的なリスクを特定した場合。",
+            "親が reviewer の責務と一致する具体的な `failure_impact.reasons` を特定した場合。",
+            "親 QA が返却 diff から reviewer の責務と一致する具体的な対象リスクを特定した場合。",
+            "Branch Plan の `failure_impact.reasons` は安全性・失敗影響の事前 Data",
+            "返却 diff 由来の対象リスクは親 QA が実装結果から特定する Data",
+            "`security-side-effect-reviewer` と rollback の確認は主に `failure_impact.reasons`",
+            "`test-quality-reviewer` と `responsibility-boundary-reviewer` は主に返却 diff 由来の対象リスク",
             "専門 reviewer を汎用コードレビューの代替にしない。",
             "専門 reviewer は mode 名だけを理由に一律起動しない。",
-            "対象リスクがない専門 reviewer を無条件で起動しない。",
-            "対象リスクと review 範囲を明示する。",
+            "3つの起動条件が成立しない専門 reviewer を無条件で起動しない。",
+            "成立した起動条件、対象リスクまたは確認観点、review 範囲を明示する。",
             "- 必須完了ゲート",
             "この表の2本は必須の完了ゲートであり、"
             "[専門 reviewer](reviewer-dispatch.md) の起動条件の対象外とする。",
@@ -133,13 +138,12 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Keep the specialist launch conditions in one section and subordinate the rest."""
-        # 正本宣言は risk 軸へ限定する。無限定にすると「再起動対象」節が持つ
-        # 「レビューループ round の起動対象を定める唯一の規約」と排他になり、
-        # risk 成立と無関係な第1類型の再起動が正本側の読みで打ち消される。
+        # 初回の起動条件と、変更後 snapshot に対する再起動対象は別の規約である。
+        # 正本宣言が再起動まで覆うと、第1類型の再起動が打ち消される。
         single_source_declaration = (
-            "risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
+            "専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
             "起動時に渡す Data の受け渡し規約、または[枝レビューの4相](branch-review.md)の"
-            "「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。"
+            "「再起動対象」のように再起動を定める規約として書く。"
         )
         subordination_contracts = (
             "[専門 reviewer](reviewer-dispatch.md) の起動条件に従って起動する",
@@ -205,7 +209,7 @@ class ImplLeadReviewGateContractsTest(
                 self.assertIn(
                     self._normalize_contract(
                         "この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。"
-                        "risk による起動条件は"
+                        "専門 reviewer の起動条件は"
                         "[専門 reviewer](reviewer-dispatch.md) に従う"
                     ),
                     normalized_step_5,
@@ -213,7 +217,8 @@ class ImplLeadReviewGateContractsTest(
                 # 渡す Data の列挙は「reviewer 起動テンプレート」節がこの手順を名指しで
                 # 参照しているため、受け渡し規約として保持する。
                 for handoff_data in (
-                    "task、AC、commit 範囲、変更ファイル、diff text、対象 risk",
+                    "task、AC、commit 範囲、変更ファイル、diff text、Branch Plan の `failure_impact.reasons`、"
+                    "親 QA が返却 diff から特定した対象リスク",
                     "diff artifact の絶対 path を渡すことを既定とし",
                 ):
                     self.assertIn(
@@ -236,6 +241,35 @@ class ImplLeadReviewGateContractsTest(
                             self._normalize_contract(launch_condition_marker),
                             normalized_step_5,
                         )
+
+    def test_repository_routes_specialists_from_preplanned_impact_or_returned_diff_risk(
+        self,
+    ) -> None:
+        """Keep preplanned safety Data separate from risks observed in the returned diff."""
+        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
+        finding_routings = self._impl_lead_reference_texts("finding-routing.md")
+        closeouts = self._impl_lead_reference_texts("run-closeout.md")
+        for platform, branch_review in branch_reviews.items():
+            with self.subTest(platform=platform):
+                normalized_review = self._normalize_contract(branch_review)
+                self.assertIn(
+                    self._normalize_contract(
+                        "ユーザー明示、`failure_impact.reasons` との責務一致、または返却 diff 由来の対象リスク"
+                    ),
+                    normalized_review,
+                )
+                self.assertIn(
+                    self._normalize_contract(
+                        "親 QA が返却 diff から特定した対象リスク"
+                    ),
+                    self._normalize_contract(finding_routings[platform]),
+                )
+                self.assertIn(
+                    self._normalize_contract(
+                        "残存する failure impact と返却 diff 由来の対象リスク"
+                    ),
+                    self._normalize_contract(closeouts[platform]),
+                )
 
     def test_repository_over_engineering_gate_applies_only_to_standard_and_strict(
         self,
@@ -711,7 +745,7 @@ class ImplLeadReviewGateContractsTest(
             "EVAL-31 parent decision",
         )
 
-        eval_32 = self._corpus_case(corpus, "## EVAL-32:", "# 結果記録")
+        eval_32 = self._corpus_case(corpus, "## EVAL-32:", "## EVAL-33:")
         eval_32_paragraphs = self._corpus_positive_paragraphs(eval_32)
         self.assertTrue(
             any(

@@ -27,7 +27,7 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
   Implementation Plan を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
 - `plan-intake`: 確定済みと称する Branch Plan が `impl-lead` へ渡された時点。Executor が
   自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
-  violation 再計算0件、全枝の `risk.level` が3値のいずれか)と mode の妥当性を確認し、委譲を開始するか
+  violation 再計算0件、全枝の2評価軸が有効)と mode の妥当性を確認し、委譲を開始するか
   修正・引き上げ・確認を求めるかを評価する。
 - `post-return QA`: Implementer から commit、diff、test 結果が返った時点。親が返却物を読んだ後の
   risk 特定、reviewer / refactorer の routing、修正先、受け入れ判断を評価する。
@@ -627,13 +627,13 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 
 **期待する判断**
 
-`strict-full`(`{fixed, strict}`)と判断し、全枝へ `strict` を固定適用する(枝ごとの `risk.level` による
+`strict-full`(`{fixed, strict}`)と判断し、全枝へ `strict` を固定適用する(枝ごとの `implementation_complexity.level` による
 導出は行わない)。枝数が5であることを明示した確認を委譲開始前にユーザーへ求め、確認が得られるまで
 委譲を開始しない。
 
 **必須動作**
 
-- `{fixed, strict}` を採用し、枝ごとの `risk.level` による導出を行わない。
+- `{fixed, strict}` を採用し、枝ごとの `implementation_complexity.level` による導出を行わない。
 - 実行前サマリーで枝数(5)と全枝 `strict` であることを明示し、`strict-full` の確認ゲートとして
   ユーザー確認を要求する。
 - 確認が得られるまで worktree 準備や Worker 起動を行わない。
@@ -643,7 +643,7 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 
 - 確認を得ずに委譲を開始する、または最初の枝だけ確認して残りは省略する。
 - 枝数を示さずに「コストが高いので確認します」とだけ述べる。
-- risk.level の入力がないことを理由に `{adaptive, strict}` へ読み替える。
+- implementation_complexity.level の入力がないことを理由に `{adaptive, strict}` へ読み替える。
 - 一部の枝だけ `strict` 未満へ独自に下げる。
 
 **許容される差異**
@@ -658,7 +658,7 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 **手動評価項目**
 
 - [ ] `{fixed, strict}`(strict-full)と判断している。
-- [ ] 枝ごとの risk.level 導出を行っていない。
+- [ ] 枝ごとの implementation_complexity.level 導出を行っていない。
 - [ ] 枝数(5)を明示した確認を委譲開始前に求めている。
 - [ ] 確認前に worktree 準備や Worker 起動をしていない。
 - [ ] 全枝 `strict` の段階ゲート契約を維持している。
@@ -1402,11 +1402,11 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] 委譲要求がないため計画の確定で停止している。
 - [ ] `impl-lead` を起動していない。
 
-## EVAL-21: lite 明示と high risk 枝への mode 引き上げ提案
+## EVAL-21: lite 明示と high failure impact 枝への mode 引き上げ提案
 
 **目的**
 
-`{fixed, lite}` の委譲要求を受けた `branch-design` が、high risk 枝を含む場合に
+`{fixed, lite}` の委譲要求を受けた `branch-design` が、high failure impact 枝を含む場合に
 `delegation_mode_proposal` として `{adaptive, strict}` を提案することを確認する。
 
 **評価タイミング**
@@ -1424,12 +1424,12 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 **期待する判断**
 
 `lite` の明示は `{fixed, lite}` の委譲要求を兼ねる。分割の結果、署名不一致時の取引拒否と監査 log
-要件を持つ枝の `risk.level` が `high` になる。出力条件表の `{fixed, lite}` かつ `high` を含む行に従い、
+要件を持つ枝の `failure_impact.level` が `high` になる。出力条件表の `{fixed, lite}` かつ `high` を含む行に従い、
 `delegation_mode_proposal` として `{adaptive, strict}` を提案する。委譲は開始しない。
 
 **必須動作**
 
-- Branch Plan を生成し、少なくとも1枝の `risk.level: high` を判定根拠とともに示す。
+- Branch Plan を生成し、少なくとも1枝の `failure_impact.level: high` を判定根拠とともに示す。
 - 出力条件表から `delegation_mode_proposal.propose: { policy: adaptive, baseline: strict }` を
   再計算して出力する。
 - `delegation.requested_mode` は `{fixed, lite}` のまま保持し、proposal はあくまで提案であって
@@ -1438,14 +1438,14 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 
 **禁止動作**
 
-- high risk 枝があるのに `delegation_mode_proposal` を省略する。
+- high failure impact 枝があるのに `delegation_mode_proposal` を省略する。
 - `{fixed, lite}` のまま委譲を開始する、または `requested_mode` を親が勝手に書き換える。
 - `{adaptive, standard}` など出力条件表と異なる baseline を提案する。
 - 委譲や Worker 起動を先取りする。
 
 **許容される差異**
 
-- 枝分割の粒度や AC 割り当ての具体は変わってよいが、high risk 枝の存在と proposal の内容
+- 枝分割の粒度や AC 割り当ての具体は変わってよいが、high failure impact 枝の存在と proposal の内容
   (`{adaptive, strict}`)は変えない。
 
 **Claude/Codex 差**
@@ -1455,7 +1455,7 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 **手動評価項目**
 
 - [ ] `{fixed, lite}` を委譲要求として受理している。
-- [ ] high risk 枝を具体的根拠とともに判定している。
+- [ ] high failure impact 枝を具体的根拠とともに判定している。
 - [ ] `delegation_mode_proposal` として `{adaptive, strict}` を出力条件表どおり提案している。
 - [ ] `requested_mode` を勝手に書き換えず、委譲を開始していない。
 - [ ] Branch Plan Data の提示で止まっている。
@@ -1796,9 +1796,12 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
-- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と `risk.level: medium` を持ち、2つの
-  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の
-  `tests` と一致
+- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と次の2評価軸を持ち、2つの
+  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の `tests` と一致
+  - `failure_impact.level: low`
+  - `failure_impact.reasons: ["外部副作用がなく、枝単位でrevertできる"]`
+  - `implementation_complexity.level: medium`
+  - `implementation_complexity.reasons: ["2つのstage間に限定された実装順序の判断が残る"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > この Branch Plan で委譲を開始してください。
@@ -1806,7 +1809,7 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 **期待する判断**
 
 再検証5項目は満たす(`approved`、`delegation.authorized: true` / `authorized_by: user`、
-`unresolved_decisions` の空、violation 再計算0件、全枝の `risk.level` が3値のいずれか)。決定表により
+`unresolved_decisions` の空、violation 再計算0件、全枝の2評価軸が有効)。決定表により
 `{adaptive, standard}` × `medium` → `standard` が導出されるが、`implementation_stages` を宣言した枝は
 導出結果に関わらず `strict` の段階ゲート機構で実行する規約であるため、`standard` から `strict` への
 枝単位の引き上げとして扱い、具体的なリスク(`standard` では段階ゲートと中間ゲートの検証を保証できない
@@ -1850,12 +1853,12 @@ mode 引き上げの判断は共通である。段階を継続する platform �
 - [ ] 黙って mode を変更していない。
 - [ ] stage が AC を所有せず、受け入れ・revert が枝単位である。
 
-## EVAL-22: 混在 risk と mode 未指定委譲の決定表導出
+## EVAL-22: 混在 complexity と mode 未指定委譲の決定表導出
 
 **目的**
 
 mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, standard}` を採用し、枝の
-`risk.level` から決定表どおりに枝ごとの mode を導出することを確認する。
+`implementation_complexity.level` から決定表どおりに枝ごとの mode を導出することを確認する。
 
 **評価タイミング**
 
@@ -1867,8 +1870,13 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: null }`
-- `branches`: `b-auth`(`risk.level: high`)、`b-domain`(`risk.level: medium`)、
-  `b-label`(`risk.level: low`)
+- `branches`:
+  - `b-auth`: `failure_impact.level: high` / `failure_impact.reasons: ["認可失敗が全利用者へ波及する"]` /
+    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["認可component間の契約判断が残る"]`
+  - `b-domain`: `failure_impact.level: medium` / `failure_impact.reasons: ["失敗影響はdomain処理内に限定される"]` /
+    `implementation_complexity.level: medium` / `implementation_complexity.reasons: ["限定された業務規則の判断が残る"]`
+  - `b-label`: `failure_impact.level: low` / `failure_impact.reasons: ["表示文言だけで容易にrevertできる"]` /
+    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存patternの定型適用で判断が残らない"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > この Branch Plan で委譲を開始してください。
@@ -1883,21 +1891,21 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 **必須動作**
 
 - 再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、violation
-  再計算0件、全枝の `risk.level` が3値のいずれか)を確認する。
+  再計算0件、全枝の2評価軸が有効)を確認する。
 - `requested_mode: null` から `{adaptive, standard}` を採用する。
 - 決定表から `high → strict` / `medium → standard` / `low → lite` を枝ごとに導出する。
-- 実行前サマリーで採用した配分方針、枝ごとの `risk.level`、導出 mode、件数を提示する。
+- 実行前サマリーで採用した配分方針、枝ごとの2評価軸、導出 mode、件数を提示する。
 
 **禁止動作**
 
 - `requested_mode: null` を理由に mode 選択を止める、または一律 `standard` を全枝へ適用する。
-- 決定表を使わず risk.level を無視して mode を決める。
+- 決定表を使わず implementation_complexity.level を無視して mode を決める。
 - 導出結果を Branch Plan へ書き戻す。
 - 再検証を経ずに委譲を開始する。
 
 **許容される差異**
 
-- 枝 id や purpose の具体は変えてよいが、`risk.level` の3値と導出結果の対応は変えない。
+- 枝 id や purpose の具体は変えてよいが、`implementation_complexity.level` の3値と導出結果の対応は変えない。
 
 **Claude/Codex 差**
 
@@ -1911,11 +1919,11 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 - [ ] 導出結果を Branch Plan へ書き戻していない。
 - [ ] 実行前サマリーで枝ごとの mode と件数を提示している。
 
-## EVAL-23: strict 明示と low risk 枝の standard 導出
+## EVAL-23: strict 明示と low complexity 枝の standard 導出
 
 **目的**
 
-`{adaptive, strict}` を要求された Executor が、`risk.level: low` の枝を `lite` へ落とさず
+`{adaptive, strict}` を要求された Executor が、`implementation_complexity.level: low` の枝を `lite` へ落とさず
 `standard` として導出することを確認する。
 
 **評価タイミング**
@@ -1928,7 +1936,11 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: strict } }`
-- `branches`: `b-migration`(`risk.level: high`)、`b-format`(`risk.level: low`)
+- `branches`:
+  - `b-migration`: `failure_impact.level: high` / `failure_impact.reasons: ["データ移行失敗時の切り戻しが困難"]` /
+    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["移行手順と整合性確認に非自明な判断が残る"]`
+  - `b-format`: `failure_impact.level: low` / `failure_impact.reasons: ["局所的な表示整形で容易にrevertできる"]` /
+    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存formatterを定型適用できる"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > strict-adaptive で委譲を開始してください。
@@ -1944,11 +1956,11 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 - 再検証5項目を確認する。
 - `{adaptive, strict}` を採用する。
 - 決定表から `b-format`(low)を `standard` として導出する。
-- 実行前サマリーで枝ごとの `risk.level` と導出 mode を提示する。
+- 実行前サマリーで枝ごとの2評価軸と導出 mode を提示する。
 
 **禁止動作**
 
-- `risk.level: low` を根拠に `b-format` を `lite` へ導出する。
+- `implementation_complexity.level: low` を根拠に `b-format` を `lite` へ導出する。
 - ユーザーが明示した `baseline: strict` を親都合で `standard` baseline へ引き下げる。
 - 表を使わず経験則で mode を決める。
 - 導出結果を Branch Plan へ書き戻す。
@@ -2246,7 +2258,7 @@ Synthetic diff と reviewer findings:
 同期案は外部 side effect を rollback できず、outbox 案は外部 audit 失敗時の rollback AC を満たさないため、親が安全な
 順序を選べない。差し戻しには競合している reviewer 名、指摘を識別できる情報と内容、守る AC、優先指示、許容不能リスク、
 必要な検証、守る AC を変更しない protocol 再設計条件を渡し、この節の変更後 snapshot 再実行契約に従う。再設計は局所修正の
-域を超えるため、再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後も対象 risk が
+域を超えるため、再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後もfailure_impact.reasonsの対象が
 成立する専門 reviewer を実施する。この再構成起動も1 round として同じ通番で数え、親の最終受入判断は相4の完了後に行う。
 
 守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねず Implementation Plan の AC 確定とユーザー確認へ
@@ -2348,6 +2360,124 @@ evidence 不成立の確認、finding ごとの理由、修正 routing なし、
 - [ ] 修正 routing と snapshot 変更がない。
 - [ ] 親が既存 green 検証と最終判断を記録している。
 - [ ] evidence の推測補完や多数決がない。
+
+## EVAL-33: high impact / low complexity
+
+**目的**
+
+失敗影響と実装複雑度を独立して扱い、高い失敗影響だけを理由に adaptive mode や Implementer role を
+引き上げないことを確認する。
+
+**入力**
+
+- `failure_impact.level: high`: 認可失敗時の影響は広いが、既存の確定済み policy へ1条件を追加する。
+- `failure_impact.reasons: ["認可条件の誤りが全利用者へ波及し、rollbackまで不正アクセスが続く"]`
+- `implementation_complexity.level: low`: 仕様と既存 pattern が明確で、残る設計判断がない。
+- `implementation_complexity.reasons: ["確定済みpolicyの既存patternへ1条件を定型適用できる"]`
+
+**期待する判断**
+
+`{adaptive, standard}` では complexity から `lite` を導出し、failure impact だけを理由に `strict` または
+`senior-implementer` を選ばない。failure impact は専門 reviewer と rollback 確認へ使う。
+
+**必須動作**
+
+- adaptive mode を `implementation_complexity.level` から導出する。
+- `failure_impact.reasons` を専門 reviewer と rollback 確認へ渡す。
+
+**禁止動作**
+
+- 高い失敗コストを adaptive mode または senior 選択へ直接写像する。
+- 依存 edge だけではどちらの level も上げないという規約を無視する。
+
+**許容される差異**
+
+具体的な reviewer は `failure_impact.reasons` に応じて変えてよい。
+
+**Claude/Codex 差**
+
+判断は共通で、agent の起動 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] impact と complexity の判断根拠と利用先が分離されている。
+
+## EVAL-34: low impact / high complexity
+
+**目的**
+
+失敗範囲が限定的でも、残存する設計・推論判断から厳格な実装フローとworker候補を選べることを確認する。
+
+**入力**
+
+- `failure_impact.level: low`: 外部副作用がなく、容易に切り戻せる。
+- `failure_impact.reasons: ["外部副作用がなく、局所変更を単独revertできる"]`
+- `implementation_complexity.level: high`: component間契約に未解決の判断があり、仮説検証を要する。
+- `implementation_complexity.reasons: ["component間契約の候補を比較し、仮説検証する必要がある"]`
+
+**期待する判断**
+
+`{adaptive, standard}` では implementation complexity を根拠に `strict` と `senior-implementer` の候補にする。
+failure impact が低いことを理由に mode を下げない。
+
+**必須動作**
+
+- complexity high を mode 導出と worker 選択の入力にする。
+- failure impact を adaptive mode の直接導出に使わない。
+
+**禁止動作**
+
+- low impact を理由に `lite` または通常 Implementer へ固定する。
+
+**許容される差異**
+
+残存判断の内容に応じて senior ではなく expert 審査または再計画を選んでもよい。
+
+**Claude/Codex 差**
+
+判断は共通で、agent の起動 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] complexity high が mode と worker 候補へ反映されている。
+
+## EVAL-35: legacy risk の拒否
+
+**目的**
+
+非互換なBranch Plan契約で旧 `risk` 単独と旧 `risk` と新 field の混在を拒否することを確認する。
+
+**入力**
+
+- 旧 `risk` 単独の枝。
+- 旧 `risk` と `failure_impact` / `implementation_complexity` が混在する枝。
+
+**期待する判断**
+
+planning Skill と Executor の双方が `legacy-risk-present` を blocking として返し、旧値から2軸を互換推測しない。
+欠落する新fieldは対応する assessment violation としても報告し、委譲を開始しない。
+
+**必須動作**
+
+- planning Skill と Executor が入力 Data から violation を再計算する。
+- 修正済み Branch Plan を再検証するまで停止する。
+
+**禁止動作**
+
+- 旧 `risk` 単独を `failure_impact` として扱う。
+- 旧 `risk` と新 field の混在時に一方を黙って優先する。
+
+**許容される差異**
+
+`validation.blocking` に複数の assessment violation を併記してよい。
+
+**Claude/Codex 差**
+
+blocking判断は共通で、planning/Executor の起動 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] legacy入力から新fieldを推測せず停止している。
 
 # 結果記録
 

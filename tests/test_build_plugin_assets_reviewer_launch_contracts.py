@@ -12,7 +12,8 @@ from build_plugin_assets_test_support import (
 REVIEWER_LAUNCH_TEMPLATE_FIELDS = (
     "対象 reviewer",
     "確認させる観点",
-    "対象リスク",
+    "Branch Plan の failure_impact.reasons",
+    "親 QA が返却 diff から特定した対象リスク",
     "review 範囲",
     "タスクの目的",
     "Acceptance Criteria",
@@ -256,8 +257,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             ),
             "reviewer-dispatch.md": (
                 "この基本情報は「reviewer 起動テンプレート」の各欄に対応する",
+                "「専門 reviewer」節の2つのリスク入力と review 範囲、"
                 "[返却と統合](qa-and-integration.md) 手順5 の task・AC・commit 範囲・変更ファイル・"
-                "diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべて"
+                "diff text を含め、reviewer 起動時に渡す Data はすべて"
                 "このテンプレートの欄として吸収する",
                 "テンプレート外に残る起動時 Data はない",
             ),

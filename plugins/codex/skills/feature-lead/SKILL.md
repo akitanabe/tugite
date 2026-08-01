@@ -244,11 +244,12 @@ mode が未指定の場合は `requested_mode` を `null` のまま保持する�
 
 `delegation_mode_proposal` は planning Skill の生成物であり、親 Codex エージェントが書ける範囲は
 `delegation` 配下だけである。この Skill は `delegation_mode_proposal` を書かない。写像した
-`requested_mode` が枝の `risk.level` と整合せず、`branch-design` の branch-plan-schema.md の
+`requested_mode` が枝の `failure_impact.level` と整合せず、`branch-design` の branch-plan-schema.md の
 出力条件表が proposal を要求する組み合わせ（`policy: fixed` かつ `baseline: lite` で `medium`
 以上の枝を含む）になる場合は、`delegation` を設定するその時点で、表が提案する
 `{policy, baseline}` を `requested_mode` へ設定する。設定後は `policy: adaptive` になり表は
 proposal を要求しないため、proposal を書かずに `mode-proposal-invalid` を回避できる。
+proposal の判定には枝の `failure_impact.level` を使い、`implementation_complexity` は使わない。
 
 この設定は `delegation.authorized` の `false` から `true` への遷移1回の中で完結し、状態遷移表の
 親の権限行に収まる。判断点を発生させないため台帳へ新しい行を起こさない。引き上げ先は表が決める

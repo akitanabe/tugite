@@ -167,6 +167,8 @@ class FeatureLeadContractsTest(
                 "完結し、状態遷移表の親の権限行に収まる。",
                 "判断点を発生させないため台帳へ新しい行を起こさない。",
                 "引き上げ先は表が決めるため、この原稿へ表を複製せず正本を参照する。",
+                "proposal の判定には枝の `failure_impact.level` を使い、"
+                "`implementation_complexity` は使わない。",
                 "引き上げた事実と引き上げ前後の `{policy, baseline}` は最終報告へ記録する。",
                 "この引き上げの根拠は `impl-lead` SKILL.md の引き下げ禁止の例外条項に置く。",
                 "この引き上げは `autonomy` に依らず `attended` と `unattended` の双方で"
@@ -332,6 +334,7 @@ class FeatureLeadContractsTest(
             "引き上げ先は出力条件表に委ね、この原稿で別の値を選ばない。",
             "引き上げ前後の `{policy, baseline}` を記録し、引き上げが生むリスクを"
             "ユーザーへ報告する。",
+            "proposal の安全性判断は `failure_impact.level` を入力にする。",
         )
         # The exception applies in both autonomy settings, so the manuscript must not
         # narrow it. A blanket ban on the word `autonomy` would also fail on unrelated

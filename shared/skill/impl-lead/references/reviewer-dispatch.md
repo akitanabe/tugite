@@ -11,11 +11,13 @@
 
 ## 専門 reviewer
 
-専門 reviewer は特定の risk を深く確認する役割であり、専門 reviewer を汎用コードレビューの代替にしない。
-専門 reviewer は mode 名だけを理由に一律起動しない。原則として次の場合だけ使用する。
+専門 reviewer は、Branch Plan に記録された失敗影響または返却 diff で判明した reviewer 固有の対象リスクを
+深く確認する役割であり、専門 reviewer を汎用コードレビューの代替にしない。
+専門 reviewer は mode 名だけを理由に一律起動しない。次のいずれかが成立する場合だけ使用する。
 
 - ユーザーが専門 reviewer を明示的に要求した場合。
-- 親が reviewer の責務と一致する具体的なリスクを特定した場合。
+- 親が reviewer の責務と一致する具体的な `failure_impact.reasons` を特定した場合。
+- 親 QA が返却 diff から reviewer の責務と一致する具体的な対象リスクを特定した場合。
 
 | Reviewer | 対象リスク |
 | --- | --- |
@@ -26,11 +28,16 @@
 `responsibility-boundary-reviewer` の対象リスクは、複数層、複数の外部 I/O、新しい abstraction・adapter・service、
 責務混在の疑いのいずれかを認めたときに成立する。
 
-対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
+Branch Plan の `failure_impact.reasons` は安全性・失敗影響の事前 Data であり、返却 diff 由来の対象リスクは
+親 QA が実装結果から特定する Data である。前者は起動の有無にかかわらず reviewer context へ渡す。
+`security-side-effect-reviewer` と rollback の確認は主に `failure_impact.reasons` を入力にし、
+`test-quality-reviewer` と `responsibility-boundary-reviewer` は主に返却 diff 由来の対象リスクを入力にする。
+`implementation_complexity` や枝 mode だけを理由に専門 reviewer を選ばない。3つの起動条件が成立しない専門 reviewer を
+無条件で起動しない。起動する場合は成立した起動条件、対象リスクまたは確認観点、review 範囲を明示する。
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
 
-risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、起動時に渡す Data の受け渡し規約、
-または[枝レビューの4相](branch-review.md) の「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。
+専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、起動時に渡す Data の受け渡し規約、
+または[枝レビューの4相](branch-review.md) の「再起動対象」のように再起動を定める規約として書く。
 
 ### reviewer へ渡すコンテキスト
 
@@ -71,7 +78,8 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 ```text
 - 対象 reviewer: <reviewer 名>
 - 確認させる観点: <reviewer に確認させる具体的な観点>
-- 対象リスク: <この reviewer が確認すべき対象リスク>
+- Branch Plan の failure_impact.reasons: <事前 Data。なければ「なし」>
+- 親 QA が返却 diff から特定した対象リスク: <diff 由来 Data。なければ「なし」>
 - review 範囲: <対象ファイル・commit 範囲>
 - タスクの目的: <実装枝の目的>
 - Acceptance Criteria: <AC>
@@ -93,8 +101,8 @@ diff だけでは関連する既存設計や利用箇所を判断できない場
 artifact の作成手順は「diff artifact の作成」節に、受け渡し・確認・停止条件は「diff artifact の
 受け渡しと停止条件」節に従う。起動前後の記録は「reviewer 起動前後の worktree・親 checkout 照合」節に従う。
 
-「専門 reviewer」節の対象リスクと review 範囲、[返却と統合](qa-and-integration.md) 手順5 の task・AC・commit 範囲・
-変更ファイル・diff text・対象 risk を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
+「専門 reviewer」節の2つのリスク入力と review 範囲、[返却と統合](qa-and-integration.md) 手順5 の task・AC・commit 範囲・
+変更ファイル・diff text を含め、reviewer 起動時に渡す Data はすべてこのテンプレートの
 欄として吸収する。テンプレート外に残る起動時 Data はない。
 ## reviewer 起動前後の worktree・親 checkout 照合
 

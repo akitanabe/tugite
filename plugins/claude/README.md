@@ -22,10 +22,16 @@
   - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
 - `skills/feature-lead/SKILL.md`
   - `plan-craft` → `branch-design` → `impl-lead` を順に連結し、要求から実装完了までを一括で進めます。判断点は既定で停止し、`unattended` 明示時のみ自律解決します。
+
+Branch Plan は `failure_impact` と `implementation_complexity` を独立して保持します。`adaptive` の枝 mode は
+implementation complexity だけから導出し、`failure_impact` は adaptive mode の直接導出には使わず、
+`{fixed, lite}` の `delegation_mode_proposal`（安全助言）にだけ使います。
+complexity が high の枝は `strict` 候補です。
+
 - `agents/implementer.md`
-  - 仕様が明確で範囲が閉じた通常実装を担当します。
+  - implementation complexity が low / medium で残る判断が少ない通常実装を担当します。
 - `agents/senior-implementer.md`
-  - 設計判断や広い影響範囲を伴う高難度実装を担当します。
+  - implementation complexity が high、または非自明な設計・algorithm・concurrency判断が残る実装を担当します。
 - `agents/expert-implementer.md`
   - 事前審査を通過した、親相当の推論能力が必要な実装を担当します。
 - `agents/expert-selection-reviewer.md`

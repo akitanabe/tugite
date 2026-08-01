@@ -7,7 +7,8 @@ Branch Plan の正規スキーマ(正本)を定義する。確定済み Branch P
 `impl-lead` へ渡せるが、受け渡しは親エージェントの責務であり、この Skill は
 委譲を開始しない。設計の経緯と確定事項は
 [issue #46](https://github.com/akitanabe/tugite/issues/46) と
-[issue #68](https://github.com/akitanabe/tugite/issues/68) を参照。
+[issue #68](https://github.com/akitanabe/tugite/issues/68) と
+[issue #120](https://github.com/akitanabe/tugite/issues/120) を参照。
 
 ## 目次
 
@@ -29,11 +30,11 @@ Branch Plan の正規スキーマ(正本)を定義する。確定済み Branch P
 - AC の割り当ては枝側の一方向参照だけにする。AC 側と枝側の両方に割り当てを書くと二重管理になり、
   validation がどちらを正とするか決められないため。この正規化により「未割り当て AC」と
   「primary 不在の AC」は同一の検査に縮退する。
-- 枝ごとの委譲 mode は schema に持たせず、`branches[].risk` を正として導出する。枝側に
-  `recommended_mode` を置くと `risk` と二重管理になり、矛盾したときにどちらを正とするか
+- 枝ごとの委譲 mode は schema に持たせず、`branches[].implementation_complexity` を正として導出する。枝側に
+  `recommended_mode` を置くと `implementation_complexity` と二重管理になり、矛盾したときにどちらを正とするか
   決められないため。AC 割り当てを枝側の一方向参照へ正規化したのと同じ理由である。
   導出した枝 mode は Branch Plan へ書き戻さず、実行 Data として保持して最終報告で報告する。
-  mode の判定理由は `risk.reasons` に書き、mode ごとの理由欄を別に設けない。
+  mode の判定理由は `implementation_complexity.reasons` に書き、mode ごとの理由欄を別に設けない。
 - Branch Plan の承認(`approval`)と委譲開始権限(`delegation`)は独立した Data とする。承認は
   計画の確定だけを意味し、委譲開始はユーザーの明示的な委譲要求だけを根拠に親エージェントが
   権限を設定する。
@@ -145,9 +146,12 @@ branches:
     # 1つ以上必須。テスト種別だけを保持し、具体的なテスト名・実行 command は持たない
     # (「tests / stage_tests の意味」の節を参照)
     out_of_scope: []                           # 許可範囲内でもこの枝では担当しない責務・作業
-    risk:
+    failure_impact:
       level: low | medium | high
-      reasons: []
+      reasons: [<1件以上の具体的な理由>]
+    implementation_complexity:
+      level: low | medium | high
+      reasons: [<1件以上の具体的な理由>]
     implementation_stages:      # 任意。1つの振る舞いが大きすぎる場合のみ。宣言時は2 stage 以上。
                                 # 宣言した枝は strict の段階ゲート機構で実行する(実行規約の節を参照)
       - id: <kebab-case>
@@ -160,7 +164,7 @@ execution:
   order: []                     # 全枝の id を1回ずつ。depends_on の topological order であること
 
 delegation_mode_proposal:       # 出力条件表を満たすときだけ出力する。要否と内容は
-                                # requested_mode と枝の risk.level から再計算する
+                                # requested_mode と枝の failure_impact.level から再計算する
   propose:
     policy: adaptive            # 引き上げの提案なので policy: fixed は提案しない
     baseline: standard | strict
@@ -202,11 +206,16 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `scope-conflict` | 同一枝内の `allowed_paths` / `forbidden_paths` の矛盾、stage `allowed_paths` の枝範囲逸脱 |
 | `tests-missing` | 枝の `tests` が空 |
 | `stages-invalid` | stage 数不足(1個)、`stages_reason` 欠落、`stage_tests` の和集合が枝の `tests` と不一致 |
+| `branch-assessment-missing` | `failure_impact` / `implementation_complexity`、または配下の `level` / `reasons` の欠落 |
+| `branch-assessment-invalid` | 両 field の `level` が `low` / `medium` / `high` 以外、または `reasons` が配列以外・空配列・空文字・非文字列要素を含む |
+| `legacy-risk-present` | 旧 `risk` が単独で存在する場合、または旧 `risk` が新しい field と混在する場合。旧 `risk` から新しい2軸を推測しない |
 | `branch-contract-violation` | 外部から観測可能な振る舞い単位、単独の受け入れ判断、単独 revert という実装枝契約を満たさない枝 |
 | `state-invalid` | `status` と他フィールドの矛盾(`approved` なのに `unresolved_decisions` が非空など)。有効な組み合わせ表から再計算する |
 | `approval-invalid` | `approval.method` と `status` / `confirmation_mode` の矛盾(`awaiting_review` なのに `method` が非 null、`review` なのに `auto` 承認など) |
 | `delegation-invalid` | `delegation` 内の矛盾(`authorized: false` なのに `authorized_by: user`、`requested_mode` が非 null なのに `authorized: false`、`requested_mode` が有効な `{policy, baseline}` の組み合わせでないなど)。有効な組み合わせ表から再計算する |
-| `mode-proposal-invalid` | `delegation_mode_proposal` の要否・内容が `requested_mode` と枝の `risk.level` からの再計算(出力条件表)と一致しない(必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案) |
+| `mode-proposal-invalid` | `delegation_mode_proposal` の要否・内容が `requested_mode` と枝の `failure_impact.level` からの再計算(出力条件表)と一致しない(必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案) |
+
+両評価軸で `reasons` の欠落、配列以外、空配列、空文字、非文字列要素は invalid とする。
 
 トップレベル状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` / `approval-invalid` / `delegation-invalid` を生成する。
@@ -228,16 +237,16 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `true` | `user` | `{fixed, strict}` |
 
 `{adaptive, lite}` と `{fixed, standard}` は入力語彙が存在しないため無効とし、表に含めない。
-`baseline` を `lite` にすると low risk 枝の割り当て先が `lite` しかなく導出が恒等写像になり、
+`baseline` を `lite` にすると low complexity 枝の割り当て先が `lite` しかなく導出が恒等写像になり、
 `medium` 以上を引き上げる用途は `{adaptive, standard}` と同一になるため、独立した配分方針として
 意味を持たない。`{fixed, standard}` は全枝固定を明示する入力語彙が存在しないため到達できない。
-仮に語彙を足しても `{adaptive, standard}` は low risk 枝だけを `lite` に落とし他は `standard` の
+仮に語彙を足しても `{adaptive, standard}` は low complexity 枝だけを `lite` に落とし他は `standard` の
 ままなので、品質面で下回らずコストだけが下がり、優位性がない。
 
 `delegation_mode_proposal` の要否と内容は、次の出力条件表から `requested_mode` と枝の
-`risk.level` を使って再計算する。
+`failure_impact.level` を使って再計算する。
 
-| delegation.requested_mode | 枝の risk.level | 出力 |
+| delegation.requested_mode | 枝の failure_impact.level | 出力 |
 | --- | --- | --- |
 | `{fixed, lite}` | `high` を含む | `{adaptive, strict}` を提案 |
 | `{fixed, lite}` | `medium` を含み `high` なし | `{adaptive, standard}` を提案 |
@@ -245,13 +254,16 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `{fixed, strict}` | 任意 | 出力しない |
 | `{adaptive, *}` または `null` | 任意 | 出力しない |
 
-`policy: adaptive` では枝の `risk.level` から mode を導出するため、high risk 枝は決定表側で
-`strict` になる。提案が必要なのは `policy: fixed` が枝の `risk` と整合しない場合だけである。
+`policy: adaptive` では枝の `implementation_complexity.level` から mode を導出する。
+`failure_impact` は adaptive mode の直接導出には使わない。提案が必要なのは `{fixed, lite}` が
+枝の `failure_impact` と整合しない場合だけである。
 
 `{fixed, strict}` に対して降格を提案しない。引き上げだけを提案する非対称性は、コストの削減より
-品質の担保を優先する判断であり、low risk 枝から `lite` を提案しないのと同じ理由である。
+品質の担保を優先する判断であり、low failure impact 枝から `lite` を提案しないのと同じ理由である。
 
 `branch-contract-violation` は機械検査ではなく planning Skill と Executor の判定で生成する。
+`implementation_complexity.level: high` だけでは `branch-contract-violation` にしない。
+単独の Acceptance Criteria・検証・受け入れ判断・revert が閉じない場合だけ、この code を生成する。
 実装枝契約に関わる判定(単独 review 可能性、revert 範囲の隔離、禁止範囲の明確さ)はこの code と
 `scope-conflict` で表現し、`false` のまま承認へ進む経路を持たない。
 

@@ -23,9 +23,10 @@
    [diff artifact の作成](reviewer-dispatch.md) に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ {{continuation_mechanism}} で差し戻し、修正 commit を追加させる。
-5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、対象 risk を渡す。
+5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、Branch Plan の `failure_impact.reasons`、
+   親 QA が返却 diff から特定した対象リスクを渡す。
    この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。
-   risk による起動条件は [専門 reviewer](reviewer-dispatch.md) に従う。
+   専門 reviewer の起動条件は [専門 reviewer](reviewer-dispatch.md) に従う。
    周辺コンテキストの追加は [reviewer へ渡すコンテキスト](reviewer-dispatch.md) の選択基準に従う。
    {{new_worker}} は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
    ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を
@@ -64,6 +65,9 @@ Red 証跡の要求に置き換えない。`lite` の前提が崩れた場合は
    ことも確認する。
 4. **記述原則** — Code=How、test=What、commit=Why、comment=Why Not の配置になっているか。
 5. **親の実行** — focused test と関連する全体検証を親が実行し、green を確認する。
+
+`failure_impact.reasons` に記録された失敗伝播、部分成功、rollback 影響を確認する。
+rollback の確認を `implementation_complexity` から導出しない。
 ## 返却 diff の変更単位判定
 
 親は、返却 diff を専門 reviewer 起動や受入の前に読み、1変更単位として渡せるかを判定する。判定は
@@ -86,9 +90,9 @@ diff が大きいだけでは分割しない。固定行数だけでは分割し
 差戻し、または再計画のいずれかを選び、選択理由を記録する。
 
 - scope 逸脱の差戻しを選ぶ。
-- 承認済み実装枝の purpose、AC 文言、AC ownership、scope、依存、risk を保てる場合は、commit を分離する、
+- 承認済み実装枝の purpose、AC 文言、AC ownership、scope、依存、failure impact、implementation complexity を保てる場合は、commit を分離する、
   最小範囲だけを残す、または別タスク化する。この整形では、既存枝の契約と承認を変更しない。
-- 独立した実装枝への分離、または AC ownership・依存・risk の変更が必要な場合は Branch Plan を再生成する。
+- 独立した実装枝への分離、または AC ownership・依存・failure impact・implementation complexity の変更が必要な場合は Branch Plan を再生成する。
   blocking violation と Executor 再検証5項目を再計算し、必要なユーザー再承認を得るまで新枝を委譲しない。
 - AC 文言自体の分解・再定義が必要な場合は Implementation Plan の AC 確定とユーザー確認へ戻る。その後
   Branch Plan を再生成・再検証・再承認する。再承認後に初めて新枝の委譲を開始する。

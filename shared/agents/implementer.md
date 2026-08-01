@@ -2,12 +2,12 @@
 name = "implementer"
 
 [claude]
-description = "Tugite ワークフロー専用の通常実装者。仕様が明確で範囲が閉じた通常の実装・テスト追加（大半の枝）を、Sonnet + effort high で実装する。親（マネージャー）が subagent_type で明示的に選ぶ前提で使う。自動委譲用ではない（明示指示がない限り起動しない）。設計判断を伴う・波及が大きい・非自明なアルゴリズム/並行性を含む高難度の枝は senior-implementer を使う。"
+description = "Tugite ワークフロー専用の通常実装者。implementation_complexity が low / medium で、仕様が明確、既存 pattern を適用でき、残る判断が少ない実装・テスト追加を、Sonnet + effort high で実装する。親（マネージャー）が subagent_type で明示的に選ぶ前提で使う。自動委譲用ではない（明示指示がない限り起動しない）。非自明な設計判断・アルゴリズム/並行性を含む高難度の枝は senior-implementer を使う。"
 model = "sonnet"
 effort = "high"
 
 [codex]
-description = "Tugite workflow implementer for clear, bounded implementation or test branches. Use only when the parent agent explicitly delegates a normal implementation branch."
+description = "Tugite workflow implementer for clear, bounded implementation or test branches with low or medium implementation_complexity and little residual judgment. Use only when the parent agent explicitly delegates a normal implementation branch."
 model = "gpt-5.6-luna"
 model_reasoning_effort = "xhigh"
 nickname_candidates = ["Implementer", "Builder", "TDD Worker"]

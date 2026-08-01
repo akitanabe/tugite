@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -44,7 +45,8 @@ class ImplLeadModeContractsTest(
             "委譲の決定は次の3層に分ける。層をまたいで並列に選ばない。",
             "経路の選択 — `direct`（この skill の外）か、委譲（この skill）か。",
             "配分方針の選択 — 委譲する場合に、配分方針 `policy` と基準 `baseline` を決める。",
-            "枝 mode の導出 — `policy`、`baseline`、枝の `risk.level` から枝ごとの mode を導く。",
+            "枝 mode の導出 — `policy`、`baseline`、枝の "
+            "`implementation_complexity.level` から枝ごとの mode を導く。",
             "`direct` は親が実装する、この skill の外にある経路である。",
             "委譲 mode ではないため、配分方針や枝 mode と同じ層に並べて選ばない。",
             "タスク規模だけでこの skill を発火しない。",
@@ -58,7 +60,7 @@ class ImplLeadModeContractsTest(
             "`direct` から委譲へ変更する場合は、ユーザーへ確認する。",
             "仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。",
             "`lite` の選択条件を満たさなくなった場合は `standard` 以上へ引き上げる。",
-            "`standard` では扱えないリスクが判明した場合は `strict` へ引き上げる。",
+            "`standard` では扱えない実装複雑度が判明した場合は `strict` へ引き上げる。",
         )
         route_contracts = (
             (
@@ -95,14 +97,14 @@ class ImplLeadModeContractsTest(
             "配分方針  policy   : fixed | adaptive",
             "基準      baseline : lite | standard | strict",
             "枝 mode            : lite | standard | strict",
-            "policy / baseline と枝の risk.level から導出する",
+            "policy / baseline と枝の implementation_complexity.level から導出する",
             "`adaptive` は新しい実装フローではなく、既存の `lite` / `standard` / `strict` を"
             "枝へ割り当てる配分方針である。",
             "枝へ割り当てられた後は、その枝を既存の各 mode のフローで実行する。",
             "`policy: fixed` は、全枝固定であることを明示的に表現する語彙だけに割り当てる。",
             "それ以外の語彙と mode 未指定はすべて `adaptive` へ写す。",
             "今後語彙を追加する場合の既定も `adaptive` とする。",
-            "`policy: adaptive` では、`baseline` と枝の `risk.level` の決定表で"
+            "`policy: adaptive` では、`baseline` と枝の `implementation_complexity.level` の決定表で"
             "枝ごとの mode を導出する。",
             "決定表の正本は [Branch Plan の受け入れ](references/branch-plan-intake.md) とする。",
             "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
@@ -118,7 +120,7 @@ class ImplLeadModeContractsTest(
             ),
             (
                 "| `strict` / `strict-adaptive` | `adaptive` | `strict` |",
-                "全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` に"
+                "全体として厳格な確認を要求するが、明らかに低 complexity の枝まで一律 `strict` に"
                 "しない。`standard-adaptive` より保守的に導出する。",
             ),
             (
@@ -153,8 +155,8 @@ class ImplLeadModeContractsTest(
             "`policy` を親都合で `fixed` から `adaptive` へ変えない。",
             "枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。",
             "導出表を逸脱した割り当てだけを引き上げ / 引き下げとして扱う。",
-            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
-            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的なリスクを"
+            "mode を引き上げた場合は、その具体的な実装複雑度をユーザーへ報告する。",
+            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的な実装複雑度を"
             "ユーザーへ報告する。",
         )
 
@@ -176,12 +178,13 @@ class ImplLeadModeContractsTest(
             "解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` "
             "として解釈されたことを確認できるようにする。",
             "枝 mode ごとの件数。",
-            "各枝の `risk.level`、導出した mode、手動上書きの有無。",
+            "各枝の `failure_impact.level`、`implementation_complexity.level`、"
+            "導出した mode、手動上書きの有無。",
             "Mode: standard-adaptive  (policy: adaptive / baseline: standard)",
             "Branch allocation:\n  strict   1\n  standard 3\n  lite     1",
-            "1. authorization-check  high    → strict",
-            "4. api-response         low     → lite → standard  (override)",
-            "5. label-text           low     → lite",
+            "1. authorization-check  impact:high / complexity:high    → strict",
+            "4. api-response         impact:medium / complexity:low     → lite → standard  (override)",
+            "5. label-text           impact:low / complexity:low        → lite",
             "枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。",
             "各枝の行では、上書きがある場合に「導出 mode → 上書き後の mode」の両方を示す。",
             "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
@@ -206,6 +209,180 @@ class ImplLeadModeContractsTest(
                     main.index("実行前サマリーを提示する"),
                     main.index("先頭の枝だけを委譲する"),
                 )
+
+    def test_repository_workflows_separate_mode_and_safety_inputs(self) -> None:
+        """Use complexity for adaptive modes and impact only for fixed-lite advice."""
+        required_rules = (
+            "adaptive の枝 mode は `implementation_complexity.level` だけから導出する。",
+            "`failure_impact` は adaptive mode の直接導出に使わない。",
+            "`failure_impact` は `{fixed, lite}` の安全性に関する "
+            "`delegation_mode_proposal` に使う。",
+            "mode の理由の正本は `implementation_complexity.reasons` とする。",
+        )
+        for path, workflow in self._repository_workflow_texts().items():
+            with self.subTest(path=path):
+                normalized = "".join(workflow.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+                self.assertNotIn("recommended_mode:", workflow)
+                self.assertNotIn("required_safeguards:", workflow)
+
+    def test_repository_decision_corpus_separates_impact_from_complexity(self) -> None:
+        """Observe inverse assessment combinations without cross-axis escalation."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        eval_33 = corpus.split("## EVAL-33:", 1)[1].split("## EVAL-34:", 1)[0]
+        eval_34 = corpus.split("## EVAL-34:", 1)[1].split("## EVAL-35:", 1)[0]
+        contracts = {
+            "EVAL-33": (
+                eval_33,
+                (
+                    "high impact / low complexity",
+                    "failure_impact.level: high",
+                    "failure_impact.reasons: [",
+                    "implementation_complexity.level: low",
+                    "implementation_complexity.reasons: [",
+                    "complexity から `lite` を導出",
+                    "failure impact だけを理由に `strict` または `senior-implementer` を選ばない",
+                    "failure impact は専門 reviewer と rollback 確認へ使う",
+                    "依存 edge だけではどちらの level も上げない",
+                ),
+            ),
+            "EVAL-34": (
+                eval_34,
+                (
+                    "low impact / high complexity",
+                    "failure_impact.level: low",
+                    "failure_impact.reasons: [",
+                    "implementation_complexity.level: high",
+                    "implementation_complexity.reasons: [",
+                    "implementation complexity を根拠に `strict` と `senior-implementer` の候補にする",
+                    "failure impact が低いことを理由に mode を下げない",
+                    "low impact を理由に `lite` または通常 Implementer へ固定する",
+                ),
+            ),
+        }
+        for case_name, (case, required) in contracts.items():
+            with self.subTest(case=case_name):
+                normalized_case = "".join(case.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized_case)
+
+    def test_repository_valid_branch_plan_evals_include_both_assessment_axes(self) -> None:
+        """Give every valid branch example complete impact and complexity Data."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        cases = {
+            "EVAL-18": corpus.split("## EVAL-18:", 1)[1].split("## EVAL-22:", 1)[0],
+            "EVAL-22": corpus.split("## EVAL-22:", 1)[1].split("## EVAL-23:", 1)[0],
+            "EVAL-23": corpus.split("## EVAL-23:", 1)[1].split("## EVAL-24:", 1)[0],
+        }
+        expected_branch_counts = {"EVAL-18": 1, "EVAL-22": 3, "EVAL-23": 2}
+        branch_markers = {
+            "EVAL-18": ("`branches`: `b1`",),
+            "EVAL-22": ("`b-auth`:", "`b-domain`:", "`b-label`:"),
+            "EVAL-23": ("`b-migration`:", "`b-format`:"),
+        }
+        for case_name, case in cases.items():
+            with self.subTest(case=case_name):
+                expected_count = expected_branch_counts[case_name]
+                case_input = case.split("**入力**", 1)[1].split(
+                    "**期待する判断**", 1
+                )[0]
+                self.assertEqual(
+                    expected_count, case_input.count("failure_impact.level:")
+                )
+                self.assertEqual(
+                    expected_count, case_input.count("failure_impact.reasons:")
+                )
+                self.assertEqual(
+                    expected_count,
+                    case_input.count("implementation_complexity.level:"),
+                )
+                self.assertEqual(
+                    expected_count,
+                    case_input.count("implementation_complexity.reasons:"),
+                )
+                markers = branch_markers[case_name]
+                for index, marker in enumerate(markers):
+                    with self.subTest(case=case_name, branch=marker):
+                        start = case_input.index(marker)
+                        end_markers = markers[index + 1 :] + (
+                            "`unresolved_decisions",
+                        )
+                        end = min(
+                            position
+                            for end_marker in end_markers
+                            if (
+                                position := case_input.find(
+                                    end_marker, start + len(marker)
+                                )
+                            )
+                            != -1
+                        )
+                        branch = case_input[start:end]
+                        for axis in (
+                            "failure_impact",
+                            "implementation_complexity",
+                        ):
+                            self.assertEqual(1, branch.count(f"{axis}.level:"))
+                            self.assertEqual(1, branch.count(f"{axis}.reasons:"))
+                            self.assertEqual(
+                                1,
+                                len(
+                                    re.findall(
+                                        rf"{axis}\.level:\s*(?:low|medium|high)",
+                                        branch,
+                                    )
+                                ),
+                            )
+                            self.assertEqual(
+                                1,
+                                len(
+                                    re.findall(
+                                        rf'{axis}\.reasons:\s*\[(?:\s*"[^"]+"\s*,?)+\]',
+                                        branch,
+                                    )
+                                ),
+                            )
+    def test_repository_decision_corpus_rejects_legacy_risk(self) -> None:
+        """Observe planning and Executor rejection of legacy risk input."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        required_contracts = (
+            "## EVAL-35: legacy risk の拒否",
+            "旧 `risk` 単独",
+            "旧 `risk` と新 field の混在",
+            "planning Skill と Executor の双方",
+            "`legacy-risk-present`",
+            "互換推測しない",
+        )
+        normalized = "".join(corpus.split())
+        for contract in required_contracts:
+            self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_readmes_describe_independent_branch_assessment_axes(self) -> None:
+        """Publish the same two-axis mode contract in every user-facing README."""
+        paths = (
+            Path("README.md"),
+            Path("plugins/claude/README.md"),
+            Path("plugins/codex/README.md"),
+        )
+        required_contracts = (
+            "failure_impact",
+            "implementation_complexity",
+            "adaptive",
+            "fixed",
+            "lite",
+            "strict",
+        )
+        for path in paths:
+            text = self._repository_text(path)
+            normalized = "".join(text.split())
+            with self.subTest(path=path):
+                for contract in required_contracts:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertNotIn("branches[].risk", text)
+                self.assertNotIn("risk.level", text)
+                self.assertNotIn("低リスク", text)
+                self.assertNotIn("risk 差", text)
 
     def test_repository_workflows_apply_mode_specific_qa_and_parent_verification(
         self,

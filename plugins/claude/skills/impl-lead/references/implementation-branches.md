@@ -117,14 +117,15 @@ regression Green 例外の Red 段階では passing test を commit し、変更
 
 ## Implementer の選択
 
-難度は行数ではなく、設計の自由度、影響範囲、ドメインの罠、誤実装の代償で判断する。
+難度は `implementation_complexity` と実装時に残る設計・推論判断で判断する。
 
 | Implementer | 使う場面 |
 | --- | --- |
-| `implementer` | 仕様が明確で範囲が閉じた通常の実装・テスト追加。 |
-| `senior-implementer` | 設計判断、複数 module への波及、非自明な algorithm・concurrency、高い失敗コストを伴う枝。 |
+| `implementer` | 仕様が明確で既存 pattern を適用でき、残る判断が少ない枝。 |
+| `senior-implementer` | `implementation_complexity` が高い、または設計・algorithm・concurrency に非自明な判断が残る枝。 |
 | `expert-implementer` | 親相当の推論が必要で、senior では不足する具体的根拠があり、事前審査を通過した枝。 |
 
+単なる複数 module への波及、高い失敗コスト、誤実装の代償だけでは `senior-implementer` を選ばない。
 通常と senior で迷ったら `senior-implementer` を選ぶ。難所と定型作業が混在する場合は枝を分ける。
 expert と迷う場合は senior を選び、expert 候補にする場合だけ
 [Expert 選択](expert-selection.md) の事前審査を行う。
