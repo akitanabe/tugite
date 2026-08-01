@@ -59,6 +59,21 @@ COUNT_ONLY_REVIEWER_NAMES = (
 )
 REVIEWER_DISPATCH_REFERENCE = "reviewer-dispatch.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
+PARENT_DATA_LOWER_BOUND_DECLARATION = (
+    "親が取得して渡す Data は reviewer の判断に必要な情報の下限であり、"
+    "この節は reviewer 自身の探索手段を定義しない。"
+)
+LEGACY_PARENT_DATA_EXPLORATION_BAN = (
+    "これらの情報は親が取得して渡すものであり、reviewer 自身に取得させない。"
+)
+DIFF_SCOPE_DECLARATION = (
+    "対象は基準 commit からの diff が導入または悪化させた問題に限定し、"
+    "既存問題を広く探索しない。"
+)
+READ_ONLY_DELEGATION_DECLARATION = (
+    "reviewer が read-only であることの担保は "
+    "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
+)
 # Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
 # adding an 8th reviewer to those sets fails this test instead of leaving the
 # manuscript's literal count silently stale.
@@ -396,6 +411,51 @@ class ReviewerFindingsContractTest(
                 self.assertIn(
                     "".join(READ_ONLY_ENFORCEMENT_DELEGATION.split()),
                     normalized_section,
+                )
+
+    def test_branch_review_requires_parent_data_as_decision_lower_bound(self) -> None:
+        """Require the mandatory gate to leave reviewer-side exploration undefined."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                normalized = "".join(section.split())
+                self.assertIn(
+                    "".join(PARENT_DATA_LOWER_BOUND_DECLARATION.split()),
+                    normalized,
+                )
+
+    def test_branch_review_rejects_legacy_parent_data_exploration_ban(self) -> None:
+        """Keep the former parent-only acquisition rule out of every distributed gate."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                self.assertNotIn(
+                    "".join(LEGACY_PARENT_DATA_EXPLORATION_BAN.split()),
+                    "".join(section.split()),
+                )
+
+    def test_branch_review_preserves_diff_scope_and_read_only_delegation(self) -> None:
+        """Preserve the bounded diff scope and findings-contract delegation in the gate."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                normalized = "".join(section.split())
+                self.assertIn("".join(DIFF_SCOPE_DECLARATION.split()), normalized)
+                self.assertIn(
+                    "".join(READ_ONLY_DELEGATION_DECLARATION.split()),
+                    normalized,
                 )
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
