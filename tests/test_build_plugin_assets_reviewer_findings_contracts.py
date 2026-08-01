@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -59,6 +60,26 @@ COUNT_ONLY_REVIEWER_NAMES = (
 )
 REVIEWER_DISPATCH_REFERENCE = "reviewer-dispatch.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
+PARENT_DATA_LOWER_BOUND_DECLARATION = (
+    "親が取得して渡す Data は reviewer の判断に必要な情報の下限であり、"
+    "この節は reviewer 自身の探索手段を定義しない。"
+)
+LEGACY_PARENT_DATA_EXPLORATION_BAN = (
+    "これらの情報は親が取得して渡すものであり、reviewer 自身に取得させない。"
+)
+# Keep this finite and semantic: generic words such as 「探索」 or 「取得」 also
+# occur in legitimate lower-bound and diff-scope statements.  These combinations
+# cover the known regression where the reviewer is made the subject of a direct
+# information-acquisition ban, without attempting to enumerate natural-language
+# paraphrases indefinitely.
+REVIEWER_SIDE_EXPLORATION_BAN_PATTERNS = (
+    ("reviewer 自身", "追加情報を取得", "してはならない"),
+    ("reviewer 自身", "探索", "を禁止する"),
+)
+DIFF_SCOPE_DECLARATION = (
+    "対象は基準 commit からの diff が導入または悪化させた問題に限定し、"
+    "既存問題を広く探索しない。"
+)
 # Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
 # adding an 8th reviewer to those sets fails this test instead of leaving the
 # manuscript's literal count silently stale.
@@ -397,6 +418,79 @@ class ReviewerFindingsContractTest(
                     "".join(READ_ONLY_ENFORCEMENT_DELEGATION.split()),
                     normalized_section,
                 )
+
+    def test_branch_review_requires_parent_data_as_decision_lower_bound(self) -> None:
+        """Require the mandatory gate to leave reviewer-side exploration undefined."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                normalized = "".join(section.split())
+                self.assertIn(
+                    "".join(PARENT_DATA_LOWER_BOUND_DECLARATION.split()),
+                    normalized,
+                )
+
+    def test_branch_review_rejects_reviewer_side_exploration_bans(self) -> None:
+        """Keep parent-only and reviewer-side exploration bans out of every distributed gate."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section_lines = self._section_lines(
+                    text, QA_AND_INTEGRATION_MUST_GATES_SECTION
+                )
+                section = "\n".join(section_lines)
+                self.assertNotIn(
+                    "".join(LEGACY_PARENT_DATA_EXPLORATION_BAN.split()),
+                    "".join(section.split()),
+                )
+                paragraphs: list[str] = []
+                paragraph_lines: list[str] = []
+                for line in (*section_lines, ""):
+                    if line.strip():
+                        paragraph_lines.append(line)
+                    elif paragraph_lines:
+                        paragraphs.append("".join(paragraph_lines))
+                        paragraph_lines = []
+                sentences = (
+                    sentence
+                    for paragraph in paragraphs
+                    for sentence in re.split(r"(?<=[。！？!?])", paragraph)
+                )
+                for sentence in sentences:
+                    normalized_sentence = "".join(sentence.split())
+                    for subject, target, polarity in (
+                        REVIEWER_SIDE_EXPLORATION_BAN_PATTERNS
+                    ):
+                        self.assertFalse(
+                            all(
+                                marker in normalized_sentence
+                                for marker in (
+                                    "".join(subject.split()),
+                                    "".join(target.split()),
+                                    "".join(polarity.split()),
+                                )
+                            ),
+                            f"{platform}'s mandatory gate must not prohibit "
+                            f"reviewer-side exploration with the semantic pattern "
+                            f"{subject!r}, {target!r}, {polarity!r}",
+                        )
+
+    def test_branch_review_preserves_diff_scope(self) -> None:
+        """Preserve the bounded diff scope in the gate."""
+        for platform, text in self._skill_reference_texts(
+            "branch-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, QA_AND_INTEGRATION_MUST_GATES_SECTION)
+                )
+                normalized = "".join(section.split())
+                self.assertIn("".join(DIFF_SCOPE_DECLARATION.split()), normalized)
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
         """Reach the findings contract from the QA phase of the delegation workflow."""

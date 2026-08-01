@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -55,7 +56,7 @@ class ImplLeadReviewGateContractsTest(
                 "`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、"
                 "受け入れる前に必ず起動し"
             ),
-            "各ゲートを起動する相は「枝レビューの3相」で定める。",
+            "各ゲートを起動する相は「枝レビューの4相」で定める。",
             "この節は適用 mode の正本であり、相への割り当てを持たない。",
             "reviewer は最終的な受け入れ判断を行わない。",
             "親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。",
@@ -75,6 +76,59 @@ class ImplLeadReviewGateContractsTest(
         self.assertEqual(1, reference.count(heading))
         return reference.split(heading, 1)[1].split("\n## ", 1)[0]
 
+    def _corpus_case(self, corpus: str, heading: str, next_heading: str) -> str:
+        self.assertEqual(1, corpus.count(heading))
+        case = corpus.split(heading, 1)[1]
+        self.assertEqual(1, case.count(next_heading))
+        return case.split(next_heading, 1)[0]
+
+    def _corpus_cases(self, corpus: str) -> list[tuple[str, str]]:
+        """Extract every EVAL case without pinning the corpus's ordering or IDs."""
+        headings = list(re.finditer(r"(?m)^## EVAL-[^\n]+$", corpus))
+        self.assertTrue(headings)
+        cases: list[tuple[str, str]] = []
+        for heading in headings:
+            next_heading = re.search(
+                r"(?m)^#{1,2} [^\n]+$",
+                corpus[heading.end() :],
+            )
+            end = (
+                heading.end() + next_heading.start()
+                if next_heading is not None
+                else len(corpus)
+            )
+            cases.append(
+                (heading.group(0).removeprefix("## "), corpus[heading.end() : end])
+            )
+        self.assertEqual(len(headings), len(cases))
+        return cases
+
+    def _corpus_positive_paragraphs(self, case: str) -> list[str]:
+        section_headings = (
+            "**期待する判断**",
+            "**必須動作**",
+            "**禁止動作**",
+            "**許容される差異**",
+            "**Claude/Codex 差**",
+            "**手動評価項目**",
+        )
+        paragraphs: list[str] = []
+        for start in ("**期待する判断**", "**必須動作**", "**手動評価項目**"):
+            self.assertEqual(1, case.count(start))
+            start_position = case.index(start) + len(start)
+            end_positions = [
+                case.index(heading)
+                for heading in section_headings
+                if heading != start and heading in case and case.index(heading) > start_position
+            ]
+            bounded = case[start_position : min(end_positions or [len(case)])]
+            paragraphs.extend(
+                self._normalize_contract(paragraph)
+                for paragraph in bounded.split("\n\n")
+                if paragraph.strip()
+            )
+        return paragraphs
+
     def test_repository_specialist_launch_conditions_live_only_in_specialist_section(
         self,
     ) -> None:
@@ -84,7 +138,7 @@ class ImplLeadReviewGateContractsTest(
         # risk 成立と無関係な第1類型の再起動が正本側の読みで打ち消される。
         single_source_declaration = (
             "risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
-            "起動時に渡す Data の受け渡し規約、または[枝レビューの3相](branch-review.md)の"
+            "起動時に渡す Data の受け渡し規約、または[枝レビューの4相](branch-review.md)の"
             "「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。"
         )
         subordination_contracts = (
@@ -398,6 +452,8 @@ class ImplLeadReviewGateContractsTest(
 
         section_contracts = {
             "expected decision": (
+                "standardの相1でwriting-principles-reviewerの指摘が出たcase",
+                "相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない",
                 "専門 reviewer を追加せず",
                 "`writing-principles-reviewer` を最終差分へ起動する",
                 "reviewer は自身で変更せず",
@@ -410,7 +466,6 @@ class ImplLeadReviewGateContractsTest(
                 "`review-patch-refactorer` へ渡す",
                 "元 Implementer へ差し戻す",
                 "修正後は親QA",
-                "reviewer 再確認",
             ),
             "prohibited actions": (
                 "`writing-principles-reviewer` 自身にファイル変更",
@@ -424,7 +479,7 @@ class ImplLeadReviewGateContractsTest(
                 "`no-change` または指摘ID付き Data",
                 "親が各指摘ID",
                 "`review-patch-refactorer`、元 Implementer、不採用",
-                "修正後に親QAと reviewer 再確認",
+                "修正後に親QA",
                 "親が最終受け入れ判断",
             ),
         }
@@ -432,6 +487,260 @@ class ImplLeadReviewGateContractsTest(
             for contract in contracts:
                 with self.subTest(section=section_name, contract=contract):
                     self.assertIn(contract, eval_sections[section_name])
+
+        self.assertNotIn("修正後は親QAで diff と test 結果を確認して reviewer を再実行する", eval_sections["required actions"])
+        self.assertNotIn("修正後に親QAと reviewer 再確認を行っている", eval_sections["manual checks"])
+
+    def test_repository_decision_corpus_has_no_obsolete_four_phase_requirements(
+        self,
+    ) -> None:
+        """Scan the whole corpus while retaining valid phase-specific obligations."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        normalized = "".join(corpus.split())
+
+        # These combinations are forbidden only when they prescribe an action or
+        # check; phase names remain valid in explanations and retained invariants.
+        forbidden_contracts = (
+            "writing-principles-reviewerの指摘を採用した修正の後に同reviewerを再実行する",
+            "修正後に親QAとreviewer再確認を行っている",
+            "相3の完了をもって枝を受け入れる",
+            "相1の再構成起動の完了をもって枝を受け入れる",
+            "相3の完了をもって最終判断する",
+            "相1の再構成起動の完了をもって最終判断する",
+            "相4で元Implementerへ差し戻す",
+            "相4でレビューループへ戻す",
+            "liteで相1にwriting-principles-reviewerを起動する",
+        )
+        for contract in forbidden_contracts:
+            with self.subTest(forbidden=contract):
+                self.assertNotIn("".join(contract.split()), normalized)
+
+        common = corpus.split("### 全委譲ケースで親が保持する責任", 1)[1].split(
+            "## 共通の手動評価手順", 1
+        )[0]
+        self.assertIn(
+            "standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない",
+            common,
+        )
+        eval_06 = corpus.split("## EVAL-06:", 1)[1].split("## EVAL-07:", 1)[0]
+        eval_07 = corpus.split("## EVAL-07:", 1)[1].split("## EVAL-08:", 1)[0]
+        eval_08 = corpus.split("## EVAL-08:", 1)[1].split("## EVAL-24:", 1)[0]
+        for case_name, case in (("EVAL-06", eval_06), ("EVAL-07", eval_07), ("EVAL-08", eval_08)):
+            with self.subTest(case=case_name):
+                self.assertIn("修正後は親QA", case)
+        eval_24 = corpus.split("## EVAL-24:", 1)[1].split("## EVAL-25:", 1)[0]
+        eval_30 = corpus.split("## EVAL-30:", 1)[1].split("## EVAL-31:", 1)[0]
+        eval_31 = corpus.split("## EVAL-31:", 1)[1].split("## EVAL-32:", 1)[0]
+        self.assertIn("相3", eval_24)
+        self.assertIn("再収束後に最終レビュー群を再度実施する", eval_30)
+        self.assertIn("modeに応じた相1の起動集合（initialレビュー群の集合）を再構成", eval_31)
+        self.assertIn("親の最終受入判断", eval_31)
+
+    def test_repository_decision_corpus_rejects_semantic_route_regressions_in_bounded_sections(
+        self,
+    ) -> None:
+        """Reject obsolete positive instructions by subject, phase, action, and polarity."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        positive_paragraphs = []
+        for case_name, case in self._corpus_cases(corpus):
+            positive_paragraphs.extend(
+                (case_name, paragraph)
+                for paragraph in self._corpus_positive_paragraphs(case)
+            )
+
+        common = corpus.split("### 全委譲ケースで親が保持する責任", 1)[1].split(
+            "## 共通の手動評価手順", 1
+        )[0]
+        positive_paragraphs.extend(
+            ("common responsibilities", self._normalize_contract(paragraph))
+            for paragraph in common.split("\n\n")
+            if paragraph.strip()
+        )
+
+        for case_name, paragraph in positive_paragraphs:
+            for sentence in paragraph.split("。"):
+                sentence = sentence.strip()
+                if not sentence:
+                    continue
+                has_post_fix = any(
+                    marker in sentence
+                    for marker in ("修正後", "修正を採用した後", "修正した後")
+                )
+                has_reviewer = "writing-principles-reviewer" in sentence
+                has_rerun = any(
+                    marker in sentence for marker in ("再実行", "再起動", "再確認")
+                )
+                self.assertFalse(
+                    has_post_fix and has_reviewer and has_rerun,
+                    f"{case_name}: obsolete writing reviewer rerun: {sentence}",
+                )
+
+                has_phase_three_completion = any(
+                    marker in sentence
+                    for marker in (
+                        "相3の完了",
+                        "相3が完了",
+                        "相3を終え",
+                        "相3終了",
+                        "最終レビュー群の完了",
+                        "最終レビュー群が完了",
+                    )
+                )
+                has_phase_one_reconstruction_completion = any(
+                    marker in sentence
+                    for marker in (
+                        "相1の再構成起動の完了",
+                        "相1の再構成が完了",
+                        "initialレビュー群の再構成が完了",
+                        "再構成起動が完了",
+                    )
+                )
+                has_acceptance = any(
+                    marker in sentence
+                    for marker in ("枝を受け入れ", "受け入れ", "最終受入", "最終判断", "Accepted")
+                )
+                self.assertFalse(
+                    (
+                        has_phase_three_completion
+                        or has_phase_one_reconstruction_completion
+                    )
+                    and has_acceptance
+                    and not any(
+                        marker in sentence
+                        for marker in ("相4", "完了レビュー群")
+                    ),
+                    f"{case_name}: obsolete pre-completion acceptance: {sentence}",
+                )
+
+                has_phase_four = "相4" in sentence or "完了レビュー群" in sentence
+                has_forbidden_route = any(
+                    marker in sentence
+                    for marker in (
+                        "元Implementerへ差し戻す",
+                        "元 Implementerへ差し戻す",
+                        "レビューループへ戻す",
+                        "相2へ戻す",
+                        "相2への復帰",
+                    )
+                )
+                self.assertFalse(
+                    has_phase_four and has_forbidden_route,
+                    f"{case_name}: phase-four forbidden routing: {sentence}",
+                )
+
+                has_lite = "lite" in sentence
+                has_phase_one = "相1" in sentence or "initial" in sentence
+                has_launch = any(marker in sentence for marker in ("起動", "実施"))
+                has_positive_lite_launch = not any(
+                    marker in sentence
+                    for marker in ("起動しない", "起動せず", "対象外", "評価対象としない")
+                )
+                self.assertFalse(
+                    has_lite
+                    and has_phase_one
+                    and has_reviewer
+                    and has_launch
+                    and has_positive_lite_launch,
+                    f"{case_name}: lite phase-one writing reviewer launch: {sentence}",
+                )
+
+    def test_repository_decision_corpus_retains_phase_and_parent_obligations_in_same_boundaries(
+        self,
+    ) -> None:
+        """Keep parent QA and phase-specific reruns beside the routes they qualify."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        for case_name, heading, next_heading in (
+            ("EVAL-06", "## EVAL-06:", "## EVAL-07:"),
+            ("EVAL-07", "## EVAL-07:", "## EVAL-08:"),
+            ("EVAL-08", "## EVAL-08:", "## EVAL-24:"),
+        ):
+            case = self._corpus_case(corpus, heading, next_heading)
+            required = self._corpus_positive_paragraphs(case)
+            self.assertTrue(
+                any("修正後は親QA" in paragraph for paragraph in required),
+                case_name,
+            )
+
+        eval_08 = self._corpus_case(corpus, "## EVAL-08:", "## EVAL-24:")
+        manual = eval_08.split("**手動評価項目**", 1)[1].split(
+            "**Claude/Codex 差**", 1
+        )[0]
+        self.assertIn("修正後に親QA", self._normalize_contract(manual))
+
+        eval_24 = self._corpus_case(corpus, "## EVAL-24:", "## EVAL-09:")
+        eval_24_required = self._corpus_positive_paragraphs(eval_24)
+        self.assertTrue(
+            any(
+                "再び収束したら最終レビュー群としてover-engineering-reviewerを再度実施" in paragraph
+                and "親QAで指摘外変更が0件" in paragraph
+                for paragraph in eval_24_required
+            ),
+            "EVAL-24",
+        )
+
+        eval_30 = self._corpus_case(corpus, "## EVAL-30:", "## EVAL-31:")
+        eval_30_required = self._corpus_positive_paragraphs(eval_30)
+        self.assertTrue(
+            any(
+                "レビューループへ戻し" in paragraph
+                and "再収束後に最終レビュー群を再度実施する" in paragraph
+                for paragraph in eval_30_required
+            ),
+            "EVAL-30",
+        )
+
+        eval_31 = self._corpus_case(corpus, "## EVAL-31:", "## EVAL-32:")
+        eval_31_expected = [
+            paragraph
+            for paragraph in self._corpus_positive_paragraphs(eval_31)
+            if "modeに応じた相1の起動集合" in paragraph
+        ]
+        self.assertTrue(eval_31_expected, "EVAL-31 reconstruction")
+        self.assertTrue(
+            any(
+                "再構成" in paragraph and "相4の完了後" in paragraph
+                for paragraph in eval_31_expected
+            ),
+            "EVAL-31 acceptance boundary",
+        )
+        self.assertTrue(
+            any(
+                "親が再実行結果を読んで最終受入判断を行う" in paragraph
+                for paragraph in self._corpus_positive_paragraphs(eval_31)
+            ),
+            "EVAL-31 parent decision",
+        )
+
+        eval_32 = self._corpus_case(corpus, "## EVAL-32:", "# 結果記録")
+        eval_32_paragraphs = self._corpus_positive_paragraphs(eval_32)
+        self.assertTrue(
+            any(
+                "完了レビュー群のno-changeを受領した後" in paragraph
+                and "修正routingをせず" in paragraph
+                for paragraph in eval_32_paragraphs
+            ),
+            "EVAL-32 completion",
+        )
+        self.assertTrue(
+            any(
+                "完了レビュー群の実施を完了してから" in paragraph
+                and "snapshot変更なし" in paragraph
+                for paragraph in eval_32_paragraphs
+            ),
+            "EVAL-32 no-routing result",
+        )
+
+        common = corpus.split("### 全委譲ケースで親が保持する責任", 1)[1].split(
+            "## 共通の手動評価手順", 1
+        )[0]
+        normalized_common = self._normalize_contract(common)
+        self.assertIn("writing-principles-reviewer", normalized_common)
+        self.assertIn(
+            self._normalize_contract(
+                "standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない"
+            ),
+            normalized_common,
+        )
 
     def test_repository_mandatory_gates_accept_no_change_result(self) -> None:
         """Pass any mandatory gate whose review reports no findings."""
@@ -483,9 +792,9 @@ class ImplLeadReviewGateContractsTest(
             "判断を記録",
             "reviewer の指摘が0件",
             "`review-patch-refactorer` による修正後",
-            # 受け入れ条件は「枝レビューの3相」の枝の受け入れ点へ一本化した。
+            # 受け入れ条件は「枝レビューの4相」の枝の受け入れ点へ一本化した。
             # この節に残るのは参照だけで、条件本体を重ねて定義しないことまで固定する。
-            "枝の受け入れ可否は「枝レビューの3相」の「枝の受け入れ点」で定める。"
+            "枝の受け入れ可否は「枝レビューの4相」の「枝の受け入れ点」で定める。"
             "この節では受け入れ条件を重ねて定義しない。",
         )
 
@@ -656,20 +965,21 @@ class ImplLeadReviewGateContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn(contract, eval_08)
 
-    def test_repository_mandatory_gates_recheck_every_fix_before_acceptance(
+    def test_repository_mandatory_gates_recheck_only_pre_completion_phase_fixes(
         self,
     ) -> None:
-        """Return every fix route to mode-scoped parent QA and the narrowed relaunch set."""
+        """Keep pre-completion rechecks while exempting completion-phase fixes."""
         branch_reviews = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
-            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、"
-            "元 Implementer による修正にも適用する。",
+            "相1〜相3で採用した指摘に起因するdiff変更には、"
+            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認を適用する。",
+            "相4で採用した指摘に起因するdiff変更には、上記の reviewer 再確認義務を適用しない。",
             "`review-patch-refactorer` または元 Implementer による修正後",
             "親が変更後の diff とテスト結果を確認",
             # 親 QA の再実行が観点0・5 だけへ縮退しないことは `## 親の QA` の mode 別規定へ
             # 委ねる。ここでは委ね先を固定して、再実行義務が diff 確認だけへ痩せないようにする。
             "[親の QA](qa-and-integration.md) の mode 別の適用範囲に従って親 QA を再実行する。",
-            "再確認する reviewer は\n「枝レビューの3相」の「再起動対象」で定める。",
+            "再確認する reviewer は\n「枝レビューの4相」の「再起動対象」で定める。",
         )
 
         for platform, workflow in branch_reviews.items():
@@ -680,6 +990,34 @@ class ImplLeadReviewGateContractsTest(
                         "".join(contract.split()),
                         normalized_workflow,
                     )
+
+    def test_repository_distribution_uses_four_phase_review_references(self) -> None:
+        """Keep four-phase references synchronized across shared and generated review surfaces."""
+        skills = self._repository_skill_texts()
+        surfaces = (
+            skills.source_main,
+            skills.claude_main,
+            skills.codex_main,
+            skills.source_references["reviewer-dispatch.md"],
+            skills.claude_references["reviewer-dispatch.md"],
+            skills.codex_references["reviewer-dispatch.md"],
+        )
+        for surface in surfaces:
+            with self.subTest(surface=surface[:40]):
+                self.assertNotIn("枝レビューの3相", surface)
+                self.assertNotIn("3相で進める", surface)
+                self.assertIn("枝レビューの4相", surface)
+
+    def test_repository_distribution_branch_review_rejects_three_phase_terms_on_all_platforms(
+        self,
+    ) -> None:
+        """Keep the branch-review phase contract free of retired three-phase wording."""
+        references = self._impl_lead_reference_texts("branch-review.md")
+        for platform, reference in references.items():
+            with self.subTest(platform=platform):
+                self.assertNotIn("枝レビューの3相", reference)
+                self.assertNotIn("3相で進める", reference)
+                self.assertIn("枝レビューの4相", reference)
 
     def test_repository_mandatory_gates_do_not_ground_passage_in_missing_evidence(
         self,

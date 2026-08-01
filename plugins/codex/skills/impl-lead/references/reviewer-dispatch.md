@@ -32,7 +32,7 @@
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
 
 risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、起動時に渡す Data の受け渡し規約、
-または[枝レビューの3相](branch-review.md) の「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。
+または[枝レビューの4相](branch-review.md) の「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。
 
 ### reviewer へ渡すコンテキスト
 
@@ -107,10 +107,44 @@ reviewer を起動する直前に、対象 worktree の `git rev-parse HEAD` と
 使うと reviewer が何もしなくても必ず不一致になる。
 reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。
 
-一致しない場合、その reviewer の findings を採用しない。差異の内容を最終報告へ記録する。
-findings は親が渡した時点の snapshot に対する判定として成立しており、判定の間に対象が動いていれば、
+`reviewer` 起動テンプレートの `diff artifact` 欄へ `diff artifact` の絶対 path を渡して起動した場合、親は起動直前と
+返却後にその artifact の内容 `hash` を記録し、一致することを確認する。`diff text` 欄へ本文を直接記入して起動した
+場合は、この確認の対象外とする。
+
+この照合が観測する対象は、対象 worktree の `git rev-parse HEAD` の値、親の統合 checkout の `git rev-parse HEAD` の値、
+`git status --short` が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減、および渡した `diff artifact` の内容だけで
+ある。非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない。ignore 対象のファイルへの書き込みも観測しない。
+観測できない範囲を担保としてどう扱うかは [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」を
+正本とする。
+
+一致しない場合、同一 `snapshot` へ一斉起動した全 `reviewer` の `findings` を採用せず破棄する。破棄した `findings` は、
+`settled` の定義1番目が言う「その時点までに受け取った全指摘」にも、枝の受け入れ点が言う「未解決または判断未記録の指摘」にも
+含めない。破棄した事実と件数を差異の内容とあわせて最終報告へ記録する。
+`findings` は親が渡した時点の `snapshot` に対する判定として成立しており、判定の間に対象が動いていれば、
 返ってきた指摘が何に対するものかを親が確定できないためである。reviewer が到達するのは対象 worktree
 だけでなく親の統合 checkout でもあるため、照合はどちらか一方に絞らず両方に掛ける。
+
+処分は、差異が対象 worktree と親の統合 checkout のどちらに生じたかで決める。両方に差異がある場合は、親の統合 checkout に
+差異がある側の処分を採る。
+
+- **対象 worktree の新規非追跡項目だけが差異である場合** — 対象 worktree はこの `run` 専用に作成した一時領域である。
+  親は、同一 `snapshot` で起動した全 `reviewer` の返却または停止を確認してから、起動前後の `git status --short` 差分から削除候補を再計算する。
+  候補は起動前になかった非追跡の項目のうち、正確な `run-created top-level untracked item` だけとし、削除対象を再検査する。候補 path は対象 worktree の root 内に限定し、
+  top-level ではない path、起動前から存在した path、または root 外へ解決される path は unsafe candidate として削除しない。
+  検査は symlink を辿らず、symlink はリンク自身だけを削除し、symlink のリンク先を削除しない。
+  削除候補について、起動前になかった非追跡の項目を親が削除して記録済み `snapshot` へ戻す。
+  削除後に対象 worktree の `git rev-parse HEAD` と `git status --short`、削除後に親の統合 checkout の `git rev-parse HEAD` と `git status --short` を
+  起動前の記録へ再照合する。diff artifact を渡した場合は、削除後に渡した diff artifact の内容 hash も起動前の記録へ再照合する。
+  削除に失敗した場合、削除対象が残存する場合、追加差異がある場合、
+  または unsafe candidate がある場合は、`Needs revision` として統合せず、再実施せずに終了する。
+  全条件が成立した場合だけ同じ相を再実施する。再実施は新たな `round` を消費する。
+- **対象 worktree のその他の差異** — `HEAD` または追跡ファイルが記録値と異なる場合、および非追跡の項目が減少・消失した場合、
+  親は復旧を試みず、当該枝を `Needs revision` として統合しない。
+- **親の統合 checkout の差異** — `HEAD` または `git status --short` が記録値と異なる場合、および渡した `diff artifact` の内容 `hash` が一致しない場合、
+  親は親の統合 checkout にある項目を自動で復旧・削除せず、当該枝を `Needs revision` として統合しない。不一致になった `diff artifact` は
+  以後の `reviewer` 起動へ再利用せず、`run` 完了時の通常の後始末で扱う。
+
+再実施は「打ち切り条件」に従い、`rounds-exhausted` 到達後は同節が定める例外の範囲でだけ行う。
 
 この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。reviewer が対象を動かしうるかは
 その reviewer の定義側の設定に依存するため、親はその設定を前提に置かず、自分で観測できる事実だけで

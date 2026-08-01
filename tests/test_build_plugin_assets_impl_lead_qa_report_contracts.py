@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import unittest
 
@@ -290,7 +291,7 @@ class ImplLeadQaReportContractsTest(
             ),
             "branch-review.md": (
                 "必須完了ゲート",
-                "枝レビューの3相",
+                "枝レビューの4相",
                 "reviewer 間の競合解消",
             ),
             "finding-routing.md": (
@@ -325,6 +326,22 @@ class ImplLeadQaReportContractsTest(
                 with self.subTest(platform=platform, reference=name):
                     self.assertEqual(expected, toc_items)
                     self.assertEqual(expected, actual)
+
+    def test_repository_distribution_version_is_3_8_1(self) -> None:
+        """Pin the reviewer data-boundary patch release to the synchronized version."""
+        shared_version = self._repository_text(Path("shared/VERSION")).strip()
+        self.assertEqual("3.8.1", shared_version)
+        for manifest_path in (
+            Path("plugins/claude/.claude-plugin/plugin.json"),
+            Path("plugins/codex/.codex-plugin/plugin.json"),
+        ):
+            manifest = json.loads(self._repository_text(manifest_path))
+            with self.subTest(path=manifest_path):
+                self.assertEqual("3.8.1", manifest["version"])
+        self.assertEqual(
+            "3.8.1",
+            self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
+        )
 
     def test_repository_writes_one_parent_qa_report_only_when_requested(
         self,

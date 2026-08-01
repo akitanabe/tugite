@@ -3,7 +3,7 @@
   "name": "tugite",
   "displayName": "Tugite",
   "description": "実装作業をサブエージェントへ委譲しつつ、親エージェントがマネージャー兼 QA として品質責任を持つためのプラグイン。",
-  "version": "3.7.1",
+  "version": "3.8.1",
   "author": {
     "name": "akitanabe"
   },
