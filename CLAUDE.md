@@ -71,10 +71,15 @@ bash tests/install-agents-test.sh
 - **更新が必要** — `shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更
 - **更新は不要** — `README.md` / `CLAUDE.md` / `AGENTS.md` / `tests/` / `evals/` だけの変更
 
-semver の割り当ては次のとおりです。
+semver は**公開面が壊れるか**で割り当てます。
 
-- **major** — 既存の workflow 契約を壊す変更（mode や skill・agent の改名・削除など、利用者の呼び出しが通らなくなるもの）
-- **minor** — skill・agent の追加、契約の追加や拡張
+- **公開面** — skill 名、agent 名、mode 名（`direct` / `lite` / `standard` / `strict` / `strict-full`、`policy` / `baseline`）、skill の起動方法と発火条件、ユーザーが保存して後から渡す Data の形式（Implementation Plan）、`$install-custom-agents` などの CLI
+- **内部契約** — 同一 version 内で完結する skill 間の受け渡し Data。Branch Plan の field 名、blocking violation code、reference の節構成
+
+Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が同じ version で同時に配布され、片方だけ古い組み合わせが生じないためです。Implementation Plan は issue などへ保存して後日渡す運用があるため公開面に含めます。
+
+- **major** — 公開面を壊す変更（mode や skill・agent の改名・削除など、利用者の呼び出しが通らなくなるもの）
+- **minor** — skill・agent の追加、契約の追加や拡張、内部契約の変更
 - **patch** — model/effort プロファイルの調整など、契約の意味を変えない修正
 
 ## テストの二層構造

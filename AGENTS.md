@@ -24,7 +24,7 @@ Red、Green、Refactor の順で進めます。テストには `unittest` を使
 
 ## Version 更新指針
 
-`shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更では、`shared/VERSION` を更新してから生成器を実行します。手で編集するのは `shared/VERSION` だけで、両 plugin の manifest と `plugins/codex/install/VERSION` へは生成器が同期します。既存の workflow 契約を壊す変更は major、skill・agent や契約の追加は minor、model/effort プロファイル調整のように契約の意味を変えない修正は patch を上げます。`README.md`・`AGENTS.md`・`CLAUDE.md`・`tests/`・`evals/` だけの変更は配布物が変わらないため、version は据え置きます。
+`shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更では、`shared/VERSION` を更新してから生成器を実行します。手で編集するのは `shared/VERSION` だけで、両 plugin の manifest と `plugins/codex/install/VERSION` へは生成器が同期します。公開面（skill・agent・mode の名前、起動方法と発火条件、ユーザーが保存して後から渡す Implementation Plan の形式、CLI）を壊す変更は major、skill・agent や契約の追加と、同一 version 内で完結する skill 間 Data（Branch Plan の field 名など）の変更は minor、model/effort プロファイル調整のように契約の意味を変えない修正は patch を上げます。`README.md`・`AGENTS.md`・`CLAUDE.md`・`tests/`・`evals/` だけの変更は配布物が変わらないため、version は据え置きます。
 
 ## Commit・Pull Request 指針
 
