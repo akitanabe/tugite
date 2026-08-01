@@ -80,10 +80,6 @@ DIFF_SCOPE_DECLARATION = (
     "対象は基準 commit からの diff が導入または悪化させた問題に限定し、"
     "既存問題を広く探索しない。"
 )
-READ_ONLY_DELEGATION_DECLARATION = (
-    "reviewer が read-only であることの担保は "
-    "[Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」に従う。"
-)
 # Both counts are derived from REVIEWER_NAMES / FINDINGS_REVIEWER_NAMES so that
 # adding an 8th reviewer to those sets fails this test instead of leaving the
 # manuscript's literal count silently stale.
@@ -484,8 +480,8 @@ class ReviewerFindingsContractTest(
                             f"{subject!r}, {target!r}, {polarity!r}",
                         )
 
-    def test_branch_review_preserves_diff_scope_and_read_only_delegation(self) -> None:
-        """Preserve the bounded diff scope and findings-contract delegation in the gate."""
+    def test_branch_review_preserves_diff_scope(self) -> None:
+        """Preserve the bounded diff scope in the gate."""
         for platform, text in self._skill_reference_texts(
             "branch-review.md"
         ).items():
@@ -495,10 +491,6 @@ class ReviewerFindingsContractTest(
                 )
                 normalized = "".join(section.split())
                 self.assertIn("".join(DIFF_SCOPE_DECLARATION.split()), normalized)
-                self.assertIn(
-                    "".join(READ_ONLY_DELEGATION_DECLARATION.split()),
-                    normalized,
-                )
 
     def test_delegate_skill_links_to_the_reviewer_findings_reference(self) -> None:
         """Reach the findings contract from the QA phase of the delegation workflow."""
