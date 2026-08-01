@@ -479,7 +479,7 @@ class ImplLeadReviewGateContractsTest(
         eval_31 = corpus.split("## EVAL-31:", 1)[1].split("## EVAL-32:", 1)[0]
         self.assertIn("相3", eval_24)
         self.assertIn("再収束後に最終レビュー群を再度実施する", eval_30)
-        self.assertIn("initialレビュー群の起動集合を再構成", eval_31)
+        self.assertIn("modeに応じた相1の起動集合（initialレビュー群の集合）を再構成", eval_31)
         self.assertIn("親の最終受入判断", eval_31)
 
     def test_repository_mandatory_gates_accept_no_change_result(self) -> None:

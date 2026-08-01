@@ -95,7 +95,8 @@ branch を一貫して撤去できた。
 5. 専門 reviewer は、返却 diff を読んで責務と一致する具体的 risk を特定した場合だけ起動する。mode や
    「念のため」を理由に全 reviewer を一律起動しない。
 6. `writing-principles-reviewer` は必須の完了ゲートであり、専門 reviewer と混同しない read-only agent として、
-   `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない。reviewer は指摘 Data だけを返し、修正先と最終判断は親が決める。
+   `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。
+   standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない。reviewer は指摘 Data だけを返し、修正先と最終判断は親が決める。
 7. `over-engineering-reviewer` は `standard` と `strict` の必須完了ゲートであり、`lite` では起動しない。
    起動するのはレビューループが収束した確定 snapshot に対する最終レビュー群で、収束ごとに1回である。
    reviewer は基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と明示された
@@ -818,7 +819,8 @@ test risk と修正先の判断は共通である。reviewer の起動と元 Imp
 
 **評価タイミング**
 
-`post-return QA`。standardの相1で `writing-principles-reviewer` の指摘が出た case。相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない。
+`post-return QA`。standardの相1で `writing-principles-reviewer` の指摘が出た case。
+相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない。
 
 **入力**
 
@@ -896,7 +898,8 @@ mechanism だけが異なる。
 
 **評価タイミング**
 
-`post-return QA`。`strict` 枝の Refactor 段階が完了し、最終差分が返却された時点。相3の最終レビュー群として実施する。
+`post-return QA`。`strict` 枝の Refactor 段階が完了し、最終差分が返却された時点。
+相3の最終レビュー群として実施する。
 
 **入力**
 
@@ -2243,7 +2246,7 @@ Synthetic diff と reviewer findings:
 同期案は外部 side effect を rollback できず、outbox 案は外部 audit 失敗時の rollback AC を満たさないため、親が安全な
 順序を選べない。差し戻しには競合している reviewer 名、指摘を識別できる情報と内容、守る AC、優先指示、許容不能リスク、
 必要な検証、守る AC を変更しない protocol 再設計条件を渡し、この節の変更後 snapshot 再実行契約に従う。再設計は局所修正の
-域を超えるため、再設計後の新しい同一 snapshot では initialレビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が
+域を超えるため、再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後も対象 risk が
 成立する専門 reviewer を実施する。この再構成起動も1 round として同じ通番で数え、親の最終受入判断は相4の完了後に行う。
 
 守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねず Implementation Plan の AC 確定とユーザー確認へ

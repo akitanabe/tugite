@@ -59,14 +59,14 @@ class ImplLeadReviewLoopContractsTest(
                 self.assertIn("writing-principles-reviewer", initial)
                 self.assertIn("riskで選んだ専門reviewer", initial)
                 self.assertIn("lite", initial)
-                self.assertIn("起動しない", initial)
+                self.assertIn("起動せず", initial)
                 self.assertNotIn("writing-principles-reviewerの枝あたり最低1回", initial)
 
                 # 相への割り当ての正本はこの節だけとする。initial 群が
                 # over-engineering-reviewer を起動しないことが issue #103 の中核なので、
                 # 「含まれない」側も列挙の有無で判定できる形に固定する。
                 self.assertIn(
-                    "その枝で適用される必須完了ゲートのうち、over-engineering-reviewerを除いたもの",
+                    "standard/strictの相1ではwriting-principles-reviewerと、[専門reviewer](reviewer-dispatch.md)の起動条件により",
                     initial,
                 )
                 self.assertNotIn("over-engineering-reviewerを実施", initial)
@@ -105,12 +105,7 @@ class ImplLeadReviewLoopContractsTest(
                 initial = self._normalize_contract(sections["### initial レビュー群"])
 
                 self.assertIn(
-                    "[専門reviewer](reviewer-dispatch.md)の起動条件によりriskで選択した専門reviewer",
-                    initial,
-                )
-                self.assertIn(
-                    "同節の起動条件は、この相のrisk選択とレビューループroundの"
-                    "「再起動対象」の第2類型の双方へ効く",
+                    "[専門reviewer](reviewer-dispatch.md)の起動条件は、この相のrisk選択とレビューループroundの「再起動対象」の第2類型の双方へ効く",
                     initial,
                 )
                 # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
@@ -133,13 +128,14 @@ class ImplLeadReviewLoopContractsTest(
                 counting = self._normalize_contract(sections["### 1 round の数え方"])
                 for contract in (
                     "相1の起動対象が0名になった枝（liteかつriskによる専門reviewerが1本も成立しない枝）",
-                    "この枝は指摘0件のままsettledに到達したものとして扱い、相3へ進む",
+                    "相1の起動対象が0名になった枝（liteかつriskによる専門reviewerが1本も成立しない枝）は、指摘0件のままsettledに到達したものとして扱い、相3へ進む",
                     "この枝のround通番は、最初に実施した相の実施をround1とする",
+                    "相3の起動対象がない場合は相3を実施せず、roundを消費せずに相4へ進む",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), initial)
                 for contract in (
-                    "modeにより相の起動対象が存在しない相は実施せずroundを消費しない",
+                    "modeにより相の起動対象が存在しない相は実施せずroundを消費しない（liteの最終レビュー群を含む）",
                     "起動対象が空でも実施される復帰roundと再構成起動は、現行どおり実施としてroundを消費する",
                 ):
                     with self.subTest(contract=contract):
@@ -163,7 +159,7 @@ class ImplLeadReviewLoopContractsTest(
                     counting,
                 )
                 self.assertIn(
-                    "相の起動対象がないため実施しない場合（liteの最終レビュー群）はroundを消費しない",
+                    "modeにより相の起動対象が存在しない相は実施せずroundを消費しない（liteの最終レビュー群を含む）",
                     counting,
                 )
                 self.assertIn(
@@ -185,7 +181,7 @@ class ImplLeadReviewLoopContractsTest(
                     "解消されている。理由付き不採用だけではsettledにしない",
                     "上限規則が発火するのは、枝の受け入れ点が未達のまま新たなroundが必要になった場合だけである",
                     "settled済みsnapshotへの最終レビュー群の実施が未了である場合のその1回だけを",
-                    "D4の前提条件を満たしたsnapshotへの完了レビュー群の実施が未了である場合のその1回だけを",
+                    "完了レビュー群の前提条件を満たしたsnapshotへの完了レビュー群の実施が未了である場合のその1回だけを",
                     "この上界はroundの種類を問わず一様に掛かり、再構成起動もこれに従う",
                     "枝あたりの総round数は上限＋2で有界になる",
                     "rounds-exhaustedで打ち切った枝は受け入れない",
@@ -208,7 +204,7 @@ class ImplLeadReviewLoopContractsTest(
                 self.assertIn("指摘0件のno-change", termination)
                 self.assertIn("全指摘を理由付き不採用にした場合", termination)
                 self.assertIn(
-                    "D9により破棄された実施だけが、roundを消費するが実施完了には当たらない",
+                    "D9により破棄された実施はroundを消費するが実施完了に当たらず",
                     termination,
                 )
                 self.assertIn(
@@ -229,11 +225,11 @@ class ImplLeadReviewLoopContractsTest(
                     termination,
                 )
                 self.assertIn(
-                    "D4の前提条件を満たしたsnapshotへの完了レビュー群の実施が未了である場合",
+                    "完了レビュー群の前提条件を満たしたsnapshotへの完了レビュー群の実施が未了である場合",
                     termination,
                 )
                 self.assertIn(
-                    "例外で実施した相がD9により破棄された場合は、その相を再実施しない",
+                    "例外で実施した相がD9により破棄された場合は、その相を再実施せず",
                     termination,
                 )
 
@@ -254,13 +250,14 @@ class ImplLeadReviewLoopContractsTest(
                     "および同じ競合解消で修正案が採用されなかった競合当事者",
                     "指摘が出た相は問わず",
                     "変更後に対象riskが新たに成立するreviewer",
-                    "第2類型の判定対象は専門reviewerであり、必須完了ゲート2本はレビューループroundの起動対象から除外されるためこの判定を行わない",
+                    "第2類型の判定対象は専門reviewerである",
+                    "必須完了ゲート2本は第1類型と第2類型の対象外とし、レビューループroundの起動対象から除外する",
                     "この2類型は起動し、これ以外は起動しない",
                     "over-engineering-reviewer",
                     "writing-principles-reviewer",
-                    "前者の再確認は最終レビュー群、後者の再確認は完了レビュー群",
+                    "前者の再確認は最終レビュー群、後者の再確認は完了レビュー群が担う",
                     "最終レビュー群から復帰したroundではover-engineering-reviewerを起動せず",
-                    "その snapshot では initial レビュー群の起動集合を再構成し",
+                    "その snapshot では mode に応じた相1の起動集合（initial レビュー群の集合）を再構成し",
                     "再構成起動は同一通番の1roundとして数え",
                 ):
                     with self.subTest(contract=contract):
@@ -297,14 +294,14 @@ class ImplLeadReviewLoopContractsTest(
                 sections = self._four_phase_sections(reference)
                 completion = self._normalize_contract(sections["### 完了レビュー群"])
                 for contract in (
-                    "全modeでwriting-principles-reviewerを前提到達後に1回実施する",
-                    "D9の照合不一致による再実施をその例外とする",
+                    "writing-principles-reviewerを全modeで1回実施する",
+                    "D9の照合不一致による再実施だけをその1回の例外とし",
                     "この相の指摘をレビューループへ戻さない",
                     "起動は通常のreviewer起動テンプレートで行い、量的な絞り込みを加えない",
                     "前回の指摘と親の採否",
                     "通常どおり適用され",
                     "不採用済み指摘の再申告を新規として扱わない",
-                    "レビューの再起動も相2への復帰も行わない",
+                    "レビューの再起動は行わず、相2への復帰も元Implementerへの差し戻しもしない",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), completion)
@@ -326,7 +323,7 @@ class ImplLeadReviewLoopContractsTest(
                     "Rejected / Needs revisionを最終判断として未統合で終了する場合",
                     "重要度が修正必須でも起動条件を満たすならこの経路で採用し、修正する",
                     "後続作業として残すべき内容は、採否とは別にrunの最終報告へ記録する",
-                    "受け入れ点の未解決または判断未記録の指摘を残していないに影響しない",
+                    "受け入れ点の条件（未解決または判断未記録の指摘がないこと）を変更しない",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), completion)
@@ -367,7 +364,11 @@ class ImplLeadReviewLoopContractsTest(
                     normalized = self._normalize_contract(text)
                     with self.subTest(owner=owner):
                         self.assertIn("相1〜相3で採用した指摘に起因するdiff変更", normalized)
-                        self.assertIn("相4で採用した指摘に起因するdiff変更には適用しない", normalized)
+                        if owner == "mandatory gate":
+                            expected = "相4で採用した指摘に起因するdiff変更には、上記のreviewer再確認義務を適用しない"
+                        else:
+                            expected = "相4で採用した指摘に起因するdiff変更には適用しない"
+                        self.assertIn(expected, normalized)
                 completion = self._four_phase_sections(reference_text)["### 完了レビュー群"]
                 self.assertIn(
                     "この適用除外がない場合に受け入れ点へ到達できなくなる理由",
@@ -701,7 +702,7 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "review-patch-refactorer ではなく元 Implementer へ差し戻す",
-                    "再設計後の新しい同一 snapshot では initial レビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施する",
+                    "再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施する",
                     "親の最終受入判断は相4の完了後に行う",
                 ),
                 (
