@@ -49,9 +49,8 @@ REVIEWER_LAUNCH_SNAPSHOT_CONTRACTS = (
     "親の統合 checkout の記録は diff artifact の書き出し後に取り直し、"
     "「返却と統合」手順2 で取得した値を使い回さない。",
     "reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。",
-    "一致しない場合、同一 snapshot へ一斉起動した全 reviewer の findings を採用せず破棄する。",
+    "一致しない場合、同一 `snapshot` へ一斉起動した全 `reviewer` の `findings` を採用せず破棄する。",
     "破棄した事実と件数を差異の内容とあわせて最終報告へ記録する。",
-    "差異の内容を最終報告へ記録する。",
     "reviewer が到達するのは対象 worktree だけでなく親の統合 checkout でもあるため、"
     "照合はどちらか一方に絞らず両方に掛ける。",
     "この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。",
@@ -344,10 +343,8 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 )[0]
                 normalized = self._normalize_contract(section)
                 for contract in (
-                    "対象 worktree の git rev-parse HEAD",
-                    "対象 worktree の git status --short",
-                    "親の統合 checkout の git rev-parse HEAD",
-                    "親の統合 checkout の git status --short",
+                    "対象 worktree の git rev-parse HEAD と git status --short",
+                    "親の統合 checkout の git rev-parse HEAD と git status --short",
                     "git status --short が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減",
                     "渡した diff artifact の内容",
                 ):
