@@ -122,6 +122,29 @@ class ImplLeadReviewLoopContractsTest(
                             self._normalize_contract(enumerated_site), initial
                         )
 
+    def test_workflows_handle_zero_target_initial_phase_and_mode_specific_phase_skips(
+        self,
+    ) -> None:
+        """Advance a lite branch with no phase-one target without spending a round."""
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
+            with self.subTest(platform=platform):
+                sections = self._four_phase_sections(reference)
+                initial = self._normalize_contract(sections["### initial レビュー群"])
+                counting = self._normalize_contract(sections["### 1 round の数え方"])
+                for contract in (
+                    "相1の起動対象が0名になった枝（liteかつriskによる専門reviewerが1本も成立しない枝）",
+                    "この枝は指摘0件のままsettledに到達したものとして扱い、相3へ進む",
+                    "この枝のround通番は、最初に実施した相の実施をround1とする",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), initial)
+                for contract in (
+                    "modeにより相の起動対象が存在しない相は実施せずroundを消費しない",
+                    "起動対象が空でも実施される復帰roundと再構成起動は、現行どおり実施としてroundを消費する",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), counting)
+
     def test_workflows_bound_branch_review_rounds_and_define_two_post_exhaustion_exceptions(
         self,
     ) -> None:
