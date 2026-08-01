@@ -371,11 +371,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     "削除後に対象 worktree の git rev-parse HEAD と git status --short",
                     "削除後に親の統合 checkout の git rev-parse HEAD と git status --short",
                     "削除後に渡した diff artifact の内容 hash",
-                    "削除に失敗した場合",
-                    "削除対象が残存する場合",
-                    "追加差異がある場合",
-                    "Needs revision",
-                    "再実施せず",
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), target_only)
@@ -411,6 +406,32 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     target_only.index("削除後に渡したdiffartifactの内容hash"),
                     target_only.index("同じ相を再実施する"),
                 )
+
+                failure_marker = self._normalize_contract("削除に失敗した場合")
+                success_marker = self._normalize_contract("全条件が成立した場合だけ")
+                self.assertIn(failure_marker, target_only)
+                self.assertIn(success_marker, target_only)
+                failure = target_only.split(failure_marker, 1)[1].split(
+                    success_marker, 1
+                )[0]
+                success = target_only.split(success_marker, 1)[1]
+                for contract in (
+                    "削除対象が残存する場合",
+                    "追加差異がある場合",
+                    "unsafe candidate",
+                    "Needs revision",
+                    "再実施せず",
+                ):
+                    with self.subTest(route="failure", contract=contract):
+                        self.assertIn(self._normalize_contract(contract), failure)
+                self.assertNotIn("同じ相を再実施する", failure)
+                for contract in (
+                    "同じ相を再実施する",
+                    "再実施は新たな round を消費する",
+                ):
+                    with self.subTest(route="success", contract=contract):
+                        self.assertIn(self._normalize_contract(contract), success)
+                self.assertNotIn(self._normalize_contract("Needs revision"), success)
 
     def test_repository_reviewer_launch_preserves_four_checkout_observations_and_status_deltas(
         self,
@@ -467,6 +488,10 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
             "非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない",
             "ignore 対象のファイルへの書き込みも観測しない",
         )
+        # The canonical read-only reference is intentionally inside this
+        # boundary. Do not ban generic 「担保」 wording or the reference
+        # itself; only these finite limit markers describe a prohibited
+        # assurance claim that would exceed the observation contract.
         assurance_limit_markers = (
             "担保対象外",
             "担保しない",
@@ -486,7 +511,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 normalized = self._normalize_contract(section)
                 self.assertIn(observation_marker, normalized)
                 observation = normalized.split(observation_marker, 1)[1].split(
-                    read_only_reference, 1
+                    self._normalize_contract("一致しない場合"), 1
                 )[0]
                 for contract in observation_points:
                     with self.subTest(contract=contract):
@@ -494,7 +519,7 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 for marker in assurance_limit_markers:
                     with self.subTest(marker=marker):
                         self.assertNotIn(self._normalize_contract(marker), observation)
-                self.assertIn(read_only_reference, normalized)
+                self.assertIn(read_only_reference, observation)
 
     def test_repository_reviewer_launch_discards_all_snapshot_findings_and_reports_mismatch(
         self,

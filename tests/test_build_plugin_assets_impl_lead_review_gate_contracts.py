@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -80,6 +81,27 @@ class ImplLeadReviewGateContractsTest(
         case = corpus.split(heading, 1)[1]
         self.assertEqual(1, case.count(next_heading))
         return case.split(next_heading, 1)[0]
+
+    def _corpus_cases(self, corpus: str) -> list[tuple[str, str]]:
+        """Extract every EVAL case without pinning the corpus's ordering or IDs."""
+        headings = list(re.finditer(r"(?m)^## EVAL-[^\n]+$", corpus))
+        self.assertTrue(headings)
+        cases: list[tuple[str, str]] = []
+        for heading in headings:
+            next_heading = re.search(
+                r"(?m)^#{1,2} [^\n]+$",
+                corpus[heading.end() :],
+            )
+            end = (
+                heading.end() + next_heading.start()
+                if next_heading is not None
+                else len(corpus)
+            )
+            cases.append(
+                (heading.group(0).removeprefix("## "), corpus[heading.end() : end])
+            )
+        self.assertEqual(len(headings), len(cases))
+        return cases
 
     def _corpus_positive_paragraphs(self, case: str) -> list[str]:
         section_headings = (
@@ -519,18 +541,8 @@ class ImplLeadReviewGateContractsTest(
     ) -> None:
         """Reject obsolete positive instructions by subject, phase, action, and polarity."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
-        cases = (
-            ("EVAL-06", "## EVAL-06:", "## EVAL-07:"),
-            ("EVAL-07", "## EVAL-07:", "## EVAL-08:"),
-            ("EVAL-08", "## EVAL-08:", "## EVAL-24:"),
-            ("EVAL-24", "## EVAL-24:", "## EVAL-09:"),
-            ("EVAL-30", "## EVAL-30:", "## EVAL-31:"),
-            ("EVAL-31", "## EVAL-31:", "## EVAL-32:"),
-            ("EVAL-32", "## EVAL-32:", "# 結果記録"),
-        )
         positive_paragraphs = []
-        for case_name, heading, next_heading in cases:
-            case = self._corpus_case(corpus, heading, next_heading)
+        for case_name, case in self._corpus_cases(corpus):
             positive_paragraphs.extend(
                 (case_name, paragraph)
                 for paragraph in self._corpus_positive_paragraphs(case)
