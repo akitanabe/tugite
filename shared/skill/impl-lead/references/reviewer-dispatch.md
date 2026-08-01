@@ -104,11 +104,38 @@ reviewer を起動する直前に、対象 worktree の `git rev-parse HEAD` と
 存在しなかった `.tugite/` は手順2 時点では現れず、artifact 書き出し後に現れるため、手順2 の値をそのまま
 使うと reviewer が何もしなくても必ず不一致になる。
 reviewer の返却後に同じ4つを取り直し、起動前の記録と一致することを確認する。
+起動前後の記録には、対象 worktree の `git status --short` と親の統合 checkout の `git status --short` をそれぞれ含める。
 
-一致しない場合、その reviewer の findings を採用しない。差異の内容を最終報告へ記録する。
+reviewer 起動テンプレートの diff artifact 欄へ diff artifact の絶対 path を渡して起動した場合、親は起動直前と
+返却後にその artifact の内容 hash を記録し、一致することを確認する。diff text 欄へ本文を直接記入して起動した
+場合は、この確認の対象外とする。
+
+この照合が観測する対象は、対象 worktree の `git rev-parse HEAD` の値、親の統合 checkout の `git rev-parse HEAD` の値、
+`git status --short` が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減、および渡した diff artifact の
+内容だけである。非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない。ignore 対象のファイルへの書き込みも
+観測しない。観測できない範囲を担保としてどう扱うかは [Reviewer findings の共通契約](reviewer-findings.md) の
+「read-only の担保」を正本とする。
+
+一致しない場合、同一 snapshot へ一斉起動した全 reviewer の findings を採用せず破棄する。破棄した findings は、
+settled の定義1番目が言う「その時点までに受け取った全指摘」にも、枝の受け入れ点が言う「未解決または判断未記録の指摘」にも
+含めない。破棄した事実と件数を差異の内容とあわせて最終報告へ記録する。差異の内容を最終報告へ記録する。
 findings は親が渡した時点の snapshot に対する判定として成立しており、判定の間に対象が動いていれば、
 返ってきた指摘が何に対するものかを親が確定できないためである。reviewer が到達するのは対象 worktree
 だけでなく親の統合 checkout でもあるため、照合はどちらか一方に絞らず両方に掛ける。
+
+処分は、差異が対象 worktree と親の統合 checkout のどちらに生じたかで決める。両方に差異がある場合は、親の統合 checkout に
+差異がある側の処分を採る。
+
+- **対象 worktree の新規非追跡項目だけが差異である場合** — 対象 worktree はこの run 専用に作成した一時領域であり、reviewer 起動中は
+  worker が停止しているため、起動前になかった非追跡の項目を親が削除して記録済み snapshot へ戻す。そのうえで同じ相を再実施する。
+  再実施は新たな round を消費する。
+- **対象 worktree のその他の差異** — HEAD または追跡ファイルが記録値と異なる場合、および非追跡の項目が減少・消失した場合、
+  親は復旧を試みず、当該枝を `Needs revision` として統合しない。
+- **親の統合 checkout の差異** — HEAD または `git status --short` が記録値と異なる場合、および渡した diff artifact の内容 hash が一致しない場合、
+  親は親の統合 checkout にある項目を自動で復旧・削除せず、当該枝を `Needs revision` として統合しない。不一致になった diff artifact は
+  以後の reviewer 起動へ再利用せず、run 完了時の通常の後始末で扱う。
+
+再実施は「打ち切り条件」に従い、`rounds-exhausted` 到達後は同節が定める例外の範囲でだけ行う。
 
 この照合は起動する reviewer を選ばず、すべての reviewer 起動に掛ける。reviewer が対象を動かしうるかは
 その reviewer の定義側の設定に依存するため、親はその設定を前提に置かず、自分で観測できる事実だけで
