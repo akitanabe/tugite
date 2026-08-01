@@ -343,6 +343,36 @@ class ImplLeadReviewLoopContractsTest(
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), completion)
 
+    def test_workflows_completion_refactorer_fix_requires_parent_qa_green_and_return_recheck(
+        self,
+    ) -> None:
+        """Connect an accepted completion patch to every required parent checkpoint."""
+        for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
+            with self.subTest(platform=platform):
+                completion = self._four_phase_sections(reference)["### 完了レビュー群"]
+                paragraphs = [
+                    self._normalize_contract(paragraph)
+                    for paragraph in completion.split("\n\n")
+                    if paragraph.strip()
+                ]
+                route = next(
+                    paragraph
+                    for paragraph in paragraphs
+                    if "採用できるのはreview-patch-refactorerの起動条件を満たす指摘だけ" in paragraph
+                )
+                for contract in (
+                    "review-patch-refactorerの起動条件を満たす指摘だけ",
+                    "修正後は親QA、green確認、およびrefactorer返却の再確認で完了する",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), route)
+                self.assertIn(
+                    self._normalize_contract(
+                        "レビューの再起動は行わず、相2への復帰も元Implementerへの差し戻しもしない"
+                    ),
+                    self._normalize_contract(completion),
+                )
+
     def test_workflows_record_completion_finding_outcomes_and_unfit_mandatory_routes(
         self,
     ) -> None:
@@ -369,8 +399,16 @@ class ImplLeadReviewLoopContractsTest(
         """Keep an invalid completion patch outside the accepted return range."""
         for platform, reference in self._impl_lead_reference_texts("branch-review.md").items():
             with self.subTest(platform=platform):
-                completion = self._normalize_contract(
-                    self._four_phase_sections(reference)["### 完了レビュー群"]
+                completion = self._four_phase_sections(reference)["### 完了レビュー群"]
+                paragraphs = [
+                    self._normalize_contract(paragraph)
+                    for paragraph in completion.split("\n\n")
+                    if paragraph.strip()
+                ]
+                invalid_patch = next(
+                    paragraph
+                    for paragraph in paragraphs
+                    if "返却がgreenを割った場合" in paragraph
                 )
                 for contract in (
                     "相4のreview-patch-refactorer起動では修正をcommitさせる",
@@ -378,11 +416,23 @@ class ImplLeadReviewLoopContractsTest(
                     "許可範囲外の変更・指摘外の変更",
                     "修正commitを枝の返却SHA rangeへ含めず",
                     "相4実施時の確定snapshotを枝の最終形とする",
-                    "確定snapshotに対して行い",
+                    "枝worktreeのgreen確認と後始末の統合済み判定は",
+                    "返却SHA rangeの末尾である確定snapshotに対して行い",
                     "相2への復帰も元Implementerへの差し戻しもしない",
                 ):
                     with self.subTest(contract=contract):
-                        self.assertIn(self._normalize_contract(contract), completion)
+                        self.assertIn(self._normalize_contract(contract), invalid_patch)
+                snapshot_anchor = self._normalize_contract(
+                    "返却SHA rangeの末尾である確定snapshotに対して行い"
+                )
+                self.assertIn(snapshot_anchor, invalid_patch)
+                before_snapshot = invalid_patch.split(snapshot_anchor, 1)[0]
+                for contract in (
+                    "枝worktreeのgreen確認",
+                    "後始末の統合済み判定",
+                ):
+                    with self.subTest(check=contract):
+                        self.assertIn(self._normalize_contract(contract), before_snapshot)
 
     def test_workflows_exempt_completion_phase_changes_from_pre_completion_rechecks(
         self,

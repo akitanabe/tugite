@@ -309,10 +309,10 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     normalized_section,
                 )
 
-    def test_repository_reviewer_launch_hashes_absolute_artifact_before_and_after_only(
+    def test_repository_reviewer_launch_treats_artifact_hash_delta_as_mismatch_and_keeps_inline_text_outside_scope(
         self,
     ) -> None:
-        """Hash the handed-off artifact around a launch, excluding inline diff text."""
+        """Treat a changed handed-off artifact as a batch mismatch and exclude inline diff text."""
         for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
             with self.subTest(platform=platform):
                 section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
@@ -330,6 +330,86 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                         "diff text 欄へ本文を直接記入して起動した場合は、この確認の対象とする"
                     ),
                     normalized,
+                )
+
+                parent_mismatch = normalized.split(
+                    self._normalize_contract("親の統合 checkout の差異"), 1
+                )[1]
+                for contract in (
+                    "渡した diff artifact の内容 hash が一致しない場合",
+                    "Needs revision として統合しない",
+                    "不一致になった diff artifact は以後の reviewer 起動へ再利用せず",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), parent_mismatch)
+
+    def test_repository_reviewer_launch_confines_untracked_cleanup_to_quiescent_exact_target_and_post_delete_recheck(
+        self,
+    ) -> None:
+        """Require safe cleanup to finish before rerunning a mismatched launch."""
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                target_marker = self._normalize_contract(
+                    "対象 worktree の新規非追跡項目だけが差異である場合"
+                )
+                other_marker = self._normalize_contract("対象 worktree のその他の差異")
+                self.assertIn(target_marker, normalized)
+                self.assertIn(other_marker, normalized)
+                target_only = normalized.split(target_marker, 1)[1].split(
+                    other_marker, 1
+                )[0]
+
+                for contract in (
+                    "全 reviewer の返却または停止を確認してから",
+                    "削除対象を再検査",
+                    "対象 worktree の root 内に限定",
+                    "起動前になかった非追跡の項目",
+                    "削除後に対象 worktree の git rev-parse HEAD と git status --short",
+                    "削除後に親の統合 checkout の git rev-parse HEAD と git status --short",
+                    "削除後に渡した diff artifact の内容 hash",
+                    "削除に失敗した場合",
+                    "削除対象が残存する場合",
+                    "追加差異がある場合",
+                    "Needs revision",
+                    "再実施せず",
+                ):
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), target_only)
+
+                self.assertTrue(
+                    any(
+                        marker in target_only
+                        for marker in (
+                            "symlinkを辿らず",
+                            "symlinkを追従せず",
+                            "symlinkのリンク先を削除しない",
+                        )
+                    ),
+                    f"{platform}: cleanup must not follow symlinks",
+                )
+                self.assertLess(
+                    target_only.index("全reviewerの返却または停止を確認してから"),
+                    target_only.index("削除対象を再検査"),
+                )
+                self.assertLess(
+                    target_only.index("削除対象を再検査"),
+                    target_only.index("同じ相を再実施する"),
+                )
+                self.assertLess(
+                    target_only.index("削除後に対象worktreeのgitrev-parseHEADとgitstatus--short"),
+                    target_only.index("同じ相を再実施する"),
+                )
+                self.assertLess(
+                    target_only.index("削除後に親の統合checkoutのgitrev-parseHEADとgitstatus--short"),
+                    target_only.index("同じ相を再実施する"),
+                )
+                self.assertLess(
+                    target_only.index("削除後に渡したdiffartifactの内容hash"),
+                    target_only.index("同じ相を再実施する"),
                 )
 
     def test_repository_reviewer_launch_preserves_four_checkout_observations_and_status_deltas(
@@ -370,6 +450,51 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                         self.assertIn(self._normalize_contract(contract), normalized)
                 self.assertNotIn("network送信", normalized)
                 self.assertNotIn("credential参照", normalized)
+
+    def test_repository_reviewer_launch_limits_observation_section_to_points_and_findings_contract(
+        self,
+    ) -> None:
+        """Keep assurance limits in the read-only contract instead of the observation list."""
+        observation_marker = self._normalize_contract("この照合が観測する対象は")
+        read_only_reference = self._normalize_contract(
+            "観測できない範囲を担保としてどう扱うかは [Reviewer findings の共通契約](reviewer-findings.md) の「read-only の担保」を正本とする"
+        )
+        observation_points = (
+            "対象 worktree の git rev-parse HEAD",
+            "親の統合 checkout の git rev-parse HEAD",
+            "git status --short が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減",
+            "渡した diff artifact の内容",
+            "非追跡 directory 配下の個別ファイルの増減と内容変更は観測しない",
+            "ignore 対象のファイルへの書き込みも観測しない",
+        )
+        assurance_limit_markers = (
+            "担保対象外",
+            "担保しない",
+            "保証しない",
+            "保証できない",
+            "防止できない",
+            "防止を保証",
+            "外部副作用",
+            "network送信",
+            "credential参照",
+        )
+        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
+            with self.subTest(platform=platform):
+                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = self._normalize_contract(section)
+                self.assertIn(observation_marker, normalized)
+                observation = normalized.split(observation_marker, 1)[1].split(
+                    read_only_reference, 1
+                )[0]
+                for contract in observation_points:
+                    with self.subTest(contract=contract):
+                        self.assertIn(self._normalize_contract(contract), observation)
+                for marker in assurance_limit_markers:
+                    with self.subTest(marker=marker):
+                        self.assertNotIn(self._normalize_contract(marker), observation)
+                self.assertIn(read_only_reference, normalized)
 
     def test_repository_reviewer_launch_discards_all_snapshot_findings_and_reports_mismatch(
         self,
