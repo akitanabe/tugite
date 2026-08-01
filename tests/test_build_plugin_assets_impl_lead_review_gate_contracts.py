@@ -55,7 +55,7 @@ class ImplLeadReviewGateContractsTest(
                 "`over-engineering-reviewer` は `standard` / `strict` の枝でだけ、"
                 "受け入れる前に必ず起動し"
             ),
-            "各ゲートを起動する相は「枝レビューの3相」で定める。",
+            "各ゲートを起動する相は「枝レビューの4相」で定める。",
             "この節は適用 mode の正本であり、相への割り当てを持たない。",
             "reviewer は最終的な受け入れ判断を行わない。",
             "親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。",
@@ -84,7 +84,7 @@ class ImplLeadReviewGateContractsTest(
         # risk 成立と無関係な第1類型の再起動が正本側の読みで打ち消される。
         single_source_declaration = (
             "risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
-            "起動時に渡す Data の受け渡し規約、または[枝レビューの3相](branch-review.md)の"
+            "起動時に渡す Data の受け渡し規約、または[枝レビューの4相](branch-review.md)の"
             "「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。"
         )
         subordination_contracts = (
@@ -398,6 +398,8 @@ class ImplLeadReviewGateContractsTest(
 
         section_contracts = {
             "expected decision": (
+                "standardの相1でwriting-principles-reviewerの指摘が出たcase",
+                "相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない",
                 "専門 reviewer を追加せず",
                 "`writing-principles-reviewer` を最終差分へ起動する",
                 "reviewer は自身で変更せず",
@@ -410,7 +412,6 @@ class ImplLeadReviewGateContractsTest(
                 "`review-patch-refactorer` へ渡す",
                 "元 Implementer へ差し戻す",
                 "修正後は親QA",
-                "reviewer 再確認",
             ),
             "prohibited actions": (
                 "`writing-principles-reviewer` 自身にファイル変更",
@@ -424,7 +425,7 @@ class ImplLeadReviewGateContractsTest(
                 "`no-change` または指摘ID付き Data",
                 "親が各指摘ID",
                 "`review-patch-refactorer`、元 Implementer、不採用",
-                "修正後に親QAと reviewer 再確認",
+                "修正後に親QA",
                 "親が最終受け入れ判断",
             ),
         }
@@ -432,6 +433,54 @@ class ImplLeadReviewGateContractsTest(
             for contract in contracts:
                 with self.subTest(section=section_name, contract=contract):
                     self.assertIn(contract, eval_sections[section_name])
+
+        self.assertNotIn("修正後は親QAで diff と test 結果を確認して reviewer を再実行する", eval_sections["required actions"])
+        self.assertNotIn("修正後に親QAと reviewer 再確認を行っている", eval_sections["manual checks"])
+
+    def test_repository_decision_corpus_has_no_obsolete_four_phase_requirements(
+        self,
+    ) -> None:
+        """Scan the whole corpus while retaining valid phase-specific obligations."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        normalized = "".join(corpus.split())
+
+        # These combinations are forbidden only when they prescribe an action or
+        # check; phase names remain valid in explanations and retained invariants.
+        forbidden_contracts = (
+            "writing-principles-reviewerの指摘を採用した修正の後に同reviewerを再実行する",
+            "修正後に親QAとreviewer再確認を行っている",
+            "相3の完了をもって枝を受け入れる",
+            "相1の再構成起動の完了をもって枝を受け入れる",
+            "相3の完了をもって最終判断する",
+            "相1の再構成起動の完了をもって最終判断する",
+            "相4で元Implementerへ差し戻す",
+            "相4でレビューループへ戻す",
+            "liteで相1にwriting-principles-reviewerを起動する",
+        )
+        for contract in forbidden_contracts:
+            with self.subTest(forbidden=contract):
+                self.assertNotIn("".join(contract.split()), normalized)
+
+        common = corpus.split("### 全委譲ケースで親が保持する責任", 1)[1].split(
+            "## 共通の手動評価手順", 1
+        )[0]
+        self.assertIn(
+            "standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない",
+            common,
+        )
+        eval_06 = corpus.split("## EVAL-06:", 1)[1].split("## EVAL-07:", 1)[0]
+        eval_07 = corpus.split("## EVAL-07:", 1)[1].split("## EVAL-08:", 1)[0]
+        eval_08 = corpus.split("## EVAL-08:", 1)[1].split("## EVAL-24:", 1)[0]
+        for case_name, case in (("EVAL-06", eval_06), ("EVAL-07", eval_07), ("EVAL-08", eval_08)):
+            with self.subTest(case=case_name):
+                self.assertIn("修正後は親QA", case)
+        eval_24 = corpus.split("## EVAL-24:", 1)[1].split("## EVAL-25:", 1)[0]
+        eval_30 = corpus.split("## EVAL-30:", 1)[1].split("## EVAL-31:", 1)[0]
+        eval_31 = corpus.split("## EVAL-31:", 1)[1].split("## EVAL-32:", 1)[0]
+        self.assertIn("相3", eval_24)
+        self.assertIn("再収束後に最終レビュー群を再度実施する", eval_30)
+        self.assertIn("initialレビュー群の起動集合を再構成", eval_31)
+        self.assertIn("親の最終受入判断", eval_31)
 
     def test_repository_mandatory_gates_accept_no_change_result(self) -> None:
         """Pass any mandatory gate whose review reports no findings."""
@@ -483,9 +532,9 @@ class ImplLeadReviewGateContractsTest(
             "判断を記録",
             "reviewer の指摘が0件",
             "`review-patch-refactorer` による修正後",
-            # 受け入れ条件は「枝レビューの3相」の枝の受け入れ点へ一本化した。
+            # 受け入れ条件は「枝レビューの4相」の枝の受け入れ点へ一本化した。
             # この節に残るのは参照だけで、条件本体を重ねて定義しないことまで固定する。
-            "枝の受け入れ可否は「枝レビューの3相」の「枝の受け入れ点」で定める。"
+            "枝の受け入れ可否は「枝レビューの4相」の「枝の受け入れ点」で定める。"
             "この節では受け入れ条件を重ねて定義しない。",
         )
 
@@ -656,20 +705,21 @@ class ImplLeadReviewGateContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn(contract, eval_08)
 
-    def test_repository_mandatory_gates_recheck_every_fix_before_acceptance(
+    def test_repository_mandatory_gates_recheck_only_pre_completion_phase_fixes(
         self,
     ) -> None:
-        """Return every fix route to mode-scoped parent QA and the narrowed relaunch set."""
+        """Keep pre-completion rechecks while exempting completion-phase fixes."""
         branch_reviews = self._impl_lead_reference_texts("branch-review.md")
         required_contracts = (
-            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認は、"
-            "元 Implementer による修正にも適用する。",
+            "相1〜相3で採用した指摘に起因するdiff変更には、"
+            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認を適用する。",
+            "相4で採用した指摘に起因するdiff変更には、上記の reviewer 再確認義務を適用しない。",
             "`review-patch-refactorer` または元 Implementer による修正後",
             "親が変更後の diff とテスト結果を確認",
             # 親 QA の再実行が観点0・5 だけへ縮退しないことは `## 親の QA` の mode 別規定へ
             # 委ねる。ここでは委ね先を固定して、再実行義務が diff 確認だけへ痩せないようにする。
             "[親の QA](qa-and-integration.md) の mode 別の適用範囲に従って親 QA を再実行する。",
-            "再確認する reviewer は\n「枝レビューの3相」の「再起動対象」で定める。",
+            "再確認する reviewer は\n「枝レビューの4相」の「再起動対象」で定める。",
         )
 
         for platform, workflow in branch_reviews.items():
@@ -680,6 +730,23 @@ class ImplLeadReviewGateContractsTest(
                         "".join(contract.split()),
                         normalized_workflow,
                     )
+
+    def test_repository_distribution_uses_four_phase_review_references(self) -> None:
+        """Keep four-phase references synchronized across shared and generated review surfaces."""
+        skills = self._repository_skill_texts()
+        surfaces = (
+            skills.source_main,
+            skills.claude_main,
+            skills.codex_main,
+            skills.source_references["reviewer-dispatch.md"],
+            skills.claude_references["reviewer-dispatch.md"],
+            skills.codex_references["reviewer-dispatch.md"],
+        )
+        for surface in surfaces:
+            with self.subTest(surface=surface[:40]):
+                self.assertNotIn("枝レビューの3相", surface)
+                self.assertNotIn("3相で進める", surface)
+                self.assertIn("枝レビューの4相", surface)
 
     def test_repository_mandatory_gates_do_not_ground_passage_in_missing_evidence(
         self,
