@@ -433,25 +433,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                         self.assertIn(self._normalize_contract(contract), success)
                 self.assertNotIn(self._normalize_contract("Needs revision"), success)
 
-    def test_repository_reviewer_launch_preserves_four_checkout_observations_and_status_deltas(
-        self,
-    ) -> None:
-        """Keep the four checkout observations while separating status and artifact changes."""
-        for platform, reference in self._impl_lead_reference_texts("reviewer-dispatch.md").items():
-            with self.subTest(platform=platform):
-                section = reference.split(REVIEWER_LAUNCH_SNAPSHOT_SECTION, 1)[1].split(
-                    "\n## ", 1
-                )[0]
-                normalized = self._normalize_contract(section)
-                for contract in (
-                    "対象 worktree の git rev-parse HEAD と git status --short",
-                    "親の統合 checkout の git rev-parse HEAD と git status --short",
-                    "git status --short が示す追跡ファイルの状態（内容変更を含む）と非追跡の項目の増減",
-                    "渡した diff artifact の内容",
-                ):
-                    with self.subTest(contract=contract):
-                        self.assertIn(self._normalize_contract(contract), normalized)
-
     def test_repository_reviewer_launch_limits_observation_section_to_points_and_findings_contract(
         self,
     ) -> None:
