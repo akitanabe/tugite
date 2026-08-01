@@ -80,7 +80,7 @@
 `failure_impact` と、仕様明確さ・既存pattern・残存判断・依存複雑性・調査を表す
 `implementation_complexity` を独立して持ちます。`policy: adaptive` では、`baseline` と枝の
 `implementation_complexity.level` から次の決定表で枝ごとの mode を導出します。
-`failure_impact` は adaptive mode の直接導出には使わず、`fixed` / `lite` の安全助言に使います。
+`failure_impact` は adaptive mode の直接導出には使わず、`{fixed, lite}` の `delegation_mode_proposal`（安全助言）にだけ使います。
 `policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用します。
 
 | policy | baseline | `implementation_complexity.level: low` | `medium` | `high` |

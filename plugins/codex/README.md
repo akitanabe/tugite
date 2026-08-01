@@ -94,7 +94,8 @@ plugins/codex/install/install-agents.sh --force --repo <repo>
 Custom agent の配置と設定形式については、[Codex subagents の公式ドキュメント](https://developers.openai.com/codex/agent-configuration/subagents)を参照してください。
 
 Branch Plan は `failure_impact` と `implementation_complexity` を独立して保持します。`adaptive` の枝 mode は
-implementation complexity だけから導出し、failure impact は `fixed` / `lite` の安全助言に使います。
+implementation complexity だけから導出し、`failure_impact` は adaptive mode の直接導出には使わず、
+`{fixed, lite}` の `delegation_mode_proposal`（安全助言）にだけ使います。
 complexity が high の枝は `strict` 候補です。
 
 ## Custom agent
