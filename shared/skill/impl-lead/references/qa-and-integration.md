@@ -23,9 +23,10 @@
    [diff artifact の作成](reviewer-dispatch.md) に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ {{continuation_mechanism}} で差し戻し、修正 commit を追加させる。
-5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、対象となる `failure_impact.reasons` を渡す。
+5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、Branch Plan の `failure_impact.reasons`、
+   親 QA が返却 diff から特定した対象リスクを渡す。
    この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。
-   `failure_impact.reasons` による起動条件は [専門 reviewer](reviewer-dispatch.md) に従う。
+   専門 reviewer の起動条件は [専門 reviewer](reviewer-dispatch.md) に従う。
    周辺コンテキストの追加は [reviewer へ渡すコンテキスト](reviewer-dispatch.md) の選択基準に従う。
    {{new_worker}} は別 worktree で始まり枝の変更を見ないため、作業 tree の存在を前提にさせない。
    ここでの作業 tree は worker worktree を指し、親の統合 checkout に保存した diff artifact を

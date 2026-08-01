@@ -268,36 +268,47 @@ class PlanImplementationBranchesContractsTest(
         self,
     ) -> None:
         """Assess failure impact and implementation complexity independently."""
-        required = (
-            "## failure_impact.level の判定観点",
-            "## implementation_complexity.level の判定観点",
+        impact_contracts = (
             "1. 失敗時の影響範囲",
             "2. 変更の可逆性 / 切り戻しの容易さ",
             "3. 外部副作用の有無と数",
             "4. セキュリティ・権限への影響",
             "5. データ整合性への影響",
             "6. 後方互換性への影響",
+            "| `low` | 表示文言のみの変更、設定値の追加、振る舞いに影響しないリネーム、局所的な機械的修正。外部副作用がなく、容易に切り戻せる。 |",
+            "| `medium` | 通常の機能追加、既存ロジックの変更、API 内部処理の変更、UI とバックエンドの通常連携。テストで十分に担保でき、失敗時の影響が限定的。 |",
+            "| `high` | 認証・認可・権限判定、データ削除・上書き・移行、外部 API の契約変更、後方互換性への影響、決済・請求・金額計算、機密情報への影響、複数の外部 I/O。失敗時の影響が広い、または切り戻しが困難。 |",
+            "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
+            "判定に使った観点は `failure_impact.reasons` に記録する。",
+        )
+        complexity_contracts = (
             "1. 仕様の明確さ",
             "2. 適用できる既存 pattern の有無",
             "3. component 間の責務・契約に残る判断",
             "4. 依存関係の複雑性",
             "5. 調査・仮説検証の必要性",
-            "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
+            "| `low` | 仕様と依存契約が明確で、既存 pattern の定型適用として実装でき、調査や設計判断がほぼ残らない。 |",
+            "| `medium` | 通常の機能追加や既存ロジック変更で、限定された責務・契約判断または仮説検証が残る。 |",
+            "| `high` | 仕様や責務境界に重要な判断が残る、非自明な algorithm・concurrency を含む、または複数の仮説を調査・検証する必要がある。 |",
             "判定に使った観点は `implementation_complexity.reasons` に記録する。",
             "決定表をここに再掲しない。",
         )
-        level_contracts = (
-            "failure_impact.level",
-            "implementation_complexity.level",
-            "`low`",
-            "`medium`",
-            "`high`",
-        )
         for platform, text in self._plan_reference_texts("branch-splitting.md").items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
-                for contract in required + level_contracts:
-                    self.assertIn("".join(contract.split()), normalized)
+                impact = text.split("## failure_impact.level の判定観点", 1)[1].split(
+                    "## implementation_complexity.level の判定観点", 1
+                )[0]
+                complexity = text.split(
+                    "## implementation_complexity.level の判定観点", 1
+                )[1].split("\n## ", 1)[0]
+                normalized_impact = "".join(impact.split())
+                normalized_complexity = "".join(complexity.split())
+                for contract in impact_contracts:
+                    self.assertIn("".join(contract.split()), normalized_impact)
+                    self.assertNotIn("".join(contract.split()), normalized_complexity)
+                for contract in complexity_contracts:
+                    self.assertIn("".join(contract.split()), normalized_complexity)
+                    self.assertNotIn("".join(contract.split()), normalized_impact)
 
     def test_plan_schema_requires_and_validates_both_branch_assessment_axes(
         self,

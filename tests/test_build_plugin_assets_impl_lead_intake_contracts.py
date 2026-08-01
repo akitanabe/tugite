@@ -179,8 +179,6 @@ class DelegateImplementationIntakeContractsTest(
         required_rules = (
             "全枝の `implementation_complexity.level` が `low` / `medium` / `high` の"
             "いずれかである。",
-            "欠落または3値以外の枝がある場合は決定的に導出できないため、"
-            "委譲を開始せず Branch Plan の修正を要求する。",
             "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
             "`delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、"
             "`null` の場合は `{adaptive, standard}` を採用する。",
@@ -194,6 +192,15 @@ class DelegateImplementationIntakeContractsTest(
                 normalized = "".join(text.split())
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized)
+                self.assertNotIn(
+                    "".join(
+                        (
+                            "欠落または3値以外の枝がある場合は決定的に導出できないため、"
+                            "委譲を開始せず Branch Plan の修正を要求する。"
+                        ).split()
+                    ),
+                    normalized,
+                )
 
     def test_intake_reference_keeps_staged_branches_at_strict(self) -> None:
         """Run staged branches at strict and treat the gap as a per-branch upgrade."""

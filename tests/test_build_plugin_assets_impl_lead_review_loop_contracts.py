@@ -57,7 +57,7 @@ class ImplLeadReviewLoopContractsTest(
                 )
                 self.assertIn("standard/strict", initial)
                 self.assertIn("writing-principles-reviewer", initial)
-                self.assertIn("failure_impact.reasonsで選んだ専門reviewer", initial)
+                self.assertIn("選んだ専門reviewerを起動する", initial)
                 self.assertIn("lite", initial)
                 self.assertIn("起動せず", initial)
                 self.assertNotIn("writing-principles-reviewerの枝あたり最低1回", initial)
@@ -105,13 +105,13 @@ class ImplLeadReviewLoopContractsTest(
                 initial = self._normalize_contract(sections["### initial レビュー群"])
 
                 self.assertIn(
-                    "[専門reviewer](reviewer-dispatch.md)の起動条件は、この相のfailure_impact.reasonsによる選択とレビューループroundの「再起動対象」の第2類型の双方へ効く",
+                    "[専門reviewer](reviewer-dispatch.md)の起動条件は、この相のユーザー明示、failure_impact.reasonsとの責務一致、または返却diff由来の対象リスクによる選択と、レビューループroundの「再起動対象」の第2類型の双方へ効く",
                     initial,
                 )
                 # 起動条件の所在を数え上げると、起動指示が増えるたびにこの列挙が
                 # 同期漏れを起こす。所在は「専門 reviewer」節ひとつに閉じる。
                 self.assertIn(
-                    "failure_impact.reasonsによる専門reviewerの起動条件はこの1節だけが定める",
+                    "起動条件は[専門reviewer](reviewer-dispatch.md)節だけが定める",
                     initial,
                 )
                 for enumerated_site in ("「返却と統合」手順5", "「責務境界」節"):
@@ -124,7 +124,7 @@ class ImplLeadReviewLoopContractsTest(
         """Route safety review and rollback checks from recorded failure impact."""
         contracts = {
             "reviewer-dispatch.md": (
-                "`failure_impact.reasons` と責務が一致する専門 reviewer を選ぶ。",
+                "`security-side-effect-reviewer` と rollback の確認は主に `failure_impact.reasons` を入力にし",
                 "`implementation_complexity` や枝 mode だけを理由に専門 reviewer を選ばない。",
             ),
             "qa-and-integration.md": (
@@ -151,8 +151,8 @@ class ImplLeadReviewLoopContractsTest(
                 initial = self._normalize_contract(sections["### initial レビュー群"])
                 counting = self._normalize_contract(sections["### 1 round の数え方"])
                 for contract in (
-                    "相1の起動対象が0名になった枝（liteかつfailure_impact.reasonsによる専門reviewerが1本も成立しない枝）",
-                    "相1の起動対象が0名になった枝（liteかつfailure_impact.reasonsによる専門reviewerが1本も成立しない枝）は、指摘0件のままsettledに到達したものとして扱い、相3へ進む",
+                    "相1の起動対象が0名になった枝（liteかつ専門reviewerの起動条件が1本も成立しない枝）",
+                    "相1の起動対象が0名になった枝（liteかつ専門reviewerの起動条件が1本も成立しない枝）は、指摘0件のままsettledに到達したものとして扱い、相3へ進む",
                     "この枝のround通番は、最初に実施した相の実施をround1とする",
                     "相3の起動対象がない場合は相3を実施せず、roundを消費せずに相4へ進む",
                 ):
@@ -289,7 +289,7 @@ class ImplLeadReviewLoopContractsTest(
                     "直前のdiff変更のきっかけとなった指摘を出したreviewer、"
                     "および同じ競合解消で修正案が採用されなかった競合当事者",
                     "指摘が出た相は問わず",
-                    "変更後にfailure_impact.reasonsの対象が新たに成立するreviewer",
+                    "変更後にfailure_impact.reasonsとの責務一致または返却diff由来の対象リスクが新たに成立するreviewer",
                     "第2類型の判定対象は専門reviewerである",
                     "必須完了ゲート2本は第1類型と第2類型の対象外とし、レビューループroundの起動対象から除外する",
                     "この2類型は起動し、これ以外は起動しない",

@@ -19,6 +19,7 @@ main の手順9へ戻る。
 ## 統合済み diff review
 
 全枝の統合と検証後、後始末より前に統合済み diff を review する。
+review 対象には、残存する failure impact と返却 diff 由来の対象リスクを含める。
 
 環境が提供する場合は `/review` を実行し、利用できない場合は同等の統合済み diff review を親が行う。
 結果と対応内容を最終報告へ含める。

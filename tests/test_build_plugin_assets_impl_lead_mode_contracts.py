@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -229,28 +230,91 @@ class ImplLeadModeContractsTest(
     def test_repository_decision_corpus_separates_impact_from_complexity(self) -> None:
         """Observe inverse assessment combinations without cross-axis escalation."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
-        required_contracts = (
-            "## EVAL-33: high impact / low complexity",
-            "failure_impact.level: high",
-            "failure_impact.reasons:",
-            "implementation_complexity.level: low",
-            "implementation_complexity.reasons:",
-            "failure impact だけを理由に `strict` または `senior-implementer` を選ばない",
-            "## EVAL-34: low impact / high complexity",
-            "failure_impact.level: low",
-            "implementation_complexity.level: high",
-            "implementation complexity を根拠に `strict` と `senior-implementer` の候補にする",
-            "依存 edge だけではどちらの level も上げない",
-        )
-        normalized = "".join(corpus.split())
-        for contract in required_contracts:
-            self.assertIn("".join(contract.split()), normalized)
         eval_33 = corpus.split("## EVAL-33:", 1)[1].split("## EVAL-34:", 1)[0]
         eval_34 = corpus.split("## EVAL-34:", 1)[1].split("## EVAL-35:", 1)[0]
-        for case_name, case in (("EVAL-33", eval_33), ("EVAL-34", eval_34)):
+        contracts = {
+            "EVAL-33": (
+                eval_33,
+                (
+                    "high impact / low complexity",
+                    "failure_impact.level: high",
+                    "failure_impact.reasons: [",
+                    "implementation_complexity.level: low",
+                    "implementation_complexity.reasons: [",
+                    "complexity から `lite` を導出",
+                    "failure impact だけを理由に `strict` または `senior-implementer` を選ばない",
+                    "failure impact は専門 reviewer と rollback 確認へ使う",
+                    "依存 edge だけではどちらの level も上げない",
+                ),
+            ),
+            "EVAL-34": (
+                eval_34,
+                (
+                    "low impact / high complexity",
+                    "failure_impact.level: low",
+                    "failure_impact.reasons: [",
+                    "implementation_complexity.level: high",
+                    "implementation_complexity.reasons: [",
+                    "implementation complexity を根拠に `strict` と `senior-implementer` の候補にする",
+                    "failure impact が低いことを理由に mode を下げない",
+                    "low impact を理由に `lite` または通常 Implementer へ固定する",
+                ),
+            ),
+        }
+        for case_name, (case, required) in contracts.items():
             with self.subTest(case=case_name):
-                self.assertIn("failure_impact.reasons:", case)
-                self.assertIn("implementation_complexity.reasons:", case)
+                normalized_case = "".join(case.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized_case)
+
+    def test_repository_valid_branch_plan_evals_include_both_assessment_axes(self) -> None:
+        """Give every valid branch example complete impact and complexity Data."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        cases = {
+            "EVAL-18": corpus.split("## EVAL-18:", 1)[1].split("## EVAL-22:", 1)[0],
+            "EVAL-22": corpus.split("## EVAL-22:", 1)[1].split("## EVAL-23:", 1)[0],
+            "EVAL-23": corpus.split("## EVAL-23:", 1)[1].split("## EVAL-24:", 1)[0],
+        }
+        expected_branch_counts = {"EVAL-18": 1, "EVAL-22": 3, "EVAL-23": 2}
+        for case_name, case in cases.items():
+            with self.subTest(case=case_name):
+                expected_count = expected_branch_counts[case_name]
+                case_input = case.split("**入力**", 1)[1].split(
+                    "**期待する判断**", 1
+                )[0]
+                self.assertEqual(
+                    expected_count, case_input.count("failure_impact.level:")
+                )
+                self.assertEqual(
+                    expected_count, case_input.count("failure_impact.reasons:")
+                )
+                self.assertEqual(
+                    expected_count,
+                    case_input.count("implementation_complexity.level:"),
+                )
+                self.assertEqual(
+                    expected_count,
+                    case_input.count("implementation_complexity.reasons:"),
+                )
+                for axis in ("failure_impact", "implementation_complexity"):
+                    self.assertEqual(
+                        expected_count,
+                        len(
+                            re.findall(
+                                rf"{axis}\.level:\s*(?:low|medium|high)",
+                                case_input,
+                            )
+                        ),
+                    )
+                    self.assertEqual(
+                        expected_count,
+                        len(
+                            re.findall(
+                                rf'{axis}\.reasons:\s*\["[^"]+"\]',
+                                case_input,
+                            )
+                        ),
+                    )
 
     def test_repository_decision_corpus_rejects_legacy_risk(self) -> None:
         """Observe planning and Executor rejection of legacy risk input."""

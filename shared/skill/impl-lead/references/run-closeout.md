@@ -17,9 +17,10 @@ main の手順9へ戻る。
 ## 統合済み diff review
 
 全枝の統合と検証後、後始末より前に統合済み diff を review する。
+review 対象には、残存する failure impact と返却 diff 由来の対象リスクを含める。
 
 <!-- claude-only:start -->
-親が統合済み diff、test、残存 risk を読み、最終受け入れ判断を記録する。
+親が統合済み diff と test を読み、最終受け入れ判断を記録する。
 <!-- claude-only:end -->
 <!-- codex-only:start -->
 環境が提供する場合は `/review` を実行し、利用できない場合は同等の統合済み diff review を親が行う。

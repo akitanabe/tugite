@@ -132,14 +132,13 @@ Why Not: 破棄された実施を完了と数えると、受け入れ点へ到�
 親 QA の後、同一 diff snapshot へ次を一斉に起動する。
 
 - `standard` / `strict` の相1では `writing-principles-reviewer` と、[専門 reviewer](reviewer-dispatch.md) の起動条件により
-  `failure_impact.reasons` で選んだ専門 reviewer を起動する。`lite` の相1では
-  `writing-principles-reviewer` を起動せず、`failure_impact.reasons` で選んだ専門 reviewer のみを起動する。
-- [専門 reviewer](reviewer-dispatch.md) の起動条件は、この相の `failure_impact.reasons` による選択と
-  レビューループ round の「再起動対象」の第2類型の双方へ効く。`failure_impact.reasons` による
-  専門 reviewer の起動条件はこの1節だけが定めるため、この相では他の節の起動指示を数え上げない。
+  選んだ専門 reviewer を起動する。`lite` の相1では `writing-principles-reviewer` を起動せず、専門 reviewer のみを起動する。
+- [専門 reviewer](reviewer-dispatch.md) の起動条件は、この相のユーザー明示、`failure_impact.reasons` との責務一致、
+  または返却 diff 由来の対象リスクによる選択と、レビューループ round の「再起動対象」の第2類型の双方へ効く。
+  起動条件は [専門 reviewer](reviewer-dispatch.md) 節だけが定めるため、この相では他の節の起動指示を数え上げない。
 
 modeにより相1の起動対象が存在しない場合は相1を実施せず、roundを消費しない。相1の起動対象が0名になった枝
-（`lite` かつ `failure_impact.reasons` による専門 reviewer が1本も成立しない枝）は、指摘0件のまま
+（`lite` かつ専門 reviewer の起動条件が1本も成立しない枝）は、指摘0件のまま
 `settled` に到達したものとして扱い、相3へ進む。
 この枝のround通番は、最初に実施した相の実施をround1とする。相3の起動対象がない場合は相3を実施せず、roundを消費せずに相4へ進む。
 相1が空でも、起動対象が空でも実施される復帰 round と再構成起動は実施し、roundを消費する。
@@ -161,7 +160,8 @@ initial レビュー群の findings を起点に、競合解消 → 採否判断
   なかった競合当事者。指摘が出た相は問わず、initial レビュー群・レビューループ・最終レビュー群のいずれで
   出た指摘にも適用する。競合当事者を含めるのは、採用されなかった側が反対した折衷案を、その reviewer が
   一度も再確認しないまま受け入れ点へ到達させないためである。
-- 第2類型 — 変更後に `failure_impact.reasons` の対象が新たに成立する reviewer（専門 reviewer）。
+- 第2類型 — 変更後に `failure_impact.reasons` との責務一致または返却 diff 由来の対象リスクが
+  新たに成立する reviewer（専門 reviewer）。
   第2類型の判定対象は専門 reviewer である。
   必須完了ゲート2本は第1類型と第2類型の対象外とし、レビューループ round の起動対象から除外する。
 
@@ -171,7 +171,8 @@ initial レビュー群の findings を起点に、競合解消 → 採否判断
 
 第2類型の「新たに成立する」は、元 Implementer への差し戻しによる再設計のように、変更が局所修正の域を超える
 snapshot には適用しない。その snapshot では mode に応じた相1の起動集合（initial レビュー群の集合）を
-再構成し、変更後も `failure_impact.reasons` の対象が成立する専門 reviewer を起動する。局所修正の round と
+再構成し、変更後も `failure_impact.reasons` との責務一致または返却 diff 由来の対象リスクが成立する
+専門 reviewer を起動する。局所修正の round と
 再設計後の snapshot は、変更が指摘範囲に閉じているかで区別する。
 再構成起動は同一通番の1 round として数え、この義務は `rounds-exhausted` 未到達である限りで成立する。
 

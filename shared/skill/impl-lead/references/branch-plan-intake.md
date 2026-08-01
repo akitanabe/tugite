@@ -61,9 +61,6 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
    混在する場合は `legacy-risk-present` とする。旧 `risk` から `failure_impact` または
    `implementation_complexity` を推測しない。Branch Plan の修正を要求し、委譲を開始しない。
 
-欠落または3値以外の枝がある場合は決定的に導出できないため、委譲を開始せず
-Branch Plan の修正を要求する。
-
 いずれかを満たさない場合は実装を開始せず、Branch Plan の修正(または委譲要求の有無の確認)を
 要求する。
 

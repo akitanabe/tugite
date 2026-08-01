@@ -1402,11 +1402,11 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] 委譲要求がないため計画の確定で停止している。
 - [ ] `impl-lead` を起動していない。
 
-## EVAL-21: lite 明示と high risk 枝への mode 引き上げ提案
+## EVAL-21: lite 明示と high failure impact 枝への mode 引き上げ提案
 
 **目的**
 
-`{fixed, lite}` の委譲要求を受けた `branch-design` が、high risk 枝を含む場合に
+`{fixed, lite}` の委譲要求を受けた `branch-design` が、high failure impact 枝を含む場合に
 `delegation_mode_proposal` として `{adaptive, strict}` を提案することを確認する。
 
 **評価タイミング**
@@ -1438,14 +1438,14 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 
 **禁止動作**
 
-- high risk 枝があるのに `delegation_mode_proposal` を省略する。
+- high failure impact 枝があるのに `delegation_mode_proposal` を省略する。
 - `{fixed, lite}` のまま委譲を開始する、または `requested_mode` を親が勝手に書き換える。
 - `{adaptive, standard}` など出力条件表と異なる baseline を提案する。
 - 委譲や Worker 起動を先取りする。
 
 **許容される差異**
 
-- 枝分割の粒度や AC 割り当ての具体は変わってよいが、high risk 枝の存在と proposal の内容
+- 枝分割の粒度や AC 割り当ての具体は変わってよいが、high failure impact 枝の存在と proposal の内容
   (`{adaptive, strict}`)は変えない。
 
 **Claude/Codex 差**
@@ -1455,7 +1455,7 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 **手動評価項目**
 
 - [ ] `{fixed, lite}` を委譲要求として受理している。
-- [ ] high risk 枝を具体的根拠とともに判定している。
+- [ ] high failure impact 枝を具体的根拠とともに判定している。
 - [ ] `delegation_mode_proposal` として `{adaptive, strict}` を出力条件表どおり提案している。
 - [ ] `requested_mode` を勝手に書き換えず、委譲を開始していない。
 - [ ] Branch Plan Data の提示で止まっている。
@@ -1796,9 +1796,12 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
-- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と `implementation_complexity.level: medium` を持ち、2つの
-  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の
-  `tests` と一致
+- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と次の2評価軸を持ち、2つの
+  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の `tests` と一致
+  - `failure_impact.level: low`
+  - `failure_impact.reasons: ["外部副作用がなく、枝単位でrevertできる"]`
+  - `implementation_complexity.level: medium`
+  - `implementation_complexity.reasons: ["2つのstage間に限定された実装順序の判断が残る"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > この Branch Plan で委譲を開始してください。
@@ -1850,7 +1853,7 @@ mode 引き上げの判断は共通である。段階を継続する platform �
 - [ ] 黙って mode を変更していない。
 - [ ] stage が AC を所有せず、受け入れ・revert が枝単位である。
 
-## EVAL-22: 混在 risk と mode 未指定委譲の決定表導出
+## EVAL-22: 混在 complexity と mode 未指定委譲の決定表導出
 
 **目的**
 
@@ -1867,8 +1870,13 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: null }`
-- `branches`: `b-auth`(`implementation_complexity.level: high`)、`b-domain`(`implementation_complexity.level: medium`)、
-  `b-label`(`implementation_complexity.level: low`)
+- `branches`:
+  - `b-auth`: `failure_impact.level: high` / `failure_impact.reasons: ["認可失敗が全利用者へ波及する"]` /
+    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["認可component間の契約判断が残る"]`
+  - `b-domain`: `failure_impact.level: medium` / `failure_impact.reasons: ["失敗影響はdomain処理内に限定される"]` /
+    `implementation_complexity.level: medium` / `implementation_complexity.reasons: ["限定された業務規則の判断が残る"]`
+  - `b-label`: `failure_impact.level: low` / `failure_impact.reasons: ["表示文言だけで容易にrevertできる"]` /
+    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存patternの定型適用で判断が残らない"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > この Branch Plan で委譲を開始してください。
@@ -1911,7 +1919,7 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 - [ ] 導出結果を Branch Plan へ書き戻していない。
 - [ ] 実行前サマリーで枝ごとの mode と件数を提示している。
 
-## EVAL-23: strict 明示と low risk 枝の standard 導出
+## EVAL-23: strict 明示と low complexity 枝の standard 導出
 
 **目的**
 
@@ -1928,7 +1936,11 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 - `status: approved` / `approval.method: user` / `confirmation_mode: review`
 - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: strict } }`
-- `branches`: `b-migration`(`implementation_complexity.level: high`)、`b-format`(`implementation_complexity.level: low`)
+- `branches`:
+  - `b-migration`: `failure_impact.level: high` / `failure_impact.reasons: ["データ移行失敗時の切り戻しが困難"]` /
+    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["移行手順と整合性確認に非自明な判断が残る"]`
+  - `b-format`: `failure_impact.level: low` / `failure_impact.reasons: ["局所的な表示整形で容易にrevertできる"]` /
+    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存formatterを定型適用できる"]`
 - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > strict-adaptive で委譲を開始してください。

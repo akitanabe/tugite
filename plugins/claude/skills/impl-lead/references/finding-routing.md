@@ -127,7 +127,8 @@ attention` / `Blocker` のように3区分と異なる語彙で申告する revi
 - 既存の責務配置、命名、directory 構成から不自然に外れていないか。
 - 分割や抽象化が過剰になっていないか。
 
-この軽量確認で `responsibility-boundary-reviewer` の対象リスクが成立したと判断した場合は、
+この軽量確認で、親 QA が返却 diff から特定した対象リスクとして
+`responsibility-boundary-reviewer` の対象リスクが成立したと判断した場合は、
 [専門 reviewer](reviewer-dispatch.md) の起動条件に従って起動する。対象リスクが成立する具体例も
 [専門 reviewer](reviewer-dispatch.md) が定める。この節は専門 reviewer の起動条件を
 独自に定義しない。以下は起動した場合の判定区分ごとの修正先 routing である。
