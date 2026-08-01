@@ -2359,7 +2359,9 @@ evidence 不成立の確認、finding ごとの理由、修正 routing なし、
 **入力**
 
 - `failure_impact.level: high`: 認可失敗時の影響は広いが、既存の確定済み policy へ1条件を追加する。
+- `failure_impact.reasons: ["認可条件の誤りが全利用者へ波及し、rollbackまで不正アクセスが続く"]`
 - `implementation_complexity.level: low`: 仕様と既存 pattern が明確で、残る設計判断がない。
+- `implementation_complexity.reasons: ["確定済みpolicyの既存patternへ1条件を定型適用できる"]`
 
 **期待する判断**
 
@@ -2397,7 +2399,9 @@ evidence 不成立の確認、finding ごとの理由、修正 routing なし、
 **入力**
 
 - `failure_impact.level: low`: 外部副作用がなく、容易に切り戻せる。
+- `failure_impact.reasons: ["外部副作用がなく、局所変更を単独revertできる"]`
 - `implementation_complexity.level: high`: component間契約に未解決の判断があり、仮説検証を要する。
+- `implementation_complexity.reasons: ["component間契約の候補を比較し、仮説検証する必要がある"]`
 
 **期待する判断**
 

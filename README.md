@@ -70,7 +70,7 @@
 | `direct` | — | — | 委譲要求がなく、仕様が明確で影響範囲が閉じる変更。 |
 | 指定なし | `adaptive` | `standard` | 通常利用のデフォルト。mode 未指定の明示的な委譲でもこれを選ぶ。 |
 | `standard` / `standard-adaptive` | `adaptive` | `standard` | 通常の実装委譲。 |
-| `strict` / `strict-adaptive` | `adaptive` | `strict` | 全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` にしない。 |
+| `strict` / `strict-adaptive` | `adaptive` | `strict` | 全体として厳格な確認を要求するが、明らかに low complexity の枝まで一律 `strict` にしない。 |
 | `strict-full` | `fixed` | `strict` | 全枝へ `strict` を固定適用する。枝ごとの導出を行わない。 |
 | `lite` | `fixed` | `lite` | 全枝を軽量フローで処理する。ユーザーが明示し、仕様が明確で影響範囲が局所的、容易に戻せる変更にだけ選ぶ。 |
 
@@ -132,7 +132,7 @@ v2.0.0 で `strict` の意味が変わりました。旧 `strict`(全枝固定)�
 
 ### strict-full: 全枝を一律 strict にする変更
 
-枝ごとの risk 差を問わず全枝を `strict` で固定したい場合だけ `strict-full`(配分方針は `{fixed, strict}`)を使います。`strict-full` は枝数に比例してコストが増えるため、実行前に枝数を明示したユーザー確認を委譲開始条件とし、確認が得られるまで委譲を開始しません。低リスク枝まで一律 `strict` にするコストを避けたい通常の場合は `strict-adaptive` を優先します。
+枝ごとの implementation complexity 差を問わず全枝を `strict` で固定したい場合だけ `strict-full`(配分方針は `{fixed, strict}`)を使います。`strict-full` は枝数に比例してコストが増えるため、実行前に枝数を明示したユーザー確認を委譲開始条件とし、確認が得られるまで委譲を開始しません。low complexity 枝まで一律 `strict` にするコストを避けたい通常の場合は `strict-adaptive` を優先します。
 
 ### 専門 reviewer を選ぶとき
 

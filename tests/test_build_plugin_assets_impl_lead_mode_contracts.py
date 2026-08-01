@@ -232,7 +232,9 @@ class ImplLeadModeContractsTest(
         required_contracts = (
             "## EVAL-33: high impact / low complexity",
             "failure_impact.level: high",
+            "failure_impact.reasons:",
             "implementation_complexity.level: low",
+            "implementation_complexity.reasons:",
             "failure impact だけを理由に `strict` または `senior-implementer` を選ばない",
             "## EVAL-34: low impact / high complexity",
             "failure_impact.level: low",
@@ -243,6 +245,12 @@ class ImplLeadModeContractsTest(
         normalized = "".join(corpus.split())
         for contract in required_contracts:
             self.assertIn("".join(contract.split()), normalized)
+        eval_33 = corpus.split("## EVAL-33:", 1)[1].split("## EVAL-34:", 1)[0]
+        eval_34 = corpus.split("## EVAL-34:", 1)[1].split("## EVAL-35:", 1)[0]
+        for case_name, case in (("EVAL-33", eval_33), ("EVAL-34", eval_34)):
+            with self.subTest(case=case_name):
+                self.assertIn("failure_impact.reasons:", case)
+                self.assertIn("implementation_complexity.reasons:", case)
 
     def test_repository_decision_corpus_rejects_legacy_risk(self) -> None:
         """Observe planning and Executor rejection of legacy risk input."""
@@ -282,6 +290,8 @@ class ImplLeadModeContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
                 self.assertNotIn("branches[].risk", text)
                 self.assertNotIn("risk.level", text)
+                self.assertNotIn("低リスク", text)
+                self.assertNotIn("risk 差", text)
 
     def test_repository_workflows_apply_mode_specific_qa_and_parent_verification(
         self,

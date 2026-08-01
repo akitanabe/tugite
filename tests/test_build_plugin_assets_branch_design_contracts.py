@@ -283,7 +283,7 @@ class PlanImplementationBranchesContractsTest(
             "4. 依存関係の複雑性",
             "5. 調査・仮説検証の必要性",
             "変更量が1行でも、権限判定やデータ削除条件に関わる場合は `high` とする。",
-            "判定に使った観点はそれぞれの `reasons` に記録する。",
+            "判定に使った観点は `implementation_complexity.reasons` に記録する。",
             "決定表をここに再掲しない。",
         )
         level_contracts = (

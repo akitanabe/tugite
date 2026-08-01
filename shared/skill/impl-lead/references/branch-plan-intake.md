@@ -97,7 +97,7 @@ Branch Plan の修正を要求する。
 `{adaptive, strict}` は `implementation_complexity.level` の3値に対して2値しか使わず、`{adaptive, standard}` との差は
 `medium` だけでなく `low` にも現れる。`{adaptive, strict}` で `lite` が必要な枝は、理由を記録した
 手動上書きで降格する。表の側で `low → lite` に戻すと、`strict` を指定したユーザーの意図に反して
-低リスク判定の誤りが無検証のまま通る。
+low complexity / 実装複雑度の判定誤りが無検証のまま通る。
 
 `shared_foundation` は親が委譲前に実装する明示的な例外であり委譲枝ではないため、枝 mode の
 導出対象外とする。親は現行どおり `verification` を実行して基準 commit にする。実行前サマリーの
