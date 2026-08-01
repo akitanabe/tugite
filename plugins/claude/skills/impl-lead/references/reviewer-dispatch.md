@@ -13,11 +13,11 @@
 
 ## 専門 reviewer
 
-専門 reviewer は特定の risk を深く確認する役割であり、専門 reviewer を汎用コードレビューの代替にしない。
+専門 reviewer は `failure_impact.reasons` に記録された具体的な失敗影響を深く確認する役割であり、専門 reviewer を汎用コードレビューの代替にしない。
 専門 reviewer は mode 名だけを理由に一律起動しない。原則として次の場合だけ使用する。
 
 - ユーザーが専門 reviewer を明示的に要求した場合。
-- 親が reviewer の責務と一致する具体的なリスクを特定した場合。
+- 親が reviewer の責務と一致する具体的な `failure_impact.reasons` を特定した場合。
 
 | Reviewer | 対象リスク |
 | --- | --- |
@@ -28,11 +28,12 @@
 `responsibility-boundary-reviewer` の対象リスクは、複数層、複数の外部 I/O、新しい abstraction・adapter・service、
 責務混在の疑いのいずれかを認めたときに成立する。
 
-対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
+`failure_impact.reasons` と責務が一致する専門 reviewer を選ぶ。`implementation_complexity` や枝 mode だけを
+理由に専門 reviewer を選ばない。対象リスクがない専門 reviewer を無条件で起動しない。起動する場合は対象リスクと review 範囲を明示する。
 reviewer は最終的な受け入れ判断を行わない。親が diff、テスト、検証結果を確認し、最終的な受け入れを判断する。
 
-risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、起動時に渡す Data の受け渡し規約、
-または[枝レビューの4相](branch-review.md) の「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。
+failure_impact.reasons による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、起動時に渡す Data の受け渡し規約、
+または[枝レビューの4相](branch-review.md) の「再起動対象」のように failure impact 以外の軸で起動対象を定める規約として書く。
 
 ### reviewer へ渡すコンテキスト
 

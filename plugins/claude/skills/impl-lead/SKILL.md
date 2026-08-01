@@ -24,12 +24,12 @@ Implementer は実装を担当するが、最終的な品質責任と受け入�
 
 1. 経路の選択 — `direct`（この skill の外）か、委譲（この skill）か。
 2. 配分方針の選択 — 委譲する場合に、配分方針 `policy` と基準 `baseline` を決める。
-3. 枝 mode の導出 — `policy`、`baseline`、枝の `risk.level` から枝ごとの mode を導く。
+3. 枝 mode の導出 — `policy`、`baseline`、枝の `implementation_complexity.level` から枝ごとの mode を導く。
 
 ```text
 配分方針  policy   : fixed | adaptive
 基準      baseline : lite | standard | strict
-枝 mode            : lite | standard | strict   ← policy / baseline と枝の risk.level から導出する
+枝 mode            : lite | standard | strict   ← policy / baseline と枝の implementation_complexity.level から導出する
 ```
 
 `adaptive` は新しい実装フローではなく、既存の `lite` / `standard` / `strict` を枝へ割り当てる配分方針である。
@@ -42,7 +42,7 @@ Implementer は実装を担当するが、最終的な品質責任と受け入�
 | `direct` | — | — | この skill を発火しない skill 外の経路。委譲要求がなく、仕様が明確で影響範囲が閉じ、親が直接処理する変更。 |
 | 指定なし | `adaptive` | `standard` | 通常利用のデフォルト。mode 未指定の明示的な委譲でもこれを選ぶ。 |
 | `standard` / `standard-adaptive` | `adaptive` | `standard` | 通常の実装委譲。 |
-| `strict` / `strict-adaptive` | `adaptive` | `strict` | 全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` にしない。`standard-adaptive` より保守的に導出する。 |
+| `strict` / `strict-adaptive` | `adaptive` | `strict` | 全体として厳格な確認を要求するが、明らかに低 complexity の枝まで一律 `strict` にしない。`standard-adaptive` より保守的に導出する。 |
 | `strict-full` | `fixed` | `strict` | 全枝へ `strict` を固定適用する。枝ごとの導出を行わない。 |
 | `lite` | `fixed` | `lite` | 全枝を軽量フローで処理する。枝ごとの導出を行わない。ユーザーが明示し、仕様が明確で影響範囲が局所的、容易に戻せる変更にだけ選ぶ。 |
 
@@ -51,7 +51,7 @@ mode 未指定はすべて `adaptive` へ写す。今後語彙を追加する場
 
 `lite` は名前で全枝固定を表さないため、この表で `{fixed, lite}` と定義することで担保する。`lite` の
 adaptive 化が必要になった場合の変更対象は、語彙の名前ではなくこの定義である。`lite` を `adaptive` の
-`baseline` にはしない。`baseline` を `lite` にすると low risk 枝の割り当て先が `lite` しかなく導出が
+`baseline` にはしない。`baseline` を `lite` にすると low complexity 枝の割り当て先が `lite` しかなく導出が
 恒等写像になり、medium 以上を引き上げる用途は `{adaptive, standard}` と同一になるため、独立した
 配分方針として意味を持たない。
 
@@ -76,9 +76,13 @@ Implementation Plan を渡して実装までの一括実行を直接要求され
 
 ### 枝 mode の導出
 
-`policy: adaptive` では、`baseline` と枝の `risk.level` の決定表で枝ごとの mode を導出する。
+`policy: adaptive` では、`baseline` と枝の `implementation_complexity.level` の決定表で枝ごとの mode を導出する。
 決定表の正本は [Branch Plan の受け入れ](references/branch-plan-intake.md) とする。
 `policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。
+
+adaptive の枝 mode は `implementation_complexity.level` だけから導出する。`failure_impact` は adaptive mode の
+直接導出に使わない。`failure_impact` は `{fixed, lite}` の安全性に関する `delegation_mode_proposal` に使う。
+mode の理由の正本は `implementation_complexity.reasons` とする。
 
 委譲 mode の強度は `lite < standard < strict` とする。導出した枝 mode は Branch Plan へ書き戻さず、
 実行 Data として保持して最終報告で報告する。
@@ -93,13 +97,14 @@ Implementation Plan を渡して実装までの一括実行を直接要求され
 設定することは、この親都合の変更に含めない。ユーザーが mode を明示して一括実行を要求したことが、
 この引き上げの授権を兼ねる。引き上げ先は出力条件表に委ね、この原稿で別の値を選ばない。
 引き上げ前後の `{policy, baseline}` を記録し、引き上げが生むリスクをユーザーへ報告する。
+proposal の安全性判断は `failure_impact.level` を入力にする。
 
 枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。導出表を逸脱した割り当てだけを
 引き上げ / 引き下げとして扱う。
 
-mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。導出結果より高い mode で枝を実行する
-場合も、枝単位で具体的なリスクをユーザーへ報告する。`lite` の選択条件を満たさなくなった場合は
-`standard` 以上へ引き上げる。`standard` では扱えないリスクが判明した場合は `strict` へ引き上げる。
+mode を引き上げた場合は、その具体的な実装複雑度をユーザーへ報告する。導出結果より高い mode で枝を実行する
+場合も、枝単位で具体的な実装複雑度をユーザーへ報告する。`lite` の選択条件を満たさなくなった場合は
+`standard` 以上へ引き上げる。`standard` では扱えない実装複雑度が判明した場合は `strict` へ引き上げる。
 仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。
 
 ## 実行前サマリー
@@ -109,7 +114,7 @@ mode を引き上げた場合は、その具体的なリスクをユーザーへ
 - 解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` として解釈されたことを
   確認できるようにする。
 - 枝 mode ごとの件数。
-- 各枝の `risk.level`、導出した mode、手動上書きの有無。
+- 各枝の `failure_impact.level`、`implementation_complexity.level`、導出した mode、手動上書きの有無。
 
 ```text
 Mode: standard-adaptive  (policy: adaptive / baseline: standard)
@@ -119,11 +124,11 @@ Branch allocation:
   standard 3
   lite     1
 
-1. authorization-check  high    → strict
-2. domain-logic         medium  → standard
-3. repository-update    medium  → standard
-4. api-response         low     → lite → standard  (override)
-5. label-text           low     → lite
+1. authorization-check  impact:high / complexity:high    → strict
+2. domain-logic         impact:low  / complexity:medium  → standard
+3. repository-update    impact:medium / complexity:medium → standard
+4. api-response         impact:medium / complexity:low     → lite → standard  (override)
+5. label-text           impact:low / complexity:low        → lite
 ```
 
 枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。実行コストは実効 mode で決まるため、

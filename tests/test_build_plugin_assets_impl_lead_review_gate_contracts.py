@@ -40,7 +40,7 @@ class ImplLeadReviewGateContractsTest(
         }
         required_rules = (
             "ユーザーが専門 reviewer を明示的に要求した場合。",
-            "親が reviewer の責務と一致する具体的なリスクを特定した場合。",
+            "親が reviewer の責務と一致する具体的な `failure_impact.reasons` を特定した場合。",
             "専門 reviewer を汎用コードレビューの代替にしない。",
             "専門 reviewer は mode 名だけを理由に一律起動しない。",
             "対象リスクがない専門 reviewer を無条件で起動しない。",
@@ -133,13 +133,13 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Keep the specialist launch conditions in one section and subordinate the rest."""
-        # 正本宣言は risk 軸へ限定する。無限定にすると「再起動対象」節が持つ
+        # 正本宣言は failure impact 軸へ限定する。無限定にすると「再起動対象」節が持つ
         # 「レビューループ round の起動対象を定める唯一の規約」と排他になり、
         # risk 成立と無関係な第1類型の再起動が正本側の読みで打ち消される。
         single_source_declaration = (
-            "risk による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
+            "failure_impact.reasons による専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
             "起動時に渡す Data の受け渡し規約、または[枝レビューの4相](branch-review.md)の"
-            "「再起動対象」のように risk 以外の軸で起動対象を定める規約として書く。"
+            "「再起動対象」のように failure impact 以外の軸で起動対象を定める規約として書く。"
         )
         subordination_contracts = (
             "[専門 reviewer](reviewer-dispatch.md) の起動条件に従って起動する",
@@ -205,7 +205,7 @@ class ImplLeadReviewGateContractsTest(
                 self.assertIn(
                     self._normalize_contract(
                         "この手順は起動可否を定めず、渡す Data と diff の受け渡しだけを定める。"
-                        "risk による起動条件は"
+                        "failure_impact.reasons による起動条件は"
                         "[専門 reviewer](reviewer-dispatch.md) に従う"
                     ),
                     normalized_step_5,
@@ -213,7 +213,7 @@ class ImplLeadReviewGateContractsTest(
                 # 渡す Data の列挙は「reviewer 起動テンプレート」節がこの手順を名指しで
                 # 参照しているため、受け渡し規約として保持する。
                 for handoff_data in (
-                    "task、AC、commit 範囲、変更ファイル、diff text、対象 risk",
+                    "task、AC、commit 範囲、変更ファイル、diff text、対象となる `failure_impact.reasons`",
                     "diff artifact の絶対 path を渡すことを既定とし",
                 ):
                     self.assertIn(
@@ -711,7 +711,7 @@ class ImplLeadReviewGateContractsTest(
             "EVAL-31 parent decision",
         )
 
-        eval_32 = self._corpus_case(corpus, "## EVAL-32:", "# 結果記録")
+        eval_32 = self._corpus_case(corpus, "## EVAL-32:", "## EVAL-33:")
         eval_32_paragraphs = self._corpus_positive_paragraphs(eval_32)
         self.assertTrue(
             any(

@@ -156,9 +156,9 @@ report を生成しない。
 
 ## Implementation branches
 
-| Logical worktree ID | Branch (sanitized or omitted) | Implementer role | Risk level | Derived mode | Manual override | Cleanup state / reason | Integration state | Decision |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|  |  |  |  |  |  |  |  | `Accepted` / `Rejected` / `Needs revision` |
+| Logical worktree ID | Branch (sanitized or omitted) | Implementer role | Failure impact | Implementation complexity | Derived mode | Manual override | Cleanup state / reason | Integration state | Decision |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  |  |  |  |  | `Accepted` / `Rejected` / `Needs revision` |
 
 ## Acceptance Criteria → test
 
@@ -234,5 +234,8 @@ mode の両方が読み取れるように記録する。降格には理由の記
 条件)自体は [Branch Plan の受け入れ](branch-plan-intake.md) を正本とし、ここでは記録項目としてだけ
 扱う。
 
-reviewer を起動しなかった場合も理由を記録する。対象 risk がないことは有効な理由である。
+mode は implementation complexity から導出する。Failure impact は安全性の記録として保持し、
+Derived mode の入力として扱わない。
+
+reviewer を起動しなかった場合も理由を記録する。対象となる failure impact がないことは有効な理由である。
 最終判断は親だけが記入する。

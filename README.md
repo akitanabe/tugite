@@ -59,7 +59,7 @@
 
 1. **経路の選択** — `direct`(この skill の外)か、委譲(この skill)か。
 2. **配分方針の選択** — 委譲する場合に、配分方針 `policy`(`fixed` / `adaptive`)と基準 `baseline`(`lite` / `standard` / `strict`)を決めます。
-3. **枝 mode の導出** — `policy`、`baseline`、枝の `risk.level` から枝ごとの mode(`lite` / `standard` / `strict`)を導きます。
+3. **枝 mode の導出** — `policy`、`baseline`、枝の `implementation_complexity.level` から枝ごとの mode(`lite` / `standard` / `strict`)を導きます。
 
 `direct` は委譲 mode ではなく、親エージェントが直接処理する、この skill の外にある route です。委譲要求がなく、仕様が明確で影響範囲が閉じる変更に選び、配分方針や枝 mode と同じ層に並べて選びません。委譲する場合は、まず配分方針を選び、次に枝ごとの mode を導出します。
 
@@ -76,9 +76,14 @@
 
 ### 枝 mode の決定表
 
-`policy: adaptive` では、`baseline` と枝の `risk.level` から次の決定表で枝ごとの mode を導出します。`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用します。
+各枝は、失敗範囲・可逆性・外部副作用・security・data整合性・後方互換性を表す
+`failure_impact` と、仕様明確さ・既存pattern・残存判断・依存複雑性・調査を表す
+`implementation_complexity` を独立して持ちます。`policy: adaptive` では、`baseline` と枝の
+`implementation_complexity.level` から次の決定表で枝ごとの mode を導出します。
+`failure_impact` は adaptive mode の直接導出には使わず、`fixed` / `lite` の安全助言に使います。
+`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用します。
 
-| policy | baseline | `risk.level: low` | `medium` | `high` |
+| policy | baseline | `implementation_complexity.level: low` | `medium` | `high` |
 | --- | --- | --- | --- | --- |
 | `fixed` | `lite` | `lite` | `lite` | `lite` |
 | `fixed` | `strict` | `strict` | `strict` | `strict` |
@@ -91,7 +96,7 @@
 
 ### v1 からの移行
 
-v2.0.0 で `strict` の意味が変わりました。旧 `strict`(全枝固定)は新語彙の `strict-full` に対応します。新しい `strict` / `strict-adaptive` は、枝の `risk.level` に応じて枝ごとに mode を導出する配分方針を指し、旧 `strict` より枝単位では軽くなり得ます。
+v2.0.0 で `strict` の意味が変わりました。旧 `strict`(全枝固定)は新語彙の `strict-full` に対応します。新しい `strict` / `strict-adaptive` は、枝の実装複雑度に応じて枝ごとに mode を導出する配分方針を指し、旧 `strict` より枝単位では軽くなり得ます。
 
 | 指定 | 変更前(v1) | 変更後(v2) |
 | --- | --- | --- |
@@ -119,11 +124,11 @@ v2.0.0 で `strict` の意味が変わりました。旧 `strict`(全枝固定)�
 
 ### standard / standard-adaptive: 小機能・validation rule・振る舞い変更
 
-通常の小機能、validation rule の追加、test を伴う振る舞い変更を明示的に委譲する場合、または mode 未指定で委譲する場合は `standard`(配分方針は `{adaptive, standard}`)を使います。枝の `risk.level` が `high` なら `strict`、`low` なら `lite` へ枝ごとに引き下げ/引き上げられます。親は AC と境界値・異常系を具体化し、専用 worktree で実装させます。Implementer は Red 証跡と AC → test → 期待値の根拠の対応を返し、親は diff と test を確認して、統合後の green と最終判断まで担います。
+通常の小機能、validation rule の追加、test を伴う振る舞い変更を明示的に委譲する場合、または mode 未指定で委譲する場合は `standard`(配分方針は `{adaptive, standard}`)を使います。枝の `implementation_complexity.level` が `high` なら `strict`、`low` なら `lite` へ枝ごとに導出されます。親は AC と境界値・異常系を具体化し、専用 worktree で実装させます。Implementer は Red 証跡と AC → test → 期待値の根拠の対応を返し、親は diff と test を確認して、統合後の green と最終判断まで担います。
 
-### strict / strict-adaptive: 失敗コストが高い変更
+### strict / strict-adaptive: 実装複雑度が高い変更
 
-本番 data migration、file import / export、認証、破壊的操作のような変更でも、名前だけで一律に決めません。失敗コスト、復旧の難しさ、部分失敗時の整合性、認可の誤りという具体的なリスクが高い場合に `strict`(配分方針は `{adaptive, strict}`)を使います。`medium` / `high` risk の枝は `strict` に、`low` risk の枝は(`lite` ではなく)`standard` に導出されます。各枝は同じ実装枝、Implementer context、worktree でテスト計画 → Red → Green → Refactor を段階 gate に分け、親が各段階と統合後の green を確認します。
+仕様や責務境界に重要な判断が残る、非自明なalgorithm・concurrencyを含む、または調査・仮説検証が必要な場合に `strict`(配分方針は `{adaptive, strict}`)を使います。`medium` / `high` complexity の枝は `strict` に、`low` complexity の枝は(`lite` ではなく)`standard` に導出されます。各枝は同じ実装枝、Implementer context、worktree でテスト計画 → Red → Green → Refactor を段階 gate に分け、親が各段階と統合後の green を確認します。高い failure impact だけでは adaptive mode を strict にしません。
 
 ### strict-full: 全枝を一律 strict にする変更
 

@@ -93,12 +93,16 @@ plugins/codex/install/install-agents.sh --force --repo <repo>
 
 Custom agent の配置と設定形式については、[Codex subagents の公式ドキュメント](https://developers.openai.com/codex/agent-configuration/subagents)を参照してください。
 
+Branch Plan は `failure_impact` と `implementation_complexity` を独立して保持します。`adaptive` の枝 mode は
+implementation complexity だけから導出し、failure impact は `fixed` / `lite` の安全助言に使います。
+complexity が high の枝は `strict` 候補です。
+
 ## Custom agent
 
 | Agent | 担当 |
 | --- | --- |
-| `implementer` | 仕様が明確で範囲が閉じた通常実装 |
-| `senior-implementer` | 設計判断や広い影響範囲を伴う高難度実装 |
+| `implementer` | implementation complexity が low / medium で残る判断が少ない通常実装 |
+| `senior-implementer` | implementation complexity が high、または非自明な設計・algorithm・concurrency判断が残る実装 |
 | `expert-implementer` | 事前審査を通過した、親相当の推論能力が必要な実装 |
 | `expert-selection-reviewer` | expert の高い実行コストを正当化する選択理由の事前審査 |
 | `responsibility-boundary-reviewer` | 責務混在、境界違反、副作用分散のレビュー |

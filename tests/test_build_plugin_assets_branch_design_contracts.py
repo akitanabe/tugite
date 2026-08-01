@@ -182,11 +182,11 @@ class PlanImplementationBranchesContractsTest(
             "Executor が {adaptive, standard} を採用する。",
             "`{adaptive, lite}` と `{fixed, standard}` は入力語彙が存在しないため無効とし、"
             "表に含めない。",
-            "`baseline` を `lite` にすると low risk 枝の割り当て先が `lite` しかなく導出が"
+            "`baseline` を `lite` にすると low complexity 枝の割り当て先が `lite` しかなく導出が"
             "恒等写像になり、`medium` 以上を引き上げる用途は `{adaptive, standard}` と"
             "同一になるため、独立した配分方針として意味を持たない。",
             "`{fixed, standard}` は全枝固定を明示する入力語彙が存在しないため到達できない。"
-            "仮に語彙を足しても `{adaptive, standard}` は low risk 枝だけを `lite` に落とし"
+            "仮に語彙を足しても `{adaptive, standard}` は low complexity 枝だけを `lite` に落とし"
             "他は `standard` のままなので、品質面で下回らずコストだけが下がり、優位性がない。",
         )
         valid_combinations = (
@@ -241,7 +241,7 @@ class PlanImplementationBranchesContractsTest(
             "提案が必要なのは `{fixed, lite}` が枝の `failure_impact` と整合しない場合だけである。",
             "`{fixed, strict}` に対して降格を提案しない。",
             "引き上げだけを提案する非対称性は、コストの削減より品質の担保を優先する"
-            "判断であり、low risk 枝から `lite` を提案しないのと同じ理由である。",
+            "判断であり、low failure impact 枝から `lite` を提案しないのと同じ理由である。",
         )
         proposal_rows = (
             "| `{fixed, lite}` | `high` を含む | `{adaptive, strict}` を提案 |",

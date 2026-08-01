@@ -289,7 +289,7 @@ class ImplLeadReviewLoopContractsTest(
                     "直前のdiff変更のきっかけとなった指摘を出したreviewer、"
                     "および同じ競合解消で修正案が採用されなかった競合当事者",
                     "指摘が出た相は問わず",
-                    "変更後に対象riskが新たに成立するreviewer",
+                    "変更後にfailure_impact.reasonsの対象が新たに成立するreviewer",
                     "第2類型の判定対象は専門reviewerである",
                     "必須完了ゲート2本は第1類型と第2類型の対象外とし、レビューループroundの起動対象から除外する",
                     "この2類型は起動し、これ以外は起動しない",
@@ -818,7 +818,7 @@ class ImplLeadReviewLoopContractsTest(
             ),
             (
                 "## EVAL-32:",
-                "# 結果記録",
+                "## EVAL-33:",
                 (
                     "security-side-effect-reviewer は「token が log に出る可能性がある」と指摘するが",
                     "file / 行、再現手順、参照 Data の path / id のいずれも示さず",

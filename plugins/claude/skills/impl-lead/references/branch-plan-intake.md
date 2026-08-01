@@ -55,26 +55,36 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
 2. `delegation.authorized: true` かつ `authorized_by: user` である。
 3. `unresolved_decisions` が空である。
 4. blocking violation code 表のすべての検査規則を入力 Data から再計算し、違反が0件である。
-5. 全枝の `risk.level` が `low` / `medium` / `high` のいずれかである。欠落または3値以外の枝が
-   ある場合は決定的に導出できないため、委譲を開始せず Branch Plan の修正を要求する。
+5. 全枝に `failure_impact` と `implementation_complexity` が存在する。両 field の `level` が
+   `low` / `medium` / `high` のいずれかである。両 field の `reasons` が欠落しておらず、非空の
+   文字列配列である。欠落、配列以外、空配列、空文字、非文字列要素は
+   `branch-assessment-missing` または `branch-assessment-invalid` として委譲を開始せず、
+   Branch Plan の修正を要求する。旧 `risk` が単独で存在する場合、または旧 `risk` が新しい field と
+   混在する場合は `legacy-risk-present` とする。旧 `risk` から `failure_impact` または
+   `implementation_complexity` を推測しない。Branch Plan の修正を要求し、委譲を開始しない。
+
+欠落または3値以外の枝がある場合は決定的に導出できないため、委譲を開始せず
+Branch Plan の修正を要求する。
 
 いずれかを満たさない場合は実装を開始せず、Branch Plan の修正(または委譲要求の有無の確認)を
 要求する。
 
 5項目を満たした後、委譲開始前に枝ごとの mode を導出する。
 
+- 全枝の `implementation_complexity.level` が `low` / `medium` / `high` のいずれかである。
 - `delegation.requested_mode` を入力語彙の写像ではなく Data として受け取り、`null` の場合は
   `{adaptive, standard}` を採用する。
 - 「枝 mode の決定表」から枝ごとの mode を再計算する。planning Skill 側の申告や
   `delegation_mode_proposal` の内容を根拠にしない。
+- `failure_impact` は枝 mode の直接導出に使わない。
 - 導出結果は実行 Data として保持し、Branch Plan へ書き戻さない。
 
 ## 枝 mode の決定表
 
-配分方針 `policy`、基準 `baseline`、枝の `risk.level` から枝ごとの mode を導出する。
+配分方針 `policy`、基準 `baseline`、枝の `implementation_complexity.level` から枝ごとの mode を導出する。
 この表を正本とし、planning Skill と Executor は同じ表を使う。
 
-| policy | baseline | `risk.level: low` | `medium` | `high` |
+| policy | baseline | `implementation_complexity.level: low` | `medium` | `high` |
 | --- | --- | --- | --- | --- |
 | `fixed` | `lite` | `lite` | `lite` | `lite` |
 | `fixed` | `strict` | `strict` | `strict` | `strict` |
@@ -82,11 +92,11 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
 | `adaptive` | `strict` | `standard` | `strict` | `strict` |
 
 `policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。`fixed` の2行は、
-`risk.level` を読まずに `baseline` を適用することを表の上で確認できるように置く。
+`implementation_complexity.level` を読まずに `baseline` を適用することを表の上で確認できるように置く。
 
 `{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。「判断に迷う場合は基準側へ
 倒す」方針を `strict` baseline では `low` にも適用するのが一貫するためである。この結果
-`{adaptive, strict}` は `risk.level` の3値に対して2値しか使わず、`{adaptive, standard}` との差は
+`{adaptive, strict}` は `implementation_complexity.level` の3値に対して2値しか使わず、`{adaptive, standard}` との差は
 `medium` だけでなく `low` にも現れる。`{adaptive, strict}` で `lite` が必要な枝は、理由を記録した
 手動上書きで降格する。表の側で `low → lite` に戻すと、`strict` を指定したユーザーの意図に反して
 低リスク判定の誤りが無検証のまま通る。
@@ -102,13 +112,14 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
 
 - 引き上げ(`lite → standard`、`standard → strict`)は理由の記録を必須としない。
 - 降格は理由の記録を必須とする。理由なしの降格は受け付けない。
-- `risk.level: high` の枝を `lite` へ直接降格させない。
+- `implementation_complexity.level: high` の枝を `lite` へ直接降格させない。
 - 判断材料が不足している場合は `baseline` 側へ倒す。
 - 上書きは最終報告に含める。
 
-`risk.level` そのものが誤っていると判断した場合は、上書きではなく Branch Plan の `risk` を修正して
-再検証する。上書きを risk 修正の代用にしない。実行 Data 側だけを書き換えると、誤った `risk` が
-Branch Plan に残り、後続枝の導出と `delegation_mode_proposal` の再計算がその誤りを根拠に続く。
+`implementation_complexity.level` そのものが誤っていると判断した場合は、上書きではなく Branch Plan の
+`implementation_complexity` を修正して再検証する。上書きを implementation complexity 修正の代用にしない。
+実行 Data 側だけを書き換えると、誤った `implementation_complexity` が Branch Plan に残り、後続枝の
+mode 導出がその誤りを根拠に続く。
 
 上書きを受け付ける入力経路は本 reference で規定しない。Branch Plan の受け渡しと同じく親エージェントの
 責務とする。
@@ -122,9 +133,10 @@ Branch Plan に残り、後続枝の導出と `delegation_mode_proposal` の再�
   導出結果が `strict` 未満の場合、これは枝単位の mode 引き上げに当たる。Executor は SKILL.md の
   引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。引き上げが受け入れられない
   場合は stages を実行せず、枝の再分割または stages の削除を要求する。
-- stages を宣言する枝は実質的に `risk.level` が `low` ではない。`{adaptive, standard}` かつ
-  `risk.level: low` かつ stages 宣言という組み合わせが出た場合は、stages 側ではなく `risk.level` の
-  付け方を疑い、planning へ差し戻すかどうかを判断する。
+- stages を宣言する枝は実質的に `implementation_complexity.level` が `low` ではない。
+  `{adaptive, standard}` かつ `implementation_complexity.level: low` かつ stages 宣言という
+  組み合わせが出た場合は、stages 側ではなく `implementation_complexity.level` の付け方を疑い、
+  planning へ差し戻すかどうかを判断する。
 - 各 stage を `strict` の1サイクル(テスト計画 → Red → Green → Refactor)として実行する。
   stage の Red は `stage_tests` のテストだけを対象とし、後続 stage のテストを先に書かない。
   このため「後続 stage のテストが red のまま進む」状態は発生しない。

@@ -59,7 +59,7 @@ class ImplLeadModeContractsTest(
             "`direct` から委譲へ変更する場合は、ユーザーへ確認する。",
             "仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。",
             "`lite` の選択条件を満たさなくなった場合は `standard` 以上へ引き上げる。",
-            "`standard` では扱えないリスクが判明した場合は `strict` へ引き上げる。",
+            "`standard` では扱えない実装複雑度が判明した場合は `strict` へ引き上げる。",
         )
         route_contracts = (
             (
@@ -119,7 +119,7 @@ class ImplLeadModeContractsTest(
             ),
             (
                 "| `strict` / `strict-adaptive` | `adaptive` | `strict` |",
-                "全体として厳格な確認を要求するが、明らかに低リスクの枝まで一律 `strict` に"
+                "全体として厳格な確認を要求するが、明らかに低 complexity の枝まで一律 `strict` に"
                 "しない。`standard-adaptive` より保守的に導出する。",
             ),
             (
@@ -154,8 +154,8 @@ class ImplLeadModeContractsTest(
             "`policy` を親都合で `fixed` から `adaptive` へ変えない。",
             "枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。",
             "導出表を逸脱した割り当てだけを引き上げ / 引き下げとして扱う。",
-            "mode を引き上げた場合は、その具体的なリスクをユーザーへ報告する。",
-            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的なリスクを"
+            "mode を引き上げた場合は、その具体的な実装複雑度をユーザーへ報告する。",
+            "導出結果より高い mode で枝を実行する場合も、枝単位で具体的な実装複雑度を"
             "ユーザーへ報告する。",
         )
 
@@ -181,9 +181,9 @@ class ImplLeadModeContractsTest(
             "導出した mode、手動上書きの有無。",
             "Mode: standard-adaptive  (policy: adaptive / baseline: standard)",
             "Branch allocation:\n  strict   1\n  standard 3\n  lite     1",
-            "1. authorization-check  high    → strict",
-            "4. api-response         low     → lite → standard  (override)",
-            "5. label-text           low     → lite",
+            "1. authorization-check  impact:high / complexity:high    → strict",
+            "4. api-response         impact:medium / complexity:low     → lite → standard  (override)",
+            "5. label-text           impact:low / complexity:low        → lite",
             "枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。",
             "各枝の行では、上書きがある場合に「導出 mode → 上書き後の mode」の両方を示す。",
             "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
