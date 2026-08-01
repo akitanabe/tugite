@@ -276,6 +276,11 @@ class ImplLeadModeContractsTest(
             "EVAL-23": corpus.split("## EVAL-23:", 1)[1].split("## EVAL-24:", 1)[0],
         }
         expected_branch_counts = {"EVAL-18": 1, "EVAL-22": 3, "EVAL-23": 2}
+        branch_markers = {
+            "EVAL-18": ("`branches`: `b1`",),
+            "EVAL-22": ("`b-auth`:", "`b-domain`:", "`b-label`:"),
+            "EVAL-23": ("`b-migration`:", "`b-format`:"),
+        }
         for case_name, case in cases.items():
             with self.subTest(case=case_name):
                 expected_count = expected_branch_counts[case_name]
@@ -310,12 +315,53 @@ class ImplLeadModeContractsTest(
                         expected_count,
                         len(
                             re.findall(
-                                rf'{axis}\.reasons:\s*\["[^"]+"\]',
+                                rf'{axis}\.reasons:\s*\[(?:\s*"[^"]+"\s*,?)+\]',
                                 case_input,
                             )
                         ),
                     )
-
+                markers = branch_markers[case_name]
+                for index, marker in enumerate(markers):
+                    with self.subTest(case=case_name, branch=marker):
+                        start = case_input.index(marker)
+                        end_markers = markers[index + 1 :] + (
+                            "`unresolved_decisions",
+                        )
+                        end = min(
+                            position
+                            for end_marker in end_markers
+                            if (
+                                position := case_input.find(
+                                    end_marker, start + len(marker)
+                                )
+                            )
+                            != -1
+                        )
+                        branch = case_input[start:end]
+                        for axis in (
+                            "failure_impact",
+                            "implementation_complexity",
+                        ):
+                            self.assertEqual(1, branch.count(f"{axis}.level:"))
+                            self.assertEqual(1, branch.count(f"{axis}.reasons:"))
+                            self.assertEqual(
+                                1,
+                                len(
+                                    re.findall(
+                                        rf"{axis}\.level:\s*(?:low|medium|high)",
+                                        branch,
+                                    )
+                                ),
+                            )
+                            self.assertEqual(
+                                1,
+                                len(
+                                    re.findall(
+                                        rf'{axis}\.reasons:\s*\[(?:\s*"[^"]+"\s*,?)+\]',
+                                        branch,
+                                    )
+                                ),
+                            )
     def test_repository_decision_corpus_rejects_legacy_risk(self) -> None:
         """Observe planning and Executor rejection of legacy risk input."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))

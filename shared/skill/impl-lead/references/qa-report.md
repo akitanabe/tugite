@@ -237,5 +237,11 @@ mode の両方が読み取れるように記録する。降格には理由の記
 mode は implementation complexity から導出する。Failure impact は安全性の記録として保持し、
 Derived mode の入力として扱わない。
 
-reviewer を起動しなかった場合も理由を記録する。対象となる failure impact がないことは有効な理由である。
+reviewer を起動しなかった場合も理由を記録する。次の3条件をすべて満たす場合だけ、専門 reviewer の
+有効な非起動理由とする。
+
+- ユーザーによる専門 reviewer の明示がない。
+- reviewer の責務に一致する `failure_impact.reasons` がない。
+- 親 QA が返却 diff から特定した reviewer 固有の対象リスクがない。
+
 最終判断は親だけが記入する。

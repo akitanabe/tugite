@@ -546,7 +546,10 @@ class ImplLeadQaReportContractsTest(
             "判断理由",
             "Next action",
             "reviewer を起動しなかった場合も理由を記録",
-            "対象となる failure impact がないことは有効な理由",
+            "ユーザーによる専門 reviewer の明示がない",
+            "reviewer の責務に一致する `failure_impact.reasons` がない",
+            "親 QA が返却 diff から特定した reviewer 固有の対象リスクがない",
+            "3条件をすべて満たす場合だけ、専門 reviewer の有効な非起動理由とする",
             "最終判断は親だけが記入",
         )
 
@@ -555,6 +558,12 @@ class ImplLeadQaReportContractsTest(
                 normalized = "".join(report.split())
                 for field in required_fields:
                     self.assertIn("".join(field.split()), normalized)
+                self.assertNotIn(
+                    "".join(
+                        "対象となる failure impact がないことは有効な理由".split()
+                    ),
+                    normalized,
+                )
 
                 template = self._extract_qa_report_template(report)
                 required_template_fields = (
