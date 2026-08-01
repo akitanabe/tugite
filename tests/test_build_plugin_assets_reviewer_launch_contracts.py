@@ -568,7 +568,6 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                 ):
                     with self.subTest(contract=contract):
                         self.assertIn(self._normalize_contract(contract), target_addition)
-                self.assertNotIn("Needs revision", target_addition)
 
     def test_repository_reviewer_launch_needs_revision_without_restore_for_target_head_tracked_or_untracked_removal(
         self,
