@@ -701,7 +701,8 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "review-patch-refactorer ではなく元 Implementer へ差し戻す",
-                    "再設計後の新しい同一 snapshot では initial レビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施してから受け入れる",
+                    "再設計後の新しい同一 snapshot では initial レビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が成立する専門 reviewer を実施する",
+                    "親の最終受入判断は相4の完了後に行う",
                 ),
                 (
                     "競合している reviewer 名",
@@ -731,12 +732,14 @@ class ImplLeadReviewLoopContractsTest(
                     "security-side-effect-reviewer は「token が log に出る可能性がある」と指摘するが",
                     "file / 行、再現手順、参照 Data の path / id のいずれも示さず",
                     "repository の現状からも該当出力を確認できない",
+                    "完了レビュー群で writing-principles-reviewer が no-change を返し",
                 ),
                 (
                     "evidence 不成立の finding は問題を検証できないため、finding ごとの理由付き不採用として完了する",
+                    "完了レビュー群の no-change を受領した後",
                 ),
                 (
-                    "修正 routing をしない、snapshot 変更なしで完了し、AC 1〜2 の既存 green 検証を親が確認する",
+                    "完了レビュー群の実施を完了してから、修正 routing をしない、snapshot 変更なしで完了し、AC 1〜2 の既存 green 検証を親が確認する",
                 ),
                 (
                     "review-patch-refactorer または元 Implementer へ修正 routing する",

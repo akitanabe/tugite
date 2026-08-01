@@ -95,9 +95,7 @@ branch を一貫して撤去できた。
 5. 専門 reviewer は、返却 diff を読んで責務と一致する具体的 risk を特定した場合だけ起動する。mode や
    「念のため」を理由に全 reviewer を一律起動しない。
 6. `writing-principles-reviewer` は必須の完了ゲートであり、専門 reviewer と混同しない read-only agent として、
-   `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。この起動は initial レビュー群で
-   枝あたり最低1回であり、以降のループ round では再起動対象の規約に従う。reviewer は指摘 Data だけを
-   返し、修正先と最終判断は親が決める。
+   `lite`、`standard`、`strict` のすべてで、各実装枝を受け入れる前に必ず起動する。standard / strictは相1と相4、liteは相4で起動し、レビューループroundでは起動しない。reviewer は指摘 Data だけを返し、修正先と最終判断は親が決める。
 7. `over-engineering-reviewer` は `standard` と `strict` の必須完了ゲートであり、`lite` では起動しない。
    起動するのはレビューループが収束した確定 snapshot に対する最終レビュー群で、収束ごとに1回である。
    reviewer は基準 commit からの diff が導入した要素のうち、取り除いても Acceptance Criteria と明示された
@@ -712,7 +710,7 @@ diff だけで既存の calculator / repository / publisher との境界を判�
 - reviewer の判定を材料にしつつ、親が `Accepted` / `Rejected` / `Needs revision` を決める。
 - 振る舞いや AC の再解釈が必要な修正は元 Implementer へ戻す。局所 patch の可否は全条件を確認して決める。
 - 機能修正後、最終差分に対して `writing-principles-reviewer` の必須の read-only gate を実行する。指摘があれば
-  親が修正先を判断し、修正後の diff と test を確認して reviewer を再実行する。
+  親が修正先を判断し、修正後は親QAで diff と test 結果を確認して親が最終判断を保持する。
 
 **禁止動作**
 
@@ -784,7 +782,7 @@ Red 証跡を渡す。親自身も境界・異常系不足を hard reject とし
 - reviewer に不足 case と期待値根拠を AC の範囲で評価させ、製品仕様を広げさせない。
 - case 追加と期待値検討は元 Implementer へ戻し、局所 refactorer に代行させない。
 - 機能修正後は最終差分に対して `writing-principles-reviewer` の必須の read-only gate を実行する。指摘が
-  あれば親が修正先を判断し、修正後の diff と test を再度確認して reviewer を再実行し、最終判断を保持する。
+  あれば親が修正先を判断し、修正後は親QAで diff と test 結果を再度確認して、最終判断を保持する。
 
 **禁止動作**
 
@@ -820,7 +818,7 @@ test risk と修正先の判断は共通である。reviewer の起動と元 Imp
 
 **評価タイミング**
 
-`post-return QA`。機能的 QA が green で、専門 risk が見つからなかった後。
+`post-return QA`。standardの相1で `writing-principles-reviewer` の指摘が出た case。相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない。
 
 **入力**
 
@@ -845,6 +843,7 @@ Synthetic diff 要約:
 
 **期待する判断**
 
+standardの相1でwriting-principles-reviewerの指摘が出たcaseとして、相1の指摘routingに限り、相3・相4の実施と枝の受け入れ判断を評価対象としない。
 専門 reviewer を追加せず、`writing-principles-reviewer` を最終差分へ起動する。reviewer は自身で変更せず、
 `no-change` または指摘ID付きの Data を親へ返す。親が各指摘IDを確認して修正先または不採用を判断する。
 
@@ -856,8 +855,7 @@ Synthetic diff 要約:
 - `review-patch-refactorer` へは指摘元 reviewer、指摘ID、指摘本文、親が採用した修正条件、変更を許可するファイルを
   Data として渡す。
 - テストケース追加、期待値の再検討、仕様、設計、振る舞いの判断が必要なら元 Implementer へ差し戻す。
-- どちらの修正先でも、修正後は親QAで diff と test 結果を確認し、reviewer 再確認を行ってから親が最終判断する。
-  再確認するのはレビューループ round の再起動対象、すなわち指摘を出した `writing-principles-reviewer` である。
+- どちらの修正先でも、修正後は親QAで diff と test 結果を確認してから親が最終判断する。
 - 修正後の親QAでは、基準 commit からの diff で指摘外変更、許可範囲外変更、ファイルの追加・削除・移動が0件で
   あることを確認する。
 
@@ -885,7 +883,7 @@ mechanism だけが異なる。
 - [ ] `no-change` または指摘ID付き Data を受け取っている。
 - [ ] 親が各指摘IDを確認し、`review-patch-refactorer`、元 Implementer、不採用のいずれかを判断している。
 - [ ] `review-patch-refactorer` へ指摘ID、修正条件、許可ファイルを含む Data を渡している。
-- [ ] 修正後に親QAと reviewer 再確認を行っている。
+- [ ] 修正後に親QAで diff と test 結果を確認している。
 - [ ] 修正後の親QAで指摘外変更と許可範囲外変更が0件であることを確認している。
 - [ ] 親が最終受け入れ判断を保持している。
 
@@ -898,7 +896,7 @@ mechanism だけが異なる。
 
 **評価タイミング**
 
-`post-return QA`。`strict` 枝の Refactor 段階が完了し、最終差分が返却された時点。
+`post-return QA`。`strict` 枝の Refactor 段階が完了し、最終差分が返却された時点。相3の最終レビュー群として実施する。
 
 **入力**
 
@@ -2166,8 +2164,7 @@ AC、外部／repository 指示の優先順位、具体的失敗リスク、影�
 検証可能な代替解法を許容する。
 
 最終レビュー群の指摘を採用して diff が変わった場合はレビューループへ戻し、再起動対象が定める reviewer を起動する。
-再び `settled` に到達したら最終レビュー群を再度実施してから受け入れる。復帰した round で
-`over-engineering-reviewer` は起動しない。
+相4の完了前に枝を受け入れず、復帰した round で `over-engineering-reviewer` は起動しない。
 
 **必須動作**
 
@@ -2246,8 +2243,8 @@ Synthetic diff と reviewer findings:
 同期案は外部 side effect を rollback できず、outbox 案は外部 audit 失敗時の rollback AC を満たさないため、親が安全な
 順序を選べない。差し戻しには競合している reviewer 名、指摘を識別できる情報と内容、守る AC、優先指示、許容不能リスク、
 必要な検証、守る AC を変更しない protocol 再設計条件を渡し、この節の変更後 snapshot 再実行契約に従う。再設計は局所修正の
-域を超えるため、再設計後の新しい同一 snapshot では initial レビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が
-成立する専門 reviewer を実施してから受け入れる。この再構成起動も1 round として同じ通番で数える。
+域を超えるため、再設計後の新しい同一 snapshot では initialレビュー群の起動集合を再構成し、親QAと、変更後も対象 risk が
+成立する専門 reviewer を実施する。この再構成起動も1 round として同じ通番で数え、親の最終受入判断は相4の完了後に行う。
 
 守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねず Implementation Plan の AC 確定とユーザー確認へ
 停止し、その後 Branch Plan を再生成・再検証・再承認する。
@@ -2307,7 +2304,8 @@ Synthetic diff と reviewer findings:
 
 - 変更は profile response の serializer だけで、focused test と関連 suite は green である。
 - initial レビュー群で `writing-principles-reviewer` が `no-change` を返す。レビューループは指摘の採否記録だけで
-  `settled` に到達し、最終レビュー群で `over-engineering-reviewer` も `no-change` を返す。
+  `settled` に到達し、最終レビュー群で `over-engineering-reviewer` も `no-change` を返す。完了レビュー群で
+  `writing-principles-reviewer` が `no-change` を返し、全相の findings を受領して完了する。
 - `security-side-effect-reviewer` は「token が log に出る可能性がある」と指摘するが、file / 行、再現手順、参照 Data の
   path / id のいずれも示さず、repository の現状からも該当出力を確認できない。これは evidence 不成立 finding である。
 
@@ -2316,13 +2314,13 @@ Synthetic diff と reviewer findings:
 **期待する判断**
 
 親は各相の全対象 reviewer の結果を収集し、evidence 不成立の finding は問題を検証できないため、finding ごとの
-理由付き不採用として完了する。修正 routing をせず、snapshot 変更なしで親の最終判断を記録する。
+理由付き不採用として完了する。完了レビュー群の `no-change` を受領した後、修正 routing をせず、snapshot 変更なしで親の最終判断を記録する。
 
 **必須動作**
 
 - 各相の全対象 reviewer の `no-change` と findings を収集する。
 - evidence 不成立であること、補えなかった一次情報、採用しない理由を finding ごとの理由として記録する。
-- 修正 routing をしない、snapshot 変更なしで完了し、AC 1〜2 の既存 green 検証を親が確認する。
+- 完了レビュー群の実施を完了してから、修正 routing をしない、snapshot 変更なしで完了し、AC 1〜2 の既存 green 検証を親が確認する。
 
 **禁止動作**
 
