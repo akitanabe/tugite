@@ -101,7 +101,7 @@ SKILL_REFERENCE_NAMES = {
         "inventory-report.md",
     ),
     "plan-craft": (
-        "implementation-plan-schema.md",
+        "plan-artifacts.md",
         "plan-drafting.md",
         "adversarial-review.md",
         "overengineering-plan-review.md",
