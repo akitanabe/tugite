@@ -75,16 +75,77 @@ RETIRED_FIELD_SCAN_ROOTS = (
     Path("plugins/codex/skills/plan-craft"),
 )
 # `plan-craft` の出力はプラン文書とレビュー状態の2 artifact であり、それらを束ねた
-# 単一 Data も、その正本だった reference も存在しない。語が残ると、読者は存在しない
-# artifact を探しに行く。走査は配布原稿・生成物・利用者向け文書・評価 corpus に掛ける。
-RETIRED_PLAN_ARTIFACT_TERMS = ("Implementation Plan", "implementation-plan-schema")
-RETIRED_TERM_SCAN_ROOTS = (Path("shared"), Path("plugins"), Path("evals"))
-RETIRED_TERM_SCAN_FILES = (
-    Path("README.md"),
-    Path("CLAUDE.md"),
-    Path("AGENTS.md"),
+# 単一 Data も、その正本だった reference も、artifact の旧称も存在しない。語が残ると、
+# 読者は存在しない artifact を探しに行く。廃止語ごとに走査範囲が違うため、語と root と
+# anchor の組で持つ。root は directory も file も取り、directory は全 file を走査する。
+# 拡張子で絞ると、VERSION や installer script のような拡張子のない file・script が漏れて
+# 検査が受け入れ条件の grep より狭くなるため、絞り込みを置かない。
+# anchor は root から機械的に導かず固定 path を並べる。root を反復してガードにすると、
+# root を1つ落としたときにガードの反復も同時に減り、検査が縮んだことを検出できない。
+RETIRED_TERM_SCANS = (
+    (
+        "Implementation Plan",
+        (
+            Path("shared"),
+            Path("plugins"),
+            Path("evals"),
+            Path("README.md"),
+            Path("CLAUDE.md"),
+            Path("AGENTS.md"),
+        ),
+        (
+            Path("README.md"),
+            Path("CLAUDE.md"),
+            Path("AGENTS.md"),
+            Path("evals/workflow-decision-corpus.md"),
+            Path("shared/VERSION"),
+            Path("shared/skill/plan-craft/SKILL.md"),
+            Path("plugins/claude/README.md"),
+            Path("plugins/codex/install/install-agents.sh"),
+        ),
+    ),
+    (
+        "implementation-plan-schema",
+        (Path("shared"), Path("plugins"), Path("evals")),
+        (
+            Path("evals/workflow-decision-corpus.md"),
+            Path("shared/VERSION"),
+            Path("shared/skill/plan-craft/SKILL.md"),
+            Path("plugins/codex/skills/plan-craft/SKILL.md"),
+        ),
+    ),
+    (
+        "プラン本文",
+        (
+            Path("shared/skill/plan-craft"),
+            Path("shared/skill/feature-lead"),
+            Path("shared/agents/plan-adversarial-reviewer.md"),
+            Path("shared/agents/over-engineering-reviewer.md"),
+        ),
+        (
+            Path("shared/skill/plan-craft/SKILL.md"),
+            Path("shared/skill/plan-craft/references/plan-artifacts.md"),
+            Path("shared/skill/feature-lead/SKILL.md"),
+            Path("shared/agents/plan-adversarial-reviewer.md"),
+            Path("shared/agents/over-engineering-reviewer.md"),
+        ),
+    ),
 )
-RETIRED_TERM_SCAN_SUFFIXES = (".md", ".toml", ".json", ".yaml", ".yml")
+# 廃止 top-level field が corpus の必須動作へ戻っていないかを見る token。`plan` と `scope`
+# は一般語で、素の表記が散文に正当に現れる（「plan-craft」「scope 逸脱」）ため、この2語だけ
+# backtick 付きと YAML key 形に限る。残る3語は素の表記でも Data の field 以外に読めない。
+RETIRED_REVIEW_STATE_FIELD_TOKENS = (
+    "`plan`",
+    "plan:",
+    "`scope`",
+    "scope:",
+    "`acceptance_criteria`",
+    "acceptance_criteria",
+    "`dependencies`",
+    "dependencies",
+    "`constraints`",
+    "constraints",
+)
 # 利用者向け README は `plan-craft` の出力を artifact の数で説明する。1つの Data を
 # 返すと読める記述が残ると、README だけを読んだ利用者が後日渡す入力を1つだと考える。
 README_PATHS = (
@@ -889,34 +950,34 @@ class DraftImplementationPlanContractsTest(
                         f"{path} still names a retired plan field",
                     )
 
-    def _retired_term_scan_paths(self) -> list[Path]:
-        paths: list[Path] = []
-        for root in RETIRED_TERM_SCAN_ROOTS:
-            paths.extend(
-                sorted(
+    def _scan_paths(self, roots: tuple[Path, ...]) -> set[Path]:
+        paths: set[Path] = set()
+        for root in roots:
+            absolute = REPOSITORY_ROOT / root
+            if absolute.is_dir():
+                paths.update(
                     candidate.relative_to(REPOSITORY_ROOT)
-                    for candidate in (REPOSITORY_ROOT / root).rglob("*")
+                    for candidate in absolute.rglob("*")
                     if candidate.is_file()
-                    and candidate.suffix in RETIRED_TERM_SCAN_SUFFIXES
                 )
-            )
-        paths.extend(RETIRED_TERM_SCAN_FILES)
+            else:
+                paths.add(root)
         return paths
 
     def test_repository_manuscripts_drop_the_retired_plan_artifact_terms(self) -> None:
-        """Leave no manuscript naming the single plan Data or its retired reference."""
-        paths = self._retired_term_scan_paths()
-        for root in RETIRED_TERM_SCAN_ROOTS:
-            with self.subTest(root=str(root)):
-                self.assertTrue(
-                    any(root in path.parents for path in paths),
-                    f"{root} contributed no file to the retired-term scan",
-                )
-        for path in paths:
-            text = self._repository_text(path)
-            for term in RETIRED_PLAN_ARTIFACT_TERMS:
-                with self.subTest(path=str(path), term=term):
-                    self.assertNotIn(term, text)
+        """Leave no manuscript naming the single plan Data, its reference, or its old alias."""
+        for term, roots, anchors in RETIRED_TERM_SCANS:
+            paths = self._scan_paths(roots)
+            for anchor in anchors:
+                with self.subTest(term=term, anchor=str(anchor)):
+                    self.assertIn(
+                        anchor,
+                        paths,
+                        f"{anchor} fell out of the scan for {term}",
+                    )
+            for path in sorted(paths):
+                with self.subTest(term=term, path=str(path)):
+                    self.assertNotIn(term, self._repository_text(path))
 
     def test_readmes_describe_plan_craft_output_as_two_artifacts(self) -> None:
         """Publish the plan-craft output as two artifacts in every user-facing README."""
@@ -936,12 +997,16 @@ class DraftImplementationPlanContractsTest(
         # corpus は人手評価の入力である。廃止 field を必須動作に残すと、新設計どおりの
         # 実装が「必須動作を満たさない」と採点される。
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
-        section = corpus.split("## EVAL-25:", 1)[1].split("\n## EVAL-26:", 1)[0]
+        # 見出し番号だけでは切り出せない。`## EVAL-25:` は corpus に2つあり、番号で
+        # 分割すると無関係な case を含んだ region を検査してしまう。
+        section = corpus.split("## EVAL-25: レビュー付きプラン起草の正常収束", 1)[
+            1
+        ].split("\n## EVAL-26:", 1)[0]
         normalized = "".join(section.split())
         self.assertIn("プラン文書とレビュー状態", normalized)
-        for field in RETIRED_REVIEW_STATE_FIELDS:
-            with self.subTest(field=field):
-                self.assertNotIn(f"`{field}`", normalized)
+        for token in RETIRED_REVIEW_STATE_FIELD_TOKENS:
+            with self.subTest(token=token):
+                self.assertNotIn(token, normalized)
 
     def test_draft_skill_matches_confirmed_contract(self) -> None:
         """Separate plan approval from downstream work and keep drafting review-gated."""

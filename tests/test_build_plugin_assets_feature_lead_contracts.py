@@ -249,6 +249,11 @@ class FeatureLeadContractsTest(
             "渡された入力、issue 本文や会話内のプラン）はすべて `plan-craft` から開始する。",
             "プラン文書だけを渡された場合はレビュー状態が無いものとして扱い、その path から"
             "兄弟のレビュー状態を解決しない。",
+            # 命名規約が `<slug>.md` と `<slug>-review.yaml` を対にしているため、規約を
+            # 知る読者ほど「同じ slug を機械的に探せばよい」という単純化に届く。それが
+            # 誤りである理由を原稿へ残させる。
+            "レビュー状態は承認の記録であり、推測で解決すると、そのプラン文書に対応しない"
+            "レビュー状態を承認済みとして扱う経路が開くためである。",
             "`plan_document: 会話内` のレビュー状態は、プラン文書を会話上に貼り直されても"
             "開始段判定を通さず、`plan-craft` から開始する。",
             "`status` が `awaiting_review` または `blocked` のレビュー状態を"
@@ -270,7 +275,7 @@ class FeatureLeadContractsTest(
             "要求原文をこれに充て、`branch-design` から開始する場合は確定済みプラン文書の"
             "見出し行と「scope」節と「Acceptance Criteria」節が要求原文の位置を占める。",
             "開始段より前の段は実行せず、開始段以降の段は飛ばさない。",
-            "`branch-design` を省いてプラン文書を直接 `impl-lead` へ渡さない。",
+            "`branch-design` を省いてプラン文書とレビュー状態を直接 `impl-lead` へ渡さない。",
         )
 
         for platform, text in self._generated_texts().items():
