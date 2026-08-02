@@ -48,9 +48,9 @@
 - Branch Plan の承認(`approval`)と委譲開始権限(`delegation`)は独立した Data とする。承認は
   計画の確定だけを意味し、委譲開始はユーザーの明示的な委譲要求だけを根拠に親エージェントが
   権限を設定する。
-- `validation.blocking` は安定した code を持つ violation の配列とし、planning Skill と Executor が
-  同じ検査規則を共有する。承認可否は blocking violation の有無だけで決まり、自己評価 boolean は
-  参考情報に限定する。
+- Set と Branch Plan の `validation.blocking` は、どちらも安定した code を持つ violation の配列とし、
+  planning Skill と Executor が同じ検査規則を共有する。承認可否は blocking violation の有無だけで
+  決まり、自己評価 boolean は参考情報に限定する。
 - `allowed_paths` は変更を許可する物理的なファイル範囲、`forbidden_paths` は変更を禁止する物理的な
   ファイル範囲を表す。`out_of_scope` は許可範囲内でもこの枝では担当しない責務・作業を表し、
   パス制約とは独立して扱う。
@@ -100,7 +100,7 @@ branch_plans:
   - id: BP-1                    # Set 全域で一意
     status: blocked | awaiting_review | approved
     # blocked:          「blocking violation code」の節が定める blocked の定義に従う
-    # awaiting_review:  confirmation_mode: review で blocking なし。ユーザー承認待ち
+    # awaiting_review:  confirmation_mode: review で Set と自身に blocking なし。ユーザー承認待ち
     # approved:         承認済み。Set と自身の blocking がすべて空であることが前提
     confirmation_mode: review | auto
     # すべての status で保持する。既定は review。auto はユーザーが明示した場合のみ。
@@ -199,7 +199,7 @@ branch_plans:
 ## blocking violation code
 
 planning Skill と Executor は同じ検査規則を使う。Executor は planning Skill の自己申告を信用せず、
-入力 Data から再計算する。`帰属` は、その code をどの層の Data から再計算し、どちらの
+入力 Data から再計算する。「帰属」列は、その code をどの層の Data から再計算し、どちらの
 `validation.blocking` へ入れるかを表す。
 
 | code | 帰属 | 検査内容 |
@@ -211,7 +211,7 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `ac-duplicate-primary` | Set | 全 Branch Plan の枝の和集合で、複数枝の `covers_acceptance_criteria` に現れる AC |
 | `execution-order-invalid` | 両方 | Set では `order` の不足・重複、Branch Plan では `execution.order` の不足、重複、依存順序違反 |
 | `branch-without-primary-ac` | Branch Plan | primary AC を1件も所有しない実装枝 |
-| `dependency-cycle` | Branch Plan | `depends_on` の循環 |
+| `dependency-cycle` | Branch Plan | 同一 Branch Plan 内の `depends_on` の循環 |
 | `scope-conflict` | Branch Plan | 同一枝内の `allowed_paths` / `forbidden_paths` の矛盾 |
 | `tests-missing` | Branch Plan | 枝の `tests` が空 |
 | `branch-assessment-missing` | Branch Plan | `failure_impact` / `implementation_complexity`、または配下の `level` / `reasons` の欠落 |
@@ -223,6 +223,8 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `approval-invalid` | Branch Plan | `approval.method` と `status` / `confirmation_mode` の矛盾(`awaiting_review` なのに `method` が非 null、`review` なのに `auto` 承認など) |
 | `delegation-invalid` | Branch Plan | `delegation` 内の矛盾(`authorized: false` なのに `authorized_by: user`、`requested_mode` が非 null なのに `authorized: false`、`requested_mode` が有効な `{policy, baseline}` の組み合わせでないなど)。有効な組み合わせ表から再計算する |
 | `mode-proposal-invalid` | Branch Plan | `delegation_mode_proposal` の要否・内容が `requested_mode` と枝の `failure_impact.level` からの再計算(出力条件表)と一致しない(必要時の欠落、不要時の出力、表と異なる `{policy, baseline}` の提案) |
+
+両評価軸で `reasons` の欠落、配列以外、空配列、空文字、非文字列要素は invalid とする。
 
 帰属が `Set` の code は、複数 Branch Plan にまたがる Data がなければ判定できない。AC の割り当てを
 Branch Plan 単体で検査すると、AC が複数の Branch Plan へ散る正当な分割で必ず `ac-unassigned` が
@@ -252,8 +254,6 @@ Set は `status` を持たないため、これ以外に Set の違反を実行�
 の再計算は拡張後の定義を使い、自身の2 field が空のまま `blocked` である Branch Plan を矛盾として
 扱わない。Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず実行を
 開始しない。
-
-両評価軸で `reasons` の欠落、配列以外、空配列、空文字、非文字列要素は invalid とする。
 
 Branch Plan の状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` / `approval-invalid` / `delegation-invalid` を生成する。
@@ -315,9 +315,9 @@ Branch Plan の状態は値を個別に検査せず、次の有効な組み合�
 | (生成) → `blocked` | planning Skill | 自身の `unresolved_decisions` または `validation.blocking`、あるいは Set の `validation.blocking` が非空 |
 | (生成) → `awaiting_review` | planning Skill | `confirmation_mode: review` かつ Set と自身に blocking なし |
 | (生成) → `approved` (`method: auto`) | planning Skill | `confirmation_mode: auto` かつ Set と自身に blocking なし |
-| `blocked` → `awaiting_review` | planning Skill(再実行) | 原因解消後に全 validation を再実行して blocking なし、`confirmation_mode: review` |
+| `blocked` → `awaiting_review` | planning Skill(再実行) | 原因解消後に全 validation を再実行して Set と自身に blocking なし、`confirmation_mode: review` |
 | `blocked` → `approved` (`method: auto`) | planning Skill(再実行) | 同上、`confirmation_mode: auto` |
-| `awaiting_review` → `approved` (`method: user`) | 親エージェント | ユーザーの承認操作。blocking violation が残る場合は承認操作があっても遷移しない |
+| `awaiting_review` → `approved` (`method: user`) | 親エージェント | ユーザーの承認操作。Set または自身に blocking violation が残る場合は承認操作があっても遷移しない |
 | `delegation.authorized: false → true`(必要なら `requested_mode` も設定) | 親エージェント | ユーザーの明示的な委譲要求。mode の明示は委譲要求を兼ねる。どの status でも記録できるが、委譲開始には `status: approved` が別途必要 |
 
 承認と委譲開始は独立している。`awaiting_review` から承認された場合も、委譲要求がなければ

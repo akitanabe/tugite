@@ -147,7 +147,7 @@ class PlanImplementationBranchesContractsTest(
             "confirmation_mode: review | auto",
             "delegation:",
             "authorized: false",
-            "| code | 検査内容 |",
+            "| code | 帰属 | 検査内容 |",
             "duplicate-id",
             "unknown-reference",
             "branch-without-primary-ac",
