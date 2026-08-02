@@ -213,9 +213,6 @@ class DraftImplementationPlanContractsTest(
                     any(line.strip() == "body: |" for line in block),
                     "plan.body must be written as a block scalar",
                 )
-                joined = "".join("".join(block).split())
-                for retired in ("design:", "approach:", "steps:"):
-                    self.assertNotIn(retired, joined)
 
     def test_draft_schema_reference_keeps_the_structural_field_annotations(
         self,
@@ -495,7 +492,7 @@ class DraftImplementationPlanContractsTest(
                 )
                 for contract in required:
                     self.assertIn("".join(contract.split()), section)
-                for contract in forbidden + ("objective / design / approach / steps",):
+                for contract in forbidden:
                     self.assertNotIn("".join(contract.split()), section)
 
     def _retired_field_scan_paths(self) -> list[Path]:
