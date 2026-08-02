@@ -368,6 +368,10 @@ class DraftImplementationPlanContractsTest(
             # `acceptance_criteria` も構造 field として存続する。code 表を所有するのは
             # この文書だけなので、再掲を code 化しない記録には他に置き場が無い。
             "`acceptance_criteria` が「設計」節の規約本文を再掲しているか",
+            # 列挙側だけを固定すると、「再掲は意味判断である」とだけ書かれて「だから
+            # code にしない」が欠けた原稿が通る。改訂前が固定していたのは結論文の側
+            # なので、後継の固定を結論文へも置く。
+            "再掲の有無も同じ理由で code にせず",
         )
         for platform, text in self._schema_reference_texts().items():
             with self.subTest(platform=platform):
@@ -474,10 +478,13 @@ class DraftImplementationPlanContractsTest(
             ),
             # 「立場」節が持つ diff 入力モード向けの入力一覧はこの判定の対象外なので、
             # over-engineering-reviewer はプラン入力モード節だけを切り出して見る。
+            # この節の改訂前の別列挙は `AC、明示された制約、scope` だったので、禁止語は
+            # その頭を取る1語で足りる。一致しえない語を並べると、読み手はこの節が複数種類の
+            # 書き戻しを塞いでいると読むが、実際に塞げるのは1種類だけになる。
             "over-engineering-reviewer": (
                 "## プラン入力モード",
                 ("判定にはプラン本文の全文を使います。",),
-                ("AC、明示された制約", "constraints、assumptions"),
+                ("AC、明示された制約",),
             ),
         }
         for agent, (heading, required, forbidden) in agent_checks.items():
