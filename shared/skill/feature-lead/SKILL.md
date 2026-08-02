@@ -4,7 +4,7 @@ name: feature-lead
 description: >-
   ユーザー要求から実装完了までを、`plan-craft` / `branch-design` / `impl-lead` の3段を
   順に連結して一括で進める orchestration skill。プランから実装までの一括実行を明示的に
-  要求されたときに使う。確定済みの Implementation Plan を渡して実装までの一括実行を
+  要求されたときに使う。確定済みのプラン文書とレビュー状態を渡して実装までの一括実行を
   要求されたときも発火し、`branch-design` から開始する。各段の判断基準は再定義せず、
   段の遷移と判断点の処理だけを担う。既定では段が `blocked` を返した時点で停止し、
   `unattended` の明示時だけ自律解決して進む。
@@ -16,7 +16,7 @@ name: feature-lead
 description: >-
   ユーザー要求から実装完了までを、`plan-craft` / `branch-design` / `impl-lead` の3段を
   順に連結して一括で進める orchestration skill。プランから実装までの一括実行を明示的に
-  要求されたときに使う。確定済みの Implementation Plan を渡して実装までの一括実行を
+  要求されたときに使う。確定済みのプラン文書とレビュー状態を渡して実装までの一括実行を
   要求されたときも発火し、`branch-design` から開始する。各段の判断基準は再定義せず、
   段の遷移と判断点の処理だけを担う。既定では段が `blocked` を返した時点で停止し、
   `unattended` の明示時だけ自律解決して進む。
@@ -38,23 +38,29 @@ description: >-
   ユーザーへ返して確定を求める。`unattended` ではこの Skill が自律解決して進める。どちらの場合も
   判断点を黙って消さず、判断点台帳へ記録する。
 - 開始段より前の段は実行せず、開始段以降の段は飛ばさない。`branch-design` を省いて
-  Implementation Plan を直接 `impl-lead` へ渡さない。
+  プラン文書とレビュー状態を直接 `impl-lead` へ渡さない。
 
 ## 発火条件
 
 - ユーザーがプラン作成から実装までの一括実行を明示的に要求したとき。
-- ユーザーが確定済みの Implementation Plan を渡して実装までの一括実行を要求したとき。この場合は
+- ユーザーが確定済みのプラン文書とレビュー状態を渡して実装までの一括実行を要求したとき。この場合は
   `branch-design` から開始する。
 
-開始段は入力の起点で一意に決める。Implementation Plan 正規スキーマに適合し `status: approved` の
-Data を渡された場合だけ `branch-design` から開始する。それ以外の入力（自然文の要求、`status` を
-持たない Data、正規スキーマに適合しないプラン本文、issue 本文や会話内のプラン）はすべて
-`plan-craft` から開始する。ただし正規スキーマに適合し `status` が `awaiting_review` または
-`blocked` の Data はこの既定規則の対象から除き、次の差し戻し規則を優先する。
+開始段は入力の起点で一意に決める。レビュー状態が `status: approved` であり、その `plan_document`
+が repository 相対 path であり、その path のプラン文書が読める場合だけ `branch-design` から
+開始する。それ以外の入力（自然文の要求、`status` を持たないレビュー状態、プラン文書だけを渡された
+入力、issue 本文や会話内のプラン）はすべて `plan-craft` から開始する。プラン文書だけを渡された
+場合はレビュー状態が無いものとして扱い、その path から兄弟のレビュー状態を解決しない。レビュー状態は
+承認の記録であり、推測で解決すると、そのプラン文書に対応しないレビュー状態を承認済みとして扱う経路が
+開くためである。命名規約が2 file の対を保証するのは同一 run が両方を書いた場合だけであり、片方だけが
+残る状況を命名からは区別できない。`plan_document: 会話内` のレビュー状態は、プラン文書を会話上に貼り直されても開始段判定を通さず、
+`plan-craft` から開始する。会話内経路は同一会話内で完結する用途に限られ、後日渡す経路を持たない
+ためである。ただし `status` が `awaiting_review` または `blocked` のレビュー状態はこの既定規則の
+対象から除き、次の差し戻し規則を優先する。
 
 次の場合は発火しない。
 
-- `status` が `awaiting_review` または `blocked` の Implementation Plan Data を渡されたとき。
+- `status` が `awaiting_review` または `blocked` のレビュー状態を渡されたとき。
   承認または判断点の確定を求めて差し戻す。これを判断点として台帳へ記録しない。判断点は段が
   返したものだけを対象とし、起動前に渡された入力を「判断点の分類」にも再実行にも掛けない。
 - 確定済みの Branch Plan を渡されたとき。この Skill の対象外であり、`impl-lead` を直接使う経路を
@@ -77,8 +83,8 @@ Data を渡された場合だけ `branch-design` から開始する。それ以�
 - mode 指定（`lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full`）。
   未指定の場合はこの Skill で補わず、`impl-lead` の既定に委ねる。
 
-次は `plan-craft` から開始する場合の確認項目である。`branch-design` から開始する場合は、確定済み
-Implementation Plan Data がこの位置を占め、受け手のない確認項目を残さない。
+次は `plan-craft` から開始する場合の確認項目である。`branch-design` から開始する場合は、確定済みの
+プラン文書とレビュー状態がこの位置を占め、受け手のない確認項目を残さない。
 
 - 要求原文。言い換えず、`plan-craft` へそのまま渡す。
 - `rounds_limit` の値の明示指定。`plan-craft` へそのまま渡す。
@@ -94,11 +100,11 @@ Implementation Plan Data がこの位置を占め、受け手のない確認項�
 
 1. 上の入力を確認し、開始段を決める。
 2. `plan-craft` から開始する場合は、`plan-craft` を `confirmation_mode: auto` で起動し、
-   Implementation Plan Data を得る。`branch-design` から開始する場合はこの段を実行せず、渡された
-   確定済み Implementation Plan Data をそのまま次段の入力にする。
+   プラン文書とレビュー状態を得る。`branch-design` から開始する場合はこの段を実行せず、渡された
+   確定済みのプラン文書とレビュー状態をそのまま次段の入力にする。
 3. `plan-craft` を実行した場合は「段の遷移と判断点の処理」に従い status を判定する。判断点が
    あれば `autonomy` に従って処理する。
-4. 確定した Implementation Plan を `branch-design` へ `confirmation_mode: auto` で渡し、
+4. 確定したプラン文書とレビュー状態を `branch-design` へ `confirmation_mode: auto` で渡し、
    Branch Plan Data を得る。
 5. 「段の遷移と判断点の処理」に従い status を判定する。判断点があれば `autonomy` に従って処理する。
 6. 「授権の根拠」に従い `delegation` を設定する。
@@ -188,8 +194,8 @@ non-resolvable であるため優先規則を適用せず停止する。
 
 `unattended` の自律解決は次に従う。ユーザーへ判断を返さないことと、判断の根拠を持たないことは
 別である。根拠源と scope の基準は開始段に応じて一意に定める。`plan-craft` から開始する場合は
-要求原文をこれに充て、`branch-design` から開始する場合は確定済み Implementation Plan Data の
-`objective` と `scope` と `acceptance_criteria` が要求原文の位置を占める。
+要求原文をこれに充て、`branch-design` から開始する場合は確定済みプラン文書の見出し行と「scope」節と
+「Acceptance Criteria」節が要求原文の位置を占める。
 
 - 根拠は根拠源と repository の観測可能な事実（既存 code、テスト、規約、設定）から取る。
   根拠を取れる場合は `basis_kind: observed` として記録する。

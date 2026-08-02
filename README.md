@@ -13,7 +13,7 @@
 - `shared/skill/test-audit/`
   - `SKILL.md` に既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告する skill の核、`references/*.md` に棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を分けた共通原稿です。
 - `shared/skill/plan-craft/`
-  - `SKILL.md` にユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返す planning skill の核、`references/*.md` にプランスキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を分けた共通原稿です。
+  - `SKILL.md` にユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経たプラン文書とレビュー状態の2 artifact を返す planning skill の核、`references/*.md` にプラン artifact の規約、起草手順、レビューループ規約、過剰実装審査の詳細を分けた共通原稿です。
 - `shared/skill/feature-lead/`
   - `SKILL.md` に `plan-craft` → `branch-design` → `impl-lead` の3段を連結し、要求から実装完了までを一括で進める orchestration skill の共通原稿です。references は持ちません。
 - `shared/agents/*.md`

@@ -6,7 +6,7 @@ Phase 1 データである。正本は `shared/skill/impl-lead/SKILL.md` とそ�
 受け入れ口と Executor 再検証を定める `references/branch-plan-intake.md` を含む)、
 `shared/skill/branch-design/SKILL.md` とその `references/`(`branch-plan-schema.md` /
 `branch-splitting.md` / `plan-review.md`)、`shared/skill/plan-craft/SKILL.md` とその
-`references/`(`implementation-plan-schema.md` / `plan-drafting.md` / `adversarial-review.md` /
+`references/`(`plan-artifacts.md` / `plan-drafting.md` / `adversarial-review.md` /
 `overengineering-plan-review.md`)、および関連する `shared/agents/` にあり、この文書は正本を置き換えない。
 
 Phase 1 では全ケースを手動評価する。この文書自身は model や agent を実行せず、自動採点もしない。
@@ -24,7 +24,7 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
   枝分割判断(縦割りか、分割過多でないか)、`status` 決定、承認と委譲開始の分離を含む権限の扱いを
   評価する。この Skill は実装も委譲も行わないため、委譲や `impl-lead` の起動を先取りしない。
   `plan-craft` がプランを起草し、敵対的レビューループと過剰実装審査を経て
-  Implementation Plan を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
+  プラン文書とレビュー状態を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
 - `plan-intake`: 確定済みと称する Branch Plan が `impl-lead` へ渡された時点。Executor が
   自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
   violation 再計算0件、全枝の2評価軸が有効)と mode の妥当性を確認し、委譲を開始するか
@@ -1539,11 +1539,11 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 
 `plan-craft` がユーザー要求から起草し、`plan-adversarial-reviewer` の round で親が指摘IDごとに
 verdict を確定・記録し、収束後に `over-engineering-reviewer` のプラン審査を経て `awaiting_review` の
-Implementation Plan Data だけを返すこと、`branch-design` を直接起動しないことを確認する。
+プラン文書とレビュー状態だけを返すこと、`branch-design` を直接起動しないことを確認する。
 
 **評価タイミング**
 
-`planning`。実装 diff がなく Implementation Plan を起草・レビュー・提示する時点。
+`planning`。実装 diff がなくプラン文書を起草・レビュー・提示する時点。
 
 **入力**
 
@@ -1554,17 +1554,17 @@ Implementation Plan Data だけを返すこと、`branch-design` を直接起動
 
 **期待する判断**
 
-`plan-craft` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・dependencies を
-持つプランを起草する。`plan-adversarial-reviewer` の round を繰り返し、各 round で親が指摘IDごとに verdict を
+`plan-craft` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・依存を
+持つプラン文書を起草する。`plan-adversarial-reviewer` の round を繰り返し、各 round で親が指摘IDごとに verdict を
 確定して `adopted` / `rejected` を台帳(`PF-*`)へ記録し、採用指摘をプランへ反映する。`zero-findings` または
 `trivial-only` で収束したら `over-engineering-reviewer` をプラン入力モードで起動する。`rounds_limit` は既定の
 10、`confirmation_mode` は既定の `review` のままとし、blocking がなければ `status: awaiting_review` で未解決
-一覧なしの Implementation Plan Data を提示する。実装・枝分割・委譲は行わず、`branch-design` を
+一覧なしのプラン文書とレビュー状態を提示する。実装・枝分割・委譲は行わず、`branch-design` を
 起動しない。
 
 **必須動作**
 
-- Implementation Plan Data(`status`、`confirmation_mode`、`plan`、`acceptance_criteria`、`scope`、`review` の
+- 起草手順の定める節を持つプラン文書と、レビュー状態(`status`、`confirmation_mode`、`review` の
   台帳と `termination`、`validation`)を返す。
 - 各 round の指摘に、親が確定した verdict と `adopted` / `rejected` + 理由を指摘IDごとに記録する。
 - adversarial の収束後に `over-engineering-reviewer` のプラン審査を1回実行してから提示する。
@@ -1590,7 +1590,7 @@ planning 判断は共通である。Skill と reviewer を実行する platform 
 
 **手動評価項目**
 
-- [ ] Implementation Plan Data だけを返し、実装・枝分割・委譲を先取りしていない。
+- [ ] プラン文書とレビュー状態だけを返し、実装・枝分割・委譲を先取りしていない。
 - [ ] 指摘IDごとに親の確定 verdict と `adopted` / `rejected` + 理由が台帳に残っている。
 - [ ] adversarial 収束後に過剰実装審査を実行してから提示している。
 - [ ] 既定 `review` / `rounds_limit: 10` を保ち、`status: awaiting_review` で提示している。
@@ -1605,7 +1605,7 @@ planning 判断は共通である。Skill と reviewer を実行する platform 
 
 **評価タイミング**
 
-`planning`。Implementation Plan のレビューループが上限に到達した時点。
+`planning`。プラン文書のレビューループが上限に到達した時点。
 
 **入力**
 
@@ -1620,7 +1620,7 @@ planning 判断は共通である。Skill と reviewer を実行する platform 
 
 ユーザー明示により `rounds_limit: 2` を記録する。2 round を消化しても `修正推奨` 以上の指摘が残るため
 `termination: round-limit` で打ち切り、未対応指摘を `resolution: unresolved` として台帳に残す。提示では
-Implementation Plan の YAML より前に未解決一覧(指摘ID・verdict・summary)を明示する。`confirmation_mode:
+レビュー状態の YAML より前に未解決一覧(指摘ID・verdict・summary)を明示する。`confirmation_mode:
 auto` でも自動承認せず(`approval.method: null` のまま)、追加 round の明示指定、指摘の採用・不採用の確定、
 このまま承認のいずれかをユーザーに確定してもらう。要求の曖昧さが blocking なら `open_questions` に記録して
 `status: blocked` としてよい。
@@ -1673,7 +1673,7 @@ adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの
 >
 > 要求: 設定画面にタイムゾーン選択を追加する。保存した選択は再読み込み後も表示に反映される。
 >
-> (評価用の synthetic 進行: 起草されたプラン本文の「手順」節に、要求にない「将来の多言語対応に備えた
+> (評価用の synthetic 進行: 起草されたプラン文書の「手順」節に、要求にない「将来の多言語対応に備えた
 > 表示文言の plugin 機構の導入」が含まれ、adversarial は `zero-findings` で収束し、プラン入力モードの
 > `over-engineering-reviewer` がこの要素をどの AC・制約にも辿れない計画要素として指摘するものとする。)
 
@@ -1681,8 +1681,8 @@ adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの
 
 指摘を同じ `PF-*` 台帳へ `reviewer: over-engineering-reviewer` として記録し、親が verdict を確定して採用を
 判断する。採用した場合の反映経路はプラン修正だけであり、`review-patch-refactorer` を起動しない。
-プラン本文の「手順」節から当該作業を取り除いた後、adversarial レビューを再実行し、この round も
-`rounds_limit` に数える。再実行が収束したら Implementation Plan Data を提示する。
+プラン文書の「手順」節から当該作業を取り除いた後、adversarial レビューを再実行し、この round も
+`rounds_limit` に数える。再実行が収束したらプラン文書とレビュー状態を提示する。
 
 **必須動作**
 
@@ -2022,8 +2022,8 @@ Synthetic diff 要約:
 親は reviewer 起動や受入の前に混在を検出し、変更理由・AC・責務・依存・受入・rollback・検証単位を理由として
 再分割を判断する。既存枝の purpose、AC 文言、AC ownership、scope、依存、risk を保った commit 分離や最小範囲の
 整形なら既存契約を維持する。独立した実装枝への分離、AC ownership・依存・risk の変更、または AC 文言の分解・
-再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または Implementation
-Plan の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
+再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または
+プラン文書の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
 
 **必須動作**
 
@@ -2031,7 +2031,7 @@ Plan の AC 確定とユーザー確認へ戻り、再承認が済むまで新�
 - 混在した diff をそのまま reviewer へ渡したり受け入れたりしない。
 - scope 逸脱の差戻し、承認済み契約を保つ commit 分離・最小範囲・別タスク化、または再計画のいずれかを選び、
   選択理由を記録する。
-- Branch Plan または Implementation Plan を再確定する場合、再生成・再検証・ユーザー再承認の順序を守る。
+- Branch Plan またはプラン文書を再確定する場合、再生成・再検証・ユーザー再承認の順序を守る。
 
 **禁止動作**
 
@@ -2054,7 +2054,7 @@ commit 分離の具体的な枝名や reviewer context は変えてよい。た�
 
 - [ ] 固定行数を使わず、7つの判断軸を示している。
 - [ ] 混在 diff の直接 review / 受入を停止している。
-- [ ] 承認済み契約を保つ整形と、Branch Plan / Implementation Plan の再確定を区別している。
+- [ ] 承認済み契約を保つ整形と、Branch Plan / プラン文書の再確定を区別している。
 - [ ] 再承認前の新枝委譲がない。
 - [ ] 親が reviewer の結果に先立って最終判断を保持している。
 
@@ -2261,7 +2261,7 @@ Synthetic diff と reviewer findings:
 域を超えるため、再設計後の新しい同一 snapshot では modeに応じた相1の起動集合（initialレビュー群の集合）を再構成し、親QAと、変更後もfailure_impact.reasonsの対象が
 成立する専門 reviewer を実施する。この再構成起動も1 round として同じ通番で数え、親の最終受入判断は相4の完了後に行う。
 
-守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねず Implementation Plan の AC 確定とユーザー確認へ
+守る AC 自体の分解・再定義が必要と判明した場合は、元 Implementer に委ねずプラン文書の AC 確定とユーザー確認へ
 停止し、その後 Branch Plan を再生成・再検証・再承認する。
 
 **必須動作**
@@ -2269,7 +2269,7 @@ Synthetic diff と reviewer findings:
 - 競合している reviewer 名と、指摘を識別できる情報 / evidence / 内容を特定して記録する。
 - 守る AC、外部／repository の優先指示、許容不能リスク、必要な検証、再設計条件を元 Implementer へ渡す。
 - 差し戻し後は元 Implementer の protocol 再設計（守る AC は変更しない）と実装を待ち、新しい同一 snapshot でこの節の変更後 snapshot 再実行契約を満たす。
-- 守る AC の分解・再定義が必要なら、Implementation Plan の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認まで停止する。
+- 守る AC の分解・再定義が必要なら、プラン文書の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認まで停止する。
 - 親が再実行結果を読んで最終受入判断を行う。
 
 **禁止動作**
@@ -2283,7 +2283,7 @@ Synthetic diff と reviewer findings:
 
 差し戻し prompt の構造、reviewer の起動 mechanism、守る AC を変更しない protocol の具体的な実装案は platform と入力に応じて変えてよい。
 ただし元 Implementer への routing と受け渡し Data、この節の変更後 snapshot 再実行、親の最終判断は変えない。守る AC の分解・再定義が必要なら
-Implementation Plan の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認へ停止する。
+プラン文書の AC 確定とユーザー確認、Branch Plan の再生成・再検証・再承認へ停止する。
 
 **Claude/Codex 差**
 

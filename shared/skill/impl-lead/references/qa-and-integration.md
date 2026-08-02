@@ -20,7 +20,10 @@
    混入していないことを確かめる。親の統合 checkout に生成した diff artifact
    (`.tugite/diffs/<slug>-diff.patch`)は親自身が書き出した既知の untracked file であり、
    この確認によって worker の変更の混入と誤認しない。作成規約は
-   [diff artifact の作成](reviewer-dispatch.md) に従う。
+   [diff artifact の作成](reviewer-dispatch.md) に従う。`feature-lead` の一括経路で
+   `plan-craft` が書き出したプラン artifact(`.tugite/plans/` 配下)も親側が書き出した
+   既知の untracked file として同じ扱いとし、worker の変更の混入と誤認しない。作成規約は
+   [プラン artifact](../../plan-craft/references/plan-artifacts.md) に従う。
 3. 報告だけで受け入れず、対象 test と実装 diff を開く。
 4. QA hard reject は同じ枝へ {{continuation_mechanism}} で差し戻し、修正 commit を追加させる。
 5. 専門 reviewer へは task、AC、commit 範囲、変更ファイル、diff text、Branch Plan の `failure_impact.reasons`、
@@ -94,7 +97,7 @@ diff が大きいだけでは分割しない。固定行数だけでは分割し
   最小範囲だけを残す、または別タスク化する。この整形では、既存枝の契約と承認を変更しない。
 - 独立した実装枝への分離、または AC ownership・依存・failure impact・implementation complexity の変更が必要な場合は Branch Plan を再生成する。
   blocking violation と Executor 再検証5項目を再計算し、必要なユーザー再承認を得るまで新枝を委譲しない。
-- AC 文言自体の分解・再定義が必要な場合は Implementation Plan の AC 確定とユーザー確認へ戻る。その後
+- AC 文言自体の分解・再定義が必要な場合はプラン文書の AC 確定とユーザー確認へ戻る。その後
   Branch Plan を再生成・再検証・再承認する。再承認後に初めて新枝の委譲を開始する。
 
 分割で依存が不自然または検証不能になる場合は1変更として扱う。この場合も、固定行数を根拠に分割を強制せず、
