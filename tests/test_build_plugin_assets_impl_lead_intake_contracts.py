@@ -280,8 +280,8 @@ class DelegateImplementationIntakeContractsTest(
                 self.assertEqual(
                     sorted(positions),
                     positions,
-                    f"{platform}: Set の先行検査 → 5項目 → `両方` の担当宣言 の順に"
-                    f"並んでいない: {positions}",
+                    f"{platform}: Set の先行検査 → 5項目の先頭 → `両方` の担当宣言 → "
+                    f"5項目の末尾(境界) の順に並んでいない: {positions}",
                 )
 
     def test_intake_reference_stops_at_an_unauthorized_branch_plan_and_asks_for_authorization(
