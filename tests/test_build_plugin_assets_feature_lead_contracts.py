@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -10,6 +9,7 @@ from build_plugin_assets_test_support import (
     RepositoryContractSupport,
     generated_skill_path,
     shared_skill_path,
+    shared_skill_reference_path,
 )
 
 
@@ -43,6 +43,52 @@ class FeatureLeadContractsTest(
             "source": self._repository_text(shared_skill_path(FEATURE_LEAD_SKILL)),
             **self._generated_texts(),
         }
+
+    @staticmethod
+    def _section(text: str, heading: str, *, next_heading: str = "\n## ") -> str:
+        """Slice out `heading`'s body, capped at the next heading marker.
+
+        Mirrors the split-then-cap pattern already used elsewhere in this suite
+        (e.g. the flow test below, and `## Executor 側の再検証` in
+        test_build_plugin_assets_impl_lead_intake_contracts.py): a whole-file
+        `assertIn` cannot tell "this sentence lives under the right heading"
+        from "this sentence exists somewhere in the file", which is the gap a
+        review round on this branch found in practice.
+        """
+        return text.split(heading, 1)[1].split(next_heading, 1)[0]
+
+    @staticmethod
+    def _bullet(section: str, marker: str, next_marker: str | None) -> str:
+        """Slice out one bullet's text, keeping `marker` itself in the result.
+
+        `str.split` consumes its delimiter, which would strip the very autonomy
+        label ("`attended`" / "`unattended`") a contract needs to assert against
+        (e.g. "`unattended` では境界で止まらない。" starts with the marker).
+        Index-based slicing keeps it.
+        """
+        start = section.index(marker)
+        if next_marker is None:
+            return section[start:]
+        return section[start : section.index(next_marker, start)]
+
+    def _assert_heading_present_and_live(self, text: str, heading: str) -> None:
+        """Fail if `heading` is missing, or sits inside an unclosed HTML comment.
+
+        The generator only strips its own `claude-only` / `codex-only` markers
+        (scripts/build_plugin_assets.py); an unrelated `<!-- ... -->` wrapper
+        passes through to the generated file with its text intact, so a plain
+        `assertIn` cannot distinguish a live heading from one commented out of
+        the rendered skill. Counting delimiters up to the heading's position
+        catches that case: an unclosed opener before it means the heading is
+        being suppressed, not just indented oddly.
+        """
+        self.assertIn(heading, text)
+        prefix = text[: text.index(heading)]
+        self.assertLessEqual(
+            prefix.count("<!--"),
+            prefix.count("-->"),
+            f"{heading!r} sits inside an unclosed HTML comment",
+        )
 
     def _generated_frontmatter_and_body(self, text: str) -> tuple[str, str]:
         # The generated Markdown always opens with a YAML frontmatter block, so the
@@ -385,89 +431,207 @@ class FeatureLeadContractsTest(
         contracts = (
             "`branch-design` が返した Branch Plan Set のうち1件でも Branch Plan が "
             "`blocked` である",
+            "（`blocked` の定義は `branch-plan-schema.md` に従う）",
             "この場合は特定の Branch Plan ではなく段全体を判断点として扱う。",
             "授権を設定するのは、Set の全 Branch Plan が `status: approved` を返した"
             "場合だけである。",
             "1件でも `blocked` な Branch Plan があれば段全体を判断点として扱い停止し、"
             "一部の Branch Plan だけを授権して進める経路は持たない。",
         )
+        # RB-4: `blocked` の成立条件は branch-plan-schema.md の定義そのもの
+        # であり、`feature-lead` が逐語コピーすると二重管理になる。旧文言が
+        # 戻っていないことを確認する。
+        forbidden = (
+            "その Branch Plan の `unresolved_decisions` または `validation.blocking` "
+            "が非空、あるいは Set の `validation.blocking` が非空"
+        )
         for platform, text in self._feature_lead_main_texts().items():
             normalized = "".join(text.split())
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
+            with self.subTest(platform=platform, forbidden=forbidden):
+                self.assertNotIn("".join(forbidden.split()), normalized)
 
     def test_feature_lead_authorizes_only_the_lead_branch_plan_under_attended(
         self,
     ) -> None:
         """Authorize just the order-first Branch Plan when autonomy stays attended."""
-        # AC-8(b), first half. Kept as its own contract (distinct from the
-        # unattended one below) so a manuscript that authorizes everything under
-        # both settings still fails this test.
-        contract = "`attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。"
-        for platform, text in self._feature_lead_main_texts().items():
-            with self.subTest(platform=platform):
-                self.assertIn(
-                    "".join(contract.split()), "".join(text.split())
-                )
-
-    def test_feature_lead_authorizes_every_branch_plan_under_unattended(self) -> None:
-        """Authorize the whole Set when autonomy is unattended."""
-        # AC-8(c), first half. Kept separate from the attended contract above so the
-        # attended/unattended distinction cannot collapse into one shared sentence.
-        contract = "`unattended` では、Set の全 Branch Plan を授権する。"
-        for platform, text in self._feature_lead_main_texts().items():
-            with self.subTest(platform=platform):
-                self.assertIn(
-                    "".join(contract.split()), "".join(text.split())
-                )
-
-    def test_feature_lead_relays_the_boundary_stop_and_resumes_after_authorization(
-        self,
-    ) -> None:
-        """Relay impl-lead's boundary presentation instead of copying it, then resume."""
-        # AC-8(b), second half.
+        # AC-8(b), first half; RB-1; TQ-2. Scoped to "## 授権の根拠": RB-5 makes
+        # that section the sole home for authorization granularity, so a copy
+        # drifting or vanishing elsewhere in the file can no longer mask a
+        # regression here (previously a whole-file `assertIn` let a mutation
+        # that deleted these lines from this exact section still pass, because
+        # an identical sentence duplicated the claim in another section).
         contracts = (
-            "`impl-lead` が境界で止まったら、`impl-lead` が提示した内容を既存の"
-            "最終報告の中継規約に従ってユーザーへ返し、次の Branch Plan の授権を求める。",
-            "提示内容そのものは `branch-plan-intake.md` を正本とし、この Skill へ"
-            "複製しない。",
-            "ユーザーが授権を確定したら、その Branch Plan から `impl-lead` を再開する。",
-            "この停止は Skill の責務を果たさずに終了することではなく、Branch Plan を"
-            "承認単位にした結果として意図された停止である。",
+            "授権する Branch Plan の範囲の正本は `branch-plan-intake.md`"
+            "「Branch Plan 境界の授権」である。",
+            "`attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。",
         )
         for platform, text in self._feature_lead_main_texts().items():
-            normalized = "".join(text.split())
+            section = self._section(text, "## 授権の根拠")
+            normalized = "".join(section.split())
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_feature_lead_records_the_boundary_passage_when_unattended(self) -> None:
-        """Log that an unattended run crossed authorized boundaries and which ids."""
-        # AC-8(c), second half.
-        contract = (
-            "境界を通過した事実と通過した Branch Plan id を最終報告へ記録する。"
+    def test_feature_lead_authorizes_every_branch_plan_under_unattended(self) -> None:
+        """Authorize the whole Set under the intake's bulk-authorization exception."""
+        # AC-8(c), first half; RB-1; TQ-2. Same section scope as the attended
+        # test above, and the same reasoning: the attended/unattended
+        # distinction must not collapse into one shared, half-satisfied
+        # sentence, and `branch-plan-intake.md`'s grant of "only an explicit
+        # blanket authorization gets every Branch Plan" must be the thing this
+        # Skill maps `autonomy: unattended` onto, not an unattributed rule.
+        contracts = (
+            "`unattended` では、Set の全 Branch Plan を授権する。",
+            "`autonomy: unattended` の明示を、正本が例外とする「ユーザーが全 "
+            "Branch Plan の一括授権を明示した場合」として読み替える。",
         )
         for platform, text in self._feature_lead_main_texts().items():
+            section = self._section(text, "## 授権の根拠")
+            normalized = "".join(section.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_feature_lead_boundary_stop_section_heading_is_live(self) -> None:
+        """Keep the boundary-stop heading real: not renamed, not commented out."""
+        # TQ-1. Step 8 of "全体の流れ" points at this heading by name; a rename
+        # leaves that reference dangling, and a generic HTML-comment wrapper
+        # (the generator strips only its own claude-only/codex-only markers,
+        # per scripts/build_plugin_assets.py) would otherwise leave every
+        # whole-file `assertIn` in this file satisfied by inert text.
+        for platform, text in self._feature_lead_main_texts().items():
             with self.subTest(platform=platform):
-                self.assertIn(
-                    "".join(contract.split()), "".join(text.split())
+                self._assert_heading_present_and_live(
+                    text, "### Branch Plan 境界の停止"
                 )
+
+    def test_feature_lead_boundary_stop_section_relays_without_duplicating(
+        self,
+    ) -> None:
+        """Describe the boundary relay once, in its own section, without re-deriving it."""
+        # AC-8(b) second half; AC-8(d) mechanism; RB-3; RB-5; TQ-1. Scoped to
+        # "### Branch Plan 境界の停止" (same split-and-cap pattern as the flow
+        # test) so this section's own regressions cannot hide behind a copy
+        # living in "授権の根拠" or "判断点台帳".
+        contracts = (
+            "`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点の"
+            "いずれにも当たらない。",
+            "境界の停止を判断点として扱わない理由は「判断点台帳」に従う。",
+            "授権する Branch Plan の範囲は「授権の根拠」に従う。",
+            # RB-3: 「既存の最終報告の中継規約」という未定義語をやめ、提示が
+            # 手順9の最終報告とは別の中間提示であることを直接書く。
+            "`impl-lead` が境界で止まったら、`impl-lead` が提示した内容をそのまま"
+            "ユーザーへ返し、次の Branch Plan の授権を求める。",
+            "この提示は手順9の最終報告とは別の、会話上の中間提示である。",
+            "提示内容そのものは `branch-plan-intake.md` を正本とし、この Skill へ"
+            "複製しない。",
+            "この停止は Skill の責務を果たさずに終了することではなく、Branch Plan を"
+            "承認単位にした結果として意図された停止である。",
+        )
+        # RB-5: 授権粒度の逐語文と、台帳非記録の理由の逐語文は、それぞれ
+        # 「授権の根拠」「判断点台帳」を正本にする。この節へ戻っていないことを
+        # 確認する（file 自身の Why Not「判断表を複製すると正本が二重化する」を
+        # この節自身の記述にも適用する）。
+        forbidden = (
+            "`attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを"
+            "授権する。",
+            "台帳が対象とするのは段が返した判断点であり、境界の停止は授権が"
+            "未設定であることの帰結だからである。",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            section = self._section(
+                text, "### Branch Plan 境界の停止", next_heading="\n## "
+            )
+            normalized = "".join(section.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+            for phrase in forbidden:
+                with self.subTest(platform=platform, forbidden=phrase):
+                    self.assertNotIn("".join(phrase.split()), normalized)
+
+    def test_feature_lead_boundary_resume_sets_delegation_before_returning(
+        self,
+    ) -> None:
+        """Route the attended resume back through delegation, not straight to impl-lead."""
+        # RB-2; TQ-3. Isolates the `attended` bullet specifically, not just the
+        # section: "その Branch Plan" is anaphoric, so a mutation that moves
+        # this sentence into the `unattended` bullet (a boundary unattended
+        # never reaches) would still satisfy a section-only scope. The prior
+        # wording ("...手順7へ戻る") skipped 手順6, which is the only step that
+        # sets `delegation` — resuming without it would hand impl-lead the same
+        # unauthorized Branch Plan and loop at the same boundary forever.
+        resume_contract = (
+            "ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan"
+            "について行い直し、`impl-lead` を再開する。"
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            section = self._section(
+                text, "### Branch Plan 境界の停止", next_heading="\n## "
+            )
+            attended_bullet = self._bullet(section, "- `attended`", "- `unattended`")
+            normalized = "".join(attended_bullet.split())
+            with self.subTest(platform=platform):
+                self.assertIn("".join(resume_contract.split()), normalized)
+
+    def test_feature_lead_records_the_boundary_passage_when_unattended(self) -> None:
+        """Log that an unattended run never stops at the boundary, only records it."""
+        # AC-8(c), second half; TQ-1; TQ-3. Scoped to the `unattended` bullet
+        # specifically, mirroring the attended-bullet scoping above for the
+        # same anaphora risk (a mutation swapping which bullet holds which
+        # sentence would otherwise still pass a section-only scope).
+        contracts = (
+            "`unattended` では境界で止まらない。",
+            "境界を通過した事実と通過した Branch Plan id を最終報告へ記録する。",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            section = self._section(
+                text, "### Branch Plan 境界の停止", next_heading="\n## "
+            )
+            unattended_bullet = self._bullet(section, "- `unattended`", None)
+            normalized = "".join(unattended_bullet.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_feature_lead_excludes_boundary_stops_from_the_gate_decision_point(
+        self,
+    ) -> None:
+        """Keep the impl-lead-gate decision point from re-absorbing boundary stops."""
+        # TQ-5; AC-8(d) mechanism. Scoped to "## 段の遷移と判断点の処理", where
+        # the decision-point bullet list lives. Without this exclusion clause,
+        # "`impl-lead` が各 mode のゲートで停止した" would cover the boundary
+        # stop too, and `origin: impl-lead-gate` would route it back into the
+        # ledger the next test says it must never reach.
+        contract = (
+            "ただし Branch Plan 境界（未授権の Branch Plan への到達）での停止は"
+            "これに含めない。「Branch Plan 境界の停止」に従う。"
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            section = self._section(text, "## 段の遷移と判断点の処理")
+            normalized = "".join(section.split())
+            with self.subTest(platform=platform):
+                self.assertIn("".join(contract.split()), normalized)
 
     def test_feature_lead_keeps_the_boundary_stop_out_of_the_decision_ledger(
         self,
     ) -> None:
         """Explain, not just omit, why the boundary stop never becomes a ledger row."""
-        # AC-8(d).
+        # AC-8(d); RB-5; TQ-1; TQ-2. Scoped to "## 判断点台帳": RB-5 makes this
+        # section the sole home for the non-recording rationale, so a copy
+        # drifting away from "### Branch Plan 境界の停止" (checked separately
+        # above to have none) cannot mask a regression here either.
         contracts = (
-            "`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点の"
-            "いずれにも当たらない。",
             "`origin: impl-lead-gate` として判断点台帳へ記録しない。",
             "台帳が対象とするのは段が返した判断点であり、境界の停止は授権が未設定で"
             "あることの帰結だからである。",
         )
         for platform, text in self._feature_lead_main_texts().items():
-            normalized = "".join(text.split())
+            section = self._section(text, "## 判断点台帳")
+            normalized = "".join(section.split())
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
@@ -487,11 +651,11 @@ class FeatureLeadContractsTest(
             "`order` に従って Branch Plan を実行する。",
             "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
             "手順9を行わずに",
-            "その Branch Plan から手順7へ戻る",
+            "その Branch Plan について手順6から行い直す",
             "`order` の全 Branch Plan の実行が終わったら",
         )
         for platform, text in self._feature_lead_main_texts().items():
-            flow = text.split("## 全体の流れ", 1)[1].split("\n## ", 1)[0]
+            flow = self._section(text, "## 全体の流れ")
             normalized_flow = "".join(flow.split())
             positions: list[int] = []
             for phrase in required_order:
@@ -503,17 +667,22 @@ class FeatureLeadContractsTest(
                 self.assertEqual(positions, sorted(positions))
 
     def test_feature_lead_has_no_remaining_branch_plan_data_wording(self) -> None:
-        """Retire the pre-Set field name, including in the platform frontmatter."""
+        """Retire the pre-Set field name, including a whitespace-split rewrap."""
+        # TQ-4. Normalized the same way as every other contract in this file;
+        # the previous raw-text check missed a line-wrapped "Branch Plan\nData".
+        forbidden = "".join("Branch Plan Data".split())
         for platform, text in self._feature_lead_main_texts().items():
             with self.subTest(platform=platform):
-                self.assertNotIn("Branch Plan Data", text)
+                self.assertNotIn(forbidden, "".join(text.split()))
 
     def test_feature_lead_does_not_duplicate_impl_lead_intake_presentation_wording(
         self,
     ) -> None:
         """Point at branch-plan-intake.md instead of restating its boundary text."""
+        # TQ-7: resolved via the same reference-path builder the support module
+        # already exposes for this skill, instead of a hand-written Path.
         intake_text = self._repository_text(
-            Path("shared/skill/impl-lead/references/branch-plan-intake.md")
+            shared_skill_reference_path(IMPL_LEAD_SKILL, "branch-plan-intake.md")
         )
         duplicated_phrase = (
             "完了済み Branch Plan の最終報告と未実行 Branch Plan の一覧を提示して、"

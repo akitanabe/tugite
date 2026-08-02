@@ -112,7 +112,8 @@ description: >-
 7. Branch Plan Set と判断点台帳を `impl-lead` へ渡す。`impl-lead` は受け入れ口の再検証を通常
    どおり行い、`order` に従って Branch Plan を実行する。
 8. `impl-lead` が未授権の Branch Plan の境界で止まった場合は、手順9を行わずに「Branch Plan
-   境界の停止」に従って処理する。ユーザーが授権を確定したら、その Branch Plan から手順7へ戻る。
+   境界の停止」に従って処理する。ユーザーが授権を確定したら、その Branch Plan について手順6から
+   行い直す。
 9. `order` の全 Branch Plan の実行が終わったら、`impl-lead` の最終報告を提示する。段ごとの
    要約を先に置き、最終報告を末尾に置く。判断点台帳の全件を会話上の最終報告にも含める。
 
@@ -130,9 +131,8 @@ description: >-
   非空）。
 - `plan-craft` が `termination: round-limit` で `resolution: unresolved` の指摘を残した。
 - `branch-design` が返した Branch Plan Set のうち1件でも Branch Plan が `blocked` である
-  （その Branch Plan の `unresolved_decisions` または `validation.blocking` が非空、あるいは
-  Set の `validation.blocking` が非空）。この場合は特定の Branch Plan ではなく段全体を判断点
-  として扱う。
+  （`blocked` の定義は `branch-plan-schema.md` に従う）。この場合は特定の Branch Plan ではなく
+  段全体を判断点として扱う。
 - `impl-lead` が各 mode のゲートで停止した。停止条件は `impl-lead` の契約に従う。ただし
   Branch Plan 境界（未授権の Branch Plan への到達）での停止はこれに含めない。「Branch Plan
   境界の停止」に従う。
@@ -186,19 +186,18 @@ non-resolvable であるため優先規則を適用せず停止する。
 
 ### Branch Plan 境界の停止
 
-`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点のいずれにも当たらない。
-`origin: impl-lead-gate` として判断点台帳へ記録しない。台帳が対象とするのは段が返した判断点で
-あり、境界の停止は授権が未設定であることの帰結だからである。判断点ではないが停止点ではあるため、
-`autonomy` に応じて次の扱いに従う。
+`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点のいずれにも当たらない。境界の
+停止を判断点として扱わない理由は「判断点台帳」に従う。授権する Branch Plan の範囲は「授権の根拠」
+に従う。
 
-- `attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。`impl-lead` が
-  境界で止まったら、`impl-lead` が提示した内容を既存の最終報告の中継規約に従ってユーザーへ返し、
-  次の Branch Plan の授権を求める。提示内容そのものは `branch-plan-intake.md` を正本とし、この
-  Skill へ複製しない。ユーザーが授権を確定したら、その Branch Plan から `impl-lead` を再開する。
-  この停止は Skill の責務を果たさずに終了することではなく、Branch Plan を承認単位にした結果と
-  して意図された停止である。
-- `unattended` では、Set の全 Branch Plan を授権する。境界を通過した事実と通過した Branch Plan
-  id を最終報告へ記録する。
+- `attended`（既定）では、`impl-lead` が境界で止まったら、`impl-lead` が提示した内容をそのまま
+  ユーザーへ返し、次の Branch Plan の授権を求める。この提示は手順9の最終報告とは別の、会話上の
+  中間提示である。提示内容そのものは `branch-plan-intake.md` を正本とし、この Skill へ複製
+  しない。ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan について行い直し、
+  `impl-lead` を再開する。この停止は Skill の責務を果たさずに終了することではなく、Branch Plan
+  を承認単位にした結果として意図された停止である。
+- `unattended` では境界で止まらない。境界を通過した事実と通過した Branch Plan id を最終報告へ
+  記録する。
 
 ## `round-limit` の扱い
 
@@ -269,8 +268,8 @@ resolvable な判断点がこれに当たる。`deferred` は解決を試みて�
 含まれる場合、この記載が唯一の検分経路になる。記載できない判断点は解決したとみなさない。
 
 Branch Plan 境界の停止（`impl-lead` が未授権の Branch Plan に到達して止まること）は判断点では
-ないため、台帳へ記録しない。台帳が対象とするのは段が返した判断点であり、境界の停止は授権が
-未設定であることの帰結だからである。
+ないため、`origin: impl-lead-gate` として判断点台帳へ記録しない。台帳が対象とするのは段が返した
+判断点であり、境界の停止は授権が未設定であることの帰結だからである。
 
 `basis_kind: assumed` の項目は台帳内で区別して示し、観測事実に基づく解決と混ぜない。仮定の総数を
 最終報告の冒頭要約にも出す。
@@ -286,10 +285,14 @@ Branch Plan 境界の停止（`impl-lead` が未授権の Branch Plan に到達�
 `blocked` な Branch Plan があれば段全体を判断点として扱い停止し、一部の Branch Plan だけを
 授権して進める経路は持たない。
 
-授権する Branch Plan の範囲は `autonomy` で分ける。
+授権する Branch Plan の範囲の正本は `branch-plan-intake.md`「Branch Plan 境界の授権」である。
+この Skill は `autonomy` への具体化だけを行う。
 
-- `attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。
-- `unattended` では、Set の全 Branch Plan を授権する。
+- `attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。正本が既定として
+  述べる範囲と同じである。
+- `unattended` では、Set の全 Branch Plan を授権する。`autonomy: unattended` の明示を、正本が
+  例外とする「ユーザーが全 Branch Plan の一括授権を明示した場合」として読み替える。
+  `round-limit` の扱いで起動要求が引き上げの明示を兼ねると読み替えるのと同じ形である。
 
 段ごとの委譲要求の再取得は求めない。ただし `impl-lead` の受け入れ口が行う再検証は省略しない。
 
