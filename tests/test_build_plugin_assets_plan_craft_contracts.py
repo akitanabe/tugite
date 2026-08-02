@@ -980,6 +980,51 @@ class DraftImplementationPlanContractsTest(
                 with self.subTest(term=term, path=str(path)):
                     self.assertNotIn(term, self._repository_text(path))
 
+    def test_semver_sections_list_the_plan_artifacts_as_public_surface(self) -> None:
+        """Name the two plan artifacts in the public-surface enumeration, not just omit retired ones."""
+        # 上のテストは廃止語の不在しか見ない。公開面の列挙からプラン文書とレビュー状態が
+        # 丸ごと削除されても、廃止語が増えるわけではないため不在検査は反応しない
+        # (reviewer の変異実測で確認済み)。ここでは存在側を固定する。
+        # 節スコープで切り出すのは、file 全体への assertIn だと判定例が別の節へ
+        # 移動しても通ってしまうため。`_section_lines` は見出し行の index 探索を使うので、
+        # 見出しが変わると `ValueError` で落ち、節の切り出しが崩れたことも検出できる。
+        cases = (
+            (
+                Path("CLAUDE.md"),
+                "## VERSION の更新規約",
+                (
+                    "ユーザーが保存して後から渡す artifact の形式"
+                    "（`plan-craft` のプラン文書とレビュー状態）",
+                    "4.2.0 で `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
+                    "2 artifact へ分けたときも、旧形式の Data を渡しても `feature-lead` は"
+                    "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
+                    "落ちるだけで、skill・agent・mode 名も変わらないため minor としました。",
+                ),
+            ),
+            (
+                Path("AGENTS.md"),
+                "## Version 更新指針",
+                (
+                    "ユーザーが保存して後から渡す `plan-craft` の"
+                    "プラン文書とレビュー状態の形式",
+                    "たとえば `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
+                    "2 artifact へ分けた 4.2.0 では、旧形式の Data を渡しても `feature-lead` は"
+                    "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
+                    "落ちるだけで、skill・agent・mode の名前も変わらないため minor としました。",
+                ),
+            ),
+        )
+        for path, heading, required in cases:
+            text = self._repository_text(path)
+            section = "".join(
+                "".join(
+                    DraftImplementationPlanContractsTest._section_lines(text, heading)
+                ).split()
+            )
+            for contract in required:
+                with self.subTest(path=str(path), contract=contract):
+                    self.assertIn("".join(contract.split()), section)
+
     def test_readmes_describe_plan_craft_output_as_two_artifacts(self) -> None:
         """Publish the plan-craft output as two artifacts in every user-facing README."""
         for path in README_PATHS:
