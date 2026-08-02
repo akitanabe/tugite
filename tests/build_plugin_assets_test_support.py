@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -277,14 +278,25 @@ class RepositoryContractSupport:
         style lines, which are template content the workflow hands to a worker,
         not sections of the reference itself. Counting them as headings would make
         a table-of-contents comparison fail for a file that is in fact consistent.
+
+        Both ``` and ~~~ fences are recognized, and a fence closes only on a run of
+        the same character at least as long as the opener. A plain toggle would
+        treat a nested fence — legal CommonMark, and how a Markdown template that
+        itself contains a code block has to be written — as a close, and every
+        heading after it would be misclassified.
         """
         headings: list[str] = []
-        in_fence = False
+        fence: str | None = None
         for line in text.splitlines():
-            if line.startswith("```"):
-                in_fence = not in_fence
+            marker = re.match(r"^(`{3,}|~{3,})", line)
+            if marker is not None:
+                run = marker.group(1)
+                if fence is None:
+                    fence = run
+                elif run[0] == fence[0] and len(run) >= len(fence):
+                    fence = None
                 continue
-            if in_fence or not line.startswith("## "):
+            if fence is not None or not line.startswith("## "):
                 continue
             heading = line.removeprefix("## ")
             if heading != "目次":

@@ -194,8 +194,8 @@ Branch Plan 単位で成立するためである。
 11. 永続 QA レポートの出力条件を満たす場合だけ
     [永続 QA レポート](references/qa-report.md) を読む。
 12. [Run の終了処理](references/run-closeout.md) に従い、会話上の最終報告を行う。
-    採用した配分方針と枝ごとの mode を含める。`order` に未実行の Branch Plan が残る場合は、
-    次の Branch Plan の授権を確認する。未授権の Branch Plan に到達した場合は実行を止め、
+    採用した配分方針と枝ごとの mode を含める。ここからは Set 単位で判断する。
+    `order` に未実行の Branch Plan が残る場合は、次の Branch Plan の授権を確認する。未授権の Branch Plan に到達した場合は実行を止め、
     [Branch Plan の受け入れ](references/branch-plan-intake.md) に従って完了済みの最終報告と
     未実行 Branch Plan の一覧を提示し、授権を要求する。
     授権された未実行の Branch Plan があれば手順2へ戻り、その Branch Plan を実行する。

@@ -28,9 +28,9 @@ run の終わりになるため、run 単位のままだと先行 Branch Plan �
 `Accepted`、`Rejected`、`Needs revision` を記録できるようにする。未実行の検証と未統合の状態を
 隠さない。最終判断は親だけが行う。
 
-親は全枝の QA、統合済み diff review、最終検証、最終判断を終える。最終 gate 後に cleanup の実施可否と
+親はその Branch Plan の全枝の QA、統合済み diff review、最終検証、最終判断を終える。最終 gate 後に cleanup の実施可否と
 結果を確定してから、sanitized Markdown Data を完成させ、出力条件を満たす場合だけ report を生成する。
-`Needs revision` などで worktree を保持する場合も cleanup 状態と理由を記録する。親の最終判断時に1回だけ生成し、その後に
+`Needs revision` などで worktree を保持する場合も cleanup 状態と理由を記録する。その Branch Plan に対する親の最終判断時に1回だけ生成し、その後に
 会話上の最終報告を行う。sanitize できない場合は生成しない。生成しなかった理由を会話上の最終報告へ含める。
 
 ## 保存先と slug

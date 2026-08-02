@@ -15,7 +15,8 @@ Branch Plan の自己申告を信用せず、再検証してから枝と配分�
 Branch Plan Set と Branch Plan の正規スキーマ(スキーマ本体・violation code とその帰属・
 Branch Plan の状態遷移)の正本は
 [Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
-であり、本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。
+であり、本 reference は受け入れ口の規定、Executor 側の再検証、枝 mode の決定表、
+Branch Plan 境界の授権の正本を担う。
 
 ## 受け入れ口の規定
 
@@ -50,8 +51,10 @@ Branch Plan の状態遷移)の正本は
 
 ## Executor 側の再検証
 
-Set 全体の検査(`ac-unassigned` / `ac-duplicate-primary` / `duplicate-id` /
-`unknown-reference` / `cross-plan-dependency`)を先に行う。
+Set 全体の検査を先に行う。対象は
+[Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
+の blocking violation code 表で帰属が `Set` の code と、帰属が `両方` の code の Set 側 field とし、
+Set 全体の Data から再計算する。どの code がどちらの帰属かは同表を正本とし、本 reference へ複製しない。
 Set の `validation.blocking` が非空なら、Branch Plan 側の状態に関わらず実行を開始しない。
 Set は `status` を持たないため、Set 帰属の違反を実行可否へ伝える経路がこの先行検査しかない。
 
@@ -62,7 +65,8 @@ Set は `status` を持たないため、Set 帰属の違反を実行可否へ�
 1. `status: approved` であり、`approval.method` が設定済みである。
 2. `delegation.authorized: true` かつ `authorized_by: user` である。
 3. `unresolved_decisions` が空である。
-4. blocking violation code 表のすべての検査規則を入力 Data から再計算し、違反が0件である。
+4. blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から再計算し、
+   違反が0件である。帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。
 5. 全枝に `failure_impact` と `implementation_complexity` が存在する。両 field の `level` が
    `low` / `medium` / `high` のいずれかである。両 field の `reasons` が欠落しておらず、非空の
    文字列配列である。欠落、配列以外、空配列、空文字、非文字列要素は
@@ -72,7 +76,9 @@ Set は `status` を持たないため、Set 帰属の違反を実行可否へ�
    `implementation_complexity` を推測しない。Branch Plan の修正を要求し、委譲を開始しない。
 
 いずれかを満たさない場合は実装を開始せず、Branch Plan の修正(または委譲要求の有無の確認)を
-要求する。
+要求する。ただし項目2 だけが不成立の場合は修正を要求せず、本 reference
+「Branch Plan 境界の授権」に従う。授権が未設定であることは Branch Plan の誤りではなく、
+境界に到達したことを表すためである。
 
 5項目を満たした後、委譲開始前に枝ごとの mode を導出する。
 

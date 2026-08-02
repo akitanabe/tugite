@@ -37,6 +37,14 @@ STAGE_FREE_IMPL_LEAD_DOCS = (
     "implementation-branches.md",
     "run-closeout.md",
 )
+# qa-report.md で `stage` を含んでよい行。Git の staging を指す保存規約の記述であり、
+# 実装段階機構とは別概念である。行そのものを固定するのは、除外を「この語を含む行」で
+# 表すと、同じ行の末尾へ stage 概念の一文を足す変更を素通ししてしまうため。
+QA_REPORT_GIT_STAGING_LINES = (
+    "利用先 repository で生成する report instance は既定では untracked / unstaged / "
+    "uncommitted とする。",
+    "表示されてよい。既定では `git add`、stage、commit しない。",
+)
 
 
 class DelegateImplementationIntakeContractsTest(
@@ -127,8 +135,8 @@ class DelegateImplementationIntakeContractsTest(
         """Carry the revalidation section as the canonical source."""
         moved_body = (
             "`status: approved` であり、`approval.method` が設定済みである。",
-            "blocking violation code 表のすべての検査規則を入力 Data から再計算し、"
-            "違反が0件である。",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算し、違反が0件である。",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
@@ -165,7 +173,8 @@ class DelegateImplementationIntakeContractsTest(
         )
         required_rules = (
             "## 枝 mode の決定表",
-            "本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。",
+            "本 reference は受け入れ口の規定、Executor 側の再検証、枝 mode の決定表、"
+            "Branch Plan 境界の授権の正本を担う。",
             "この表を正本とし、planning Skill と Executor は同じ表を使う。",
             "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
             "`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。",
@@ -231,14 +240,21 @@ class DelegateImplementationIntakeContractsTest(
         # 「Set 全体の検査を先に行う」と「再検証を Branch Plan ごとに繰り返す」を別々に
         # 固定する。前者だけだと、Set の検査を通した後に Branch Plan ごとの再検証が
         # 落ちる原稿でもこのテストが通ってしまう。
+        # 対象 code は帰属表を正本として参照させる。個別列挙を固定すると、`impl-lead` 側に
+        # 帰属表の部分複製が生まれ、schema 側で帰属が動いたときに2箇所が食い違う。
         set_wide_rules = (
-            "Set 全体の検査(`ac-unassigned` / `ac-duplicate-primary` / `duplicate-id` / "
-            "`unknown-reference` / `cross-plan-dependency`)を先に行う。",
+            "Set 全体の検査を先に行う。",
+            "blocking violation code 表で帰属が `Set` の code と、帰属が `両方` の code の "
+            "Set 側 field とし、Set 全体の Data から再計算する。",
+            "どの code がどちらの帰属かは同表を正本とし、本 reference へ複製しない。",
             "Set の `validation.blocking` が非空なら、Branch Plan 側の状態に関わらず"
             "実行を開始しない。",
         )
         per_branch_plan_rules = (
             "次の5項目は、実行対象の Branch Plan ごとに繰り返す。",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算し、違反が0件である。",
+            "帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。",
         )
         for platform, text in self._intake_reference_texts().items():
             normalized = "".join(text.split())
@@ -261,6 +277,8 @@ class DelegateImplementationIntakeContractsTest(
             "その Branch Plan の授権を要求する。",
             "再検証の項目2「`delegation.authorized: true` かつ `authorized_by: user`」が"
             "そのまま境界の判定になる。",
+            "ただし項目2 だけが不成立の場合は修正を要求せず、本 reference"
+            "「Branch Plan 境界の授権」に従う。",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
@@ -364,16 +382,7 @@ class DelegateImplementationIntakeContractsTest(
                     )
 
         for platform, report in texts["qa-report.md"].items():
-            git_staging_lines = [
-                line
-                for line in report.splitlines()
-                if "unstaged" in line or "git add" in line
-            ]
-            carrying = [
-                line
-                for line in report.splitlines()
-                if "stage" in line.lower() and line not in git_staging_lines
-            ]
+            carrying = [line for line in report.splitlines() if "stage" in line.lower()]
             with self.subTest(document="qa-report.md", platform=platform):
                 for field_name in STAGE_FIELD_NAMES:
                     self.assertNotIn(
@@ -382,10 +391,10 @@ class DelegateImplementationIntakeContractsTest(
                         f"qa-report.md({platform}) に廃止 field 名 {field_name} が残っている",
                     )
                 self.assertEqual(
-                    [],
+                    list(QA_REPORT_GIT_STAGING_LINES),
                     carrying,
-                    f"qa-report.md({platform}) の Git staging 以外の行に stage 概念の"
-                    f"語彙が残っている: {carrying}",
+                    f"qa-report.md({platform}) の stage を含む行が、Git staging を述べる"
+                    f"既知の2行と一致しない: {carrying}",
                 )
 
     def test_intake_reference_excludes_shared_foundation_from_derivation(self) -> None:
@@ -433,7 +442,8 @@ class DelegateImplementationIntakeContractsTest(
             "`branch-assessment-missing`",
             "`branch-assessment-invalid`",
             "`legacy-risk-present`",
-            "blocking violation code 表のすべての検査規則を入力 Data から再計算",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):

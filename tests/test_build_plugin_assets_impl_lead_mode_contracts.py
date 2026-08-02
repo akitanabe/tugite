@@ -206,8 +206,27 @@ class ImplLeadModeContractsTest(
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized_workflow)
 
-        for main in (skills.source_main, skills.claude_main, skills.codex_main):
-            with self.subTest(main=main[:40]):
+        # Branch Plan 単位の提示と確認ゲートは SKILL.md 本体が持つ。連結テキストへの
+        # assert だけだと、reference へ移設しても通ってしまい、SKILL.md だけを読む
+        # Executor が単位を知らないまま委譲を開始できる。
+        branch_plan_unit_rules = (
+            "実行前サマリーは Branch Plan 単位で提示する。",
+            "Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。",
+            "`strict-full` の確認ゲートは Branch Plan 単位で行う。",
+        )
+        for platform, main in (
+            ("source", skills.source_main),
+            ("claude", skills.claude_main),
+            ("codex", skills.codex_main),
+        ):
+            summary_section = main.split("## 実行前サマリー", 1)[-1].split(
+                "\n## ", 1
+            )[0]
+            normalized_summary = "".join(summary_section.split())
+            for rule in branch_plan_unit_rules:
+                with self.subTest(platform=platform, rule=rule):
+                    self.assertIn("".join(rule.split()), normalized_summary)
+            with self.subTest(platform=platform, check="order"):
                 self.assertLess(
                     main.index("実行前サマリーを提示する"),
                     main.index("先頭の枝だけを委譲する"),
@@ -694,6 +713,8 @@ class ImplLeadModeContractsTest(
         required_flow = (
             "確定済み Branch Plan Set が渡されている場合は",
             "`order` に従って Branch Plan を順に実行する。",
+            "いま実行している Branch Plan の全枝を完了した場合は、`order` に未実行の "
+            "Branch Plan が残っていても手順9へ進む。",
             "未授権の Branch Plan に到達した場合は実行を止め",
             "授権を要求する",
             "授権された未実行の Branch Plan があれば手順2へ戻り",

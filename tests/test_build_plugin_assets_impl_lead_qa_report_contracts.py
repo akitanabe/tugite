@@ -316,17 +316,13 @@ class ImplLeadQaReportContractsTest(
         ):
             for name, expected in expected_sections.items():
                 text = references[name]
-                toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
-                toc_items = tuple(
-                    line.removeprefix("- ")
-                    for line in toc.splitlines()
-                    if line.startswith("- ")
-                )
-                headings = tuple(re.findall(r"^## (.+)$", text, re.M))
-                actual = tuple(heading for heading in headings if heading != "目次")
                 with self.subTest(platform=platform, reference=name):
-                    self.assertEqual(expected, toc_items)
-                    self.assertEqual(expected, actual)
+                    self.assertEqual(
+                        expected, self._markdown_table_of_contents(text)
+                    )
+                    self.assertEqual(
+                        expected, self._markdown_section_headings(text)
+                    )
 
     def test_repository_distribution_version_is_4_3_0(self) -> None:
         """Pin the Branch Plan Set schema to the synchronized minor version."""
