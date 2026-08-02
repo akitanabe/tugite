@@ -338,6 +338,21 @@ class ImplLeadExecutionContractsTest(
                 for contract in required_contract:
                     self.assertIn("".join(contract.split()), normalized)
 
+                # 節をまたぐ移動は切り出しが防ぐが、同じ節の中で照応語を照応元の前へ
+                # 出す入れ替えは通ってしまうため、節内の順序も固定する。判定は正規化
+                # テキスト上で行い、折り返し位置の変更で needle が消えないようにする。
+                anchor, referring = (
+                    "".join(required_contract[0].split()),
+                    "".join(required_contract[1].split()),
+                )
+                self.assertIn(anchor, normalized, f"{platform}: 照応元がない")
+                self.assertIn(referring, normalized, f"{platform}: 照応語の文がない")
+                self.assertLess(
+                    normalized.index(anchor),
+                    normalized.index(referring),
+                    f"{platform}: 「この規約は」が照応元より前に置かれている",
+                )
+
                 self.assertEqual(
                     expected_sections,
                     self._markdown_table_of_contents(reference),

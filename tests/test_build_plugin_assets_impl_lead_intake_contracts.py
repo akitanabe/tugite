@@ -268,10 +268,28 @@ class DelegateImplementationIntakeContractsTest(
             for rule in per_branch_plan_rules:
                 with self.subTest(platform=platform, scope="branch-plan"):
                     self.assertIn("".join(rule.split()), normalized)
+            # 順序も正規化テキスト上で判定する。生テキストを引くと、意味を変えない
+            # 折り返し位置の変更だけで needle が消え、契約違反がないのに落ちる。
+            ordered_markers = (
+                "Set 全体の検査を先に行う。",
+                "1. `status: approved`",
+                "帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。",
+            )
+            positions = []
+            for marker in ordered_markers:
+                normalized_marker = "".join(marker.split())
+                self.assertIn(
+                    normalized_marker,
+                    normalized,
+                    f"{platform}: 再検証節に「{marker}」がない",
+                )
+                positions.append(normalized.index(normalized_marker))
             with self.subTest(platform=platform, scope="order"):
-                self.assertLess(
-                    section.index("Set 全体の検査を先に行う。"),
-                    section.index("1. `status: approved`"),
+                self.assertEqual(
+                    sorted(positions),
+                    positions,
+                    f"{platform}: Set の先行検査 → 5項目 → `両方` の担当宣言 の順に"
+                    f"並んでいない: {positions}",
                 )
 
     def test_intake_reference_stops_at_an_unauthorized_branch_plan_and_asks_for_authorization(
