@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import unittest
 
 from build_plugin_assets_test_support import (
     PLATFORMS,
     RepositoryContractSupport,
     generated_skill_path,
+    shared_skill_path,
 )
 
 
@@ -30,6 +32,16 @@ class FeatureLeadContractsTest(
         return {
             platform: self._repository_text(generated_skill_path(platform, skill))
             for platform in PLATFORMS
+        }
+
+    def _feature_lead_main_texts(self) -> dict[str, str]:
+        # Includes the manuscript itself (not just the two generated files) so a
+        # contract can Red against the file a human actually edits. Checking only
+        # the generated pair would let a change to the generator's rendering (or a
+        # stale manuscript the generator happens to already satisfy) pass silently.
+        return {
+            "source": self._repository_text(shared_skill_path(FEATURE_LEAD_SKILL)),
+            **self._generated_texts(),
         }
 
     def _generated_frontmatter_and_body(self, text: str) -> tuple[str, str]:
@@ -361,6 +373,164 @@ class FeatureLeadContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
             with self.subTest(platform=platform, contract=autonomy_narrowing):
                 self.assertNotIn("".join(autonomy_narrowing.split()), normalized)
+
+    def test_feature_lead_stops_the_whole_stage_when_any_branch_plan_is_blocked(
+        self,
+    ) -> None:
+        """Treat a Set with any blocked Branch Plan as one stage-wide decision point."""
+        # AC-8(a). The two contracts are asserted separately (one in "段の遷移と
+        # 判断点の処理", one in "授権の根拠") because they are independent claims:
+        # detecting the stage-wide stop does not by itself say authorization is
+        # withheld unless every Branch Plan is approved.
+        contracts = (
+            "`branch-design` が返した Branch Plan Set のうち1件でも Branch Plan が "
+            "`blocked` である",
+            "この場合は特定の Branch Plan ではなく段全体を判断点として扱う。",
+            "授権を設定するのは、Set の全 Branch Plan が `status: approved` を返した"
+            "場合だけである。",
+            "1件でも `blocked` な Branch Plan があれば段全体を判断点として扱い停止し、"
+            "一部の Branch Plan だけを授権して進める経路は持たない。",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            normalized = "".join(text.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_feature_lead_authorizes_only_the_lead_branch_plan_under_attended(
+        self,
+    ) -> None:
+        """Authorize just the order-first Branch Plan when autonomy stays attended."""
+        # AC-8(b), first half. Kept as its own contract (distinct from the
+        # unattended one below) so a manuscript that authorizes everything under
+        # both settings still fails this test.
+        contract = "`attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。"
+        for platform, text in self._feature_lead_main_texts().items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "".join(contract.split()), "".join(text.split())
+                )
+
+    def test_feature_lead_authorizes_every_branch_plan_under_unattended(self) -> None:
+        """Authorize the whole Set when autonomy is unattended."""
+        # AC-8(c), first half. Kept separate from the attended contract above so the
+        # attended/unattended distinction cannot collapse into one shared sentence.
+        contract = "`unattended` では、Set の全 Branch Plan を授権する。"
+        for platform, text in self._feature_lead_main_texts().items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "".join(contract.split()), "".join(text.split())
+                )
+
+    def test_feature_lead_relays_the_boundary_stop_and_resumes_after_authorization(
+        self,
+    ) -> None:
+        """Relay impl-lead's boundary presentation instead of copying it, then resume."""
+        # AC-8(b), second half.
+        contracts = (
+            "`impl-lead` が境界で止まったら、`impl-lead` が提示した内容を既存の"
+            "最終報告の中継規約に従ってユーザーへ返し、次の Branch Plan の授権を求める。",
+            "提示内容そのものは `branch-plan-intake.md` を正本とし、この Skill へ"
+            "複製しない。",
+            "ユーザーが授権を確定したら、その Branch Plan から `impl-lead` を再開する。",
+            "この停止は Skill の責務を果たさずに終了することではなく、Branch Plan を"
+            "承認単位にした結果として意図された停止である。",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            normalized = "".join(text.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_feature_lead_records_the_boundary_passage_when_unattended(self) -> None:
+        """Log that an unattended run crossed authorized boundaries and which ids."""
+        # AC-8(c), second half.
+        contract = (
+            "境界を通過した事実と通過した Branch Plan id を最終報告へ記録する。"
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            with self.subTest(platform=platform):
+                self.assertIn(
+                    "".join(contract.split()), "".join(text.split())
+                )
+
+    def test_feature_lead_keeps_the_boundary_stop_out_of_the_decision_ledger(
+        self,
+    ) -> None:
+        """Explain, not just omit, why the boundary stop never becomes a ledger row."""
+        # AC-8(d).
+        contracts = (
+            "`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点の"
+            "いずれにも当たらない。",
+            "`origin: impl-lead-gate` として判断点台帳へ記録しない。",
+            "台帳が対象とするのは段が返した判断点であり、境界の停止は授権が未設定で"
+            "あることの帰結だからである。",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            normalized = "".join(text.split())
+            for contract in contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_feature_lead_flow_branches_at_the_boundary_before_the_final_report(
+        self,
+    ) -> None:
+        """Give the numbered flow a stop/resume branch instead of a straight line."""
+        # Completion criterion: the numbered "全体の流れ" list must not still end at
+        # step 8 presenting the first Branch Plan's final report. Extracting the
+        # section (capped at the next "## ") and asserting order, not just presence,
+        # is required per the branch's own constraints: a whole-file containment
+        # check cannot tell "the branch sits inside the numbered flow" from
+        # "the same words happen to exist elsewhere in the file", and a prior
+        # branch's review already found that miss in practice.
+        required_order = (
+            "`order` に従って Branch Plan を実行する。",
+            "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
+            "手順9を行わずに",
+            "その Branch Plan から手順7へ戻る",
+            "`order` の全 Branch Plan の実行が終わったら",
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            flow = text.split("## 全体の流れ", 1)[1].split("\n## ", 1)[0]
+            normalized_flow = "".join(flow.split())
+            positions: list[int] = []
+            for phrase in required_order:
+                needle = "".join(phrase.split())
+                with self.subTest(platform=platform, phrase=phrase):
+                    self.assertIn(needle, normalized_flow)
+                positions.append(normalized_flow.find(needle))
+            with self.subTest(platform=platform, check="order"):
+                self.assertEqual(positions, sorted(positions))
+
+    def test_feature_lead_has_no_remaining_branch_plan_data_wording(self) -> None:
+        """Retire the pre-Set field name, including in the platform frontmatter."""
+        for platform, text in self._feature_lead_main_texts().items():
+            with self.subTest(platform=platform):
+                self.assertNotIn("Branch Plan Data", text)
+
+    def test_feature_lead_does_not_duplicate_impl_lead_intake_presentation_wording(
+        self,
+    ) -> None:
+        """Point at branch-plan-intake.md instead of restating its boundary text."""
+        intake_text = self._repository_text(
+            Path("shared/skill/impl-lead/references/branch-plan-intake.md")
+        )
+        duplicated_phrase = (
+            "完了済み Branch Plan の最終報告と未実行 Branch Plan の一覧を提示して、"
+            "その Branch Plan の授権を要求する。"
+        )
+        normalized_duplicated_phrase = "".join(duplicated_phrase.split())
+        # Guard the guard: if the phrase ever moves or is reworded in the intake
+        # reference, this fails loudly instead of the negative assertion below
+        # silently passing for the wrong reason.
+        self.assertIn(
+            normalized_duplicated_phrase, "".join(intake_text.split())
+        )
+        for platform, text in self._feature_lead_main_texts().items():
+            with self.subTest(platform=platform):
+                self.assertNotIn(
+                    normalized_duplicated_phrase, "".join(text.split())
+                )
 
 
 if __name__ == "__main__":
