@@ -487,6 +487,13 @@ class FeatureLeadContractsTest(
         # RB-4: `blocked` の成立条件は branch-plan-schema.md の定義そのもの
         # であり、`feature-lead` が逐語コピーすると二重管理になる。旧文言が
         # 戻っていないことを確認する。
+        #
+        # Why Not: この forbidden だけ whole-file スコープのままにする理由。
+        # `assertIn` の節スコープ化は「正しい場所に**ある**こと」を追加で
+        # 要求するため検出力が上がるが、`assertNotIn` の節スコープ化は探す
+        # 範囲が減るだけで検出力が下がる。RB-4 が禁じる逐語定義は
+        # `feature-lead` SKILL.md のどこに出現しても二重管理になるため、
+        # 正しいスコープは file 全体である（PQ-1）。
         forbidden = (
             "その Branch Plan の `unresolved_decisions` または `validation.blocking` "
             "が非空、あるいは Set の `validation.blocking` が非空"
@@ -500,6 +507,7 @@ class FeatureLeadContractsTest(
             gate_section = "".join(
                 self._section(text, "## 授権の根拠").split()
             )
+            normalized = "".join(text.split())
             for contract in decision_point_contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), decision_section)
@@ -507,7 +515,7 @@ class FeatureLeadContractsTest(
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), gate_section)
             with self.subTest(platform=platform, forbidden=forbidden):
-                self.assertNotIn("".join(forbidden.split()), decision_section)
+                self.assertNotIn("".join(forbidden.split()), normalized)
 
     def test_feature_lead_authorizes_only_the_lead_branch_plan_under_attended(
         self,
