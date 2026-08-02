@@ -198,20 +198,16 @@ class DraftImplementationPlanContractsTest(
         return rest[:end]
 
     @staticmethod
-    def _first_bullet_block(section_lines: list[str]) -> tuple[str, ...]:
-        """Return the section's first blank-line-delimited bullet block, item by item."""
-        start = next(
-            index
-            for index, line in enumerate(section_lines)
-            if line.startswith("- ")
-        )
+    def _bullet_items(section_lines: list[str]) -> tuple[str, ...]:
+        """Return every bullet item in the section, continuation lines folded in."""
+        # 空行で打ち切らない。打ち切ると母数が最初のブロックだけになり、説明段落の
+        # 後ろへ足された項目が件数の固定をすり抜ける。他の節の項目を拾わないことは
+        # `_section_lines` の `## ` 見出し単位の切り出しが担保する。
         items: list[str] = []
-        for line in section_lines[start:]:
-            if not line.strip():
-                break
+        for line in section_lines:
             if line.startswith("- "):
                 items.append(line)
-            else:
+            elif items and line.startswith(" "):
                 items[-1] += line
         return tuple("".join(item.split()) for item in items)
 
@@ -737,9 +733,30 @@ class DraftImplementationPlanContractsTest(
                     self.assertIn("".join(contract.split()), section)
                 self.assertEqual(
                     tuple("".join(item.split()) for item in conditions),
-                    self._first_bullet_block(section_lines),
+                    self._bullet_items(section_lines),
                     "the omission conditions must stay exactly these two",
                 )
+
+    def test_plan_artifacts_reference_owns_the_in_conversation_limit(self) -> None:
+        """Carry the in-conversation limit and its reason where SKILL.md points."""
+        # SKILL.md は正本注記だけを持ち、理由本文をこちらへ委ねている。正本側を
+        # 固定しないと、指し示された節が空でも AC-13 と正反対でも通ってしまう。
+        # 節スコープで見るのは、文が別の節へ移された場合も検出するためである。
+        required = (
+            "会話内経路（`plan_document: 会話内`）は同一会話内で完結する用途に限り、"
+            "後日渡す経路を持たない。",
+            "レビュー状態が file として残らず、後から会話上に貼り直しても "
+            "`plan-craft` からの再起草になる。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = "".join(
+                    "".join(
+                        self._section_lines(text, "## file 出力と会話内経路")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
 
     def test_plan_review_inputs_hand_the_whole_plan_body_to_both_reviewers(
         self,
