@@ -375,11 +375,12 @@ class DelegateImplementationIntakeContractsTest(
         # 廃止 field 名を含まない stage 概念の散文と目次項目まで検出できるよう、生の
         # "stage" 部分文字列(大小無視)の不在を検査する。branch-design 側の同型テストと
         # 検査形が違うのは qa-report.md のためである。同 file は Git の staging を指す語
-        # (`unstaged` / `git add`、stage) を保存規約として持ち、これは実装段階機構とは
-        # 別概念で本 workflow の変更対象でもない。そこで qa-report.md だけは廃止 field 名
-        # 4語の不在に加えて、stage を含む行が既知の2行ちょうどであることを全文で照合する。
-        # 保存規約の文言を改訂したときは、`QA_REPORT_GIT_STAGING_LINES` も同じ変更意図で
-        # 更新する。
+        # (`unstaged` / `git add`、stage) を保存規約として正当に持ち、これは実装段階機構とは
+        # 別概念で本 workflow の変更対象でもないため、他4 file と同じ「stage を1件も含まない」
+        # 検査を当てられない。そこで qa-report.md だけは、stage を含む行が既知の2行ちょうど
+        # であることを全文で照合する。廃止 field 名はいずれも部分文字列 stage を含むため、
+        # この照合が残存を検出する。保存規約の文言を改訂したときは、
+        # `QA_REPORT_GIT_STAGING_LINES` も同じ変更意図で更新する。
         texts = {
             name: self._delegate_reference_texts(name)
             for name in (*STAGE_FREE_IMPL_LEAD_DOCS, "qa-report.md")

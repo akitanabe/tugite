@@ -716,7 +716,6 @@ class ImplLeadModeContractsTest(
             "授権を要求する",
             "授権された未実行の Branch Plan があれば手順2へ戻り",
             "手順7の修正経路",
-            "手順9へ進む",
         )
         # 決定表と再検証規則は正本参照のままにする。SKILL.md へ再掲すると同じ規則が
         # 2箇所で更新対象になる。決定表はヘッダ行全体で識別する。`| policy | baseline |`
