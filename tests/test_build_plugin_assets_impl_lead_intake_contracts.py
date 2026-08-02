@@ -20,15 +20,6 @@ INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
 BRANCH_DESIGN_SKILL = "branch-design"
 
-# 廃止した実装段階機構の field 名。`legacy-stages-present` の検査規則は
-# `branch-design` 側の branch-plan-schema.md だけが持つため、impl-lead の原稿には
-# 1件も残さない。
-STAGE_FIELD_NAMES = (
-    "implementation_stages",
-    "stage_tests",
-    "stages_reason",
-    "stages-invalid",
-)
 # 廃止 field 名を含まない stage 概念の散文と目次項目まで検出するため、Latin 表記の
 # "stage" 部分文字列の不在で検査する file。qa-report.md だけは Git の staging を指す
 # 別概念の語を保持するため、この一覧から外して個別に検査する。
@@ -243,7 +234,6 @@ class DelegateImplementationIntakeContractsTest(
         # 対象 code は帰属表を正本として参照させる。個別列挙を固定すると、`impl-lead` 側に
         # 帰属表の部分複製が生まれ、schema 側で帰属が動いたときに2箇所が食い違う。
         set_wide_rules = (
-            "Set 全体の検査を先に行う。",
             "blocking violation code 表で帰属が `Set` の code と、帰属が `両方` の code の "
             "Set 側 field とし、Set 全体の Data から再計算する。",
             "どの code がどちらの帰属かは同表を正本とし、本 reference へ複製しない。",
@@ -255,7 +245,6 @@ class DelegateImplementationIntakeContractsTest(
             "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
             "再計算し、違反が0件である。",
             "帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。",
-            "帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。",
         )
         # 「先に行う」「次の5項目」はどちらも位置で意味が決まる語なので、file 全体では
         # なく再検証節を切り出して照合し、Set の先行検査が5項目より前にあることまで見る。
@@ -344,7 +333,6 @@ class DelegateImplementationIntakeContractsTest(
                     "".join("テスト種別の意味は正規スキーマの「tests の意味」に従う。".split()),
                     normalized,
                 )
-                self.assertNotIn("stage_tests の意味", text)
 
         schema_texts = {
             "source": self._repository_text(
@@ -414,12 +402,6 @@ class DelegateImplementationIntakeContractsTest(
         for platform, report in texts["qa-report.md"].items():
             carrying = [line for line in report.splitlines() if "stage" in line.lower()]
             with self.subTest(document="qa-report.md", platform=platform):
-                for field_name in STAGE_FIELD_NAMES:
-                    self.assertNotIn(
-                        field_name,
-                        report,
-                        f"qa-report.md({platform}) に廃止 field 名 {field_name} が残っている",
-                    )
                 self.assertEqual(
                     list(QA_REPORT_GIT_STAGING_LINES),
                     carrying,

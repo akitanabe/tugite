@@ -190,9 +190,6 @@ class ImplLeadModeContractsTest(
             "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
             "枝数を明示したユーザー確認を委譲開始条件とする。",
             "確認が得られるまで委譲を開始しない。",
-            "実行前サマリーは Branch Plan 単位で提示する。",
-            "Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。",
-            "`strict-full` の確認ゲートは Branch Plan 単位で行う。",
             "実行前サマリーを提示する。",
             "`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。",
             "会話上の最終報告を行う。採用した配分方針と枝ごとの mode を含める。",

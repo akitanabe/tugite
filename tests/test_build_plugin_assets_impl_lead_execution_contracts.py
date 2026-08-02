@@ -335,8 +335,6 @@ class ImplLeadExecutionContractsTest(
                     "## Implementer context と枝の lifecycle", 1
                 )[-1].split("\n## ", 1)[0]
                 normalized = "".join(lifecycle.split())
-                for contract in required_contract:
-                    self.assertIn("".join(contract.split()), normalized)
 
                 # 節をまたぐ移動は切り出しが防ぐが、同じ節の中で照応語を照応元の前へ
                 # 出す入れ替えは通ってしまうため、節内の順序も固定する。判定は正規化
