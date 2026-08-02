@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import itertools
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -21,6 +23,60 @@ PLAN_REFERENCE_NAMES = (
     "branch-splitting.md",
     "plan-review.md",
 )
+
+# Set は状態を持たない。status / approval / delegation / 完了判定を Set 直下へ足すと、
+# Branch Plan 単位の受け入れ判断と二重管理になるため、この並びを増やすときは
+# 状態を持ち込んでいないかを確認する。
+SET_LEVEL_FIELDS = (
+    "implementation_plan",
+    "acceptance_criteria",
+    "order",
+    "decision",
+    "validation",
+    "branch_plans",
+)
+BRANCH_PLAN_FIELDS = (
+    "id",
+    "status",
+    "confirmation_mode",
+    "approval",
+    "delegation",
+    "unresolved_decisions",
+    "assumptions",
+    "shared_foundation",
+    "branches",
+    "execution",
+    "delegation_mode_proposal",
+    "decision",
+    "override",
+    "validation",
+)
+
+# 帰属は「どの層の Data を見れば再計算できるか」を表す。`Set` の5件は複数 Branch Plan に
+# またがる Data がないと判定できず、Branch Plan 単体で検査すると正当な分割で誤検知する。
+VIOLATION_CODE_ATTRIBUTIONS = (
+    ("duplicate-id", "Set"),
+    ("unknown-reference", "Set"),
+    ("cross-plan-dependency", "Set"),
+    ("ac-unassigned", "Set"),
+    ("ac-duplicate-primary", "Set"),
+    ("execution-order-invalid", "両方"),
+    ("branch-without-primary-ac", "Branch Plan"),
+    ("dependency-cycle", "Branch Plan"),
+    ("scope-conflict", "Branch Plan"),
+    ("tests-missing", "Branch Plan"),
+    ("branch-assessment-missing", "Branch Plan"),
+    ("branch-assessment-invalid", "Branch Plan"),
+    ("legacy-risk-present", "Branch Plan"),
+    ("legacy-stages-present", "Branch Plan"),
+    ("branch-contract-violation", "Branch Plan"),
+    ("state-invalid", "Branch Plan"),
+    ("approval-invalid", "Branch Plan"),
+    ("delegation-invalid", "Branch Plan"),
+    ("mode-proposal-invalid", "Branch Plan"),
+)
+
+STAGE_FIELD_NAMES = ("implementation_stages", "stage_tests", "stages_reason")
 
 
 class PlanImplementationBranchesContractsTest(
@@ -98,7 +154,8 @@ class PlanImplementationBranchesContractsTest(
             "delegation-invalid",
             "mode-proposal-invalid",
             "## 状態遷移と権限",
-            "## tests / stage_tests の意味",
+            "- tests の意味",
+            "## tests の意味",
         )
         excluded = (
             "## implementation_stages の実行規約",
@@ -116,6 +173,141 @@ class PlanImplementationBranchesContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
                 for section in excluded:
                     self.assertNotIn("".join(section.split()), normalized)
+
+    def _schema_block(self, text: str) -> str:
+        return text.split("```yaml", 1)[1].split("\n```", 1)[0]
+
+    def _violation_code_table(self, text: str) -> tuple[list[str], ...]:
+        section = text.split("## blocking violation code", 1)[1].split("\n## ", 1)[0]
+        lines = section.splitlines()
+        # この節は状態組み合わせ表・delegation 表・出力条件表も持つため、最初の表だけを取る。
+        first_row = next(index for index, line in enumerate(lines) if line.startswith("|"))
+        block = itertools.takewhile(
+            lambda line: line.startswith("|"), lines[first_row:]
+        )
+        return tuple(
+            [cell.strip() for cell in line.strip().strip("|").split("|")]
+            for line in block
+        )
+
+    def _assert_carries(self, contract: str, text: str) -> None:
+        self.assertTrue(
+            "".join(contract.split()) in "".join(text.split()),
+            f"契約文が原稿に存在しない: {contract}",
+        )
+
+    def test_plan_schema_nests_branch_plans_under_a_stateless_set(self) -> None:
+        """Hold the plan-wide inputs on a stateless set and every state on each plan."""
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                block = self._schema_block(text)
+                self.assertEqual(
+                    SET_LEVEL_FIELDS,
+                    tuple(re.findall(r"^([a-z_]+):", block, re.M)),
+                )
+                plans = block.split("\nbranch_plans:", 1)[1]
+                fields = tuple(
+                    match.group(1)
+                    for match in (
+                        re.match(r"^(?:  - |    )([a-z_]+):", line)
+                        for line in plans.splitlines()
+                    )
+                    if match is not None
+                )
+                self.assertEqual(BRANCH_PLAN_FIELDS, fields)
+
+    def test_plan_schema_attributes_every_violation_code_to_its_layer(self) -> None:
+        """Name the layer that recalculates each violation code."""
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                table = self._violation_code_table(text)
+                self.assertEqual(["code", "帰属", "検査内容"], table[0])
+                rows = table[2:]
+                self.assertCountEqual(
+                    VIOLATION_CODE_ATTRIBUTIONS,
+                    tuple((row[0].strip("`"), row[1]) for row in rows),
+                )
+                attributions = {row[0].strip("`"): row[1] for row in rows}
+                self.assertEqual(
+                    5,
+                    sum(1 for layer in attributions.values() if layer == "Set"),
+                )
+                self.assertEqual(
+                    ("execution-order-invalid",),
+                    tuple(
+                        code
+                        for code, layer in attributions.items()
+                        if layer == "両方"
+                    ),
+                )
+                duplicate_id = next(
+                    row[2] for row in rows if row[0].strip("`") == "duplicate-id"
+                )
+                self.assertIn("Branch Plan id", duplicate_id)
+                self.assertIn("branch id", duplicate_id)
+                self.assertIn("AC id", duplicate_id)
+                self.assertNotIn("stage", duplicate_id)
+
+    def test_plan_schema_scopes_reference_resolution_across_the_set(self) -> None:
+        """Resolve AC references set-wide and branch references inside one plan."""
+        required = (
+            "AC id 参照(`covers_acceptance_criteria` / `verifies_acceptance_criteria` / "
+            "`unresolved_decisions.affects` の `ac-assignment` / `ac-derivation`)は "
+            "Set の `acceptance_criteria` 全域で解決する。",
+            "branch id 参照(`depends_on` / `execution.order` / "
+            "`unresolved_decisions.affects` の `branch`)は、その参照を持つ Branch Plan 内の "
+            "`branches[].id` だけで解決する。",
+            "Set の `order` の要素は `branch_plans[].id` で解決する。",
+            "同一 Branch Plan 内で解決できず、かつ Set 全域の branch id には存在する",
+            "Set 全域にも存在しない場合は `unknown-reference` とする。",
+        )
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                for contract in required:
+                    self._assert_carries(contract, text)
+
+    def test_plan_schema_blocks_every_branch_plan_on_a_set_level_violation(self) -> None:
+        """Carry a set-level violation into every plan without contradicting its state."""
+        required = (
+            "Set の `validation.blocking` が非空である間、planning Skill は"
+            "全 Branch Plan を `blocked` にする。",
+            "その Branch Plan の `unresolved_decisions` または `validation.blocking` が非空、"
+            "あるいは Set の `validation.blocking` が非空",
+            "有効な組み合わせ表と `state-invalid` の再計算は拡張後の定義を使い、"
+            "自身の2 field が空のまま `blocked` である Branch Plan を矛盾として扱わない。",
+            "Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず"
+            "実行を開始しない。",
+        )
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                for contract in required:
+                    self._assert_carries(contract, text)
+
+    def test_plan_schema_drops_stage_fields_except_the_legacy_detection_rule(
+        self,
+    ) -> None:
+        """Keep stage vocabulary only in the rule that detects it as a legacy field."""
+        # 検査規則の行だけは廃止 field 名を残す。名前を消すと legacy-stages-present が
+        # 何を検出するのかを原稿から復元できなくなるため。
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                self.assertFalse(
+                    "stages-invalid" in text,
+                    "廃止した `stages-invalid` が残っている",
+                )
+                carrying = [line for line in text.splitlines() if "stage" in line]
+                self.assertEqual(
+                    1,
+                    len(carrying),
+                    f"stage 概念を含む行が検査規則の1行に収まっていない: {carrying}",
+                )
+                legacy_rule = carrying[0]
+                self.assertTrue(
+                    legacy_rule.startswith("| `legacy-stages-present` |"),
+                    f"例外行が legacy-stages-present の検査規則ではない: {legacy_rule}",
+                )
+                for name in STAGE_FIELD_NAMES:
+                    self.assertIn(name, legacy_rule)
 
     def test_plan_schema_reference_points_terminology_to_the_implementation_branches_glossary(
         self,
