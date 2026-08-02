@@ -1673,16 +1673,16 @@ adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの
 >
 > 要求: 設定画面にタイムゾーン選択を追加する。保存した選択は再読み込み後も表示に反映される。
 >
-> (評価用の synthetic 進行: 起草されたプランの steps に、要求にない「将来の多言語対応に備えた表示文言の
-> plugin 機構の導入」が含まれ、adversarial は `zero-findings` で収束し、プラン入力モードの
+> (評価用の synthetic 進行: 起草されたプラン本文の「手順」節に、要求にない「将来の多言語対応に備えた
+> 表示文言の plugin 機構の導入」が含まれ、adversarial は `zero-findings` で収束し、プラン入力モードの
 > `over-engineering-reviewer` がこの要素をどの AC・制約にも辿れない計画要素として指摘するものとする。)
 
 **期待する判断**
 
 指摘を同じ `PF-*` 台帳へ `reviewer: over-engineering-reviewer` として記録し、親が verdict を確定して採用を
-判断する。採用した場合の反映経路はプラン修正だけであり、`review-patch-refactorer` を起動しない。プランから
-当該 step を取り除いた後、adversarial レビューを再実行し、この round も `rounds_limit` に数える。再実行が
-収束したら Implementation Plan Data を提示する。
+判断する。採用した場合の反映経路はプラン修正だけであり、`review-patch-refactorer` を起動しない。
+プラン本文の「手順」節から当該作業を取り除いた後、adversarial レビューを再実行し、この round も
+`rounds_limit` に数える。再実行が収束したら Implementation Plan Data を提示する。
 
 **必須動作**
 

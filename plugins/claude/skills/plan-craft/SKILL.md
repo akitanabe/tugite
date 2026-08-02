@@ -26,8 +26,9 @@ Implementation Plan は `branch-design` へ渡せるが、受け渡しは親エ�
 - 承認と次工程の開始権限は独立している。この Skill が扱うのは Implementation Plan の確定までであり、
   枝分割・委譲の開始権限は含まない。次工程はユーザーの明示的な要求だけを根拠に、親エージェントが
   後から開始する。
-- 要求の不足を勝手に補完しない。AC 充足・scope・実行可否に影響する blocking な不足は
-  `open_questions` として確定を求め、影響しない minor な不足は `assumptions` に明示する。
+- 要求の不足を勝手に補完しない。AC 充足・scope・実行可否に影響する
+  blocking な不足はプラン本文の「依存 / 制約 / 前提 / 未確定」節に確定が必要な問いとして書き、
+  影響しない minor な不足は同じ節に仮定として明示する。
 
 ## 発火条件
 
@@ -46,7 +47,8 @@ Implementation Plan を渡して実装までの一括実行を直接要求され
 
 ## 入力の確認
 
-着手前に次を確認する。不足が blocking なら補完せず `open_questions` にする。
+着手前に次を確認する。不足が blocking なら補完せず、プラン本文の
+「依存 / 制約 / 前提 / 未確定」節に確定が必要な問いとして書く。
 
 - 要求原文（言い換えずに保持する）。
 - 対象 repository と読み取り可能な現状。
@@ -58,14 +60,16 @@ Implementation Plan を渡して実装までの一括実行を直接要求され
 
 1. 上の入力を確認する。
 2. [起草手順](references/plan-drafting.md) に従い、安定 ID 付きで観測可能な振る舞いを表す AC、
-   scope、dependencies、constraints を持つプランを起草する。
-3. [Implementation Plan 正規スキーマ](references/implementation-plan-schema.md) に従い
-   Implementation Plan Data を生成する。
-4. [敵対的レビューループ](references/adversarial-review.md) に従い、`plan-adversarial-reviewer` に
+   scope、依存、制約を持つプラン本文を起草する。
+   この時点では Implementation Plan Data を生成しない。
+3. [敵対的レビューループ](references/adversarial-review.md) に従い、`plan-adversarial-reviewer` に
    よる round を打ち切り条件が成立するまで繰り返す。
-5. adversarial の収束後、[過剰実装のプラン審査](references/overengineering-plan-review.md) に従い
+4. adversarial の収束後、[過剰実装のプラン審査](references/overengineering-plan-review.md) に従い
    `over-engineering-reviewer` をプラン入力モードで起動する。指摘採用でプランを修正した場合は
-   手順4へ戻る。
+   手順3へ戻る。
+5. [Implementation Plan 正規スキーマ](references/implementation-plan-schema.md) に従い
+   Implementation Plan Data を生成する。レビュー済みのプラン本文を `plan.body` に置き、
+   構造 field を該当節から転記する。
 6. blocking violation code 表を入力 Data から再計算し、`validation.blocking` を確定する。
 7. `open_questions` と `validation.blocking` から `status` を決める。いずれかが非空なら `blocked`。
    空で `confirmation_mode: review` なら `awaiting_review`、`auto` なら `approved`（`method: auto`）。

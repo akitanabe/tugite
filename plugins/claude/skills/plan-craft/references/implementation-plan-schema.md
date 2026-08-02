@@ -22,16 +22,21 @@ Implementation Plan の正規スキーマ（正本）を定義する。確定済
   「用語」節に従う。`impl-lead` と `branch-design` が共有する語彙を
   この Skill でも複製せずそのまま使う。
 - Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務で
-  あり、`plan.steps` は起草者が実装の道筋を示す順序付き作業であって、AC を所有しない。
-- `plan.design` は決めた規約の本体を1箇所に置く正本とする。`plan.approach` は `design` の規約を
-  対象 repository の現状へ当てはめる方針、`plan.steps` は `design` を実現する作業、
-  `acceptance_criteria` は `design` の充足を判定する観測点であり、いずれも規約本文自体を
-  保持しない。
-- 1つの設計判断を複数の field へ別々の言い回しで写すと、レビューは写しの不一致の同期に
-  費やされる。`design` を正本に置くのはこの写しを無くすためであり、`plan.approach` を
-  設計文書に据える案と別 artifact に分離する案は棄却した。`approach` は `design` の要約ではなく、
-  `design` が答えない「どこへ・既存構造のどれを使うか」を担当する。要約にすると `design` と
-  変更理由を共有し、写しが要約の粒度で残るためである。
+  あり、プラン本文の「手順」節は起草者が実装の道筋を示す順序付き作業であって、AC を
+  所有しない。
+- プラン本文の節構成と各節の責務は [起草手順](plan-drafting.md) の
+  「プラン本文の節構成」を正本とする。この文書は節構成を再掲せず、確定した本文を
+  `plan.body` として保持する規約だけを持つ。
+- 1つの設計判断を複数の場所へ別々の言い回しで写すと、レビューは写しの不一致の同期に
+  費やされる。プラン本文の「設計」節を正本に置くのはこの写しを無くすためである。
+  以前この案を棄却したのは、分離した artifact と Data が並存して写しが残るため
+  であった。本設計では並存しない。
+  乖離が入りうるのは確定時の転記の1点に限られ、round ごとに増殖しない。
+- 構造 field（`acceptance_criteria` / `scope` / `dependencies` / `constraints` /
+  `open_questions` / `assumptions`）は、確定時に `plan.body` の該当節から言い換えずに
+  転記する。レビュー中は本文だけが存在し、構造 field は確定時に1回だけ生成する。
+  `plan.objective` は `plan.body` の見出し行から、`plan.source` は「要求の所在」行から、
+  いずれも言い換えずに転記する。
 - AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま引き継げる形（観測可能な
   振る舞いの原文）で保持する。ID は round の増減やプラン修正で振り直さない。
 - レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。指摘 ID
@@ -67,18 +72,14 @@ approval:
 plan:
   objective: <実装目的の1行要約>
   source: <要求の所在。「会話内」/ path>
-  design: <決めた規約の本体。設計判断の正本>
-                                # 書くのは決めたことだけで、要求の再掲や背景の説明は含めない。
-                                # 分量はそのプランで実際に決めた事項の数に従い、決めた事項が少なければ短くてよい
-  approach: <design の規約を対象 repository の現状へ当てはめる方針>
-                                # どこへ・既存構造のどれを使うかを書く。
-                                # design が答えた規約そのものは書かない
-  steps: []                     # 順序付きの作業。実装枝への分割はしない。AC を所有しない。
-                                # 規約本文は持たず、plan.design を正本として参照する
+  body: |
+    <レビュー済みのプラン本文の全文。見出し行と「要求の所在」行に各節が続く Markdown。
+     複数行・見出し・箇条書き・コロンを含むため block scalar で保持する。
+     節構成の正本は plan-drafting.md の「プラン本文の節構成」>
 
 acceptance_criteria:
   - id: AC-1                    # 安定 ID。Branch Plan へそのまま引き継ぎ可能。振り直さない
-    text: <観測可能な振る舞い>   # 規約本文の正本は plan.design。
+    text: <観測可能な振る舞い>   # 規約本文の正本はプラン本文の「設計」節。
                                 # AC はその充足を判定する観測可能な振る舞いだけを書く
 
 scope:
@@ -132,13 +133,13 @@ validation:
 | `review-incomplete` | `termination` が null のまま、または過剰実装審査（`reviewer: over-engineering-reviewer` の round）未実行のまま `awaiting_review` 以降へ遷移している |
 | `resolution-missing` | `resolution` が未記録の finding、または `resolution: unresolved` が `termination: round-limit` 以外で残っている |
 | `rounds-invalid` | `rounds_completed` が `rounds_limit` を超えている、または `findings[].round` と矛盾する |
-| `design-missing` | `plan.design` が未記載または空のまま `awaiting_review` 以降へ遷移している |
+| `body-missing` | `plan.body` が未記載または空のまま `awaiting_review` 以降へ遷移している |
 | `handoff-incomplete` | 引き渡し必須 field（`plan.objective` / `plan.source` / `acceptance_criteria` / `scope`）の欠落 |
 
-この表は、入力 Data から再計算できる検査だけで成り立つ。`approach` / `steps` /
-`acceptance_criteria` が `design` の規約本文を再掲しているかは意味判断であり、Data から
-再計算できない。表へ入れると表全体の再計算可能性が壊れるため、再掲の有無は code にしない。
-再掲の抑止は起草手順とレビューの判定が担う。
+この表は、入力 Data から再計算できる検査だけで成り立つ。構造 field が `plan.body` の該当節と
+食い違っていないか、および本文が規定の節見出しを備えているかは意味判断であり、Data から
+再計算できない。表へ入れると表全体の再計算可能性が壊れるため、転記一致と節見出しの有無は
+code にしない。節の充足は起草手順とレビューの判定が担う。
 
 トップレベル状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` を生成する。
@@ -181,6 +182,6 @@ validation:
 
 `handoff-incomplete` は、この表の左列を充足できない field 欠落を検査する。
 
-`plan.design` はこの表へ足さない。左列は `branch-design` の入力要件そのものであり、行を足す
-ことは入力要件の変更になる。加えて、足すと `handoff-incomplete` と `design-missing` の検査
+レビュー済みの本文はこの表へ足さない。左列は `branch-design` の入力要件そのものであり、行を足す
+ことは入力要件の変更になる。加えて、足すと `handoff-incomplete` と `body-missing` の検査
 対象が二重になり、1つの欠落に2つの code が立つ。
