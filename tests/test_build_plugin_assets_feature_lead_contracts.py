@@ -632,6 +632,15 @@ class FeatureLeadContractsTest(
             "ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan"
             "について行い直し、`impl-lead` を再開する。"
         )
+        # TQ-14: the positive assertIn above only requires the correct sentence
+        # to exist somewhere in the bullet; it does not rule out a contradicting
+        # sentence appended alongside it. Forbid the shortcut explicitly, the
+        # same defensive pattern this file already uses at
+        # `test_feature_lead_reports_the_whole_ledger_in_both_autonomy_modes`'s
+        # `unattended_only_wording` and
+        # `test_impl_lead_exempts_the_feature_lead_upgrade_from_the_downgrade_ban`'s
+        # `autonomy_narrowing`.
+        forbidden_shortcut = "手順6を省いて手順7へ直接戻ってもよい。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
@@ -640,17 +649,27 @@ class FeatureLeadContractsTest(
             normalized = "".join(attended_bullet.split())
             with self.subTest(platform=platform):
                 self.assertIn("".join(resume_contract.split()), normalized)
+            with self.subTest(platform=platform, forbidden=forbidden_shortcut):
+                self.assertNotIn("".join(forbidden_shortcut.split()), normalized)
 
     def test_feature_lead_records_the_boundary_passage_when_unattended(self) -> None:
         """Log that an unattended run never stops at the boundary, only records it."""
-        # AC-8(c), second half; TQ-1; TQ-3. Scoped to the `unattended` bullet
-        # specifically, mirroring the attended-bullet scoping above for the
-        # same anaphora risk (a mutation swapping which bullet holds which
-        # sentence would otherwise still pass a section-only scope).
+        # AC-8(c), second half; TQ-1; TQ-3. Scoped from the `unattended` marker
+        # to the end of the already-bounded "### Branch Plan 境界の停止"
+        # section — not to "just this bullet's own text". `_bullet` has no
+        # closing marker to slice to for the last bullet in a section (see its
+        # docstring), so anything placed after this bullet's real sentences
+        # and before the section boundary would also satisfy a plain
+        # `assertIn` here.
         contracts = (
             "`unattended` では境界で止まらない。",
             "境界を通過した事実と通過した Branch Plan id を最終報告へ記録する。",
         )
+        # TQ-13: the scope above cannot rule out a bullet whose own words say
+        # the opposite of AC-8(c) — "この bullet must contain the right
+        # sentence" is not the same claim as "this bullet must not also
+        # contain the wrong one". Forbid the negation directly.
+        forbidden = "境界で必ず停止し、ユーザーの授権を待つ。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
@@ -660,6 +679,8 @@ class FeatureLeadContractsTest(
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
+            with self.subTest(platform=platform, forbidden=forbidden):
+                self.assertNotIn("".join(forbidden.split()), normalized)
 
     def test_feature_lead_excludes_boundary_stops_from_the_gate_decision_point(
         self,
@@ -715,12 +736,22 @@ class FeatureLeadContractsTest(
         # check cannot tell "the branch sits inside the numbered flow" from
         # "the same words happen to exist elsewhere in the file", and a prior
         # branch's review already found that miss in practice.
+        #
+        # TQ-12: the resume test elsewhere requires the literal "...手順6から
+        # その Branch Plan について行い直し..." but nothing tied the ordinal "6"
+        # to delegation-setting content — a manuscript could renumber or
+        # reshuffle the steps and that literal would keep matching by
+        # coincidence. The first and last entries below are ordinal-qualified
+        # (start with "6. " / "9. ") specifically so that renumbering or
+        # swapping step bodies breaks the match, not just renaming the
+        # cross-reference text.
         required_order = (
+            "6. 「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。",
             "`order` に従って Branch Plan を実行する。",
             "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
             "手順9を行わずに",
             "その Branch Plan について手順6から行い直す",
-            "`order` の全 Branch Plan の実行が終わったら",
+            "9. `order` の全 Branch Plan の実行が終わったら",
         )
         for platform, text in self._feature_lead_main_texts().items():
             flow = self._section(text, "## 全体の流れ")
