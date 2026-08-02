@@ -42,7 +42,7 @@ Branch Plan の状態遷移)の正本は
   既存挙動を固定する regression test なのかを委譲前に確認する。後者だけが Red 証跡の Green 例外を
   利用できる。分類できない場合は Green 例外を適用せず判断点として返す。regression と確認できた場合は、
   [実装枝の準備と委譲](implementation-branches.md) の4項目の根拠を返却条件へ追加する。
-- Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。分割
+- Branch Plan Set が渡されていない場合は、現行どおり親が inline に枝を分ける。分割
   シグナルに該当する場合は `branch-design` の使用を推奨する
   (強制しない)。
 

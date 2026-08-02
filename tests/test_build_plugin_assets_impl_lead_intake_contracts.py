@@ -145,7 +145,7 @@ class DelegateImplementationIntakeContractsTest(
             "再検証を満たさない場合は実装を開始せず",
             "既存の委譲 prompt の Data へそのまま流し込む",
             "委譲 prompt の必須テストと検証 command で",
-            "Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。",
+            "Branch Plan Set が渡されていない場合は、現行どおり親が inline に枝を分ける。",
             "`branch-design` の使用を",
         )
         for platform, text in self._intake_reference_texts().items():
