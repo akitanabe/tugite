@@ -170,8 +170,8 @@ Branch Plan 単位で成立するためである。
 3. [実装枝の準備と委譲](references/implementation-branches.md) を読み、基準、worktree、Worker 選択、
    委譲 prompt を準備する。この時点では起動しない。
 4. expert 候補の場合だけ、起動前に [Expert 選択](references/expert-selection.md) を読む。
-5. 実行前サマリーを提示する。実行前サマリーと `strict-full` の確認は、いま実行している
-   Branch Plan を単位とする。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
+5. 実行前サマリーを提示する。提示と `strict-full` の確認は、いま実行している Branch Plan を
+   単位とする。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
    審査と準備が完了した先頭の枝だけを委譲する。
 6. Implementer の返答を待ち、返却 commit と実行結果を受け取る。
 7. [返却の QA と統合](references/qa-and-integration.md)、
@@ -183,9 +183,9 @@ Branch Plan 単位で成立するためである。
    指摘件数のサマリ行と指摘ごとの evidence を備えた形で受け取る。
 8. QA 修正を続ける場合は手順7の修正経路を継続する。「枝レビューの4相」の枝の受け入れ点を満たして受け入れる
    場合は1枝だけを統合し、統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
+   いま実行している Branch Plan の全枝を完了した場合は、`order` に未実行の Branch Plan が残っていても手順9へ進む。
    親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を
    終了する場合は、手順9へ進む。
-   いま実行している Branch Plan の全枝を完了し、`order` に未実行の Branch Plan が残る場合も手順9へ進む。
 9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、
    [Run の終了処理](references/run-closeout.md) に従い、適用可能な統合済み diff review と
    最終検証を行い、親の最終判断を確定する。
@@ -194,8 +194,8 @@ Branch Plan 単位で成立するためである。
 11. 永続 QA レポートの出力条件を満たす場合だけ
     [永続 QA レポート](references/qa-report.md) を読む。
 12. [Run の終了処理](references/run-closeout.md) に従い、会話上の最終報告を行う。
-    採用した配分方針と枝ごとの mode を含める。`order` に未実行の Branch Plan が残る場合、
-    未授権の Branch Plan に到達した場合は実行を止め、
+    採用した配分方針と枝ごとの mode を含める。`order` に未実行の Branch Plan が残る場合は、
+    次の Branch Plan の授権を確認する。未授権の Branch Plan に到達した場合は実行を止め、
     [Branch Plan の受け入れ](references/branch-plan-intake.md) に従って完了済みの最終報告と
     未実行 Branch Plan の一覧を提示し、授権を要求する。
     授権された未実行の Branch Plan があれば手順2へ戻り、その Branch Plan を実行する。

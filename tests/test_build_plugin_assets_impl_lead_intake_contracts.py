@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -328,19 +327,12 @@ class DelegateImplementationIntakeContractsTest(
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
-                toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
-                toc_items = tuple(
-                    line.removeprefix("- ")
-                    for line in toc.splitlines()
-                    if line.startswith("- ")
+                self.assertEqual(
+                    expected_sections, self._markdown_table_of_contents(text)
                 )
-                headings = tuple(
-                    heading
-                    for heading in re.findall(r"^## (.+)$", text, re.M)
-                    if heading != "目次"
+                self.assertEqual(
+                    expected_sections, self._markdown_section_headings(text)
                 )
-                self.assertEqual(expected_sections, toc_items)
-                self.assertEqual(expected_sections, headings)
 
     def test_impl_lead_surface_docs_drop_all_stage_vocabulary(self) -> None:
         """Leave no trace of the retired implementation_stages mechanism in impl-lead."""

@@ -269,6 +269,39 @@ class RepositoryContractSupport:
         return "".join(text.replace("`", "").split())
 
     @staticmethod
+    def _markdown_section_headings(text: str) -> tuple[str, ...]:
+        """Return the level-2 headings of ``text``, excluding 目次 and fenced blocks.
+
+        Lines inside a fenced code block are skipped: the impl-lead references
+        embed delegation-prompt templates whose bodies contain literal ``## タスク``
+        style lines, which are template content the workflow hands to a worker,
+        not sections of the reference itself. Counting them as headings would make
+        a table-of-contents comparison fail for a file that is in fact consistent.
+        """
+        headings: list[str] = []
+        in_fence = False
+        for line in text.splitlines():
+            if line.startswith("```"):
+                in_fence = not in_fence
+                continue
+            if in_fence or not line.startswith("## "):
+                continue
+            heading = line.removeprefix("## ")
+            if heading != "目次":
+                headings.append(heading)
+        return tuple(headings)
+
+    @staticmethod
+    def _markdown_table_of_contents(text: str) -> tuple[str, ...]:
+        """Return the bullet items of the 目次 section of ``text``."""
+        toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
+        return tuple(
+            line.removeprefix("- ")
+            for line in toc.splitlines()
+            if line.startswith("- ")
+        )
+
+    @staticmethod
     def _iter_repository_text_asset_files(*roots: Path) -> Iterator[Path]:
         """Yield the repository's authored and generated text assets under ``roots``.
 

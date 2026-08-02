@@ -10,7 +10,8 @@
 `branch-design` が出力した確定済み Branch Plan Set を
 `impl-lead` の入力として受け入れるための規約を定める。親は
 Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。
-Branch Plan Set と Branch Plan の正規スキーマ(状態・violation code・帰属・状態遷移)の正本は
+Branch Plan Set と Branch Plan の正規スキーマ(スキーマ本体・violation code とその帰属・
+Branch Plan の状態遷移)の正本は
 [Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
 であり、本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。
 

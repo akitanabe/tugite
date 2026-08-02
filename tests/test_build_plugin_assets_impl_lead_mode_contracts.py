@@ -701,9 +701,12 @@ class ImplLeadModeContractsTest(
             "手順9へ進む",
         )
         # 決定表と再検証規則は正本参照のままにする。SKILL.md へ再掲すると同じ規則が
-        # 2箇所で更新対象になる。
+        # 2箇所で更新対象になる。決定表はヘッダ行全体で識別する。`| policy | baseline |`
+        # だけだと、保持義務のある入力語彙の写像表(`| ユーザー入力 | policy | baseline |
+        # 意味と選択条件 |`)にも一致してしまう。
         forbidden_restatements = (
-            "| policy | baseline |",
+            "| policy | baseline | `implementation_complexity.level: low` | "
+            "`medium` | `high` |",
             "`status: approved` であり、`approval.method` が設定済みである。",
         )
         for platform, main in (

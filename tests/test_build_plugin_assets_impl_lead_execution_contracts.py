@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -333,19 +332,14 @@ class ImplLeadExecutionContractsTest(
                 for contract in required_contract:
                     self.assertIn("".join(contract.split()), normalized)
 
-                toc = reference.split("## 目次", 1)[1].split("\n## ", 1)[0]
-                toc_items = tuple(
-                    line.removeprefix("- ")
-                    for line in toc.splitlines()
-                    if line.startswith("- ")
+                self.assertEqual(
+                    expected_sections,
+                    self._markdown_table_of_contents(reference),
                 )
-                headings = tuple(
-                    heading
-                    for heading in re.findall(r"^## (.+)$", reference, re.M)
-                    if heading != "目次"
+                self.assertEqual(
+                    expected_sections,
+                    self._markdown_section_headings(reference),
                 )
-                self.assertEqual(expected_sections, toc_items)
-                self.assertEqual(expected_sections, headings)
 
 
 if __name__ == "__main__":
