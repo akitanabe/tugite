@@ -27,6 +27,11 @@ PLAN_REFERENCE_NAMES = (
 # Set は状態を持たない。status / approval / delegation / 完了判定を Set 直下へ足すと、
 # Branch Plan 単位の受け入れ判断と二重管理になるため、この並びを増やすときは
 # 状態を持ち込んでいないかを確認する。
+# 集合ではなく順序まで固定するのは、この2つの並びが互いの部分集合ではなく、層を取り違えて
+# field を1段ずらしても集合比較では両方の集合が変わらない配置がありうるためである。
+# 順序を固定すると、ずらした位置がそのまま差分として出る。violation code 表を
+# assertCountEqual にしているのは、表の行順が読み手向けの並びでしかなく、code と帰属の
+# 対応だけが契約だからで、扱いの違いはこの「並び自体が契約かどうか」に対応する。
 SET_LEVEL_FIELDS = (
     "implementation_plan",
     "acceptance_criteria",
@@ -277,6 +282,12 @@ class PlanImplementationBranchesContractsTest(
             "自身の2 field が空のまま `blocked` である Branch Plan を矛盾として扱わない。",
             "Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず"
             "実行を開始しない。",
+            # 同じ規則を状態遷移表とスキーマ本体のコメントにも書いているため、散文だけを
+            # 固定すると原稿が自己矛盾したまま通る。3箇所すべてを固定する。
+            "| (生成) → `blocked` | planning Skill | 自身の `unresolved_decisions` または "
+            "`validation.blocking`、あるいは Set の `validation.blocking` が非空 |",
+            "Set または自身に blocking violation が残る場合は承認操作があっても遷移しない",
+            "# blocked:          「blocking violation code」の節が定める blocked の定義に従う",
         )
         for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
             with self.subTest(platform=platform):
@@ -295,19 +306,23 @@ class PlanImplementationBranchesContractsTest(
                     "stages-invalid" in text,
                     "廃止した `stages-invalid` が残っている",
                 )
-                carrying = [line for line in text.splitlines() if "stage" in line]
-                self.assertEqual(
-                    1,
-                    len(carrying),
-                    f"stage 概念を含む行が検査規則の1行に収まっていない: {carrying}",
+                carrying = [
+                    line
+                    for line in text.splitlines()
+                    if any(name in line for name in STAGE_FIELD_NAMES)
+                ]
+                self.assertNotEqual(
+                    [],
+                    carrying,
+                    "legacy-stages-present の検査規則行が見つからない",
                 )
-                legacy_rule = carrying[0]
-                self.assertTrue(
-                    legacy_rule.startswith("| `legacy-stages-present` |"),
-                    f"例外行が legacy-stages-present の検査規則ではない: {legacy_rule}",
-                )
+                for line in carrying:
+                    self.assertTrue(
+                        line.startswith("| `legacy-stages-present` |"),
+                        f"廃止 field 名が検査規則行の外に残っている: {line}",
+                    )
                 for name in STAGE_FIELD_NAMES:
-                    self.assertIn(name, legacy_rule)
+                    self.assertIn(name, carrying[0])
 
     def test_plan_schema_reference_points_terminology_to_the_implementation_branches_glossary(
         self,

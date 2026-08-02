@@ -31,8 +31,11 @@
   決められないため。
 - `branch_plans` が1件の場合も Set を返す。出力形が入力によって変わると、検査の帰属まで
   入力形によって変わるため。
-- Set の `order` は Branch Plan id の全順序であり、先行する Branch Plan 全体の完了を依存とする。
-  枝間の依存は Branch Plan 内で閉じ、Set の `order` は Branch Plan 間の依存を持たない。
+- Set の `order` は Branch Plan id の全順序であり、この並び自体が実行順序の制約である。先行する
+  Branch Plan 全体の完了を待ってから次の Branch Plan を開始する。Set 層は `depends_on` のような
+  別建ての依存 field を持たないため、並びと突き合わせる依存関係が存在せず、Set 層の検査は
+  `order` が `branch_plans[].id` を1回ずつ含むかだけになる。枝どうしの `depends_on` は
+  Branch Plan 内で閉じる。
 - `decision` は Set と Branch Plan の両方に同名で存在する。層が参照 path(`decision` と
   `branch_plans[].decision`)で一意に決まるため、名前を分けない。
 - AC の割り当ては枝側の一方向参照だけにする。AC 側と枝側の両方に割り当てを書くと二重管理になり、
@@ -81,8 +84,8 @@ acceptance_criteria:            # 元プランの AC を原文のまま保持す
                                 # 空なら元プラン由来であり、findings 由来 AC と同一 Set 内で混在できる。
                                 # 検査対象にしない(「設計方針」を参照)
 
-order: []                       # branch_plans[].id を1回ずつ含む全順序。
-                                # 先行する Branch Plan 全体の完了を依存とする
+order: []                       # branch_plans[].id を1回ずつ含む全順序。並び自体が実行順序で、
+                                # 先行する Branch Plan 全体の完了を待ってから次を開始する
 
 decision:                       # 分割しない(branch_plans が1件)場合は必須
   split: false
@@ -146,7 +149,8 @@ branch_plans:
       verification: []            # 基準 commit にする前の検証 command
       covers_acceptance_criteria: []  # 固定で空。元 AC の完成責任を負わないことをスキーマ上明示
     branches:
-      - id: <kebab-case>
+      - id: <kebab-case>                     # Set 全域で一意。cross-plan-dependency は
+                                             # Set 全域の branch id で判定するため重複を許さない
         title: <短い表題>
         purpose: <外部から観測可能な振る舞い>  # 委譲 prompt の「目的」にそのまま渡せる粒度
         depends_on: []                         # 同一 Branch Plan 内の他枝の id。循環禁止
@@ -224,14 +228,21 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 
 両評価軸で `reasons` の欠落、配列以外、空配列、空文字、非文字列要素は invalid とする。
 
-帰属が `Set` の code は、複数 Branch Plan にまたがる Data がなければ判定できない。AC の割り当てを
-Branch Plan 単体で検査すると、AC が複数の Branch Plan へ散る正当な分割で必ず `ac-unassigned` が
-発火するため、全 Branch Plan の枝の和集合で検査する。
+帰属は次の基準で決める。Set 全域の Data を必要とする判定を1件でも含む code は `Set` 帰属とし、
+同種の検査を層で割らない。層で割ると同じ違反が2層へ二重記録され、どちらを正とするかの規則が
+新たに必要になるためである。AC の割り当てを Branch Plan 単体で検査すると、AC が複数の
+Branch Plan へ散る正当な分割で必ず `ac-unassigned` が発火するため、全 Branch Plan の枝の和集合で
+検査する。`unknown-reference` は、AC id 参照が Set の `acceptance_criteria` 全域を必要とし、
+`depends_on` の未解決も `cross-plan-dependency` との切り分けに Set 全域の branch id を必要とする
+ため、同一 Branch Plan 内で閉じる参照も含めて参照検査全体を `Set` 帰属にまとめる。
+`両方` は、同名の検査が両層の別 field(`order` と `execution.order`)に独立して存在し、片方の
+違反をもう片方から再計算できない `execution-order-invalid` だけに与える。
 
 `execution-order-invalid` は両層に同じ検査規則を適用する。Set では `order` が
 `branch_plans[].id` を1回ずつ含むこと、Branch Plan では `execution.order` が `branches[].id` を
-1回ずつ含み `depends_on` の topological order であることを検査する。Set の `order` は
-Branch Plan 間の依存を持たないため、順序違反の検査は Branch Plan 層だけに掛かる。
+1回ずつ含み `depends_on` の topological order であることを検査する。Set 層には `depends_on` に
+相当する依存 field がなく、`order` の並びそのものが実行順序であるため、依存関係との突き合わせは
+Branch Plan 層だけに掛かる。
 
 `unknown-reference` の検査は Set 層で行うが、参照の解決範囲は種類ごとに分ける。
 AC id 参照(`covers_acceptance_criteria` / `verifies_acceptance_criteria` /
@@ -246,12 +257,13 @@ branch id には存在する場合に生成する。Set 全域にも存在しな
 差し戻し先が異なるため、同じ code にまとめない。
 
 Set の `validation.blocking` が非空である間、planning Skill は全 Branch Plan を `blocked` にする。
-Set は `status` を持たないため、これ以外に Set の違反を実行可否へ伝える経路がない。したがって
+Set は `status` を持たないため、これが Set の違反を Branch Plan の状態として表す唯一の経路である。
+したがって
 `blocked` は、その Branch Plan の `unresolved_decisions` または `validation.blocking` が非空、
 あるいは Set の `validation.blocking` が非空であることを表す。有効な組み合わせ表と `state-invalid`
 の再計算は拡張後の定義を使い、自身の2 field が空のまま `blocked` である Branch Plan を矛盾として
 扱わない。Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず実行を
-開始しない。
+開始しない。受け入れ口での再検証の規約そのものは `impl-lead` 側を正本とする。
 
 Branch Plan の状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` / `approval-invalid` / `delegation-invalid` を生成する。
