@@ -711,6 +711,127 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_splitting_reference_states_qualitative_branch_plan_split_criteria(
+        self,
+    ) -> None:
+        """Judge Branch Plan splits by change-purpose independence, not a fixed branch count."""
+        required = (
+            "## Branch Plan へ分割する判断基準",
+            "質的基準とし、枝数の固定閾値も新しい blocking code も設けない。",
+            "**分割する** — 独立した変更目的が複数あり、一方を実行して他方を実行しない選択が"
+            "成立する。",
+            "**分割する** — 先行部分の完了後に、後続の設計を見直す余地がある(学習が起きる境界)。",
+            "**分割しない** — 全枝が1つの変更目的に属し、一部だけ受け入れる選択が成立しない。",
+            "分割しない場合は Set の `decision.split: false` と理由の",
+            "記録を必須とする。実装枝の `decision` と同型の機構であり、新しい形式を導入しない。",
+            "宣言条件にある「複数の枝」は、同一 Branch Plan 内の複数の枝を指す。",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_review_presents_the_set_order_and_layers_the_confirmation_operations(
+        self,
+    ) -> None:
+        """Present the set order and per-plan summary, naming each operation's owning layer."""
+        required = (
+            "提示の分岐は Set 全体で決める。",
+            "Branch Plan が1件でも `blocked` であれば、`blocked` の提示を行う。この状態では"
+            "承認操作を求めない。",
+            "全 Branch Plan が同じ `status` のときは、その `status` の提示を行う。",
+            "Set の `order` を要約表の前に示し、Branch Plan の実行順序を明示する。",
+            "この分割で実行 — Set 全体の承認を意味する。提示した Branch Plan Set をそのまま"
+            "確定する。",
+            "分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、"
+            "実装枝への分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かを"
+            "ユーザーが示す。",
+            "分割せず1枝で実行 — 実装枝の統合を意味する。記録先は現行どおり Branch Plan の"
+            "`override.merge_branches` とする。",
+            "ユーザーが Branch Plan を1件へまとめる指示をした場合は、Set の "
+            "`decision.split: false` とユーザーが示した理由として記録し、"
+            "Branch Plan Set を再生成する。",
+            "`override` を Set 層へ増やさない。",
+        )
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_review_presents_set_level_blocking_before_branch_plan_detail(
+        self,
+    ) -> None:
+        """Surface a set-wide violation before any per-branch-plan blocking detail."""
+        required = (
+            "Branch Plan Set 内に `status: blocked` の Branch Plan が1件でもあれば、"
+            "承認操作を求めず、原因の解消を依頼する。",
+            "Set の `validation.blocking` が非空の場合は、これを先に提示する。Set の違反は全"
+            "Branch Plan を `blocked` にする。",
+            "各 blocked な Branch Plan について、`unresolved_decisions` は `question` と "
+            "`affects` を対応付けて提示し",
+        )
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_skill_describes_its_output_as_a_branch_plan_set(self) -> None:
+        """Describe the skill's output as a Branch Plan Set and drop the data-only claim."""
+        for platform in ("claude", "codex"):
+            main = self._plan_skill_texts()[platform]
+            with self.subTest(platform=platform):
+                normalized = "".join(main.split())
+                self.assertIn(
+                    "".join("Branch Plan Set へ変換する planning skill。".split()),
+                    normalized,
+                )
+                self.assertIn(
+                    "".join(
+                        "Branch Plan Set を返すだけで、委譲開始権限は含まない。".split()
+                    ),
+                    normalized,
+                )
+                self.assertIn("".join("出力は Branch Plan Set だけである".split()), normalized)
+                self.assertNotIn("".join("Branch Plan Data".split()), normalized)
+
+    def test_plan_skill_flow_adds_a_branch_plan_split_step_before_branch_splitting(
+        self,
+    ) -> None:
+        """Add Branch Plan splitting to the flow and feed set-level blocking into status."""
+        required = (
+            "「Branch Plan へ分割する判断基準」に従い、",
+            "独立した変更目的が複数あるか、先行部分の完了後に後続の設計を見直す余地があるかを"
+            "判断し、Branch Plan Set を分ける。分割しない場合は Set の `decision.split: false` と"
+            "理由を記録する。",
+            "Set の `validation.blocking`、各 Branch Plan の `unresolved_decisions` と "
+            "`validation.blocking` から `status` を決める。",
+        )
+        for platform in ("claude", "codex"):
+            main = self._plan_skill_texts()[platform]
+            with self.subTest(platform=platform):
+                normalized = "".join(main.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_branch_design_surface_docs_drop_all_stage_vocabulary(self) -> None:
+        """Leave no trace of the retired implementation_stages mechanism in these docs."""
+        # implementation_stages / stage_tests / stages_reason に加え、廃止 field 名を含まない
+        # stage 概念の散文(「stage は AC を所有しない」等)や目次項目も検出できるよう、
+        # 生の "stage" 部分文字列(大小無視)の不在を検査する。これが崩れると、廃止語だけを
+        # 消して概念の散文が残る不完全な削除を見逃す。
+        text_groups: dict[str, dict[str, str]] = {
+            "branch-splitting.md": self._plan_reference_texts("branch-splitting.md"),
+            "plan-review.md": self._plan_reference_texts("plan-review.md"),
+            "branch-design/SKILL.md": self._plan_skill_texts(),
+        }
+        for doc_name, texts in text_groups.items():
+            for platform, text in texts.items():
+                with self.subTest(doc=doc_name, platform=platform):
+                    self.assertNotIn("stage", text.lower())
+
 
 if __name__ == "__main__":
     unittest.main()
