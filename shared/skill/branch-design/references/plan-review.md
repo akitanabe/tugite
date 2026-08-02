@@ -54,7 +54,8 @@ Branch Plan の表の前に明示する。
 - この分割で実行 — Set 全体の承認を意味する。`status: awaiting_review` の Branch Plan について
   `approval.method: user` と `status: approved` を記録し、すでに `approved`(`method: auto`) の
   Branch Plan は変更しない。Set 層に承認状態は持たない。提示した Branch Plan Set をそのまま
-  確定する。
+  確定する。遷移条件と実行主体は [Branch Plan 正規スキーマ](branch-plan-schema.md) の
+  「状態遷移と権限」に従う。
 - 分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、実装枝への
   分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かをユーザーが示す。AC 割り当て
   の修正は枝の `covers_acceptance_criteria` へ反映する。指定された層(Set の `branch_plans` /

@@ -828,6 +828,12 @@ class PlanImplementationBranchesContractsTest(
             "実行順は、その Branch Plan の `execution.order` の順序に一致させる。",
             "Set の `order` と Branch Plan ごとの要約表 → 確認操作 →",
             "自動承認した記録として Set の `order` と要約表、",
+            # T-3: RB-2 の混在時付記(「shared_foundation.required: true の注記と同じ
+            # 置き方で」)が参照する正本文そのものを固定する。これがないと、正本文を
+            # 旧文(「該当する Branch Plan の」を欠いた「共有土台として表の前に明示する」)へ
+            # 差し戻す変異で、RB-2 の付記が指す対象が消えて2文が矛盾したまま Green になる。
+            "`shared_foundation.required: true` の場合は、親が委譲前に実装する共有土台として、"
+            "該当する Branch Plan の表の前に明示する。",
             # R-2/RB-1: 「この分割で実行」の記録先を明示する。無条件に「各 Branch Plan」へ
             # 記録すると、混在 confirmation_mode の Set で既に approved(auto) の Branch Plan を
             # 上書きし approval-invalid を誘発するため、awaiting_review の Branch Plan だけを
@@ -837,6 +843,10 @@ class PlanImplementationBranchesContractsTest(
             "`approval.method: user` と `status: approved` を記録し、すでに "
             "`approved`(`method: auto`) の Branch Plan は変更しない。Set 層に承認状態は"
             "持たない。",
+            # RB-4: 遷移条件と実行主体の正本(branch-plan-schema.md の「状態遷移と権限」)を
+            # 参照する1句を固定する。R-5 の override 修正と同じ「正本参照」の形に揃える。
+            "遷移条件と実行主体は [Branch Plan 正規スキーマ](branch-plan-schema.md) の"
+            "「状態遷移と権限」に従う。",
             # RB-3: 「分割を修正」から抜け落ちていた AC 割り当ての反映先を戻す。
             "分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、"
             "実装枝への分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かを"
