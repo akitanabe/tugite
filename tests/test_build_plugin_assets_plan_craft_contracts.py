@@ -993,42 +993,83 @@ class DraftImplementationPlanContractsTest(
         # 節スコープで切り出すのは、file 全体への assertIn だと判定例が別の節へ
         # 移動しても通ってしまうため。`_section_lines` は見出し行の index 探索を使うので、
         # 見出しが変わると `ValueError` で落ち、節の切り出しが崩れたことも検出できる。
-        cases = (
+        #
+        # 節スコープだけでは1段階足りない。節内に文字列が「ある」ことしか見ないと、
+        # 同じ節の中で「公開面」列挙項目から「内部契約」列挙項目へ丸ごと移した変異
+        # （帰属の反転）を検出できない(reviewer の変異実測で確認済み)。CLAUDE.md は
+        # 列挙が markdown の bullet なので、`_bullet_items` で bullet 単位に割ってから
+        # 「公開面」bullet の中にあることまで見る。AGENTS.md は散文の括弧内列挙なので、
+        # bullet 単位に割れない代わりに、固定文字列の左端を列挙の開き括弧
+        # 「公開面（」まで伸ばし、この列挙の外へ移された場合は隣接文脈が変わって
+        # 部分文字列が繋がらなくなるようにする。
+        claude_text = self._repository_text(Path("CLAUDE.md"))
+        claude_section_lines = DraftImplementationPlanContractsTest._section_lines(
+            claude_text, "## VERSION の更新規約"
+        )
+        claude_bullets = DraftImplementationPlanContractsTest._bullet_items(
+            claude_section_lines
+        )
+        public_surface_bullet = next(
+            item for item in claude_bullets if item.startswith("-**公開面**")
+        )
+        self.assertIn(
+            "".join(
+                (
+                    "ユーザーが保存して後から渡す artifact の形式"
+                    "（`plan-craft` のプラン文書とレビュー状態）"
+                ).split()
+            ),
+            public_surface_bullet,
+        )
+
+        agents_text = self._repository_text(Path("AGENTS.md"))
+        agents_section = "".join(
+            "".join(
+                DraftImplementationPlanContractsTest._section_lines(
+                    agents_text, "## Version 更新指針"
+                )
+            ).split()
+        )
+        self.assertIn(
+            "".join(
+                (
+                    "公開面（skill・agent・mode の名前、起動方法と発火条件、"
+                    "ユーザーが保存して後から渡す `plan-craft` の"
+                    "プラン文書とレビュー状態の形式、CLI）"
+                ).split()
+            ),
+            agents_section,
+        )
+
+        minor_examples = (
             (
                 Path("CLAUDE.md"),
                 "## VERSION の更新規約",
-                (
-                    "ユーザーが保存して後から渡す artifact の形式"
-                    "（`plan-craft` のプラン文書とレビュー状態）",
-                    "4.2.0 で `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
-                    "2 artifact へ分けたときも、旧形式の Data を渡しても `feature-lead` は"
-                    "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
-                    "落ちるだけで、skill・agent・mode 名も変わらないため minor としました。",
-                ),
+                "4.2.0 で `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
+                "2 artifact へ分けたときも、旧形式の Data を渡しても `feature-lead` は"
+                "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
+                "落ちるだけで、skill・agent・mode 名も変わらないため minor としました。",
             ),
             (
                 Path("AGENTS.md"),
                 "## Version 更新指針",
-                (
-                    "ユーザーが保存して後から渡す `plan-craft` の"
-                    "プラン文書とレビュー状態の形式",
-                    "たとえば `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
-                    "2 artifact へ分けた 4.2.0 では、旧形式の Data を渡しても `feature-lead` は"
-                    "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
-                    "落ちるだけで、skill・agent・mode の名前も変わらないため minor としました。",
-                ),
+                "たとえば `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の"
+                "2 artifact へ分けた 4.2.0 では、旧形式の Data を渡しても `feature-lead` は"
+                "停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ"
+                "落ちるだけで、skill・agent・mode の名前も変わらないため minor としました。",
             ),
         )
-        for path, heading, required in cases:
+        # minor 判定例は列挙項目ではなく1文の言い回しそのものが観測点なので、節スコープの
+        # assertIn のままでよい。
+        for path, heading, contract in minor_examples:
             text = self._repository_text(path)
             section = "".join(
                 "".join(
                     DraftImplementationPlanContractsTest._section_lines(text, heading)
                 ).split()
             )
-            for contract in required:
-                with self.subTest(path=str(path), contract=contract):
-                    self.assertIn("".join(contract.split()), section)
+            with self.subTest(path=str(path)):
+                self.assertIn("".join(contract.split()), section)
 
     def test_readmes_describe_plan_craft_output_as_two_artifacts(self) -> None:
         """Publish the plan-craft output as two artifacts in every user-facing README."""
