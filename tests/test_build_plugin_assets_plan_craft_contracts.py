@@ -200,14 +200,21 @@ class DraftImplementationPlanContractsTest(
     @staticmethod
     def _bullet_items(section_lines: list[str]) -> tuple[str, ...]:
         """Return every bullet item in the section, continuation lines folded in."""
-        # 空行で打ち切らない。打ち切ると母数が最初のブロックだけになり、説明段落の
-        # 後ろへ足された項目が件数の固定をすり抜ける。他の節の項目を拾わないことは
-        # `_section_lines` の `## ` 見出し単位の切り出しが担保する。
+        # 節全体を空行で打ち切らない。打ち切ると母数が最初のブロックだけになり、
+        # 説明段落の後ろへ足された項目が件数の固定をすり抜ける。他の節の項目を
+        # 拾わないことは `_section_lines` の `## ` 見出し単位の切り出しが担保する。
+        # 継続行の畳み込みはインデントではなく直前の空行でリセットする。インデント
+        # 判定だと非インデントの継続行（Markdown の lazy continuation）や番号付き
+        # 行が母数から黙って落ちる。
         items: list[str] = []
+        in_item = False
         for line in section_lines:
             if line.startswith("- "):
                 items.append(line)
-            elif items and line.startswith(" "):
+                in_item = True
+            elif not line.strip():
+                in_item = False
+            elif items and in_item:
                 items[-1] += line
         return tuple("".join(item.split()) for item in items)
 
