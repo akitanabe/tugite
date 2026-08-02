@@ -67,6 +67,7 @@ Set は `status` を持たないため、Set 帰属の違反を実行可否へ�
 3. `unresolved_decisions` が空である。
 4. blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から再計算し、
    違反が0件である。帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。
+   帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。
 5. 全枝に `failure_impact` と `implementation_complexity` が存在する。両 field の `level` が
    `low` / `medium` / `high` のいずれかである。両 field の `reasons` が欠落しておらず、非空の
    文字列配列である。欠落、配列以外、空配列、空文字、非文字列要素は

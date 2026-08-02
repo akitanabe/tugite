@@ -255,15 +255,24 @@ class DelegateImplementationIntakeContractsTest(
             "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
             "再計算し、違反が0件である。",
             "帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。",
+            "帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。",
         )
+        # 「先に行う」「次の5項目」はどちらも位置で意味が決まる語なので、file 全体では
+        # なく再検証節を切り出して照合し、Set の先行検査が5項目より前にあることまで見る。
         for platform, text in self._intake_reference_texts().items():
-            normalized = "".join(text.split())
+            section = text.split("## Executor 側の再検証", 1)[-1].split("\n## ", 1)[0]
+            normalized = "".join(section.split())
             for rule in set_wide_rules:
                 with self.subTest(platform=platform, scope="set"):
                     self.assertIn("".join(rule.split()), normalized)
             for rule in per_branch_plan_rules:
                 with self.subTest(platform=platform, scope="branch-plan"):
                     self.assertIn("".join(rule.split()), normalized)
+            with self.subTest(platform=platform, scope="order"):
+                self.assertLess(
+                    section.index("Set 全体の検査を先に行う。"),
+                    section.index("1. `status: approved`"),
+                )
 
     def test_intake_reference_stops_at_an_unauthorized_branch_plan_and_asks_for_authorization(
         self,
@@ -359,9 +368,9 @@ class DelegateImplementationIntakeContractsTest(
         # 検査形が違うのは qa-report.md のためである。同 file は Git の staging を指す語
         # (`unstaged` / `git add`、stage) を保存規約として持ち、これは実装段階機構とは
         # 別概念で本 workflow の変更対象でもない。そこで qa-report.md だけは廃止 field 名
-        # 4語の不在に加えて「Git staging の行以外に stage を含む行がないこと」を検査する。
-        # 既知行の判定は行番号ではなく行の内容(`unstaged` / `git add` を含むか)で行い、
-        # 保存規約の文言が動いても検査が空振りしないようにする。
+        # 4語の不在に加えて、stage を含む行が既知の2行ちょうどであることを全文で照合する。
+        # 保存規約の文言を改訂したときは、`QA_REPORT_GIT_STAGING_LINES` も同じ変更意図で
+        # 更新する。
         texts = {
             name: self._delegate_reference_texts(name)
             for name in (*STAGE_FREE_IMPL_LEAD_DOCS, "qa-report.md")

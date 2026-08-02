@@ -324,11 +324,17 @@ class ImplLeadExecutionContractsTest(
             "Implementer の選択",
             "委譲 prompt",
         )
+        # 「この規約は」は直前の「次の枝は最新の統合済み green な基準コミットから開始する。」
+        # を受ける照応語なので、file 全体ではなく両文を含む節を切り出して照合する。連結
+        # テキストへの包含だけだと、別の節へ移して照応先が変わっても通ってしまう。
         for platform, reference in self._impl_lead_reference_texts(
             "implementation-branches.md"
         ).items():
             with self.subTest(platform=platform):
-                normalized = "".join(reference.split())
+                lifecycle = reference.split(
+                    "## Implementer context と枝の lifecycle", 1
+                )[-1].split("\n## ", 1)[0]
+                normalized = "".join(lifecycle.split())
                 for contract in required_contract:
                     self.assertIn("".join(contract.split()), normalized)
 
