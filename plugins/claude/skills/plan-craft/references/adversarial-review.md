@@ -18,15 +18,15 @@
 
 ## round の構成
 
-レビューが判定する対象は設計文書（`plan.design`）であって AC の集合ではない
+レビューが判定する対象はプラン本文の「設計」節であって AC の集合ではない
 （判定の軸の正本は `plan-adversarial-reviewer`）。
-`design` / `approach` / `steps` / AC の責務分担は
-[Implementation Plan 正規スキーマ](implementation-plan-schema.md)を正本とする。
+プラン本文の節構成と各節の責務は
+[起草手順](plan-drafting.md) の「プラン本文の節構成」を正本とする。
 
 1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
 
-1. reviewer へ実装プラン本体、AC、scope、constraints、assumptions と、2 round 目以降は前 round
-   までの指摘台帳を渡して起動する。
+1. reviewer へプラン本文の全文と、2 round 目以降は前 round までの
+   指摘台帳を渡して起動する。
 2. 親が指摘IDごとに内容を確認し、`軽微` の定義（`plan-adversarial-reviewer` が持つ影響基準 +
    軽微類型カタログ）に照らして verdict を確定する。reviewer の verdict 申告をそのまま採用しない。
 3. 親が指摘IDごとに採用（`adopted`）/ 不採用（`rejected`）を判断し、確定 verdict・判断・理由を
@@ -35,6 +35,11 @@
 
 ## 指摘台帳
 
+- 指摘台帳と round 状態はプラン本文の外に持つ。本文へ書くと、指摘の解消が本文の変更として
+  現れず、round ごとに本文と台帳の両方を同期することになる。
+- 台帳は Implementation Plan の `review` block そのものとし、新しい field 名を導入しない。
+  field 定義の正本は [Implementation Plan 正規スキーマ](implementation-plan-schema.md) に置く。
+  確定時は写し替えや構造変換を行わず、そのまま `review` の下へ置く。
 - `review.findings` は全 round・全 reviewer 通算の台帳とする。指摘 ID（`PF-*`）は round をまたいで
   振り直さず、`reviewer` field で発行元を区別する。
 - `resolution` は `adopted` / `rejected` のいずれかを指摘IDごとに記録する。`resolution: unresolved`

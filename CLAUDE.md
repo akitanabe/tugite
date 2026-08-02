@@ -82,6 +82,8 @@ Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が
 - **minor** — skill・agent の追加、契約の追加や拡張、内部契約の変更
 - **patch** — model/effort プロファイルの調整など、契約の意味を変えない修正
 
+公開面に載ることは major を意味しません。major の定義は「利用者の呼び出しが通らなくなる」ことなので、判定は旧入力を渡したときに停止するかで行います。4.1.0 で Implementation Plan の `plan` 配下を散文の `plan.body` へ統合したときも、旧形式の Data を渡しても `feature-lead` は停止せず「正規スキーマに適合しないプラン本文」として `plan-craft` から再起草へ落ちるだけで、skill・agent・mode 名も変わらないため minor としました。
+
 ## テストの二層構造
 
 - **`tests/test_build_plugin_assets_cli.py`** — 生成器を CLI としてのみ扱う振る舞いテスト。tempdir に fixture repository を組み立てて実行するため、実リポジトリの原稿内容には依存しません。
