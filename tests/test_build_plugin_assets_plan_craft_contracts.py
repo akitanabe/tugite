@@ -198,6 +198,24 @@ class DraftImplementationPlanContractsTest(
         return rest[:end]
 
     @staticmethod
+    def _first_bullet_block(section_lines: list[str]) -> tuple[str, ...]:
+        """Return the section's first blank-line-delimited bullet block, item by item."""
+        start = next(
+            index
+            for index, line in enumerate(section_lines)
+            if line.startswith("- ")
+        )
+        items: list[str] = []
+        for line in section_lines[start:]:
+            if not line.strip():
+                break
+            if line.startswith("- "):
+                items.append(line)
+            else:
+                items[-1] += line
+        return tuple("".join(item.split()) for item in items)
+
+    @staticmethod
     def _review_state_top_level_keys(text: str) -> tuple[str, ...]:
         schema = text.split("## レビュー状態のスキーマ", 1)[1].split("```yaml", 1)[1]
         schema = schema.split("```", 1)[0]
@@ -238,16 +256,21 @@ class DraftImplementationPlanContractsTest(
             "レビュー状態はプラン文書の内容を写す field を持たない。",
             "実装目的・要求の所在・AC・scope・依存・制約の正本はプラン文書の"
             "見出し行・「要求の所在」行・各節にある。",
-            "AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま"
-            "引き継げる形（観測可能な振る舞いの原文）でプラン文書の"
-            "「Acceptance Criteria」節に保持する。",
-            "ID は round の増減やプラン修正で振り直さない。",
+            # 引き継ぎ規約はこの文書が持つが、ID 規約そのものは起草手順が正本。
+            # 両方へ本文を置くと、同じ規約が別々の言い回しで2箇所に残る。
+            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の "
+            "`acceptance_criteria` へ原文のまま引き継ぐ。",
+            "ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、"
+            "この文書は再掲しない。",
         )
         for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+                self.assertNotIn(
+                    "".join("プラン修正で振り直さない".split()), normalized
+                )
 
     def test_plan_artifacts_reference_keeps_the_plan_scope_design_principles(
         self,
@@ -420,6 +443,47 @@ class DraftImplementationPlanContractsTest(
                 for retired in RETIRED_VIOLATION_CODES:
                     self.assertNotIn(retired, "".join(table_a + table_b))
 
+    def test_plan_artifacts_reference_raises_one_code_per_missing_part(self) -> None:
+        """Split the empty document from its missing parts so one gap raises one code."""
+        # 両 code はプラン文書という同一対象を見るため、分界が無いと本文が空のプランで
+        # 2つの code が同時に立ち、1つの欠落に2つの修正要求が出る。
+        required = (
+            "`body-missing` を立てるのは本文全体が無い、または空の場合だけとし、"
+            "本文がある場合の個別の欠落は `handoff-incomplete` だけで扱う。",
+            "1つの欠落に2つの code を立てない。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
+    def test_plan_artifacts_reference_records_where_the_retired_codes_went(self) -> None:
+        """Name the downstream owner of every check the plan stage stopped making."""
+        # 削除した原稿は「code にしない理由と担い手」を同じ位置へ書く様式だった。
+        # 引き受け先が配布原稿から消えると、次の改訂者が検査の欠落と読む。
+        required = (
+            "廃止した `scope-conflict`、AC id に対する `duplicate-id`、"
+            "`unknown-reference` は plan 段では扱わない。",
+            "前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。",
+            "`unknown-reference` は、plan 段で id を参照する field が "
+            "`open_questions[].affects` だけになり、その値をプラン文書の節名または "
+            "AC id とすることで参照検査の対象が残らない。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
     def test_plan_artifacts_reference_bounds_the_blocking_path_per_table(self) -> None:
         """Give each table its own value range for the blocking violation's path."""
         required = (
@@ -581,6 +645,12 @@ class DraftImplementationPlanContractsTest(
             "path separator を許可しない。",
             "`.` または `..` を許可しない。",
             "絶対 path を許可しない。",
+            # 継承元の衝突規約は「次の suffix を選ぶ」で閉じており、ローカル規定の
+            # 「slug を選び直さない」と正面から衝突する。どちらが勝つかを書かないと、
+            # レビュー状態側だけが埋まっている場合の帰結がどちらからも決まらない。
+            "レビュー状態の初回作成でも slug を選び直さない。",
+            "`<slug>-review.yaml` が既にある場合は exclusive create が失敗し、"
+            "「file 出力と会話内経路」の省略条件「保存先へ書き込めない」に当たる。",
         )
         # 正規化手順の複製が入っていないことを、正本側の手順の語で検出する。
         not_duplicated = (
@@ -651,23 +721,24 @@ class DraftImplementationPlanContractsTest(
             "省略の判定は artifact ごとに行う。",
             "「ユーザーが file を求めていない」ことを省略の条件にしない。",
         )
+        # 省略条件の列挙そのものを等価固定する。条件語（「書き込めない」など）で
+        # 絞って数えると、新しい語で書かれた3つ目の条件が母数に入らず、件数の固定が
+        # 何も検出しないまま緑になる。
+        conditions = (
+            "- 保存先へ書き込めない。ancestor 検査で停止する、"
+            "安全な create Action を保証できない、書き込みが失敗するのいずれか。",
+            "- ユーザーが file を出力しないことを明示的に要求した。",
+        )
         for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 section_lines = self._section_lines(text, "## file 出力と会話内経路")
                 section = "".join("".join(section_lines).split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), section)
-                # 省略条件は2つに限る。3つ目の箇条書きが足されたら落とす。
                 self.assertEqual(
-                    2,
-                    len(
-                        [
-                            line
-                            for line in section_lines
-                            if line.startswith("- ")
-                            and ("書き込めない" in line or "file を出力しない" in line)
-                        ]
-                    ),
+                    tuple("".join(item.split()) for item in conditions),
+                    self._first_bullet_block(section_lines),
+                    "the omission conditions must stay exactly these two",
                 )
 
     def test_plan_review_inputs_hand_the_whole_plan_body_to_both_reviewers(
@@ -851,15 +922,21 @@ class DraftImplementationPlanContractsTest(
     def test_draft_skill_limits_the_in_conversation_route_to_one_conversation(
         self,
     ) -> None:
-        """State that the in-conversation route carries no hand-off to a later session."""
-        # 会話内経路にはレビュー状態の file が残らないため、後から貼り直しても
-        # 開始段判定を通らず `plan-craft` からの再起草になる。
-        contract = (
-            "会話内経路は同一会話内で完結する用途に限り、後日渡す経路を持たない。"
+        """State the in-conversation limit here while naming the reference as its source."""
+        # 同じ規約を2箇所へ本文として置くと、片側だけの改訂が誰にも検出されない。
+        # 規約文と正本注記を対にして、理由の本文は正本側だけが持つ形へ寄せる。
+        required = (
+            "会話内経路は同一会話内で完結する用途に限り、後日渡す経路を持たない。",
+            "正本は [プラン artifact](references/plan-artifacts.md) の"
+            "「file 出力と会話内経路」とする。",
         )
         for platform, main in self._draft_skill_texts().items():
             with self.subTest(platform=platform):
-                self.assertIn("".join(contract.split()), "".join(main.split()))
+                normalized = "".join(main.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+                # 理由の本文は正本側だけが持つ。写すと文言が乖離する。
+                self.assertNotIn("".join("レビュー状態が file として".split()), normalized)
 
     def test_draft_review_reference_targets_the_plan_body_not_the_ac_set(
         self,
