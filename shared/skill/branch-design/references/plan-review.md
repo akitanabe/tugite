@@ -97,8 +97,9 @@ Test Inventory 報告の findings を元プランにした場合、AC の文言�
 Branch Plan Set 内に `status: blocked` の Branch Plan が1件でもあれば、承認操作を求めず、
 原因の解消を依頼する。
 
-- Set の `validation.blocking` が非空の場合は、これを先に提示する。Set の違反は全 Branch Plan を
-  `blocked` にする。
+- Set の `validation.blocking` が非空の場合は、これを先に提示する。Set の違反が全 Branch Plan を
+  `blocked` にすることは [Branch Plan 正規スキーマ](branch-plan-schema.md) の
+  「状態遷移と権限」による。
 - 各 blocked な Branch Plan について、`unresolved_decisions` は `question` と `affects` を
   対応付けて提示し、確定が必要な判断をユーザーへ示す。仮定で進めず、確定を待つ。
 - 各 blocked な Branch Plan の `validation.blocking` は `code`、`path`、`message` を提示し、
