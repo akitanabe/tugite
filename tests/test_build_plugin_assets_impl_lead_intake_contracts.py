@@ -270,10 +270,13 @@ class DelegateImplementationIntakeContractsTest(
                     self.assertIn("".join(rule.split()), normalized)
             # 順序も正規化テキスト上で判定する。生テキストを引くと、意味を変えない
             # 折り返し位置の変更だけで needle が消え、契約違反がないのに落ちる。
+            # 末尾に項目5 を置いて `両方` の担当宣言を項目4 の中へ挟む。境界が無いと、
+            # 同じ文が再検証節の後ろ(mode 導出の段落など)へ出ても昇順のまま通る。
             ordered_markers = (
                 "Set 全体の検査を先に行う。",
                 "1. `status: approved`",
                 "帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。",
+                "5. 全枝に",
             )
             positions = []
             for marker in ordered_markers:
