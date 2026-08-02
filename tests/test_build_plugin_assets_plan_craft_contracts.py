@@ -970,9 +970,10 @@ class DraftImplementationPlanContractsTest(
             paths = self._scan_paths(roots)
             for anchor in anchors:
                 with self.subTest(term=term, anchor=str(anchor)):
-                    self.assertIn(
-                        anchor,
-                        paths,
+                    # 集合そのものを差分表示させると失敗出力が全 path で埋まるため、
+                    # 欠けた anchor だけを示す。
+                    self.assertTrue(
+                        anchor in paths,
                         f"{anchor} fell out of the scan for {term}",
                     )
             for path in sorted(paths):
