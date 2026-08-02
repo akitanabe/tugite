@@ -537,7 +537,6 @@ class DraftImplementationPlanContractsTest(
         )
         for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
                 table = [
                     line
                     for line in self._section_lines(
