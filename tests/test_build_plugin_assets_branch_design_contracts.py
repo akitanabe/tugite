@@ -371,8 +371,8 @@ class PlanImplementationBranchesContractsTest(
     ) -> None:
         """Accept inventory findings as a source plan only for explicitly listed finding IDs."""
         required = (
-            "元プラン(path / issue URL / 会話内 / `test-audit` の "
-            "Test Inventory 報告の findings)",
+            "元プラン(`plan-craft` のプラン文書 `.tugite/plans/<slug>.md` / path / "
+            "issue URL / 会話内 / `test-audit` の Test Inventory 報告の findings)",
             "findings 由来の AC では、原文はユーザーが確定した文言を指す。",
             "対象 findings の ID(`G-*`)をユーザーが明示的に指定する。"
             "全 findings の自動採用はしない。",
@@ -380,6 +380,23 @@ class PlanImplementationBranchesContractsTest(
             "自動採用せず対象 ID の明示指定を求める。",
             "導出は `suggestion` を受け入れ条件の形に整えることに限る。",
             "findings にない対象・範囲・実装方針を足さない。",
+        )
+        for platform, main in self._plan_skill_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(main.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_skill_reads_the_plan_document_sections_without_renumbering_ids(
+        self,
+    ) -> None:
+        """Take AC wording from the plan document and keep the ids it already carries."""
+        # AC id を振り直すと、プラン文書の AC を参照する指摘台帳や issue の記載が
+        # Branch Plan 側の id と食い違い、どの AC を指すのかを追えなくなる。
+        required = (
+            "`plan-craft` のプラン文書を元プランにする場合は、"
+            "「Acceptance Criteria」節から AC 原文を取る。",
+            "文書が持つ AC id はそのまま引き継ぎ、振り直さない。",
         )
         for platform, main in self._plan_skill_texts().items():
             with self.subTest(platform=platform):

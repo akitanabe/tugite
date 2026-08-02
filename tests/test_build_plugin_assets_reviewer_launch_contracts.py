@@ -284,6 +284,26 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
                     for contract in owned_connections[name]:
                         self.assertIn("".join(contract.split()), normalized)
 
+    def test_return_and_integration_exempts_parent_written_artifacts_from_contamination(
+        self,
+    ) -> None:
+        """Exempt every artifact the parent side writes from the contamination check."""
+        # `feature-lead` の一括経路では `plan-craft` が起草直後にプラン文書を書くため、
+        # 最初の枝を受ける時点で `.tugite/plans/` がすでに untracked として存在する。
+        # 除外しないと、親が worker の変更の混入と誤認して枝が `Needs revision` へ落ちる。
+        required = (
+            "`plan-craft` が書き出したプラン artifact (`.tugite/plans/` 配下)",
+            "は親側が書き出した既知の untracked file であり、"
+            "この確認によって worker の変更の混入と誤認しない",
+            "[プラン artifact](../../plan-craft/references/plan-artifacts.md)",
+        )
+        for platform, reference in self._qa_and_integration_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = reference.split("## 返却と統合", 1)[1].split("\n## ", 1)[0]
+                normalized = "".join(section.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
     def test_repository_reviewer_launch_compares_the_worktree_before_and_after(
         self,
     ) -> None:

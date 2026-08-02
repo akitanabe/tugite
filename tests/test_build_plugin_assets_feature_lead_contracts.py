@@ -233,36 +233,44 @@ class FeatureLeadContractsTest(
     def test_feature_lead_starts_from_the_stage_its_input_determines(self) -> None:
         """Start from branch-design only for an approved plan and never skip a later stage."""
         frontmatter_contract = (
-            "確定済みの Implementation Plan を渡して実装までの一括実行を要求されたときも"
+            "確定済みのプラン文書とレビュー状態を渡して実装までの一括実行を要求されたときも"
             "発火し、`branch-design` から開始する。"
         )
+        # 開始段は2 artifact が揃っていることで決まる。`plan_document` の path 条件を
+        # 落とすと、会話内経路で提示したペアを保存して後日貼り付ける入力が判定を通り、
+        # 「会話内経路は後日渡す経路を持たない」規定と二重に適合する。
         body_contracts = (
-            "ユーザーが確定済みの Implementation Plan を渡して実装までの一括実行を要求した"
+            "ユーザーが確定済みのプラン文書とレビュー状態を渡して実装までの一括実行を要求した"
             "とき。この場合は `branch-design` から開始する。",
-            "Implementation Plan 正規スキーマに適合し `status: approved` の Data を渡された"
-            "場合だけ `branch-design` から開始する。",
-            "それ以外の入力（自然文の要求、`status` を持たない Data、正規スキーマに適合しない"
-            "プラン本文、issue 本文や会話内のプラン）はすべて `plan-craft` から開始する。",
-            "`status` が `awaiting_review` または `blocked` の Implementation Plan Data を"
+            "レビュー状態が `status: approved` であり、その `plan_document` が repository "
+            "相対 path であり、その path のプラン文書が読める場合だけ `branch-design` から"
+            "開始する。",
+            "それ以外の入力（自然文の要求、`status` を持たないレビュー状態、プラン文書だけを"
+            "渡された入力、issue 本文や会話内のプラン）はすべて `plan-craft` から開始する。",
+            "プラン文書だけを渡された場合はレビュー状態が無いものとして扱い、その path から"
+            "兄弟のレビュー状態を解決しない。",
+            "`plan_document: 会話内` のレビュー状態は、プラン文書を会話上に貼り直されても"
+            "開始段判定を通さず、`plan-craft` から開始する。",
+            "`status` が `awaiting_review` または `blocked` のレビュー状態を"
             "渡されたとき。承認または判断点の確定を求めて差し戻す。これを判断点として台帳へ"
             "記録しない。",
             "判断点は段が返したものだけを対象とし、起動前に渡された入力を「判断点の分類」にも"
             "再実行にも掛けない。",
             "確定済みの Branch Plan を渡されたとき。この Skill の対象外であり、`impl-lead` を"
             "直接使う経路を案内する。",
-            "`branch-design` から開始する場合はこの段を実行せず、渡された確定済み "
-            "Implementation Plan Data をそのまま次段の入力にする。",
+            "`branch-design` から開始する場合はこの段を実行せず、渡された確定済みの"
+            "プラン文書とレビュー状態をそのまま次段の入力にする。",
             "不足が blocking なら補完せず、開始段に応じた受け手へ渡す。`plan-craft` から開始"
             "する場合は `plan-craft` の `open_questions` として扱わせ、`branch-design` から"
             "開始する場合は `branch-design` の `unresolved_decisions` として扱わせる。",
             "次は `plan-craft` から開始する場合の確認項目である。`branch-design` から開始する"
-            "場合は、確定済み Implementation Plan Data がこの位置を占め、受け手のない確認項目を"
+            "場合は、確定済みのプラン文書とレビュー状態がこの位置を占め、受け手のない確認項目を"
             "残さない。",
             "根拠源と scope の基準は開始段に応じて一意に定める。`plan-craft` から開始する場合は"
-            "要求原文をこれに充て、`branch-design` から開始する場合は確定済み Implementation "
-            "Plan Data の `objective` と `scope` と `acceptance_criteria` が要求原文の位置を"
-            "占める。",
+            "要求原文をこれに充て、`branch-design` から開始する場合は確定済みプラン文書の"
+            "見出し行と「scope」節と「Acceptance Criteria」節が要求原文の位置を占める。",
             "開始段より前の段は実行せず、開始段以降の段は飛ばさない。",
+            "`branch-design` を省いてプラン文書を直接 `impl-lead` へ渡さない。",
         )
 
         for platform, text in self._generated_texts().items():
@@ -284,8 +292,8 @@ class FeatureLeadContractsTest(
         # A whole-file match would let a body-only edit satisfy both platforms with
         # an untouched description, which is exactly the miss AC-16 asks about.
         contracts = (
-            "ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの "
-            "Implementation Plan を渡して実装までの一括実行を直接要求された場合は、"
+            "ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの"
+            "プラン文書とレビュー状態を渡して実装までの一括実行を直接要求された場合は、"
             "`feature-lead` の責務であり発火しない。",
             "`feature-lead` の段として起動された場合はこの条件の対象外であり、"
             "通常どおり動作する。",

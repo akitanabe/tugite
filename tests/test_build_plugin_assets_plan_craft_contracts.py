@@ -74,6 +74,24 @@ RETIRED_FIELD_SCAN_ROOTS = (
     Path("plugins/claude/skills/plan-craft"),
     Path("plugins/codex/skills/plan-craft"),
 )
+# `plan-craft` の出力はプラン文書とレビュー状態の2 artifact であり、それらを束ねた
+# 単一 Data も、その正本だった reference も存在しない。語が残ると、読者は存在しない
+# artifact を探しに行く。走査は配布原稿・生成物・利用者向け文書・評価 corpus に掛ける。
+RETIRED_PLAN_ARTIFACT_TERMS = ("Implementation Plan", "implementation-plan-schema")
+RETIRED_TERM_SCAN_ROOTS = (Path("shared"), Path("plugins"), Path("evals"))
+RETIRED_TERM_SCAN_FILES = (
+    Path("README.md"),
+    Path("CLAUDE.md"),
+    Path("AGENTS.md"),
+)
+RETIRED_TERM_SCAN_SUFFIXES = (".md", ".toml", ".json", ".yaml", ".yml")
+# 利用者向け README は `plan-craft` の出力を artifact の数で説明する。1つの Data を
+# 返すと読める記述が残ると、README だけを読んだ利用者が後日渡す入力を1つだと考える。
+README_PATHS = (
+    Path("README.md"),
+    Path("plugins/claude/README.md"),
+    Path("plugins/codex/README.md"),
+)
 PLAN_REVIEWER_AGENT_NAMES = (
     "plan-adversarial-reviewer",
     "over-engineering-reviewer",
@@ -870,6 +888,60 @@ class DraftImplementationPlanContractsTest(
                         normalized.count("".join(token.split())),
                         f"{path} still names a retired plan field",
                     )
+
+    def _retired_term_scan_paths(self) -> list[Path]:
+        paths: list[Path] = []
+        for root in RETIRED_TERM_SCAN_ROOTS:
+            paths.extend(
+                sorted(
+                    candidate.relative_to(REPOSITORY_ROOT)
+                    for candidate in (REPOSITORY_ROOT / root).rglob("*")
+                    if candidate.is_file()
+                    and candidate.suffix in RETIRED_TERM_SCAN_SUFFIXES
+                )
+            )
+        paths.extend(RETIRED_TERM_SCAN_FILES)
+        return paths
+
+    def test_repository_manuscripts_drop_the_retired_plan_artifact_terms(self) -> None:
+        """Leave no manuscript naming the single plan Data or its retired reference."""
+        paths = self._retired_term_scan_paths()
+        for root in RETIRED_TERM_SCAN_ROOTS:
+            with self.subTest(root=str(root)):
+                self.assertTrue(
+                    any(root in path.parents for path in paths),
+                    f"{root} contributed no file to the retired-term scan",
+                )
+        for path in paths:
+            text = self._repository_text(path)
+            for term in RETIRED_PLAN_ARTIFACT_TERMS:
+                with self.subTest(path=str(path), term=term):
+                    self.assertNotIn(term, text)
+
+    def test_readmes_describe_plan_craft_output_as_two_artifacts(self) -> None:
+        """Publish the plan-craft output as two artifacts in every user-facing README."""
+        for path in README_PATHS:
+            with self.subTest(path=str(path)):
+                normalized = "".join(self._repository_text(path).split())
+                for contract in (
+                    "プラン文書とレビュー状態の2 artifact を返",
+                    "プラン artifact の規約",
+                ):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_eval_corpus_asks_for_the_two_artifacts_instead_of_retired_fields(
+        self,
+    ) -> None:
+        """Keep EVAL-25 asking for artifacts a current plan-craft run can produce."""
+        # corpus は人手評価の入力である。廃止 field を必須動作に残すと、新設計どおりの
+        # 実装が「必須動作を満たさない」と採点される。
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        section = corpus.split("## EVAL-25:", 1)[1].split("\n## EVAL-26:", 1)[0]
+        normalized = "".join(section.split())
+        self.assertIn("プラン文書とレビュー状態", normalized)
+        for field in RETIRED_REVIEW_STATE_FIELDS:
+            with self.subTest(field=field):
+                self.assertNotIn(f"`{field}`", normalized)
 
     def test_draft_skill_matches_confirmed_contract(self) -> None:
         """Separate plan approval from downstream work and keep drafting review-gated."""
@@ -1764,8 +1836,8 @@ class DraftImplementationPlanContractsTest(
             ).split()
         )
         required = (
-            "プラン本文の「手順」節に、要求にない",
-            "プラン本文の「手順」節から当該作業を取り除いた後",
+            "プラン文書の「手順」節に、要求にない",
+            "プラン文書の「手順」節から当該作業を取り除いた後",
         )
         # 書き換えで同居する既存の評価観点を落とさない。EVAL-27 の主眼は反映経路と
         # round 計上であって、入力の呼称ではない。

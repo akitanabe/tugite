@@ -541,7 +541,7 @@ class ImplLeadReviewLoopContractsTest(
 
                 implementation_section = section[implementation_replan:]
                 for contract in (
-                    "Implementation Plan の AC 確定とユーザー確認へ戻る",
+                    "プラン文書の AC 確定とユーザー確認へ戻る",
                     "その後 Branch Plan を再生成・再検証・再承認する",
                     "再承認後に初めて新枝の委譲を開始する",
                 ):
@@ -809,7 +809,7 @@ class ImplLeadReviewLoopContractsTest(
                 ),
                 (
                     "守る AC を変更しない",
-                    "Implementation Plan の AC 確定",
+                    "プラン文書の AC 確定",
                     "ユーザー確認",
                     "Branch Plan の再生成",
                     "再検証",
