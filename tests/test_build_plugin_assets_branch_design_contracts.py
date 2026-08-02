@@ -27,11 +27,10 @@ PLAN_REFERENCE_NAMES = (
 # Set は状態を持たない。status / approval / delegation / 完了判定を Set 直下へ足すと、
 # Branch Plan 単位の受け入れ判断と二重管理になるため、この並びを増やすときは
 # 状態を持ち込んでいないかを確認する。
-# 集合ではなく順序まで固定するのは、この2つの並びが互いの部分集合ではなく、層を取り違えて
-# field を1段ずらしても集合比較では両方の集合が変わらない配置がありうるためである。
-# 順序を固定すると、ずらした位置がそのまま差分として出る。violation code 表を
-# assertCountEqual にしているのは、表の行順が読み手向けの並びでしかなく、code と帰属の
-# 対応だけが契約だからで、扱いの違いはこの「並び自体が契約かどうか」に対応する。
+# 集合ではなく順序まで固定するのは、YAML の並びを読み手が層の対応表として読むためで、
+# どの field がどの層に属するかは並びの見た目から復元される。並び自体を契約に含める。
+# violation code 表を assertCountEqual にしているのは、表の行順が読み手向けの並びでしかなく、
+# code と帰属の対応だけが契約だからで、扱いの違いはこの「並び自体が契約かどうか」に対応する。
 SET_LEVEL_FIELDS = (
     "implementation_plan",
     "acceptance_criteria",
@@ -282,12 +281,22 @@ class PlanImplementationBranchesContractsTest(
             "自身の2 field が空のまま `blocked` である Branch Plan を矛盾として扱わない。",
             "Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず"
             "実行を開始しない。",
-            # 同じ規則を状態遷移表とスキーマ本体のコメントにも書いているため、散文だけを
-            # 固定すると原稿が自己矛盾したまま通る。3箇所すべてを固定する。
+            # 同じ規則を散文・状態遷移表・スキーマ本体のコメントへ重複して書いているため、
+            # どれか1種類だけを固定すると、残りを旧文言へ戻した原稿が自己矛盾したまま通る。
+            # 3種類の記載すべて(散文4文・遷移表5行・コメント3行)を固定する。
+            "# blocked:          「blocking violation code」の節が定める blocked の定義に従う",
+            "# awaiting_review:  confirmation_mode: review で Set と自身に blocking なし。"
+            "ユーザー承認待ち",
+            "# approved:         承認済み。Set と自身の blocking がすべて空であることが前提",
             "| (生成) → `blocked` | planning Skill | 自身の `unresolved_decisions` または "
             "`validation.blocking`、あるいは Set の `validation.blocking` が非空 |",
+            "| (生成) → `awaiting_review` | planning Skill | `confirmation_mode: review` かつ "
+            "Set と自身に blocking なし |",
+            "| (生成) → `approved` (`method: auto`) | planning Skill | "
+            "`confirmation_mode: auto` かつ Set と自身に blocking なし |",
+            "| `blocked` → `awaiting_review` | planning Skill(再実行) | 原因解消後に全 "
+            "validation を再実行して Set と自身に blocking なし、`confirmation_mode: review` |",
             "Set または自身に blocking violation が残る場合は承認操作があっても遷移しない",
-            "# blocked:          「blocking violation code」の節が定める blocked の定義に従う",
         )
         for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
             with self.subTest(platform=platform):

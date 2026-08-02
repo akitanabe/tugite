@@ -33,8 +33,8 @@
   入力形によって変わるため。
 - Set の `order` は Branch Plan id の全順序であり、この並び自体が実行順序の制約である。先行する
   Branch Plan 全体の完了を待ってから次の Branch Plan を開始する。Set 層は `depends_on` のような
-  別建ての依存 field を持たないため、並びと突き合わせる依存関係が存在せず、Set 層の検査は
-  `order` が `branch_plans[].id` を1回ずつ含むかだけになる。枝どうしの `depends_on` は
+  別建ての依存 field を持たないため、並びと突き合わせる依存関係が存在せず、Set 層の `order` の
+  検査は `branch_plans[].id` を1回ずつ含むかだけになる。枝どうしの `depends_on` は
   Branch Plan 内で閉じる。
 - `decision` は Set と Branch Plan の両方に同名で存在する。層が参照 path(`decision` と
   `branch_plans[].decision`)で一意に決まるため、名前を分けない。
@@ -94,7 +94,8 @@ decision:                       # 分割しない(branch_plans が1件)場合は
 validation:                     # Set 帰属の violation だけを持つ
   blocking: []                  # violation の配列。1件でもあれば全 Branch Plan が status: blocked
   # - code: <violation code 表の安定 code>
-  #   path: <問題があるスキーマ上の path。例: branch_plans[1].branches[0].depends_on>
+  #   path: <問題があるスキーマ上の path。Set の root からの相対。
+  #          例: branch_plans[1].branches[0].depends_on>
   #   message: <修正に必要な説明>
 
 branch_plans:
@@ -190,7 +191,8 @@ branch_plans:
     validation:                   # この Branch Plan 帰属の violation だけを持つ
       blocking: []                # violation の配列。1件でもあれば status: blocked
       # - code: <violation code 表の安定 code>
-      #   path: <問題があるスキーマ上の path。例: branches[1].allowed_paths>
+      #   path: <問題があるスキーマ上の path。この Branch Plan からの相対。
+      #          例: branches[1].allowed_paths>
       #   message: <修正に必要な説明>
       self_assessment:            # 参考情報。承認可否の判定には使わない
         action_boundaries_isolated: true      # 補助指標(第一基準ではない)
@@ -228,8 +230,8 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 
 両評価軸で `reasons` の欠落、配列以外、空配列、空文字、非文字列要素は invalid とする。
 
-帰属は次の基準で決める。Set 全域の Data を必要とする判定を1件でも含む code は `Set` 帰属とし、
-同種の検査を層で割らない。層で割ると同じ違反が2層へ二重記録され、どちらを正とするかの規則が
+帰属は次の基準で決める。Set 全域の Data を必要とする判定を1件でも含む code は、下記の `両方` の
+条件に当たらない限り `Set` 帰属とし、同種の検査を層で割らない。層で割ると同じ違反が2層へ二重記録され、どちらを正とするかの規則が
 新たに必要になるためである。AC の割り当てを Branch Plan 単体で検査すると、AC が複数の
 Branch Plan へ散る正当な分割で必ず `ac-unassigned` が発火するため、全 Branch Plan の枝の和集合で
 検査する。`unknown-reference` は、AC id 参照が Set の `acceptance_criteria` 全域を必要とし、
