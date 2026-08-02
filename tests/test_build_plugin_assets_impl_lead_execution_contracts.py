@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -285,19 +286,66 @@ class ImplLeadExecutionContractsTest(
     def test_repository_implementation_branches_reference_defines_branch_terminology(
         self,
     ) -> None:
-        """Define 実装枝, git branch, and Branch Plan as distinct terms in one glossary."""
-        skills = self._repository_skill_texts()
+        """Define 実装枝, git branch, Branch Plan Set, and Branch Plan in one glossary."""
+        # 用語の正本は「用語」節であり、他の節に同じ語が出るだけでは正本にならない。
+        # そのため節を次の見出しまでで切り出して、その中だけを検査する。
         required_glossary_content = (
-            "## 用語",
             "**実装枝**",
             "**git branch**",
-            "**Branch Plan**",
+            "**Branch Plan Set** — `branch-design` が出力する Data。`branch_plans[]` に "
+            "Branch Plan を持ち、`acceptance_criteria` と `order` を Set 層で持つ。",
+            "**Branch Plan** — Branch Plan Set の要素。",
             "単独の `branch` 表記を使わない",
         )
 
-        for item in required_glossary_content:
-            for skill in skills.all_texts():
-                self.assertIn(item, skill)
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                self.assertIn("## 用語", reference)
+                glossary = reference.split("## 用語", 1)[1].split("\n## ", 1)[0]
+                normalized_glossary = "".join(glossary.split())
+                for item in required_glossary_content:
+                    self.assertIn("".join(item.split()), normalized_glossary)
+
+    def test_repository_implementation_branches_chain_base_commits_across_branch_plans(
+        self,
+    ) -> None:
+        """Chain the green base commit across Branch Plans without waiting for main."""
+        required_contract = (
+            "次の枝は最新の統合済み green な基準コミットから開始する。",
+            "この規約は Branch Plan 間にも適用する。",
+            "先行 Branch Plan の成果が main へ merge されるのを待たない。",
+        )
+        expected_sections = (
+            "用語",
+            "Implementer context と枝の lifecycle",
+            "worktree と基準 commit",
+            "委譲 mode に応じた TDD/QA",
+            "Implementer の選択",
+            "委譲 prompt",
+        )
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(reference.split())
+                for contract in required_contract:
+                    self.assertIn("".join(contract.split()), normalized)
+
+                toc = reference.split("## 目次", 1)[1].split("\n## ", 1)[0]
+                toc_items = tuple(
+                    line.removeprefix("- ")
+                    for line in toc.splitlines()
+                    if line.startswith("- ")
+                )
+                headings = tuple(
+                    heading
+                    for heading in re.findall(r"^## (.+)$", reference, re.M)
+                    if heading != "目次"
+                )
+                self.assertEqual(expected_sections, toc_items)
+                self.assertEqual(expected_sections, headings)
 
 
 if __name__ == "__main__":

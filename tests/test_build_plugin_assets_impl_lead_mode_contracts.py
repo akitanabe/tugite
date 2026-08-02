@@ -190,6 +190,9 @@ class ImplLeadModeContractsTest(
             "`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、"
             "枝数を明示したユーザー確認を委譲開始条件とする。",
             "確認が得られるまで委譲を開始しない。",
+            "実行前サマリーは Branch Plan 単位で提示する。",
+            "Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。",
+            "`strict-full` の確認ゲートは Branch Plan 単位で行う。",
             "実行前サマリーを提示する。",
             "`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。",
             "会話上の最終報告を行う。採用した配分方針と枝ごとの mode を含める。",
@@ -680,6 +683,42 @@ class ImplLeadModeContractsTest(
                 self.assertIn(
                     "".join(exclusion_contract.split()), normalized_frontmatter
                 )
+
+    def test_impl_lead_skill_flow_runs_branch_plans_in_order_and_stops_at_the_boundary(
+        self,
+    ) -> None:
+        """Walk the Branch Plan Set in order and halt at an unauthorized boundary."""
+        # 手順の番号は run-closeout.md の「main の手順9へ戻る」と既存契約が参照するため、
+        # Branch Plan 単位の分岐は既存手順の中へ織り込み、番号を増やさない。
+        skills = self._repository_skill_texts()
+        required_flow = (
+            "確定済み Branch Plan Set が渡されている場合は",
+            "`order` に従って Branch Plan を順に実行する。",
+            "未授権の Branch Plan に到達した場合は実行を止め",
+            "授権を要求する",
+            "授権された未実行の Branch Plan があれば手順2へ戻り",
+            "手順7の修正経路",
+            "手順9へ進む",
+        )
+        # 決定表と再検証規則は正本参照のままにする。SKILL.md へ再掲すると同じ規則が
+        # 2箇所で更新対象になる。
+        forbidden_restatements = (
+            "| policy | baseline |",
+            "`status: approved` であり、`approval.method` が設定済みである。",
+        )
+        for platform, main in (
+            ("source", skills.source_main),
+            ("claude", skills.claude_main),
+            ("codex", skills.codex_main),
+        ):
+            flow = main.split("## 全体の流れ", 1)[-1]
+            normalized_flow = "".join(flow.split())
+            for contract in required_flow:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized_flow)
+            for restatement in forbidden_restatements:
+                with self.subTest(platform=platform, restatement=restatement):
+                    self.assertNotIn("".join(restatement.split()), "".join(main.split()))
 
 
 if __name__ == "__main__":
