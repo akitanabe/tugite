@@ -139,11 +139,8 @@ RETIRED_REVIEW_STATE_FIELD_TOKENS = (
     "plan:",
     "`scope`",
     "scope:",
-    "`acceptance_criteria`",
     "acceptance_criteria",
-    "`dependencies`",
     "dependencies",
-    "`constraints`",
     "constraints",
 )
 # 利用者向け README は `plan-craft` の出力を artifact の数で説明する。1つの Data を
