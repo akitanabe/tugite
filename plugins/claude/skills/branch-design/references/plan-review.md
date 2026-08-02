@@ -26,6 +26,9 @@
     読まなくても分割の妥当性を判断できるようにする。
   - `approved`(`method: auto`): 自動承認した記録として Set の `order` と要約表、
     Branch Plan Set を提示し、承認が自動化された範囲(委譲開始は含まない)を明示する。
+- `blocked` が0件で `status` が揃わない場合(`awaiting_review` と `approved`(`method: auto`) の
+  混在)は、承認操作を求める側の `awaiting_review` の提示に寄せる。`approved`(`method: auto`) の
+  Branch Plan は、要約表内で `confirmation_mode: auto` により自動承認済みである旨を付記する。
 
 ## 要約表
 
@@ -49,20 +52,23 @@ Branch Plan の表の前に明示する。
 
 ユーザーへ次の3種の操作を、どちらの層に掛かるかを明示して提示する。
 
-- この分割で実行 — Set 全体の承認を意味する。提示した Branch Plan Set をそのまま確定する。
+- この分割で実行 — Set 全体の承認を意味する。記録先は各 Branch Plan の
+  `approval.method: user` と `status: approved` であり、Set 層に承認状態は持たない。
+  提示した Branch Plan Set をそのまま確定する。
 - 分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、実装枝への
-  分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かをユーザーが示す。修正後に
-  再生成する。
-- 分割せず1枝で実行 — 実装枝の統合を意味する。記録先は現行どおり Branch Plan の
-  `override.merge_branches` とする。
-
-ユーザーが Branch Plan を1件へまとめる指示をした場合は、Set の `decision.split: false` と
-ユーザーが示した理由として記録し、Branch Plan Set を再生成する。「分割を修正」の指示は、
-指定された層(Set の `branch_plans` / Branch Plan の `branches`)へ反映して validation を
-再実行してから再提示する。
+  分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かをユーザーが示す。指定
+  された層(Set の `branch_plans` / Branch Plan の `branches`)へ反映して validation を
+  再実行してから再提示する。
+- 分割せず1枝で実行 — 実装枝の統合を意味する。対象が単一の Branch Plan 内の枝なら、記録先は
+  現行どおりその Branch Plan の `override.merge_branches` とする。対象が `branch_plans` が
+  2件以上ある Set 全体(Branch Plan を1件へまとめる指示)なら、Set を1件へ畳む指示として扱い、
+  Set の `decision.split: false` と、統合後の Branch Plan の `override.merge_branches` の
+  両方を記録し、Branch Plan Set を再生成する。
 
 `override` を Set 層へ増やさない。`override` は実装枝の統合という Branch Plan 内の操作を
 記録する field であり、層をまたいで意味を広げると記録先が入力によって変わるためである。
+Branch Plan を1件へまとめる指示は Set の `decision.split: false` を記録するが、これは
+「分割せず1枝で実行」を Set 全体へ適用した結果であり、`override` を Set 層へ増やす変更ではない。
 
 承認は Branch Plan Set の確定だけを意味する。委譲開始は、ユーザーの明示的な委譲要求だけを根拠に
 親エージェントが `delegation` を設定した後に、`impl-lead` 側で行う。

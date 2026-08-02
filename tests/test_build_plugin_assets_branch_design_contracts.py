@@ -711,12 +711,40 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_splitting_reference_leads_with_the_two_layer_order_and_the_split_section(
+        self,
+    ) -> None:
+        """State the two-layer split order up front and read Set-layer criteria first."""
+        # R-1/WP-3: 読み手が Set 層の質的基準を実装枝分割の追加基準として誤読しないよう、
+        # 冒頭リード文で2層構成と判断順序(Set 層 → 実装枝層)を宣言し、節の登場順も
+        # SKILL.md の全体の流れ(Branch Plan 分割 → 実装枝分割)に合わせる。
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                self.assertIn(
+                    "".join(
+                        "この file は Branch Plan Set への分割と実装枝への分割という"
+                        "2層の基準を扱い、判断の順序は Set 層 → 実装枝層である。".split()
+                    ),
+                    normalized,
+                )
+                toc_section = text.split("## 目次", 1)[1].split("## ", 1)[0]
+                self.assertLess(
+                    toc_section.index("Branch Plan へ分割する判断基準"),
+                    toc_section.index("第一基準と優先順位"),
+                )
+                self.assertLess(
+                    text.index("## Branch Plan へ分割する判断基準"),
+                    text.index("## 第一基準と優先順位"),
+                )
+
     def test_plan_splitting_reference_states_qualitative_branch_plan_split_criteria(
         self,
     ) -> None:
         """Judge Branch Plan splits by change-purpose independence, not a fixed branch count."""
+        # F-3: AC-7 は「質的基準」がどの節にあるかを問うため、文書全体ではなく
+        # 「Branch Plan へ分割する判断基準」節に絞って検査する。
         required = (
-            "## Branch Plan へ分割する判断基準",
             "質的基準とし、枝数の固定閾値も新しい blocking code も設けない。",
             "**分割する** — 独立した変更目的が複数あり、一方を実行して他方を実行しない選択が"
             "成立する。",
@@ -724,13 +752,58 @@ class PlanImplementationBranchesContractsTest(
             "**分割しない** — 全枝が1つの変更目的に属し、一部だけ受け入れる選択が成立しない。",
             "分割しない場合は Set の `decision.split: false` と理由の",
             "記録を必須とする。実装枝の `decision` と同型の機構であり、新しい形式を導入しない。",
-            "宣言条件にある「複数の枝」は、同一 Branch Plan 内の複数の枝を指す。",
         )
         for platform, text in self._plan_reference_texts("branch-splitting.md").items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
+                section = text.split("## Branch Plan へ分割する判断基準", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                normalized = "".join(section.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_splitting_reference_scopes_the_cross_plan_scope_sentence_to_its_section(
+        self,
+    ) -> None:
+        """Keep the same-Branch-Plan-scope sentence inside the shared_foundation section."""
+        # F-3: AC-7 は「shared_foundation の判定節に」と節を指定しているため、
+        # 文書全体ではなく `## shared_foundation の判定` 節に絞って検査する。
+        required = (
+            "宣言条件にある「複数の枝」は、同一 Branch Plan 内の複数の枝を指す。",
+            "土台を必要とする枝が Branch Plan をまたぐ場合は、先行 Branch Plan が土台を"
+            "作った結果が",
+            "基準 commit に入るため、後続 Branch Plan では `shared_foundation.required: false` "
+            "とする。",
+            "同じ土台を複数の Branch Plan で重複宣言しない。",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                section = text.split("## shared_foundation の判定", 1)[1]
+                normalized = "".join(section.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_splitting_reference_names_the_branch_plan_layer_for_decision_and_override(
+        self,
+    ) -> None:
+        """Name the Branch Plan layer for decision/override now that Set carries a decision too."""
+        # R-5: 同 file に Set 層の `decision` が入ったため、「1枝にまとめる判断」節の裸の
+        # `decision` / `override` を層明示に揃える。`override` の記録先の正本は
+        # plan-review.md の「確認操作」節への参照で示す。
+        required = (
+            "分割しない場合は Branch Plan の `decision.split: false` を出力し",
+            "ユーザーが実装枝の統合を",
+            "指示した場合は、記録先の正本である",
+            "の「確認操作」節に従い",
+            "`override` にその理由を記録する。",
+        )
+        for platform, text in self._plan_reference_texts("branch-splitting.md").items():
+            with self.subTest(platform=platform):
+                section = text.split("## 1枝にまとめる判断", 1)[1].split("\n## ", 1)[0]
+                normalized = "".join(section.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertIn("plan-review.md", section)
 
     def test_plan_review_presents_the_set_order_and_layers_the_confirmation_operations(
         self,
@@ -742,17 +815,47 @@ class PlanImplementationBranchesContractsTest(
             "承認操作を求めない。",
             "全 Branch Plan が同じ `status` のときは、その `status` の提示を行う。",
             "Set の `order` を要約表の前に示し、Branch Plan の実行順序を明示する。",
-            "この分割で実行 — Set 全体の承認を意味する。提示した Branch Plan Set をそのまま"
-            "確定する。",
+            # F-1: 要約表と提示の順序が Branch Plan 単位になったという記載を固定する。
+            # これがないと「Branch Plan ごとに」「その Branch Plan の」を削り Set 全体で
+            # 1枚の要約表という旧文へ戻す変異が Green になる。
+            "続けて、YAML 全文の前に、Branch Plan ごとに次の列を持つ要約表を表示する。",
+            "実行順は、その Branch Plan の `execution.order` の順序に一致させる。",
+            "Set の `order` と Branch Plan ごとの要約表 → 確認操作 →",
+            "自動承認した記録として Set の `order` と要約表、",
+            # R-2: 「この分割で実行」の記録先を明示する。
+            "この分割で実行 — Set 全体の承認を意味する。記録先は各 Branch Plan の",
+            "`approval.method: user` と `status: approved` であり、Set 層に承認状態は"
+            "持たない。",
             "分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、"
             "実装枝への分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かを"
             "ユーザーが示す。",
-            "分割せず1枝で実行 — 実装枝の統合を意味する。記録先は現行どおり Branch Plan の"
-            "`override.merge_branches` とする。",
-            "ユーザーが Branch Plan を1件へまとめる指示をした場合は、Set の "
-            "`decision.split: false` とユーザーが示した理由として記録し、"
+            # R-3/WP-1: 「分割せず1枝で実行」が層をまたいだ場合の帰結を明示する。
+            "分割せず1枝で実行 — 実装枝の統合を意味する。対象が単一の Branch Plan 内の枝なら、"
+            "記録先は現行どおりその Branch Plan の `override.merge_branches` とする。",
+            "対象が `branch_plans` が2件以上ある Set 全体(Branch Plan を1件へまとめる指示)"
+            "なら、Set を1件へ畳む指示として扱い、Set の `decision.split: false` と、"
+            "統合後の Branch Plan の `override.merge_branches` の両方を記録し、"
             "Branch Plan Set を再生成する。",
             "`override` を Set 層へ増やさない。",
+        )
+        for platform, text in self._plan_reference_texts("plan-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_review_defines_the_mixed_status_presentation(self) -> None:
+        """Define the presentation when non-blocked Branch Plans disagree on status."""
+        # R-4/WP-2: 「全 Branch Plan が同じ status のときは、その status の提示を行う」が
+        # blocked 0件かつ status が揃わない場合(awaiting_review と approved(auto) の混在)を
+        # 未定義のまま残していた。confirmation_mode は Branch Plan ごとの field で schema 上
+        # 混在しうるため、(a) 混在時の提示を定義する側を選んだ(不変条件を捏造しない)。
+        required = (
+            "`blocked` が0件で `status` が揃わない場合(`awaiting_review` と "
+            "`approved`(`method: auto`) の混在)は、承認操作を求める側の `awaiting_review` "
+            "の提示に寄せる。",
+            "`approved`(`method: auto`) の Branch Plan は、要約表内で "
+            "`confirmation_mode: auto` により自動承認済みである旨を付記する。",
         )
         for platform, text in self._plan_reference_texts("plan-review.md").items():
             with self.subTest(platform=platform):
@@ -780,8 +883,10 @@ class PlanImplementationBranchesContractsTest(
 
     def test_plan_skill_describes_its_output_as_a_branch_plan_set(self) -> None:
         """Describe the skill's output as a Branch Plan Set and drop the data-only claim."""
-        for platform in ("claude", "codex"):
-            main = self._plan_skill_texts()[platform]
+        # F-2: source(shared/skill/branch-design/SKILL.md)は人が実際に編集する正本であり、
+        # claude/codex の生成物だけを検査すると shared 側の書き戻しを検出できない。
+        # test_plan_skill_matches_confirmed_schema_contract と同じく3 platform を検査する。
+        for platform, main in self._plan_skill_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(main.split())
                 self.assertIn(
@@ -797,11 +902,23 @@ class PlanImplementationBranchesContractsTest(
                 self.assertIn("".join("出力は Branch Plan Set だけである".split()), normalized)
                 self.assertNotIn("".join("Branch Plan Data".split()), normalized)
 
+    def test_plan_skill_uses_the_set_term_for_the_approval_sentence(self) -> None:
+        """Match plan-review.md's set-level approval phrasing instead of the bare Branch Plan noun."""
+        # R-5: plan-review.md はすでに「承認は Branch Plan Set の確定だけを意味する。」に
+        # 揃っている。SKILL.md 側の同義文が「Branch Plan」の裸のままだと、2 file 間で
+        # 承認対象の呼称が食い違う。
+        for platform, main in self._plan_skill_texts().items():
+            with self.subTest(platform=platform):
+                self.assertIn("承認は Branch Plan Set の確定だけを意味する。", main)
+
     def test_plan_skill_flow_adds_a_branch_plan_split_step_before_branch_splitting(
         self,
     ) -> None:
-        """Add Branch Plan splitting to the flow and feed set-level blocking into status."""
-        required = (
+        """Add Branch Plan splitting as a numbered flow step ahead of branch splitting."""
+        # F-2: ここも source を含む3 platform を検査する。
+        # F-3: AC-18 は「全体の流れ」に手順として現れることを求めるため、`## 全体の流れ`
+        # 節に絞って検査し、番号付き手順であることも regex で確認する。
+        required_in_flow = (
             "「Branch Plan へ分割する判断基準」に従い、",
             "独立した変更目的が複数あるか、先行部分の完了後に後続の設計を見直す余地があるかを"
             "判断し、Branch Plan Set を分ける。分割しない場合は Set の `decision.split: false` と"
@@ -809,12 +926,27 @@ class PlanImplementationBranchesContractsTest(
             "Set の `validation.blocking`、各 Branch Plan の `unresolved_decisions` と "
             "`validation.blocking` から `status` を決める。",
         )
-        for platform in ("claude", "codex"):
-            main = self._plan_skill_texts()[platform]
+        for platform, main in self._plan_skill_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(main.split())
-                for contract in required:
-                    self.assertIn("".join(contract.split()), normalized)
+                flow = main.split("## 全体の流れ", 1)[1].split("\n## ", 1)[0]
+                normalized_flow = "".join(flow.split())
+                for contract in required_in_flow:
+                    self.assertIn("".join(contract.split()), normalized_flow)
+                self.assertRegex(
+                    flow,
+                    r"\n\d+\.\s*\[枝分割判断\]\(references/branch-splitting\.md\) の"
+                    r"「Branch Plan へ分割する判断基準」",
+                )
+                split_step_marker = "".join(
+                    "Branch Plan へ分割する判断基準」に従い、".split()
+                )
+                branch_step_marker = "".join(
+                    "外部から観測可能な振る舞いの縦割りで実装枝へ分ける。".split()
+                )
+                self.assertLess(
+                    normalized_flow.index(split_step_marker),
+                    normalized_flow.index(branch_step_marker),
+                )
 
     def test_branch_design_surface_docs_drop_all_stage_vocabulary(self) -> None:
         """Leave no trace of the retired implementation_stages mechanism in these docs."""
@@ -822,6 +954,11 @@ class PlanImplementationBranchesContractsTest(
         # stage 概念の散文(「stage は AC を所有しない」等)や目次項目も検出できるよう、
         # 生の "stage" 部分文字列(大小無視)の不在を検査する。これが崩れると、廃止語だけを
         # 消して概念の散文が残る不完全な削除を見逃す。
+        # F-4: 検出は Latin 表記の "stage" 部分文字列に閉じる。この3 file の原稿は stage
+        # 概念を Latin 表記(implementation_stages 等)でしか表現していなかったため、
+        # カタカナ「ステージ」への書き戻しは既存語彙からは起こらない。カタカナを検出語へ
+        # 加えると「ステージング環境」のような無関係な語で偽陽性が増えるため、検査範囲を
+        # Latin 表記に意図的に限定する(見落としではなく選択)。
         text_groups: dict[str, dict[str, str]] = {
             "branch-splitting.md": self._plan_reference_texts("branch-splitting.md"),
             "plan-review.md": self._plan_reference_texts("plan-review.md"),
@@ -830,7 +967,12 @@ class PlanImplementationBranchesContractsTest(
         for doc_name, texts in text_groups.items():
             for platform, text in texts.items():
                 with self.subTest(doc=doc_name, platform=platform):
-                    self.assertNotIn("stage", text.lower())
+                    self.assertNotIn(
+                        "stage",
+                        text.lower(),
+                        f"{doc_name}({platform}) に廃止した implementation_stages 機構の"
+                        "語彙(stage)が残っている",
+                    )
 
 
 if __name__ == "__main__":

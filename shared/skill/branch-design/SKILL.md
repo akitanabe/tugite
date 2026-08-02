@@ -104,7 +104,7 @@ description: >-
 
 ## 承認と委譲開始の分離
 
-承認は Branch Plan の確定だけを意味する。`confirmation_mode: auto` は Branch Plan の承認だけを
+承認は Branch Plan Set の確定だけを意味する。`confirmation_mode: auto` は Branch Plan の承認だけを
 自動化した記録であり、委譲開始権限を含まない。委譲開始には、ユーザーの明示的な委譲要求を
 根拠に親エージェントが `delegation` を設定し、`status: approved` であることが別途必要になる。
 
