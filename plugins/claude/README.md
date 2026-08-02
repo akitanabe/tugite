@@ -17,9 +17,9 @@
 - `skills/test-audit/references/*.md`
   - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
 - `skills/plan-craft/SKILL.md`
-  - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経た Implementation Plan Data を返します。実装・委譲・枝分割は行いません。
+  - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経たプラン文書とレビュー状態の2 artifact を返します。実装・委譲・枝分割は行いません。
 - `skills/plan-craft/references/*.md`
-  - Implementation Plan スキーマ、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
+  - プラン artifact の規約（プラン文書とレビュー状態）、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
 - `skills/feature-lead/SKILL.md`
   - `plan-craft` → `branch-design` → `impl-lead` を順に連結し、要求から実装完了までを一括で進めます。判断点は既定で停止し、`unattended` 明示時のみ自律解決します。
 

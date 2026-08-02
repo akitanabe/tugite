@@ -6,7 +6,7 @@ description: >-
   該当するときに使う。実装や委譲は行わず、`impl-lead` を直接起動しない。
   Branch Plan Data を返すだけで、委譲開始権限は含まない。
   ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
-  Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+  プラン文書とレビュー状態を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
   責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
   通常どおり動作する。
 ---
@@ -37,7 +37,7 @@ description: >-
 [枝分割判断](references/branch-splitting.md) を参照する。
 
 ただし、ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
-Implementation Plan を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
+プラン文書とレビュー状態を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
 責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
 通常どおり動作する。
 
@@ -46,9 +46,11 @@ Implementation Plan を渡して実装までの一括実行を直接要求され
 着手前に次を確認する。不足が blocking なら補完せず `unresolved_decisions` にする。
 
 - 実装目的。
-- 元プラン(path / issue URL / 会話内 / `test-audit` の Test Inventory 報告の findings)。
-- Acceptance Criteria(原文。言い換えない)。findings 由来の AC では、原文はユーザーが確定した
-  文言を指す。
+- 元プラン(`plan-craft` のプラン文書 `.tugite/plans/<slug>.md` / path / issue URL / 会話内 /
+  `test-audit` の Test Inventory 報告の findings)。
+- Acceptance Criteria(原文。言い換えない)。`plan-craft` のプラン文書を元プランにする場合は、
+  「Acceptance Criteria」節から AC 原文を取る。文書が持つ AC id はそのまま引き継ぎ、振り直さない。
+  findings 由来の AC では、原文はユーザーが確定した文言を指す。
 - 変更可能範囲と変更禁止範囲。
 - 既知の依存。
 - 確認モードの既定は `review` とし、`auto` はユーザーが明示した場合のみ使う。

@@ -292,9 +292,9 @@ class ReviewerLaunchTemplateAndDiffArtifactContractsTest(
         # 最初の枝を受ける時点で `.tugite/plans/` がすでに untracked として存在する。
         # 除外しないと、親が worker の変更の混入と誤認して枝が `Needs revision` へ落ちる。
         required = (
-            "`plan-craft` が書き出したプラン artifact (`.tugite/plans/` 配下)",
-            "は親側が書き出した既知の untracked file であり、"
-            "この確認によって worker の変更の混入と誤認しない",
+            "`plan-craft` が書き出したプラン artifact(`.tugite/plans/` 配下)も"
+            "親側が書き出した既知の untracked file として同じ扱いとし、"
+            "worker の変更の混入と誤認しない",
             "[プラン artifact](../../plan-craft/references/plan-artifacts.md)",
         )
         for platform, reference in self._qa_and_integration_reference_texts().items():

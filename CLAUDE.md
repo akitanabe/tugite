@@ -73,16 +73,16 @@ bash tests/install-agents-test.sh
 
 semver は**公開面が壊れるか**で割り当てます。
 
-- **公開面** — skill 名、agent 名、mode 名（`direct` / `lite` / `standard` / `strict` / `strict-full`、`policy` / `baseline`）、skill の起動方法と発火条件、ユーザーが保存して後から渡す Data の形式（Implementation Plan）、`$install-custom-agents` などの CLI
+- **公開面** — skill 名、agent 名、mode 名（`direct` / `lite` / `standard` / `strict` / `strict-full`、`policy` / `baseline`）、skill の起動方法と発火条件、ユーザーが保存して後から渡す artifact の形式（`plan-craft` のプラン文書とレビュー状態）、`$install-custom-agents` などの CLI
 - **内部契約** — 同一 version 内で完結する skill 間の受け渡し Data。Branch Plan の field 名、blocking violation code、reference の節構成
 
-Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が同じ version で同時に配布され、片方だけ古い組み合わせが生じないためです。Implementation Plan は issue などへ保存して後日渡す運用があるため公開面に含めます。
+Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が同じ version で同時に配布され、片方だけ古い組み合わせが生じないためです。プラン文書とレビュー状態は issue などへ保存して後日渡す運用があるため公開面に含めます。
 
 - **major** — 公開面を壊す変更（mode や skill・agent の改名・削除など、利用者の呼び出しが通らなくなるもの）
 - **minor** — skill・agent の追加、契約の追加や拡張、内部契約の変更
 - **patch** — model/effort プロファイルの調整など、契約の意味を変えない修正
 
-公開面に載ることは major を意味しません。major の定義は「利用者の呼び出しが通らなくなる」ことなので、判定は旧入力を渡したときに停止するかで行います。4.1.0 で Implementation Plan の `plan` 配下を散文の `plan.body` へ統合したときも、旧形式の Data を渡しても `feature-lead` は停止せず「正規スキーマに適合しないプラン本文」として `plan-craft` から再起草へ落ちるだけで、skill・agent・mode 名も変わらないため minor としました。
+公開面に載ることは major を意味しません。major の定義は「利用者の呼び出しが通らなくなる」ことなので、判定は旧入力を渡したときに停止するかで行います。4.2.0 で `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の2 artifact へ分けたときも、旧形式の Data を渡しても `feature-lead` は停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ落ちるだけで、skill・agent・mode 名も変わらないため minor としました。
 
 ## テストの二層構造
 
