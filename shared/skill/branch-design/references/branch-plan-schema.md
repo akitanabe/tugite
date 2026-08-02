@@ -240,12 +240,6 @@ Branch Plan へ散る正当な分割で必ず `ac-unassigned` が発火するた
 `両方` は、同名の検査が両層の別 field(`order` と `execution.order`)に独立して存在し、片方の
 違反をもう片方から再計算できない `execution-order-invalid` だけに与える。
 
-`execution-order-invalid` は両層に同じ検査規則を適用する。Set では `order` が
-`branch_plans[].id` を1回ずつ含むこと、Branch Plan では `execution.order` が `branches[].id` を
-1回ずつ含み `depends_on` の topological order であることを検査する。Set 層には `depends_on` に
-相当する依存 field がなく、`order` の並びそのものが実行順序であるため、依存関係との突き合わせは
-Branch Plan 層だけに掛かる。
-
 `unknown-reference` の検査は Set 層で行うが、参照の解決範囲は種類ごとに分ける。
 AC id 参照(`covers_acceptance_criteria` / `verifies_acceptance_criteria` /
 `unresolved_decisions.affects` の `ac-assignment` / `ac-derivation`)は Set の
@@ -321,8 +315,7 @@ Branch Plan の状態は値を個別に検査せず、次の有効な組み合�
 
 ## 状態遷移と権限
 
-状態は Branch Plan ごとに持つ。Set は状態を持たないため、Set の違反は全 Branch Plan の
-`blocked` として現れる。
+状態は Branch Plan ごとに持つ。
 
 | 遷移 | 実行主体 | 条件 |
 | --- | --- | --- |
