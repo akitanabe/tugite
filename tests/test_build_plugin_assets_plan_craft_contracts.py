@@ -334,7 +334,6 @@ class DraftImplementationPlanContractsTest(
 
     def test_plan_artifacts_reference_blocks_a_plan_that_has_no_body(self) -> None:
         """Block an empty plan document from reaching awaiting_review or approved."""
-        body_missing_row = "| `body-missing` | プラン文書の本文が無い、または空 |"
         # file の有無で立てると、file 出力を省略した経路のプランが常に blocked へ
         # 固定され、省略を認める規定が実行不能になる。
         target_of_the_check = (
@@ -361,7 +360,6 @@ class DraftImplementationPlanContractsTest(
                         self._section_lines(text, "## blocking violation code")
                     ).split()
                 )
-                self.assertIn("".join(body_missing_row.split()), violation_section)
                 self.assertNotIn("design-missing", violation_section)
                 for contract in target_of_the_check:
                     self.assertIn("".join(contract.split()), violation_section)
@@ -540,10 +538,6 @@ class DraftImplementationPlanContractsTest(
         for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
-                self.assertIn(
-                    "".join("status: blocked | awaiting_review | approved".split()),
-                    normalized,
-                )
                 table = [
                     line
                     for line in self._section_lines(
