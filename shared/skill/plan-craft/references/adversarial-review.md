@@ -16,14 +16,14 @@
 
 ## round の構成
 
-レビューが判定する対象はプラン本文の「設計」節であって AC の集合ではない
+レビューが判定する対象はプラン文書の「設計」節であって AC の集合ではない
 （判定の軸の正本は `plan-adversarial-reviewer`）。
-プラン本文の節構成と各節の責務は
-[起草手順](plan-drafting.md) の「プラン本文の節構成」を正本とする。
+プラン文書の節構成と各節の責務は
+[起草手順](plan-drafting.md) の「プラン文書の節構成」を正本とする。
 
 1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
 
-1. reviewer へプラン本文の全文と、2 round 目以降は前 round までの
+1. reviewer へプラン文書の全文と、2 round 目以降は前 round までの
    指摘台帳を渡して起動する。
 2. 親が指摘IDごとに内容を確認し、`軽微` の定義（`plan-adversarial-reviewer` が持つ影響基準 +
    軽微類型カタログ）に照らして verdict を確定する。reviewer の verdict 申告をそのまま採用しない。
@@ -33,10 +33,10 @@
 
 ## 指摘台帳
 
-- 指摘台帳と round 状態はプラン本文の外に持つ。本文へ書くと、指摘の解消が本文の変更として
+- 指摘台帳と round 状態はプラン文書の外に持つ。本文へ書くと、指摘の解消が本文の変更として
   現れず、round ごとに本文と台帳の両方を同期することになる。
-- 台帳は Implementation Plan の `review` block そのものとし、新しい field 名を導入しない。
-  field 定義の正本は [Implementation Plan 正規スキーマ](implementation-plan-schema.md) に置く。
+- 台帳はレビュー状態の `review` block そのものとし、新しい field 名を導入しない。
+  field 定義の正本は [プラン artifact](plan-artifacts.md) に置く。
   確定時は写し替えや構造変換を行わず、そのまま `review` の下へ置く。
 - `review.findings` は全 round・全 reviewer 通算の台帳とする。指摘 ID（`PF-*`）は round をまたいで
   振り直さず、`reviewer` field で発行元を区別する。
@@ -53,7 +53,7 @@ reviewer が示す evidence は
 evidence を欠く指摘だけを根拠にプランを修正しない。
 
 親が該当ファイルと行の引用・再現手順・参照した Data の path と id のいずれかを、親自身が確認した
-repository の現状・プラン本文・既存 manuscript から特定できる場合は、親が evidence を補って通常の
+repository の現状・プラン文書・既存 manuscript から特定できる場合は、親が evidence を補って通常の
 判断（`軽微` の定義への照合と `adopted` / `rejected` の判断）へ戻す。
 
 evidence を補えない指摘は、指摘が成立したと仮定した場合の影響を影響基準に当てて verdict を確定した
@@ -82,6 +82,6 @@ evidence を補えない指摘は、指摘が成立したと仮定した場合�
 ## round-limit 時の提示
 
 - `修正推奨` 以上の未対応指摘を `resolution: unresolved` として台帳に残す。
-- 提示では、Implementation Plan の YAML より前に未解決一覧（指摘ID・verdict・summary）を明示する。
+- 提示では、レビュー状態の YAML より前に未解決一覧（指摘ID・verdict・summary）を明示する。
 - 確認モードが `auto` でも自動承認しない。未解決指摘の扱い（追加 round の明示指定、指摘の
   採用・不採用の確定、このまま承認）をユーザーに確定してもらう。

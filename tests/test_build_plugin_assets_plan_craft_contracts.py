@@ -345,21 +345,19 @@ class DraftImplementationPlanContractsTest(
         lines = DraftImplementationPlanContractsTest._section_lines(
             text, "## blocking violation code"
         )
-        start = lines.index(table_heading)
-        rest = lines[start + 1 :]
-        end = next(
-            (
-                index
-                for index, line in enumerate(rest)
-                if line.startswith("**") or line.startswith("## ")
-            ),
-            len(rest),
+        rest = lines[lines.index(table_heading) + 1 :]
+        # 見出し直後の1つ目の表だけを対象にする。節の末尾まで拾うと、同じ節にある
+        # 有効な組み合わせ表の行が表Bの行として混ざる。
+        table_start = next(
+            index for index, line in enumerate(rest) if line.startswith("|")
         )
-        return tuple(
-            line
-            for line in rest[:end]
-            if line.startswith("| `") and not line.startswith("| --- ")
-        )
+        rows = []
+        for line in rest[table_start:]:
+            if not line.startswith("|"):
+                break
+            if line.startswith("| `"):
+                rows.append(line)
+        return tuple(rows)
 
     def test_plan_artifacts_reference_splits_recomputable_codes_from_judged_codes(
         self,
