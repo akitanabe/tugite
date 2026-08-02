@@ -282,8 +282,9 @@ class PlanImplementationBranchesContractsTest(
             "Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず"
             "実行を開始しない。",
             # 同じ規則を散文・状態遷移表・スキーマ本体のコメントへ重複して書いているため、
-            # どれか1種類だけを固定すると、残りを旧文言へ戻した原稿が自己矛盾したまま通る。
-            # 3種類の記載すべて(散文4文・遷移表5行・コメント3行)を固定する。
+            # 一部だけを固定すると、残りを旧文言へ戻した原稿が自己矛盾したまま通る。原稿にある
+            # 15記載(散文5項目・遷移表5行・スキーマ本体のコメント4行・「状態遷移と権限」節の
+            # 前置き1文)をすべて固定する。原稿へ記載を足すときは、ここへも足す。
             "# blocked:          「blocking violation code」の節が定める blocked の定義に従う",
             "# awaiting_review:  confirmation_mode: review で Set と自身に blocking なし。"
             "ユーザー承認待ち",
@@ -297,6 +298,12 @@ class PlanImplementationBranchesContractsTest(
             "| `blocked` → `awaiting_review` | planning Skill(再実行) | 原因解消後に全 "
             "validation を再実行して Set と自身に blocking なし、`confirmation_mode: review` |",
             "Set または自身に blocking violation が残る場合は承認操作があっても遷移しない",
+            "Set の `validation.blocking` は `state-invalid` の入力にしない。Set 由来の "
+            "`blocked` は Set 層の検査と Executor の先行検査で表し、Branch Plan 側では"
+            "再判定しない。",
+            "# violation の配列。1件でもあれば全 Branch Plan が status: blocked",
+            "状態は Branch Plan ごとに持つ。Set は状態を持たないため、Set の違反は"
+            "全 Branch Plan の `blocked` として現れる。",
         )
         for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
             with self.subTest(platform=platform):

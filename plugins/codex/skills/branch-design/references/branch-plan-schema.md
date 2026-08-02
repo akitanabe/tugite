@@ -266,7 +266,9 @@ Set は `status` を持たないため、これが Set の違反を Branch Plan 
 `blocked` は、その Branch Plan の `unresolved_decisions` または `validation.blocking` が非空、
 あるいは Set の `validation.blocking` が非空であることを表す。有効な組み合わせ表と `state-invalid`
 の再計算は拡張後の定義を使い、自身の2 field が空のまま `blocked` である Branch Plan を矛盾として
-扱わない。Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず実行を
+扱わない。Set の `validation.blocking` は `state-invalid` の入力にしない。Set 由来の `blocked` は
+Set 層の検査と Executor の先行検査で表し、Branch Plan 側では再判定しない。
+Executor は Set 全体の検査を先に行い、非空なら Branch Plan 側の状態に関わらず実行を
 開始しない。受け入れ口での再検証の規約そのものは `impl-lead` 側を正本とする。
 
 Branch Plan の状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
