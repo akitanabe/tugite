@@ -63,7 +63,7 @@ description: >-
 - `status` が `awaiting_review` または `blocked` のレビュー状態を渡されたとき。
   承認または判断点の確定を求めて差し戻す。これを判断点として台帳へ記録しない。判断点は段が
   返したものだけを対象とし、起動前に渡された入力を「判断点の分類」にも再実行にも掛けない。
-- 確定済みの Branch Plan を渡されたとき。この Skill の対象外であり、`impl-lead` を直接使う経路を
+- 確定済みの Branch Plan Set を渡されたとき。この Skill の対象外であり、`impl-lead` を直接使う経路を
   案内する。
 - 単一の段だけの要求。プランのみは `plan-craft`、枝分割計画のみは `branch-design` の責務である。
 - `direct` の明示時。委譲を伴わない経路であり、この Skill の対象外である。
@@ -105,12 +105,16 @@ description: >-
 3. `plan-craft` を実行した場合は「段の遷移と判断点の処理」に従い status を判定する。判断点が
    あれば `autonomy` に従って処理する。
 4. 確定したプラン文書とレビュー状態を `branch-design` へ `confirmation_mode: auto` で渡し、
-   Branch Plan Data を得る。
-5. 「段の遷移と判断点の処理」に従い status を判定する。判断点があれば `autonomy` に従って処理する。
-6. 「授権の根拠」に従い `delegation` を設定する。
-7. Branch Plan と判断点台帳を `impl-lead` へ渡す。`impl-lead` は受け入れ口の再検証を通常どおり行う。
-8. `impl-lead` の最終報告を提示する。段ごとの要約を先に置き、最終報告を末尾に置く。判断点台帳の
-   全件を会話上の最終報告にも含める。
+   Branch Plan Set を得る。
+5. 「段の遷移と判断点の処理」に従い status を判定する。Set のうち1件でも Branch Plan が
+   `blocked` であれば段全体を判断点として扱う。判断点があれば `autonomy` に従って処理する。
+6. 「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。
+7. Branch Plan Set と判断点台帳を `impl-lead` へ渡す。`impl-lead` は受け入れ口の再検証を通常
+   どおり行い、`order` に従って Branch Plan を実行する。
+8. `impl-lead` が未授権の Branch Plan の境界で止まった場合は、手順9を行わずに「Branch Plan
+   境界の停止」に従って処理する。ユーザーが授権を確定したら、その Branch Plan から手順7へ戻る。
+9. `order` の全 Branch Plan の実行が終わったら、`impl-lead` の最終報告を提示する。段ごとの
+   要約を先に置き、最終報告を末尾に置く。判断点台帳の全件を会話上の最終報告にも含める。
 
 ## 段の遷移と判断点の処理
 
@@ -125,9 +129,13 @@ description: >-
 - `plan-craft` が `status: blocked` を返した（`open_questions` または `validation.blocking` が
   非空）。
 - `plan-craft` が `termination: round-limit` で `resolution: unresolved` の指摘を残した。
-- `branch-design` が `status: blocked` を返した（`unresolved_decisions` または
-  `validation.blocking` が非空）。
-- `impl-lead` が各 mode のゲートで停止した。停止条件は `impl-lead` の契約に従う。
+- `branch-design` が返した Branch Plan Set のうち1件でも Branch Plan が `blocked` である
+  （その Branch Plan の `unresolved_decisions` または `validation.blocking` が非空、あるいは
+  Set の `validation.blocking` が非空）。この場合は特定の Branch Plan ではなく段全体を判断点
+  として扱う。
+- `impl-lead` が各 mode のゲートで停止した。停止条件は `impl-lead` の契約に従う。ただし
+  Branch Plan 境界（未授権の Branch Plan への到達）での停止はこれに含めない。「Branch Plan
+  境界の停止」に従う。
 
 ### 判断点の分類
 
@@ -175,6 +183,22 @@ non-resolvable であるため優先規則を適用せず停止する。
 
 停止せず、「自律解決の規律」に従って判断点を解決してから次段へ進む。解決は判断点の記録を伴い、
 記録できない解決は行わない。
+
+### Branch Plan 境界の停止
+
+`impl-lead` が未授権の Branch Plan の境界で止まることは、上の判断点のいずれにも当たらない。
+`origin: impl-lead-gate` として判断点台帳へ記録しない。台帳が対象とするのは段が返した判断点で
+あり、境界の停止は授権が未設定であることの帰結だからである。判断点ではないが停止点ではあるため、
+`autonomy` に応じて次の扱いに従う。
+
+- `attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。`impl-lead` が
+  境界で止まったら、`impl-lead` が提示した内容を既存の最終報告の中継規約に従ってユーザーへ返し、
+  次の Branch Plan の授権を求める。提示内容そのものは `branch-plan-intake.md` を正本とし、この
+  Skill へ複製しない。ユーザーが授権を確定したら、その Branch Plan から `impl-lead` を再開する。
+  この停止は Skill の責務を果たさずに終了することではなく、Branch Plan を承認単位にした結果と
+  して意図された停止である。
+- `unattended` では、Set の全 Branch Plan を授権する。境界を通過した事実と通過した Branch Plan
+  id を最終報告へ記録する。
 
 ## `round-limit` の扱い
 
@@ -244,17 +268,30 @@ resolvable な判断点がこれに当たる。`deferred` は解決を試みて�
 台帳の記載は `attended` / `unattended` の双方で必須とする。判断点をユーザーへ返さない解決が
 含まれる場合、この記載が唯一の検分経路になる。記載できない判断点は解決したとみなさない。
 
+Branch Plan 境界の停止（`impl-lead` が未授権の Branch Plan に到達して止まること）は判断点では
+ないため、台帳へ記録しない。台帳が対象とするのは段が返した判断点であり、境界の停止は授権が
+未設定であることの帰結だからである。
+
 `basis_kind: assumed` の項目は台帳内で区別して示し、観測事実に基づく解決と混ぜない。仮定の総数を
 最終報告の冒頭要約にも出す。
 
 ## 授権の根拠
 
-`branch-design` は `delegation.authorized: false` を返す。この Skill は{{parent_agent}}の役割で
+`branch-design` は Branch Plan Set の各 Branch Plan について `delegation.authorized: false` を
+返す。この Skill は{{parent_agent}}の役割で、Branch Plan ごとに独立して
 `delegation.authorized: true` / `authorized_by: user` を設定する。根拠はこの Skill の起動要求
 そのものであり、要求は plan から実装委譲までを含むものとして扱う。
 
+授権を設定するのは、Set の全 Branch Plan が `status: approved` を返した場合だけである。1件でも
+`blocked` な Branch Plan があれば段全体を判断点として扱い停止し、一部の Branch Plan だけを
+授権して進める経路は持たない。
+
+授権する Branch Plan の範囲は `autonomy` で分ける。
+
+- `attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを授権する。
+- `unattended` では、Set の全 Branch Plan を授権する。
+
 段ごとの委譲要求の再取得は求めない。ただし `impl-lead` の受け入れ口が行う再検証は省略しない。
-授権を設定するのは、`branch-design` が `status: approved` を返した場合だけである。
 
 ### `delegation.requested_mode` の設定
 
