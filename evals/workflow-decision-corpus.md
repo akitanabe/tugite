@@ -2022,8 +2022,8 @@ Synthetic diff 要約:
 親は reviewer 起動や受入の前に混在を検出し、変更理由・AC・責務・依存・受入・rollback・検証単位を理由として
 再分割を判断する。既存枝の purpose、AC 文言、AC ownership、scope、依存、risk を保った commit 分離や最小範囲の
 整形なら既存契約を維持する。独立した実装枝への分離、AC ownership・依存・risk の変更、または AC 文言の分解・
-再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または Implementation
-Plan の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
+再定義が必要なら、Branch Plan を再生成（blocking violation と Executor 再検証5項目の再計算）または
+プラン文書の AC 確定とユーザー確認へ戻り、再承認が済むまで新枝を委譲しない。
 
 **必須動作**
 
