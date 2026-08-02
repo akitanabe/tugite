@@ -352,9 +352,9 @@ class DraftImplementationPlanContractsTest(
                 self.assertIn(
                     "".join(approved_precondition.split()), "".join(text.split())
                 )
-                # 行が blocking violation code 節の中にあることまで固定する。body-missing が
-                # validation.blocking に載ることが approved 到達不能の第一リンクであり、
-                # 本文のどこかに同じ文字列があるだけではその連鎖は成立しない。
+                # 対象を節スコープに絞るのは、code 表への混入だけを禁じ、説明のために
+                # code 名へ触れる散文の言及は許すため。文書全体を対象にすると、その
+                # 言及まで巻き込んで落ちてしまう。
                 violation_section = "".join(
                     "".join(
                         self._section_lines(text, "## blocking violation code")
