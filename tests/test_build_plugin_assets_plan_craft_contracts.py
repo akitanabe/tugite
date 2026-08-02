@@ -241,8 +241,10 @@ class DraftImplementationPlanContractsTest(
     ) -> None:
         """Keep the schema's own principles while the section conventions move away."""
         required = (
-            "Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務であり、"
-            "プラン本文の「手順」節は起草者が実装の道筋を示す順序付き作業であって、AC を所有しない。",
+            # 節の責務本文はここへ置かない。「手順」節が AC を所有しないことの正本は
+            # plan-drafting.md の「プラン本文の節構成」であり、この文書が同じ義務を
+            # 別の言い回しで持つと、片方だけの改訂で他方が緑のまま残る。
+            "Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務である。",
             "AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま引き継げる形",
             "レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。",
             "`validation.blocking` は安定した code を持つ violation の配列とし、承認可否は "
@@ -362,6 +364,10 @@ class DraftImplementationPlanContractsTest(
             # 節見出しの有無を検査条件に足すと、どの見出しをどう書けば節と認めるかを
             # Data 検査のために固定することになり、本文を散文にした目的と衝突する。
             "本文が規定の節見出しを備えているか",
+            # 再掲禁止は廃止規約ではなく plan-drafting.md に生きており、
+            # `acceptance_criteria` も構造 field として存続する。code 表を所有するのは
+            # この文書だけなので、再掲を code 化しない記録には他に置き場が無い。
+            "`acceptance_criteria` が「設計」節の規約本文を再掲しているか",
         )
         for platform, text in self._schema_reference_texts().items():
             with self.subTest(platform=platform):
@@ -454,6 +460,8 @@ class DraftImplementationPlanContractsTest(
                     for contract in forbidden:
                         self.assertNotIn("".join(contract.split()), section)
 
+        # 否定側は4箇所すべてへ課す。required の1文が残る限り緑になる形にすると、
+        # AC・scope・constraints・assumptions の別列挙が書き戻されても検出できない。
         agent_checks = {
             "plan-adversarial-reviewer": (
                 "## 立場",
@@ -462,15 +470,17 @@ class DraftImplementationPlanContractsTest(
                     "必要です。",
                     "2 round 目以降は前 round までの指摘台帳を受け取ります。",
                 ),
+                ("AC、scope", "constraints、assumptions"),
             ),
             # 「立場」節が持つ diff 入力モード向けの入力一覧はこの判定の対象外なので、
             # over-engineering-reviewer はプラン入力モード節だけを切り出して見る。
             "over-engineering-reviewer": (
                 "## プラン入力モード",
                 ("判定にはプラン本文の全文を使います。",),
+                ("AC、明示された制約", "constraints、assumptions"),
             ),
         }
-        for agent, (heading, required) in agent_checks.items():
+        for agent, (heading, required, forbidden) in agent_checks.items():
             with self.subTest(agent=agent):
                 source = self._repository_text(Path("shared/agents") / f"{agent}.md")
                 section = "".join(
@@ -478,9 +488,8 @@ class DraftImplementationPlanContractsTest(
                 )
                 for contract in required:
                     self.assertIn("".join(contract.split()), section)
-                self.assertNotIn(
-                    "".join("objective / design / approach / steps".split()), section
-                )
+                for contract in forbidden + ("objective / design / approach / steps",):
+                    self.assertNotIn("".join(contract.split()), section)
 
     def _retired_field_scan_paths(self) -> list[Path]:
         paths: list[Path] = []
@@ -500,7 +509,17 @@ class DraftImplementationPlanContractsTest(
 
     def test_plan_craft_manuscripts_drop_the_retired_plan_fields(self) -> None:
         """Leave no manuscript naming the retired plan fields as current fields."""
-        for path in self._retired_field_scan_paths():
+        paths = self._retired_field_scan_paths()
+        # agent 側は `_repository_text` が path の存在を強制するが、skill 側は `rglob` の
+        # 戻り値をそのまま使うため、root の path がずれても例外にならず空を返す。走査対象が
+        # 0件のまま緑になると AC-16 の担保が静かに失われるので、root ごとに下限を置く。
+        for root in RETIRED_FIELD_SCAN_ROOTS:
+            with self.subTest(root=str(root)):
+                self.assertTrue(
+                    any(root in path.parents for path in paths),
+                    f"{root} contributed no file to the retired-field scan",
+                )
+        for path in paths:
             normalized = "".join(self._repository_text(path).split())
             for token in RETIRED_PLAN_FIELD_TOKENS:
                 with self.subTest(path=str(path), token=token):

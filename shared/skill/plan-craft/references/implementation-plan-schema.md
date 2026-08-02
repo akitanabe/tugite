@@ -19,9 +19,7 @@ Implementation Plan の正規スキーマ（正本）を定義する。確定済
   [実装枝の準備と委譲](../../impl-lead/references/implementation-branches.md)の
   「用語」節に従う。`impl-lead` と `branch-design` が共有する語彙を
   この Skill でも複製せずそのまま使う。
-- Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務で
-  あり、プラン本文の「手順」節は起草者が実装の道筋を示す順序付き作業であって、AC を
-  所有しない。
+- Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務である。
 - プラン本文の節構成と各節の責務は [起草手順](plan-drafting.md) の
   「プラン本文の節構成」を正本とする。この文書は節構成を再掲せず、確定した本文を
   `plan.body` として保持する規約だけを持つ。
@@ -135,9 +133,11 @@ validation:
 | `handoff-incomplete` | 引き渡し必須 field（`plan.objective` / `plan.source` / `acceptance_criteria` / `scope`）の欠落 |
 
 この表は、入力 Data から再計算できる検査だけで成り立つ。構造 field が `plan.body` の該当節と
-食い違っていないか、および本文が規定の節見出しを備えているかは意味判断であり、Data から
+食い違っていないか、`acceptance_criteria` が「設計」節の規約本文を再掲しているか、および
+本文が規定の節見出しを備えているかは意味判断であり、Data から
 再計算できない。表へ入れると表全体の再計算可能性が壊れるため、転記一致と節見出しの有無は
-code にしない。節の充足は起草手順とレビューの判定が担う。
+code にしない。節の充足は起草手順とレビューの判定が担う。再掲の有無も同じ理由で code にせず、
+その抑止も同じ担い手が担う。
 
 トップレベル状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` を生成する。
