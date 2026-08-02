@@ -476,8 +476,10 @@ class DraftImplementationPlanContractsTest(
             # 「立場」節が持つ diff 入力モード向けの入力一覧はこの判定の対象外なので、
             # over-engineering-reviewer はプラン入力モード節だけを切り出して見る。
             # この節の改訂前の別列挙は `AC、明示された制約、scope` だったので、禁止語は
-            # その頭を取る1語で足りる。一致しえない語を並べると、読み手はこの節が複数種類の
-            # 書き戻しを塞いでいると読むが、実際に塞げるのは1種類だけになる。
+            # その頭を取る1語で足りる。落とした `constraints、assumptions` は他節の語彙による
+            # 書き戻しを偶発的に検出していたが、同じ形式は plan-adversarial-reviewer 側では
+            # 元から未検出だった。各節の禁止語をその節の改訂前の列挙に対応させる規則へ揃えるため、
+            # この非対称な cross-guard を落とした。
             "over-engineering-reviewer": (
                 "## プラン入力モード",
                 ("判定にはプラン本文の全文を使います。",),
