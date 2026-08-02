@@ -100,6 +100,43 @@ class FeatureLeadContractsTest(
             ) from None
         return section[start:end]
 
+    @staticmethod
+    def _numbered_step(flow: str, number: int) -> str:
+        """Return numbered step `number`'s full text, wrapped lines rejoined.
+
+        Anchors the ordinal to the start of a physical line — a bare "N. "
+        substring search would also match inside a prose sentence that merely
+        mentions the number, or would keep matching a renumbered step whose
+        new number still contains the digit as a substring (e.g. a step
+        renumbered to "16." still contains "6"). TQ-17 found both misses in
+        practice with the previous non-anchored implementation.
+
+        The regex's `\\s*` after the period accepts the fullwidth space
+        (U+3000, which `str.isspace()` already treats as whitespace) and a
+        missing space alike, so those manuscript-formatting variants keep
+        matching. Continuation lines of a wrapped step (indented text that
+        does not itself start with "digit.") are folded into the same step,
+        so re-wrapping a step across more or fewer physical lines does not
+        change what this returns.
+        """
+        lines = flow.split("\n")
+        start_pattern = re.compile(rf"^\s*{number}\.\s*")
+        next_pattern = re.compile(r"^\s*\d+\.\s*")
+        start_index = next(
+            (i for i, line in enumerate(lines) if start_pattern.match(line)), None
+        )
+        if start_index is None:
+            raise AssertionError(f"no line starts with step {number}. in the flow")
+        end_index = next(
+            (
+                i
+                for i in range(start_index + 1, len(lines))
+                if next_pattern.match(lines[i])
+            ),
+            len(lines),
+        )
+        return "\n".join(lines[start_index:end_index])
+
     def _assert_heading_present_and_live(self, text: str, heading: str) -> None:
         """Fail if `heading` is missing, or sits inside an unclosed HTML comment.
 
@@ -493,7 +530,11 @@ class FeatureLeadContractsTest(
         # 要求するため検出力が上がるが、`assertNotIn` の節スコープ化は探す
         # 範囲が減るだけで検出力が下がる。RB-4 が禁じる逐語定義は
         # `feature-lead` SKILL.md のどこに出現しても二重管理になるため、
-        # 正しいスコープは file 全体である（PQ-1）。
+        # 正しいスコープは file 全体である（PQ-1）。ただし禁止命題が
+        # 文脈依存である場合（ある bullet では真になる場合）はこの規則の
+        # 対象外とし、当該スコープへ閉じる（TQ-13/TQ-16 の
+        # `test_feature_lead_records_the_boundary_passage_when_unattended`
+        # を参照）。
         forbidden = (
             "その Branch Plan の `unresolved_decisions` または `validation.blocking` "
             "が非空、あるいは Set の `validation.blocking` が非空"
@@ -632,10 +673,16 @@ class FeatureLeadContractsTest(
             "ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan"
             "について行い直し、`impl-lead` を再開する。"
         )
-        # TQ-14: the positive assertIn above only requires the correct sentence
-        # to exist somewhere in the bullet; it does not rule out a contradicting
-        # sentence appended alongside it. Forbid the shortcut explicitly, the
-        # same defensive pattern this file already uses at
+        # TQ-14; TQ-15: the positive assertIn above only requires the correct
+        # sentence to exist somewhere in the bullet; it does not rule out a
+        # contradicting sentence appended alongside it. Unlike TQ-13's
+        # forbidden text below, "手順6を省いて手順7へ直接戻ってもよい。" is not
+        # context-dependent — it is false everywhere in this Skill, not just
+        # outside the `attended` bullet — so PQ-1's whole-file rule applies
+        # without exception: scoping this check to the bullet would miss the
+        # same sentence appended to the `unattended` bullet, the section
+        # preamble, or 全体の流れ's own 手順8 (all demonstrated by review).
+        # This is the same whole-file scope this file already uses at
         # `test_feature_lead_reports_the_whole_ledger_in_both_autonomy_modes`'s
         # `unattended_only_wording` and
         # `test_impl_lead_exempts_the_feature_lead_upgrade_from_the_downgrade_ban`'s
@@ -646,11 +693,13 @@ class FeatureLeadContractsTest(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
             )
             attended_bullet = self._bullet(section, "- `attended`", "- `unattended`")
-            normalized = "".join(attended_bullet.split())
+            normalized_bullet = "".join(attended_bullet.split())
             with self.subTest(platform=platform):
-                self.assertIn("".join(resume_contract.split()), normalized)
+                self.assertIn("".join(resume_contract.split()), normalized_bullet)
             with self.subTest(platform=platform, forbidden=forbidden_shortcut):
-                self.assertNotIn("".join(forbidden_shortcut.split()), normalized)
+                self.assertNotIn(
+                    "".join(forbidden_shortcut.split()), "".join(text.split())
+                )
 
     def test_feature_lead_records_the_boundary_passage_when_unattended(self) -> None:
         """Log that an unattended run never stops at the boundary, only records it."""
@@ -669,6 +718,15 @@ class FeatureLeadContractsTest(
         # the opposite of AC-8(c) — "この bullet must contain the right
         # sentence" is not the same claim as "this bullet must not also
         # contain the wrong one". Forbid the negation directly.
+        #
+        # Why Not: この forbidden だけ bullet スコープに閉じ、PQ-1 の
+        # whole-file 規則（同 file `test_feature_lead_stops_the_whole_stage_
+        # when_any_branch_plan_is_blocked` を参照）を適用しない理由（TQ-16）。
+        # 「境界で必ず停止し、ユーザーの授権を待つ。」は `attended` では真の
+        # 命題である。この禁止は RB-4 のような文脈非依存の二重管理禁止とは
+        # 種類が違い、`unattended` bullet という文脈でだけ偽であるべき命題を
+        # 禁じている。whole-file 化すると、`attended` 側に同内容の正しい
+        # 記述があるだけで正しい原稿を落とす。
         forbidden = "境界で必ず停止し、ユーザーの授権を待つ。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
@@ -736,22 +794,28 @@ class FeatureLeadContractsTest(
         # check cannot tell "the branch sits inside the numbered flow" from
         # "the same words happen to exist elsewhere in the file", and a prior
         # branch's review already found that miss in practice.
-        #
-        # TQ-12: the resume test elsewhere requires the literal "...手順6から
-        # その Branch Plan について行い直し..." but nothing tied the ordinal "6"
-        # to delegation-setting content — a manuscript could renumber or
-        # reshuffle the steps and that literal would keep matching by
-        # coincidence. The first and last entries below are ordinal-qualified
-        # (start with "6. " / "9. ") specifically so that renumbering or
-        # swapping step bodies breaks the match, not just renaming the
-        # cross-reference text.
         required_order = (
-            "6. 「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。",
             "`order` に従って Branch Plan を実行する。",
             "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
             "手順9を行わずに",
             "その Branch Plan について手順6から行い直す",
-            "9. `order` の全 Branch Plan の実行が終わったら",
+            "`order` の全 Branch Plan の実行が終わったら",
+        )
+        # TQ-12; TQ-17: the resume test elsewhere requires the literal "...
+        # 手順6からその Branch Plan について行い直し..." but that alone ties
+        # nothing to the ordinal "6" actually being the delegation-setting
+        # step — a manuscript could renumber or reshuffle the steps and the
+        # cross-reference text would keep matching by coincidence. Checking
+        # each numbered step's own body (via `_numbered_step`, anchored to
+        # the start of a physical line — see its docstring for why a bare
+        # substring search is not enough) ties the ordinal to its content
+        # directly, so renumbering or swapping step bodies breaks the match
+        # instead of only renaming the cross-reference text.
+        step_six_contract = "".join(
+            "「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。".split()
+        )
+        step_nine_contract = "".join(
+            "`order` の全 Branch Plan の実行が終わったら".split()
         )
         for platform, text in self._feature_lead_main_texts().items():
             flow = self._section(text, "## 全体の流れ")
@@ -764,6 +828,16 @@ class FeatureLeadContractsTest(
                 positions.append(normalized_flow.find(needle))
             with self.subTest(platform=platform, check="order"):
                 self.assertEqual(positions, sorted(positions))
+            with self.subTest(platform=platform, step=6):
+                self.assertIn(
+                    step_six_contract,
+                    "".join(self._numbered_step(flow, 6).split()),
+                )
+            with self.subTest(platform=platform, step=9):
+                self.assertIn(
+                    step_nine_contract,
+                    "".join(self._numbered_step(flow, 9).split()),
+                )
 
     def test_feature_lead_has_no_remaining_branch_plan_data_wording(self) -> None:
         """Retire the pre-Set field name, including a whitespace-split rewrap."""
