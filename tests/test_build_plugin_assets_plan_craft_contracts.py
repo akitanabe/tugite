@@ -986,7 +986,7 @@ class DraftImplementationPlanContractsTest(
                     self.assertNotIn("".join(term.split()), normalized)
 
     def test_semver_sections_list_the_plan_artifacts_as_public_surface(self) -> None:
-        """Name the two plan artifacts in the public-surface enumeration, not just omit retired ones."""
+        """Name the two plan artifacts inside the enumeration scope, no wider and no narrower."""
         # 上のテストは廃止語の不在しか見ない。公開面の列挙からプラン文書とレビュー状態が
         # 丸ごと削除されても、廃止語が増えるわけではないため不在検査は反応しない
         # (reviewer の変異実測で確認済み)。ここでは存在側を固定する。
@@ -996,50 +996,76 @@ class DraftImplementationPlanContractsTest(
         #
         # 節スコープだけでは1段階足りない。節内に文字列が「ある」ことしか見ないと、
         # 同じ節の中で「公開面」列挙項目から「内部契約」列挙項目へ丸ごと移した変異
-        # （帰属の反転）を検出できない(reviewer の変異実測で確認済み)。CLAUDE.md は
-        # 列挙が markdown の bullet なので、`_bullet_items` で bullet 単位に割ってから
-        # 「公開面」bullet の中にあることまで見る。AGENTS.md は散文の括弧内列挙なので、
-        # bullet 単位に割れない代わりに、固定文字列の左端を列挙の開き括弧
-        # 「公開面（」まで伸ばし、この列挙の外へ移された場合は隣接文脈が変わって
-        # 部分文字列が繋がらなくなるようにする。
-        claude_text = self._repository_text(Path("CLAUDE.md"))
-        claude_section_lines = DraftImplementationPlanContractsTest._section_lines(
-            claude_text, "## VERSION の更新規約"
-        )
-        claude_bullets = DraftImplementationPlanContractsTest._bullet_items(
-            claude_section_lines
-        )
-        public_surface_bullet = next(
-            item for item in claude_bullets if item.startswith("-**公開面**")
-        )
-        self.assertIn(
-            "".join(
-                (
-                    "ユーザーが保存して後から渡す artifact の形式"
-                    "（`plan-craft` のプラン文書とレビュー状態）"
-                ).split()
-            ),
-            public_surface_bullet,
-        )
+        # （帰属の反転）を検出できない(reviewer の変異実測で確認済み)。そこで節の中から
+        # さらに公開面の列挙 scope（CLAUDE.md なら「公開面」bullet、AGENTS.md なら
+        # 「公開面（…）」の括弧内）を切り出し、対象句がその scope の中にあることを見る。
+        #
+        # 逆に、列挙 scope より狭く固定してはいけない。列挙 scope の中で対象句の前後に
+        # 他の要素（skill 名、CLI など）まで1本の連続文字列として固定すると、他要素の
+        # 語順や個数という AC-20 と無関係な理由でも落ちる。将来 AGENTS.md の公開面へ
+        # 要素を1つ足しただけでテスト名が主張する契約と失敗原因がずれる
+        # (reviewer の変異実測で確認済み)。scope を取り出したあとは、対象句だけを
+        # `assertIn` する。
+        def claude_public_surface_scope(text: str) -> str:
+            section_lines = DraftImplementationPlanContractsTest._section_lines(
+                text, "## VERSION の更新規約"
+            )
+            bullets = DraftImplementationPlanContractsTest._bullet_items(section_lines)
+            matches = [item for item in bullets if item.startswith("-**公開面**")]
+            # `next()` の既定値なしだと bullet が消えたときに空メッセージの
+            # `StopIteration` になり、何が欠けたか読み取れない。件数固定にすると、
+            # 0件（消失）だけでなく2件（複製）も同じ assert で名指しできる。
+            self.assertEqual(
+                1,
+                len(matches),
+                "CLAUDE.md の「## VERSION の更新規約」節は「公開面」bullet を"
+                "ちょうど1つ持つ必要がある",
+            )
+            return matches[0]
 
-        agents_text = self._repository_text(Path("AGENTS.md"))
-        agents_section = "".join(
-            "".join(
-                DraftImplementationPlanContractsTest._section_lines(
-                    agents_text, "## Version 更新指針"
-                )
-            ).split()
-        )
-        self.assertIn(
-            "".join(
-                (
-                    "公開面（skill・agent・mode の名前、起動方法と発火条件、"
-                    "ユーザーが保存して後から渡す `plan-craft` の"
-                    "プラン文書とレビュー状態の形式、CLI）"
+        def agents_public_surface_scope(text: str) -> str:
+            section = "".join(
+                "".join(
+                    DraftImplementationPlanContractsTest._section_lines(
+                        text, "## Version 更新指針"
+                    )
                 ).split()
+            )
+            opener = "公開面（"
+            self.assertIn(
+                opener,
+                section,
+                "AGENTS.md の「## Version 更新指針」節は「公開面（」で始まる"
+                "括弧内列挙を持つ必要がある",
+            )
+            start = section.index(opener) + len(opener)
+            self.assertIn(
+                "）",
+                section[start:],
+                "AGENTS.md の「公開面（」列挙は閉じ括弧「）」を持つ必要がある",
+            )
+            end = section.index("）", start)
+            return section[start:end]
+
+        cases = (
+            (
+                Path("CLAUDE.md"),
+                claude_public_surface_scope,
+                "ユーザーが保存して後から渡す artifact の形式"
+                "（`plan-craft` のプラン文書とレビュー状態）",
             ),
-            agents_section,
+            (
+                Path("AGENTS.md"),
+                agents_public_surface_scope,
+                "ユーザーが保存して後から渡す `plan-craft` の"
+                "プラン文書とレビュー状態の形式",
+            ),
         )
+        for path, extract_public_surface_scope, contract in cases:
+            with self.subTest(path=str(path)):
+                text = self._repository_text(path)
+                scope = extract_public_surface_scope(text)
+                self.assertIn("".join(contract.split()), scope)
 
         minor_examples = (
             (
