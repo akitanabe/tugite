@@ -284,6 +284,8 @@ class PlanImplementationBranchesContractsTest(
             # 同じ規則を散文・状態遷移表・スキーマ本体のコメントへ重複して書いているため、
             # 一部だけを固定すると、残りを旧文言へ戻した原稿が自己矛盾したまま通る。原稿にある
             # 14記載(散文5項目・遷移表5行・スキーマ本体のコメント4行)をすべて固定する。
+            # 数えるのは規則そのものを再掲する文だけとし、規則の成立根拠を述べる文と、他 Skill へ
+            # 正本を委譲する文は数えない。
             # 原稿へ記載を足すときは、ここへも足す。
             "# blocked:          「blocking violation code」の節が定める blocked の定義に従う",
             "# awaiting_review:  confirmation_mode: review で Set と自身に blocking なし。"
