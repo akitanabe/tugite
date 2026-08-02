@@ -978,7 +978,12 @@ class DraftImplementationPlanContractsTest(
                     )
             for path in sorted(paths):
                 with self.subTest(term=term, path=str(path)):
-                    self.assertNotIn(term, self._repository_text(path))
+                    # 生テキストのままの部分文字列比較だと、原稿の再整形で語が行を
+                    # またいだ瞬間に検査の視界から消える（`Implementation Plan` が
+                    # `Implementation\nPlan` へ折り返された実例で検出漏れを確認済み）。
+                    # 兄弟テストと同じく空白畳み込みしてから比較する。
+                    normalized = "".join(self._repository_text(path).split())
+                    self.assertNotIn("".join(term.split()), normalized)
 
     def test_semver_sections_list_the_plan_artifacts_as_public_surface(self) -> None:
         """Name the two plan artifacts in the public-surface enumeration, not just omit retired ones."""
