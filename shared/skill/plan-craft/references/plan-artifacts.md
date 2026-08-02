@@ -32,9 +32,9 @@
   レビュー状態は構造 field を持たず、プラン文書の内容を1つも複製しない。持つのはレビュー運用の
   状態だけであり、読者も寿命もプラン文書と異なる。したがって写しが生じず、棄却理由は本設計に
   当たらない。確定時の転記そのものが無くなるため、乖離が入りうる1点も消える。
-- AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま引き継げる形（観測可能な
-  振る舞いの原文）でプラン文書の「Acceptance Criteria」節に保持する。ID は round の増減や
-  プラン修正で振り直さない。
+- AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の `acceptance_criteria` へ
+  原文のまま引き継ぐ。ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、
+  この文書は再掲しない。
 - レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。指摘 ID
   （`PF-*`）は round をまたいで振り直さず、`reviewer` field で発行元を区別する。verdict は親が
   確認した確定値だけを記録し、reviewer の自己申告をそのまま書かない。
@@ -85,7 +85,10 @@ Markdown file」という Markdown 前提と一体で書かれており、Markdo
 - 絶対 path を許可しない。
 
 2 file は同じ slug を使う。suffix はプラン文書の作成時に選び、レビュー状態はその slug をそのまま
-使う。同一プランの更新は同じ path を上書きし、slug を選び直さない。
+使う。同一プランの更新は同じ path を上書きし、slug を選び直さない。レビュー状態の初回作成でも
+slug を選び直さない。`<slug>-review.yaml` が既にある場合は exclusive create が失敗し、
+「file 出力と会話内経路」の省略条件「保存先へ書き込めない」に当たる。正本の衝突規約が次の suffix を
+選ぶのは1 file だけを書く場合の規定であり、対を崩してまで書き込みを続けない。
 
 保存内容の最小化も同じ正本に従い、次のとおり読み替える。
 
@@ -225,10 +228,21 @@ file の本文、会話内経路では会話上に提示した本文を対象に
 `body-missing` を立てると、その経路のプランが常に `blocked` へ固定され、file 出力の省略を認める
 規定が実行不能になる。
 
+`body-missing` を立てるのは本文全体が無い、または空の場合だけとし、本文がある場合の個別の欠落は
+`handoff-incomplete` だけで扱う。1つの欠落に2つの code を立てない。両 code はプラン文書という
+同一対象を見るため、分界を置かないと本文が空のプランで2つの code が同時に成立し、1つの欠落に
+2つの修正要求が出る。
+
 本文が規定の節見出しを備えているかは意味判断であり、レビュー状態 Data から再計算できない。表を
 2つに分けるのはこのためである。意味判断を表Aへ入れると、表A 全体が Data から再計算できるという
 性質が壊れる。表Bの生成主体は親の判定であり、節の充足は起草手順とレビューの判定が担う。Branch
 Plan 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
+
+廃止した `scope-conflict`、AC id に対する `duplicate-id`、`unknown-reference` は plan 段では
+扱わない。前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。
+`unknown-reference` は、plan 段で id を参照する field が `open_questions[].affects` だけになり、
+その値をプラン文書の節名または AC id とすることで参照検査の対象が残らない。finding id に対する
+`duplicate-id` は表Aに残る。
 
 トップレベル状態は値を個別に検査せず、次の有効な組み合わせ表から検査する。表にない組み合わせは
 `state-invalid` を生成する。
