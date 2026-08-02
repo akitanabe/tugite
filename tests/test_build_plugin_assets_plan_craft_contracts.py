@@ -595,6 +595,31 @@ class DraftImplementationPlanContractsTest(
                 for contract in not_duplicated:
                     self.assertNotIn("".join(contract.split()), normalized)
 
+    def test_plan_artifacts_reference_resolves_the_inherited_storage_link(self) -> None:
+        """Resolve the qa-report link the storage rules inherit from, in every tree."""
+        # 保存規約を複製せず継承する以上、辿れないリンクは規約そのものの欠落になる。
+        relative_link = "../../impl-lead/references/qa-report.md"
+        reference_paths = {
+            "source": shared_skill_reference_path(
+                PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+        }
+        texts = self._artifacts_reference_texts()
+        for structure, reference_path in reference_paths.items():
+            with self.subTest(structure=structure):
+                self.assertIn(relative_link, texts[structure])
+                resolved = (REPOSITORY_ROOT / reference_path).parent / relative_link
+                self.assertTrue(
+                    resolved.resolve().is_file(),
+                    f"unresolved cross-skill link from {reference_path}",
+                )
+
     def test_plan_artifacts_reference_fixes_when_each_artifact_is_written(self) -> None:
         """Write the document each round, the review state at confirmation and on approval."""
         required = (
