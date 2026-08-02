@@ -28,7 +28,8 @@
     Branch Plan Set を提示し、承認が自動化された範囲(委譲開始は含まない)を明示する。
 - `blocked` が0件で `status` が揃わない場合(`awaiting_review` と `approved`(`method: auto`) の
   混在)は、承認操作を求める側の `awaiting_review` の提示に寄せる。`approved`(`method: auto`) の
-  Branch Plan は、要約表内で `confirmation_mode: auto` により自動承認済みである旨を付記する。
+  Branch Plan は、`shared_foundation.required: true` の注記と同じ置き方で、該当する
+  Branch Plan の表の前に `confirmation_mode: auto` により自動承認済みである旨を付記する。
 
 ## 要約表
 
@@ -52,13 +53,14 @@ Branch Plan の表の前に明示する。
 
 ユーザーへ次の3種の操作を、どちらの層に掛かるかを明示して提示する。
 
-- この分割で実行 — Set 全体の承認を意味する。記録先は各 Branch Plan の
-  `approval.method: user` と `status: approved` であり、Set 層に承認状態は持たない。
-  提示した Branch Plan Set をそのまま確定する。
+- この分割で実行 — Set 全体の承認を意味する。`status: awaiting_review` の Branch Plan について
+  `approval.method: user` と `status: approved` を記録し、すでに `approved`(`method: auto`) の
+  Branch Plan は変更しない。Set 層に承認状態は持たない。提示した Branch Plan Set をそのまま
+  確定する。
 - 分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、実装枝への
-  分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かをユーザーが示す。指定
-  された層(Set の `branch_plans` / Branch Plan の `branches`)へ反映して validation を
-  再実行してから再提示する。
+  分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かをユーザーが示す。AC 割り当て
+  の修正は枝の `covers_acceptance_criteria` へ反映する。指定された層(Set の `branch_plans` /
+  Branch Plan の `branches`)へ反映して validation を再実行してから再提示する。
 - 分割せず1枝で実行 — 実装枝の統合を意味する。対象が単一の Branch Plan 内の枝なら、記録先は
   現行どおりその Branch Plan の `override.merge_branches` とする。対象が `branch_plans` が
   2件以上ある Set 全体(Branch Plan を1件へまとめる指示)なら、Set を1件へ畳む指示として扱い、

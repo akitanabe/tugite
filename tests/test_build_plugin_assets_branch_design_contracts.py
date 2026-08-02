@@ -778,7 +778,13 @@ class PlanImplementationBranchesContractsTest(
         )
         for platform, text in self._plan_reference_texts("branch-splitting.md").items():
             with self.subTest(platform=platform):
-                section = text.split("## shared_foundation の判定", 1)[1]
+                # T-1: 他の節スコープ検査(states_qualitative / names_the_branch_plan_layer)と
+                # 同じく `.split("\n## ", 1)[0]` で上限を付ける。`shared_foundation の判定` は
+                # 現状最後の節だが、上限がないと文末新設節への移動や見出しレベルの降格を
+                # substring 一致のまま見逃す。
+                section = text.split("## shared_foundation の判定", 1)[1].split(
+                    "\n## ", 1
+                )[0]
                 normalized = "".join(section.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
@@ -822,13 +828,19 @@ class PlanImplementationBranchesContractsTest(
             "実行順は、その Branch Plan の `execution.order` の順序に一致させる。",
             "Set の `order` と Branch Plan ごとの要約表 → 確認操作 →",
             "自動承認した記録として Set の `order` と要約表、",
-            # R-2: 「この分割で実行」の記録先を明示する。
-            "この分割で実行 — Set 全体の承認を意味する。記録先は各 Branch Plan の",
-            "`approval.method: user` と `status: approved` であり、Set 層に承認状態は"
+            # R-2/RB-1: 「この分割で実行」の記録先を明示する。無条件に「各 Branch Plan」へ
+            # 記録すると、混在 confirmation_mode の Set で既に approved(auto) の Branch Plan を
+            # 上書きし approval-invalid を誘発するため、awaiting_review の Branch Plan だけを
+            # 対象にする限定を固定する。
+            "この分割で実行 — Set 全体の承認を意味する。`status: awaiting_review` の Branch Plan"
+            "について",
+            "`approval.method: user` と `status: approved` を記録し、すでに "
+            "`approved`(`method: auto`) の Branch Plan は変更しない。Set 層に承認状態は"
             "持たない。",
+            # RB-3: 「分割を修正」から抜け落ちていた AC 割り当ての反映先を戻す。
             "分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、"
             "実装枝への分割(Branch Plan 内の `branches` の分け方)か、どちらの層の修正かを"
-            "ユーザーが示す。",
+            "ユーザーが示す。AC 割り当ての修正は枝の `covers_acceptance_criteria` へ反映する。",
             # R-3/WP-1: 「分割せず1枝で実行」が層をまたいだ場合の帰結を明示する。
             "分割せず1枝で実行 — 実装枝の統合を意味する。対象が単一の Branch Plan 内の枝なら、"
             "記録先は現行どおりその Branch Plan の `override.merge_branches` とする。",
@@ -854,8 +866,12 @@ class PlanImplementationBranchesContractsTest(
             "`blocked` が0件で `status` が揃わない場合(`awaiting_review` と "
             "`approved`(`method: auto`) の混在)は、承認操作を求める側の `awaiting_review` "
             "の提示に寄せる。",
-            "`approved`(`method: auto`) の Branch Plan は、要約表内で "
-            "`confirmation_mode: auto` により自動承認済みである旨を付記する。",
+            # RB-2: 要約表の行は実装枝単位で Branch Plan 単位の列を持たないため、付記の
+            # 置き場所を shared_foundation の注記と同じ「該当する Branch Plan の表の前に」へ
+            # 揃える。
+            "`approved`(`method: auto`) の Branch Plan は、`shared_foundation.required: true` "
+            "の注記と同じ置き方で、該当する Branch Plan の表の前に `confirmation_mode: auto` "
+            "により自動承認済みである旨を付記する。",
         )
         for platform, text in self._plan_reference_texts("plan-review.md").items():
             with self.subTest(platform=platform):
@@ -907,9 +923,16 @@ class PlanImplementationBranchesContractsTest(
         # R-5: plan-review.md はすでに「承認は Branch Plan Set の確定だけを意味する。」に
         # 揃っている。SKILL.md 側の同義文が「Branch Plan」の裸のままだと、2 file 間で
         # 承認対象の呼称が食い違う。
+        # T-2: この file の他の契約検査はすべて "".join(text.split()) で空白を正規化してから
+        # 比較しており、80桁前後で折り返す原稿の運用上、意味を変えない改行位置の変更で
+        # 無関係に落ちないようにしている。ここも揃える。
         for platform, main in self._plan_skill_texts().items():
             with self.subTest(platform=platform):
-                self.assertIn("承認は Branch Plan Set の確定だけを意味する。", main)
+                normalized = "".join(main.split())
+                self.assertIn(
+                    "".join("承認は Branch Plan Set の確定だけを意味する。".split()),
+                    normalized,
+                )
 
     def test_plan_skill_flow_adds_a_branch_plan_split_step_before_branch_splitting(
         self,
