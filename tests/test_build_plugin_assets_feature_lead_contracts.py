@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -19,6 +20,11 @@ IMPL_LEAD_SKILL = "impl-lead"
 # request. Their manuscripts word the non-firing clause identically so a single
 # literal can be asserted against every generated file.
 PRE_EXISTING_STAGE_SKILLS = ("plan-craft", "branch-design", IMPL_LEAD_SKILL)
+# Matches a single-backtick inline code span so it can be stripped before an
+# HTML-comment delimiter count. Without this, prose that quotes the marker
+# syntax (e.g. "行頭の `<!--` で始まる範囲は...") would be miscounted as an
+# actual, unclosed comment opener even though nothing is really commented out.
+_INLINE_CODE_SPAN_RE = re.compile(r"`[^`\n]*`")
 
 
 class FeatureLeadContractsTest(
@@ -65,11 +71,34 @@ class FeatureLeadContractsTest(
         label ("`attended`" / "`unattended`") a contract needs to assert against
         (e.g. "`unattended` では境界で止まらない。" starts with the marker).
         Index-based slicing keeps it.
+
+        Raises `AssertionError` — not the bare `ValueError` `str.index` would
+        raise — when `marker` is absent or `next_marker` no longer follows it,
+        so a manuscript edit that reorders, merges, or drops a bullet fails as
+        a readable test failure instead of an opaque "substring not found"
+        error with no indication of which assumption broke.
+
+        `next_marker=None` (used for the last bullet in a section) trusts the
+        caller's `section` to already end where that bullet ends: Markdown has
+        no closing marker for "end of bullet list" the way it does for a bullet
+        boundary, so there is nothing more specific to slice to. Callers must
+        obtain `section` from `_section`, which caps at the next heading, so
+        the slice is still bounded — just not to a marker inside the bullet
+        list itself.
         """
+        if marker not in section:
+            raise AssertionError(f"bullet marker {marker!r} not found in section")
         start = section.index(marker)
         if next_marker is None:
             return section[start:]
-        return section[start : section.index(next_marker, start)]
+        try:
+            end = section.index(next_marker, start)
+        except ValueError:
+            raise AssertionError(
+                f"bullet order changed: {next_marker!r} no longer follows "
+                f"{marker!r} (bullet reordered, merged, or removed)"
+            ) from None
+        return section[start:end]
 
     def _assert_heading_present_and_live(self, text: str, heading: str) -> None:
         """Fail if `heading` is missing, or sits inside an unclosed HTML comment.
@@ -80,10 +109,19 @@ class FeatureLeadContractsTest(
         `assertIn` cannot distinguish a live heading from one commented out of
         the rendered skill. Counting delimiters up to the heading's position
         catches that case: an unclosed opener before it means the heading is
-        being suppressed, not just indented oddly.
+        being suppressed, not just indented oddly. Same-line, self-contained
+        markers (this repository's own "<!-- claude-only:start -->" style
+        platform markers — still present verbatim in the "source" manuscript,
+        which the generator strips only from the generated output) add one to
+        each count and net out, so they do not need special-casing.
+
+        Inline code spans are stripped before counting: a sentence that quotes
+        the marker syntax (e.g. "行頭の `<!--` で始まる範囲は...") contains the
+        literal substring "<!--" without opening a real comment, and would
+        otherwise be miscounted as an unclosed opener.
         """
         self.assertIn(heading, text)
-        prefix = text[: text.index(heading)]
+        prefix = _INLINE_CODE_SPAN_RE.sub("", text[: text.index(heading)])
         self.assertLessEqual(
             prefix.count("<!--"),
             prefix.count("-->"),
@@ -424,15 +462,23 @@ class FeatureLeadContractsTest(
         self,
     ) -> None:
         """Treat a Set with any blocked Branch Plan as one stage-wide decision point."""
-        # AC-8(a). The two contracts are asserted separately (one in "段の遷移と
-        # 判断点の処理", one in "授権の根拠") because they are independent claims:
+        # AC-8(a). The decision-point bullet lives in the "## 段の遷移と判断点の
+        # 処理" preamble bullet list; the authorization gate it implies lives in
+        # "## 授権の根拠". They are checked as two separate claims because
         # detecting the stage-wide stop does not by itself say authorization is
         # withheld unless every Branch Plan is approved.
-        contracts = (
+        #
+        # TQ-11: the gate contracts were still whole-file-scoped after a prior
+        # round moved their neighboring sentences (attended/unattended
+        # granularity) into the "## 授権の根拠" scope — moving this paragraph
+        # out of that section passed silently until scoped here too.
+        decision_point_contracts = (
             "`branch-design` が返した Branch Plan Set のうち1件でも Branch Plan が "
             "`blocked` である",
             "（`blocked` の定義は `branch-plan-schema.md` に従う）",
             "この場合は特定の Branch Plan ではなく段全体を判断点として扱う。",
+        )
+        authorization_gate_contracts = (
             "授権を設定するのは、Set の全 Branch Plan が `status: approved` を返した"
             "場合だけである。",
             "1件でも `blocked` な Branch Plan があれば段全体を判断点として扱い停止し、"
@@ -446,12 +492,22 @@ class FeatureLeadContractsTest(
             "が非空、あるいは Set の `validation.blocking` が非空"
         )
         for platform, text in self._feature_lead_main_texts().items():
-            normalized = "".join(text.split())
-            for contract in contracts:
+            decision_section = "".join(
+                self._section(
+                    text, "## 段の遷移と判断点の処理", next_heading="\n### "
+                ).split()
+            )
+            gate_section = "".join(
+                self._section(text, "## 授権の根拠").split()
+            )
+            for contract in decision_point_contracts:
                 with self.subTest(platform=platform, contract=contract):
-                    self.assertIn("".join(contract.split()), normalized)
+                    self.assertIn("".join(contract.split()), decision_section)
+            for contract in authorization_gate_contracts:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), gate_section)
             with self.subTest(platform=platform, forbidden=forbidden):
-                self.assertNotIn("".join(forbidden.split()), normalized)
+                self.assertNotIn("".join(forbidden.split()), decision_section)
 
     def test_feature_lead_authorizes_only_the_lead_branch_plan_under_attended(
         self,
@@ -601,17 +657,21 @@ class FeatureLeadContractsTest(
         self,
     ) -> None:
         """Keep the impl-lead-gate decision point from re-absorbing boundary stops."""
-        # TQ-5; AC-8(d) mechanism. Scoped to "## 段の遷移と判断点の処理", where
-        # the decision-point bullet list lives. Without this exclusion clause,
-        # "`impl-lead` が各 mode のゲートで停止した" would cover the boundary
-        # stop too, and `origin: impl-lead-gate` would route it back into the
-        # ledger the next test says it must never reach.
+        # TQ-5; TQ-8; AC-8(d) mechanism. Scoped to the "## 段の遷移と判断点の
+        # 処理" preamble bullet list specifically — capped at the first "### "
+        # subsection, not the whole "## " section — because the exclusion
+        # clause has to sit on the gate bullet itself. TQ-8 found that the
+        # wider "## " cap let the clause migrate into the sibling subsection
+        # "### Branch Plan 境界の停止" and still pass, since both landed in the
+        # same slice; capping at "### " makes that migration fail here.
         contract = (
             "ただし Branch Plan 境界（未授権の Branch Plan への到達）での停止は"
             "これに含めない。「Branch Plan 境界の停止」に従う。"
         )
         for platform, text in self._feature_lead_main_texts().items():
-            section = self._section(text, "## 段の遷移と判断点の処理")
+            section = self._section(
+                text, "## 段の遷移と判断点の処理", next_heading="\n### "
+            )
             normalized = "".join(section.split())
             with self.subTest(platform=platform):
                 self.assertIn("".join(contract.split()), normalized)
