@@ -352,9 +352,12 @@ class DraftImplementationPlanContractsTest(
                 self.assertIn(
                     "".join(approved_precondition.split()), "".join(text.split())
                 )
-                # 対象を節スコープに絞るのは、code 表への混入だけを禁じ、説明のために
-                # code 名へ触れる散文の言及は許すため。文書全体を対象にすると、その
-                # 言及まで巻き込んで落ちてしまう。
+                # 対象を節スコープに絞るのは、design-missing の禁止をこの節（表と
+                # 付随する散文）だけに掛け、他の節や他文書での言及と切り離すため。
+                # 範囲は表に限らないので、この節へ design-missing に触れる説明を
+                # 書くと assertNotIn が落ちる。target_of_the_check の各文についても、
+                # 文書のどこかにあるだけでなくこの節の中にあることを同じ絞り込みで
+                # 固定する。
                 violation_section = "".join(
                     "".join(
                         self._section_lines(text, "## blocking violation code")
