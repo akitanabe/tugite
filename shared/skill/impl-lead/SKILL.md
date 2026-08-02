@@ -126,6 +126,11 @@ mode を引き上げた場合は、その具体的な実装複雑度をユーザ
 
 ## 実行前サマリー
 
+実行前サマリーは Branch Plan 単位で提示する。
+Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。
+提示のたびにユーザーがその Branch Plan の実行コストを判断できるようにするためであり、
+Set 全体の枝一覧を1回だけ提示する形にはしない。
+
 導出後、委譲開始前に次を提示する。
 
 - 解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` として解釈されたことを
@@ -161,6 +166,9 @@ Branch allocation:
 `strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、枝数を明示したユーザー確認を
 委譲開始条件とする。確認が得られるまで委譲を開始しない。
 
+`strict-full` の確認ゲートは Branch Plan 単位で行う。枝数に比例してコストが増えるという根拠が
+Branch Plan 単位で成立するためである。
+
 ## 委譲環境の前提
 
 各実装枝は専用 worktree で隔離する。worktree を用意できない場合は委譲を開始しない。
@@ -182,13 +190,15 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
 
 1. 目的、入力、出力、Acceptance Criteria、変更範囲、禁止範囲を確定する。
 2. 配分方針を選び、共有土台と直列に受け入れる実装枝へ分け、枝ごとの mode を導出する。
-   確定済み Branch Plan が渡されている場合は
+   確定済み Branch Plan Set が渡されている場合は
    [Branch Plan の受け入れ](references/branch-plan-intake.md) を読み、再検証してから枝と
-   配分方針の入力にする。
+   配分方針の入力にする。`order` に従って Branch Plan を順に実行する。以降の手順は、
+   いま実行している Branch Plan を対象にする。
 3. [実装枝の準備と委譲](references/implementation-branches.md) を読み、基準、worktree、Worker 選択、
    委譲 prompt を準備する。この時点では起動しない。
 4. expert 候補の場合だけ、起動前に [Expert 選択](references/expert-selection.md) を読む。
-5. 実行前サマリーを提示する。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
+5. 実行前サマリーを提示する。実行前サマリーと `strict-full` の確認は、いま実行している
+   Branch Plan を単位とする。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
    審査と準備が完了した先頭の枝だけを委譲する。
 6. Implementer の返答を待ち、返却 commit と実行結果を受け取る。
 7. [返却の QA と統合](references/qa-and-integration.md)、
@@ -202,6 +212,7 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
    場合は1枝だけを統合し、統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
    親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を
    終了する場合は、手順9へ進む。
+   いま実行している Branch Plan の全枝を完了し、`order` に未実行の Branch Plan が残る場合も手順9へ進む。
 9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、
    [Run の終了処理](references/run-closeout.md) に従い、適用可能な統合済み diff review と
    最終検証を行い、親の最終判断を確定する。
@@ -210,7 +221,11 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
 11. 永続 QA レポートの出力条件を満たす場合だけ
     [永続 QA レポート](references/qa-report.md) を読む。
 12. [Run の終了処理](references/run-closeout.md) に従い、会話上の最終報告を行う。
-    採用した配分方針と枝ごとの mode を含める。
+    採用した配分方針と枝ごとの mode を含める。`order` に未実行の Branch Plan が残る場合、
+    未授権の Branch Plan に到達した場合は実行を止め、
+    [Branch Plan の受け入れ](references/branch-plan-intake.md) に従って完了済みの最終報告と
+    未実行 Branch Plan の一覧を提示し、授権を要求する。
+    授権された未実行の Branch Plan があれば手順2へ戻り、その Branch Plan を実行する。
 
 共有土台の作成は、実装枝の委譲前に親が行える明示的な例外とする。複数枝が同じ fixture、設定、
 テストデータ、生成物を必要とするときだけ先に確定し、検証して基準 commit にする。この例外は、

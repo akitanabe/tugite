@@ -23,7 +23,10 @@
 - repository instruction
 - Acceptance Criteria
 
-トップレベルの workflow run ごとに report は1つだけ生成する。複数の実装枝は同じ report へ列挙し、枝ごとに
+Branch Plan ごとに report は1つだけ生成する。境界で止まる run では最後の Branch Plan の完了時点が
+run の終わりになるため、run 単位のままだと先行 Branch Plan の完了時に report が生成されず、
+[Run の終了処理](run-closeout.md) の Branch Plan 単位の後始末と最終報告と食い違う。
+複数の実装枝は同じ report へ列挙し、枝ごとに
 `Accepted`、`Rejected`、`Needs revision` を記録できるようにする。未実行の検証と未統合の状態を
 隠さない。最終判断は親だけが行う。
 
@@ -143,7 +146,7 @@ report を生成しない。
 
 ## 標準テンプレート
 
-次のテンプレートをトップレベルの workflow run ごとに1つ使用する。field には sanitize 済みの Data だけを
+次のテンプレートを Branch Plan ごとに1つ使用する。field には sanitize 済みの Data だけを
 記入する。
 
 ```markdown

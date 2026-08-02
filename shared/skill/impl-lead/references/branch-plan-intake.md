@@ -5,19 +5,22 @@
 - 受け入れ口の規定
 - Executor 側の再検証
 - 枝 mode の決定表
-- implementation_stages の実行規約
+- Branch Plan 境界の授権
 
-`branch-design` が出力した確定済み Branch Plan を
+`branch-design` が出力した確定済み Branch Plan Set を
 `impl-lead` の入力として受け入れるための規約を定める。親は
 Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。
-Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正本は
+Branch Plan Set と Branch Plan の正規スキーマ(状態・violation code・帰属・状態遷移)の正本は
 [Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
 であり、本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。
 
 ## 受け入れ口の規定
 
-確定済み Branch Plan が渡された場合、親は次の手順で受け入れる。
+確定済み Branch Plan Set が渡された場合、親は次の手順で受け入れる。
 
+- 受け入れ対象は Branch Plan Set であり、`order` に従って Branch Plan を順に実行する。
+  親や `feature-lead` が Set をほどいて Branch Plan を1つずつ渡す形にはしない。委譲と実行は
+  `impl-lead` の責務であり、実行の区切りも同じ skill が持つ。
 - 自己申告を信用せず、本 reference「Executor 側の再検証」の5項目を委譲開始前に
   確認する。blocking violation code 表は planning Skill と同じ規則を入力 Data から
   再計算する。code 表の正本は
@@ -33,21 +36,25 @@ Branch Plan の正規スキーマ(状態・violation code・状態遷移)の正�
   [実装枝の準備と委譲](implementation-branches.md) に従う。
 - 枝の `tests` に列挙された種別が、委譲 prompt の必須テストと検証 command で
   すべて充足されることを委譲前に確認する。テスト種別の意味は正規スキーマの
-  「tests / stage_tests の意味」に従う。
+  「tests の意味」に従う。
 - `purpose`、`branch_criteria`、`tests` から、各追加 test が新機能または未実装仕様を検証するのか、
   既存挙動を固定する regression test なのかを委譲前に確認する。後者だけが Red 証跡の Green 例外を
   利用できる。分類できない場合は Green 例外を適用せず判断点として返す。regression と確認できた場合は、
   [実装枝の準備と委譲](implementation-branches.md) の4項目の根拠を返却条件へ追加する。
-- `implementation_stages` を宣言した枝は、導出した枝 mode に関わらず `strict` の段階ゲート機構で
-  実行する。導出結果が `strict` 未満の場合の枝単位の引き上げは、SKILL.md
-  「workflow mode の選択」の mode 引き上げ契約に従う。
 - Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。分割
   シグナルに該当する場合は `branch-design` の使用を推奨する
   (強制しない)。
 
 ## Executor 側の再検証
 
+Set 全体の検査(`ac-unassigned` / `ac-duplicate-primary` / `duplicate-id` /
+`unknown-reference` / `cross-plan-dependency`)を先に行う。
+Set の `validation.blocking` が非空なら、Branch Plan 側の状態に関わらず実行を開始しない。
+Set は `status` を持たないため、Set 帰属の違反を実行可否へ伝える経路がこの先行検査しかない。
+
 `impl-lead` は Branch Plan の自己申告を信用せず、委譲開始前に次を再検証する。
+次の5項目は、実行対象の Branch Plan ごとに繰り返す。Branch Plan は承認と委譲開始権限を
+それぞれ独立して持つため、先行 Branch Plan の再検証結果を後続 Branch Plan へ流用できない。
 
 1. `status: approved` であり、`approval.method` が設定済みである。
 2. `delegation.authorized: true` かつ `authorized_by: user` である。
@@ -118,30 +125,21 @@ mode 導出がその誤りを根拠に続く。
 上書きを受け付ける入力経路は本 reference で規定しない。Branch Plan の受け渡しと同じく親エージェントの
 責務とする。
 
-## implementation_stages の実行規約
+## Branch Plan 境界の授権
 
-`implementation_stages` は Domain / Repository / Endpoint のような実装上の中間段階であり、
-`strict` の Test plan / Red / Green / Refactor とは別の軸である。両者の関係を次のとおり定める。
+Branch Plan 境界の停止は、新しいゲート機構ではなく `delegation.authorized` の再検証で表す。
+`delegation.authorized: false` の Branch Plan に到達した時点で実行を止める。
+完了済み Branch Plan の最終報告と未実行 Branch Plan の一覧を提示して、その Branch Plan の授権を
+要求する。再検証の項目2「`delegation.authorized: true` かつ `authorized_by: user`」が
+そのまま境界の判定になる。境界のために独立した状態や field を増やさないのは、承認と委譲開始権限が
+すでに Branch Plan ごとに独立して存在し、同じ判定を二重に持つと矛盾したときにどちらを正とするか
+決められないためである。
 
-- stages を宣言した枝は、決定表の導出結果に関わらず `strict` の段階ゲート機構で実行する。
-  導出結果が `strict` 未満の場合、これは枝単位の mode 引き上げに当たる。Executor は SKILL.md の
-  引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。引き上げが受け入れられない
-  場合は stages を実行せず、枝の再分割または stages の削除を要求する。
-- stages を宣言する枝は実質的に `implementation_complexity.level` が `low` ではない。
-  `{adaptive, standard}` かつ `implementation_complexity.level: low` かつ stages 宣言という
-  組み合わせが出た場合は、stages 側ではなく `implementation_complexity.level` の付け方を疑い、
-  planning へ差し戻すかどうかを判断する。
-- 各 stage を `strict` の1サイクル(テスト計画 → Red → Green → Refactor)として実行する。
-  stage の Red は `stage_tests` のテストだけを対象とし、後続 stage のテストを先に書かない。
-  このため「後続 stage のテストが red のまま進む」状態は発生しない。
-- stage の Green / Refactor gate の条件は「基準 commit 時点の既存テスト、完了済み stage の
-  `stage_tests`、現在 stage の `stage_tests` がすべて green」とする。stage 境界では、現在までに
-  追加したすべてのテストが green であることを親が確認する。最終 stage 完了後は、枝の全必須テストを
-  改めて実行し、外部向け AC の受け入れ判断を枝単位で行う。
-- commit は `strict` の段階別 commit 規約に従い、stage ごとに Red / Green / Refactor の commit を
-  作る。stage 境界(Refactor commit 後)で親が worktree の状態を確認する。
-- stage ごとの返却証跡には、現在の stage だけでなく累積テストの実行結果を含める。最終返却には、
-  先頭 stage の最初の commit から末尾 stage の最終 commit までの SHA range と、stage ごとの
-  commit SHA・検証結果を含める。
-- 既存挙動を固定する regression test は、追加時点で Green でも段階順序を省略せず、Red gate で Green
-  結果と根拠を親が確認する。新機能または未実装仕様の `stage_tests` は Red 必須のままとする。
+授権の粒度は次のとおりとする。
+
+- 親は1回の委譲要求で全 Branch Plan を授権しない。
+- 既定では `order` の先頭の未実行 Branch Plan だけを授権する。
+- ユーザーが全 Branch Plan の一括授権を明示した場合だけ全件を授権する。
+
+先行 Branch Plan が完了せずに終了した場合の後続の扱いは
+[Run の終了処理](run-closeout.md) を正本とし、授権より優先する。

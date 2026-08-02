@@ -19,7 +19,9 @@
 - **git branch** — 実装枝を載せる VCS 上の branch。1実装枝 = 1 git branch = 1 専用 worktree で
   対応させる。日本語文中では常に `git branch` と書き、単独の `branch` 表記を使わない。
   実装枝と同じ文に現れるため、修飾なしでは指示対象が確定しないため。
-- **Branch Plan** — `branch-design` が出力する Data。`branches[]`、
+- **Branch Plan Set** — `branch-design` が出力する Data。`branch_plans[]` に Branch Plan を持ち、
+  `acceptance_criteria` と `order` を Set 層で持つ。
+- **Branch Plan** — Branch Plan Set の要素。`branches[]`、
   `branch_criteria`、`branch-without-primary-ac` などの key と code は実装枝を指し、
   git branch を指さない。
 
@@ -36,6 +38,11 @@ Acceptance Criteria 未達、仕様誤解、機能欠落、テスト失敗、正
 枝を統合し、統合後の green を確認して差し戻しが不要になった時点で、その Implementer の役割を終了する。
 次の枝は最新の統合済み green な基準コミットから開始する。前の枝から引き継ぐ変更は統合済みコードへ
 反映し、コードから読み取れない確定済み制約だけを次の指示へ明記する。
+
+この規約は Branch Plan 間にも適用する。次の Branch Plan の先頭枝も、先行 Branch Plan の成果を
+含む最新の統合済み green な基準コミットから開始する。
+先行 Branch Plan の成果が main へ merge されるのを待たない。merge を待つと、人間の merge 操作が
+workflow の待ち合わせに入り、`impl-lead` が完了を判定できない外部要因に実行順序が依存する。
 
 実装枝を開始するときは `spawn_agent` で新規 Implementer を生成する。
 新規 Implementer の生成時は必ず `fork_turns: "none"` を指定する。親の会話 context や前の枝の履歴を
