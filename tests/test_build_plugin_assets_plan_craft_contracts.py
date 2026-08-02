@@ -20,14 +20,28 @@ from build_plugin_assets_test_support import (
 
 
 PLAN_CRAFT_SKILL = "plan-craft"
-SCHEMA_REFERENCE_NAME = "implementation-plan-schema.md"
+ARTIFACTS_REFERENCE_NAME = "plan-artifacts.md"
+RETIRED_ARTIFACTS_REFERENCE_NAME = "implementation-plan-schema.md"
 DRAFT_REFERENCE_NAMES = (
-    "implementation-plan-schema.md",
+    "plan-artifacts.md",
     "plan-drafting.md",
     "adversarial-review.md",
     "overengineering-plan-review.md",
 )
-PLAN_BODY_SECTIONS_HEADING = "## プラン本文の節構成"
+PLAN_BODY_SECTIONS_HEADING = "## プラン文書の節構成"
+# レビュー状態は運用状態だけを持ち、プラン文書の内容を写す field を持たない。
+# 廃止した top-level field は、`acceptance_criteria` のように散文で正当に言及される
+# 語を含むため、文書全体の語の走査ではなくスキーマ本体の top-level key で見る。
+RETIRED_REVIEW_STATE_FIELDS = (
+    "plan",
+    "acceptance_criteria",
+    "scope",
+    "dependencies",
+    "constraints",
+)
+# 廃止した blocking violation code。表A・表B のどちらにも復活させない。検出は下流
+# （`branch-design` 側の同名 code と Branch Plan の `duplicate-id`）に残る。
+RETIRED_VIOLATION_CODES = ("scope-conflict", "unknown-reference")
 # 廃止した `plan.design` / `plan.approach` / `plan.steps` を現行の field として指す表記。
 # 素の英単語（design / steps）は英語の frontmatter や散文にも一致するため採らない。
 # backtick 付き・ドット付き・YAML key 形に加え、接頭辞なしの列挙も直接列挙する。
@@ -127,40 +141,36 @@ class DraftImplementationPlanContractsTest(
                     )
                     self.assertIn("## 目次", reference)
 
-    def test_draft_schema_reference_holds_the_canonical_schema(self) -> None:
-        """Carry the confirmed schema, violation codes, transitions, and handoff map."""
+    def test_plan_artifacts_reference_holds_the_canonical_schema(self) -> None:
+        """Carry the review-state schema, violation codes, transitions, and handoff map."""
         required = (
+            "plan_document:",
             "status: blocked | awaiting_review | approved",
             "confirmation_mode: review | auto",
             "rounds_limit: 10",
             "termination: null | zero-findings | trivial-only | round-limit",
             "全 round・全 reviewer 通算の指摘台帳",
-            "| code | 検査内容 |",
-            "duplicate-id",
-            "unknown-reference",
-            "vocabulary-invalid",
-            "state-invalid",
-            "scope-conflict",
-            "review-incomplete",
-            "resolution-missing",
-            "rounds-invalid",
             # violation code をここで全列挙する。ただし素の部分文字列は本文の他所（Why Not
             # 段落など）にも一致しうるため、この列挙は表の網羅性の目安であって行の存在証明
             # ではない。行本文と表内での位置は code ごとの専用テストが固定する。
+            "duplicate-id",
+            "vocabulary-invalid",
+            "state-invalid",
+            "review-incomplete",
+            "resolution-missing",
+            "rounds-invalid",
             "body-missing",
             "handoff-incomplete",
             "## 状態遷移と権限",
             "## branch-design への引き渡し",
         )
-        for platform, text in self._draft_reference_texts(
-            "implementation-plan-schema.md"
-        ).items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_draft_schema_reference_points_terminology_to_the_implementation_branches_glossary(
+    def test_plan_artifacts_reference_points_terminology_to_the_implementation_branches_glossary(
         self,
     ) -> None:
         """Route branch terminology to the impl-lead glossary, not a local copy."""
@@ -169,20 +179,13 @@ class DraftImplementationPlanContractsTest(
             "impl-lead",
             "../../impl-lead/references/implementation-branches.md",
         )
-        for platform, text in self._draft_reference_texts(
-            "implementation-plan-schema.md"
-        ).items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 for contract in required:
                     self.assertIn(contract, text)
 
-    def _schema_reference_texts(self) -> dict[str, str]:
-        return self._draft_reference_texts(SCHEMA_REFERENCE_NAME)
-
-    @staticmethod
-    def _plan_block(text: str) -> list[str]:
-        lines = text.splitlines()
-        return lines[lines.index("plan:") : lines.index("acceptance_criteria:")]
+    def _artifacts_reference_texts(self) -> dict[str, str]:
+        return self._draft_reference_texts(ARTIFACTS_REFERENCE_NAME)
 
     @staticmethod
     def _section_lines(text: str, heading: str) -> list[str]:
@@ -194,116 +197,127 @@ class DraftImplementationPlanContractsTest(
         )
         return rest[:end]
 
-    def test_draft_schema_reference_holds_the_plan_body_as_three_fields(self) -> None:
-        """Keep plan to objective, source, and a block-scalar body of the reviewed prose."""
-        # 2 空白インデントの key だけを拾う。`body` の block scalar の中身は 4 空白以上へ
-        # 字下げされるため、この抽出にも `_section_lines` の行頭 `## ` 判定にも掛からない。
-        # プレースホルダを他の field と同じ平文1行で書くと、本文の Markdown を入れた時点で
-        # Data が不正な YAML になるため、block scalar であること自体を固定する。
-        for platform, text in self._schema_reference_texts().items():
-            with self.subTest(platform=platform):
-                block = self._plan_block(text)
-                keys = tuple(
-                    match.group(1)
-                    for match in (re.match(r"^  ([a-z_]+):", line) for line in block)
-                    if match is not None
-                )
-                self.assertEqual(("objective", "source", "body"), keys)
-                self.assertTrue(
-                    any(line.strip() == "body: |" for line in block),
-                    "plan.body must be written as a block scalar",
-                )
+    @staticmethod
+    def _bullet_items(section_lines: list[str]) -> tuple[str, ...]:
+        """Return every bullet item in the section, continuation lines folded in."""
+        # 節全体を空行で打ち切らない。打ち切ると母数が最初のブロックだけになり、
+        # 説明段落の後ろへ足された項目が件数の固定をすり抜ける。他の節の項目を
+        # 拾わないことは `_section_lines` の `## ` 見出し単位の切り出しが担保する。
+        # 継続行の畳み込みはインデントではなく直前の空行でリセットする。インデント
+        # 判定だと非インデントの継続行（Markdown の lazy continuation）や番号付き
+        # 行が母数から黙って落ちる。
+        items: list[str] = []
+        in_item = False
+        for line in section_lines:
+            if line.startswith("- "):
+                items.append(line)
+                in_item = True
+            elif not line.strip():
+                in_item = False
+            elif items and in_item:
+                items[-1] += line
+        return tuple("".join(item.split()) for item in items)
 
-    def test_draft_schema_reference_keeps_the_structural_field_annotations(
+    @staticmethod
+    def _review_state_top_level_keys(text: str) -> tuple[str, ...]:
+        schema = text.split("## レビュー状態のスキーマ", 1)[1].split("```yaml", 1)[1]
+        schema = schema.split("```", 1)[0]
+        return tuple(
+            match.group(1)
+            for match in (
+                re.match(r"^([a-z_]+):", line) for line in schema.splitlines()
+            )
+            if match is not None
+        )
+
+    def test_plan_artifacts_reference_limits_the_review_state_to_run_state(self) -> None:
+        """Hold only the eight run-state fields and no copy of the plan document."""
+        # プラン文書の内容を写す field を持たないことが、分離案を棄却した理由が本設計に
+        # 当たらない根拠そのものである。field 名の不在を散文の走査で見ると
+        # `acceptance_criteria` のような正当な言及まで拾うため、top-level key で見る。
+        expected = (
+            "plan_document",
+            "status",
+            "confirmation_mode",
+            "approval",
+            "open_questions",
+            "assumptions",
+            "review",
+            "validation",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                self.assertEqual(expected, self._review_state_top_level_keys(text))
+                for retired in RETIRED_REVIEW_STATE_FIELDS:
+                    self.assertNotIn(retired, self._review_state_top_level_keys(text))
+
+    def test_plan_artifacts_reference_keeps_the_plan_document_as_the_only_source(
         self,
     ) -> None:
-        """Keep the AC annotations pointing at the plan body's design section."""
-        # #108 は、文を書き換えるときに同居する既存義務を巻き添えで落とす失敗を4件
-        # 実測している。plan block の作り直しで触れる acceptance_criteria の注記が
-        # 担っていた義務を個別に固定し、置換で消えたことを検出する。
+        """Point every plan detail at the document's heading, source line, and sections."""
         required = (
-            "id: AC-1                    # 安定 ID。Branch Plan へそのまま引き継ぎ可能。振り直さない",
-            "text: <観測可能な振る舞い>",
-            "規約本文の正本はプラン本文の「設計」節。",
-            "その充足を判定する観測可能な振る舞いだけを書く",
+            "レビュー状態はプラン文書の内容を写す field を持たない。",
+            "実装目的・要求の所在・AC・scope・依存・制約の正本はプラン文書の"
+            "見出し行・「要求の所在」行・各節にある。",
+            # 引き継ぎ規約はこの文書が持つが、ID 規約そのものは起草手順が正本。
+            # 両方へ本文を置くと、同じ規約が別々の言い回しで2箇所に残る。
+            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の "
+            "`acceptance_criteria` へ原文のまま引き継ぐ。",
+            "ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、"
+            "この文書は再掲しない。",
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+                self.assertNotIn(
+                    "".join("プラン修正で振り直さない".split()), normalized
+                )
 
-    def test_draft_schema_reference_keeps_the_plan_scope_design_principles(
+    def test_plan_artifacts_reference_keeps_the_plan_scope_design_principles(
         self,
     ) -> None:
         """Keep the schema's own principles while the section conventions move away."""
         required = (
             # 節の責務本文はここへ置かない。「手順」節が AC を所有しないことの正本は
-            # plan-drafting.md の「プラン本文の節構成」であり、この文書が同じ義務を
+            # plan-drafting.md の「プラン文書の節構成」であり、この文書が同じ義務を
             # 別の言い回しで持つと、片方だけの改訂で他方が緑のまま残る。
-            "Implementation Plan は実装枝への分割を持たない。分割は `branch-design` の責務である。",
-            "AC は安定 ID を持ち、Branch Plan の `acceptance_criteria` へそのまま引き継げる形",
+            "プランは実装枝への分割を持たない。分割は `branch-design` の責務である。",
             "レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。",
             "`validation.blocking` は安定した code を持つ violation の配列とし、承認可否は "
             "blocking violation の有無だけで決まる。自己評価 boolean は持たない。",
-            "承認（`approval`）は Implementation Plan の確定だけを意味し、"
-            "枝分割・委譲の開始権限を含まない。",
+            "承認（`approval`）はプランの確定だけを意味し、枝分割・委譲の開始権限を含まない。",
         )
-        # 設計文書を Data の field に据える案と別 artifact へ分離する案を棄却した理由は、
-        # 本変更がその「棄却した案」に見える形へ進むため、削除ではなく回答へ置き換える。
-        # 置き換えないと、次の改訂者が同じ案の再提出と読む。廃止 field 名を使わずに書く
-        # 制約は、この文自体が RETIRED_PLAN_FIELD_TOKENS の走査対象に入るためである。
+        # 設計文書を Data の field に据える案と別 artifact へ分離する案を棄却した記録は、
+        # 本設計がその「棄却した案」の形を採るため、削除ではなく回答へ置き換える。
+        # 記録を消すと、次の改訂者が本設計を棄却済み案の再提出と読む。廃止 field 名を
+        # 使わずに書く制約は、この文自体が RETIRED_PLAN_FIELD_TOKENS の走査対象に入るため。
         superseded_rejection = (
             "1つの設計判断を複数の場所へ別々の言い回しで写すと、"
             "レビューは写しの不一致の同期に費やされる。",
             "以前この案を棄却したのは、分離した artifact と Data が並存して写しが残るため"
-            "であった。本設計では並存しない。",
-            "乖離が入りうるのは確定時の転記の1点に限られ、round ごとに増殖しない。",
+            "であった。",
+            "棄却理由が成立するのは、並存する Data がプラン文書の内容を"
+            "構造 field として複製する場合である。",
+            "レビュー状態は構造 field を持たず、プラン文書の内容を1つも複製しない。"
+            "持つのはレビュー運用の状態だけであり、読者も寿命もプラン文書と異なる。"
+            "したがって写しが生じず、棄却理由は本設計に当たらない。",
+            "確定時の転記そのものが無くなるため、乖離が入りうる1点も消える。",
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in required + superseded_rejection:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_draft_schema_reference_transcribes_structural_fields_from_the_plan_body(
+    def test_plan_artifacts_reference_delegates_the_section_conventions_to_plan_drafting(
         self,
     ) -> None:
-        """Generate the structural fields once, by transcription, at confirmation time."""
-        required = (
-            "構造 field（`acceptance_criteria` / `scope` / `dependencies` / `constraints` / "
-            "`open_questions` / `assumptions`）は、確定時に `plan.body` の該当節から"
-            "言い換えずに転記する。",
-            "レビュー中は本文だけが存在し、構造 field は確定時に1回だけ生成する。",
-            "`plan.objective` は `plan.body` の見出し行から、`plan.source` は「要求の所在」行から、"
-            "いずれも言い換えずに転記する。",
-        )
-        # 転記一致を code にしない理由は violation code 節が持つ。設計方針側へも写すと、
-        # 本変更が塞ごうとしている「1つの判断が複数箇所へ別の言い回しで残る」を再現する。
-        not_a_violation_code = (
-            "構造 field が `plan.body` の該当節と食い違っていないか",
-            "転記一致と節見出しの有無は code にしない",
-        )
-        for platform, text in self._schema_reference_texts().items():
-            with self.subTest(platform=platform):
-                normalized = "".join(text.split())
-                for contract in required:
-                    self.assertIn("".join(contract.split()), normalized)
-                violation_section = "".join(
-                    "".join(
-                        self._section_lines(text, "## blocking violation code")
-                    ).split()
-                )
-                for contract in not_a_violation_code:
-                    self.assertIn("".join(contract.split()), violation_section)
-
-    def test_draft_schema_reference_delegates_the_section_conventions_to_plan_drafting(
-        self,
-    ) -> None:
-        """Hold only a pointer to the body-section conventions, never a second copy."""
+        """Hold only a pointer to the document-section conventions, never a second copy."""
         delegation = (
-            "プラン本文の節構成と各節の責務は [起草手順](plan-drafting.md) の"
-            "「プラン本文の節構成」を正本とする。"
+            "プラン文書の節構成と各節の責務は [起草手順](plan-drafting.md) の"
+            "「プラン文書の節構成」を正本とする。"
         )
         # 委譲だけを持つことは、リンクの存在では固定できない。正本側の本文が写された
         # ことを検出するために、移設した2文が現れないことを文書全体で見る。
@@ -311,18 +325,20 @@ class DraftImplementationPlanContractsTest(
             "分量はそのプランで実際に決めた事項の数に従い、決めた事項が少なければ短くてよい",
             "要約にすると",
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 self.assertIn("".join(delegation.split()), normalized)
                 for contract in moved_away:
                     self.assertNotIn("".join(contract.split()), normalized)
 
-    def test_draft_schema_reference_blocks_a_plan_that_has_no_body(self) -> None:
-        """Block an empty plan body from reaching awaiting_review or approved."""
-        body_missing_row = (
-            "| `body-missing` | `plan.body` が未記載または空のまま "
-            "`awaiting_review` 以降へ遷移している |"
+    def test_plan_artifacts_reference_blocks_a_plan_that_has_no_body(self) -> None:
+        """Block an empty plan document from reaching awaiting_review or approved."""
+        # file の有無で立てると、file 出力を省略した経路のプランが常に blocked へ
+        # 固定され、省略を認める規定が実行不能になる。
+        target_of_the_check = (
+            "`body-missing` が見るのはプラン文書の本文の有無であって file の有無ではない。",
+            "file 出力経路では file の本文、会話内経路では会話上に提示した本文を対象にする。",
         )
         # approved は blocking が空であることを前提にしているため、body-missing が
         # 立つ限り approved へ到達しない。この前提文が残ることで、遷移表へ本文専用の
@@ -331,75 +347,236 @@ class DraftImplementationPlanContractsTest(
             "approved:         承認済み。open_questions と validation.blocking が"
             "すべて空であることが前提"
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 self.assertIn(
                     "".join(approved_precondition.split()), "".join(text.split())
                 )
-                # 行が blocking violation code 節の中にあることまで固定する。body-missing が
-                # validation.blocking に載ることが approved 到達不能の第一リンクであり、
-                # 本文のどこかに同じ文字列があるだけではその連鎖は成立しない。
+                # 対象を節スコープに絞るのは、design-missing の禁止をこの節（表と
+                # 付随する散文）だけに掛け、他の節や他文書での言及と切り離すため。
+                # 範囲は表に限らないので、この節へ design-missing に触れる説明を
+                # 書くと assertNotIn が落ちる。target_of_the_check の各文についても、
+                # 文書のどこかにあるだけでなくこの節の中にあることを同じ絞り込みで
+                # 固定する。
                 violation_section = "".join(
                     "".join(
                         self._section_lines(text, "## blocking violation code")
                     ).split()
                 )
-                self.assertIn("".join(body_missing_row.split()), violation_section)
                 self.assertNotIn("design-missing", violation_section)
+                for contract in target_of_the_check:
+                    self.assertIn("".join(contract.split()), violation_section)
 
-    def test_draft_schema_reference_keeps_semantic_checks_out_of_the_violation_codes(
+    @staticmethod
+    def _violation_code_rows(text: str, table_heading: str) -> tuple[str, ...]:
+        lines = DraftImplementationPlanContractsTest._section_lines(
+            text, "## blocking violation code"
+        )
+        rest = lines[lines.index(table_heading) + 1 :]
+        # 見出し直後の1つ目の表だけを対象にする。節の末尾まで拾うと、同じ節にある
+        # 有効な組み合わせ表の行が表Bの行として混ざる。
+        table_start = next(
+            index for index, line in enumerate(rest) if line.startswith("|")
+        )
+        rows = []
+        for line in rest[table_start:]:
+            if not line.startswith("|"):
+                break
+            if line.startswith("| `"):
+                rows.append(line)
+        return tuple(rows)
+
+    def test_plan_artifacts_reference_splits_recomputable_codes_from_judged_codes(
         self,
     ) -> None:
-        """Record why transcription and section checks cannot join the recomputable codes."""
-        required = (
-            "入力 Data から再計算できる検査だけで成り立つ",
-            "意味判断であり、Data から再計算できない",
-            "表全体の再計算可能性が壊れる",
+        """Recompute one table from the review state and judge the other on the document."""
+        # 節を認識する判定を Data 検査と同じ表へ置くと、表全体が Data から再計算できる
+        # という性質が壊れる。表の区分ごとに行を全列挙し、区分をまたいだ移動も検出する。
+        recomputed = (
+            "| `duplicate-id` | finding id の重複 |",
+            "| `vocabulary-invalid` | `verdict` / `resolution` / `termination` / "
+            "`reviewer` が定義済み語彙にない値 |",
+            "| `state-invalid` | `status` と他フィールドの矛盾。"
+            "有効な組み合わせ表から再計算する |",
+            "| `review-incomplete` | `termination` が null のまま、または過剰実装審査"
+            "（`reviewer: over-engineering-reviewer` の round）未実行のまま "
+            "`awaiting_review` 以降へ遷移している |",
+            "| `resolution-missing` | `resolution` が未記録の finding、または "
+            "`resolution: unresolved` が `termination: round-limit` 以外で残っている |",
+            "| `rounds-invalid` | `rounds_completed` が `rounds_limit` を超えている、"
+            "または `findings[].round` と矛盾する |",
+        )
+        judged = (
+            "| `body-missing` | プラン文書の本文が無い、または空 |",
+            "| `handoff-incomplete` | 見出し行、「要求の所在」行、「Acceptance Criteria」節、"
+            "「scope」節のいずれかに記載が無い |",
+        )
+        why_split = (
+            "本文が規定の節見出しを備えているかは意味判断であり、"
+            "レビュー状態 Data から再計算できない。",
+            "意味判断を表Aへ入れると、表A 全体が Data から再計算できるという性質が壊れる。",
             # 担い手は「起草手順とレビューの判定」の粒度に留める。どちらがどう担うかを
             # ここで書き切ると、後続で決める配分の選択肢を先に潰す。
             "節の充足は起草手順とレビューの判定が担う",
-            # 節見出しの有無を検査条件に足すと、どの見出しをどう書けば節と認めるかを
-            # Data 検査のために固定することになり、本文を散文にした目的と衝突する。
-            "本文が規定の節見出しを備えているか",
-            # 再掲禁止は廃止規約ではなく plan-drafting.md に生きており、
-            # `acceptance_criteria` も構造 field として存続する。code 表を所有するのは
-            # この文書だけなので、再掲を code 化しない記録には他に置き場が無い。
-            "`acceptance_criteria` が「設計」節の規約本文を再掲しているか",
-            # 列挙側だけを固定すると、「再掲は意味判断である」とだけ書かれて「だから
-            # code にしない」が欠けた原稿が通る。改訂前が固定していたのは結論文の側
-            # なので、後継の固定を結論文へも置く。
-            "再掲の有無も同じ理由で code にせず",
+            "Branch Plan 正規スキーマの `branch-contract-violation` が機械検査ではなく"
+            "判定で生成される先例に従う。",
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
-                normalized = "".join(text.split())
-                for contract in required:
-                    self.assertIn("".join(contract.split()), normalized)
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in why_split:
+                    self.assertIn("".join(contract.split()), violation_section)
+                table_a = self._violation_code_rows(
+                    text, "**表A: レビュー状態 Data から再計算する code**"
+                )
+                table_b = self._violation_code_rows(
+                    text, "**表B: プラン文書に対する親の判定で生成する code**"
+                )
+                self.assertEqual(
+                    tuple("".join(row.split()) for row in recomputed),
+                    tuple("".join(row.split()) for row in table_a),
+                )
+                self.assertEqual(
+                    tuple("".join(row.split()) for row in judged),
+                    tuple("".join(row.split()) for row in table_b),
+                )
+                for retired in RETIRED_VIOLATION_CODES:
+                    self.assertNotIn(retired, "".join(table_a + table_b))
 
-    def test_draft_schema_reference_keeps_the_branch_design_handoff_map_unchanged(
+    def test_plan_artifacts_reference_raises_one_code_per_missing_part(self) -> None:
+        """Split the empty document from its missing parts so one gap raises one code."""
+        # 両 code はプラン文書という同一対象を見るため、分界が無いと本文が空のプランで
+        # 2つの code が同時に立ち、1つの欠落に2つの修正要求が出る。
+        required = (
+            "`body-missing` を立てるのは本文全体が無い、または空の場合だけとし、"
+            "本文がある場合の個別の欠落は `handoff-incomplete` だけで扱う。",
+            "1つの欠落に2つの code を立てない。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
+    def test_plan_artifacts_reference_records_where_the_retired_codes_went(self) -> None:
+        """Name the downstream owner of every check the plan stage stopped making."""
+        # 削除した原稿は「code にしない理由と担い手」を同じ位置へ書く様式だった。
+        # 引き受け先が配布原稿から消えると、次の改訂者が検査の欠落と読む。
+        required = (
+            "廃止した `scope-conflict`、AC id に対する `duplicate-id`、"
+            "`unknown-reference` は plan 段では扱わない。",
+            "前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。",
+            "`unknown-reference` は、plan 段で id を参照する field が "
+            "`open_questions[].affects` だけになり、その値をプラン文書の節名または "
+            "AC id とすることで参照検査の対象が残らない。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
+    def test_plan_artifacts_reference_bounds_the_blocking_path_per_table(self) -> None:
+        """Give each table its own value range for the blocking violation's path."""
+        required = (
+            "表A の `path` はレビュー状態のスキーマ上の path を書く"
+            "（例: `review.findings[2].resolution`）。",
+            "表B の `path` はプラン文書の位置を指す語（節名、`見出し行`、"
+            "`要求の所在行` のいずれか）を書き、本文そのものが無い場合は "
+            "`plan_document` と書く。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
+    def test_plan_artifacts_reference_rejects_a_placeholder_ac_or_scope_section(
         self,
     ) -> None:
-        """Keep the handoff rows as branch-design's input requirements, without the body."""
+        """Refuse 「該当なし」 as content for the two sections branch-design consumes."""
+        required = (
+            "表Bの「記載が無い」は、行または節が存在しない、中身が空、または"
+            "「該当なし」だけである場合を指す。節見出しの有無だけでは判定しない。",
+            "「Acceptance Criteria」節と「scope」節は `branch-design` の入力要件そのもので"
+            "あり、内容が無いプランは引き渡せないため、"
+            "「該当なし」だけの記載で充足したとみなさない。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                violation_section = "".join(
+                    "".join(
+                        self._section_lines(text, "## blocking violation code")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), violation_section)
+
+    def test_plan_artifacts_reference_keeps_the_three_status_values_and_their_pairings(
+        self,
+    ) -> None:
+        """Keep the four valid top-level combinations, both approval methods included."""
+        rows = (
+            "| `blocked` | `null` | `review` / `auto` |",
+            "| `awaiting_review` | `null` | `review` のみ |",
+            "| `approved` | `user` | `review` のみ |",
+            "| `approved` | `auto` | `auto` のみ |",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                table = [
+                    line
+                    for line in self._section_lines(
+                        text, "## blocking violation code"
+                    )
+                    if line.startswith("| `blocked`")
+                    or line.startswith("| `awaiting_review`")
+                    or line.startswith("| `approved`")
+                ]
+                self.assertEqual(
+                    tuple("".join(row.split()) for row in rows),
+                    tuple("".join(row.split()) for row in table),
+                )
+
+    def test_plan_artifacts_reference_maps_the_branch_design_handoff_to_the_document(
+        self,
+    ) -> None:
+        """Keep the handoff rows as branch-design's input requirements, read off the document."""
         # 左列は branch-design の入力要件そのもの。5行の全列挙は「行が消えないこと」しか
         # 検出しないので、表の領域を切り出して行数も固定し、6行目の追加を落とす。
         rows = (
-            "| 実装目的 | `plan.objective` |",
-            "| 元プラン | `plan.source`（この Data 自体を渡す場合は本 Data の所在） |",
-            "| Acceptance Criteria（原文） | `acceptance_criteria[].text`（ID ごと原文のまま） |",
-            "| 変更可能範囲と変更禁止範囲 | `scope.allowed_paths` / `scope.forbidden_paths` |",
-            "| 既知の依存 | `dependencies` |",
+            "| 実装目的 | 見出し行 |",
+            "| 元プラン | 「要求の所在」行 |",
+            "| Acceptance Criteria（原文） | 「Acceptance Criteria」節（ID ごと原文のまま） |",
+            "| 変更可能範囲と変更禁止範囲 | 「scope」節の変更可能 / 変更禁止 |",
+            "| 既知の依存 | 「依存 / 制約 / 前提 / 未確定」節の依存 |",
         )
         why_not = (
             "左列は `branch-design` の入力要件そのものであり、"
             "行を足すことは入力要件の変更になる",
-            "`handoff-incomplete` と `body-missing` の検査対象が二重になり、"
-            "1つの欠落に2つの code が立つ",
-            # handoff-incomplete の必須 field 列挙も固定する。ここへ plan.body を足すと、
-            # 上の Why Not が避けた「1つの欠落に2つの code」が表の外側で成立してしまう。
-            "| `handoff-incomplete` | 引き渡し必須 field（`plan.objective` / `plan.source` / "
-            "`acceptance_criteria` / `scope`）の欠落 |",
+            # handoff-incomplete が引き渡し表の左列に対応することの記録。「既知の依存」を
+            # 検査対象へ足すと、依存が無い正当なプランが常に blocked へ落ちる。
+            "`handoff-incomplete` は、この表の左列を充足できない欠落を検査する。",
+            "「既知の依存」が対象に入らないのは、依存が無いプランが正当に存在し、"
+            "「該当なし」が正しい記載になるためである。",
         )
-        for platform, text in self._schema_reference_texts().items():
+        for platform, text in self._artifacts_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for contract in rows + why_not:
@@ -416,14 +593,173 @@ class DraftImplementationPlanContractsTest(
                     len(rows) + 2,
                     "the handoff map must keep exactly the branch-design input rows",
                 )
-                self.assertNotIn("plan.body", "".join(table))
                 # 表が別節へ丸ごと複製された場合は上の節 slice の行数固定だけでは検出できない
                 # （複製先の別 slice には現れない）。文書全体で単一の表であることも併せて担保する。
                 self.assertEqual(
-                    normalized.count("|`plan.objective`|"),
+                    normalized.count("|実装目的|見出し行|"),
                     1,
                     "the handoff map must stay a single table",
                 )
+
+    def test_plan_craft_replaces_the_schema_reference_with_the_artifacts_reference(
+        self,
+    ) -> None:
+        """Ship the artifacts reference in place of the retired plan-schema reference."""
+        # 生成器は `shared/` から消えた原稿に対応する生成物を削除せず、`--check` も
+        # 出力対象だけを比較するため残存 file を検出しない。残骸を落とすのはこのテスト。
+        paths = (
+            shared_skill_reference_path(PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME),
+            generated_skill_reference_path(
+                "claude", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+            generated_skill_reference_path(
+                "codex", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+        )
+        for path in paths:
+            with self.subTest(path=str(path)):
+                self.assertTrue((REPOSITORY_ROOT / path).is_file())
+                retired = path.with_name(RETIRED_ARTIFACTS_REFERENCE_NAME)
+                self.assertFalse((REPOSITORY_ROOT / retired).exists())
+
+    def test_plan_artifacts_reference_fixes_where_both_artifacts_are_saved(self) -> None:
+        """Derive both paths from one slug and bound writes to .tugite/plans/."""
+        required = (
+            "保存先は repository root 相対の `.tugite/plans/` 直下に固定し、"
+            "プラン文書を `.tugite/plans/<slug>.md`、"
+            "レビュー状態を `.tugite/plans/<slug>-review.yaml` とする。",
+            # 正規化手順そのものを複製すると、正本と写しが別々に改訂されうる。
+            # 継承の宣言と読み替えだけを置く。
+            "slug の正規化手順、Windows 予約名の扱い、ancestor 検査、Git 管理と保持は "
+            "[永続 QA レポート](../../impl-lead/references/qa-report.md) の規約を正本として"
+            "同じ手順に従い、この文書へ複製しない。",
+            "ancestor 検査の対象 component は `.tugite` と `plans` に読み替える。",
+            "2 file は同じ slug を使う。",
+            # path 制約は継承せず定義し直す。正本の制約は「reports 直下の単一 Markdown
+            # file」という Markdown 前提と一体で書かれており、前提だけを外すと残りの
+            # 継承可否が決まらない。
+            "path 制約は継承せず、次の4つを本 manuscript で定義する。",
+            "target は `.tugite/plans/` 直下の単一 file に限る。",
+            "固定の `.tugite/plans/` prefix を除く file name component に "
+            "path separator を許可しない。",
+            "`.` または `..` を許可しない。",
+            "絶対 path を許可しない。",
+            # 継承元の衝突規約は「次の suffix を選ぶ」で閉じており、ローカル規定の
+            # 「slug を選び直さない」と正面から衝突する。どちらが勝つかを書かないと、
+            # レビュー状態側だけが埋まっている場合の帰結がどちらからも決まらない。
+            "レビュー状態の初回作成でも slug を選び直さない。",
+            "`<slug>-review.yaml` が既にある場合は exclusive create が失敗し、"
+            "「file 出力と会話内経路」の省略条件「保存先へ書き込めない」に当たる。",
+        )
+        # 正規化手順の複製が入っていないことを、正本側の手順の語で検出する。
+        not_duplicated = (
+            "Unicode NFKC で正規化する",
+            "非 `[a-z0-9]` の連続を `-` へ変換する",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+                for contract in not_duplicated:
+                    self.assertNotIn("".join(contract.split()), normalized)
+
+    def test_plan_artifacts_reference_resolves_the_inherited_storage_link(self) -> None:
+        """Resolve the qa-report link the storage rules inherit from, in every tree."""
+        # 保存規約を複製せず継承する以上、辿れないリンクは規約そのものの欠落になる。
+        relative_link = "../../impl-lead/references/qa-report.md"
+        reference_paths = {
+            "source": shared_skill_reference_path(
+                PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+            "claude": generated_skill_reference_path(
+                "claude", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+            "codex": generated_skill_reference_path(
+                "codex", PLAN_CRAFT_SKILL, ARTIFACTS_REFERENCE_NAME
+            ),
+        }
+        texts = self._artifacts_reference_texts()
+        for structure, reference_path in reference_paths.items():
+            with self.subTest(structure=structure):
+                self.assertIn(relative_link, texts[structure])
+                resolved = (REPOSITORY_ROOT / reference_path).parent / relative_link
+                self.assertTrue(
+                    resolved.resolve().is_file(),
+                    f"unresolved cross-skill link from {reference_path}",
+                )
+
+    def test_plan_artifacts_reference_fixes_when_each_artifact_is_written(self) -> None:
+        """Write the document each round, the review state at confirmation and on approval."""
+        required = (
+            "プラン文書は起草直後に作成し、採用指摘を反映するたびに同じ path を上書きする。",
+            "レビュー状態は `status` を決める確定の時点で作成し、"
+            "確定をやり直した場合だけ上書きする。round の途中でレビュー状態を書かない。",
+            "`awaiting_review` から `approved`（`method: user`）への遷移は確定より後に"
+            "親エージェントが行う。この遷移もレビュー状態へ反映し、"
+            "`status` と `approval.method` を書き直す。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = "".join(
+                    "".join(self._section_lines(text, "## 書き出しの時点")).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
+
+    def test_plan_artifacts_reference_defaults_to_writing_the_files(self) -> None:
+        """Skip the file output only when the target is unwritable or the user says so."""
+        # 「ユーザーが file を求めていない」を条件にすると、file を明示的に要求しない
+        # 通常の起動に対して、書く実行と書かない実行の両方がこの規約へ適合する。
+        required = (
+            "file 出力を既定とする。file 出力を省略してよいのは次の2条件のいずれかに"
+            "該当する場合だけとし、それ以外では常に file を書く。",
+            "保存先へ書き込めない。ancestor 検査で停止する、"
+            "安全な create Action を保証できない、書き込みが失敗するのいずれか。",
+            "ユーザーが file を出力しないことを明示的に要求した。",
+            "省略の判定は artifact ごとに行う。",
+            "「ユーザーが file を求めていない」ことを省略の条件にしない。",
+        )
+        # 省略条件の列挙そのものを等価固定する。条件語（「書き込めない」など）で
+        # 絞って数えると、新しい語で書かれた3つ目の条件が母数に入らず、件数の固定が
+        # 何も検出しないまま緑になる。
+        conditions = (
+            "- 保存先へ書き込めない。ancestor 検査で停止する、"
+            "安全な create Action を保証できない、書き込みが失敗するのいずれか。",
+            "- ユーザーが file を出力しないことを明示的に要求した。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                section_lines = self._section_lines(text, "## file 出力と会話内経路")
+                section = "".join("".join(section_lines).split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
+                self.assertEqual(
+                    tuple("".join(item.split()) for item in conditions),
+                    self._bullet_items(section_lines),
+                    "the omission conditions must stay exactly these two",
+                )
+
+    def test_plan_artifacts_reference_owns_the_in_conversation_limit(self) -> None:
+        """Carry the in-conversation limit and its reason where SKILL.md points."""
+        # SKILL.md は正本注記だけを持ち、理由本文をこちらへ委ねている。正本側を
+        # 固定しないと、指し示された節が空でも AC-13 と正反対でも通ってしまう。
+        # 節スコープで見るのは、文が別の節へ移された場合も検出するためである。
+        required = (
+            "会話内経路（`plan_document: 会話内`）は同一会話内で完結する用途に限り、"
+            "後日渡す経路を持たない。",
+            "レビュー状態が file として残らず、後から会話上に貼り直しても "
+            "`plan-craft` からの再起草になる。",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = "".join(
+                    "".join(
+                        self._section_lines(text, "## file 出力と会話内経路")
+                    ).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
 
     def test_plan_review_inputs_hand_the_whole_plan_body_to_both_reviewers(
         self,
@@ -436,7 +772,7 @@ class DraftImplementationPlanContractsTest(
             "overengineering-plan-review.md": (
                 "## 渡す入力",
                 (
-                    "プラン本文の全文",
+                    "プラン文書の全文",
                     "2 round 目以降は前 round までの指摘台帳",
                 ),
                 ("plan.objective", "AC の全文", "`allowed_paths`"),
@@ -444,7 +780,7 @@ class DraftImplementationPlanContractsTest(
             "adversarial-review.md": (
                 "## round の構成",
                 (
-                    "reviewer へプラン本文の全文と、2 round 目以降は前 round までの"
+                    "reviewer へプラン文書の全文と、2 round 目以降は前 round までの"
                     "指摘台帳を渡して起動する。",
                 ),
                 ("AC、scope、constraints、assumptions",),
@@ -467,7 +803,7 @@ class DraftImplementationPlanContractsTest(
             "plan-adversarial-reviewer": (
                 "## 立場",
                 (
-                    "判定にはプラン本文の全文と、対象 repository への読み取りアクセスが"
+                    "判定にはプラン文書の全文と、対象 repository への読み取りアクセスが"
                     "必要です。",
                     "2 round 目以降は前 round までの指摘台帳を受け取ります。",
                 ),
@@ -482,7 +818,7 @@ class DraftImplementationPlanContractsTest(
             # この非対称な cross-guard を落とした。
             "over-engineering-reviewer": (
                 "## プラン入力モード",
-                ("判定にはプラン本文の全文を使います。",),
+                ("判定にはプラン文書の全文を使います。",),
                 ("AC、明示された制約",),
             ),
         }
@@ -541,7 +877,7 @@ class DraftImplementationPlanContractsTest(
             "確認モードの既定は `review`",
             "`auto` はユーザーが明示した場合のみ",
             "`branch-design` を直接起動しない",
-            "blocking な不足はプラン本文の「依存 / 制約 / 前提 / 未確定」節",
+            "blocking な不足はプラン文書の「依存 / 制約 / 前提 / 未確定」節",
             "minor な不足は同じ節に仮定として明示",
             "`rounds_limit` の既定は 10",
             "reviewer の自己申告をそのまま採用しない",
@@ -552,14 +888,15 @@ class DraftImplementationPlanContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_draft_skill_generates_the_plan_data_after_both_reviews(self) -> None:
-        """Build the Data once, after both reviews and before blocking is recomputed."""
+    def test_draft_skill_writes_the_review_state_after_both_reviews(self) -> None:
+        """Draft the document first and write the review state once, after both reviews."""
         # 手順の番号ではなく本文の出現位置で順序を測る。手順は複数行へ折り返され、
         # 番号行だけを拾うと折り返した本文が落ちる。
         ordered = (
+            "[起草手順]",
             "[敵対的レビューループ]",
             "[過剰実装のプラン審査]",
-            "Implementation Plan Data を生成する",
+            "レビュー状態を生成する",
             "`validation.blocking` を確定する",
         )
         for platform, main in self._draft_skill_texts().items():
@@ -575,14 +912,51 @@ class DraftImplementationPlanContractsTest(
                 self.assertEqual(
                     positions,
                     sorted(positions),
-                    "the plan Data must be generated after both reviews",
+                    "the review state must be written after both reviews",
                 )
+                # プラン文書は起草直後に書き出す。ここを「確定時にまとめて書く」へ
+                # 戻すと、reviewer へ渡す全文と disk の内容が round ごとに食い違う。
                 self.assertIn(
                     "".join(
-                        "この時点では Implementation Plan Data を生成しない。".split()
+                        "[プラン artifact](references/plan-artifacts.md) の"
+                        "保存規約に従って書き出す".split()
                     ),
                     flow,
                 )
+
+    def test_draft_skill_confirms_blocking_as_a_recompute_and_a_judgement(self) -> None:
+        """Split the blocking step into recomputing table A and judging table B."""
+        # 1文の「入力 Data から再計算し」のままでは表B が手順から漏れ、本文が空の
+        # プランでも `validation.blocking` が空のまま `awaiting_review` へ到達する。
+        contract = (
+            "`validation.blocking` を確定する。表A をレビュー状態 Data から再計算し、"
+            "表B をプラン文書に対する判定で生成する。"
+        )
+        for platform, main in self._draft_skill_texts().items():
+            with self.subTest(platform=platform):
+                flow = "".join(
+                    "".join(self._section_lines(main, "## 全体の流れ")).split()
+                )
+                self.assertIn("".join(contract.split()), flow)
+
+    def test_draft_skill_limits_the_in_conversation_route_to_one_conversation(
+        self,
+    ) -> None:
+        """State the in-conversation limit here while naming the reference as its source."""
+        # 同じ規約を2箇所へ本文として置くと、片側だけの改訂が誰にも検出されない。
+        # 規約文と正本注記を対にして、理由の本文は正本側だけが持つ形へ寄せる。
+        required = (
+            "会話内経路は同一会話内で完結する用途に限り、後日渡す経路を持たない。",
+            "正本は [プラン artifact](references/plan-artifacts.md) の"
+            "「file 出力と会話内経路」とする。",
+        )
+        for platform, main in self._draft_skill_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(main.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+                # 理由の本文は正本側だけが持つ。写すと文言が乖離する。
+                self.assertNotIn("".join("レビュー状態が file として".split()), normalized)
 
     def test_draft_review_reference_targets_the_plan_body_not_the_ac_set(
         self,
@@ -593,12 +967,12 @@ class DraftImplementationPlanContractsTest(
         # 同じ宣言を運用者向けと reviewer 向けの両方へ置くため、どちらが正本かを添えないと
         # 語気の差が次の改訂で別の規定に見える。所有者の1語まで含めて固定する。
         declaration = (
-            "レビューが判定する対象はプラン本文の「設計」節であって AC の集合ではない"
+            "レビューが判定する対象はプラン文書の「設計」節であって AC の集合ではない"
             "（判定の軸の正本は `plan-adversarial-reviewer`）。"
         )
         # 責務分担の本文はここへ写さず正本を指す。写した時点でこの PR が塞ぐ経路
         # （1つの設計判断が複数箇所へ別の言い回しで残る）を原稿自身が再現する。
-        # 責務分担の正本はスキーマから起草手順の「プラン本文の節構成」へ移った。
+        # 責務分担の正本はスキーマから起草手順の「プラン文書の節構成」へ移った。
         canonical_link = "[起草手順](plan-drafting.md)"
         texts = self._draft_reference_texts("adversarial-review.md")
         for structure, text in texts.items():
@@ -614,11 +988,12 @@ class DraftImplementationPlanContractsTest(
     ) -> None:
         """Keep the findings ledger out of the prose and inside the review block."""
         required = (
-            "指摘台帳と round 状態はプラン本文の外に持つ。",
+            "指摘台帳と round 状態はプラン文書の外に持つ。",
             "本文へ書くと、指摘の解消が本文の変更として現れず、"
             "round ごとに本文と台帳の両方を同期することになる。",
-            "台帳は Implementation Plan の `review` block そのものとし、"
+            "台帳はレビュー状態の `review` block そのものとし、"
             "新しい field 名を導入しない。",
+            "field 定義の正本は [プラン artifact](plan-artifacts.md) に置く。",
             "確定時は写し替えや構造変換を行わず、そのまま `review` の下へ置く。",
         )
         for platform, text in self._draft_reference_texts(
@@ -678,7 +1053,7 @@ class DraftImplementationPlanContractsTest(
             "(../../impl-lead/references/reviewer-findings.md)",
             "evidence を欠く指摘だけを根拠にプランを修正しない。",
             "親自身が確認した",
-            "repository の現状・プラン本文・既存 manuscript から特定できる場合は",
+            "repository の現状・プラン文書・既存 manuscript から特定できる場合は",
             "親が evidence を補って通常の",
             "`軽微` の定義への照合と `adopted` / `rejected` の判断",
             "指摘が成立したと仮定した場合の影響を影響基準に当てて verdict を確定した",
@@ -738,11 +1113,11 @@ class DraftImplementationPlanContractsTest(
     def test_overengineering_plan_review_triggers_on_the_plan_body(self) -> None:
         """Trigger on a received plan body and bounce back only a plan without any AC."""
         launch = (
-            "起動時にプラン入力モードであることを明示し、レビュー済みのプラン本文の全文を渡す。",
+            "起動時にプラン入力モードであることを明示し、レビュー済みのプラン文書の全文を渡す。",
             "明示しない起動は既定の diff 入力モードになるため、プラン審査には使えない。",
         )
         bounce_back = (
-            "「Acceptance Criteria」節に AC が1件も無いプラン本文は、"
+            "「Acceptance Criteria」節に AC が1件も無いプラン文書は、"
             "reviewer が判定せず親へ差し戻す。",
             # 制約の記載を差し戻し条件に残すと、制約が無い正当なプランが差し戻される。
             # 差し戻しは審査完了として記録されないため review-incomplete が立ち続け、
@@ -797,7 +1172,7 @@ class DraftImplementationPlanContractsTest(
         )
         finding_fields = (
             "指摘ID",
-            "対象（プラン本文の節または AC id）",
+            "対象（プラン文書の節または AC id）",
             "類型",
             "判定（`軽微` / `修正推奨` / `修正必須`）",
             "具体的な失敗経路",
@@ -819,7 +1194,7 @@ class DraftImplementationPlanContractsTest(
         )
         section = "".join("".join(self._section_lines(source, "## 判定の軸")).split())
         required = (
-            "主たる判定対象はプラン本文の「設計」節です。",
+            "主たる判定対象はプラン文書の「設計」節です。",
             # 判定対象を「設計」節へ寄せたときに、既存の失敗経路4種と「失敗経路を特定
             # できる指摘だけ」の縛りが道連れで落ちるのを防ぐ。判定対象の変更であって
             # 判定の緩和ではない。
@@ -844,7 +1219,7 @@ class DraftImplementationPlanContractsTest(
             # 「設計」節を薄く言い換えて判定不能になった AC が、「設計」節と矛盾もせず
             # 「設計」節に無い決定も含まないまま上位層で消える。散文1本になった分、
             # 隣接する節どうしの言い回し差で round が発散する余地は増えている。
-            "プラン本文の節どうしの言い回しの差そのものを、"
+            "プラン文書の節どうしの言い回しの差そのものを、"
             "失敗経路を特定できないまま単独の指摘として返さない",
             # 残す経路は例示。閉じた列挙にすると、新しい救済条件が現れるたびに列を
             # 伸ばすことになり、この原稿が塞ぐ「規約を分散して持つ」構造を再現する。
@@ -932,7 +1307,7 @@ class DraftImplementationPlanContractsTest(
 
         catalog = (
             "文言・表現の好み",
-            "プラン本文の整形・体裁（項目順、記法、表記ゆれ）",
+            "プラン文書の整形・体裁（項目順、記法、表記ゆれ）",
             "「依存 / 制約 / 前提 / 未確定」節に記録済みの事項の再指摘",
             "同義の言い換え提案",
         )
@@ -998,13 +1373,16 @@ class DraftImplementationPlanContractsTest(
         required = (
             "## プラン入力モード",
             "既定は現行の diff 入力モード",
-            "明示してプラン本文を渡した場合のみ",
+            "明示してプラン文書を渡した場合のみ",
             "プランが新規に導入しようとする要素",
             "テスト結果は入力として要求しない",
             "どの AC・制約にも辿れない計画要素",
             "実装詳細が未確定の要素には適用しない",
             "`review-patch-refactorer` は使わない",
             "判定せず親へ差し戻して",
+            # 返却形式は diff 入力モードと共有されるため、対象の読み替えは mode 局所の
+            # 一覧へ置く。返却形式節を書き換えると impl-lead 側の契約が壊れる。
+            "「対象ファイルと該当箇所」はプラン文書の節または AC id と読む。",
         )
 
         for contract in required:
@@ -1022,7 +1400,7 @@ class DraftImplementationPlanContractsTest(
             "".join(self._section_lines(source, "## プラン入力モード")).split()
         )
         required = (
-            "「Acceptance Criteria」節に AC が1件も無いプラン本文は、推測で補わず、"
+            "「Acceptance Criteria」節に AC が1件も無いプラン文書は、推測で補わず、"
             "判定せず親へ差し戻してください。",
             "制約の記載の有無は差し戻し条件にしません。",
             # 「立場」節の入力要求は mode を限定せず agent 全体に掛かるため、参照を
@@ -1036,6 +1414,37 @@ class DraftImplementationPlanContractsTest(
                 self.assertIn("".join(contract.split()), section)
         # 差し戻し条件が「立場」節を参照したままだと、同節だけで条件が読み切れない。
         self.assertNotIn("".join("diff 入力モードと同様に".split()), section)
+
+    def test_over_engineering_reviewer_keeps_the_shared_return_format(self) -> None:
+        """Keep the return format shared with the diff mode untouched by the plan mode."""
+        # impl-lead は同じ節を diff 入力モードの契約として使う。プラン入力モードの
+        # 読み替えをこの節へ書き込むと、diff 側の返却契約が一緒に変わる。
+        expected_items = (
+            "- 指摘ID",
+            "- 対象ファイルと該当箇所。",
+            "  evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id "
+            "のいずれか）を示す",
+            "- 過剰の類型",
+            "- 除去しても失われる AC・制約が無いと判断した根拠",
+            "- 取り除いた後も残る実装または検証とそれが担保する AC",
+            "- 外部から観測可能な振る舞いへの影響有無",
+            "- 局所的かつ振る舞いを変えずに取り除けるか",
+            "- 推奨する修正先",
+        )
+        source = self._repository_text(
+            Path("shared/agents/over-engineering-reviewer.md")
+        )
+        lines = self._section_lines(source, "## 返却形式")
+        items = tuple(
+            line
+            for line in lines
+            if line.startswith("- ") or line.startswith("  evidence")
+        )
+        self.assertEqual(
+            tuple("".join(item.split()) for item in expected_items),
+            tuple("".join(item.split()) for item in items),
+        )
+        self.assertNotIn("プラン", "".join(lines))
 
     def test_over_engineering_reviewer_keeps_the_diff_mode_input_demand(self) -> None:
         """Keep the stance section's diff-mode input demand untouched by the plan mode."""
@@ -1170,7 +1579,7 @@ class DraftImplementationPlanContractsTest(
     ) -> None:
         """Delegate what the 方針 section covers to the body sections, keeping the ban."""
         required = (
-            "担当する内容は手順3 と同じく「プラン本文の節構成」を正本とし、"
+            "担当する内容は手順3 と同じく「プラン文書の節構成」を正本とし、"
             "ここでは再掲しない。",
             # 担当範囲の定義は節構成の担当だが、要約で書いてしまう失敗は起草時に起きる。
             # 失敗モードの禁止だけを手順側に残す。
@@ -1218,7 +1627,7 @@ class DraftImplementationPlanContractsTest(
         # 節構成側の分量の境界と衝突する。免責文の存在だけを assertIn で見ると、免責文を
         # 残したまま必須項目を「追加」した自己矛盾を通してしまう。手順3 のブロック全体を
         # 固定し、免責文の削除と必須項目の追加の両方を検出する。免責文そのものは
-        # 「プラン本文の節構成」へ移したため、手順3 は委譲だけを持つ。
+        # 「プラン文書の節構成」へ移したため、手順3 は委譲だけを持つ。
         #
         # ただしブロック等価固定が守るのは手順3 の**内側**の改変だけである。分量の境界の
         # 写し（例:「「設計」節の分量は決めた事項が少なければ短くてよい」）は手順3 以外の
@@ -1235,7 +1644,7 @@ class DraftImplementationPlanContractsTest(
         expected = (
             "3. 「設計」節に、そのプランで決めた規約の本体を書く。"
             "節構成と各節の責務、および「設計」節の分量は"
-            "「プラン本文の節構成」を正本とし、ここでは再掲しない。"
+            "「プラン文書の節構成」を正本とし、ここでは再掲しない。"
         )
         for platform, text in self._draft_reference_texts("plan-drafting.md").items():
             with self.subTest(platform=platform):
@@ -1276,7 +1685,7 @@ class DraftImplementationPlanContractsTest(
         """Bar the convention body from AC text while keeping the observation point in it."""
         required = (
             "規約・設計の本文を AC の `text` へ再掲しない。",
-            "規約の正本はプラン本文の「設計」節であり、AC は「設計」節の充足を"
+            "規約の正本はプラン文書の「設計」節であり、AC は「設計」節の充足を"
             "外部から観測できる条件として書く。",
             # 「観測点を text に含める」既存規約と衝突して読まれないよう、含めるもの
             # （観測点）と含めないもの（規約本文）を同じ項目内で書き分ける。
@@ -1297,7 +1706,7 @@ class DraftImplementationPlanContractsTest(
         # #108 は、文を書き換えるときに同居する既存義務を巻き添えで落とす失敗を4件
         # 実測している。節構成への書き換えで触れる手順と AC 規約の義務を個別に固定する。
         procedure = (
-            "要求原文を言い換えずに保持し、プラン本文の「要求の所在」行に所在を書く。",
+            "要求原文を言い換えずに保持し、プラン文書の「要求の所在」行に所在を書く。",
             "対象 repository の現状を読み、",
             # 前置詞句で切ると、禁止を許可へ反転させた原稿を通す。禁止条項は述部まで固定する。
             "現状を確認せずに以降の手順へ進まない。",

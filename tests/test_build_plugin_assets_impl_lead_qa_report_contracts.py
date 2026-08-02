@@ -327,19 +327,19 @@ class ImplLeadQaReportContractsTest(
                     self.assertEqual(expected, toc_items)
                     self.assertEqual(expected, actual)
 
-    def test_repository_distribution_version_is_4_1_0(self) -> None:
-        """Pin the prose plan-body contract to the synchronized minor version."""
+    def test_repository_distribution_version_is_4_2_0(self) -> None:
+        """Pin the two-artifact plan contract to the synchronized minor version."""
         shared_version = self._repository_text(Path("shared/VERSION")).strip()
-        self.assertEqual("4.1.0", shared_version)
+        self.assertEqual("4.2.0", shared_version)
         for manifest_path in (
             Path("plugins/claude/.claude-plugin/plugin.json"),
             Path("plugins/codex/.codex-plugin/plugin.json"),
         ):
             manifest = json.loads(self._repository_text(manifest_path))
             with self.subTest(path=manifest_path):
-                self.assertEqual("4.1.0", manifest["version"])
+                self.assertEqual("4.2.0", manifest["version"])
         self.assertEqual(
-            "4.1.0",
+            "4.2.0",
             self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
         )
 
