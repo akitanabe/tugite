@@ -68,8 +68,6 @@ Branch Plan の表の前に明示する。
 
 `override` を Set 層へ増やさない。`override` は実装枝の統合という Branch Plan 内の操作を
 記録する field であり、層をまたいで意味を広げると記録先が入力によって変わるためである。
-Branch Plan を1件へまとめる指示は Set の `decision.split: false` を記録するが、これは
-「分割せず1枝で実行」を Set 全体へ適用した結果であり、`override` を Set 層へ増やす変更ではない。
 
 承認は Branch Plan Set の確定だけを意味する。委譲開始は、ユーザーの明示的な委譲要求だけを根拠に
 親エージェントが `delegation` を設定した後に、`impl-lead` 側で行う。
