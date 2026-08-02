@@ -134,7 +134,7 @@ RETIRED_TERM_SCANS = (
 # 廃止 top-level field が corpus の必須動作へ戻っていないかを見る token。`plan` と `scope`
 # は一般語で、素の表記が散文に正当に現れる（「plan-craft」「scope 逸脱」）ため、この2語だけ
 # backtick 付きと YAML key 形に限る。残る3語は素の表記でも Data の field 以外に読めない。
-RETIRED_REVIEW_STATE_FIELD_TOKENS = (
+CORPUS_RETIRED_FIELD_TOKENS = (
     "`plan`",
     "plan:",
     "`scope`",
@@ -983,7 +983,7 @@ class DraftImplementationPlanContractsTest(
                     self.assertNotIn("".join(term.split()), normalized)
 
     def test_semver_sections_list_the_plan_artifacts_as_public_surface(self) -> None:
-        """Name the two plan artifacts inside the enumeration scope, no wider and no narrower."""
+        """Name the two plan artifacts as items in the public-surface enumeration."""
         # 上のテストは廃止語の不在しか見ない。公開面の列挙からプラン文書とレビュー状態が
         # 丸ごと削除されても、廃止語が増えるわけではないため不在検査は反応しない
         # (reviewer の変異実測で確認済み)。ここでは存在側を固定する。
@@ -1119,7 +1119,7 @@ class DraftImplementationPlanContractsTest(
         ].split("\n## EVAL-26:", 1)[0]
         normalized = "".join(section.split())
         self.assertIn("プラン文書とレビュー状態", normalized)
-        for token in RETIRED_REVIEW_STATE_FIELD_TOKENS:
+        for token in CORPUS_RETIRED_FIELD_TOKENS:
             with self.subTest(token=token):
                 self.assertNotIn(token, normalized)
 
