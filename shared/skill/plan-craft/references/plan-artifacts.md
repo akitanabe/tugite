@@ -238,8 +238,9 @@ file の本文、会話内経路では会話上に提示した本文を対象に
 性質が壊れる。表Bの生成主体は親の判定であり、節の充足は起草手順とレビューの判定が担う。Branch
 Plan Set 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
 
-廃止した `scope-conflict`、AC id に対する `duplicate-id`、`unknown-reference` は plan 段では
-扱わない。前2者は `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。
+廃止した `scope-conflict` と `unknown-reference`、AC id に対する `duplicate-id` は plan 段では
+扱わない。`scope-conflict` は `allowed_paths` の廃止により下流の検査もなく、code 自体を廃止した。
+AC id に対する `duplicate-id` だけは `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。
 `unknown-reference` は、plan 段で id を参照する field が `open_questions[].affects` だけになり、
 その値をプラン文書の節名または AC id とすることで参照検査の対象が残らない。finding id に対する
 `duplicate-id` は表Aに残る。
@@ -280,7 +281,7 @@ Plan Set 正規スキーマの `branch-contract-violation` が機械検査では
 | 実装目的 | 見出し行 |
 | 元プラン | 「要求の所在」行 |
 | Acceptance Criteria（原文） | 「Acceptance Criteria」節（ID ごと原文のまま） |
-| 変更可能範囲と変更禁止範囲 | 「scope」節の変更可能 / 変更禁止 |
+| 変更禁止範囲 | 「scope」節の変更禁止 |
 | 既知の依存 | 「依存 / 制約 / 前提 / 未確定」節の依存 |
 
 `handoff-incomplete` は、この表の左列を充足できない欠落を検査する。「既知の依存」が対象に入らない

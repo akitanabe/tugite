@@ -509,7 +509,6 @@ class DelegateImplementationIntakeContractsTest(
                 "委譲 prompt の「この枝でやらないこと」へ渡す",
             ),
             "implementation-branches.md": (
-                "- 変更を許可する物理的範囲: <allowed_paths>",
                 "- 変更を禁止する物理的範囲: <forbidden_paths>",
                 "- この枝でやらないこと: <out_of_scope。空なら「なし」>",
                 "必要になった場合は変更せず、必要性と理由を親へ報告する",
@@ -526,6 +525,23 @@ class DelegateImplementationIntakeContractsTest(
                     normalized = "".join(text.split())
                     for contract in contracts:
                         self.assertIn("".join(contract.split()), normalized)
+                    self.assertNotIn("allowed_paths", text)
+
+    def test_parent_qa_observes_forbidden_path_contact_in_viewpoint_zero(self) -> None:
+        """Define QA viewpoint zero as contact with forbidden paths, not generic scope drift."""
+        for platform, text in self._delegate_reference_texts(
+            "qa-and-integration.md"
+        ).items():
+            with self.subTest(platform=platform):
+                qa_section = text.split("## 親の QA", 1)[1].split("\n## ", 1)[0]
+                normalized = "".join(qa_section.split())
+                self.assertIn(
+                    "".join(
+                        "`forbidden_paths` に列挙された変更禁止範囲へ接触していないこと".split()
+                    ),
+                    normalized,
+                )
+                self.assertNotIn("物理的な scope 逸脱", normalized)
 
     def test_intake_reference_resolves_the_cross_skill_schema_link(self) -> None:
         """Resolve the schema code table link across shared and generated trees."""

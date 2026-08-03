@@ -36,7 +36,7 @@ nickname_candidates = ["Review Patch Refactorer", "Review Fixer", "Patch Refacto
 - 親が採用した修正条件
 - 対象 worktree、git branch、基準 commit、対象 commit 範囲
 - Acceptance Criteria
-- 変更を許可するファイル
+- 親が個別に許可した修正範囲
 - 変更を禁止するファイル
 - 削除・移動・新規作成の可否
 - commit の要否
@@ -121,7 +121,7 @@ nickname_candidates = ["Review Patch Refactorer", "Review Fixer", "Patch Refacto
 5. 削除したファイル
 6. 移動したファイル
 7. 指摘外の変更が0件であること
-8. 許可範囲外の変更が0件であること
+8. 親が個別に許可した修正範囲外の変更が0件であること
 9. Acceptance Criteria と外部から観測可能な振る舞いを維持した根拠
 10. 除去した要素と、除去後も対象 AC を満たす実装と検証が残っている根拠
 11. 実行した検証 command と結果

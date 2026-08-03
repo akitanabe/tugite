@@ -166,7 +166,7 @@ custom agent が不足する場合は `$install-custom-agents` を使い、scope
 
 - 実装枝の目的
 - Acceptance Criteria
-- 変更を許可する物理的範囲、変更を禁止する物理的範囲、この枝でやらないこと
+- 変更を禁止する物理的範囲、この枝でやらないこと
 - 最新の基準コミット
 - 絶対 worktree path と git branch 名
 - コードから読み取れない確定済みの設計判断や制約
@@ -195,7 +195,6 @@ custom agent の developer instructions にある安定契約を長く再掲せ�
 - AC-2: <条件>
 
 ## scope
-- 変更を許可する物理的範囲: <allowed_paths>
 - 変更を禁止する物理的範囲: <forbidden_paths>
 - この枝でやらないこと: <out_of_scope。空なら「なし」>
 - 再利用する共有基盤: <fixture / helper / test data>
@@ -209,6 +208,7 @@ custom agent の developer instructions にある安定契約を長く再掲せ�
 - 証跡: <この mode と段階で必要な AC 対応表、Red 出力、検証結果>
 ```
 
+`forbidden_paths` は変更禁止の物理的範囲、`out_of_scope` は担当しない責務・作業を表す。
 `out_of_scope` はパス制約へ統合せず、各項目の意味を変えずに「この枝でやらないこと」へ列挙する。
 Implementer は、その責務・作業が枝の完成に必要になった場合は変更せず、必要性と理由を親へ報告する。
 

@@ -264,7 +264,7 @@ class ImplLeadExecutionContractsTest(
         required_data = (
             "実装枝の目的",
             "Acceptance Criteria",
-            "変更を許可する物理的範囲、変更を禁止する物理的範囲、この枝でやらないこと",
+            "変更を禁止する物理的範囲、この枝でやらないこと",
             "最新の基準コミット",
             "コードから読み取れない確定済みの設計判断や制約",
             "委譲 mode と TDD 要件",
@@ -281,6 +281,23 @@ class ImplLeadExecutionContractsTest(
         self.assertIn("絶対 worktree path と git branch 名", skills.claude)
         self.assertIn("絶対 worktree path と git branch 名", skills.codex)
         self.assertNotIn("worktree の隔離条件", skills.claude)
+
+    def test_repository_impl_lead_skill_uses_forbidden_scope_input_only(self) -> None:
+        """Keep the top-level workflow input limited to the forbidden scope."""
+        skills = self._repository_skill_texts()
+        for skill in skills.all_texts():
+            self.assertIn(
+                "目的、入力、出力、Acceptance Criteria、禁止範囲を確定する。",
+                skill,
+            )
+            self.assertNotIn(
+                "目的、入力、出力、Acceptance Criteria、変更範囲、禁止範囲を確定する。",
+                skill,
+            )
+            self.assertNotIn(
+                "目的、入力、出力、Acceptance Criteria、変更禁止範囲、この枝で担当しない責務・作業を確定する。",
+                skill,
+            )
 
     def test_repository_implementation_branches_reference_defines_branch_terminology(
         self,
