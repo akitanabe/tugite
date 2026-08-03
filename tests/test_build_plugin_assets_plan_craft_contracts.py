@@ -337,7 +337,10 @@ class DraftImplementationPlanContractsTest(
             "見出し行・「要求の所在」行・各節にある。",
             # 引き継ぎ規約はこの文書が持つが、ID 規約そのものは起草手順が正本。
             # 両方へ本文を置くと、同じ規約が別々の言い回しで2箇所に残る。
-            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の "
+            # 引き継ぎ先は Branch Plan ではなく Branch Plan Set である。`acceptance_criteria`
+            # は Set が持つため、Branch Plan を引き継ぎ先と書くと読者は存在しない field を
+            # 探しに行く。
+            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan Set の "
             "`acceptance_criteria` へ原文のまま引き継ぐ。",
             "ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、"
             "この文書は再掲しない。",
