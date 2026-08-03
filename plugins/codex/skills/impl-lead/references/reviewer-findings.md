@@ -5,14 +5,17 @@
 ## 目次
 
 - 位置づけ
+- 確認観点の優先順位
 - read-only の担保
 - 指摘件数のサマリ行
 - 指摘ごとの evidence
+- 指摘一覧の並び順
+- 返却前自己検査
 
 ## 位置づけ
 
-findings を返すすべての reviewer が共通で満たす2点を定義する。正本はこの reference が持ち、
-各 reviewer 原稿は同じ2点を自分の出力形式の語彙で本文に書き下す。
+findings を返すすべての reviewer が共通で満たす契約を定義する。正本はこの reference が持ち、
+各 reviewer 原稿は必要な契約を自分の出力形式の語彙で本文に書き下す。
 
 対象は `responsibility-boundary-reviewer`、`test-quality-reviewer`、`security-side-effect-reviewer`、
 `writing-principles-reviewer`、`over-engineering-reviewer`、`plan-adversarial-reviewer` とする。
@@ -20,7 +23,15 @@ findings を返すすべての reviewer が共通で満たす2点を定義する
 
 判定語彙、0件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、この reference では変更しない。
 
-ここで定めた対象は上記2点だけに適用する。「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。
+ここで定めた findings 契約の対象は上記6本に適用する。「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。
+
+## 確認観点の優先順位
+
+親が渡す「確認させる観点」は、確認・探索の順序を先にするために優先して扱ってください。
+ただし確認させる観点だけに限定せず、自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘を
+発見し、根拠を示せる場合は返してください。
+親から渡された周辺コンテキストは、指摘の成立条件と影響を裏付けるために使うが、周辺コンテキストを理由に
+責務範囲外へ広げないでください。確認させる観点の受け口を設けても、reviewer の責務分担や判定語彙は変更しない。
 
 ## read-only の担保
 
@@ -72,8 +83,8 @@ network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と cre
 や `.env` の読み取りなど）は、この契約の担保対象外である。`push` の禁止にも上記の検査にも現れないため、
 機構的に扱われていると誤解しないこと。
 
-この節の対象は、上記2点の6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
-`expert-selection-reviewer` は指摘 Data を返さないため上記2点の対象外だが、ファイルを変更しない点は
+この節の対象は、findings を返す6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
+`expert-selection-reviewer` は指摘 Data を返さないため findings 契約の対象外だが、ファイルを変更しない点は
 共通であり、この節では対象に含める。指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、
 この節でも対象外とする。
 
@@ -101,3 +112,16 @@ network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と cre
 プランや Data だけを入力に取る reviewer は、参照した Data の path と id で足りる。
 
 evidence は各 reviewer が既に持つ場所または根拠の項目の中で示す。evidence 専用の項目を新設しない。
+
+## 指摘一覧の並び順
+
+判定または重要度の欄がある場合は、既存の語彙で高い順に並べてください。欄がない場合は、返却 Data の既存項目に示す
+受け入れ影響を根拠に比較できる場合だけ影響の大きい順に並べてください。同等または比較できない指摘の順序は問いません。
+判定語彙や field を新設せず、比較できないことだけを理由に未定義の情報を要求しないでください。低い重要度の指摘で
+高い重要度の指摘を希釈しないでください。
+
+## 返却前自己検査
+
+reviewer は返却前に各 finding の必須項目を自己検査する。各 reviewer 原稿の返却形式が必須とする項目を具体的に埋められない
+finding は返さない。必要な情報が不足している場合は、finding を作らず親へ返す。
+これは指摘件数の水増しや、根拠のない仮想的な問題の列挙を防ぐためである。
