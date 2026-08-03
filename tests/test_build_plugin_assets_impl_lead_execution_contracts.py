@@ -89,6 +89,37 @@ class ImplLeadExecutionContractsTest(
                 source,
             )
 
+    def test_repository_implementers_self_check_final_standard_and_strict_returns(
+        self,
+    ) -> None:
+        """Require final self-reconciliation while preserving lite/strict gates."""
+        required_contracts = (
+            "返却前自己照合",
+            "task requirements",
+            "変更 file",
+            "tool outputs",
+            "`standard` と `strict` の最終返却",
+            "最初の案をそのまま返さず",
+            "授権済みの段階・scope内なら修正と再検証",
+            "授権済み段階・scopeを越える場合は、状況と判断点を返す",
+        )
+        mode_boundaries = (
+            "`lite` では自己照合を要求しない",
+            "`strict` の途中段階には自己照合を要求しない",
+        )
+
+        for name in ("implementer", "senior-implementer", "expert-implementer"):
+            paths = (
+                Path("shared/agents") / f"{name}.md",
+                Path("plugins/claude/agents") / f"{name}.md",
+                Path("plugins/codex/install/agents") / f"{name}.toml",
+            )
+            for path in paths:
+                with self.subTest(name=name, path=path):
+                    normalized = "".join(self._repository_text(path).split())
+                    for contract in required_contracts + mode_boundaries:
+                        self.assertIn("".join(contract.split()), normalized)
+
     def test_repository_workflow_selects_implementers_by_complexity_and_residual_judgment(
         self,
     ) -> None:
