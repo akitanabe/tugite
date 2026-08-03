@@ -787,8 +787,9 @@ class FeatureLeadContractsTest(
         # bullet で打ち切る」形へ変えた際に、`unattended` bullet の**後ろ**へ
         # 新設した兄弟 bullet（あるいは間に挟んだ兄弟 bullet）へこの否定文を
         # 置く変異が検出できなくなった（TQ-22）。`attended` 側だけを除いた
-        # 範囲は、PQ-3 の変更にも `_bullet` の将来の変更にも依存せず、
-        # 「`attended` では真になりうる」という唯一の例外だけを反映する。
+        # 範囲は `_bullet` が返す `attended_bullet` の実際の広がりに依存する
+        # ため、その依存が壊れて `outside_attended` が無言で縮んだ場合は、
+        # 下の guard（TQ-23）がそれを loud な失敗にする。
         forbidden = "境界で必ず停止し、ユーザーの授権を待つ。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
@@ -801,6 +802,16 @@ class FeatureLeadContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
             attended_bullet = self._bullet(section, "- `attended`", None)
             outside_attended = section.replace(attended_bullet, "", 1)
+            # Guard the guard (TQ-23): `outside_attended` depends entirely on
+            # `_bullet`'s `next_marker=None` boundary via `attended_bullet` —
+            # if that boundary ever grows to swallow the `unattended` bullet
+            # too, it fails silently, not with an error: `outside_attended`
+            # would just shrink until the `assertNotIn` below passes for the
+            # wrong reason (nothing left to search, not "the forbidden text
+            # is absent"). Asserting the `unattended` bullet's own text is
+            # still present in `outside_attended` makes that collapse loud.
+            with self.subTest(platform=platform, guard="outside_attended"):
+                self.assertIn(unattended_bullet, outside_attended)
             with self.subTest(platform=platform, forbidden=forbidden):
                 self.assertNotIn(
                     "".join(forbidden.split()), "".join(outside_attended.split())
