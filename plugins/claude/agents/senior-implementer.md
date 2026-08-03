@@ -33,9 +33,9 @@ reset / merge / checkout などで自力修復しません。
 - `lite` では親が求めた場合だけ Red 証跡と AC 対応表を返す。
 - `standard` では Red 証跡と AC 対応表を必ず返す。`strict` は各段階の証跡だけを返し、
   最終返却で Red 証跡と AC 対応表を揃える。
-- **返却前自己照合**: `standard` と `strict` の最終返却前に、task requirements、AC 対応表、変更 file、
-  tool outputs、および実際の変更内容を照合する。`lite` では自己照合を要求しない。`strict` の途中段階には
-  自己照合を要求しない。
+- **返却前自己照合**: `standard` と `strict` の最終返却前に、AC 対応表を task requirements および
+  変更 file / tool outputs と照合し、返却内容との整合を確認する。`lite` では自己照合を要求しない。
+  `strict` の途中段階には自己照合を要求しない。
 - 不整合を検出した場合は最初の案をそのまま返さず、授権済みの段階・scope内なら修正と再検証を行う。
   修正が授権済み段階・scopeを越える場合は、状況と判断点を返す。
 - 新機能または未実装仕様では Red を必須とする。既存挙動を固定する regression test に限り追加時点の
