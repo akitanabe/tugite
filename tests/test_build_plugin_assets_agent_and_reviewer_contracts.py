@@ -474,6 +474,23 @@ class AgentAndReviewerContractsTest(
                     "".join(missing_input_route.split()), normalized_agent
                 )
 
+    def test_repository_review_patch_refactorer_accepts_writing_reviewer_permission(
+        self,
+    ) -> None:
+        """Allow the final writing reviewer to authorize the same bounded patch route."""
+        trigger = (
+            "専門 reviewer の具体的な指摘、または `writing-principles-reviewer` の明示許可が存在する。"
+        )
+        old_trigger = "専門 reviewer の具体的な指摘が存在する。"
+        for platform, agent in self._review_patch_refactorer_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(agent.split())
+                launch_section = normalized.split("##起動条件", 1)[1].split(
+                    "##基本方針", 1
+                )[0]
+                self.assertIn("".join(trigger.split()), launch_section)
+                self.assertNotIn("".join(old_trigger.split()), launch_section)
+
     def test_repository_review_patch_refactorer_separates_route_specific_inputs_and_returns(
         self,
     ) -> None:
