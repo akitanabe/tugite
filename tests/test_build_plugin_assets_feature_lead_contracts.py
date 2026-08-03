@@ -752,13 +752,18 @@ class FeatureLeadContractsTest(
         self,
     ) -> None:
         """Keep the impl-lead-gate decision point from re-absorbing boundary stops."""
-        # TQ-5; TQ-8; AC-8(d) mechanism. Scoped to the "## 段の遷移と判断点の
-        # 処理" preamble bullet list specifically — capped at the first "### "
-        # subsection, not the whole "## " section — because the exclusion
-        # clause has to sit on the gate bullet itself. TQ-8 found that the
-        # wider "## " cap let the clause migrate into the sibling subsection
-        # "### Branch Plan 境界の停止" and still pass, since both landed in the
-        # same slice; capping at "### " makes that migration fail here.
+        # TQ-5; TQ-8; TQ-19; AC-8(d) mechanism. Scoped to the gate bullet
+        # itself via `_bullet`, not just the "## 段の遷移と判断点の処理"
+        # preamble list capped at "### " (TQ-8). The section cap alone still
+        # let the exclusion clause migrate to a sibling bullet (the
+        # `plan-craft` blocked bullet) or to the prose above the list and
+        # keep passing: "これに含めない" is anaphoric and needs the gate
+        # bullet's own sentence as its antecedent, the same anaphora risk
+        # TQ-3 closed for the attended/unattended bullets. This is the last
+        # bullet in the capped preamble list, so `next_marker=None` scopes it
+        # to "gate marker through the end of that already-bounded section" —
+        # the same trust in the caller's section boundary `_bullet`'s
+        # docstring already documents for the `unattended` bullet.
         contract = (
             "ただし Branch Plan 境界（未授権の Branch Plan への到達）での停止は"
             "これに含めない。「Branch Plan 境界の停止」に従う。"
@@ -767,7 +772,10 @@ class FeatureLeadContractsTest(
             section = self._section(
                 text, "## 段の遷移と判断点の処理", next_heading="\n### "
             )
-            normalized = "".join(section.split())
+            gate_bullet = self._bullet(
+                section, "- `impl-lead` が各 mode のゲートで停止した", None
+            )
+            normalized = "".join(gate_bullet.split())
             with self.subTest(platform=platform):
                 self.assertIn("".join(contract.split()), normalized)
 
@@ -861,6 +869,23 @@ class FeatureLeadContractsTest(
                     step_nine_contract,
                     "".join(self._numbered_step(flow, 9).split()),
                 )
+            # TQ-20: `required_order`'s position check relies on the needle
+            # occurring nowhere else in the flow; `str.find` returns the
+            # *first* match, so a decoy copy of 手順6's sentence placed
+            # earlier in the flow (with the real step later swapped past
+            # 手順7 or 手順9) would pin `positions[0]` to the decoy and let
+            # the swap through undetected — two edits, but the second one
+            # alone reproduces RB-2's infinite loop. Locating each step by
+            # its own physical position (`flow.index` on `_numbered_step`'s
+            # anchored result, not a bare substring) is immune to a decoy
+            # occurring anywhere before it, since it points at the specific
+            # line that starts with that ordinal rather than the first
+            # matching sentence.
+            with self.subTest(platform=platform, check="ordinal-order"):
+                step_starts = [
+                    flow.index(self._numbered_step(flow, n)) for n in (6, 7, 8, 9)
+                ]
+                self.assertEqual(step_starts, sorted(step_starts))
 
     def test_feature_lead_has_no_remaining_branch_plan_data_wording(self) -> None:
         """Retire the pre-Set field name, including a whitespace-split rewrap."""
