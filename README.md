@@ -101,7 +101,7 @@
 ### impl-delegate: 明示指定時の軽量な委譲
 
 `impl-delegate` は、ユーザーが skill 名を明示した場合だけ発火します。自然言語やタスク規模から推測して発火せず、
-明示時は `impl-lead` を発火しません。Intake 後に親が基準 commit から専用 worktree を作成し、1名の `implementer`
+明示時は `impl-lead` を発火しません。Intake 後に親が基準 commit から専用 worktree を作成し、1名の `worker`（通常は `implementer`、必要時は `senior-implementer`）
 がその worktree だけを編集します。TDD の Red → Green → Refactor と親 QA は必須ですが、Branch Plan、永続 QA
 report、独立した diff artifact は要求しません。
 

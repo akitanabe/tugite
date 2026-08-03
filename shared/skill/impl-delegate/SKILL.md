@@ -22,8 +22,7 @@ description: >-
 # impl-delegate
 
 `impl-delegate` は、親が実装を1名の worker に委譲し、親自身が QA と受け入れ判断を行うための軽量な手順である。
-この手順は、`impl-lead` の mode や Branch Plan のライフサイクルを簡略化するための別 skill であり、
-同じ判断を重複して実行しない。
+この手順は、`impl-lead` の mode や Branch Plan のライフサイクルを簡略化するための別 skill である。
 
 ## 発火条件
 
@@ -115,9 +114,9 @@ patch 後は親 QA と Green 確認で終了する。
 
 親は repository-native の最終 gate を実行し、最終 diff と `git status --short` を確認する。
 commit・push・PR はユーザーが明示した場合だけ行う。
-明示された commit/push/PR と最終確認を先に実行する。安全に回収済みの場合だけ cleanup する。
-commit 未依頼で変更が worktree に残る場合は cleanup せず、path/status を報告する。force 削除しない。
-Intake 前の dirty/untracked を保持し、公開または安全な回収が完了した対象 worktree だけを cleanup する。
-安全を確認して worktree を cleanup するのは、安全に回収済みの場合だけとする。
+明示された commit/push/PR と最終確認を先に実行する。その後、次の全条件を満たす場合だけ専用 worktree を cleanup する。
+(a) worktree の意図した変更が commit 済みである、(b) `git status --short` に未 commit・未追跡の成果がない、
+(c) 依頼された push/PR 等があれば成功と最終状態を確認済みである。満たさなければ cleanup せず、path/status を報告する。
+force 削除は行わない。Intake 前の dirty/untracked は保持する。
 変更ファイル、検証 command と結果、AC 対応、残存 risk、未検証事項を報告する。判断点も報告する。
 明示がなければ、親へ変更ファイル、検証 command と結果、AC 対応、Red 証跡、判断点、残存 risk、未検証事項を返して終了する。

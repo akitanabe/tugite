@@ -39,14 +39,13 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
 
     @staticmethod
     def _frontmatter_regions(text: str) -> tuple[str, ...]:
-        """Extract YAML frontmatter blocks, including platform-specific shared blocks."""
         return tuple(
             match.group(1)
             for match in re.finditer(r"(?ms)^---\n(.*?)^---\n", text)
         )
 
-    def test_frontmatter_routes_impl_lead_and_impl_delegate_without_overlap(self) -> None:
-        """Keep general impl-lead routing and explicit-only impl-delegate routing distinct."""
+    def test_impl_lead_frontmatter_routes_exclude_impl_delegate(self) -> None:
+        """impl-delegate明示時はimpl-leadを除外し、一般委譲の経路は維持する。"""
         impl_lead_paths = (
             Path("shared/skill/impl-lead/SKILL.md"),
             Path("plugins/claude/skills/impl-lead/SKILL.md"),
@@ -178,7 +177,7 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
             "## Closeout",
             "repository-native の最終 gate",
             "最終 diff と `git status --short` を確認する",
-            "安全を確認して worktree を cleanup する",
+            "次の全条件を満たす場合だけ専用 worktree を cleanup する",
             "変更ファイル、検証 command と結果、AC 対応、残存 risk、未検証事項を報告する",
         )
         for name, text in texts.items():
@@ -228,7 +227,7 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
                     self.assertIn(self._normalize_contract(contract), normalized)
 
     def test_skill_selects_specialist_reviewers_by_concrete_risk(self) -> None:
-        """Mirror impl-lead risk-based reviewer selection and same-snapshot collection."""
+        """具体的リスクだけでreviewerを選択し、同じ入力snapshotを共有する。"""
         texts = self._skill_texts()
         required = (
             "専門 reviewer は impl-lead と同じ具体的リスク選択方針に従う。",
@@ -289,9 +288,11 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
         texts = self._skill_texts()
         required = (
             "明示された commit/push/PR と最終確認を先に実行する。",
-            "安全に回収済みの場合だけ cleanup する。",
-            "commit 未依頼で変更が worktree に残る場合は cleanup せず、path/status を報告する。",
-            "force 削除しない。",
+            "次の全条件を満たす場合だけ専用 worktree を cleanup する。",
+            "(a) worktree の意図した変更が commit 済みである、(b) `git status --short` に未 commit・未追跡の成果がない、",
+            "(c) 依頼された push/PR 等があれば成功と最終状態を確認済みである。",
+            "満たさなければ cleanup せず、path/status を報告する。",
+            "force 削除は行わない。",
         )
         for name, text in texts.items():
             with self.subTest(name=name):
@@ -306,7 +307,9 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
                     )
                 )
                 cleanup_pos = closeout.index(
-                    self._normalize_contract("安全に回収済みの場合だけ cleanup する。")
+                    self._normalize_contract(
+                        "次の全条件を満たす場合だけ専用 worktree を cleanup する。"
+                    )
                 )
                 self.assertLess(publish_pos, cleanup_pos)
 
