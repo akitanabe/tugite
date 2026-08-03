@@ -682,8 +682,11 @@ class ImplLeadModeContractsTest(
             "HEAD 不一致だけを特別扱いし、path 不一致・branch 不一致・dirty status を異なる扱いにする。",
             "Claude Code と Codex は「platform 共通の期待」に記載した起動、継続 mechanism だけが異なる。",
             "Red 必須と親 QA は共通であり、agent の起動 mechanism だけが異なる。",
-            "引き上げ受諾後の段階継続 mechanism は platform に合わせてよい。",
         )
+        # 「引き上げ受諾後の段階継続 mechanism は platform に合わせてよい。」は、廃止した
+        # implementation_stages 機構を前提にした EVAL-18 の許容差異だった。case ごと書き換えた
+        # ため文そのものが corpus に存在せず、存在を要求できない。worktree 準備を含む旧版が
+        # 復活しないことは下の stale_contracts が引き続き見る。
         for contract in required_contracts:
             self.assertIn("".join(contract.split()), normalized)
 

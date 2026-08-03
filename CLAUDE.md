@@ -99,7 +99,7 @@ Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が
 | skill | 責務 | 起動しないもの |
 | --- | --- | --- |
 | `plan-craft` | 要求から実装プランを起草し、敵対的レビューと過剰実装審査を通す | 実装・委譲・枝分割 |
-| `branch-design` | 実装プランを委譲可能な Branch Plan Data へ正規化する | 実装・委譲・`impl-lead` |
+| `branch-design` | 実装プランを委譲可能な Branch Plan Set へ正規化する | 実装・委譲・`impl-lead` |
 | `impl-lead` | 枝を worktree 隔離して委譲し、親が QA と最終検証を担う | — |
 | `test-audit` | 既存テストスイートを read-only で棚卸しし gap を報告する | 修正・テスト実行・受け入れ判断 |
 | `feature-lead` | `plan-craft` → `branch-design` → `impl-lead` を連結し、要求から実装完了までを一括で進める | 各段の判断基準の再定義・プラン起草・枝分割・実装自体 |

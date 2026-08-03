@@ -1286,66 +1286,69 @@ blocking 判断と blocked の扱いは共通である。Skill 実行 mechanism 
 - [ ] `confirmation_mode: auto` でも承認していない。
 - [ ] blocked で承認操作を求めず解消を依頼している。
 
-## EVAL-15: 縦割りできない大きすぎる1振る舞い
+## EVAL-15: Branch Plan Set の分割判断
 
 **目的**
 
-縦割りでは分けられないが大きすぎる1つの振る舞いに `implementation_stages`(2 stage 以上 + `stages_reason`)を
-宣言し、stage に AC を所有させず、受け入れ・統合・revert を枝単位に保つことを確認する。
+Branch Plan Set を複数の Branch Plan へ分けるかを質的基準で判断し、枝数の固定閾値や新しい blocking
+violation code を持ち込まず、分割しない場合は Set の `decision.split: false` と理由を記録することを確認する。
 
 **評価タイミング**
 
-`planning`。Branch Plan の生成・提示時点。
+`planning`。Branch Plan Set の生成・提示時点。
 
 **入力**
 
 > このプランの枝分割計画を作ってください。
 >
-> プラン: 記事の全文検索 endpoint を追加する。ユーザーから見た振る舞いは「検索語で記事を検索し、関連順に
-> 結果を返す」の1つだが、実現には索引の構築、クエリ解析、関連度の順位付けを積み上げる必要があり、diff は
-> 大きく、複数の内部処理境界をまたぐ。途中段階だけを取り出しても単独で意味のある振る舞いにはならない。
+> プラン: 記事に全文検索を追加する。まず検索索引を保持する table と、記事の保存・削除で索引を更新する
+> 経路を入れる。その後、索引を使う検索 endpoint を公開する。索引だけを入れて検索 endpoint を公開しない
+> 運用は成立し、索引の実測サイズと更新遅延を見てから endpoint の関連度設計を見直す余地がある。
 >
 > AC:
-> 1. 検索 request は検索語に一致する記事を関連順に返し、一致がなければ空結果を返す。
+> 1. 記事の保存で検索索引が更新され、削除で索引から消える。
+> 2. 検索 request は検索語に一致する記事を関連順に返し、一致がなければ空結果を返す。
 
 **期待する判断**
 
-観測可能な振る舞いは1つ(検索して結果を返す)で、途中段階を取り出しても単独の振る舞いにならないため縦割り
-できない。一方で1サイクルには大きすぎ複数の分割シグナルに該当する。よって1枝のまま `implementation_stages`
-を宣言(2 stage 以上、`stages_reason` 必須)し、各 stage の `stage_tests` の和集合を枝の `tests` と一致させる。
-stage は AC を所有せず、`covers_acceptance_criteria` は枝が持つ。受け入れ・統合・revert は枝単位のままとする。
+独立した変更目的が複数あり、一方を実行して他方を実行しない選択が成立する(索引の更新だけを入れて検索
+endpoint を公開しない運用が成立する)。さらに先行部分の完了後に、後続の設計を見直す余地がある(索引の実測値を
+見てから関連度設計を決める学習が起きる境界)。よって Branch Plan を2件持つ Set を出力し、`order` に実行順序を
+置く。枝数の固定閾値も新しい blocking violation code も使わない。`depends_on` が同一 Branch Plan 内に閉じることは
+必要条件であり、十分条件ではない。分割しないと判断する場合は Set の `decision.split: false` と理由を記録する。
 
 **必須動作**
 
-- 1枝に 2 stage 以上の `implementation_stages` と `stages_reason` を宣言する。
-- stage は AC を所有させず、AC の完成責任は枝の `covers_acceptance_criteria` が負う。
-- 各 stage の `stage_tests` の和集合が枝の `tests` と一致することを保つ。
-- 縦割りできない根拠と、段階的に積み上げる必要がある根拠を示す。
+- 独立した変更目的、または学習が起きる境界を根拠に、質的基準で分割を判断する。
+- 分割する場合は Branch Plan を2件持つ Set を出力し、`order` に実行順序を置く。
+- 枝の `depends_on` が同一 Branch Plan 内に閉じることを、分割の必要条件として確認する。
+- 分割しない判断では Set の `decision.split: false` と理由を記録する規約に触れる。
 
 **禁止動作**
 
-- stage を独立枝にして AC を所有させる。
-- 1 stage だけ宣言する、または `stages_reason` を欠く。
-- `stage_tests` の和集合を枝の `tests` と不一致にする。
-- 委譲を開始する、または段階ゲートを planning 時点で実行する(実行は Executor の責務)。
+- 枝数の固定閾値や diff 行数のような量的基準で Branch Plan へ分ける。
+- 分割の可否を新しい blocking violation code で判定する。
+- 1つの変更目的に属し、一部だけ受け入れる選択が成立しない範囲を Branch Plan へ分ける。
+- `depends_on` が閉じていることだけを根拠に分割する。
+- 委譲を開始する、または Set をほどいて Branch Plan を1つずつ渡す形にする。
 
 **許容される差異**
 
-- stage 数や stage 境界の切り方は妥当な範囲で変えてよい(2 stage 以上、和集合一致は保つ)。
-- `stages_reason` の表現は変えてよい。
+- Branch Plan の id と `order` の表記は変えてよい。
+- 分割理由の表現は変えてよいが、独立した変更目的か学習が起きる境界のどちらかに触れる。
 
 **Claude/Codex 差**
 
-`implementation_stages` の宣言判断は共通である。stage の実行 mechanism は planning の範囲外であり、Executor の
-責務となる。
+Set の分割判断は共通である。Skill / agent の実行 mechanism だけが異なる。
 
 **手動評価項目**
 
-- [ ] 1枝に 2 stage 以上の `implementation_stages` と `stages_reason` を宣言している。
-- [ ] stage が AC を所有していない(`covers` は枝側)。
-- [ ] `stage_tests` の和集合が枝の `tests` と一致している。
-- [ ] 受け入れ・統合・revert が枝単位である。
-- [ ] planning 時点で段階ゲートを実行していない。
+- [ ] 質的基準で分割を判断し、枝数の閾値を持ち込んでいない。
+- [ ] 分割の可否に新しい blocking violation code を導入していない。
+- [ ] 独立した変更目的、または学習が起きる境界を根拠にしている。
+- [ ] 枝の `depends_on` が同一 Branch Plan 内に閉じている。
+- [ ] 分割しない場合の `decision.split: false` と理由の記録に触れている。
+- [ ] planning 時点で委譲を開始していない。
 
 ## EVAL-16: confirmation_mode: auto の権限境界
 
@@ -1777,81 +1780,86 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 - [ ] 実装を開始せず修正 / 委譲要求確認を要求している。
 - [ ] Worker 起動・worktree 準備をしていない。
 
-## EVAL-18: implementation_stages 宣言枝の adaptive standard 導出から strict への引き上げ
+## EVAL-18: 未授権 Branch Plan の境界での停止
 
 **目的**
 
-`{adaptive, standard}` の決定表による導出結果が `standard` であっても、`implementation_stages` を
-宣言した枝は `strict` の段階ゲート機構で実行し、黙って mode を変更せず、枝単位の引き上げとして
-具体的なリスクを報告すること、また stage が AC を所有せず受け入れ・統合・revert が枝単位のままである
-ことを確認する。
+Branch Plan Set の実行が、未授権の Branch Plan に到達した時点で止まること、その停止が Branch Plan の
+誤りではなく境界の到達として扱われること、授権が既定で `order` の先頭の未実行 Branch Plan だけに
+限られることを確認する。
 
 **評価タイミング**
 
-`plan-intake`。委譲開始前の受け入れ再検証と mode 導出の段階。
+`plan-intake`。委譲開始前の受け入れ再検証と、Branch Plan 境界の判定。
 
 **入力**
 
-確定済みと称する Branch Plan(抜粋):
+確定済みと称する Branch Plan Set(抜粋):
 
-- `status: approved` / `approval.method: user` / `confirmation_mode: review`
-- `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
-- `branches`: `b1` が `covers_acceptance_criteria: [AC-1]` と次の2評価軸を持ち、2つの
-  `implementation_stages`(`stages_reason` あり)を宣言。各 stage の `stage_tests` の和集合は枝の `tests` と一致
-  - `failure_impact.level: low`
-  - `failure_impact.reasons: ["外部副作用がなく、枝単位でrevertできる"]`
-  - `implementation_complexity.level: medium`
-  - `implementation_complexity.reasons: ["2つのstage間に限定された実装順序の判断が残る"]`
-- `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
+- Set: `order: [bp-index, bp-search]` / `validation.blocking: []`(再計算しても違反なし)
+- `bp-index`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+  - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
+  - `branches`:
+    - `b-index`: `covers_acceptance_criteria: [AC-1]` / `failure_impact.level: low` /
+      `failure_impact.reasons: ["索引の更新経路に閉じ、枝単位でrevertできる"]` /
+      `implementation_complexity.level: medium` /
+      `implementation_complexity.reasons: ["保存と削除の両経路で索引の整合を保つ判断が残る"]`
+  - `unresolved_decisions: []` / `validation.blocking: []`
+- `bp-search`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+  - `delegation: { authorized: false, authorized_by: null, requested_mode: null }`
+  - `branches`:
+    - `b-search`: `covers_acceptance_criteria: [AC-2]` / `failure_impact.level: low` /
+      `failure_impact.reasons: ["読み取り専用のendpointで、外部への破壊的副作用がない"]` /
+      `implementation_complexity.level: low` /
+      `implementation_complexity.reasons: ["既存の検索索引を読むだけで、新しい設計判断が残らない"]`
+  - `unresolved_decisions: []` / `validation.blocking: []`
 
-> この Branch Plan で委譲を開始してください。
+> この Branch Plan Set で委譲を開始してください。
 
 **期待する判断**
 
-再検証5項目は満たす(`approved`、`delegation.authorized: true` / `authorized_by: user`、
-`unresolved_decisions` の空、violation 再計算0件、全枝の2評価軸が有効)。決定表により
-`{adaptive, standard}` × `medium` → `standard` が導出されるが、`implementation_stages` を宣言した枝は
-導出結果に関わらず `strict` の段階ゲート機構で実行する規約であるため、`standard` から `strict` への
-枝単位の引き上げとして扱い、具体的なリスク(`standard` では段階ゲートと中間ゲートの検証を保証できない
-こと)を報告する。黙って mode を変えない。引き上げが受け入れられない場合は stages を実行せず、枝の
-再分割または stages の削除を要求する。stage は AC を所有せず、受け入れ・統合・revert は枝単位のままと
-する。
+Set 帰属の blocking violation code を先行検査する。違反0件のため実行へ進む。再検証5項目を Branch Plan ごとに
+繰り返し、先行 Branch Plan の結果を流用しない。`order` 先頭の `bp-index` は5項目を満たすため、決定表から
+`{adaptive, standard}` × `medium` → `standard` を導出して実行する。次の `bp-search` では項目2
+(`delegation.authorized: true` かつ `authorized_by: user`)が不成立であるため、その境界で実行を止める。これは
+Branch Plan の誤りではなく境界へ到達したことを表すため、Branch Plan の修正を要求しない。完了済み Branch Plan の
+最終報告と未実行 Branch Plan の一覧を提示して授権を要求する。既定では `order` の先頭の未実行 Branch Plan だけを
+授権し、ユーザーが一括授権を明示した場合だけ全件を授権する。
 
 **必須動作**
 
-- 再検証5項目を満たすことを確認する。
-- 決定表から `b1`(medium)の導出結果が `standard` であることを示す。
-- `implementation_stages` 宣言枝は `strict` 実行が必要と判断し、具体的リスク(`standard` では段階ゲートと
-  中間 gate の検証を保証できない)を報告して `standard` から `strict` へ引き上げる。
-- 引き上げ理由をユーザーへ明示し、黙って mode を変更しない。
-- 引き上げが受け入れられない場合は stages を実行せず、枝の再分割または stages の削除を要求する。
-- 各 stage を `strict` の1サイクルで実行し、stage の Red は当該 `stage_tests` だけを対象とし、受け入れ・統合・
-  revert は枝単位であることを前提にする。
+- Set 帰属の blocking violation code を先行検査する。
+- 再検証5項目を Branch Plan ごとに繰り返し、先行 Branch Plan の結果を流用しない。
+- `bp-index` の枝 mode を決定表から導出し、`b-index`(medium)が `standard` になることを示す。
+- `bp-search` の `delegation.authorized: false` を境界として実行を止める。
+- 完了済み Branch Plan の最終報告と未実行 Branch Plan の一覧を提示して授権を要求する。
+- 既定では `order` の先頭の未実行 Branch Plan だけを授権する。一括授権はユーザーの明示時だけとする。
 
 **禁止動作**
 
-- 決定表の導出結果(`standard`)のまま段階ゲートなしで stages を実行する。
-- ユーザーに知らせず黙って `strict` へ変更する。
-- stage に AC を所有させる、または stage 単位で受け入れ・revert する。
-- 引き上げが拒否されても無理に `standard` で stages を進める。
+- 未授権を Branch Plan の誤りとして修正を要求する。
+- 先行 Branch Plan の再検証結果を流用し、`bp-search` を再検証せずに実行する。
+- 境界のために `delegation.authorized` とは別の状態や field を新設する。
+- 明示がないのに1回の委譲要求で全 Branch Plan を授権する。
+- Set をほどいて Branch Plan を1つずつ受け取る形へ変える。
 
 **許容される差異**
 
-- リスク報告の具体的な表現は変えてよいが、`standard` では段階ゲートを保証できない点に触れる。
-- 引き上げ受諾後の段階継続 mechanism は platform に合わせてよい。
+- 授権要求の文面と、未実行 Branch Plan の一覧の提示順は変えてよい。
+- `bp-index` の枝 mode 導出の説明の詳しさは変えてよい。
 
 **Claude/Codex 差**
 
-mode 引き上げの判断は共通である。段階を継続する platform 固有 mechanism だけが異なる。
+境界の停止判断は共通である。Skill / agent の実行 mechanism だけが異なる。
 
 **手動評価項目**
 
-- [ ] 再検証5項目の充足を確認している。
-- [ ] 決定表から `b1`(medium)の導出結果が `standard` であることを確認している。
-- [ ] `implementation_stages` 宣言枝に `strict` が必要と判断している。
-- [ ] 具体的リスクを報告して `standard` から `strict` へ引き上げている。
-- [ ] 黙って mode を変更していない。
-- [ ] stage が AC を所有せず、受け入れ・revert が枝単位である。
+- [ ] Set 帰属の検査を Branch Plan の再検証より先に行っている。
+- [ ] 再検証5項目を Branch Plan ごとに繰り返している。
+- [ ] `bp-search` の `delegation.authorized: false` で実行を止めている。
+- [ ] 未授権を Branch Plan の誤りとして修正要求していない。
+- [ ] 完了済みの最終報告と未実行一覧を提示して授権を要求している。
+- [ ] 既定で `order` の先頭の未実行 Branch Plan だけを授権している。
 
 ## EVAL-22: 混在 complexity と mode 未指定委譲の決定表導出
 
@@ -2540,8 +2548,7 @@ case ごとに次の template を複製して記録する。agent version は ag
 - `delegation.authorized` の値と `requested_mode`、および委譲要求がない planning で `false` を保っているか。
 - `validation.blocking` の violation code の有無と、`unresolved_decisions` の空・非空。
 - 全 AC がちょうど1枝の `covers_acceptance_criteria` に現れるか(`ac-unassigned` / `ac-duplicate-primary` /
-  `branch-without-primary-ac` の再計算)、`implementation_stages` 宣言枝で `stage_tests` の和集合が枝の
-  `tests` と一致するか。
+  `branch-without-primary-ac` の再計算)、Set の `order` が `branch_plans[].id` を1回ずつ含むか。
 - `plan-intake` で、再検証を満たさない Branch Plan に対し Worker 起動前に停止したか。
 
 一方、次は手動 rubric に残す。
@@ -2553,7 +2560,7 @@ case ごとに次の template を複製して記録する。agent version は ag
 - refactor が局所的で、仕様、公開 API、期待値、振る舞いを変えていないか。
 - 枝分割が外部から観測可能な振る舞いの縦割りとして妥当で、層別や作業種別の横割りになっていないか。
 - 分割が過多でなく、統合すべき隣接枝(同一テストでしか検証できない等)を残していないか。
-- `implementation_stages` の宣言が、縦割りできずかつ段階的な積み上げが必要な1振る舞いに限られているか。
+- Branch Plan への分割が、独立した変更目的または学習が起きる境界という質的基準に基づいているか。
 - 委譲要求がない planning で委譲を開始しない判断が、承認と委譲開始の分離という契約に基づいているか
   (`delegation.authorized` の値は機械収集できるが、その判断根拠の妥当性は手動で確認する)。
 - 親が agent の報告を追認しただけでなく、自分の証跡から品質と最終判断を説明しているか。
