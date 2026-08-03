@@ -778,14 +778,17 @@ class FeatureLeadContractsTest(
         # sentence" is not the same claim as "this bullet must not also
         # contain the wrong one". Forbid the negation directly.
         #
-        # Why Not: この forbidden だけ bullet スコープに閉じ、PQ-1 の
-        # whole-file 規則（同 file `test_feature_lead_stops_the_whole_stage_
-        # when_any_branch_plan_is_blocked` を参照）を適用しない理由（TQ-16）。
-        # 「境界で必ず停止し、ユーザーの授権を待つ。」は `attended` では真の
-        # 命題である。この禁止は RB-4 のような文脈非依存の二重管理禁止とは
-        # 種類が違い、`unattended` bullet という文脈でだけ偽であるべき命題を
-        # 禁じている。whole-file 化すると、`attended` 側に同内容の正しい
-        # 記述があるだけで正しい原稿を落とす。
+        # Why Not: この forbidden を `unattended` bullet 単体（`_bullet` の
+        # スライス）ではなく「節から `attended` bullet を除いた範囲」へ閉じる
+        # 理由（TQ-16; TQ-22）。PQ-1 の whole-file 規則をそのまま適用できない
+        # のは、「境界で必ず停止し、ユーザーの授権を待つ。」が `attended` では
+        # 真の命題だからである（TQ-16）。ただし `unattended` bullet 単体へ
+        # 閉じると、PQ-3 が `_bullet` の `next_marker=None` 経路を「次の
+        # bullet で打ち切る」形へ変えた際に、`unattended` bullet の**後ろ**へ
+        # 新設した兄弟 bullet（あるいは間に挟んだ兄弟 bullet）へこの否定文を
+        # 置く変異が検出できなくなった（TQ-22）。`attended` 側だけを除いた
+        # 範囲は、PQ-3 の変更にも `_bullet` の将来の変更にも依存せず、
+        # 「`attended` では真になりうる」という唯一の例外だけを反映する。
         forbidden = "境界で必ず停止し、ユーザーの授権を待つ。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
@@ -796,8 +799,12 @@ class FeatureLeadContractsTest(
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
+            attended_bullet = self._bullet(section, "- `attended`", None)
+            outside_attended = section.replace(attended_bullet, "", 1)
             with self.subTest(platform=platform, forbidden=forbidden):
-                self.assertNotIn("".join(forbidden.split()), normalized)
+                self.assertNotIn(
+                    "".join(forbidden.split()), "".join(outside_attended.split())
+                )
 
     def test_feature_lead_excludes_boundary_stops_from_the_gate_decision_point(
         self,
