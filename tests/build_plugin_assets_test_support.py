@@ -74,10 +74,12 @@ GENERATED_MARKDOWN_WARNING = "<!-- Generated from shared/. Do not edit directly.
 GENERATED_TOML_WARNING = "# Generated from shared/. Do not edit directly."
 PLATFORMS = ("claude", "codex")
 IMPL_LEAD_SKILL = "impl-lead"
+IMPL_DELEGATE_SKILL = "impl-delegate"
 SHARED_SKILL_ROOT = Path("shared/skill")
 # Mirror the generator's skill-name -> reference-name mapping so fixtures and
 # path derivation stay data-driven per skill instead of hardcoding one skill.
 SKILL_REFERENCE_NAMES = {
+    IMPL_DELEGATE_SKILL: (),
     IMPL_LEAD_SKILL: (
         "implementation-branches.md",
         "expert-selection.md",

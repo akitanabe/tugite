@@ -1,6 +1,6 @@
 {
   "name": "tugite",
-  "version": "4.7.0",
+  "version": "4.8.0",
   "description": "Install the bundled custom agents and delegate implementation while the parent Codex agent keeps responsibility for planning, QA, review, and final verification.",
   "author": {
     "name": "akitanabe"
