@@ -708,12 +708,10 @@ class FeatureLeadContractsTest(
         # sets `delegation` — resuming without it would hand impl-lead the same
         # unauthorized Branch Plan and loop at the same boundary forever.
         #
-        # PQ-3: `_bullet` stops at the next "\n- " or section end, rather
-        # than requiring the literal "- `unattended`" to follow — this
-        # file's contracts do not require the `attended` bullet to
-        # precede `unattended`, so requiring that literal to follow would
-        # make swapping their order fail here even though no AC this file
-        # protects depends on which comes first.
+        # PQ-3: `_bullet`'s docstring already documents why it does not
+        # require a specific literal to follow `attended` — this file's
+        # contracts do not require `attended` to precede `unattended`, so
+        # a swap between them must not fail this scope.
         resume_contract = (
             "ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan"
             "について行い直し、`impl-lead` を再開する。"
@@ -769,13 +767,13 @@ class FeatureLeadContractsTest(
         # 理由（TQ-16; TQ-22）。PQ-1 の whole-file 規則をそのまま適用できない
         # のは、「境界で必ず停止し、ユーザーの授権を待つ。」が `attended` では
         # 真の命題だからである（TQ-16）。ただし `unattended` bullet 単体へ
-        # 閉じると、PQ-3 が `_bullet` の `next_marker=None` 経路を「次の
-        # bullet で打ち切る」形へ変えた際に、`unattended` bullet の**後ろ**へ
-        # 新設した兄弟 bullet（あるいは間に挟んだ兄弟 bullet）へこの否定文を
-        # 置く変異が検出できなくなった（TQ-22）。`attended` 側だけを除いた
-        # 範囲は `_bullet` が返す `attended_bullet` の実際の広がりに依存する
-        # ため、その依存が壊れて `outside_attended` が無言で縮んだ場合は、
-        # 下の guard（TQ-23）がそれを loud な失敗にする。
+        # 閉じると、`_bullet` が持つ「次の bullet marker か section 末尾で
+        # 止まる」という固定境界（PQ-3 で確定）だけでは、`unattended` bullet
+        # の**後ろ**へ新設した兄弟 bullet（あるいは間に挟んだ兄弟 bullet）へ
+        # この否定文を置く変異を検出できない（TQ-22）。`attended` 側だけを
+        # 除いた範囲は `_bullet` が返す `attended_bullet` の実際の広がりに
+        # 依存するため、その依存が壊れて `outside_attended` が無言で縮んだ
+        # 場合は、下の guard（TQ-23）がそれを loud な失敗にする。
         forbidden = "境界で必ず停止し、ユーザーの授権を待つ。"
         for platform, text in self._feature_lead_main_texts().items():
             section = self._section(
@@ -788,10 +786,10 @@ class FeatureLeadContractsTest(
                     self.assertIn("".join(contract.split()), normalized)
             attended_bullet = self._bullet(section, "- `attended`")
             outside_attended = section.replace(attended_bullet, "", 1)
-            # Guard the guard (TQ-23): `outside_attended` depends entirely on
-            # `_bullet`'s "next bullet marker or section end" boundary via
-            # `attended_bullet` —
-            # if that boundary ever grows to swallow the `unattended` bullet
+            # Guard the guard (TQ-23): `outside_attended` depends entirely
+            # on `_bullet`'s "next bullet marker or section end" boundary
+            # via `attended_bullet` — if that boundary ever grows to
+            # swallow the `unattended` bullet
             # too, it fails silently, not with an error: `outside_attended`
             # would just shrink until the `assertNotIn` below passes for the
             # wrong reason (nothing left to search, not "the forbidden text
