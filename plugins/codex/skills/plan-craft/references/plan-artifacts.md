@@ -238,10 +238,10 @@ file の本文、会話内経路では会話上に提示した本文を対象に
 本文が規定の節見出しを備えているかは意味判断であり、レビュー状態 Data から再計算できない。表を
 2つに分けるのはこのためである。意味判断を表Aへ入れると、表A 全体が Data から再計算できるという
 性質が壊れる。表Bの生成主体は親の判定であり、節の充足は起草手順とレビューの判定が担う。Branch
-Plan 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
+Plan Set 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
 
 廃止した `scope-conflict`、AC id に対する `duplicate-id`、`unknown-reference` は plan 段では
-扱わない。前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。
+扱わない。前2者は `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。
 `unknown-reference` は、plan 段で id を参照する field が `open_questions[].affects` だけになり、
 その値をプラン文書の節名または AC id とすることで参照検査の対象が残らない。finding id に対する
 `duplicate-id` は表Aに残る。

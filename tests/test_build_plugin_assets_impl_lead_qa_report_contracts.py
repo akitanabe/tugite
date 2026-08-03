@@ -759,7 +759,7 @@ class ImplLeadQaReportContractsTest(
             "未実行の後続 Branch Plan があっても、完了した Branch Plan の後始末と"
             "最終報告は行う。",
             "完了した Branch Plan の id は実行 Data として親が保持し、"
-            "Branch Plan Data へ書き戻さない。",
+            "Branch Plan Set へ書き戻さない。",
             "`status` に完了を表す値を足さない。",
             "境界で止まった後に再開する場合、完了済みの Branch Plan を再実行しない。",
             "実行 Data を復元できない場合は、Branch Plan ごとの最終報告と統合済み commit を"
