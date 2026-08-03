@@ -39,8 +39,9 @@ RETIRED_REVIEW_STATE_FIELDS = (
     "dependencies",
     "constraints",
 )
-# 廃止した blocking violation code。表A・表B のどちらにも復活させない。検出は下流
-# （`branch-design` 側の同名 code と Branch Plan の `duplicate-id`）に残る。
+# plan 段で扱わない blocking violation code。表A・表B のどちらにも復活させない。
+# `scope-conflict` は下流にも検査を残さず code 自体を廃止し、`unknown-reference` の検出も
+# plan 段では不要になった。AC id の重複だけは下流 (`branch-design` 側の同名 code) に残る。
 RETIRED_VIOLATION_CODES = ("scope-conflict", "unknown-reference")
 # 廃止した `plan.design` / `plan.approach` / `plan.steps` を現行の field として指す表記。
 # 素の英単語（design / steps）は英語の frontmatter や散文にも一致するため採らない。
@@ -546,13 +547,13 @@ class DraftImplementationPlanContractsTest(
                     self.assertIn("".join(contract.split()), violation_section)
 
     def test_plan_artifacts_reference_records_where_the_retired_codes_went(self) -> None:
-        """Name the downstream owner of every check the plan stage stopped making."""
+        """Record which retired checks remain downstream and which code is retired entirely."""
         # 削除した原稿は「code にしない理由と担い手」を同じ位置へ書く様式だった。
         # 引き受け先が配布原稿から消えると、次の改訂者が検査の欠落と読む。
         required = (
-            "廃止した `scope-conflict`、AC id に対する `duplicate-id`、"
-            "`unknown-reference` は plan 段では扱わない。",
-            "前2者は `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。",
+            "廃止した `scope-conflict` と `unknown-reference`、AC id に対する `duplicate-id` は plan 段では扱わない。",
+            "`scope-conflict` は `allowed_paths` の廃止により下流の検査もなく、code 自体を廃止した。",
+            "AC id に対する `duplicate-id` だけは `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。",
             "`unknown-reference` は、plan 段で id を参照する field が "
             "`open_questions[].affects` だけになり、その値をプラン文書の節名または "
             "AC id とすることで参照検査の対象が残らない。",
@@ -643,7 +644,7 @@ class DraftImplementationPlanContractsTest(
             "| 実装目的 | 見出し行 |",
             "| 元プラン | 「要求の所在」行 |",
             "| Acceptance Criteria（原文） | 「Acceptance Criteria」節（ID ごと原文のまま） |",
-            "| 変更可能範囲と変更禁止範囲 | 「scope」節の変更可能 / 変更禁止 |",
+            "| 変更禁止範囲 | 「scope」節の変更禁止 |",
             "| 既知の依存 | 「依存 / 制約 / 前提 / 未確定」節の依存 |",
         )
         why_not = (

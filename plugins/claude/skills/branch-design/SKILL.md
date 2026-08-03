@@ -51,7 +51,7 @@ description: >-
 - Acceptance Criteria(原文。言い換えない)。`plan-craft` のプラン文書を元プランにする場合は、
   「Acceptance Criteria」節から AC 原文を取る。文書が持つ AC id はそのまま引き継ぎ、振り直さない。
   findings 由来の AC では、原文はユーザーが確定した文言を指す。
-- 変更可能範囲と変更禁止範囲。
+- 変更禁止範囲。
 - 既知の依存。
 - 確認モードの既定は `review` とし、`auto` はユーザーが明示した場合のみ使う。
 

@@ -170,7 +170,7 @@ worker を終了してよいのは、返答を受け取り、QA・差し戻し�
 
 ## 全体の流れ
 
-1. 目的、入力、出力、Acceptance Criteria、変更範囲、禁止範囲を確定する。
+1. 目的、入力、出力、Acceptance Criteria、禁止範囲を確定する。
 2. 配分方針を選び、共有土台と直列に受け入れる実装枝へ分け、枝ごとの mode を導出する。
    確定済み Branch Plan Set が渡されている場合は
    [Branch Plan の受け入れ](references/branch-plan-intake.md) を読み、再検証してから枝と

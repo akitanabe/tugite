@@ -67,7 +67,6 @@ VIOLATION_CODE_ATTRIBUTIONS = (
     ("execution-order-invalid", "両方"),
     ("branch-without-primary-ac", "Branch Plan"),
     ("dependency-cycle", "Branch Plan"),
-    ("scope-conflict", "Branch Plan"),
     ("tests-missing", "Branch Plan"),
     ("branch-assessment-missing", "Branch Plan"),
     ("branch-assessment-invalid", "Branch Plan"),
@@ -373,16 +372,23 @@ class PlanImplementationBranchesContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
 
+    def test_plan_skill_requests_only_forbidden_paths_as_scope_input(self) -> None:
+        """Keep branch-design input aligned with its forbidden-path-only schema."""
+        for platform, main in self._plan_skill_texts().items():
+            with self.subTest(platform=platform):
+                input_section = main.split("## 入力の確認", 1)[1].split("\n## ", 1)[0]
+                self.assertIn("- 変更禁止範囲。", input_section)
+                self.assertNotIn("変更可能範囲", input_section)
+                self.assertNotIn("この枝で担当しない責務・作業", input_section)
+
     def test_plan_references_define_branch_responsibility_exclusions(self) -> None:
-        """Generate responsibility exclusions separately from physical path limits."""
+        """Generate responsibility exclusions separately from forbidden path limits."""
         reference_contracts = {
             "branch-plan-schema.md": (
-                "`allowed_paths` は変更を許可する物理的なファイル範囲",
                 "`forbidden_paths` は変更を禁止する物理的なファイル範囲",
-                "`out_of_scope` は許可範囲内でもこの枝では担当しない責務・作業",
+                "`out_of_scope` はこの枝では担当しない責務・作業",
             ),
             "branch-splitting.md": (
-                "同じ `allowed_paths` 内に複数の責務・作業が含まれ",
                 "担当しない責務・作業を `out_of_scope` に列挙する",
                 "パスで表現できる禁止範囲を `out_of_scope` で代用しない",
             ),
@@ -394,6 +400,15 @@ class PlanImplementationBranchesContractsTest(
                     normalized = "".join(text.split())
                     for contract in contracts:
                         self.assertIn("".join(contract.split()), normalized)
+
+                    self.assertNotIn("allowed_paths", text)
+
+    def test_plan_schema_removes_allowed_path_fields_and_scope_conflict(self) -> None:
+        """Keep Branch Plan scope constraints one-way through forbidden paths."""
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                self.assertNotIn("allowed_paths:", text)
+                self.assertNotIn("scope-conflict", text)
 
     def test_plan_schema_holds_requested_mode_as_policy_and_baseline(self) -> None:
         """Carry the requested delegation mode as an allocation policy and a baseline."""

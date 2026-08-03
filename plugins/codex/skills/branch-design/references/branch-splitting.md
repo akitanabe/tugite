@@ -68,13 +68,12 @@ diff にならず、受け入れ判断を枝内に閉じられないため。
 
 ## 責務制約の生成
 
-同じ `allowed_paths` 内に複数の責務・作業が含まれ、枝がその一部だけを担当する場合は、担当しない
-責務・作業を `out_of_scope` に列挙する。枝の目的、AC、`branch_criteria` から担当外を具体化できない
+枝が複数の責務・作業の一部だけを担当する場合は、担当しない責務・作業を `out_of_scope` に列挙する。
+枝の目的、AC、`branch_criteria` から担当外を具体化できない
 場合は推測で補わず、仕様判断が必要なら `unresolved_decisions` とする。
 
-`allowed_paths` と `forbidden_paths` は物理的なファイル範囲、`out_of_scope` はその範囲内の責務・作業を
-制約する。パスで表現できる禁止範囲を `out_of_scope` で代用しない。担当外の責務・作業がなければ
-空配列にする。
+`forbidden_paths` は物理的な変更禁止範囲、`out_of_scope` は担当しない責務・作業を制約する。
+パスで表現できる禁止範囲を `out_of_scope` で代用しない。担当外の責務・作業がなければ空配列にする。
 
 ## failure_impact.level の判定観点
 

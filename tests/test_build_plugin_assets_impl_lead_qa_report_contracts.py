@@ -324,19 +324,19 @@ class ImplLeadQaReportContractsTest(
                         expected, self._markdown_section_headings(text)
                     )
 
-    def test_repository_distribution_version_is_4_3_0(self) -> None:
+    def test_repository_distribution_version_is_4_4_0(self) -> None:
         """Pin the Branch Plan Set schema to the synchronized minor version."""
         shared_version = self._repository_text(Path("shared/VERSION")).strip()
-        self.assertEqual("4.3.0", shared_version)
+        self.assertEqual("4.4.0", shared_version)
         for manifest_path in (
             Path("plugins/claude/.claude-plugin/plugin.json"),
             Path("plugins/codex/.codex-plugin/plugin.json"),
         ):
             manifest = json.loads(self._repository_text(manifest_path))
             with self.subTest(path=manifest_path):
-                self.assertEqual("4.3.0", manifest["version"])
+                self.assertEqual("4.4.0", manifest["version"])
         self.assertEqual(
-            "4.3.0",
+            "4.4.0",
             self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
         )
 

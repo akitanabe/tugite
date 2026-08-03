@@ -34,8 +34,8 @@ Branch Plan 境界の授権の正本を担う。
   有無の確認)を要求する。
 - Branch Plan の各枝は、既存の委譲 prompt の Data へそのまま流し込む。目的は
   `purpose`、Acceptance Criteria は `covers_acceptance_criteria` の原文と
-  `branch_criteria`、対象範囲は `allowed_paths`、変更禁止範囲は `forbidden_paths`、
-  必須テストは `tests` に対応させる。責務制約は `out_of_scope` の各項目を意味を変えず
+  `branch_criteria`、変更禁止範囲は `forbidden_paths`、必須テストは `tests` に対応させる。
+  責務制約は `out_of_scope` の各項目を意味を変えず
   委譲 prompt の「この枝でやらないこと」へ渡す。委譲 prompt の構成は
   [実装枝の準備と委譲](implementation-branches.md) に従う。
 - 枝の `tests` に列挙された種別が、委譲 prompt の必須テストと検証 command で

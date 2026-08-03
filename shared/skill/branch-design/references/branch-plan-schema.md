@@ -52,9 +52,8 @@
 - Set と Branch Plan の `validation.blocking` は、どちらも安定した code を持つ violation の配列とし、
   planning Skill と Executor が同じ検査規則を共有する。承認可否は blocking violation の有無だけで
   決まり、自己評価 boolean は参考情報に限定する。
-- `allowed_paths` は変更を許可する物理的なファイル範囲、`forbidden_paths` は変更を禁止する物理的な
-  ファイル範囲を表す。`out_of_scope` は許可範囲内でもこの枝では担当しない責務・作業を表し、
-  パス制約とは独立して扱う。
+- `forbidden_paths` は変更を禁止する物理的なファイル範囲を表す。`out_of_scope` はこの枝では担当
+  しない責務・作業を表し、パス制約とは独立して扱う。
 - Test Inventory 報告の findings から導出した AC は、由来する finding ID(`G-*`)を
   `acceptance_criteria[].derived_from` に記録する。棚卸し報告までの追跡は
   実装枝 → `covers_acceptance_criteria` → AC → `derived_from` の一方向参照でたどる。
@@ -144,7 +143,6 @@ branch_plans:
       required: true | false      # false の場合、以下のフィールドは省略可
       executor: parent            # 固定値
       condition: <複数枝が共有する fixture / 設定 / テストデータ等の具体>
-      allowed_paths: []
       forbidden_paths: []
       foundation_criteria: []     # 共有土台自身の完成条件。元 AC の言い換え禁止
       verification: []            # 基準 commit にする前の検証 command
@@ -161,12 +159,11 @@ branch_plans:
         verifies_acceptance_criteria: []       # 完成責任は負わないが検証に参加する AC
                                                # (旧APIパリティの再確認など)。枝間で重複可
         branch_criteria: []                    # 枝固有の派生条件。AC の言い換え禁止
-        allowed_paths: []
         forbidden_paths: []
         tests: [unit | integration | e2e | contract | regression]
         # 1つ以上必須。テスト種別だけを保持し、具体的なテスト名・実行 command は持たない
         # (「tests の意味」の節を参照)
-        out_of_scope: []                       # 許可範囲内でもこの枝では担当しない責務・作業
+        out_of_scope: []                       # この枝では担当しない責務・作業
         failure_impact:
           level: low | medium | high
           reasons: [<1件以上の具体的な理由>]
@@ -192,7 +189,7 @@ branch_plans:
       blocking: []                # violation の配列。1件でもあれば status: blocked
       # - code: <violation code 表の安定 code>
       #   path: <問題があるスキーマ上の path。この Branch Plan からの相対。
-      #          例: branches[1].allowed_paths>
+      #          例: branches[1].forbidden_paths>
       #   message: <修正に必要な説明>
       self_assessment:            # 参考情報。承認可否の判定には使わない
         action_boundaries_isolated: true      # 補助指標(第一基準ではない)
@@ -216,7 +213,6 @@ planning Skill と Executor は同じ検査規則を使う。Executor は planni
 | `execution-order-invalid` | 両方 | Set では `order` の不足・重複、Branch Plan では `execution.order` の不足、重複、依存順序違反 |
 | `branch-without-primary-ac` | Branch Plan | primary AC を1件も所有しない実装枝 |
 | `dependency-cycle` | Branch Plan | 同一 Branch Plan 内の `depends_on` の循環 |
-| `scope-conflict` | Branch Plan | 同一枝内の `allowed_paths` / `forbidden_paths` の矛盾 |
 | `tests-missing` | Branch Plan | 枝の `tests` が空 |
 | `branch-assessment-missing` | Branch Plan | `failure_impact` / `implementation_complexity`、または配下の `level` / `reasons` の欠落 |
 | `branch-assessment-invalid` | Branch Plan | 両 field の `level` が `low` / `medium` / `high` 以外、または `reasons` が配列以外・空配列・空文字・非文字列要素を含む |
@@ -310,8 +306,8 @@ Branch Plan の状態は値を個別に検査せず、次の有効な組み合�
 `branch-contract-violation` は機械検査ではなく planning Skill と Executor の判定で生成する。
 `implementation_complexity.level: high` だけでは `branch-contract-violation` にしない。
 単独の Acceptance Criteria・検証・受け入れ判断・revert が閉じない場合だけ、この code を生成する。
-実装枝契約に関わる判定(単独 review 可能性、revert 範囲の隔離、禁止範囲の明確さ)はこの code と
-`scope-conflict` で表現し、`false` のまま承認へ進む経路を持たない。
+実装枝契約に関わる判定(単独 review 可能性、revert 範囲の隔離、禁止範囲の明確さ)はこの code で
+表現し、`false` のまま承認へ進む経路を持たない。
 
 ## 状態遷移と権限
 
