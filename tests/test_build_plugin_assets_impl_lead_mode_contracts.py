@@ -16,6 +16,21 @@ from build_plugin_assets_test_support import (
 )
 
 
+DECISION_CORPUS_PATH = Path("evals/workflow-decision-corpus.md")
+# corpus から廃止した artifact 名。`branch-design` の出力は Branch Plan Set であり、
+# それを束ねた単一 Data の旧称が残ると、評価者は存在しない artifact を探しに行く。
+CORPUS_RETIRED_TERMS = ("Branch Plan Data",)
+# 廃止語を正当に含む行の完全一致 allowlist。現在は0件である。`legacy-stages-present` の
+# ように、廃止語そのものを検査規則として説明する必要が corpus に生じたときだけ、その行を
+# ここへ加える。語ではなく行で持つのは、除外が同じ語の別の残存まで隠さないようにするため。
+CORPUS_RETIRED_TERM_EXCEPTION_LINES: tuple[str, ...] = ()
+# `impl-lead` の受け入れ口へ渡るのは Branch Plan Set であり、`branches` を最上位に置いた
+# 旧形の抜粋は現行スキーマに存在しない構造を評価者へ見せる。
+CORPUS_SET_INPUT_HEADER = "確定済みと称する Branch Plan Set(抜粋):"
+CORPUS_RETIRED_FLAT_INPUT_HEADER = "確定済みと称する Branch Plan(抜粋):"
+CORPUS_SET_INPUT_CASES = ("EVAL-17", "EVAL-18", "EVAL-22", "EVAL-23")
+
+
 class ImplLeadModeContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -381,6 +396,61 @@ class ImplLeadModeContractsTest(
             "corpus に廃止した implementation_stages 機構の語彙(stage)が残っている: "
             f"{carrying}",
         )
+
+    def _decision_corpus_cases(self, corpus: str) -> dict[str, str]:
+        """Split the corpus into EVAL cases without pinning their order or IDs."""
+        headings = list(re.finditer(r"(?m)^## (EVAL-[^:\n]+):[^\n]*$", corpus))
+        self.assertTrue(headings)
+        cases: dict[str, str] = {}
+        for index, heading in enumerate(headings):
+            end = (
+                headings[index + 1].start()
+                if index + 1 < len(headings)
+                else len(corpus)
+            )
+            cases[heading.group(1)] = corpus[heading.end() : end]
+        return cases
+
+    def test_repository_decision_corpus_names_the_branch_plan_set_artifact(
+        self,
+    ) -> None:
+        """Leave no retired artifact name in the corpus outside its allowlisted lines."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        carrying = [
+            line
+            for line in corpus.splitlines()
+            if any(term in line for term in CORPUS_RETIRED_TERMS)
+            and line not in CORPUS_RETIRED_TERM_EXCEPTION_LINES
+        ]
+        self.assertEqual(
+            [],
+            carrying,
+            f"corpus に廃止した artifact 名が残っている: {carrying}",
+        )
+        # allowlist が corpus から消えた行を抱えたまま残ると、次の廃止語の除外が
+        # 気付かれずに広がる。存在しない除外行は許さない。
+        for exception in CORPUS_RETIRED_TERM_EXCEPTION_LINES:
+            with self.subTest(exception=exception):
+                self.assertIn(exception, corpus.splitlines())
+
+    def test_repository_decision_corpus_shows_plan_intake_inputs_as_sets(self) -> None:
+        """Show every plan-intake input in the Set shape the intake actually receives."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        self.assertNotIn(CORPUS_RETIRED_FLAT_INPUT_HEADER, corpus)
+        cases = self._decision_corpus_cases(corpus)
+        set_input_cases = tuple(
+            name
+            for name, case in cases.items()
+            if CORPUS_SET_INPUT_HEADER in case
+        )
+        self.assertEqual(CORPUS_SET_INPUT_CASES, set_input_cases)
+        for name in CORPUS_SET_INPUT_CASES:
+            case_input = cases[name].split("**入力**", 1)[1].split(
+                "**期待する判断**", 1
+            )[0]
+            for contract in ("`branch_plans`:", "`order`:"):
+                with self.subTest(case=name, contract=contract):
+                    self.assertIn(contract, case_input)
 
     def test_repository_decision_corpus_splits_branch_plans_on_qualitative_criteria(
         self,
