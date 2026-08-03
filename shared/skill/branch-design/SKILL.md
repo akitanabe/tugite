@@ -79,7 +79,7 @@ description: >-
 
 導出した AC の提示と確定の手順は [ユーザー確認](references/plan-review.md)、`derived_from` と
 `kind: ac-derivation` の意味と検査規則は
-[Branch Plan 正規スキーマ](references/branch-plan-schema.md) に従う。
+[Branch Plan Set 正規スキーマ](references/branch-plan-schema.md) に従う。
 
 ## 全体の流れ
 
@@ -92,7 +92,7 @@ description: >-
 4. 各 Branch Plan について、[枝分割判断](references/branch-splitting.md) の第一基準に従い、
    外部から観測可能な振る舞いの縦割りで実装枝へ分ける。分割しない場合は Branch Plan の
    `decision.split: false` と理由を記録する。
-5. [Branch Plan 正規スキーマ](references/branch-plan-schema.md) に従い Branch Plan Set を
+5. [Branch Plan Set 正規スキーマ](references/branch-plan-schema.md) に従い Branch Plan Set を
    生成する。AC 割り当ては枝側の一方向参照だけにする。
 6. blocking violation code 表を入力 Data から再計算し、Set と各 Branch Plan の
    `validation.blocking` を確定する。

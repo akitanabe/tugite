@@ -845,7 +845,7 @@ class PlanImplementationBranchesContractsTest(
             "持たない。",
             # RB-4: 遷移条件と実行主体の正本(branch-plan-schema.md の「状態遷移と権限」)を
             # 参照する1句を固定する。R-5 の override 修正と同じ「正本参照」の形に揃える。
-            "遷移条件と実行主体は [Branch Plan 正規スキーマ](branch-plan-schema.md) の"
+            "遷移条件と実行主体は [Branch Plan Set 正規スキーマ](branch-plan-schema.md) の"
             "「状態遷移と権限」に従う。",
             # RB-3: 「分割を修正」から抜け落ちていた AC 割り当ての反映先を戻す。
             "分割を修正 — Branch Plan への分割(Set の `branch_plans` の分け方や `order`)か、"
@@ -901,7 +901,7 @@ class PlanImplementationBranchesContractsTest(
             # 提示層固有の情報だけを残し、導出規則は正本参照へ寄せる。
             "Set の `validation.blocking` が非空の場合は、これを先に提示する。Set の違反が全"
             "Branch Plan を `blocked` にすることは "
-            "[Branch Plan 正規スキーマ](branch-plan-schema.md) の「状態遷移と権限」による。",
+            "[Branch Plan Set 正規スキーマ](branch-plan-schema.md) の「状態遷移と権限」による。",
             "各 blocked な Branch Plan について、`unresolved_decisions` は `question` と "
             "`affects` を対応付けて提示し",
         )

@@ -12,7 +12,7 @@
 Branch Plan の自己申告を信用せず、再検証してから枝と配分方針の入力にする。
 Branch Plan Set と Branch Plan の正規スキーマ(スキーマ本体・violation code とその帰属・
 Branch Plan の状態遷移)の正本は
-[Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
+[Branch Plan Set 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
 であり、本 reference は受け入れ口の規定、Executor 側の再検証、枝 mode の決定表、
 Branch Plan 境界の授権の正本を担う。
 
@@ -26,7 +26,7 @@ Branch Plan 境界の授権の正本を担う。
 - 自己申告を信用せず、本 reference「Executor 側の再検証」の5項目を委譲開始前に
   確認する。blocking violation code 表は planning Skill と同じ規則を入力 Data から
   再計算する。code 表の正本は
-  [Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
+  [Branch Plan Set 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
   の「blocking violation code」とする。
 - 再検証を満たさない場合は実装を開始せず、Branch Plan の修正(または委譲要求の
   有無の確認)を要求する。
@@ -50,7 +50,7 @@ Branch Plan 境界の授権の正本を担う。
 ## Executor 側の再検証
 
 Set 全体の検査を先に行う。対象は
-[Branch Plan 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
+[Branch Plan Set 正規スキーマ](../../branch-design/references/branch-plan-schema.md)
 の blocking violation code 表で帰属が `Set` の code と、帰属が `両方` の code の Set 側 field とし、
 Set 全体の Data から再計算する。どの code がどちらの帰属かは同表を正本とし、本 reference へ複製しない。
 Set の `validation.blocking` が非空なら、Branch Plan 側の状態に関わらず実行を開始しない。
