@@ -640,6 +640,14 @@ class FeatureLeadContractsTest(
         # 「授権の根拠」「判断点台帳」を正本にする。この節へ戻っていないことを
         # 確認する（file 自身の Why Not「判断表を複製すると正本が二重化する」を
         # この節自身の記述にも適用する）。
+        #
+        # Why Not: この2件も PQ-1 の whole-file 既定（`test_feature_lead_stops_
+        # the_whole_stage_when_any_branch_plan_is_blocked` を参照）の例外側に
+        # 当たる（TQ-16）。いずれも文脈依存の禁止であり、正本節（「授権の根拠」
+        # 「判断点台帳」）では上の positive `assertIn`（:628、および
+        # `test_feature_lead_authorizes_only_the_lead_branch_plan_under_attended`
+        # / `test_feature_lead_keeps_the_boundary_stop_out_of_the_decision_ledger`）
+        # がこの2文の存在を要求しており、whole-file 化すると正しい原稿を落とす。
         forbidden = (
             "`attended`（既定）では、`order` の先頭の未実行 Branch Plan だけを"
             "授権する。",
@@ -794,7 +802,19 @@ class FeatureLeadContractsTest(
         # check cannot tell "the branch sits inside the numbered flow" from
         # "the same words happen to exist elsewhere in the file", and a prior
         # branch's review already found that miss in practice.
+        # TQ-18: the first entry is 手順6's body without its ordinal prefix.
+        # `_numbered_step` below ties "6." to delegation-setting content, but
+        # it never looks at *where* that line sits in the flow — a mutation
+        # that moves the whole "6. ..." line to after 手順7 (or 手順9) keeps
+        # `_numbered_step(flow, 6)` satisfied while reproducing RB-2's
+        # infinite loop (impl-lead hands the Branch Plan Set over before
+        # delegation is set). This exact sentence occurs nowhere else in
+        # "## 全体の流れ", so leaving the ordinal off still pins its position
+        # without reintroducing TQ-17's line-start requirement here — that
+        # requirement belongs to `_numbered_step`, which independently ties
+        # the ordinal to this same content (see the comment below).
         required_order = (
+            "「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。",
             "`order` に従って Branch Plan を実行する。",
             "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
             "手順9を行わずに",
@@ -810,7 +830,10 @@ class FeatureLeadContractsTest(
         # the start of a physical line — see its docstring for why a bare
         # substring search is not enough) ties the ordinal to its content
         # directly, so renumbering or swapping step bodies breaks the match
-        # instead of only renaming the cross-reference text.
+        # instead of only renaming the cross-reference text. This is a
+        # different failure mode from the position check above (TQ-18): that
+        # one catches the right-numbered step landing in the wrong place,
+        # this one catches the right content landing under the wrong number.
         step_six_contract = "".join(
             "「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。".split()
         )
