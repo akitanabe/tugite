@@ -1559,8 +1559,8 @@ verdict を確定・記録し、収束後に `over-engineering-reviewer` のプ�
 
 `plan-craft` を発火し、要求原文と repository の現状から AC(安定 ID)・scope・依存を
 持つプラン文書を起草する。`plan-adversarial-reviewer` の round を繰り返し、各 round で親が指摘IDごとに verdict を
-確定して `adopted` / `rejected` を台帳(`PF-*`)へ記録し、採用指摘をプランへ反映する。`zero-findings` または
-`trivial-only` で収束したら `over-engineering-reviewer` をプラン入力モードで起動する。`rounds_limit` は既定の
+確定して `adopted` / `rejected` を台帳(`PF-*`)へ記録し、採用指摘をプランへ反映する。`zero-findings`、
+`trivial-only`、または `induced-loop` で収束したら `over-engineering-reviewer` をプラン入力モードで起動する。`rounds_limit` は既定の
 10、`confirmation_mode` は既定の `review` のままとし、blocking がなければ `status: awaiting_review` で未解決
 一覧なしのプラン文書とレビュー状態を提示する。実装・枝分割・委譲は行わず、`branch-design` を
 起動しない。
@@ -1663,8 +1663,10 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 **目的**
 
 adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの AC・制約にも辿れない計画要素を指摘した
-とき、反映経路がプラン修正だけであること、修正後に adversarial を再実行し、その round も `rounds_limit` に
-数えることを確認する。
+とき、反映経路がプラン修正だけであること、修正後に adversarial も `over-engineering-reviewer` も再起動せず、
+修正済みプランで review 工程を終了することを確認する。過剰実装審査の1回は adversarial の round 計数に含めず、
+`rounds_completed` / `rounds_limit` を増やさない。finding の `round` は adversarial 収束時点の
+`rounds_completed` にする。
 
 **評価タイミング**
 
@@ -1684,26 +1686,30 @@ adversarial 収束後の `over-engineering-reviewer` プラン審査が、どの
 
 指摘を同じ `PF-*` 台帳へ `reviewer: over-engineering-reviewer` として記録し、親が verdict を確定して採用を
 判断する。採用した場合の反映経路はプラン修正だけであり、`review-patch-refactorer` を起動しない。
-プラン文書の「手順」節から当該作業を取り除いた後、adversarial レビューを再実行し、この round も
-`rounds_limit` に数える。再実行が収束したらプラン文書とレビュー状態を提示する。
+プラン文書の「手順」節から当該作業を取り除いた後、adversarial レビューへ戻らず、修正済みプランとレビュー状態を提示する。
 
 **必須動作**
 
 - 過剰実装指摘を `PF-*` 台帳に `reviewer: over-engineering-reviewer` で記録し、指摘IDごとに親の判断を残す。
+- 過剰実装審査の1回は adversarial の round 計数に含めず、`rounds_completed` / `rounds_limit` を増やさない。
+- その finding の `round` を adversarial 収束時点の `rounds_completed` にする。
+- 0 findings でも `overengineering_snapshot_round` に記録して完了とする。
+- `overengineering_snapshot_round` が null なら未実行として `review-incomplete`、正整数なら審査済み snapshot として扱う。
+- 指摘がある場合、その finding の `round` は `overengineering_snapshot_round` と一致する。
 - 採用指摘の反映はプラン修正だけで行う。
-- プラン修正後に adversarial レビューを再実行してから提示する。
+- プラン修正後は adversarial レビューを再実行せず提示する。
 
 **禁止動作**
 
 - `review-patch-refactorer` を起動する、またはプラン以外(実装ファイル)を修正する。
-- プラン修正後に adversarial を再実行せず提示する。
-- 過剰実装審査の round を `rounds_limit` の外に置いて無限ループの余地を残す。
+- プラン修正後に adversarial または `over-engineering-reviewer` を再起動する。
+- 過剰実装審査後の修正を理由にレビュー工程を無期限に継続する。
 - reviewer にテスト結果や diff を要求させる。
 
 **許容される差異**
 
-- 指摘の採用・不採用は親の判断次第で変わりうるが、不採用なら理由の記録、採用ならプラン修正 + adversarial
-  再実行という経路は変えない。
+- 指摘の採用・不採用は親の判断次第で変わりうるが、不採用なら理由の記録、採用ならプラン修正後に
+  レビュー工程を終了する経路は変えない。
 
 **Claude/Codex 差**
 
@@ -1713,8 +1719,75 @@ planning 判断は共通である。reviewer を起動する platform mechanism 
 
 - [ ] 過剰実装指摘が `PF-*` 台帳に `reviewer: over-engineering-reviewer` で記録されている。
 - [ ] 反映経路がプラン修正だけで、`review-patch-refactorer` を起動していない。
-- [ ] プラン修正後に adversarial を再実行している。
-- [ ] 過剰実装審査の round が `rounds_limit` に数えられている。
+- [ ] プラン修正後に adversarial を再実行せず提示している。
+- [ ] 過剰実装審査の再起動なしで修正済みプランを最終成果物にしている。
+
+## EVAL-37: 誘発指摘の二 round 窓による収束
+
+**目的**
+
+修正必須が連続していない基準プランを固定し、基準以降に採用した修正が誘発した指摘を台帳で区別して、
+基準の2 round後から rolling の最新2つの adversarial round を過半数条件に収束させる。半数境界、非誘発の
+修正必須の繰り越し、基準前および基準 round 自体の induced 記録禁止を確認する。
+
+**評価タイミング**
+
+`planning`。adversarial の round ごとに親が verdict と induced を確定する時点。
+
+**入力**
+
+> 次の要求からレビュー付きプランを作成する。round の synthetic 進行も適用する。
+>
+> 要求: 設定画面にタイムゾーン選択を追加し、再読み込み後も保存値を表示する。
+>
+> (synthetic 進行: round 1 は `修正必須` を含むため基準前であり induced を記録しない。round 2 は
+> `修正必須` 0件で `baseline_round: 2` を固定し、基準 round 自体は induced を記録せず、以後も基準を取り直さない。round 3--4 は
+> induced 1件と非誘発1件の `修正推奨` でちょうど半数のため収束しない。round 4--5 は induced 3件が
+> 過半数だが round 5 に非誘発の `修正必須` があるため繰り越す。round 5--6 もその非誘発の `修正必須` を
+> 含むため繰り越す。round 6--7 は induced が過半数で非誘発の `修正必須` がなく、round 7 で採用指摘を
+> 反映してから `termination: induced-loop` とする。)
+
+**期待する判断**
+
+round 1 と基準 round 2 の finding に `induced` を付けず、round 2 の `baseline_round` を以後変更しない。成立後は基準を取り直さず、母数は
+`修正推奨` 以上だけを母数にする。
+基準の2 round後の最初の窓である round 3--4 はちょうど半数なので不成立、round 4--5 は induced 過半数でも
+round 5 の非誘発 `修正必須` のため不成立、round 5--6 もその非誘発 `修正必須` を含むため不成立とする。round 6--7 は
+`修正推奨` 以上の母数に占める induced が strict majority で、窓に非誘発の `修正必須` がないため、round 7
+の採用修正をプランへ反映してから収束する（`termination: induced-loop`）。`unresolved` は残さない。
+
+**必須動作**
+
+- [ ] 最初の `修正必須` 0件 round を `baseline_round` として固定している。
+- [ ] 基準前の round では `induced` を記録していない。
+- [ ] 基準 round 自体は `induced` を記録せず、基準の次 round 以降の各 `plan-adversarial-reviewer` finding に
+  `review.findings[].induced` を記録している。
+- [ ] induced がちょうど半数の窓では確定していない。
+- [ ] 非誘発の `修正必須` が窓に含まれる round を確定せず、次 round へ繰り越している。
+- [ ] 確定 round の採用指摘を反映してから打ち切り、`unresolved` を残していない。
+
+**禁止動作**
+
+- [ ] 基準を後から取り直す、または基準前の finding を induced と記録する。
+- [ ] 基準 round 自体の finding を `induced` と記録する。
+- [ ] ちょうど半数を過半数として扱う、または非誘発の `修正必須` を含む窓で確定する。
+- [ ] 確定 round の採用修正を反映せずに終了する。
+
+**許容される差異**
+
+finding の ID、具体的なプラン節、synthetic round の番号は変えてよいが、基準の固定、rolling 二 round 窓の判定、
+採用修正を反映してからの打ち切りは変えない。
+
+**Claude/Codex 差**
+
+収束判定と台帳の記録は共通で、reviewer を起動する platform mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] `baseline_round` が最初の `修正必須` 0件 round を指している。
+- [ ] 基準前と基準 round の finding に `induced` がなく、基準の次 round 以後の finding にだけ true/false がある。
+- [ ] 半数境界と非誘発の `修正必須` の繰り越しを確認している。
+- [ ] 確定 round の採用修正反映と `unresolved` なしを trace で確認している。
 
 # Plan-intake cases
 
