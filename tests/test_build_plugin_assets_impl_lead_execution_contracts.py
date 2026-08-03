@@ -93,19 +93,14 @@ class ImplLeadExecutionContractsTest(
         self,
     ) -> None:
         """Require final self-reconciliation while preserving lite/strict gates."""
-        required_contracts = (
-            "返却前自己照合",
-            "task requirements",
-            "変更 file",
-            "tool outputs",
-            "`standard` と `strict` の最終返却",
-            "最初の案をそのまま返さず",
-            "授権済みの段階・scope内なら修正と再検証",
-            "授権済み段階・scopeを越える場合は、状況と判断点を返す",
-        )
-        mode_boundaries = (
-            "`lite` では自己照合を要求しない",
-            "`strict` の途中段階には自己照合を要求しない",
+        expected_section = (
+            "- **返却前自己照合**: `standard` と `strict` の最終返却前に、"
+            "AC 対応表を task requirements および変更 file / tool outputs と照合し、"
+            "返却内容との整合を確認する。`lite` では自己照合を要求しない。"
+            "`strict` の途中段階には自己照合を要求しない。"
+            "- 不整合を検出した場合は不整合を含む最終返却を行わず、"
+            "授権済みの段階・scope内なら修正と再検証を行う。"
+            "修正が授権済み段階・scopeを越える場合は、状況と判断点を返す。"
         )
 
         for name in ("implementer", "senior-implementer", "expert-implementer"):
@@ -116,9 +111,31 @@ class ImplLeadExecutionContractsTest(
             )
             for path in paths:
                 with self.subTest(name=name, path=path):
-                    normalized = "".join(self._repository_text(path).split())
-                    for contract in required_contracts + mode_boundaries:
-                        self.assertIn("".join(contract.split()), normalized)
+                    content = self._repository_text(path)
+                    lines = content.splitlines()
+                    start = next(
+                        index
+                        for index, line in enumerate(lines)
+                        if line.startswith("- **返却前自己照合**:")
+                    )
+                    second = next(
+                        index
+                        for index in range(start + 1, len(lines))
+                        if lines[index].startswith("- ")
+                    )
+                    end = next(
+                        (
+                            index
+                            for index in range(second + 1, len(lines))
+                            if lines[index].startswith("- ")
+                        ),
+                        len(lines),
+                    )
+                    section = "".join(lines[start:end])
+                    self.assertEqual(
+                        "".join(expected_section.split()),
+                        "".join(section.split()),
+                    )
 
     def test_repository_workflow_selects_implementers_by_complexity_and_residual_judgment(
         self,
