@@ -324,21 +324,61 @@ class ImplLeadQaReportContractsTest(
                         expected, self._markdown_section_headings(text)
                     )
 
-    def test_repository_distribution_version_is_4_4_0(self) -> None:
-        """Pin the Branch Plan Set schema to the synchronized minor version."""
+    def test_repository_distribution_version_is_4_5_0(self) -> None:
+        """Keep distribution artifacts synchronized at the shared version."""
         shared_version = self._repository_text(Path("shared/VERSION")).strip()
-        self.assertEqual("4.4.0", shared_version)
+        self.assertEqual("4.5.0", shared_version)
         for manifest_path in (
             Path("plugins/claude/.claude-plugin/plugin.json"),
             Path("plugins/codex/.codex-plugin/plugin.json"),
         ):
             manifest = json.loads(self._repository_text(manifest_path))
             with self.subTest(path=manifest_path):
-                self.assertEqual("4.4.0", manifest["version"])
+                self.assertEqual("4.5.0", manifest["version"])
         self.assertEqual(
-            "4.4.0",
+            "4.5.0",
             self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
         )
+
+    def test_repository_qa_integration_gates_partial_results_before_context_replacement(
+        self,
+    ) -> None:
+        """Route partial-result acceptance through QA before replacing a context."""
+        required = (
+            "未完成 production code は統合しない。",
+            "親が独立に受入可能と QA した成果だけ",
+            "承認済み purpose / AC / scope を変えない",
+            "単独で green にできる commit range",
+            "返却 diff の変更単位判定",
+            "再分割・再承認ゲート",
+            "条件不成立なら何も統合せず",
+            "元の green 基準から新しい context を作成する",
+            "返却と統合",
+            "基準 commit 検証",
+            "旧 context の worktree/git branch 破棄",
+            "基準 commit から新しい Implementer context を作成",
+            "run-closeout の最終 cleanup ではない",
+        )
+        skills = self._repository_skill_texts()
+        for platform, reference in (
+            ("shared", skills.source_references),
+            ("claude", skills.claude_references),
+            ("codex", skills.codex_references),
+        ):
+            text = reference["qa-and-integration.md"]
+            normalized = "".join(text.split())
+            for contract in required:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+            ordered = (
+                "返却diffの変更単位判定",
+                "再分割・再承認ゲート",
+                "部分成果の受入判断とQA",
+                "条件不成立なら何も統合せず",
+                "元のgreen基準から新しいcontextを作成する",
+            )
+            positions = [normalized.index(marker) for marker in ordered]
+            self.assertEqual(sorted(positions), positions)
 
     def test_repository_writes_one_parent_qa_report_only_when_requested(
         self,

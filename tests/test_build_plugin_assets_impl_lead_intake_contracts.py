@@ -211,6 +211,40 @@ class DelegateImplementationIntakeContractsTest(
                     normalized,
                 )
 
+    def test_intake_reference_assigns_current_authorized_plan_before_delegation(
+        self,
+    ) -> None:
+        """Batch-assign only the current authorized Branch Plan before delegation."""
+        required_rules = (
+            "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
+            "配車は候補抽出と実割当をまとめた親の判断である。",
+            "再配車は返却後の新しい routing snapshot で worker を再割当する判断である。",
+            "現在授権され、5項目の再検証と mode 導出を通過した実行対象 Branch Plan 1件だけを配車母集団とする。",
+            "候補抽出と実割当を分離する。",
+            "Branch Plan 単位で配車を一括確定する。",
+            "未授権の後続 Branch Plan を配車母集団に含めない。",
+            "同一の受入 snapshot 内で候補と配車を固定する。",
+            "委譲開始前",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            section = text.split("## Executor 側の再検証", 1)[-1].split(
+                "\n## 枝 mode", 1
+            )[0]
+            normalized = "".join(section.split())
+            for rule in required_rules:
+                with self.subTest(platform=platform, rule=rule):
+                    self.assertIn("".join(rule.split()), normalized)
+            markers = (
+                "5項目を満たした後、委譲開始前に枝ごとの mode を導出する。",
+                "現在授権され、5項目の再検証と mode 導出を通過した実行対象 Branch Plan 1件だけを配車母集団とする。",
+                "その Branch Plan の全枝を候補抽出する。",
+                "候補抽出と実割当を分離する。",
+                "Branch Plan 単位で配車を一括確定する。",
+                "確定後に委譲を開始する。",
+            )
+            positions = [normalized.index("".join(marker.split())) for marker in markers]
+            self.assertEqual(sorted(positions), positions)
+
     def test_intake_reference_accepts_the_branch_plan_set_as_the_unit_of_intake(
         self,
     ) -> None:

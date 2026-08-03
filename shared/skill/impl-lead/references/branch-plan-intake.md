@@ -88,6 +88,14 @@ Set は `status` を持たないため、Set 帰属の違反を実行可否へ�
 - `failure_impact` は枝 mode の直接導出に使わない。
 - 導出結果は実行 Data として保持し、Branch Plan へ書き戻さない。
 
+配車は候補抽出と実割当をまとめた親の判断である。再配車は返却後の新しい routing snapshot で worker を再割当する判断である。
+現在授権され、5項目の再検証と mode 導出を通過した実行対象 Branch Plan 1件だけを配車母集団とする。
+その Branch Plan の全枝を候補抽出する。[実装枝の準備と委譲](implementation-branches.md) の
+「候補抽出と実割当」に従い、候補抽出と実割当を分離する。Branch Plan 単位で配車を一括確定する。確定後に委譲を開始する。
+未授権の後続 Branch Plan を配車母集団に含めない。ユーザーが全件一括授権した場合も、Branch Plan ごとに
+再検証と受入 snapshot を作り、各 Plan の全枝をその Plan の配車として確定する。同一の受入 snapshot 内で候補と
+配車を固定する。Implementer の返却後は新しい routing snapshot として再判断する。
+
 ## 枝 mode の決定表
 
 配分方針 `policy`、基準 `baseline`、枝の `implementation_complexity.level` から枝ごとの mode を導出する。

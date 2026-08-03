@@ -99,19 +99,107 @@ class ImplLeadExecutionContractsTest(
         normalized = "".join(reference.split())
         required = (
             "難度は `implementation_complexity` と実装時に残る設計・推論判断で判断する。",
-            "| `implementer` | 仕様が明確で既存 pattern を適用でき、残る判断が少ない枝。 |",
-            "| `senior-implementer` | `implementation_complexity` が高い、または設計・"
-            "algorithm・concurrency に非自明な判断が残る枝。 |",
+            "| `implementer` | senior 候補に該当せず、仕様が明確で既存 pattern を適用でき、"
+            "判断密度が低い枝。 |",
+            "| `senior-implementer` | 共通4軸の相対比較で判断密度が高く、残存設計判断と"
+            "上位 model で減らせる手戻りが他候補より大きい枝。 |",
             "単なる複数 module への波及、高い失敗コスト、誤実装の代償だけでは "
             "`senior-implementer` を選ばない。",
         )
         for contract in required:
             self.assertIn("".join(contract.split()), normalized)
 
+    def test_repository_workflow_assigns_workers_by_relative_judgment_density(
+        self,
+    ) -> None:
+        """Separate senior eligibility from relative worker allocation and rerouting."""
+        required_contract = (
+            "senior 候補は Branch Plan の field にせず、`impl-lead` 内部の作業 Data として保持する。",
+            "候補抽出と実割当を分離する。",
+            "事前設計後も残る判断量",
+            "推論難度",
+            "誤実装時の手戻り量",
+            "他枝への影響",
+            "変更量やファイル数だけを昇格根拠にしない。",
+            "現在授権され、5項目の再検証と mode 導出を通過した実行対象 Branch Plan 1件の全枝を同一の受入 snapshot 内で評価し",
+            "候補抽出後に Branch Plan 単位で実割当を一括確定する",
+            "同一の受入 snapshot 内で候補と配車を揺らさない",
+            "senior 候補同士を相対比較し、判断密度の高い枝から配分する。",
+            "senior 候補が全枝の過半になった場合は",
+            "枝分割または Acceptance Criteria の粒度を見直すシグナル",
+            "固定的な割合や閾値を senior 昇格の根拠にしない。",
+        )
+        for path, workflow in self._repository_workflow_texts().items():
+            with self.subTest(path=path):
+                normalized = "".join(workflow.split())
+                for contract in required_contract:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertNotIn("約8割", normalized)
+
+    def test_repository_workflow_reports_senior_assignment_reason(self) -> None:
+        """Report the three reasons for a senior assignment and expert distinction."""
+        required_contract = (
+            "senior の割当理由には、次の3点を必ず記録する。",
+            "残存設計判断",
+            "上位 model で減らせる誤実装・手戻り",
+            "他候補より優先する理由",
+            "expert と異なり senior には事前 reviewer を挟まず",
+            "親の自己申告に留める",
+            "Why Not",
+        )
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(reference.split())
+                for contract in required_contract:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_repository_workflow_prefers_implementer_when_uncertain_and_recreates_context(
+        self,
+    ) -> None:
+        """Keep uncertain branches on implementer and recreate context on rerouting."""
+        required_contract = (
+            "通常と senior で迷ったら `implementer` を選ぶ。",
+            "迷いだけでは senior 候補にしない。",
+            "設計を確定して `implementer` に再委譲",
+            "枝を追加分割",
+            "senior へ再配車",
+            "新しい Implementer context",
+            "未完成 production code は統合せず",
+            "親が独立に受入可能と QA した成果だけ",
+            "基準 commit の検証",
+            "旧 context の worktree / git branch の破棄",
+            "基準 commit からの新 context の worktree と git branch の作成",
+            "新しい routing snapshot",
+            "run-closeout の最終 cleanup ではなく",
+            "返却された状況と判断点は確定済み設計判断として新しい prompt に載せる。",
+            "1実装枝 = 1つの新規 Implementer context",
+            "枝をまたぐ再利用を禁止する規約",
+            "同一枝の破棄・新 context 再開は禁止しない。",
+        )
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(reference.split())
+                for contract in required_contract:
+                    self.assertIn("".join(contract.split()), normalized)
+                lifecycle = "".join(reference.split())
+                ordered = (
+                    "未完成productioncodeは統合せず",
+                    "部分成果の受入判断とQA",
+                    "基準commitの検証",
+                    "旧contextのworktree/gitbranchの破棄",
+                    "基準commitからの新contextのworktreeとgitbranchの作成",
+                )
+                positions = [lifecycle.index(marker) for marker in ordered]
+                self.assertEqual(sorted(positions), positions)
+
     def test_repository_implementer_profiles_separate_normal_and_high_complexity_branches(
         self,
     ) -> None:
-        """Keep source and generated implementer profiles aligned to complexity."""
+        """Keep source and generated implementer profiles aligned to routing role."""
         for name in ("implementer", "senior-implementer"):
             paths = (
                 Path("shared/agents") / f"{name}.md",
@@ -122,8 +210,10 @@ class ImplLeadExecutionContractsTest(
                 content = self._repository_text(path)
                 normalized = "".join(content.split())
                 with self.subTest(name=name, path=path):
-                    self.assertIn("implementation_complexity", content)
-                    if name == "senior-implementer":
+                    if name == "implementer":
+                        self.assertIn("implementation_complexity", content)
+                    else:
+                        self.assertIn("高判断密度", content)
                         for excluded in (
                             "複数 module への波及",
                             "複数モジュールに波及",

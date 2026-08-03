@@ -40,6 +40,15 @@
 6. 受け入れ後は統合先の git branch で `git cherry-pick <sha>` または commit range を取り込み、focused test と
    関連する build、typecheck、lint を再実行する。
 7. 統合後の green commit を次の枝の基準にする。枝 worktree の green と統合後の green の片方を省略しない。
+
+### 部分成果の受入と context replacement
+
+Implementer の返却に含まれる未完成 production code は統合しない。親が独立に受入可能と QA した成果だけを、
+この節の「返却と統合」の手順で受け入れる。部分成果は承認済み purpose / AC / scope を変えない。単独で green にできる
+commit range に限る。返却 diff の変更単位判定と再分割・再承認ゲートを先に通す。部分成果の受入判断と QA を行い、条件不成立なら何も統合せず、
+元の green 基準から新しい context を作成する。条件成立後は focused test と関連検証を通した基準 commit にする。
+再委譲では、部分成果の受入判断と QA、基準 commit 検証、旧 context の worktree / git branch 破棄、基準 commit から新しい
+Implementer context を作成し、その worktree / git branch を準備する順に進める。これは run-closeout の最終 cleanup ではない。
 ## 親の QA
 
 `standard` と `strict` では全観点を手を動かして確認する。`lite` では観点0（diff を読む）、観点5
