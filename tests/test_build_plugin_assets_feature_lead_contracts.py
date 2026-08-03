@@ -73,24 +73,37 @@ class FeatureLeadContractsTest(
         Index-based slicing keeps it.
 
         Raises `AssertionError` — not the bare `ValueError` `str.index` would
-        raise — when `marker` is absent or `next_marker` no longer follows it,
-        so a manuscript edit that reorders, merges, or drops a bullet fails as
-        a readable test failure instead of an opaque "substring not found"
-        error with no indication of which assumption broke.
+        raise — when `marker` is absent, so a manuscript edit that drops or
+        merges a bullet fails as a readable test failure instead of an opaque
+        "substring not found" error with no indication of which assumption
+        broke.
 
-        `next_marker=None` (used for the last bullet in a section) trusts the
-        caller's `section` to already end where that bullet ends: Markdown has
-        no closing marker for "end of bullet list" the way it does for a bullet
-        boundary, so there is nothing more specific to slice to. Callers must
-        obtain `section` from `_section`, which caps at the next heading, so
-        the slice is still bounded — just not to a marker inside the bullet
-        list itself.
+        `next_marker=None` stops at the next bullet marker ("\\n- ") if one
+        exists after `marker` in `section`, or at the end of `section`
+        otherwise (PQ-3). Markdown has no closing marker for "end of bullet
+        list" the way it does for a bullet boundary, so callers must obtain
+        `section` from `_section`, which caps at the next heading — the slice
+        is still bounded, just not to a marker inside the bullet list itself.
+        Stopping at *any* following bullet, rather than requiring one
+        specific literal to follow, means two bullets swapping places is not
+        itself a failure this helper reports: this file's contracts do not
+        require a particular order between, say, the `attended` and
+        `unattended` bullets, so a swap between them is not a regression to
+        catch here (each bullet's own content is still checked by whichever
+        `assertIn` scopes to it).
+
+        `next_marker` as an explicit literal is still supported for callers
+        that need to bound a slice to a specific following marker rather than
+        "whatever bullet comes next"; it still raises `AssertionError` (not
+        `ValueError`) if that literal does not follow `marker` in `section`.
         """
         if marker not in section:
             raise AssertionError(f"bullet marker {marker!r} not found in section")
         start = section.index(marker)
         if next_marker is None:
-            return section[start:]
+            rest = section[start:]
+            boundary = re.search(r"\n- ", rest)
+            return rest[: boundary.start()] if boundary else rest
         try:
             end = section.index(next_marker, start)
         except ValueError:
@@ -101,23 +114,14 @@ class FeatureLeadContractsTest(
         return section[start:end]
 
     @staticmethod
-    def _numbered_step(flow: str, number: int) -> str:
-        """Return numbered step `number`'s full text, wrapped lines rejoined.
+    def _locate_numbered_step(flow: str, number: int) -> tuple[list[str], int, int]:
+        """Find step `number`'s physical-line range within `flow`.
 
-        Anchors the ordinal to the start of a physical line — a bare "N. "
-        substring search would also match inside a prose sentence that merely
-        mentions the number, or would keep matching a renumbered step whose
-        new number still contains the digit as a substring (e.g. a step
-        renumbered to "16." still contains "6"). TQ-17 found both misses in
-        practice with the previous non-anchored implementation.
-
-        The regex's `\\s*` after the period accepts the fullwidth space
-        (U+3000, which `str.isspace()` already treats as whitespace) and a
-        missing space alike, so those manuscript-formatting variants keep
-        matching. Continuation lines of a wrapped step (indented text that
-        does not itself start with "digit.") are folded into the same step,
-        so re-wrapping a step across more or fewer physical lines does not
-        change what this returns.
+        Shared by `_numbered_step` (needs the body text) and
+        `_numbered_step_offset` (needs the physical position) so both stay
+        anchored to the exact same line-start match — see `_numbered_step`'s
+        docstring for why the match has to be anchored to the start of a
+        physical line at all.
         """
         lines = flow.split("\n")
         start_pattern = re.compile(rf"^\s*{number}\.\s*")
@@ -135,7 +139,47 @@ class FeatureLeadContractsTest(
             ),
             len(lines),
         )
+        return lines, start_index, end_index
+
+    @classmethod
+    def _numbered_step(cls, flow: str, number: int) -> str:
+        """Return numbered step `number`'s full text, wrapped lines rejoined.
+
+        Anchors the ordinal to the start of a physical line — a bare "N. "
+        substring search would also match inside a prose sentence that merely
+        mentions the number, or would keep matching a renumbered step whose
+        new number still contains the digit as a substring (e.g. a step
+        renumbered to "16." still contains "6"). TQ-17 found both misses in
+        practice with the previous non-anchored implementation.
+
+        The regex's `\\s*` after the period accepts the fullwidth space
+        (U+3000, which `str.isspace()` already treats as whitespace) and a
+        missing space alike, so those manuscript-formatting variants keep
+        matching. Continuation lines of a wrapped step (indented text that
+        does not itself start with "digit.") are folded into the same step,
+        so re-wrapping a step across more or fewer physical lines does not
+        change what this returns.
+        """
+        lines, start_index, end_index = cls._locate_numbered_step(flow, number)
         return "\n".join(lines[start_index:end_index])
+
+    @classmethod
+    def _numbered_step_offset(cls, flow: str, number: int) -> int:
+        """Return the character offset of step `number`'s own line in `flow`.
+
+        TQ-21: `flow.index(cls._numbered_step(flow, number))` looks wrong but
+        isn't safe — it re-searches `flow` for the step's body text as a bare
+        substring, and returns the *first* occurrence. A decoy earlier in the
+        flow that quotes the same ordinal-prefixed sentence (e.g. inside a
+        prose aside) makes that search return the decoy's offset instead of
+        the real, line-anchored step's, defeating a position check even
+        though `_numbered_step` itself correctly found the real step. Summing
+        the lengths of the physical lines before the one `_locate_numbered_step`
+        actually matched points at that specific occurrence instead of
+        whichever text happens to match first.
+        """
+        lines, start_index, _ = cls._locate_numbered_step(flow, number)
+        return sum(len(line) + 1 for line in lines[:start_index])
 
     def _assert_heading_present_and_live(self, text: str, heading: str) -> None:
         """Fail if `heading` is missing, or sits inside an unclosed HTML comment.
@@ -677,6 +721,13 @@ class FeatureLeadContractsTest(
         # wording ("...手順7へ戻る") skipped 手順6, which is the only step that
         # sets `delegation` — resuming without it would hand impl-lead the same
         # unauthorized Branch Plan and loop at the same boundary forever.
+        #
+        # PQ-3: `_bullet` is called with `next_marker=None` (stop at the next
+        # "\n- " or section end) rather than the literal "- `unattended`" —
+        # this file's contracts do not require the `attended` bullet to
+        # precede `unattended`, so requiring that literal to follow would
+        # make swapping their order fail here even though no AC this file
+        # protects depends on which comes first.
         resume_contract = (
             "ユーザーが授権を確定したら、「全体の流れ」の手順6からその Branch Plan"
             "について行い直し、`impl-lead` を再開する。"
@@ -700,7 +751,7 @@ class FeatureLeadContractsTest(
             section = self._section(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
             )
-            attended_bullet = self._bullet(section, "- `attended`", "- `unattended`")
+            attended_bullet = self._bullet(section, "- `attended`", None)
             normalized_bullet = "".join(attended_bullet.split())
             with self.subTest(platform=platform):
                 self.assertIn("".join(resume_contract.split()), normalized_bullet)
@@ -869,21 +920,26 @@ class FeatureLeadContractsTest(
                     step_nine_contract,
                     "".join(self._numbered_step(flow, 9).split()),
                 )
-            # TQ-20: `required_order`'s position check relies on the needle
-            # occurring nowhere else in the flow; `str.find` returns the
-            # *first* match, so a decoy copy of 手順6's sentence placed
+            # TQ-20; TQ-21: `required_order`'s position check relies on the
+            # needle occurring nowhere else in the flow; `str.find` returns
+            # the *first* match, so a decoy copy of 手順6's sentence placed
             # earlier in the flow (with the real step later swapped past
             # 手順7 or 手順9) would pin `positions[0]` to the decoy and let
             # the swap through undetected — two edits, but the second one
-            # alone reproduces RB-2's infinite loop. Locating each step by
-            # its own physical position (`flow.index` on `_numbered_step`'s
-            # anchored result, not a bare substring) is immune to a decoy
-            # occurring anywhere before it, since it points at the specific
-            # line that starts with that ordinal rather than the first
-            # matching sentence.
+            # alone reproduces RB-2's infinite loop. `_numbered_step_offset`
+            # closes this the same way `_numbered_step` itself is anchored:
+            # it sums the lengths of the physical lines before the one that
+            # actually matched `^\s*N\.`, rather than re-searching `flow` for
+            # the step's body text as a bare substring. A plain
+            # `flow.index(self._numbered_step(flow, n))` looks equivalent but
+            # is not — it performs exactly that bare substring search, so a
+            # decoy that quotes the ordinal-prefixed sentence (not just the
+            # unprefixed body `required_order` guards against) still returns
+            # the decoy's offset instead of the real step's; TQ-21 found this
+            # in practice.
             with self.subTest(platform=platform, check="ordinal-order"):
                 step_starts = [
-                    flow.index(self._numbered_step(flow, n)) for n in (6, 7, 8, 9)
+                    self._numbered_step_offset(flow, n) for n in (6, 7, 8, 9)
                 ]
                 self.assertEqual(step_starts, sorted(step_starts))
 
