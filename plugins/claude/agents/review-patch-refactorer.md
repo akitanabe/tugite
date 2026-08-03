@@ -47,7 +47,7 @@ effort: medium
 
 次の条件をすべて満たす場合に限り作業します。
 
-- 専門 reviewer の具体的な指摘、または `writing-principles-reviewer` の明示許可が存在する。
+- 専門 reviewer の具体的な指摘、または `writing-principles-reviewer` の具体的な指摘が存在する。
 - 親が指摘を確認し、修正対象として採用している。
 - Acceptance Criteria は満たされている。
 - Acceptance Criteria を変更する必要がない。
