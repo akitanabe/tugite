@@ -218,6 +218,17 @@ class DraftImplementationPlanContractsTest(
                     )
                     self.assertIn("## 目次", reference)
 
+    def test_adversarial_review_toc_lists_induced_loop_section(self) -> None:
+        """List the induced-loop section in every generated reference table of contents."""
+        for platform, text in self._draft_reference_texts(
+            "adversarial-review.md"
+        ).items():
+            with self.subTest(platform=platform):
+                toc = "".join(
+                    "".join(self._section_lines(text, "## 目次")).split()
+                )
+                self.assertIn("誘発指摘による収束", toc)
+
     def test_plan_artifacts_reference_holds_the_canonical_schema(self) -> None:
         """Carry the review-state schema, violation codes, transitions, and handoff map."""
         required = (
@@ -225,7 +236,11 @@ class DraftImplementationPlanContractsTest(
             "status: blocked | awaiting_review | approved",
             "confirmation_mode: review | auto",
             "rounds_limit: 10",
-            "termination: null | zero-findings | trivial-only | round-limit",
+            "termination: null | zero-findings | trivial-only | induced-loop | round-limit",
+            "baseline_round: null | positive integer",
+            "overengineering_snapshot_round: null | positive integer",
+            "induced: true | false",
+            "`plan-adversarial-reviewer` の round だけを `rounds_completed` / `rounds_limit` に数える",
             "全 round・全 reviewer 通算の指摘台帳",
             # violation code をここで全列挙する。ただし素の部分文字列は本文の他所（Why Not
             # 段落など）にも一致しうるため、この列挙は表の網羅性の目安であって行の存在証明
@@ -246,6 +261,36 @@ class DraftImplementationPlanContractsTest(
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_artifacts_reference_recomputes_induced_loop_round_invariants(self) -> None:
+        """Recompute round invariants without reinterpreting individual induced booleans."""
+        required = (
+            "`rounds-invalid` の計数不変条件は Data から次のとおり再計算する",
+            "`baseline_round` は最初の `plan-adversarial-reviewer` round",
+            "親確定 verdict に `修正必須` が0件",
+            "成立後に変わらない",
+            "基準を取り直さない",
+            "基準以前と基準 round 自体の finding に `induced` はなく",
+            "基準の次 round 以後の `plan-adversarial-reviewer` finding には `induced` がある",
+            "`over-engineering-reviewer` finding には `induced` がなく",
+            "`over-engineering-reviewer` finding の `round` は snapshot の `rounds_completed`",
+            "`over-engineering-reviewer` の起動は `rounds_limit` 外",
+            "`overengineering_snapshot_round` が null なら `review-incomplete`",
+            "正整数なら審査済み snapshot として扱う",
+            "0 findings でも `overengineering_snapshot_round` に記録して完了とする",
+            "`overengineering_snapshot_round` は `rounds_completed` と一致",
+            "一致しない場合は `rounds-invalid`",
+            "`termination: induced-loop` は基準の2 round後以降の最新2つの",
+            "`修正推奨` 以上の母数に対する `induced` の strict majority",
+            "非誘発 `修正必須` なし",
+            "`unresolved` がない場合だけ有効",
+            "個々の `induced` 真偽の意味はこの再計算で再判定しない",
+        )
+        for platform, text in self._artifacts_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = "".join("".join(self._section_lines(text, "## blocking violation code")).split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), section)
 
     def test_plan_artifacts_reference_points_terminology_to_the_implementation_branches_glossary(
         self,
@@ -478,8 +523,7 @@ class DraftImplementationPlanContractsTest(
             "`reviewer` が定義済み語彙にない値 |",
             "| `state-invalid` | `status` と他フィールドの矛盾。"
             "有効な組み合わせ表から再計算する |",
-            "| `review-incomplete` | `termination` が null のまま、または過剰実装審査"
-            "（`reviewer: over-engineering-reviewer` の round）未実行のまま "
+            "| `review-incomplete` | `termination` が null のまま、または `overengineering_snapshot_round` が null のまま "
             "`awaiting_review` 以降へ遷移している |",
             "| `resolution-missing` | `resolution` が未記録の finding、または "
             "`resolution: unresolved` が `termination: round-limit` 以外で残っている |",
@@ -853,7 +897,7 @@ class DraftImplementationPlanContractsTest(
                 "## 渡す入力",
                 (
                     "プラン文書の全文",
-                    "2 round 目以降は前 round までの指摘台帳",
+                    "adversarial の収束時点までの指摘台帳",
                 ),
                 ("plan.objective", "AC の全文", "`allowed_paths`"),
             ),
@@ -1263,7 +1307,7 @@ class DraftImplementationPlanContractsTest(
                     self.assertIn("".join(contract.split()), section)
 
     def test_draft_review_reference_defines_termination_conditions(self) -> None:
-        """Terminate the loop only via the three confirmed conditions."""
+        """Terminate the loop only via the configured conditions."""
         required = (
             "1 round = `plan-adversarial-reviewer` 起動1回",
             "`zero-findings`",
@@ -1272,7 +1316,7 @@ class DraftImplementationPlanContractsTest(
             "reviewer の verdict 申告をそのまま採用しない",
             "`修正推奨` 以上へ引き上げた指摘が1件でもあればループを継続",
             "`auto` でも自動承認しない",
-            "この round も `rounds_limit` に数える",
+            "`rounds_completed` が `rounds_limit`（既定10）に到達",
         )
         for platform, text in self._draft_reference_texts(
             "adversarial-review.md"
@@ -1281,6 +1325,112 @@ class DraftImplementationPlanContractsTest(
                 normalized = "".join(text.split())
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized)
+
+    def test_draft_review_reference_defines_induced_loop_convergence(self) -> None:
+        """Keep induced-loop invariants scoped to its canonical section."""
+        required = (
+            "親が確定した verdict に `修正必須` が1件もない最初の round を基準とし",
+            "`review.baseline_round` にその番号を記録する",
+            "いったん記録した基準は取り直さない",
+            "基準 round 自体は `induced` を記録せず",
+            "基準の次 round 以降の各 `plan-adversarial-reviewer` finding",
+            "`review.findings[].induced` に `true | false` を記録する",
+            "基準の2 round後から毎 round",
+            "rolling の最新2つの `plan-adversarial-reviewer` round",
+            "`修正推奨` 以上の finding だけを母数にする",
+            "`induced` が母数の半数を超える strict majority",
+            "ちょうど半数は成立せず",
+            "窓に非誘発の `修正必須` が含まれる場合は次 round へ繰り越す",
+            "その round の採用指摘をプランへ反映してから打ち切る",
+            "`termination: induced-loop`",
+            "`unresolved` は残さない",
+        )
+        for platform, text in self._draft_reference_texts("adversarial-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(
+                    "".join(self._section_lines(text, "## 誘発指摘による収束")).split()
+                )
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_craft_entrypoint_connects_induced_loop_to_the_single_oe_finish(
+        self,
+    ) -> None:
+        """Expose induced-loop -> one OE review -> finish in every generated entrypoint."""
+        for platform, main in self._draft_skill_texts().items():
+            with self.subTest(platform=platform):
+                flow = "".join("".join(self._section_lines(main, "## 全体の流れ")).split())
+                for contract in (
+                    "`zero-findings`、`trivial-only`、または `induced-loop` の adversarial 収束後",
+                    "`over-engineering-reviewer` をプラン入力モードで1回起動する",
+                    "adversarial round の計数対象外の必須最終ゲート",
+                    "審査完了時は `overengineering_snapshot_round` に `rounds_completed` を記録する（0 findings でも同じ）",
+                    "adversarial へ戻らず、修正済みプランでレビュー工程を終了する",
+                ):
+                    self.assertIn("".join(contract.split()), flow)
+
+        for platform, text in self._draft_reference_texts("adversarial-review.md").items():
+            with self.subTest(reference=platform):
+                connection = "".join(
+                    "".join(self._section_lines(text, "## 過剰実装審査との接続")).split()
+                )
+                for contract in (
+                    "`induced-loop`",
+                    "`over-engineering-reviewer` をプラン入力モードで1回起動する",
+                    "adversarial の round 計数対象外",
+                    "`rounds_completed` / `rounds_limit` を増やさない",
+                    "`overengineering_snapshot_round` へ `rounds_completed` を記録する",
+                    "0 findings でも記録して完了とする",
+                    "`over-engineering-reviewer` の finding の `round` は adversarial 収束時点の `rounds_completed`",
+                    "その finding の `round` は `overengineering_snapshot_round` と一致する",
+                    "最後の adversarial round で収束条件が成立してもこの1回を実行する",
+                    "adversarial レビューへ戻らず",
+                    "過剰実装審査も再起動しない",
+                ):
+                    self.assertIn("".join(contract.split()), connection)
+
+    def test_draft_review_reference_does_not_reopen_adversarial_after_plan_oe_edit(
+        self,
+    ) -> None:
+        """Finish after an adopted plan-mode OE edit without restarting either reviewer."""
+        required = (
+            "過剰実装審査の指摘を採用してプランを修正した場合",
+            "adversarial レビューへ戻らず",
+            "修正済みプランでレビュー工程を終了する",
+            "`over-engineering-reviewer` も再起動しない",
+        )
+        for platform, text in self._draft_reference_texts("overengineering-plan-review.md").items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_eval_corpus_covers_induced_loop_boundaries(self) -> None:
+        """Cover the induced-loop boundary cases in the new EVAL-37 scenario."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        self.assertEqual(corpus.count("## EVAL-37: "), 1)
+        section = corpus.split("## EVAL-37: ", 1)[1].split("\n# Plan-intake cases", 1)[0]
+        normalized = "".join(section.split())
+        required = (
+            "基準前であり induced を記録しない",
+            "基準 round 自体は induced を記録せず、以後も基準を取り直さない",
+            "基準の次round以降",
+            "round 3--4",
+            "ちょうど半数のため収束しない",
+            "`修正推奨` 以上だけを母数にする",
+            "round 4--5",
+            "過半数だが round 5 に非誘発の `修正必須` があるため繰り越す",
+            "round 5--6",
+            "round 5--6 もその非誘発 `修正必須` を含むため不成立とする",
+            "round 6--7",
+            "round 7 の採用修正をプランへ反映してから収束する",
+            "`unresolved` は残さない",
+        )
+        for contract in required:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
+        self.assertNotIn("OE", normalized)
+        self.assertNotIn("over-engineering-reviewer", normalized)
 
     def test_draft_review_reference_records_resolution_per_finding(self) -> None:
         """Record adopted or rejected per finding id before any termination."""
@@ -1371,6 +1521,7 @@ class DraftImplementationPlanContractsTest(
         launch = (
             "起動時にプラン入力モードであることを明示し、レビュー済みのプラン文書の全文を渡す。",
             "明示しない起動は既定の diff 入力モードになるため、プラン審査には使えない。",
+            "指摘の有無にかかわらず審査完了時に `overengineering_snapshot_round` へ adversarial 収束時点の `rounds_completed` を記録する。0 findings でも記録して完了とし、未実行の null と区別する。",
         )
         bounce_back = (
             "「Acceptance Criteria」節に AC が1件も無いプラン文書は、"
@@ -2027,9 +2178,14 @@ class DraftImplementationPlanContractsTest(
         # round 計上であって、入力の呼称ではない。
         preserved = (
             "指摘を同じ `PF-*` 台帳へ `reviewer: over-engineering-reviewer` として記録し",
+            "過剰実装審査の1回は adversarial の round 計数に含めず、`rounds_completed` / `rounds_limit` を増やさない。",
+            "その finding の `round` を adversarial 収束時点の `rounds_completed` にする。",
+            "0 findings でも `overengineering_snapshot_round` に記録して完了とする。",
+            "`overengineering_snapshot_round` が null なら未実行として `review-incomplete`",
+            "正整数なら審査済み snapshot として扱う。",
             "採用指摘の反映はプラン修正だけで行う。",
-            "プラン修正後に adversarial レビューを再実行してから提示する。",
-            "過剰実装審査の round を `rounds_limit` の外に置いて無限ループの余地を残す。",
+            "プラン修正後は adversarial レビューを再実行せず提示する。",
+            "プラン修正後に adversarial または `over-engineering-reviewer` を再起動する。",
             "reviewer にテスト結果や diff を要求させる。",
         )
         for contract in required + preserved:

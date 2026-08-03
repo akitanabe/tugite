@@ -13,6 +13,7 @@
 - 指摘台帳
 - evidence を欠く指摘の扱い
 - 打ち切り条件
+- 誘発指摘による収束
 - 過剰実装審査との接続
 - round-limit 時の提示
 
@@ -23,7 +24,7 @@
 プラン文書の節構成と各節の責務は
 [起草手順](plan-drafting.md) の「プラン文書の節構成」を正本とする。
 
-1 round = `plan-adversarial-reviewer` 起動1回とする。各 round は次の順で進める。
+1 round = `plan-adversarial-reviewer` 起動1回とする（adversarial round）。各 round は次の順で進める。
 
 1. reviewer へプラン文書の全文と、2 round 目以降は前 round までの
    指摘台帳を渡して起動する。
@@ -72,13 +73,39 @@ evidence を補えない指摘は、指摘が成立したと仮定した場合�
   記録し、`unresolved` を残さない。
 - `round-limit`: `rounds_completed` が `rounds_limit`（既定10）に到達したとき。
 
+## 誘発指摘による収束
+
+修正が新しい指摘を誘発し続ける経路を、台帳上で識別して有界に打ち切る。
+
+- 親が確定した verdict に `修正必須` が1件もない最初の round を基準とし、
+  `review.baseline_round` にその番号を記録する。いったん記録した基準は取り直さない。
+- 誘発指摘は、基準プランには存在せず、基準以降に採用した修正が導入した記述を対象とする。基準 round
+  自体は `induced` を記録せず、基準の次 round 以降の各 `plan-adversarial-reviewer` finding の
+  `review.findings[].induced` に `true | false` を記録する。基準前の round は `induced` を記録しない（「基準なし round」は
+  `induced` の記録なしを指す）。
+- 基準の2 round後から毎 round、rolling の最新2つの `plan-adversarial-reviewer` round にある
+  `修正推奨` 以上の finding だけを母数にする。`induced` が母数の半数を超える strict majority で、
+  窓に非誘発の `修正必須` が含まれない場合に限り、`termination: induced-loop` を確定する。
+  ちょうど半数は成立せず、窓に非誘発の `修正必須` が含まれる場合は次 round へ繰り越す。最新2つの窓を
+  評価する。
+- `induced-loop` を確定する round では、その round の採用指摘をプランへ反映してから打ち切る。
+  `unresolved` は残さない。`induced-loop` の確定それ自体を理由に、採用修正に必要な範囲を超えて指摘を
+  取り下げたり条項を追加削除したりしない。有界性は `round-limit` が担い、基準や多数決を理由に
+  `rounds_limit` を変更しない。
+
 ## 過剰実装審査との接続
 
-- adversarial の収束（`zero-findings` または `trivial-only`）後に、`over-engineering-reviewer` を
-  プラン入力モードで1回起動する（[過剰実装のプラン審査](overengineering-plan-review.md)）。
-- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューを再実行する。
-  この round も `rounds_limit` に数える。
-  上限は両 reviewer の round を合算して適用し、無限ループを構造的に防ぐ。
+- adversarial の収束（`zero-findings`、`trivial-only`、または `induced-loop`）後に、`over-engineering-reviewer` を
+  プラン入力モードで1回起動する（[過剰実装のプラン審査](overengineering-plan-review.md)）。これは adversarial の round
+  計数対象外の必須最終ゲートであり、`rounds_completed` / `rounds_limit` を増やさない。最後の adversarial round で
+  収束条件が成立してもこの1回を実行する。完了時に `overengineering_snapshot_round` へ
+  `rounds_completed` を記録する。0 findings でも記録して完了とする。
+- `over-engineering-reviewer` の finding の `round` は adversarial 収束時点の `rounds_completed`（確定 snapshot の番号）とする。
+  その finding の `round` は `overengineering_snapshot_round` と一致する。reviewer field で同じ round の adversarial finding と
+  区別する。採用修正後は追加の adversarial round を実行しない。
+- 過剰実装審査の指摘を採用してプランを修正した場合は、adversarial レビューへ戻らず、修正済み
+  プランでレビュー工程を終了する。過剰実装審査も再起動しない。採用した指摘を台帳へ記録し、
+  その修正を反映した2 artifactを提示する。
 - 過剰実装審査の指摘も同じ `PF-*` 台帳へ記録し、`reviewer: over-engineering-reviewer` で区別する。
 
 ## round-limit 時の提示

@@ -172,14 +172,17 @@ assumptions:                    # minor のみ。AC 充足・scope・実行可�
 
 review:
   rounds_limit: 10              # 既定10。ユーザー明示時のみ変更
-  rounds_completed: 0
-  termination: null | zero-findings | trivial-only | round-limit
+  rounds_completed: 0            # `plan-adversarial-reviewer` の round だけを `rounds_completed` / `rounds_limit` に数える
+  baseline_round: null | positive integer  # 修正必須が0件の最初のround。成立後は固定
+  overengineering_snapshot_round: null | positive integer  # null=最終過剰実装審査未完了。正整数=審査済みsnapshotのround
+  termination: null | zero-findings | trivial-only | induced-loop | round-limit
   findings:                     # 全 round・全 reviewer 通算の指摘台帳
     - id: PF-1                  # 安定 ID。round をまたいで振り直さない
       round: 1
       reviewer: plan-adversarial-reviewer | over-engineering-reviewer
       verdict: 軽微 | 修正推奨 | 修正必須    # 親が確認した確定値
       summary: <指摘の要約>
+      induced: true | false                  # 基準の次round以後のplan-adversarial findingだけ。over-engineering-reviewer findingには置かない
       resolution: adopted | rejected | unresolved   # unresolved は round-limit 時のみ
       resolution_note: <採用内容または不採用理由>
 
@@ -202,11 +205,28 @@ validation:
 | `duplicate-id` | finding id の重複 |
 | `vocabulary-invalid` | `verdict` / `resolution` / `termination` / `reviewer` が定義済み語彙にない値 |
 | `state-invalid` | `status` と他フィールドの矛盾。有効な組み合わせ表から再計算する |
-| `review-incomplete` | `termination` が null のまま、または過剰実装審査（`reviewer: over-engineering-reviewer` の round）未実行のまま `awaiting_review` 以降へ遷移している |
+| `review-incomplete` | `termination` が null のまま、または `overengineering_snapshot_round` が null のまま `awaiting_review` 以降へ遷移している |
 | `resolution-missing` | `resolution` が未記録の finding、または `resolution: unresolved` が `termination: round-limit` 以外で残っている |
 | `rounds-invalid` | `rounds_completed` が `rounds_limit` を超えている、または `findings[].round` と矛盾する |
 
 表A の `path` はレビュー状態のスキーマ上の path を書く（例: `review.findings[2].resolution`）。
+
+`rounds-invalid` の計数不変条件は Data から次のとおり再計算する。`rounds_completed` / `rounds_limit` は
+`plan-adversarial-reviewer` round だけを数え、`over-engineering-reviewer` の必須最終ゲートは計数対象外である。
+`baseline_round` は最初の `plan-adversarial-reviewer` round のうち親確定 verdict に `修正必須` が0件のものを指し、
+成立後に変わらない。基準を取り直さない。
+基準以前と基準 round 自体の finding に `induced` はなく、基準の次 round 以後の
+`plan-adversarial-reviewer` finding には `induced` がある。`over-engineering-reviewer` finding には
+`induced` がなく、`over-engineering-reviewer` finding の `round` は snapshot の `rounds_completed`
+（adversarial 収束時点）である。
+`over-engineering-reviewer` の起動は `rounds_limit` 外である。`termination: induced-loop` は基準の2 round後以降の最新2つの
+`plan-adversarial-reviewer` roundについて、`修正推奨` 以上の母数に対する `induced` の strict majority と
+非誘発 `修正必須` なしを満たし、`unresolved` がない場合だけ有効である。個々の `induced` 真偽の意味は
+この再計算で再判定しない。
+`overengineering_snapshot_round` が null なら `review-incomplete` を生成し、正整数なら審査済み snapshot として扱う。
+0 findings でも `overengineering_snapshot_round` に記録して完了とする。
+`overengineering_snapshot_round` は `rounds_completed` と一致し、過剰実装審査の finding があればその `round` も一致しなければならない。
+一致しない場合は `rounds-invalid` を生成する。
 
 **表B: プラン文書に対する親の判定で生成する code**
 

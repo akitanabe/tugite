@@ -64,10 +64,13 @@ description: >-
    [プラン artifact](references/plan-artifacts.md) の保存規約に従って書き出す。
 3. [敵対的レビューループ](references/adversarial-review.md) に従い、`plan-adversarial-reviewer` に
    よる round を打ち切り条件が成立するまで繰り返す。採用した指摘を反映するたびにプラン文書を
-   上書きする。
-4. adversarial の収束後、[過剰実装のプラン審査](references/overengineering-plan-review.md) に従い
-   `over-engineering-reviewer` をプラン入力モードで起動する。指摘採用でプランを修正した場合は
-   手順3へ戻る。
+   上書きし、基準 round と誘発指摘をレビュー状態へ記録する。
+4. `zero-findings`、`trivial-only`、または `induced-loop` の adversarial 収束後、
+   adversarial round の計数対象外の必須最終ゲートとして
+   [過剰実装のプラン審査](references/overengineering-plan-review.md) に従い
+   `over-engineering-reviewer` をプラン入力モードで1回起動する。指摘採用でプランを修正した場合は
+   adversarial へ戻らず、修正済みプランでレビュー工程を終了する。審査完了時は
+   `overengineering_snapshot_round` に `rounds_completed` を記録する（0 findings でも同じ）。
 5. [プラン artifact](references/plan-artifacts.md) に従いレビュー状態を生成する。
 6. `validation.blocking` を確定する。表A をレビュー状態 Data から再計算し、表B をプラン文書に
    対する判定で生成する。
