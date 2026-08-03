@@ -9,9 +9,9 @@
 - `skills/impl-lead/references/*.md`
   - 実装枝、expert 選択、QA・統合の詳細を必要な段階で参照します。
 - `skills/branch-design/SKILL.md`
-  - 実装プランを委譲可能な Branch Plan へ正規化します。実装や委譲は行いません。
+  - 実装プランを委譲可能な Branch Plan Set へ正規化します。実装や委譲は行いません。
 - `skills/branch-design/references/*.md`
-  - Branch Plan スキーマ、枝分割判断、ユーザー確認の詳細を必要な段階で参照します。
+  - Branch Plan Set スキーマ、枝分割判断、ユーザー確認の詳細を必要な段階で参照します。
 - `skills/test-audit/SKILL.md`
   - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
 - `skills/test-audit/references/*.md`

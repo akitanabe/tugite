@@ -16,6 +16,37 @@ from build_plugin_assets_test_support import (
 )
 
 
+DECISION_CORPUS_PATH = Path("evals/workflow-decision-corpus.md")
+BRANCH_SPLITTING_REFERENCE_PATH = Path(
+    "shared/skill/branch-design/references/branch-splitting.md"
+)
+BRANCH_SPLIT_CRITERIA_HEADING = "## Branch Plan へ分割する判断基準"
+# corpus から廃止した artifact 名。`branch-design` の出力は Branch Plan Set であり、
+# それを束ねた単一 Data の旧称が残ると、評価者は存在しない artifact を探しに行く。
+CORPUS_RETIRED_TERMS = ("Branch Plan Data",)
+# `impl-lead` の受け入れ口へ渡るのは Branch Plan Set である。
+CORPUS_SET_INPUT_HEADER = "確定済みと称する Branch Plan Set(抜粋):"
+# 旧形の抜粋は Branch Plan の field を最上位 bullet に置く。Set の抜粋では最上位 bullet が
+# Set 自身・`branch_plans`・run 状態だけになるため、見出しの文言ではなくこの構造で旧形を
+# 検出する。見出し文字列だけを見ると、別の言い回しで書かれた旧形の抜粋を素通りさせる。
+CORPUS_BRANCH_PLAN_FIELD_TOP_LEVEL_BULLET = re.compile(
+    r"(?m)^- `(?:status|branches|delegation|approval|confirmation_mode"
+    r"|unresolved_decisions|execution|delegation_mode_proposal)[:`]"
+)
+# `plan-intake` の評価タイミングを持つ case は、この件数を下回らない。母集合を評価タイミング
+# から導くため、corpus 側の記述が痩せると検査対象が黙って空になりうる。下限で気付けるようにする。
+CORPUS_MINIMUM_PLAN_INTAKE_CASES = 4
+# EVAL-15 は branch-splitting.md「Branch Plan へ分割する判断基準」の判断を評価する case であり、
+# corpus は正本を置き換えない。corpus 側の文言だけを固定すると、正本を改訂しても corpus は旧文言の
+# まま通り続ける。両方に同じ語があることを1本で突き合わせて drift を検出する。
+BRANCH_SPLIT_CRITERIA_SHARED_CONTRACTS = (
+    "独立した変更目的が複数あり、一方を実行して他方を実行しない選択が成立する",
+    "先行部分の完了後に、後続の設計を見直す余地がある",
+    "枝数の固定閾値",
+    "分割の必要条件であり、十分条件ではない",
+)
+
+
 class ImplLeadModeContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
@@ -203,8 +234,27 @@ class ImplLeadModeContractsTest(
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized_workflow)
 
-        for main in (skills.source_main, skills.claude_main, skills.codex_main):
-            with self.subTest(main=main[:40]):
+        # Branch Plan 単位の提示と確認ゲートは SKILL.md 本体が持つ。連結テキストへの
+        # assert だけだと、reference へ移設しても通ってしまい、SKILL.md だけを読む
+        # Executor が単位を知らないまま委譲を開始できる。
+        branch_plan_unit_rules = (
+            "実行前サマリーは Branch Plan 単位で提示する。",
+            "Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。",
+            "`strict-full` の確認ゲートは Branch Plan 単位で行う。",
+        )
+        for platform, main in (
+            ("source", skills.source_main),
+            ("claude", skills.claude_main),
+            ("codex", skills.codex_main),
+        ):
+            summary_section = main.split("## 実行前サマリー", 1)[-1].split(
+                "\n## ", 1
+            )[0]
+            normalized_summary = "".join(summary_section.split())
+            for rule in branch_plan_unit_rules:
+                with self.subTest(platform=platform, rule=rule):
+                    self.assertIn("".join(rule.split()), normalized_summary)
+            with self.subTest(platform=platform, check="order"):
                 self.assertLess(
                     main.index("実行前サマリーを提示する"),
                     main.index("先頭の枝だけを委譲する"),
@@ -275,9 +325,9 @@ class ImplLeadModeContractsTest(
             "EVAL-22": corpus.split("## EVAL-22:", 1)[1].split("## EVAL-23:", 1)[0],
             "EVAL-23": corpus.split("## EVAL-23:", 1)[1].split("## EVAL-24:", 1)[0],
         }
-        expected_branch_counts = {"EVAL-18": 1, "EVAL-22": 3, "EVAL-23": 2}
+        expected_branch_counts = {"EVAL-18": 2, "EVAL-22": 3, "EVAL-23": 2}
         branch_markers = {
-            "EVAL-18": ("`branches`: `b1`",),
+            "EVAL-18": ("`b-index`:", "`b-search`:"),
             "EVAL-22": ("`b-auth`:", "`b-domain`:", "`b-label`:"),
             "EVAL-23": ("`b-migration`:", "`b-format`:"),
         }
@@ -343,6 +393,239 @@ class ImplLeadModeContractsTest(
                                     )
                                 ),
                             )
+
+    def test_repository_decision_corpus_drops_all_stage_vocabulary(self) -> None:
+        """Leave no trace of the retired implementation_stages mechanism in the corpus."""
+        # 廃止 field 名(implementation_stages / stage_tests / stages_reason)だけでなく、
+        # field 名を含まない stage 概念の散文(「stage は AC を所有しない」等)も検出できるよう、
+        # 生の "stage" 部分文字列(大小無視)の不在を検査する。原稿側の同型テストと検査形を
+        # 揃えている。
+        # 検出は Latin 表記に閉じる。日本語の「段階」は corpus に32件あり、そのすべてが
+        # `strict` の四段階 gate と評価タイミングという別概念の正当な用法であるため、検出語へ
+        # 加えると偽陽性しか増えない。これは見落としではなく選択である。その結果、Latin 表記を
+        # 使わずに日本語だけで stage 機構を書いた散文はこの検査を通過する。その blind spot は
+        # 他のテストでも塞いでいない。塞ぐには廃止機構に固有の日本語の共起を禁止語にする必要が
+        # あり、偽陽性の範囲が読めないため採らなかった。
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        carrying = [line for line in corpus.splitlines() if "stage" in line.lower()]
+        self.assertEqual(
+            [],
+            carrying,
+            "corpus に廃止した implementation_stages 機構の語彙(stage)が残っている: "
+            f"{carrying}",
+        )
+
+    def _decision_corpus_cases(self, corpus: str) -> list[tuple[str, str]]:
+        """List every EVAL case in document order, keeping cases that reuse an ID."""
+        # corpus は EVAL-11 / EVAL-12 / EVAL-25 を別々の case で使い回している。ID を key に
+        # した dict にすると後勝ちで前の本文が検査対象から消え、壊れた case を検査が一度も
+        # 読まないまま通す。全件を配列で残す。
+        headings = list(re.finditer(r"(?m)^## (EVAL-[^:\n]+):[^\n]*$", corpus))
+        self.assertTrue(headings)
+        cases: list[tuple[str, str]] = []
+        for heading in headings:
+            # case の終わりは次の見出しであり、次の EVAL とは限らない。最後の case を
+            # 節見出しで閉じないと、結果記録や Phase 2 の本文まで case の一部として読む。
+            following = re.search(r"(?m)^#{1,2} [^\n]+$", corpus[heading.end() :])
+            end = (
+                heading.end() + following.start()
+                if following is not None
+                else len(corpus)
+            )
+            cases.append((heading.group(1), corpus[heading.end() : end]))
+        return cases
+
+    @staticmethod
+    def _decision_case_section(case: str, start: str, end: str | None) -> str:
+        """Bound one labelled section so a contract cannot be satisfied from elsewhere."""
+        if start not in case:
+            return ""
+        section = case.split(start, 1)[1]
+        return section if end is None else section.split(end, 1)[0]
+
+    def _assert_decision_case_sections(
+        self,
+        case: str,
+        section_contracts: dict[tuple[str, str | None], tuple[str, ...]],
+    ) -> None:
+        """Require each contract inside its own section so polarity stays pinned."""
+        # case 全体へ assertIn すると、同じ文が「禁止動作」にあっても通り、判断の極性が
+        # 固定されない。期待側と必須動作を別の範囲として見るのは、片方だけを反転させた
+        # 自己矛盾した case を検出するためである。
+        for (start, end), contracts in section_contracts.items():
+            section = self._decision_case_section(case, start, end)
+            normalized_section = "".join(section.split())
+            for contract in contracts:
+                with self.subTest(section=start, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized_section)
+
+    def test_repository_decision_corpus_names_the_branch_plan_set_artifact(
+        self,
+    ) -> None:
+        """Leave no retired artifact name anywhere in the corpus."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        carrying = [
+            line
+            for line in corpus.splitlines()
+            if any(term in line for term in CORPUS_RETIRED_TERMS)
+        ]
+        self.assertEqual(
+            [],
+            carrying,
+            f"corpus に廃止した artifact 名が残っている: {carrying}",
+        )
+
+    def test_repository_decision_corpus_shows_plan_intake_inputs_as_sets(self) -> None:
+        """Show every plan-intake input in the Set shape the intake actually receives."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        cases = self._decision_corpus_cases(corpus)
+        for index, (name, case) in enumerate(cases):
+            with self.subTest(case=name, position=index):
+                self.assertIsNone(
+                    CORPUS_BRANCH_PLAN_FIELD_TOP_LEVEL_BULLET.search(
+                        self._decision_case_section(
+                            case, "**入力**", "**期待する判断**"
+                        )
+                    ),
+                    f"{name} の入力が Branch Plan の field を最上位 bullet に置いている",
+                )
+        plan_intake_cases = [
+            (index, name, case)
+            for index, (name, case) in enumerate(cases)
+            if "`plan-intake`"
+            in self._decision_case_section(case, "**評価タイミング**", "**入力**")
+        ]
+        self.assertGreaterEqual(
+            len(plan_intake_cases), CORPUS_MINIMUM_PLAN_INTAKE_CASES
+        )
+        for index, name, case in plan_intake_cases:
+            case_input = self._decision_case_section(
+                case, "**入力**", "**期待する判断**"
+            )
+            for contract in (
+                CORPUS_SET_INPUT_HEADER,
+                "`branch_plans`:",
+                "`order`:",
+            ):
+                with self.subTest(case=name, position=index, contract=contract):
+                    self.assertIn(contract, case_input)
+
+    def test_repository_decision_corpus_matches_the_branch_split_criteria_source(
+        self,
+    ) -> None:
+        """Keep EVAL-15 and its source stating the split criteria in the same words."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        case = corpus.split("## EVAL-15: Branch Plan Set の分割判断", 1)[1].split(
+            "## EVAL-16:", 1
+        )[0]
+        reference = self._repository_text(BRANCH_SPLITTING_REFERENCE_PATH)
+        criteria = reference.split(BRANCH_SPLIT_CRITERIA_HEADING, 1)[1].split(
+            "\n## ", 1
+        )[0]
+        normalized_case = "".join(case.split())
+        normalized_criteria = "".join(criteria.split())
+        for contract in BRANCH_SPLIT_CRITERIA_SHARED_CONTRACTS:
+            normalized_contract = "".join(contract.split())
+            with self.subTest(contract=contract, side="source"):
+                self.assertIn(normalized_contract, normalized_criteria)
+            with self.subTest(contract=contract, side="corpus"):
+                self.assertIn(normalized_contract, normalized_case)
+
+    def test_repository_decision_corpus_splits_branch_plans_on_qualitative_criteria(
+        self,
+    ) -> None:
+        """Evaluate Branch Plan Set splitting by purpose and learning boundaries."""
+        # 期待側の契約は「期待する判断」と「必須動作」へ限定して照合する。case 全体へ
+        # assertIn すると、同じ文が「禁止動作」にあっても通るため、判断の極性が固定されない。
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        case = corpus.split("## EVAL-15: Branch Plan Set の分割判断", 1)[1].split(
+            "## EVAL-16:", 1
+        )[0]
+        section_contracts = {
+            ("**評価タイミング**", "**入力**"): ("`planning`",),
+            ("**期待する判断**", "**必須動作**"): (
+                "独立した変更目的が複数あり、一方を実行して他方を実行しない選択が成立する",
+                "先行部分の完了後に、後続の設計を見直す余地がある",
+                "`order`",
+                "`depends_on` が同一 Branch Plan 内に閉じることは分割の必要条件であり、"
+                "十分条件ではない",
+                "`decision.split: false`",
+            ),
+            ("**必須動作**", "**禁止動作**"): (
+                "独立した変更目的、または学習が起きる境界を根拠に、質的基準で分割を判断する",
+                "分割する場合は Branch Plan を2件持つ Set を出力し、`order` に実行順序を置く",
+                "枝の `depends_on` が同一 Branch Plan 内に閉じることを、分割の必要条件として"
+                "確認する",
+            ),
+            ("**禁止動作**", "**許容される差異**"): (
+                "枝数の固定閾値",
+                "新しい blocking violation code",
+                "`depends_on` が閉じていることだけを根拠に分割する",
+            ),
+        }
+        self._assert_decision_case_sections(case, section_contracts)
+
+    def test_repository_decision_corpus_stops_at_an_unauthorized_branch_plan(
+        self,
+    ) -> None:
+        """Stop at the Branch Plan boundary without treating it as a plan defect."""
+        corpus = self._repository_text(DECISION_CORPUS_PATH)
+        case = corpus.split("## EVAL-18: 未授権 Branch Plan の境界での停止", 1)[
+            1
+        ].split("## EVAL-22:", 1)[0]
+        section_contracts = {
+            ("**評価タイミング**", "**入力**"): ("`plan-intake`",),
+            ("**入力**", "**期待する判断**"): (
+                "`delegation: { authorized: false, authorized_by: null, "
+                "requested_mode: null }`",
+                "`bp-index` は授権済みで実行が完了し",
+            ),
+            # 境界と Branch Plan の誤りの弁別がこの case の中心である。禁止動作側の否定形だけで
+            # 支えると、期待する判断が「修正を要求する」へ反転しても検出できない。
+            ("**期待する判断**", "**必須動作**"): (
+                "Set 帰属の blocking violation code を先行検査する",
+                "再検証5項目を Branch Plan ごとに繰り返し、先行 Branch Plan の結果を流用しない",
+                "これは Branch Plan の誤りではなく境界へ到達したことを表すため、"
+                "Branch Plan の修正を要求しない",
+            ),
+            ("**必須動作**", "**禁止動作**"): (
+                "Set 帰属の blocking violation code を先行検査する",
+                "再検証5項目を Branch Plan ごとに繰り返し、先行 Branch Plan の結果を流用しない",
+                "これは Branch Plan の誤りではなく境界へ到達したことを表すため、"
+                "Branch Plan の修正を要求しない",
+                "完了済み Branch Plan の最終報告と、未実行 Branch Plan の一覧を提示して"
+                "授権を要求する",
+                "既定では `order` の先頭の未実行 Branch Plan だけを授権する",
+            ),
+            ("**禁止動作**", "**許容される差異**"): (
+                "未授権を Branch Plan の誤りとして修正を要求する",
+                "境界のために `delegation.authorized` とは別の状態や field を新設する",
+                "1回の委譲要求で全 Branch Plan を授権する",
+            ),
+        }
+        self._assert_decision_case_sections(case, section_contracts)
+
+    def test_repository_docs_describe_branch_design_output_as_a_branch_plan_set(
+        self,
+    ) -> None:
+        """Publish the same Branch Plan Set output description in every hand-written doc."""
+        # 生成対象ではない手書き文書だけを見る。`shared/` 側の記述は branch-design の
+        # 契約テストが持つため、ここでは読者向け文書の語彙追随だけを固定する。
+        paths = (
+            Path("README.md"),
+            Path("plugins/claude/README.md"),
+            Path("plugins/codex/README.md"),
+            Path("CLAUDE.md"),
+        )
+        for path in paths:
+            text = self._repository_text(path)
+            with self.subTest(path=path):
+                self.assertIn(
+                    "".join("実装プランを委譲可能な Branch Plan Set へ正規化".split()),
+                    "".join(text.split()),
+                )
+                self.assertNotIn("Branch Plan Data", text)
+
     def test_repository_decision_corpus_rejects_legacy_risk(self) -> None:
         """Observe planning and Executor rejection of legacy risk input."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
@@ -560,8 +843,11 @@ class ImplLeadModeContractsTest(
             "HEAD 不一致だけを特別扱いし、path 不一致・branch 不一致・dirty status を異なる扱いにする。",
             "Claude Code と Codex は「platform 共通の期待」に記載した起動、継続 mechanism だけが異なる。",
             "Red 必須と親 QA は共通であり、agent の起動 mechanism だけが異なる。",
-            "引き上げ受諾後の段階継続 mechanism は platform に合わせてよい。",
         )
+        # 「引き上げ受諾後の段階継続 mechanism は platform に合わせてよい。」は、廃止した
+        # implementation_stages 機構を前提にした EVAL-18 の許容差異だった。case ごと書き換えた
+        # ため文そのものが corpus に存在せず、存在を要求できない。worktree 準備を含む旧版が
+        # 復活しないことは下の stale_contracts が引き続き見る。
         for contract in required_contracts:
             self.assertIn("".join(contract.split()), normalized)
 
@@ -680,6 +966,46 @@ class ImplLeadModeContractsTest(
                 self.assertIn(
                     "".join(exclusion_contract.split()), normalized_frontmatter
                 )
+
+    def test_impl_lead_skill_flow_runs_branch_plans_in_order_and_stops_at_the_boundary(
+        self,
+    ) -> None:
+        """Walk the Branch Plan Set in order and halt at an unauthorized boundary."""
+        # 手順の番号は run-closeout.md の「main の手順9へ戻る」と既存契約が参照するため、
+        # Branch Plan 単位の分岐は既存手順の中へ織り込み、番号を増やさない。
+        skills = self._repository_skill_texts()
+        required_flow = (
+            "確定済み Branch Plan Set が渡されている場合は",
+            "`order` に従って Branch Plan を順に実行する。",
+            "いま実行している Branch Plan の全枝を完了した場合は、`order` に未実行の "
+            "Branch Plan が残っていても手順9へ進む。",
+            "未授権の Branch Plan に到達した場合は実行を止め",
+            "授権を要求する",
+            "授権された未実行の Branch Plan があれば手順2へ戻り",
+            "手順7の修正経路",
+        )
+        # 決定表と再検証規則は正本参照のままにする。SKILL.md へ再掲すると同じ規則が
+        # 2箇所で更新対象になる。決定表はヘッダ行全体で識別する。`| policy | baseline |`
+        # だけだと、保持義務のある入力語彙の写像表(`| ユーザー入力 | policy | baseline |
+        # 意味と選択条件 |`)にも一致してしまう。
+        forbidden_restatements = (
+            "| policy | baseline | `implementation_complexity.level: low` | "
+            "`medium` | `high` |",
+            "`status: approved` であり、`approval.method` が設定済みである。",
+        )
+        for platform, main in (
+            ("source", skills.source_main),
+            ("claude", skills.claude_main),
+            ("codex", skills.codex_main),
+        ):
+            flow = main.split("## 全体の流れ", 1)[-1]
+            normalized_flow = "".join(flow.split())
+            for contract in required_flow:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized_flow)
+            for restatement in forbidden_restatements:
+                with self.subTest(platform=platform, restatement=restatement):
+                    self.assertNotIn("".join(restatement.split()), "".join(main.split()))
 
 
 if __name__ == "__main__":

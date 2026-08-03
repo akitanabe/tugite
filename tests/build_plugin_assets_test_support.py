@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -267,6 +268,50 @@ class RepositoryContractSupport:
     @staticmethod
     def _normalize_contract(text: str) -> str:
         return "".join(text.replace("`", "").split())
+
+    @staticmethod
+    def _markdown_section_headings(text: str) -> tuple[str, ...]:
+        """Return the level-2 headings of ``text``, excluding 目次 and fenced blocks.
+
+        Lines inside a fenced code block are skipped: the impl-lead references
+        embed delegation-prompt templates whose bodies contain literal ``## タスク``
+        style lines, which are template content the workflow hands to a worker,
+        not sections of the reference itself. Counting them as headings would make
+        a table-of-contents comparison fail for a file that is in fact consistent.
+
+        Both ``` and ~~~ fences are recognized, and a fence closes only on a run of
+        the same character at least as long as the opener. A plain toggle would
+        treat a nested fence — legal CommonMark, and how a Markdown template that
+        itself contains a code block has to be written — as a close, and every
+        heading after it would be misclassified.
+        """
+        headings: list[str] = []
+        fence: str | None = None
+        for line in text.splitlines():
+            marker = re.match(r"^(`{3,}|~{3,})", line)
+            if marker is not None:
+                run = marker.group(1)
+                if fence is None:
+                    fence = run
+                elif run[0] == fence[0] and len(run) >= len(fence):
+                    fence = None
+                continue
+            if fence is not None or not line.startswith("## "):
+                continue
+            heading = line.removeprefix("## ")
+            if heading != "目次":
+                headings.append(heading)
+        return tuple(headings)
+
+    @staticmethod
+    def _markdown_table_of_contents(text: str) -> tuple[str, ...]:
+        """Return the bullet items of the 目次 section of ``text``."""
+        toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
+        return tuple(
+            line.removeprefix("- ")
+            for line in toc.splitlines()
+            if line.startswith("- ")
+        )
 
     @staticmethod
     def _iter_repository_text_asset_files(*roots: Path) -> Iterator[Path]:

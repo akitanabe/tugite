@@ -2,13 +2,15 @@
 
 # 枝分割判断
 
-実装プランを委譲可能な実装枝へ分ける判断基準を定める。枝の単位は
-`impl-lead` の実装枝契約(外部から観測可能な振る舞い / 単独の AC・検証・
-受け入れ・revert)と同じにする。この Skill は分割を判断して Branch Plan Data を返すだけで、
-枝の実装や委譲は行わない。
+実装プランを委譲可能な実装枝へ分ける判断基準を定める。この file は Branch Plan Set への
+分割と実装枝への分割という2層の基準を扱い、判断の順序は Set 層 → 実装枝層である。実装枝の
+単位は `impl-lead` の実装枝契約(外部から観測可能な振る舞い / 単独の AC・検証・受け入れ・
+revert)と同じにする。この Skill は分割を判断して Branch Plan Set を返すだけで、枝の実装や
+委譲は行わない。
 
 ## 目次
 
+- Branch Plan へ分割する判断基準
 - 第一基準と優先順位
 - 分割シグナル
 - 責務制約の生成
@@ -16,8 +18,20 @@
 - implementation_complexity.level の判定観点
 - 分割過多の統合
 - 1枝にまとめる判断
-- implementation_stages の宣言
 - shared_foundation の判定
+
+## Branch Plan へ分割する判断基準
+
+質的基準とし、枝数の固定閾値も新しい blocking code も設けない。適切な Branch Plan の粒度は
+対象の複雑さに依存し、固定値を契約として持てないためである。
+
+- **分割する** — 独立した変更目的が複数あり、一方を実行して他方を実行しない選択が成立する。
+- **分割する** — 先行部分の完了後に、後続の設計を見直す余地がある(学習が起きる境界)。
+- **分割しない** — 全枝が1つの変更目的に属し、一部だけ受け入れる選択が成立しない。
+
+枝の依存が閉じていること(枝の `depends_on` が同一 Branch Plan 内に閉じること)は分割の
+必要条件であり、十分条件ではない。分割しない場合は Set の `decision.split: false` と理由の
+記録を必須とする。実装枝の `decision` と同型の機構であり、新しい形式を導入しない。
 
 ## 第一基準と優先順位
 
@@ -133,29 +147,21 @@ diff にならず、受け入れ判断を枝内に閉じられないため。
 - 失敗時の切り分けが枝内で閉じ、他へ波及しない。
 - reviewer へ渡す diff が単独 review の粒度に収まる。
 
-分割しない場合は `decision.split: false` を出力し、`decision.reason` に「1枝で受け入れ判断・
-差し戻し・テスト実行が閉じる根拠」を記録する。ユーザーが分割の統合・修正を指示した場合は
+分割しない場合は Branch Plan の `decision.split: false` を出力し、`decision.reason` に
+「1枝で受け入れ判断・差し戻し・テスト実行が閉じる根拠」を記録する。ユーザーが実装枝の統合を
+指示した場合は、記録先の正本である [ユーザー確認](plan-review.md) の「確認操作」節に従い
 `override` にその理由を記録する。
-
-## implementation_stages の宣言
-
-1つの振る舞いが大きすぎて1サイクルで扱いづらく、かつ分割シグナルに複数該当する場合だけ、
-その枝に `implementation_stages` を宣言する。stage は実装上の中間段階であり、AC を所有しない。
-受け入れ判断・統合・revert は枝単位のままにする。
-
-- stage を宣言するのは、縦割りでは分けられないが段階的に積み上げたい1つの振る舞いに限る。
-- 宣言する場合は2 stage 以上とし、`stages_reason` に理由を記録する。
-- 各 stage の `stage_tests` の和集合が枝の `tests` と一致すること。
-- stage の実行規約は Executor(`impl-lead`)側の責務であり、この Skill では
-  宣言条件と構造だけを確定する。
 
 ## shared_foundation の判定
 
 複数の枝が同じ fixture、設定、テストデータ、生成物を必要とする場合だけ、親が委譲前に実装する
 共有土台として `shared_foundation` を宣言する。これは委譲枝としては表現しない、親実装の
-明示的な例外である。
+明示的な例外である。宣言条件にある「複数の枝」は、同一 Branch Plan 内の複数の枝を指す。
 
 - 単一の枝しか必要としない土台は、その枝の中で扱い `shared_foundation` にしない。
 - `shared_foundation` は元 AC の完成責任を負わない。`covers_acceptance_criteria` は固定で空とし、
   `foundation_criteria` に土台自身の完成条件を記録する。
 - 共有土台の作成は、返却後の機能修正を親が引き取る根拠にはしない。
+- 土台を必要とする枝が Branch Plan をまたぐ場合は、先行 Branch Plan が土台を作った結果が
+  基準 commit に入るため、後続 Branch Plan では `shared_foundation.required: false` とする。
+  同じ土台を複数の Branch Plan で重複宣言しない。

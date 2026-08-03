@@ -1,4 +1,4 @@
-"""Repository contracts for impl-lead Branch Plan intake."""
+"""Repository contracts for impl-lead Branch Plan Set intake."""
 
 from __future__ import annotations
 
@@ -18,6 +18,24 @@ from build_plugin_assets_test_support import (
 
 INTAKE_REFERENCE = "branch-plan-intake.md"
 PLAN_SCHEMA_REFERENCE = "branch-plan-schema.md"
+BRANCH_DESIGN_SKILL = "branch-design"
+
+# 廃止 field 名を含まない stage 概念の散文と目次項目まで検出するため、Latin 表記の
+# "stage" 部分文字列の不在で検査する file。qa-report.md だけは Git の staging を指す
+# 別概念の語を保持するため、この一覧から外して個別に検査する。
+STAGE_FREE_IMPL_LEAD_DOCS = (
+    "branch-plan-intake.md",
+    "implementation-branches.md",
+    "run-closeout.md",
+)
+# qa-report.md で `stage` を含んでよい行。Git の staging を指す保存規約の記述であり、
+# 実装段階機構とは別概念である。行そのものを固定するのは、除外を「この語を含む行」で
+# 表すと、同じ行の末尾へ stage 概念の一文を足す変更を素通ししてしまうため。
+QA_REPORT_GIT_STAGING_LINES = (
+    "利用先 repository で生成する report instance は既定では untracked / unstaged / "
+    "uncommitted とする。",
+    "表示されてよい。既定では `git add`、stage、commit しない。",
+)
 
 
 class DelegateImplementationIntakeContractsTest(
@@ -93,35 +111,27 @@ class DelegateImplementationIntakeContractsTest(
                 self.assertIn("## 目次", reference)
 
     def test_delegate_skill_links_to_the_intake_reference(self) -> None:
-        """Route a confirmed Branch Plan through the intake reference from SKILL.md."""
+        """Route a confirmed Branch Plan Set through the intake reference from SKILL.md."""
         for platform, main in self._delegate_skill_texts().items():
             with self.subTest(platform=platform):
                 self.assertIn(f"(references/{INTAKE_REFERENCE})", main)
                 self.assertLess(len(main.splitlines()), 300)
                 normalized = "".join(main.split())
                 self.assertIn(
-                    "".join("確定済み Branch Plan が渡されている場合は".split()),
+                    "".join("確定済み Branch Plan Set が渡されている場合は".split()),
                     normalized,
                 )
 
-    def test_intake_reference_moves_execution_and_revalidation_sections(self) -> None:
-        """Carry the execution and revalidation sections as the canonical source."""
-        moved_sections = (
-            "## implementation_stages の実行規約",
-            "## Executor 側の再検証",
-        )
+    def test_intake_reference_carries_the_revalidation_section(self) -> None:
+        """Carry the revalidation section as the canonical source."""
         moved_body = (
-            "`strict` の段階ゲート機構で実行する",
-            "各 stage を `strict` の1サイクル(テスト計画 → Red → Green → Refactor)"
-            "として実行する。",
             "`status: approved` であり、`approval.method` が設定済みである。",
-            "blocking violation code 表のすべての検査規則を入力 Data から再計算し、"
-            "違反が0件である。",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算し、違反が0件である。",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
-                for section in moved_sections:
-                    self.assertIn(section, text)
+                self.assertIn("## Executor 側の再検証", text)
                 normalized = "".join(text.split())
                 for body in moved_body:
                     self.assertIn("".join(body.split()), normalized)
@@ -134,7 +144,7 @@ class DelegateImplementationIntakeContractsTest(
             "再検証を満たさない場合は実装を開始せず",
             "既存の委譲 prompt の Data へそのまま流し込む",
             "委譲 prompt の必須テストと検証 command で",
-            "Branch Plan が渡されていない場合は、現行どおり親が inline に枝を分ける。",
+            "Branch Plan Set が渡されていない場合は、現行どおり親が inline に枝を分ける。",
             "`branch-design` の使用を",
         )
         for platform, text in self._intake_reference_texts().items():
@@ -154,7 +164,8 @@ class DelegateImplementationIntakeContractsTest(
         )
         required_rules = (
             "## 枝 mode の決定表",
-            "本 reference は実行規約、Executor 側の再検証、枝 mode の決定表の正本を担う。",
+            "本 reference は受け入れ口の規定、Executor 側の再検証、枝 mode の決定表、"
+            "Branch Plan 境界の授権の正本を担う。",
             "この表を正本とし、planning Skill と Executor は同じ表を使う。",
             "`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。",
             "`{adaptive, strict}` の `low` は `lite` ではなく `standard` とする。",
@@ -200,26 +211,204 @@ class DelegateImplementationIntakeContractsTest(
                     normalized,
                 )
 
-    def test_intake_reference_keeps_staged_branches_at_strict(self) -> None:
-        """Run staged branches at strict and treat the gap as a per-branch upgrade."""
+    def test_intake_reference_accepts_the_branch_plan_set_as_the_unit_of_intake(
+        self,
+    ) -> None:
+        """Take the whole Set and run its Branch Plans in the declared order."""
         required_rules = (
-            "stages を宣言した枝は、決定表の導出結果に関わらず `strict` の段階ゲート機構で"
-            "実行する。",
-            "導出結果が `strict` 未満の場合、これは枝単位の mode 引き上げに当たる。",
-            "SKILL.md の引き上げ契約に従い、具体的なリスクを報告して `strict` へ引き上げる。",
-            "引き上げが受け入れられない場合は stages を実行せず、"
-            "枝の再分割または stages の削除を要求する。",
-            "stages を宣言する枝は実質的に `implementation_complexity.level` が `low` ではない。",
-            "`{adaptive, standard}` かつ `implementation_complexity.level: low` かつ "
-            "stages 宣言という組み合わせが出た場合は、stages 側ではなく "
-            "`implementation_complexity.level` の付け方を疑い、"
-            "planning へ差し戻すかどうかを判断する。",
+            "受け入れ対象は Branch Plan Set であり、`order` に従って Branch Plan を"
+            "順に実行する。",
+            "親や `feature-lead` が Set をほどいて Branch Plan を1つずつ渡す形にはしない。",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):
                 normalized = "".join(text.split())
                 for rule in required_rules:
                     self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_revalidates_the_set_then_each_branch_plan(self) -> None:
+        """Check the Set first, then repeat the five checks per Branch Plan."""
+        # 「Set 全体の検査を先に行う」と「再検証を Branch Plan ごとに繰り返す」を別々に
+        # 固定する。前者だけだと、Set の検査を通した後に Branch Plan ごとの再検証が
+        # 落ちる原稿でもこのテストが通ってしまう。
+        # 対象 code は帰属表を正本として参照させる。個別列挙を固定すると、`impl-lead` 側に
+        # 帰属表の部分複製が生まれ、schema 側で帰属が動いたときに2箇所が食い違う。
+        set_wide_rules = (
+            "blocking violation code 表で帰属が `Set` の code と、帰属が `両方` の code の "
+            "Set 側 field とし、Set 全体の Data から再計算する。",
+            "どの code がどちらの帰属かは同表を正本とし、本 reference へ複製しない。",
+            "Set の `validation.blocking` が非空なら、Branch Plan 側の状態に関わらず"
+            "実行を開始しない。",
+        )
+        per_branch_plan_rules = (
+            "次の5項目は、実行対象の Branch Plan ごとに繰り返す。",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算し、違反が0件である。",
+            "帰属が `Set` の code は先行検査で扱い、ここでは再計算しない。",
+        )
+        # 「先に行う」「次の5項目」はどちらも位置で意味が決まる語なので、file 全体では
+        # なく再検証節を切り出して照合し、Set の先行検査が5項目より前にあることまで見る。
+        for platform, text in self._intake_reference_texts().items():
+            section = text.split("## Executor 側の再検証", 1)[-1].split("\n## ", 1)[0]
+            normalized = "".join(section.split())
+            for rule in set_wide_rules:
+                with self.subTest(platform=platform, scope="set"):
+                    self.assertIn("".join(rule.split()), normalized)
+            for rule in per_branch_plan_rules:
+                with self.subTest(platform=platform, scope="branch-plan"):
+                    self.assertIn("".join(rule.split()), normalized)
+            # 順序も正規化テキスト上で判定する。生テキストを引くと、意味を変えない
+            # 折り返し位置の変更だけで needle が消え、契約違反がないのに落ちる。
+            # 末尾に項目5 を置いて `両方` の担当宣言を項目4 の中へ挟む。境界が無いと、
+            # 同じ文が再検証節の後ろ(mode 導出の段落など)へ出ても昇順のまま通る。
+            ordered_markers = (
+                "Set 全体の検査を先に行う。",
+                "1. `status: approved`",
+                "帰属が `両方` の code は、Branch Plan 側 field をここで再計算する。",
+                "5. 全枝に",
+            )
+            positions = []
+            for marker in ordered_markers:
+                normalized_marker = "".join(marker.split())
+                self.assertIn(
+                    normalized_marker,
+                    normalized,
+                    f"{platform}: 再検証節に「{marker}」がない",
+                )
+                positions.append(normalized.index(normalized_marker))
+            with self.subTest(platform=platform, scope="order"):
+                self.assertEqual(
+                    sorted(positions),
+                    positions,
+                    f"{platform}: Set の先行検査 → 5項目の先頭 → `両方` の担当宣言 → "
+                    f"5項目の末尾(境界) の順に並んでいない: {positions}",
+                )
+
+    def test_intake_reference_stops_at_an_unauthorized_branch_plan_and_asks_for_authorization(
+        self,
+    ) -> None:
+        """Halt at an unauthorized Branch Plan and request its authorization."""
+        required_rules = (
+            "Branch Plan 境界の停止は、新しいゲート機構ではなく "
+            "`delegation.authorized` の再検証で表す。",
+            "`delegation.authorized: false` の Branch Plan に到達した時点で実行を止める。",
+            "完了済み Branch Plan の最終報告と未実行 Branch Plan の一覧を提示して、"
+            "その Branch Plan の授権を要求する。",
+            "再検証の項目2「`delegation.authorized: true` かつ `authorized_by: user`」が"
+            "そのまま境界の判定になる。",
+            "ただし項目2 だけが不成立の場合は修正を要求せず、本 reference"
+            "「Branch Plan 境界の授権」に従う。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for rule in required_rules:
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_authorizes_only_the_next_branch_plan_by_default(
+        self,
+    ) -> None:
+        """Authorize one Branch Plan at a time unless the user asks for all of them."""
+        # 3文を別々に固定する。とくに既定の授権範囲が欠けると、1回の委譲要求で全件が
+        # 授権され、承認単位を Branch Plan にした意味が消える。
+        required_rules = (
+            "親は1回の委譲要求で全 Branch Plan を授権しない。",
+            "既定では `order` の先頭の未実行 Branch Plan だけを授権する。",
+            "ユーザーが全 Branch Plan の一括授権を明示した場合だけ全件を授権する。",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            normalized = "".join(text.split())
+            for rule in required_rules:
+                with self.subTest(platform=platform, rule=rule):
+                    self.assertIn("".join(rule.split()), normalized)
+
+    def test_intake_reference_points_tests_meaning_at_the_existing_schema_section(
+        self,
+    ) -> None:
+        """Cite a section name that the schema reference actually carries."""
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                self.assertIn(
+                    "".join("テスト種別の意味は正規スキーマの「tests の意味」に従う。".split()),
+                    normalized,
+                )
+
+        schema_texts = {
+            "source": self._repository_text(
+                shared_skill_reference_path(BRANCH_DESIGN_SKILL, PLAN_SCHEMA_REFERENCE)
+            ),
+            "claude": self._repository_text(
+                generated_skill_reference_path(
+                    "claude", BRANCH_DESIGN_SKILL, PLAN_SCHEMA_REFERENCE
+                )
+            ),
+            "codex": self._repository_text(
+                generated_skill_reference_path(
+                    "codex", BRANCH_DESIGN_SKILL, PLAN_SCHEMA_REFERENCE
+                )
+            ),
+        }
+        for platform, schema in schema_texts.items():
+            with self.subTest(platform=platform, target="schema"):
+                self.assertIn("## tests の意味", schema)
+
+    def test_intake_reference_table_of_contents_matches_its_sections(self) -> None:
+        """Keep the intake table of contents equal to its own section headings."""
+        expected_sections = (
+            "受け入れ口の規定",
+            "Executor 側の再検証",
+            "枝 mode の決定表",
+            "Branch Plan 境界の授権",
+        )
+        for platform, text in self._intake_reference_texts().items():
+            with self.subTest(platform=platform):
+                self.assertEqual(
+                    expected_sections, self._markdown_table_of_contents(text)
+                )
+                self.assertEqual(
+                    expected_sections, self._markdown_section_headings(text)
+                )
+
+    def test_impl_lead_surface_docs_drop_all_stage_vocabulary(self) -> None:
+        """Leave no trace of the retired implementation_stages mechanism in impl-lead."""
+        # 廃止 field 名を含まない stage 概念の散文と目次項目まで検出できるよう、生の
+        # "stage" 部分文字列(大小無視)の不在を検査する。branch-design 側の同型テストと
+        # 検査形が違うのは qa-report.md のためである。同 file は Git の staging を指す語
+        # (`unstaged` / `git add`、stage) を保存規約として正当に持ち、これは実装段階機構とは
+        # 別概念で本 workflow の変更対象でもないため、他4 file と同じ「stage を1件も含まない」
+        # 検査を当てられない。そこで qa-report.md だけは、stage を含む行が既知の2行ちょうど
+        # であることを全文で照合する。廃止 field 名はいずれも部分文字列 stage を含むため、
+        # この照合が残存を検出する。保存規約の文言を改訂したときは、
+        # `QA_REPORT_GIT_STAGING_LINES` も同じ変更意図で更新する。
+        texts = {
+            name: self._delegate_reference_texts(name)
+            for name in (*STAGE_FREE_IMPL_LEAD_DOCS, "qa-report.md")
+        }
+        texts["SKILL.md"] = self._delegate_skill_texts()
+
+        for name in (*STAGE_FREE_IMPL_LEAD_DOCS, "SKILL.md"):
+            for platform, text in texts[name].items():
+                carrying = [
+                    line for line in text.splitlines() if "stage" in line.lower()
+                ]
+                with self.subTest(document=name, platform=platform):
+                    self.assertEqual(
+                        [],
+                        carrying,
+                        f"{name}({platform}) に廃止した implementation_stages 機構の"
+                        f"語彙(stage)が残っている: {carrying}",
+                    )
+
+        for platform, report in texts["qa-report.md"].items():
+            carrying = [line for line in report.splitlines() if "stage" in line.lower()]
+            with self.subTest(document="qa-report.md", platform=platform):
+                self.assertEqual(
+                    list(QA_REPORT_GIT_STAGING_LINES),
+                    carrying,
+                    f"qa-report.md({platform}) の stage を含む行が、Git staging を述べる"
+                    f"既知の2行と一致しない: {carrying}",
+                )
 
     def test_intake_reference_excludes_shared_foundation_from_derivation(self) -> None:
         """Keep the parent-built shared foundation out of the branch allocation."""
@@ -266,7 +455,8 @@ class DelegateImplementationIntakeContractsTest(
             "`branch-assessment-missing`",
             "`branch-assessment-invalid`",
             "`legacy-risk-present`",
-            "blocking violation code 表のすべての検査規則を入力 Data から再計算",
+            "blocking violation code 表のうち、その Branch Plan 帰属の検査規則を入力 Data から"
+            "再計算",
         )
         for platform, text in self._intake_reference_texts().items():
             with self.subTest(platform=platform):

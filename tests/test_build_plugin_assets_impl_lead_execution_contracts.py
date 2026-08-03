@@ -285,19 +285,86 @@ class ImplLeadExecutionContractsTest(
     def test_repository_implementation_branches_reference_defines_branch_terminology(
         self,
     ) -> None:
-        """Define 実装枝, git branch, and Branch Plan as distinct terms in one glossary."""
-        skills = self._repository_skill_texts()
+        """Define 実装枝, git branch, Branch Plan Set, and Branch Plan in one glossary."""
+        # 用語の正本は「用語」節であり、他の節に同じ語が出るだけでは正本にならない。
+        # そのため節を次の見出しまでで切り出して、その中だけを検査する。
         required_glossary_content = (
-            "## 用語",
             "**実装枝**",
             "**git branch**",
-            "**Branch Plan**",
+            "**Branch Plan Set** — `branch-design` が出力する Data。`branch_plans[]` に "
+            "Branch Plan を持ち、`acceptance_criteria` と `order` を Set 層で持つ。",
+            "**Branch Plan** — Branch Plan Set の要素。",
             "単独の `branch` 表記を使わない",
         )
 
-        for item in required_glossary_content:
-            for skill in skills.all_texts():
-                self.assertIn(item, skill)
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                self.assertIn("## 用語", reference)
+                glossary = reference.split("## 用語", 1)[1].split("\n## ", 1)[0]
+                normalized_glossary = "".join(glossary.split())
+                for item in required_glossary_content:
+                    self.assertIn("".join(item.split()), normalized_glossary)
+
+    def test_repository_implementation_branches_chain_base_commits_across_branch_plans(
+        self,
+    ) -> None:
+        """Chain the green base commit across Branch Plans without waiting for main."""
+        required_contract = (
+            "次の枝は最新の統合済み green な基準コミットから開始する。",
+            "この規約は Branch Plan 間にも適用する。",
+            "先行 Branch Plan の成果が main へ merge されるのを待たない。",
+        )
+        expected_sections = (
+            "用語",
+            "Implementer context と枝の lifecycle",
+            "worktree と基準 commit",
+            "委譲 mode に応じた TDD/QA",
+            "Implementer の選択",
+            "委譲 prompt",
+        )
+        # 「この規約は」は直前の「次の枝は最新の統合済み green な基準コミットから開始する。」
+        # を受ける照応語なので、file 全体ではなく両文を含む節を切り出して照合する。連結
+        # テキストへの包含だけだと、別の節へ移して照応先が変わっても通ってしまう。
+        for platform, reference in self._impl_lead_reference_texts(
+            "implementation-branches.md"
+        ).items():
+            with self.subTest(platform=platform):
+                lifecycle = reference.split(
+                    "## Implementer context と枝の lifecycle", 1
+                )[-1].split("\n## ", 1)[0]
+                normalized = "".join(lifecycle.split())
+
+                # 節をまたぐ移動は切り出しが防ぐが、同じ節の中で照応語を照応元の前へ
+                # 出す入れ替えは通ってしまうため、節内の順序も固定する。判定は正規化
+                # テキスト上で行い、折り返し位置の変更で needle が消えないようにする。
+                # 3文すべてを並びへ含めるのは、対象外の文が残ると、その文だけを照応元の
+                # 前へ動かす入れ替えを見逃すためである。
+                positions = []
+                for contract in required_contract:
+                    marker = "".join(contract.split())
+                    self.assertIn(
+                        marker,
+                        normalized,
+                        f"{platform}: lifecycle 節に「{contract}」がない",
+                    )
+                    positions.append(normalized.index(marker))
+                self.assertEqual(
+                    sorted(positions),
+                    positions,
+                    f"{platform}: 照応元 → Branch Plan 間への適用 → merge を待たない根拠 "
+                    f"の順に並んでいない: {positions}",
+                )
+
+                self.assertEqual(
+                    expected_sections,
+                    self._markdown_table_of_contents(reference),
+                )
+                self.assertEqual(
+                    expected_sections,
+                    self._markdown_section_headings(reference),
+                )
 
 
 if __name__ == "__main__":

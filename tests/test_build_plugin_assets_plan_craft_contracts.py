@@ -337,7 +337,10 @@ class DraftImplementationPlanContractsTest(
             "見出し行・「要求の所在」行・各節にある。",
             # 引き継ぎ規約はこの文書が持つが、ID 規約そのものは起草手順が正本。
             # 両方へ本文を置くと、同じ規約が別々の言い回しで2箇所に残る。
-            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の "
+            # 引き継ぎ先は Branch Plan ではなく Branch Plan Set である。`acceptance_criteria`
+            # は Set が持つため、Branch Plan を引き継ぎ先と書くと読者は存在しない field を
+            # 探しに行く。
+            "AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan Set の "
             "`acceptance_criteria` へ原文のまま引き継ぐ。",
             "ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、"
             "この文書は再掲しない。",
@@ -494,7 +497,7 @@ class DraftImplementationPlanContractsTest(
             # 担い手は「起草手順とレビューの判定」の粒度に留める。どちらがどう担うかを
             # ここで書き切ると、後続で決める配分の選択肢を先に潰す。
             "節の充足は起草手順とレビューの判定が担う",
-            "Branch Plan 正規スキーマの `branch-contract-violation` が機械検査ではなく"
+            "Branch Plan Set 正規スキーマの `branch-contract-violation` が機械検査ではなく"
             "判定で生成される先例に従う。",
         )
         for platform, text in self._artifacts_reference_texts().items():
@@ -549,7 +552,7 @@ class DraftImplementationPlanContractsTest(
         required = (
             "廃止した `scope-conflict`、AC id に対する `duplicate-id`、"
             "`unknown-reference` は plan 段では扱わない。",
-            "前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。",
+            "前2者は `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。",
             "`unknown-reference` は、plan 段で id を参照する field が "
             "`open_questions[].affects` だけになり、その値をプラン文書の節名または "
             "AC id とすることで参照検査の対象が残らない。",

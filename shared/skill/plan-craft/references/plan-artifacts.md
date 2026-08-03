@@ -32,7 +32,7 @@
   レビュー状態は構造 field を持たず、プラン文書の内容を1つも複製しない。持つのはレビュー運用の
   状態だけであり、読者も寿命もプラン文書と異なる。したがって写しが生じず、棄却理由は本設計に
   当たらない。確定時の転記そのものが無くなるため、乖離が入りうる1点も消える。
-- AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan の `acceptance_criteria` へ
+- AC はプラン文書の「Acceptance Criteria」節が保持し、Branch Plan Set の `acceptance_criteria` へ
   原文のまま引き継ぐ。ID 規約の正本は [起草手順](plan-drafting.md) の「AC の書き方」とし、
   この文書は再掲しない。
 - レビューの経過は `review.findings` に全 round・全 reviewer 通算の指摘台帳として持つ。指摘 ID
@@ -236,10 +236,10 @@ file の本文、会話内経路では会話上に提示した本文を対象に
 本文が規定の節見出しを備えているかは意味判断であり、レビュー状態 Data から再計算できない。表を
 2つに分けるのはこのためである。意味判断を表Aへ入れると、表A 全体が Data から再計算できるという
 性質が壊れる。表Bの生成主体は親の判定であり、節の充足は起草手順とレビューの判定が担う。Branch
-Plan 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
+Plan Set 正規スキーマの `branch-contract-violation` が機械検査ではなく判定で生成される先例に従う。
 
 廃止した `scope-conflict`、AC id に対する `duplicate-id`、`unknown-reference` は plan 段では
-扱わない。前2者は `branch-design` が Branch Plan 正規スキーマの同名 code で検査する。
+扱わない。前2者は `branch-design` が Branch Plan Set 正規スキーマの同名 code で検査する。
 `unknown-reference` は、plan 段で id を参照する field が `open_questions[].affects` だけになり、
 その値をプラン文書の節名または AC id とすることで参照検査の対象が残らない。finding id に対する
 `duplicate-id` は表Aに残る。

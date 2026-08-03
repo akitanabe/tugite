@@ -301,6 +301,7 @@ class ImplLeadQaReportContractsTest(
                 "責務境界",
             ),
             "run-closeout.md": (
+                "Branch Plan 単位の終了処理",
                 "未統合で終了する場合",
                 "統合済み diff review",
                 "後始末",
@@ -315,31 +316,27 @@ class ImplLeadQaReportContractsTest(
         ):
             for name, expected in expected_sections.items():
                 text = references[name]
-                toc = text.split("## 目次", 1)[1].split("\n## ", 1)[0]
-                toc_items = tuple(
-                    line.removeprefix("- ")
-                    for line in toc.splitlines()
-                    if line.startswith("- ")
-                )
-                headings = tuple(re.findall(r"^## (.+)$", text, re.M))
-                actual = tuple(heading for heading in headings if heading != "目次")
                 with self.subTest(platform=platform, reference=name):
-                    self.assertEqual(expected, toc_items)
-                    self.assertEqual(expected, actual)
+                    self.assertEqual(
+                        expected, self._markdown_table_of_contents(text)
+                    )
+                    self.assertEqual(
+                        expected, self._markdown_section_headings(text)
+                    )
 
-    def test_repository_distribution_version_is_4_2_0(self) -> None:
-        """Pin the two-artifact plan contract to the synchronized minor version."""
+    def test_repository_distribution_version_is_4_3_0(self) -> None:
+        """Pin the Branch Plan Set schema to the synchronized minor version."""
         shared_version = self._repository_text(Path("shared/VERSION")).strip()
-        self.assertEqual("4.2.0", shared_version)
+        self.assertEqual("4.3.0", shared_version)
         for manifest_path in (
             Path("plugins/claude/.claude-plugin/plugin.json"),
             Path("plugins/codex/.codex-plugin/plugin.json"),
         ):
             manifest = json.loads(self._repository_text(manifest_path))
             with self.subTest(path=manifest_path):
-                self.assertEqual("4.2.0", manifest["version"])
+                self.assertEqual("4.3.0", manifest["version"])
         self.assertEqual(
-            "4.2.0",
+            "4.3.0",
             self._repository_text(Path("plugins/codex/install/VERSION")).strip(),
         )
 
@@ -358,7 +355,7 @@ class ImplLeadQaReportContractsTest(
             "Acceptance Criteria",
             "いずれかが要求した場合だけ",
             "親の最終判断時に1回",
-            "トップレベルの workflow run ごとに report は1つだけ生成",
+            "Branch Plan ごとに report は1つだけ生成",
             "複数の実装枝は同じ report へ列挙",
             "`Accepted`",
             "`Rejected`",
@@ -714,6 +711,95 @@ class ImplLeadQaReportContractsTest(
             main.index(normalized_cleanup_decision),
             main.index("(references/qa-report.md)"),
         )
+
+    def test_repository_qa_report_generation_unit_is_one_report_per_branch_plan(
+        self,
+    ) -> None:
+        """Generate one persistent report per Branch Plan, not per top-level run."""
+        # 生成単位は「位置づけと出力条件」と「標準テンプレート」の2箇所に書かれている。
+        # 片方だけの改訂で通らないよう、節ごとに切り出して別々に固定し、あわせて
+        # 旧単位の語が1箇所も残っていないことを不在で検査する。
+        for path, report in self._read_qa_report_references().items():
+            with self.subTest(path=path):
+                self.assertEqual(
+                    0,
+                    report.count("トップレベルの workflow run"),
+                    "旧 run 単位の生成規約が残っている",
+                )
+
+                position = report.split("## 位置づけと出力条件", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                self.assertIn(
+                    "".join(
+                        "Branch Plan ごとに report は1つだけ生成する。".split()
+                    ),
+                    "".join(position.split()),
+                )
+                self.assertIn(
+                    "".join("複数の実装枝は同じ report へ列挙し".split()),
+                    "".join(position.split()),
+                )
+
+                template_section = report.split("## 標準テンプレート", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                self.assertIn(
+                    "".join(
+                        "次のテンプレートを Branch Plan ごとに1つ使用する。".split()
+                    ),
+                    "".join(template_section.split()),
+                )
+
+    def test_run_closeout_finalizes_each_branch_plan_independently(self) -> None:
+        """Close out each Branch Plan without waiting for the remaining ones."""
+        required_contract = (
+            "Run の終了処理(統合済み diff review、後始末、最終報告、テスト一覧 file、"
+            "永続 QA レポート)は Branch Plan 単位で行う。",
+            "未実行の後続 Branch Plan があっても、完了した Branch Plan の後始末と"
+            "最終報告は行う。",
+            "完了した Branch Plan の id は実行 Data として親が保持し、"
+            "Branch Plan Set へ書き戻さない。",
+            "`status` に完了を表す値を足さない。",
+            "境界で止まった後に再開する場合、完了済みの Branch Plan を再実行しない。",
+            "実行 Data を復元できない場合は、Branch Plan ごとの最終報告と統合済み commit を"
+            "根拠に親が完了済みを確定してから再開する。",
+            "最終報告は Branch Plan ごとに作り、`order` 順に並べる。",
+            "Set 全体の新しい要約は作らない。",
+            "テスト一覧 file は Branch Plan ごとに生成し、名前の衝突は既存の suffix 選択規約で"
+            "解決する。",
+            "Branch Plan 単位の新しい命名規約は作らない。",
+        )
+        for platform, reference in self._impl_lead_reference_texts(
+            "run-closeout.md"
+        ).items():
+            section = reference.split("## Branch Plan 単位の終了処理", 1)[-1].split(
+                "\n## ", 1
+            )[0]
+            normalized = "".join(section.split())
+            for contract in required_contract:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_run_closeout_blocks_successor_branch_plans_when_a_predecessor_does_not_complete(
+        self,
+    ) -> None:
+        """Stop successors when a predecessor ends without completing, even unattended."""
+        # 2文を別々に固定する。`unattended` の優先関係が欠けると、全 Branch Plan が
+        # 授権済みの run で授権が先行完了の要求を上書きすると読めてしまう。
+        required_contract = (
+            "先行 Branch Plan が完了せずに終了した場合(親が未統合の枝について "
+            "`Rejected` / `Needs revision` を最終判断とした場合)は、後続 Branch Plan を"
+            "実行せず未実行として報告する。",
+            "`unattended` で全 Branch Plan が授権済みの場合も、この規定が授権より優先する。",
+        )
+        for platform, reference in self._impl_lead_reference_texts(
+            "run-closeout.md"
+        ).items():
+            normalized = "".join(reference.split())
+            for contract in required_contract:
+                with self.subTest(platform=platform, contract=contract):
+                    self.assertIn("".join(contract.split()), normalized)
 
 
 if __name__ == "__main__":
