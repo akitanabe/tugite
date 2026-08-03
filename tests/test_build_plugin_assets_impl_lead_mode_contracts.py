@@ -317,6 +317,66 @@ class ImplLeadModeContractsTest(
                 for contract in required:
                     self.assertIn("".join(contract.split()), normalized_case)
 
+    def test_repository_decision_corpus_states_relative_assignment_and_reroute_behavior(
+        self,
+    ) -> None:
+        """Exercise relative senior allocation and the three implementer reroutes."""
+        corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))
+        eval_36 = corpus.split("## EVAL-36:", 1)[1].split("## ", 1)[0]
+        required = (
+            "senior 候補を Branch Plan field に置かず impl-lead 内部 Data で保持",
+            "配車は候補抽出と実割当をまとめた親の判断",
+            "再配車は返却後の新しい routing snapshot で worker を再割当する判断",
+            "候補抽出と実割当を分離",
+            "残存設計判断",
+            "推論難度",
+            "誤実装時の手戻り量",
+            "他枝への影響",
+            "判断密度の高い",
+            "配分し",
+            "senior 候補が全枝の過半",
+            "迷ったら implementer",
+            "設計確定して implementer に再委譲",
+            "枝を追加分割",
+            "senior へ再配車",
+            "旧 worktree/git branch を破棄",
+            "基準 commit から再作成",
+            "承認済み purpose / AC / scope を変えず",
+            "単独で green にできる commit range",
+            "返却 diff の変更単位判定と再分割・再承認ゲートを先に通し",
+            "条件不成立なら何も統合せず、元の green 基準から新しい context を作成する",
+        )
+        normalized = "".join(eval_36.split())
+        for contract in required:
+            with self.subTest(contract=contract):
+                self.assertIn("".join(contract.split()), normalized)
+
+        boundary = eval_36.split("**過半境界 subcase:**", 1)[1].split(
+            "**Implementer reroute subcase:**", 1
+        )[0]
+        boundary_contracts = (
+            "4枝中2枝が senior 候補",
+            "過半ではないため見直しシグナルなし",
+            "4枝中3枝が senior 候補",
+            "過半なので split / Acceptance Criteria 粒度のシグナルあり",
+            "自動停止や判定停止ではない",
+        )
+        normalized_boundary = "".join(boundary.split())
+        for contract in boundary_contracts:
+            with self.subTest(subcase="boundary", contract=contract):
+                self.assertIn("".join(contract.split()), normalized_boundary)
+
+        branch_input = eval_36.split("**入力**", 1)[1].split(
+            "**期待する判断**", 1
+        )[0]
+        for axis in (
+            "事前設計後も残る判断量",
+            "推論難度",
+            "誤実装時の手戻り量",
+            "他枝への影響",
+        ):
+            self.assertGreaterEqual(branch_input.count(axis), 3)
+
     def test_repository_valid_branch_plan_evals_include_both_assessment_axes(self) -> None:
         """Give every valid branch example complete impact and complexity Data."""
         corpus = self._repository_text(Path("evals/workflow-decision-corpus.md"))

@@ -219,6 +219,36 @@ class PlanImplementationBranchesContractsTest(
                 )
                 self.assertEqual(BRANCH_PLAN_FIELDS, fields)
 
+    def test_plan_schema_lists_branch_fields_without_internal_routing_state(self) -> None:
+        """Keep the canonical Branch Plan branch field set explicit and reviewable."""
+        expected_branch_fields = (
+            "id",
+            "title",
+            "purpose",
+            "depends_on",
+            "covers_acceptance_criteria",
+            "verifies_acceptance_criteria",
+            "branch_criteria",
+            "forbidden_paths",
+            "tests",
+            "out_of_scope",
+            "failure_impact",
+            "implementation_complexity",
+        )
+        for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():
+            with self.subTest(platform=platform):
+                block = self._schema_block(text)
+                branches = block.split("\n    branches:", 1)[1].split(
+                    "\n    execution:", 1
+                )[0]
+                field_names = tuple(
+                    match.group(1) or match.group(2)
+                    for match in re.finditer(
+                        r"(?m)^\s{6}-\s*([a-z_]+):|^\s{8}([a-z_]+):", branches
+                    )
+                )
+                self.assertEqual(expected_branch_fields, field_names)
+
     def test_plan_schema_attributes_every_violation_code_to_its_layer(self) -> None:
         """Name the layer that recalculates each violation code."""
         for platform, text in self._plan_reference_texts(PLAN_SCHEMA_REFERENCE).items():

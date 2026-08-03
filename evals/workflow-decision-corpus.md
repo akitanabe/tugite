@@ -2499,6 +2499,94 @@ blocking判断は共通で、planning/Executor の起動 mechanism だけが異�
 
 - [ ] legacy入力から新fieldを推測せず停止している。
 
+## EVAL-36: senior 候補の相対配車と Implementer 再委譲
+
+**目的**
+
+配車は候補抽出と実割当をまとめた親の判断であり、再配車は返却後の新しい routing snapshot で worker を再割当する判断である。
+現在授権された Branch Plan の受入後に senior 候補を内部 Data として抽出し、その Plan の全枝を相対比較して
+Branch Plan 単位で一括配車することを確認する。変更量やファイル数、迷いだけで senior へ昇格させず、Implementer
+の返却時は新しい routing snapshot で設計確定・枝分割・再配車を選べることも確認する。
+
+**評価タイミング**
+
+`plan-intake` で現在授権された Branch Plan を受け入れ、`post-return QA` で Implementer の返却を routing する時点。
+
+**入力**
+
+確定済みと称する Branch Plan Set(抜粋):
+
+- `branch_plans`: `BP-124` の承認済み Branch Plan。
+- `order`: [`BP-124`]
+
+現在授権され、5項目の再検証と mode 導出を通過した `BP-124` の3枝:
+
+- `b-contract`: 事前設計後も残る判断量: low / 推論難度: low / 誤実装時の手戻り量: low / 他枝への影響: low。既存 pattern の適用で閉じる。
+- `b-routing`: 事前設計後も残る判断量: high / 推論難度: high / 誤実装時の手戻り量: high / 他枝への影響: high。設計判断が残る。
+- `b-format`: 事前設計後も残る判断量: low / 推論難度: medium / 誤実装時の手戻り量: medium / 他枝への影響: low。変更量は大きいが設計は確定し、判断密度は `b-routing` より低い。
+
+未授権の後続 Branch Plan は配車母集団に含めない。各枝に failure impact と implementation complexity はあるが、
+senior 候補を表す Branch Plan field はない。
+Implementer の返却には、設計上の判断点と、既存 worktree の差分を受け入れ済みとして基準 commit へ取り込める成果が含まれる。
+
+**期待する判断**
+
+現在授権された `BP-124` の全枝を受入 snapshot 内で評価し、senior 候補を Branch Plan field に置かず impl-lead
+内部 Data で保持する。候補抽出と実割当を分離し、残存設計判断、推論難度、誤実装時の手戻り量、他枝への影響を
+共通軸として senior 候補同士を相対比較する。判断密度の高い `b-routing` を senior に配分し、`b-format` は変更量だけでは
+昇格させない。候補と配車は同一の受入 snapshot 内で固定する。senior 候補が全枝の過半になった場合は枝分割または
+AC 粒度見直しのシグナルとして扱うが、自動停止や判定停止にはしない。
+通常と senior で迷ったら implementer を選ぶ。
+
+**過半境界 subcase:**
+
+- 4枝中2枝が senior 候補: 過半ではないため見直しシグナルなし。同一 snapshot の配車を継続する。
+- 4枝中3枝が senior 候補: 過半なので split / Acceptance Criteria 粒度のシグナルあり。自動停止や判定停止ではない。親が健全性シグナルとして判断する。
+
+**Implementer reroute subcase:**
+
+Implementer の返却後、親は (a) 設計確定して implementer に再委譲、(b) 枝を追加分割、(c) senior へ再配車から選ぶ。
+未完成 production code は統合せず、親が独立に受入可能と QA した成果だけを返却と統合の手順で受け入れる。部分成果は承認済み purpose / AC / scope を変えず、
+単独で green にできる commit range に限る。返却 diff の変更単位判定と再分割・再承認ゲートを先に通し、部分成果の受入判断と QA を行う。条件不成立なら何も統合せず、元の green 基準から新しい context を作成する。
+条件成立後に基準 commit を検証してから旧 worktree/git branch を破棄し、基準 commit から再作成した新 context の worktree と git branch を
+作成する。これは run-closeout の最終 cleanup ではなく、返却 Data を含む新しい routing snapshot の context replacement である。
+返却された状況と判断点は確定済み設計判断として prompt に載せる。
+
+**必須動作**
+
+- 現在授権された Branch Plan の全枝を受け入れてから評価し、候補抽出後に Branch Plan 単位で配車を一括確定する。
+- senior 割当理由として、残存設計判断、上位 model で減らせる誤実装・手戻り、他候補より優先する理由を記録する。
+- senior には expert と異なる事前 reviewer を挟まず、親の自己申告に留める。
+- 同一の受入 snapshot 内で配車を変更せず、変更量やファイル数を昇格根拠にしない。返却後は新しい routing snapshot で再判断する。
+- 3つの再委譲選択肢を比較し、旧 worktree/git branch を廃棄して新しい Implementer context を開始する。
+
+**禁止動作**
+
+- senior 候補や配車結果を Branch Plan field へ書き戻す。
+- 1枝の候補抽出直後に配車し、同じ Branch Plan の後続枝の評価で方針を揺らす。
+- 変更量、ファイル数、失敗 impact、迷いだけを senior 昇格の根拠にする。
+- senior のために expert-selection-reviewer を事前起動する。
+- Implementer の返却後に旧 worktree/git branch を再利用し、同じ context のまま再委譲する。
+
+**許容される差異**
+
+候補 Data の保存形式、判断密度の具体的な比較順序、worktree を撤去・再作成する command は実行環境に合わせてよい。
+ただし4軸の記録、相対比較、一括配車、3点の senior 理由、3つの再委譲経路、新しい context は共通とする。
+
+**Claude/Codex 差**
+
+候補抽出、配車、再委譲の判断は共通で、worker の起動と継続 mechanism だけが platform 固有である。
+
+**手動評価項目**
+
+- [ ] senior 候補を Branch Plan field に置かず impl-lead 内部 Data で保持している。
+- [ ] 候補抽出と実割当を分離し、全枝を評価してから判断密度の高い順に配車している。
+- [ ] 残存設計判断、推論難度、誤実装時の手戻り量、他枝への影響を記録している。
+- [ ] 過半の senior 候補を枝分割または AC 粒度見直しのシグナルとしている。
+- [ ] 迷ったら implementer とし、変更量やファイル数だけで昇格していない。
+- [ ] senior の事前 reviewer を起動せず、割当理由3点を親が自己申告している。
+- [ ] 返却時に3経路を選び、旧 worktree/git branch を破棄して新 context を基準 commit から作成している。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、

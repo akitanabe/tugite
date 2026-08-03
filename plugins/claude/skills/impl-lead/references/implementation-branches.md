@@ -34,6 +34,21 @@
 同じ Implementer を継続できるのは、同一実装枝を完成させるための段階ゲートと差し戻しに限る。
 Acceptance Criteria 未達、仕様誤解、機能欠落、テスト失敗、正常系・異常系・境界値不足、スコープ逸脱、
 再検証、`strict` mode の Red / Green / Refactor は、同じ context と worktree で継続する。
+これは同じ実装枝の段階ゲートと QA 差し戻しを指す。Implementer の返却時に親が設計・枝粒度・worker 適性を
+再判断する場合は、次段落の新しい context へ切り替える。
+
+Implementer の返却で設計の未確定、枝の粒度、worker の適性に関する判断点が残った場合は、親が
+「設計を確定して `implementer` に再委譲」「枝を追加分割」「senior へ再配車」のいずれかを選ぶ。
+この再配車は段階ゲートの継続ではなく、新しい routing snapshot を作る別イベントであり、新しい Implementer context
+で行う。未完成 production code は統合せず、親が独立に受入可能と QA した成果だけを
+[返却と統合](qa-and-integration.md) の手順で受け入れる。部分成果は承認済み purpose / AC / scope を変えない。単独で green にできる
+commit range に限る。返却 diff の変更単位判定と再分割・再承認ゲートを先に通す。部分成果の受入判断と QA を行い、条件不成立なら何も統合せず、元の green 基準から新しい context を作成する。
+条件成立後の順序は、部分成果の受入判断と QA、基準 commit の検証、旧 context の worktree / git branch の破棄、
+基準 commit からの新 context の worktree と git branch の作成とする。
+旧 context の破棄は run-closeout の最終 cleanup ではなく、再委譲に先立つ context replacement である。
+返却された状況と判断点は確定済み設計判断として新しい prompt に載せる。
+「1実装枝 = 1つの新規 Implementer context」は枝をまたぐ再利用を禁止する規約であり、同一枝の破棄・
+新 context 再開は禁止しない。
 
 枝を統合し、統合後の green を確認して差し戻しが不要になった時点で、その Implementer の役割を終了する。
 次の枝は最新の統合済み green な基準コミットから開始する。前の枝から引き継ぐ変更は統合済みコードへ
@@ -126,14 +141,46 @@ regression Green 例外の Red 段階では passing test を commit し、変更
 
 難度は `implementation_complexity` と実装時に残る設計・推論判断で判断する。
 
+### 候補抽出と実割当
+
+`implementation_complexity` は Branch Plan の mode 導出に使う入力であり、senior 候補は Branch Plan の field にせず、
+`impl-lead` 内部の作業 Data として保持する。候補抽出と実割当を分離する。候補 Data には次の共通軸を記録する。
+
+- 事前設計後も残る判断量
+- 推論難度
+- 誤実装時の手戻り量
+- 他枝への影響
+
+変更量やファイル数だけを昇格根拠にしない。現在授権され、5項目の再検証と mode 導出を通過した実行対象
+Branch Plan 1件の全枝を同一の受入 snapshot 内で評価し、候補抽出後に Branch Plan 単位で実割当を一括確定する。
+未授権の後続 Branch Plan を配車母集団に含めない。同一の受入 snapshot 内で候補と配車を揺らさない。
+Implementer の返却は、返却 Data を含む新しい routing snapshot を作る別イベントであり、初回配車の固定を
+その snapshot へ自動継続しない。
+
+senior 候補同士を相対比較し、判断密度の高い枝から配分する。senior 候補が全枝の過半になった場合は、
+枝分割または Acceptance Criteria の粒度を見直すシグナルとして扱う。固定的な割合や閾値を senior 昇格の根拠にしない。
+各枝の比較結果を記録する。
+
+senior の割当理由には、次の3点を必ず記録する。
+
+1. 残存設計判断
+2. 上位 model で減らせる誤実装・手戻り
+3. 他候補より優先する理由
+
+#### Why Not: senior の事前 reviewer
+
+expert と異なり senior には事前 reviewer を挟まず、親の自己申告に留める。senior は候補抽出時の相対比較と
+3点の理由記録で配車の根拠を明示でき、expert のように親相当の能力を独立審査する高コストな gate を必要としないためである。
+expert を候補にする場合だけ [Expert 選択](expert-selection.md) の事前審査を使い、この区別を senior の選択へ持ち込まない。
+
 | Implementer | 使う場面 |
 | --- | --- |
-| `implementer` | 仕様が明確で既存 pattern を適用でき、残る判断が少ない枝。 |
-| `senior-implementer` | `implementation_complexity` が高い、または設計・algorithm・concurrency に非自明な判断が残る枝。 |
+| `implementer` | senior 候補に該当せず、仕様が明確で既存 pattern を適用でき、判断密度が低い枝。 |
+| `senior-implementer` | 共通4軸の相対比較で判断密度が高く、残存設計判断と上位 model で減らせる手戻りが他候補より大きい枝。 |
 | `expert-implementer` | 親相当の推論が必要で、senior では不足する具体的根拠があり、事前審査を通過した枝。 |
 
 単なる複数 module への波及、高い失敗コスト、誤実装の代償だけでは `senior-implementer` を選ばない。
-通常と senior で迷ったら `senior-implementer` を選ぶ。難所と定型作業が混在する場合は枝を分ける。
+通常と senior で迷ったら `implementer` を選ぶ。迷いだけでは senior 候補にしない。難所と定型作業が混在する場合は枝を分ける。
 expert と迷う場合は senior を選び、expert 候補にする場合だけ
 [Expert 選択](expert-selection.md) の事前審査を行う。
 

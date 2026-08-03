@@ -86,6 +86,43 @@ class AgentAndReviewerContractsTest(
                 self.assertIn(f"model: {expected.model}\n", artifact)
                 self.assertIn(f"effort: {expected.reasoning_effort}\n", artifact)
 
+    def test_repository_implementer_descriptions_express_relative_selection(
+        self,
+    ) -> None:
+        """Keep normal and senior descriptions aligned with the relative routing policy."""
+        implementer = self._agent_source_metadata("implementer")
+        senior = self._agent_source_metadata("senior-implementer")
+
+        self.assertIn("判断密度が低い", implementer["claude"]["description"])
+        self.assertIn("low judgment density", implementer["codex"]["description"])
+        self.assertIn("相対比較", senior["claude"]["description"])
+        self.assertIn("判断密度が高い", senior["claude"]["description"])
+        self.assertIn("residual design judgment", senior["codex"]["description"])
+        for description in (
+            implementer["claude"]["description"],
+            implementer["codex"]["description"],
+            senior["claude"]["description"],
+            senior["codex"]["description"],
+        ):
+            self.assertNotIn("変更量だけ", description)
+            self.assertNotIn("file count", description.lower())
+
+    def test_senior_implementer_body_describes_high_judgment_assignment(self) -> None:
+        """Describe a senior branch as parent-assigned high judgment work."""
+        required = (
+            "親が高判断密度として割り当てた枝を受け取ります。",
+        )
+        for path in (
+            Path("shared/agents/senior-implementer.md"),
+            CLAUDE_PROFILE_PATH / "senior-implementer.md",
+            CODEX_PROFILE_PATH / "senior-implementer.toml",
+        ):
+            content = self._repository_text(path)
+            normalized = "".join(content.split())
+            with self.subTest(path=path):
+                for contract in required:
+                    self.assertIn("".join(contract.split()), normalized)
+
     def test_repository_workflows_gate_expert_implementation_with_selection_review(
         self,
     ) -> None:

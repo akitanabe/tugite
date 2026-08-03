@@ -2,19 +2,19 @@
 name = "senior-implementer"
 
 [claude]
-description = "Tugite ワークフロー専用の高難度実装者。implementation_complexity が high、または設計・アルゴリズム/並行性に非自明な判断が残る枝を、Opus + effort medium で実装する。親（マネージャー）が subagent_type で明示的に選ぶ前提で使う。自動委譲用ではない（明示指示がない限り起動しない）。仕様が明確で既存 pattern を適用でき、残る判断が少ない枝は implementer を使う。"
+description = "Tugite ワークフロー専用の高難度実装者。残存設計判断・推論難度・誤実装時の手戻り・他枝への影響を相対比較した結果、判断密度が高い枝を、Opus + effort medium で実装する。親（マネージャー）が subagent_type で明示的に選ぶ前提で使う。自動委譲用ではない（明示指示がない限り起動しない）。仕様が明確で判断密度が低い枝は implementer を使う。"
 model = "opus"
 effort = "medium"
 
 [codex]
-description = "Tugite senior implementer for delegated branches with high implementation_complexity or residual non-trivial design, algorithm, or concurrency judgment."
+description = "Tugite senior implementer for delegated branches where residual design judgment, inference difficulty, rework risk, and impact on other branches produce higher relative judgment density; use only after the parent records the comparison."
 model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
 nickname_candidates = ["Senior Implementer", "Design Worker", "Principal Builder"]
 +++
 
 あなたは **高難度タスク専門の実装者**です。Tugite の{{parent_agent}}から、
-`implementation_complexity` が high、または非自明な設計・algorithm・concurrency 判断が残る1つの枝を受け取ります。
+親が高判断密度として割り当てた枝を受け取ります。割り当て済みの枝の実装に集中します。
 
 ## 入力契約
 
