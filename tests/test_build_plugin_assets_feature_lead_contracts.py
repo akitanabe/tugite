@@ -64,7 +64,7 @@ class FeatureLeadContractsTest(
         return text.split(heading, 1)[1].split(next_heading, 1)[0]
 
     @staticmethod
-    def _bullet(section: str, marker: str, next_marker: str | None) -> str:
+    def _bullet(section: str, marker: str) -> str:
         """Slice out one bullet's text, keeping `marker` itself in the result.
 
         `str.split` consumes its delimiter, which would strip the very autonomy
@@ -78,40 +78,26 @@ class FeatureLeadContractsTest(
         "substring not found" error with no indication of which assumption
         broke.
 
-        `next_marker=None` stops at the next bullet marker ("\\n- ") if one
-        exists after `marker` in `section`, or at the end of `section`
-        otherwise (PQ-3). Markdown has no closing marker for "end of bullet
-        list" the way it does for a bullet boundary, so callers must obtain
-        `section` from `_section`, which caps at the next heading — the slice
-        is still bounded, just not to a marker inside the bullet list itself.
-        Stopping at *any* following bullet, rather than requiring one
-        specific literal to follow, means two bullets swapping places is not
-        itself a failure this helper reports: this file's contracts do not
-        require a particular order between, say, the `attended` and
-        `unattended` bullets, so a swap between them is not a regression to
-        catch here (each bullet's own content is still checked by whichever
-        `assertIn` scopes to it).
-
-        `next_marker` as an explicit literal is still supported for callers
-        that need to bound a slice to a specific following marker rather than
-        "whatever bullet comes next"; it still raises `AssertionError` (not
-        `ValueError`) if that literal does not follow `marker` in `section`.
+        Stops at the next bullet marker ("\\n- ") if one exists after `marker`
+        in `section`, or at the end of `section` otherwise (PQ-3). Markdown
+        has no closing marker for "end of bullet list" the way it does for a
+        bullet boundary, so callers must obtain `section` from `_section`,
+        which caps at the next heading — the slice is still bounded, just not
+        to a marker inside the bullet list itself. Stopping at *any*
+        following bullet, rather than requiring one specific literal to
+        follow, means two bullets swapping places is not itself a failure
+        this helper reports: this file's contracts do not require a
+        particular order between, say, the `attended` and `unattended`
+        bullets, so a swap between them is not a regression to catch here
+        (each bullet's own content is still checked by whichever `assertIn`
+        scopes to it).
         """
         if marker not in section:
             raise AssertionError(f"bullet marker {marker!r} not found in section")
         start = section.index(marker)
-        if next_marker is None:
-            rest = section[start:]
-            boundary = re.search(r"\n- ", rest)
-            return rest[: boundary.start()] if boundary else rest
-        try:
-            end = section.index(next_marker, start)
-        except ValueError:
-            raise AssertionError(
-                f"bullet order changed: {next_marker!r} no longer follows "
-                f"{marker!r} (bullet reordered, merged, or removed)"
-            ) from None
-        return section[start:end]
+        rest = section[start:]
+        boundary = re.search(r"\n- ", rest)
+        return rest[: boundary.start()] if boundary else rest
 
     @staticmethod
     def _locate_numbered_step(flow: str, number: int) -> tuple[list[str], int, int]:
@@ -722,9 +708,9 @@ class FeatureLeadContractsTest(
         # sets `delegation` — resuming without it would hand impl-lead the same
         # unauthorized Branch Plan and loop at the same boundary forever.
         #
-        # PQ-3: `_bullet` is called with `next_marker=None` (stop at the next
-        # "\n- " or section end) rather than the literal "- `unattended`" —
-        # this file's contracts do not require the `attended` bullet to
+        # PQ-3: `_bullet` stops at the next "\n- " or section end, rather
+        # than requiring the literal "- `unattended`" to follow — this
+        # file's contracts do not require the `attended` bullet to
         # precede `unattended`, so requiring that literal to follow would
         # make swapping their order fail here even though no AC this file
         # protects depends on which comes first.
@@ -751,7 +737,7 @@ class FeatureLeadContractsTest(
             section = self._section(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
             )
-            attended_bullet = self._bullet(section, "- `attended`", None)
+            attended_bullet = self._bullet(section, "- `attended`")
             normalized_bullet = "".join(attended_bullet.split())
             with self.subTest(platform=platform):
                 self.assertIn("".join(resume_contract.split()), normalized_bullet)
@@ -795,15 +781,16 @@ class FeatureLeadContractsTest(
             section = self._section(
                 text, "### Branch Plan 境界の停止", next_heading="\n## "
             )
-            unattended_bullet = self._bullet(section, "- `unattended`", None)
+            unattended_bullet = self._bullet(section, "- `unattended`")
             normalized = "".join(unattended_bullet.split())
             for contract in contracts:
                 with self.subTest(platform=platform, contract=contract):
                     self.assertIn("".join(contract.split()), normalized)
-            attended_bullet = self._bullet(section, "- `attended`", None)
+            attended_bullet = self._bullet(section, "- `attended`")
             outside_attended = section.replace(attended_bullet, "", 1)
             # Guard the guard (TQ-23): `outside_attended` depends entirely on
-            # `_bullet`'s `next_marker=None` boundary via `attended_bullet` —
+            # `_bullet`'s "next bullet marker or section end" boundary via
+            # `attended_bullet` —
             # if that boundary ever grows to swallow the `unattended` bullet
             # too, it fails silently, not with an error: `outside_attended`
             # would just shrink until the `assertNotIn` below passes for the
@@ -829,8 +816,8 @@ class FeatureLeadContractsTest(
         # keep passing: "これに含めない" is anaphoric and needs the gate
         # bullet's own sentence as its antecedent, the same anaphora risk
         # TQ-3 closed for the attended/unattended bullets. This is the last
-        # bullet in the capped preamble list, so `next_marker=None` scopes it
-        # to "gate marker through the end of that already-bounded section" —
+        # bullet in the capped preamble list, so `_bullet` scopes it to
+        # "gate marker through the end of that already-bounded section" —
         # the same trust in the caller's section boundary `_bullet`'s
         # docstring already documents for the `unattended` bullet.
         contract = (
@@ -842,7 +829,7 @@ class FeatureLeadContractsTest(
                 text, "## 段の遷移と判断点の処理", next_heading="\n### "
             )
             gate_bullet = self._bullet(
-                section, "- `impl-lead` が各 mode のゲートで停止した", None
+                section, "- `impl-lead` が各 mode のゲートで停止した"
             )
             normalized = "".join(gate_bullet.split())
             with self.subTest(platform=platform):
@@ -879,19 +866,12 @@ class FeatureLeadContractsTest(
         # check cannot tell "the branch sits inside the numbered flow" from
         # "the same words happen to exist elsewhere in the file", and a prior
         # branch's review already found that miss in practice.
-        # TQ-18: the first entry is 手順6's body without its ordinal prefix.
-        # `_numbered_step` below ties "6." to delegation-setting content, but
-        # it never looks at *where* that line sits in the flow — a mutation
-        # that moves the whole "6. ..." line to after 手順7 (or 手順9) keeps
-        # `_numbered_step(flow, 6)` satisfied while reproducing RB-2's
-        # infinite loop (impl-lead hands the Branch Plan Set over before
-        # delegation is set). This exact sentence occurs nowhere else in
-        # "## 全体の流れ", so leaving the ordinal off still pins its position
-        # without reintroducing TQ-17's line-start requirement here — that
-        # requirement belongs to `_numbered_step`, which independently ties
-        # the ordinal to this same content (see the comment below).
+        # TQ-18/OER-1: 手順6 の位置は `required_order` の needle ではなく
+        # `check="ordinal-order"`（手順6/7/8/9 の物理行 offset が昇順である
+        # こと）と `step=6`（`^\s*6.` 行の本文が delegation 設定文であること）
+        # の組で担保する。手順6の本文は `step_nine_contract` と異なり後段の
+        # needle と同一の識別力を持たないため、`required_order` からは外す。
         required_order = (
-            "「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。",
             "`order` に従って Branch Plan を実行する。",
             "`impl-lead` が未授権の Branch Plan の境界で止まった場合は",
             "手順9を行わずに",

@@ -93,8 +93,8 @@ description: >-
    あれば `autonomy` に従って処理する。
 4. 確定したプラン文書とレビュー状態を `branch-design` へ `confirmation_mode: auto` で渡し、
    Branch Plan Set を得る。
-5. 「段の遷移と判断点の処理」に従い status を判定する。Set のうち1件でも Branch Plan が
-   `blocked` であれば段全体を判断点として扱う。判断点があれば `autonomy` に従って処理する。
+5. 「段の遷移と判断点の処理」に従い status を判定する。判断点があれば `autonomy` に従って
+   処理する。
 6. 「授権の根拠」に従い、対象 Branch Plan の `delegation` を設定する。
 7. Branch Plan Set と判断点台帳を `impl-lead` へ渡す。`impl-lead` は受け入れ口の再検証を通常
    どおり行い、`order` に従って Branch Plan を実行する。
