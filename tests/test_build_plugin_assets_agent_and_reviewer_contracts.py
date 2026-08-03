@@ -452,13 +452,12 @@ class AgentAndReviewerContractsTest(
             "対象となる指摘ID",
             "指摘本文",
             "親が採用した修正条件",
-            "対象 worktree、git branch、基準 commit、対象 commit 範囲",
             "Acceptance Criteria",
             "親が個別に許可した修正範囲",
             "変更を禁止するファイル",
             "削除・移動・新規作成の可否",
-            "commit の要否",
             "必須検証 command",
+            "経路は `impl-lead` または `impl-delegate`",
         )
         adoption_conditions = (
             "親が指摘を確認し、修正対象として採用している。",
@@ -473,6 +472,46 @@ class AgentAndReviewerContractsTest(
                     self.assertIn("".join(contract.split()), normalized_agent)
                 self.assertIn(
                     "".join(missing_input_route.split()), normalized_agent
+                )
+
+    def test_repository_review_patch_refactorer_separates_route_specific_inputs_and_returns(
+        self,
+    ) -> None:
+        """Keep branch-range data exclusive to impl-lead and snapshot data exclusive to impl-delegate."""
+        route_inputs = (
+            "`impl-lead`: 対象 worktree、git branch、基準 commit、対象 commit 範囲を受け取り、修正コミット SHA を返す。",
+            "`impl-delegate`: 親が作成した対象 worktree、基準 snapshot、現在の diff、変更禁止範囲、commit の要否を受け取り、commit は明示された場合だけ作成する。",
+            "impl-delegate で commit が明示されない場合は commit しない。",
+        )
+        route_returns = (
+            "`impl-lead` は worktree パス、作業ブランチ、追加した修正コミット SHA を返す。",
+            "`impl-delegate` は対象 worktree、変更内容、commit の要否に応じた結果を返す。",
+            "impl-delegate で commit が明示されない場合は commit なしと返す。",
+        )
+
+        for platform, agent in self._review_patch_refactorer_texts().items():
+            with self.subTest(platform=platform):
+                normalized = "".join(agent.split())
+                input_marker = "経路ごとに、次の入力と返却を追加で要求します。"
+                return_marker = "##返却形式"
+                self.assertIn("".join(input_marker.split()), normalized)
+                self.assertIn("".join(return_marker.split()), normalized)
+                mandatory_inputs = normalized.split("##必須入力", 1)[1]
+                common_inputs = mandatory_inputs.split(
+                    "".join(input_marker.split()), 1
+                )[0]
+                return_section = normalized.split("".join(return_marker.split()), 1)[1]
+                for forbidden in (
+                    "対象worktree、gitbranch、基準commit、対象commit範囲",
+                    "基準snapshot、現在のdiff、変更禁止範囲",
+                    "commitの要否",
+                ):
+                    self.assertNotIn(forbidden, common_inputs)
+                for contract in route_inputs + route_returns:
+                    self.assertIn("".join(contract.split()), normalized)
+                self.assertNotIn(
+                    "追加した修正コミットSHA",
+                    "".join(return_section.split("`impl-lead`は", 1)[0].split()),
                 )
 
     def test_repository_review_patch_refactorer_forbids_out_of_scope_changes(

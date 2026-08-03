@@ -8,6 +8,8 @@
 
 - `shared/skill/impl-lead/`
   - `SKILL.md` に workflow の核、`references/*.md` に実装枝、expert 選択、QA・統合の詳細を分けた共通原稿です。
+- `shared/skill/impl-delegate/`
+  - `SKILL.md` に、明示指定時だけ1名へ委譲する軽量な TDD 実装手順と親 QA・reviewer 選択をまとめた共通原稿です。
 - `shared/skill/branch-design/`
   - `SKILL.md` に実装プランを委譲可能な Branch Plan Set へ正規化する planning skill の核、`references/*.md` にスキーマ、枝分割判断、ユーザー確認の詳細を分けた共通原稿です。
 - `shared/skill/test-audit/`
@@ -27,6 +29,7 @@
 
 - `plugins/claude/skills/impl-lead/SKILL.md`
 - `plugins/claude/skills/impl-lead/references/*.md`
+- `plugins/claude/skills/impl-delegate/SKILL.md`
 - `plugins/claude/skills/branch-design/SKILL.md`
 - `plugins/claude/skills/branch-design/references/*.md`
 - `plugins/claude/skills/test-audit/SKILL.md`
@@ -37,6 +40,7 @@
 - `plugins/claude/agents/*.md`
 - `plugins/codex/skills/impl-lead/SKILL.md`
 - `plugins/codex/skills/impl-lead/references/*.md`
+- `plugins/codex/skills/impl-delegate/SKILL.md`
 - `plugins/codex/skills/branch-design/SKILL.md`
 - `plugins/codex/skills/branch-design/references/*.md`
 - `plugins/codex/skills/test-audit/SKILL.md`
@@ -93,6 +97,25 @@
 委譲 mode の強度は `lite < standard < strict` です。導出結果より高い mode で枝を実行する場合、具体的なリスクをユーザーへ報告します。ユーザーが明示した `baseline` を親都合で引き下げません。`direct` から委譲への変更は強度の変更ではなく責務境界の変更であるため、ユーザーに確認します。
 
 詳細な選択条件と委譲手順は、共通原稿の正本である [shared/skill/impl-lead/SKILL.md](shared/skill/impl-lead/SKILL.md) と [shared/skill/impl-lead/references/branch-plan-intake.md](shared/skill/impl-lead/references/branch-plan-intake.md) を参照してください。
+
+### impl-delegate: 明示指定時の軽量な委譲
+
+`impl-delegate` は、ユーザーが skill 名を明示した場合だけ発火します。自然言語やタスク規模から推測して発火せず、
+明示時は `impl-lead` を発火しません。Intake 後に親が基準 commit から専用 worktree を作成し、1名の `implementer`
+がその worktree だけを編集します。TDD の Red → Green → Refactor と親 QA は必須ですが、Branch Plan、永続 QA
+report、独立した diff artifact は要求しません。
+
+通常は `implementer` を選びます。事前整理後も残る設計・推論判断、誤実装時の手戻り・rollback 負担、周辺機能や
+外部副作用への影響を評価し、上位 model で誤実装リスクを具体的に減らせる場合だけ `senior-implementer` を選べます。
+変更量・ファイル数・高い失敗コストというラベルだけでは昇格せず、親は選択理由を最終報告します。
+
+専門 reviewer は `impl-lead` と同じ具体的リスク選択で必要なものだけを起動し、該当なしは 0名で構いません。
+修正後に追加確認する場合も影響 reviewer だけに限定し、固定 round や全 reviewer の再起動は行いません。
+最終 diff では `writing-principles-reviewer` を1回実行し、採用指摘だけを `review-patch-refactorer` に渡してから、
+親 QA と Green 確認で終了します。commit・push・PR は明示依頼時だけ行います。
+
+Closeout では、明示された commit/push/PR と最終確認を先に実行し、安全に回収済みの場合だけ専用 worktree を cleanup
+します。commit 未依頼で変更が worktree に残る場合は cleanup せず、path/status を報告します。force 削除は行いません。
 
 ### v1 からの移行
 
