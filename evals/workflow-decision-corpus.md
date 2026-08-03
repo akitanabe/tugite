@@ -25,7 +25,7 @@ Phase 1 では全ケースを手動評価する。この文書自身は model �
   評価する。この Skill は実装も委譲も行わないため、委譲や `impl-lead` の起動を先取りしない。
   `plan-craft` がプランを起草し、敵対的レビューループと過剰実装審査を経て
   プラン文書とレビュー状態を提示する時点も、このタイミングに含めて同じ権限の扱いを評価する。
-- `plan-intake`: 確定済みと称する Branch Plan が `impl-lead` へ渡された時点。Executor が
+- `plan-intake`: 確定済みと称する Branch Plan Set が `impl-lead` へ渡された時点。Executor が
   自己申告を信用せず再検証5項目(`status` / `approval`、`delegation`、`unresolved_decisions` の空、
   violation 再計算0件、全枝の2評価軸が有効)と mode の妥当性を確認し、委譲を開始するか
   修正・引き上げ・確認を求めるかを評価する。
@@ -109,10 +109,11 @@ branch を一貫して撤去できた。
 3. `intake` case では、diff がない段階の route / mode 判断と最初の行動を記録する。委譲を続行する場合は、
    返却後に親責任が実行されたかも trace で確認する。
 4. `planning` case では、実装 diff がない状態で記載された実装プランと(あれば)確認モード指定だけを与える。
-   生成された Branch Plan Data(`status`、`confirmation_mode`、`approval`、`delegation`、`branches` の分割と
-   AC 割り当て、`unresolved_decisions`、`validation.blocking`)と提示手順を証跡として保存し、実装・委譲・
+   生成された Branch Plan Set(Set の `order`、`decision`、`validation.blocking` と、各 Branch Plan の
+   `status`、`confirmation_mode`、`approval`、`delegation`、`branches` の分割と AC 割り当て、
+   `unresolved_decisions`、`validation.blocking`)と提示手順を証跡として保存し、実装・委譲・
    worktree 準備・Worker 起動を先取りしていないことを確認する。
-5. `plan-intake` case では、記載された確定済みと称する Branch Plan を一組の入力として与える。Executor が
+5. `plan-intake` case では、記載された確定済みと称する Branch Plan Set を一組の入力として与える。Executor が
    自己申告を信用せず再検証5項目と violation 再計算を実行したか、実装開始前に委譲・修正要求・mode 引き上げ・
    委譲要求確認のどれを選んだかを証跡として保存し、再検証を満たさないまま Worker を起動していないことを確認する。
 6. `post-return QA` case では、記載された最小 AC、synthetic diff 要約、返却 test 結果を一組の返却物として
@@ -572,7 +573,7 @@ regression Green 例外、根拠、親 QA は共通であり、strict の継続 
 **期待する判断**
 
 単一の観測可能な振る舞いで、テスト種別も Action 境界も単一、旧実装パリティと新振る舞いの同居もなく、分割
-シグナルに該当しない。よって `branch-design` を発火せず Branch Plan Data を生成せず、現行どおり
+シグナルに該当しない。よって `branch-design` を発火せず Branch Plan Set を生成せず、現行どおり
 親が inline に枝を扱う(この規模では1枝)。mode は未指定の明示委譲なので `standard` とし、引き上げを要する
 具体的 risk はない。
 
@@ -586,7 +587,7 @@ regression Green 例外、根拠、親 QA は共通であり、strict の継続 
 
 **禁止動作**
 
-- 分割シグナル非該当なのに `branch-design` を発火して Branch Plan Data を作る。
+- 分割シグナル非該当なのに `branch-design` を発火して Branch Plan Set を作る。
 - 単一振る舞いを層別や作業種別で無理に複数枝へ割る。
 - 小さいことを理由に `lite` を自動選択する、または根拠なく `standard` 以外へ動かす。
 - diff 前に専門 reviewer や `writing-principles-reviewer` を起動する。
@@ -603,7 +604,7 @@ skill 非発火と mode 判断は共通である。委譲と返却後の起動 m
 **手動評価項目**
 
 - [ ] `branch-design` を発火していない。
-- [ ] 親が inline に枝を扱い、Branch Plan Data を生成していない。
+- [ ] 親が inline に枝を扱い、Branch Plan Set を生成していない。
 - [ ] `standard` が選ばれ、`lite` の自動選択がない。
 - [ ] diff 前の専門 reviewer / `writing-principles-reviewer` 起動がない。
 - [ ] 親の返却 QA、実行検証、最終判断が維持されている。
@@ -1114,12 +1115,12 @@ branch 不一致、dirty status のいずれであっても同じ扱いとする
 
 **目的**
 
-委譲要求がなくても枝分割計画だけを作成でき、Branch Plan Data だけを返して委譲を開始しないこと、既定 `review`
+委譲要求がなくても枝分割計画だけを作成でき、Branch Plan Set だけを返して委譲を開始しないこと、既定 `review`
 で `awaiting_review` になること、承認(計画確定)と委譲開始権限が分離していることを確認する。
 
 **評価タイミング**
 
-`planning`。実装 diff がなく Branch Plan を生成・提示する時点。
+`planning`。実装 diff がなく Branch Plan Set を生成・提示する時点。
 
 **入力**
 
@@ -1130,16 +1131,17 @@ branch 不一致、dirty status のいずれであっても同じ扱いとする
 
 **期待する判断**
 
-`branch-design` を発火し、Branch Plan Data だけを返す。実装、テスト作成、worktree 準備、Worker
+`branch-design` を発火し、Branch Plan Set だけを返す。実装、テスト作成、worktree 準備、Worker
 起動は行わない。委譲要求がないため `delegation.authorized: false`(`authorized_by: null`、`requested_mode: null`)
 のままとする。`confirmation_mode` は既定の `review` で、blocking がなければ `status: awaiting_review`
-(`approval.method: null`)とする。要約表 → 確認操作 → Branch Plan の YAML の順で提示し、`impl-lead`
+(`approval.method: null`)とする。要約表 → 確認操作 → Branch Plan Set の YAML の順で提示し、`impl-lead`
 を直接起動しない。
 
 **必須動作**
 
-- Branch Plan Data(`status`、`confirmation_mode`、`approval`、`delegation`、`branches` の分割と AC 割り当て、
-  `execution`、`validation`)を返し、要約表を YAML 全文の前に置いて提示する。
+- Branch Plan Set(Set の `order`、`validation` と、各 Branch Plan の `status`、`confirmation_mode`、
+  `approval`、`delegation`、`branches` の分割と AC 割り当て、`execution`、`validation`)を返し、
+  要約表を YAML 全文の前に置いて提示する。
 - `delegation.authorized: false` を保ち、委譲開始権限を計画側で付与しない。
 - 承認は計画の確定だけを意味し、委譲開始にはユーザーの明示的な委譲要求と `status: approved` が別途必要である
   ことを示す。
@@ -1161,7 +1163,7 @@ planning 判断は共通である。Skill を実行する platform mechanism だ
 
 **手動評価項目**
 
-- [ ] Branch Plan Data だけを返し、実装・委譲・worktree 準備・Worker 起動がない。
+- [ ] Branch Plan Set だけを返し、実装・委譲・worktree 準備・Worker 起動がない。
 - [ ] `delegation.authorized: false` を保っている。
 - [ ] 既定 `review` で `status: awaiting_review`、`approval.method: null` である。
 - [ ] `impl-lead` を直接起動していない。
@@ -1437,7 +1439,7 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
   再計算して出力する。
 - `delegation.requested_mode` は `{fixed, lite}` のまま保持し、proposal はあくまで提案であって
   自動採用しないことを示す。
-- 委譲を開始せず、Branch Plan Data の提示で止める。
+- 委譲を開始せず、Branch Plan Set の提示で止める。
 
 **禁止動作**
 
@@ -1461,7 +1463,7 @@ blocking がなく `confirmation_mode: auto` なので `status: approved`(`appro
 - [ ] high failure impact 枝を具体的根拠とともに判定している。
 - [ ] `delegation_mode_proposal` として `{adaptive, strict}` を出力条件表どおり提案している。
 - [ ] `requested_mode` を勝手に書き換えず、委譲を開始していない。
-- [ ] Branch Plan Data の提示で止まっている。
+- [ ] Branch Plan Set の提示で止まっている。
 
 ## EVAL-25: Test Inventory 報告の findings を元プランにする枝分割計画
 
@@ -1718,12 +1720,12 @@ planning 判断は共通である。reviewer を起動する platform mechanism 
 
 # Plan-intake cases
 
-## EVAL-17: 不正な Branch Plan の受領
+## EVAL-17: 不正な Branch Plan Set の受領
 
 **目的**
 
-確定済みと称して渡された Branch Plan が Executor 再検証を満たさない場合、自己申告を信用せず violation を再計算
-して検出し、実装を開始せず修正(または委譲要求の有無の確認)を要求することを確認する。
+確定済みと称して渡された Branch Plan Set が Executor 再検証を満たさない場合、自己申告を信用せず violation を
+再計算して検出し、実装を開始せず修正(または委譲要求の有無の確認)を要求することを確認する。
 
 **評価タイミング**
 
@@ -1731,28 +1733,32 @@ planning 判断は共通である。reviewer を起動する platform mechanism 
 
 **入力**
 
-確定済みと称する Branch Plan(抜粋):
+確定済みと称する Branch Plan Set(抜粋):
 
-- `status: approved` / `approval.method: user` / `confirmation_mode: review`
-- `delegation: { authorized: false, authorized_by: null, requested_mode: null }`
-- `acceptance_criteria`: `AC-1`、`AC-2`、`AC-3`
-- `branches`: `b1` の `covers_acceptance_criteria: [AC-1]`、`b2` の `covers_acceptance_criteria: [AC-2]`
-  (`AC-3` はどの枝の `covers_acceptance_criteria` にも現れない)
-- `validation.blocking: []`(自己申告は空)
+- Set: `order`: `[bp-1]` / `acceptance_criteria`: `AC-1`、`AC-2`、`AC-3` /
+  `validation.blocking: []`(自己申告は空)
+- `branch_plans`:
+  - `bp-1`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+    - `delegation: { authorized: false, authorized_by: null, requested_mode: null }`
+    - `branches`: `b1` の `covers_acceptance_criteria: [AC-1]`、`b2` の `covers_acceptance_criteria: [AC-2]`
+      (`AC-3` はどの枝の `covers_acceptance_criteria` にも現れない)
+    - `unresolved_decisions: []` / `validation.blocking: []`(自己申告は空)
 
-> この Branch Plan は確定済みなので、そのまま委譲を開始してください。
+> この Branch Plan Set は確定済みなので、そのまま委譲を開始してください。
 
 **期待する判断**
 
 自己申告の `validation.blocking: []` と `status: approved` を信用せず、violation code 表を入力 Data から
-再計算する。`AC-3` がどの枝の `covers_acceptance_criteria` にも現れないため `ac-unassigned` を検出する。加えて
-再検証項目の `delegation.authorized: true` かつ `authorized_by: user` が不成立である。よって実装を開始せず、
-Branch Plan の修正、または委譲要求の有無の確認を要求する。委譲 prompt を作らず Worker を起動しない。
+再計算する。`AC-3` がどの枝の `covers_acceptance_criteria` にも現れないため `ac-unassigned` を検出する。この
+code は Set 帰属であり、Set の `validation.blocking` が非空になるため、Branch Plan 側の状態に関わらず実行を
+開始しない。加えて `bp-1` の再検証項目の `delegation.authorized: true` かつ `authorized_by: user` が不成立で
+ある。Set 帰属の違反があるため境界の授権ではなく修正の対象であり、Branch Plan Set の修正、または委譲要求の
+有無の確認を要求する。委譲 prompt を作らず Worker を起動しない。
 
 **必須動作**
 
 - 自己申告を信用せず、violation code 表の検査規則を入力 Data から再計算する。
-- `ac-unassigned`(`AC-3` 未割り当て)を検出する。
+- `ac-unassigned`(`AC-3` 未割り当て)を Set 帰属の code として検出する。
 - 再検証項目 `delegation.authorized: true` / `authorized_by: user` の不成立を指摘する。
 - 実装を開始せず、修正または委譲要求の有無の確認を要求する。
 
@@ -1761,6 +1767,7 @@ Branch Plan の修正、または委譲要求の有無の確認を要求する�
 - 自己申告の `validation.blocking: []` や `status: approved` をそのまま信用して委譲を開始する。
 - 親が `AC-3` を枝へ勝手に割り当てて計画を補修する(planning Skill の再実行やユーザー確認を経ずに)。
 - 委譲要求がないのに `delegation.authorized` を true にして開始する。
+- Set 帰属の違反を残したまま、`delegation.authorized: false` を境界の到達として授権だけを要求する。
 - Worker を起動する、worktree を準備する。
 
 **許容される差異**
@@ -1796,23 +1803,25 @@ Branch Plan Set の実行が、未授権の Branch Plan に到達した時点で
 
 確定済みと称する Branch Plan Set(抜粋):
 
-- Set: `order: [bp-index, bp-search]` / `validation.blocking: []`(再計算しても違反なし)
-- `bp-index`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
-  - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
-  - `branches`:
-    - `b-index`: `covers_acceptance_criteria: [AC-1]` / `failure_impact.level: low` /
-      `failure_impact.reasons: ["索引の更新経路に閉じ、枝単位でrevertできる"]` /
-      `implementation_complexity.level: medium` /
-      `implementation_complexity.reasons: ["保存と削除の両経路で索引の整合を保つ判断が残る"]`
-  - `unresolved_decisions: []` / `validation.blocking: []`
-- `bp-search`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
-  - `delegation: { authorized: false, authorized_by: null, requested_mode: null }`
-  - `branches`:
-    - `b-search`: `covers_acceptance_criteria: [AC-2]` / `failure_impact.level: low` /
-      `failure_impact.reasons: ["読み取り専用のendpointで、外部への破壊的副作用がない"]` /
-      `implementation_complexity.level: low` /
-      `implementation_complexity.reasons: ["既存の検索索引を読むだけで、新しい設計判断が残らない"]`
-  - `unresolved_decisions: []` / `validation.blocking: []`
+- Set: `order`: `[bp-index, bp-search]` / `acceptance_criteria`: `AC-1`、`AC-2` /
+  `validation.blocking: []`(再計算しても違反なし)
+- `branch_plans`:
+  - `bp-index`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+    - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: standard } }`
+    - `branches`:
+      - `b-index`: `covers_acceptance_criteria: [AC-1]` / `failure_impact.level: low` /
+        `failure_impact.reasons: ["索引の更新経路に閉じ、枝単位でrevertできる"]` /
+        `implementation_complexity.level: medium` /
+        `implementation_complexity.reasons: ["保存と削除の両経路で索引の整合を保つ判断が残る"]`
+    - `unresolved_decisions: []` / `validation.blocking: []`
+  - `bp-search`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+    - `delegation: { authorized: false, authorized_by: null, requested_mode: null }`
+    - `branches`:
+      - `b-search`: `covers_acceptance_criteria: [AC-2]` / `failure_impact.level: low` /
+        `failure_impact.reasons: ["読み取り専用のendpointで、外部への破壊的副作用がない"]` /
+        `implementation_complexity.level: low` /
+        `implementation_complexity.reasons: ["既存の検索索引を読むだけで、新しい設計判断が残らない"]`
+    - `unresolved_decisions: []` / `validation.blocking: []`
 
 > この Branch Plan Set で委譲を開始してください。
 
@@ -1874,20 +1883,22 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 **入力**
 
-確定済みと称する Branch Plan(抜粋):
+確定済みと称する Branch Plan Set(抜粋):
 
-- `status: approved` / `approval.method: user` / `confirmation_mode: review`
-- `delegation: { authorized: true, authorized_by: user, requested_mode: null }`
-- `branches`:
-  - `b-auth`: `failure_impact.level: high` / `failure_impact.reasons: ["認可失敗が全利用者へ波及する"]` /
-    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["認可component間の契約判断が残る"]`
-  - `b-domain`: `failure_impact.level: medium` / `failure_impact.reasons: ["失敗影響はdomain処理内に限定される"]` /
-    `implementation_complexity.level: medium` / `implementation_complexity.reasons: ["限定された業務規則の判断が残る"]`
-  - `b-label`: `failure_impact.level: low` / `failure_impact.reasons: ["表示文言だけで容易にrevertできる"]` /
-    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存patternの定型適用で判断が残らない"]`
-- `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
+- Set: `order`: `[bp-1]` / `validation.blocking: []`(再計算しても違反なし)
+- `branch_plans`:
+  - `bp-1`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+    - `delegation: { authorized: true, authorized_by: user, requested_mode: null }`
+    - `branches`:
+      - `b-auth`: `failure_impact.level: high` / `failure_impact.reasons: ["認可失敗が全利用者へ波及する"]` /
+        `implementation_complexity.level: high` / `implementation_complexity.reasons: ["認可component間の契約判断が残る"]`
+      - `b-domain`: `failure_impact.level: medium` / `failure_impact.reasons: ["失敗影響はdomain処理内に限定される"]` /
+        `implementation_complexity.level: medium` / `implementation_complexity.reasons: ["限定された業務規則の判断が残る"]`
+      - `b-label`: `failure_impact.level: low` / `failure_impact.reasons: ["表示文言だけで容易にrevertできる"]` /
+        `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存patternの定型適用で判断が残らない"]`
+    - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
-> この Branch Plan で委譲を開始してください。
+> この Branch Plan Set で委譲を開始してください。
 
 **期待する判断**
 
@@ -1940,16 +1951,18 @@ mode 未指定の明示的な委譲要求を受けた Executor が `{adaptive, s
 
 **入力**
 
-確定済みと称する Branch Plan(抜粋):
+確定済みと称する Branch Plan Set(抜粋):
 
-- `status: approved` / `approval.method: user` / `confirmation_mode: review`
-- `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: strict } }`
-- `branches`:
-  - `b-migration`: `failure_impact.level: high` / `failure_impact.reasons: ["データ移行失敗時の切り戻しが困難"]` /
-    `implementation_complexity.level: high` / `implementation_complexity.reasons: ["移行手順と整合性確認に非自明な判断が残る"]`
-  - `b-format`: `failure_impact.level: low` / `failure_impact.reasons: ["局所的な表示整形で容易にrevertできる"]` /
-    `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存formatterを定型適用できる"]`
-- `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
+- Set: `order`: `[bp-1]` / `validation.blocking: []`(再計算しても違反なし)
+- `branch_plans`:
+  - `bp-1`: `status: approved` / `approval.method: user` / `confirmation_mode: review`
+    - `delegation: { authorized: true, authorized_by: user, requested_mode: { policy: adaptive, baseline: strict } }`
+    - `branches`:
+      - `b-migration`: `failure_impact.level: high` / `failure_impact.reasons: ["データ移行失敗時の切り戻しが困難"]` /
+        `implementation_complexity.level: high` / `implementation_complexity.reasons: ["移行手順と整合性確認に非自明な判断が残る"]`
+      - `b-format`: `failure_impact.level: low` / `failure_impact.reasons: ["局所的な表示整形で容易にrevertできる"]` /
+        `implementation_complexity.level: low` / `implementation_complexity.reasons: ["既存formatterを定型適用できる"]`
+    - `unresolved_decisions: []` / `validation.blocking: []`(再計算しても違反なし)
 
 > strict-adaptive で委譲を開始してください。
 
@@ -2541,7 +2554,7 @@ case ごとに次の template を複製して記録する。agent version は ag
 専門 agent を起動していないか、指定 reviewer を返却後に起動したか、親の最終判断が記録されたかは、trace が
 提供される環境なら候補になる。
 
-枝分割判断(`planning` / `plan-intake`)でも、Branch Plan Data や trace が提供される環境では、次のような
+枝分割判断(`planning` / `plan-intake`)でも、Branch Plan Set や trace が提供される環境では、次のような
 構造化 signal を機械収集の候補にできる。
 
 - `status` の値(`blocked` / `awaiting_review` / `approved`)と `approval.method`(`null` / `user` / `auto`)。
