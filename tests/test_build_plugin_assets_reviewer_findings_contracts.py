@@ -58,6 +58,53 @@ COUNT_ONLY_REVIEWER_NAMES = (
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
 )
+FOCUS_GUIDANCE_CONTRACTS = (
+    "親が渡す「確認させる観点」は、確認・探索の順序を先にするために優先して扱ってください。",
+    "確認させる観点だけに限定せず、",
+    "自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘",
+    "根拠を示せる",
+    "周辺コンテキストを理由に責務範囲外へ広げないでください。",
+)
+DEPTH_REVIEWER_NAMES = (
+    "plan-adversarial-reviewer",
+    "security-side-effect-reviewer",
+)
+EXPLORATION_DEPTH_CONTRACTS = (
+    "一次の失敗を発見した後も、探索をそこで打ち切らず、",
+    "二次的な失敗",
+    "部分成功後の状態",
+    "retry",
+    "rollback",
+    "確定するまで確認してください。",
+)
+SECURITY_COMPATIBILITY_CONTRACTS = (
+    "version skew",
+    "schema drift",
+    "migration hazard",
+    "compatibility regression",
+    "既存の認可・機密性・破壊安全性・冪等性・競合・部分失敗・外部副作用の安全性",
+    "具体的な成立条件",
+    "diff、AC、渡された Data の根拠",
+    "仮想的な脅威を列挙しない",
+)
+FINDING_ORDER_CONTRACTS = (
+    "判定または重要度の欄がある場合は、既存の語彙で高い順に並べてください。",
+    "欄がない場合は、返却 Data の既存項目に示す受け入れ影響を根拠に比較できる場合だけ影響の大きい順に並べてください。",
+    "同等または比較できない指摘の順序は問いません。",
+    "判定語彙や field を新設せず、",
+    "比較できないことだけを理由に未定義の情報を要求しないでください。",
+    "低い重要度の指摘で高い重要度の指摘を希釈しないでください。",
+)
+RETURN_SELF_CHECK_CONTRACTS = (
+    "返却前に各 finding の必須項目を自己検査してください。",
+    "各 reviewer 原稿の返却形式が必須とする項目を具体的に埋められない finding は返さないでください。",
+    "必要な情報が不足している場合は、finding を作らず親へ返してください。",
+)
+RETURN_SELF_CHECK_REFERENCE_CONTRACTS = (
+    "reviewer は返却前に各 finding の必須項目を自己検査する。",
+    "各 reviewer 原稿の返却形式が必須とする項目を具体的に埋められない finding は返さない。",
+    "必要な情報が不足している場合は、finding を作らず親へ返す。",
+)
 REVIEWER_DISPATCH_REFERENCE = "reviewer-dispatch.md"
 QA_AND_INTEGRATION_MUST_GATES_SECTION = "## 必須完了ゲート"
 PARENT_DATA_LOWER_BOUND_DECLARATION = (
@@ -193,7 +240,7 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # observes them, so a reader must not assume they are mechanically covered.
     "network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照"
     "（`~/.git-credentials` や `.env` の読み取りなど）は、この契約の担保対象外である。",
-    f"この節の対象は、上記2点の{len(FINDINGS_REVIEWER_NAMES)}本に "
+    f"この節の対象は、findings を返す{len(FINDINGS_REVIEWER_NAMES)}本に "
     f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
     "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
     "この節でも対象外とする。",
@@ -205,7 +252,7 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
 # 「read-only の担保」 — which would restore the exact misreading this
 # disclaimer exists to prevent — fails this test.
 READ_ONLY_SCOPE_DISCLAIMER_IN_POSITIONING_SECTION = (
-    "ここで定めた対象は上記2点だけに適用する。"
+    "ここで定めた findings 契約の対象は上記6本に適用する。"
     "「read-only の担保」は対象範囲が異なり、同節が自身の対象を定める。"
 )
 # The delegation pointer, not a second copy of the rule: branch-review.md
@@ -285,6 +332,13 @@ class ReviewerFindingsContractTest(
             "codex": self._repository_text(CODEX_PROFILE_PATH / f"{name}.toml"),
         }
 
+    def _findings_output_section(self, text: str) -> str:
+        """Extract the existing output-format section without renaming public headings."""
+        for heading in ("## 返却形式", "## 出力形式"):
+            if heading in text:
+                return "\n".join(self._section_lines(text, heading))
+        self.fail("reviewer manuscript has no output-format section")
+
     def test_reviewer_findings_reference_is_distributed_with_warning_and_toc(
         self,
     ) -> None:
@@ -298,16 +352,18 @@ class ReviewerFindingsContractTest(
         self.assertTrue(texts["source"].startswith("# "))
         self.assertFalse(texts["source"].startswith(GENERATED_MARKDOWN_WARNING))
         self.assertIn(toc_heading, texts["source"])
-        self.assertIn("read-only の担保", _toc_section(texts["source"]))
+        source_toc = _toc_section(texts["source"])
+        self.assertIn("確認観点の優先順位", source_toc)
+        self.assertIn("read-only の担保", source_toc)
         for platform in ("claude", "codex"):
             with self.subTest(platform=platform):
                 self.assertTrue(
                     texts[platform].startswith(f"{GENERATED_MARKDOWN_WARNING}\n\n")
                 )
                 self.assertIn(toc_heading, texts[platform])
-                self.assertIn(
-                    "read-only の担保", _toc_section(texts[platform])
-                )
+                toc = _toc_section(texts[platform])
+                self.assertIn("確認観点の優先順位", toc)
+                self.assertIn("read-only の担保", toc)
         self.assertEqual(texts["claude"], texts["codex"])
 
     def test_reviewer_findings_reference_defines_summary_line_and_evidence(
@@ -563,6 +619,85 @@ class ReviewerFindingsContractTest(
                         self.assertNotIn(
                             "".join(summary_item.split()), normalized
                         )
+
+    def test_findings_reviewers_treat_parent_focus_as_non_exclusive(self) -> None:
+        """Make the parent's focus an exploration-order hint without turning it into a scope gate."""
+        for name in FINDINGS_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(text.split())
+                    for contract in FOCUS_GUIDANCE_CONTRACTS:
+                        self.assertIn("".join(contract.split()), normalized)
+
+    def test_findings_reference_focus_section_is_distributed_and_semantic(self) -> None:
+        """Protect the canonical focus guidance and its non-exclusive polarity on both platforms."""
+        for platform, text in self._reviewer_findings_reference_texts().items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, "## 確認観点の優先順位")
+                )
+                normalized = "".join(section.split())
+                for contract in FOCUS_GUIDANCE_CONTRACTS:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_plan_and_security_reviewers_continue_after_the_first_failure(self) -> None:
+        """Require bounded second-order failure exploration for the two reviewers that inspect failure impact."""
+        for name in DEPTH_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    normalized = "".join(text.split())
+                    for contract in EXPLORATION_DEPTH_CONTRACTS:
+                        self.assertIn("".join(contract.split()), normalized)
+
+    def test_security_reviewer_checks_compatibility_drift_with_evidence(self) -> None:
+        """Keep compatibility hazards in scope only when tied to concrete evidence."""
+        for platform, text in self._findings_reviewer_texts(
+            "security-side-effect-reviewer"
+        ).items():
+            with self.subTest(platform=platform):
+                normalized = "".join(text.split())
+                for contract in SECURITY_COMPATIBILITY_CONTRACTS:
+                    self.assertIn("".join(contract.split()), normalized)
+
+    def test_findings_reference_and_reviewers_order_comparable_findings_by_impact(self) -> None:
+        """Order by existing severity vocabulary or comparable acceptance impact without inventing fields."""
+        texts = self._reviewer_findings_reference_texts()
+        for platform, text in texts.items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, "## 指摘一覧の並び順")
+                )
+                normalized = "".join(section.split())
+                for contract in FINDING_ORDER_CONTRACTS:
+                    self.assertIn("".join(contract.split()), normalized)
+
+        for name in FINDINGS_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    section = self._findings_output_section(text)
+                    normalized = "".join(section.split())
+                    for contract in FINDING_ORDER_CONTRACTS:
+                        self.assertIn("".join(contract.split()), normalized)
+
+    def test_findings_reviewers_self_check_required_fields_before_returning(self) -> None:
+        """Reject findings whose required return fields cannot be made concrete."""
+        texts = self._reviewer_findings_reference_texts()
+        for platform, text in texts.items():
+            with self.subTest(platform=platform):
+                section = "\n".join(
+                    self._section_lines(text, "## 返却前自己検査")
+                )
+                normalized = "".join(section.split())
+                for contract in RETURN_SELF_CHECK_REFERENCE_CONTRACTS:
+                    self.assertIn("".join(contract.split()), normalized)
+
+        for name in FINDINGS_REVIEWER_NAMES:
+            for platform, text in self._findings_reviewer_texts(name).items():
+                with self.subTest(name=name, platform=platform):
+                    section = self._findings_output_section(text)
+                    normalized = "".join(section.split())
+                    for contract in RETURN_SELF_CHECK_CONTRACTS:
+                        self.assertIn("".join(contract.split()), normalized)
 
 
 if __name__ == "__main__":
