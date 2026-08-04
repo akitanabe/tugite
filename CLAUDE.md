@@ -17,6 +17,12 @@ python3 scripts/build_plugin_assets.py
 # 生成物が共通原稿と一致するか確認（ファイルを書き換えない）
 python3 scripts/build_plugin_assets.py --check
 
+# Gunte 管理対象を生成
+gunte emit
+
+# Gunte 管理対象のbyte driftと契約を確認（ファイルを書き換えない）
+gunte check
+
 # Python テスト一式
 python3 -B -m unittest discover -s tests -p 'test_build_plugin_assets*.py'
 
@@ -28,6 +34,26 @@ bash tests/install-agents-test.sh
 ```
 
 `plugins/` 以下の生成対象ファイルを直接編集しないでください。対応する `shared/` の原稿を変更してから生成器を実行します。生成物には generated warning が付いています。
+
+## v5開発でのGunte運用
+
+GunteにはGo 1.26.5以上が必要です。公開版は次のコマンドで導入します。
+
+```bash
+go install github.com/akitanabe/gunte/cmd/gunte@latest
+```
+
+`gunte.toml` がproject、source、target、出力rule、target別用語を定義し、`contracts.toml` が `requires` / `forbids` / `order` 契約を定義します。platformごとのplugin manifest正本は `declarations/` に置きます。Gunteは実行時のcurrent working directoryをproject rootとして扱うため、repository rootで実行してください。
+
+`develop/v5` の初期基準では、Gunteの管理対象は `gunte.toml` の `sources.files` に列挙したagent、manifest、versionだけです。v4 skillはGunteへ移さず、v5正本を作るまでは従来の `scripts/build_plugin_assets.py` で扱います。Gunte管理対象を変更した場合は、次の順で生成と両系統の整合を確認します。
+
+```bash
+gunte emit
+gunte check
+python3 -B scripts/build_plugin_assets.py --check
+```
+
+Gunte v1は未登録sourceを走査せず、生成対象外のstale fileも検出しません。必須pathとretired pathはrepositoryの構造テストで保護します。`requires` / `forbids` / `order` は決定論的なartifact契約だけに使い、Work Unit分割などのLLM判断品質はEVALで扱います。
 
 ## 生成パイプライン
 

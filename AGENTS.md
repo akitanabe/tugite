@@ -2,17 +2,25 @@
 
 ## プロジェクト構成
 
-Tugite は、Claude Code と Codex 向けの agent・skill 定義を配布します。正本は `shared/` です。skill は `shared/skill/<skill-name>/`、agent は `shared/agents/`、platform ごとの用語は `shared/terms.toml`、bundle version は `shared/VERSION` で管理します。`scripts/build_plugin_assets.py` は、これらを `plugins/claude/` と `plugins/codex/` の配布物へ変換します。generated warning のあるファイルを直接編集せず、対応する `shared/` の原稿を変更して再生成してください。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。
+Tugite は、Claude Code と Codex 向けの agent・skill 定義を配布します。正本は `shared/` です。skill は `shared/skill/<skill-name>/`、agent は `shared/agents/`、platform ごとの用語は `shared/terms.toml`、bundle version は `shared/VERSION` で管理します。v5 開発では `gunte.toml` と `contracts.toml` を Gunte の project 設定と契約 registry として使い、platform ごとの manifest 正本は `declarations/` に置きます。v4 skill は Gunte へ移さず、v5 正本を作るまでは `scripts/build_plugin_assets.py` で生成します。generated warning のあるファイルを直接編集せず、対応する正本を変更して再生成してください。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。
 
 ## ビルド・テスト・開発コマンド
 
 - `python3 scripts/build_plugin_assets.py`: platform ごとの配布物と version を再生成します。
 - `python3 scripts/build_plugin_assets.py --check`: ファイルを変更せず、生成物が最新か確認します。
+- `gunte emit`: `gunte.toml` の `sources.files` から Gunte 管理対象の配布物を生成します。
+- `gunte check`: Gunte 管理対象をメモリ上で生成し、既存配布物との byte drift と契約違反を検出します。
 - `python3 -B -m unittest discover -s tests -p 'test_build_plugin_assets*.py'`: Python の CLI・repository contract テストを実行します。bytecode を残さないため `-B` を付けます。
 - `bash tests/install-agents-test.sh`: Codex custom-agent installer を検証します。
 - `git diff --check`: 提出前に空白エラーを検出します。
 
-外部依存のインストールやローカルサーバーは不要です。ツールは Python 標準ライブラリと Bash を使用します。
+Gunte には Go 1.26.5 以上が必要です。公開版は `go install github.com/akitanabe/gunte/cmd/gunte@latest` で導入します。ローカルサーバーは不要です。
+
+## Gunte の運用
+
+`develop/v5` の初期基準では、Gunte は `gunte.toml` の `sources.files` に列挙した agent、manifest、version だけを管理します。v4 skill は Gunte へ移さず、v5 の正本を作るまで従来生成器の管理対象に残します。Gunte 管理対象を変更したら `gunte emit`、`gunte check`、`python3 -B scripts/build_plugin_assets.py --check` を順に実行してください。
+
+`contracts.toml` の `requires` / `forbids` / `order` は、生成物上で決定論的に検査できる不変条件だけに使います。LLM の判断品質は EVAL で扱います。Gunte v1 は `gunte.toml` に未登録の source と生成対象外の stale file を検出しないため、必須 path と retired path は repository の構造テストでも保護してください。
 
 ## コーディングスタイルと命名
 
