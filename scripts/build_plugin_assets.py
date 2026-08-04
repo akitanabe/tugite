@@ -17,6 +17,7 @@ PLATFORMS = ("claude", "codex")
 # directory a generation target; an empty tuple describes a SKILL.md-only skill.
 SKILL_REFERENCE_NAMES = {
     "impl-delegate": (),
+    "impl-lead-v5": (),
     "impl-lead": (
         "implementation-branches.md",
         "expert-selection.md",
