@@ -834,32 +834,6 @@ class ImplLeadModeContractsTest(
                     for contract in contracts:
                         self.assertIn("".join(contract.split()), normalized)
 
-    def test_repository_implementers_return_regression_green_evidence(
-        self,
-    ) -> None:
-        required_contracts = (
-            "新機能または未実装仕様では Red を必須",
-            "既存挙動を固定する regression test に限り追加時点の Green を許可",
-            "既存挙動を固定する追補 test であること",
-            "対応する AC",
-            "期待値の根拠",
-            "既存実装がすでに仕様を満たしていたこと",
-            "形式的な Red のために本番 code を変更しない",
-            "親が明示した一時 mutation 検証だけを行い、commit しない",
-            "変更禁止範囲と本番 code を mutation の対象にしない",
-        )
-
-        for name in ("implementer", "senior-implementer", "expert-implementer"):
-            paths = (
-                Path("shared/agents") / f"{name}.md",
-                Path("plugins/claude/agents") / f"{name}.md",
-                Path("plugins/codex/install/agents") / f"{name}.toml",
-            )
-            for path in paths:
-                with self.subTest(name=name, path=path):
-                    normalized = "".join(self._repository_text(path).split())
-                    for contract in required_contracts:
-                        self.assertIn("".join(contract.split()), normalized)
 
     def test_repository_decision_corpus_covers_red_and_regression_green_cases(
         self,

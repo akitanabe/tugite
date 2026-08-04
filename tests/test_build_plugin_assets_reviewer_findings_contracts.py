@@ -280,10 +280,8 @@ READ_ONLY_ENFORCEMENT_CONTRACTS = (
     # observes them, so a reader must not assume they are mechanically covered.
     "network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と credential の参照"
     "（`~/.git-credentials` や `.env` の読み取りなど）は、この契約の担保対象外である。",
-    f"この節の対象は、findings を返す{len(FINDINGS_REVIEWER_NAMES)}本に "
-    f"`expert-selection-reviewer` を加えた reviewer {len(REVIEWER_NAMES)}本とする。",
-    "指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、"
-    "この節でも対象外とする。",
+    f"この節の対象は、findings を返す reviewer {len(REVIEWER_NAMES)}本とする。",
+    "finding の修正経路はこの節の対象外とする。",
 )
 # Lives in 「位置づけ」, not in 「read-only の担保」: the disclaimer keeps a
 # reader from mistaking the read-only section's 7-reviewer scope for
@@ -458,12 +456,7 @@ class ReviewerFindingsContractTest(
         self,
     ) -> None:
         """Leave each reviewer's exploration reach to its agent definition instead of copying the roster into the manuscript."""
-        # `expert-selection-reviewer` and `review-patch-refactorer` are named
-        # deliberately: the section has to say who it covers and who it does
-        # not, which is scope, not a per-reviewer tool assignment. Every other
-        # reviewer name appearing here would mean the roster is maintained in
-        # two places again.
-        listed_by_scope = {"expert-selection-reviewer", "review-patch-refactorer"}
+        listed_by_scope: set[str] = set()
         for platform, text in self._reviewer_findings_reference_texts().items():
             section = "\n".join(
                 self._section_lines(text, READ_ONLY_ENFORCEMENT_SECTION)

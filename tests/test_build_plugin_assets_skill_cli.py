@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 import unittest
 
@@ -24,8 +23,8 @@ from build_plugin_assets_test_support import (
 class BuildPluginAssetsSkillCliTest(IsolatedRepositorySupport, unittest.TestCase):
     """Verify the generator only through its documented command-line interface."""
 
-    def test_build_generates_all_assets_and_syncs_versions(self) -> None:
-        """Generate skill packages, eighteen agent assets, and synchronized versions."""
+    def test_build_generates_all_registered_skill_assets(self) -> None:
+        """Generate the registered skill packages without owning other assets."""
         with self._temporary_repository() as root:
             result = self._run(root)
 
@@ -35,17 +34,6 @@ class BuildPluginAssetsSkillCliTest(IsolatedRepositorySupport, unittest.TestCase
             for path in self._generated_paths(root):
                 self.assertTrue(path.is_file(), path)
 
-            for manifest_path in (
-                "plugins/claude/.claude-plugin/plugin.json",
-                "plugins/codex/.codex-plugin/plugin.json",
-            ):
-                manifest = json.loads((root / manifest_path).read_text(encoding="utf-8"))
-                self.assertEqual("1.2.3", manifest["version"])
-                self.assertEqual(f"fixture for {manifest_path}", manifest["description"])
-            self.assertEqual(
-                "1.2.3\n",
-                (root / "plugins/codex/install/VERSION").read_text(encoding="utf-8"),
-            )
 
     def test_build_filters_markers_before_replacing_terms(self) -> None:
         """Select one platform branch, then replace terms without leaking markers."""

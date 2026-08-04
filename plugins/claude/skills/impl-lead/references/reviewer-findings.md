@@ -19,7 +19,7 @@ findings を返すすべての reviewer が共通で満たす契約を定義す�
 
 対象は `responsibility-boundary-reviewer`、`test-quality-reviewer`、`security-side-effect-reviewer`、
 `writing-principles-reviewer`、`over-engineering-reviewer`、`plan-adversarial-reviewer` とする。
-指摘 Data を返さない `expert-selection-reviewer` と `review-patch-refactorer` は対象外とする。
+この契約は指摘 Data を返す reviewer だけを対象とし、finding の修正経路は定義しない。
 
 判定語彙、0件の表記、判定対象外の範囲の書き方は各 reviewer 原稿を正本とし、この reference では変更しない。
 
@@ -83,10 +83,7 @@ network 送信（`curl` / `gh api` / `ssh` などによる外部送信）と cre
 や `.env` の読み取りなど）は、この契約の担保対象外である。`push` の禁止にも上記の検査にも現れないため、
 機構的に扱われていると誤解しないこと。
 
-この節の対象は、findings を返す6本に `expert-selection-reviewer` を加えた reviewer 7本とする。
-`expert-selection-reviewer` は指摘 Data を返さないため findings 契約の対象外だが、ファイルを変更しない点は
-共通であり、この節では対象に含める。指摘された範囲を修正する `review-patch-refactorer` は書き込みを要するため、
-この節でも対象外とする。
+この節の対象は、findings を返す reviewer 6本とする。finding の修正経路はこの節の対象外とする。
 
 ## 指摘件数のサマリ行
 

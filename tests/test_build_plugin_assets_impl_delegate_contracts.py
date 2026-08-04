@@ -168,7 +168,6 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
             "worker はその worktree のみを編集する",
             "親は同じ対象を並行編集しない",
             "専門 reviewer と writing-principles-reviewer は同じ隔離 worktree の確定 snapshot を読む",
-            "review-patch-refactorer も同じ worktree を修正する",
             "基準 snapshot からの diff を確認する",
             "親が focused test を実行する",
             "生成された配布物を直接編集しない",
@@ -210,15 +209,13 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
                 for contract in artifact_nonrequirements:
                     self.assertIn(self._normalize_contract(contract), normalized)
 
-    def test_skill_routes_non_local_writing_findings_to_parent_decision(self) -> None:
-        """Keep behavior-changing writing findings outside the local patch route."""
+    def test_skill_stops_when_writing_findings_require_changes(self) -> None:
+        """Stop without defining a successor actor for adopted writing changes."""
         texts = self._skill_texts()
         required = (
-            "writing-principles-reviewer の finding が振る舞い変更、仕様判断、または再設計を要する場合",
-            "`review-patch-refactorer` へ渡さない",
-            "親が理由付き不採用または未完了と判断する",
-            "修正範囲を拡張しない",
-            "writing-principles-reviewer を再起動しない",
+            "finding を適用する後継実行経路は現 bundle では定義しない",
+            "変更が必要な finding を採用した場合は修正を開始せず、未完了として停止",
+            "writing-principles-reviewer 自身には変更をさせない",
         )
         for name, text in texts.items():
             with self.subTest(name=name):
@@ -258,9 +255,8 @@ class ImplDelegateContractsTest(RepositoryContractSupport, unittest.TestCase):
             "全 reviewer を再起動しない。",
             "収束 loop を設けない。",
             "最終 diff に対して `writing-principles-reviewer` を必ず1回起動する。",
-            "採用した指摘だけを `review-patch-refactorer` に渡す。review-patch-refactorer は最小の behavior-preserving patch だけを行う。",
-            "patch 後に同 reviewer を再起動しない。",
-            "patch 後は親 QA と Green 確認で終了する。",
+            "finding を適用する後継実行経路は現 bundle では定義しない。",
+            "変更が必要な finding を採用した場合は修正を開始せず、未完了として停止して親へ返す。",
         )
         for name, text in texts.items():
             with self.subTest(name=name):

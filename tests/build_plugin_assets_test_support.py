@@ -18,20 +18,18 @@ from typing import Any, Iterator
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 BUILDER_SOURCE = REPOSITORY_ROOT / "scripts" / "build_plugin_assets.py"
 AGENT_NAMES = (
+    "focused-implementer",
     "implementer",
     "senior-implementer",
     "expert-implementer",
-    "expert-selection-reviewer",
     "responsibility-boundary-reviewer",
     "test-quality-reviewer",
     "writing-principles-reviewer",
     "over-engineering-reviewer",
     "plan-adversarial-reviewer",
     "security-side-effect-reviewer",
-    "review-patch-refactorer",
 )
 REVIEWER_NAMES = (
-    "expert-selection-reviewer",
     "responsibility-boundary-reviewer",
     "test-quality-reviewer",
     "writing-principles-reviewer",
@@ -52,15 +50,12 @@ BASH_GRANTED_REVIEWER_NAMES = (
     "security-side-effect-reviewer",
 )
 BASH_WITHHELD_REVIEWER_NAMES = (
-    "expert-selection-reviewer",
     "writing-principles-reviewer",
     "plan-adversarial-reviewer",
 )
 WRITE_TOOL_NAMES = ["Edit", "Write", "NotebookEdit"]
 READ_TOOL_NAMES = ["Read", "Grep", "Glob"]
-REFACTORER_NAMES = (
-    "review-patch-refactorer",
-)
+REFACTORER_NAMES = ()
 
 
 def claude_reviewer_tool_policy(name: str) -> tuple[list[str], list[str]] | None:
@@ -174,30 +169,28 @@ class RepositorySkillTexts:
 
 
 CODEX_MODEL_PROFILES = {
+    "focused-implementer": ModelProfile("gpt-5.6-luna", "high"),
     "implementer": ModelProfile("gpt-5.6-luna", "xhigh"),
     "senior-implementer": ModelProfile("gpt-5.6-sol", "medium"),
     "expert-implementer": ModelProfile("gpt-5.6-sol", "max"),
-    "expert-selection-reviewer": ModelProfile("gpt-5.6-sol", "medium"),
     "responsibility-boundary-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "test-quality-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "writing-principles-reviewer": ModelProfile("gpt-5.6-luna", "xhigh"),
     "over-engineering-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "plan-adversarial-reviewer": ModelProfile("gpt-5.6-sol", "high"),
     "security-side-effect-reviewer": ModelProfile("gpt-5.6-sol", "xhigh"),
-    "review-patch-refactorer": ModelProfile("gpt-5.6-luna", "high"),
 }
 CLAUDE_MODEL_PROFILES = {
+    "focused-implementer": ModelProfile("sonnet", "medium"),
     "implementer": ModelProfile("sonnet", "high"),
     "senior-implementer": ModelProfile("opus", "medium"),
     "expert-implementer": ModelProfile("opus", "max"),
-    "expert-selection-reviewer": ModelProfile("opus", "medium"),
     "responsibility-boundary-reviewer": ModelProfile("opus", "high"),
     "test-quality-reviewer": ModelProfile("opus", "high"),
     "writing-principles-reviewer": ModelProfile("sonnet", "high"),
     "over-engineering-reviewer": ModelProfile("opus", "high"),
     "plan-adversarial-reviewer": ModelProfile("opus", "high"),
     "security-side-effect-reviewer": ModelProfile("opus", "xhigh"),
-    "review-patch-refactorer": ModelProfile("sonnet", "medium"),
 }
 
 
@@ -619,11 +612,7 @@ class IsolatedRepositorySupport:
     ) -> list[Path]:
         """List every file whose content is owned by the generator."""
         skills = self._active_skills(extra_skills)
-        paths = [
-            root / "plugins/claude/.claude-plugin/plugin.json",
-            root / "plugins/codex/.codex-plugin/plugin.json",
-            root / "plugins/codex/install/VERSION",
-        ]
+        paths: list[Path] = []
         for platform in PLATFORMS:
             for skill, reference_names in skills.items():
                 paths.append(root / generated_skill_path(platform, skill))
@@ -631,13 +620,6 @@ class IsolatedRepositorySupport:
                     root / generated_skill_reference_path(platform, skill, name)
                     for name in reference_names
                 )
-        for name in AGENT_NAMES:
-            paths.extend(
-                (
-                    root / CLAUDE_PROFILE_PATH / f"{name}.md",
-                    root / CODEX_PROFILE_PATH / f"{name}.toml",
-                )
-            )
         return paths
 
     def _snapshot(self, paths: list[Path]) -> dict[Path, bytes | None]:

@@ -1505,7 +1505,7 @@ class DraftImplementationPlanContractsTest(
         required = (
             "プラン入力モード",
             "指摘の反映経路はプラン修正だけ",
-            "`review-patch-refactorer` を使わない",
+            "code の変更経路を定義しない",
             "adversarial の収束後に1回",
         )
         for platform, text in self._draft_reference_texts(
@@ -1785,7 +1785,7 @@ class DraftImplementationPlanContractsTest(
             "テスト結果は入力として要求しない",
             "どの AC・制約にも辿れない計画要素",
             "実装詳細が未確定の要素には適用しない",
-            "`review-patch-refactorer` は使わない",
+            "code の変更経路を定義しない",
             "判定せず親へ差し戻して",
             # 返却形式は diff 入力モードと共有されるため、対象の読み替えは mode 局所の
             # 一覧へ置く。返却形式節を書き換えると impl-lead 側の契約が壊れる。
