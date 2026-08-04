@@ -161,6 +161,12 @@ v2.0.0 で `strict` の意味が変わりました。旧 `strict`(全枝固定)�
 
 責務境界、test 品質、security / side-effect の専門 reviewer は、`strict` であることだけを理由に一律で選びません。返却 diff に対応する具体的なリスクがある場合、またはユーザーが明示した場合だけ選び、reviewer に最終判断を委ねません。記述原則をread-onlyで確認する `writing-principles-reviewer` は、これらの専門 reviewer とは別の役割です。
 
+read-only reviewer の tool contract は、対象 repository への書き込み禁止と、判定に必要な探索手段を分けて設計しています。全 reviewer で書き込み系 tool を禁止する一方、repository-native command、基準 commit の参照、test や mutation の実行が evidence の質を左右する reviewer には Bash を許可します。渡された Data と原稿だけで判定する reviewer には Bash を許可しません。各 reviewer の群への割り当ては `shared/agents/` を正本とし、一覧をここへ複製しません。
+
+この分割は [Issue #114](https://github.com/akitanabe/tugite/issues/114) で、23回の reviewer 実行を調べた結果に基づいています。`test-quality-reviewer` は検出力を mutation で実測し、`responsibility-boundary-reviewer` は基準 commit を `git show` / `git grep` で参照して、diff 由来の問題と既存問題を切り分けていました。Bash を一律に外すと、read-only の形式は揃っても、これらの reviewer が根拠を検証できず判断品質が下がります。
+
+Bash を許可する reviewer も対象 repository では読み取りと検証だけを行い、書き込みが必要な検証は対象外の一時複製へ隔離します。Claude では Bash の内部操作を tool metadata だけで制限できないため、これは既知の制約です。tool policy を変更する場合は、review goal と必要な evidence が変わった根拠、および同等の判断品質を維持できる代替手段を示してください。
+
 ## 編集と生成
 
 共通原稿を編集したら、配布物を再生成します。
