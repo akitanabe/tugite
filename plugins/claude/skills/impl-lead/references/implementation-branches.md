@@ -167,22 +167,21 @@ senior の割当理由には、次の3点を必ず記録する。
 2. 上位 model で減らせる誤実装・手戻り
 3. 他候補より優先する理由
 
-#### Why Not: senior の事前 reviewer
+#### Why Not: senior と expert の選択手順
 
-expert と異なり senior には事前 reviewer を挟まず、親の自己申告に留める。senior は候補抽出時の相対比較と
-3点の理由記録で配車の根拠を明示でき、expert のように親相当の能力を独立審査する高コストな gate を必要としないためである。
-expert を候補にする場合だけ [Expert 選択](expert-selection.md) の事前審査を使い、この区別を senior の選択へ持ち込まない。
+senior は候補抽出時の相対比較と3点の理由記録で配車の根拠を明示する。expert の選択手順は現 bundle で
+定義しないため、expert を候補にする場合は [Expert 選択](expert-selection.md) の停止境界に従う。
 
 | Implementer | 使う場面 |
 | --- | --- |
 | `implementer` | senior 候補に該当せず、仕様が明確で既存 pattern を適用でき、判断密度が低い枝。 |
 | `senior-implementer` | 共通4軸の相対比較で判断密度が高く、残存設計判断と上位 model で減らせる手戻りが他候補より大きい枝。 |
-| `expert-implementer` | 親相当の推論が必要で、senior では不足する具体的根拠があり、事前審査を通過した枝。 |
+| `expert-implementer` | agent surface には存在するが、現 bundle では選択手順を定義しない。候補にした時点で停止する。 |
 
 単なる複数 module への波及、高い失敗コスト、誤実装の代償だけでは `senior-implementer` を選ばない。
 通常と senior で迷ったら `implementer` を選ぶ。迷いだけでは senior 候補にしない。難所と定型作業が混在する場合は枝を分ける。
-expert と迷う場合は senior を選び、expert 候補にする場合だけ
-[Expert 選択](expert-selection.md) の事前審査を行う。
+expert と迷う場合は senior を選び、expert を候補にする必要が生じた場合は
+[Expert 選択](expert-selection.md) の停止境界に従う。
 
 
 ## 委譲 prompt

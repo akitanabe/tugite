@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 import unittest
 
@@ -52,17 +51,9 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
                 root
                 / GENERATED_SKILL_REFERENCE_PATHS["codex"]["expert-selection.md"]
             )
-            missing_agent = root / "plugins/codex/install/agents/implementer.toml"
-            stale_manifest = root / "plugins/codex/.codex-plugin/plugin.json"
             stale_skill.write_text("stale\n", encoding="utf-8", newline="")
             stale_reference.write_text("stale\n", encoding="utf-8", newline="")
             missing_reference.unlink()
-            missing_agent.unlink()
-            manifest = json.loads(stale_manifest.read_text(encoding="utf-8"))
-            manifest["version"] = "9.9.9"
-            stale_manifest.write_text(
-                json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline=""
-            )
             paths = self._generated_paths(root)
             before = self._snapshot(paths)
 
@@ -80,8 +71,6 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
                     "plugins/codex/skills/impl-lead/references/"
                     "expert-selection.md"
                 ),
-                "plugins/codex/install/agents/implementer.toml",
-                "plugins/codex/.codex-plugin/plugin.json",
             ):
                 self.assertIn(relative_path, result.stderr)
             self.assertEqual(before, self._snapshot(paths))
@@ -89,8 +78,10 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
     def test_check_reports_input_errors_without_writing(self) -> None:
         """Return validation exit one on --check and preserve every stale output."""
         with self._temporary_repository() as root:
-            (root / "shared/VERSION").write_text(
-                "01.0.0\n", encoding="utf-8", newline=""
+            (root / SHARED_SKILL_PATH).write_text(
+                "<!-- claude-only:start -->\nunclosed\n",
+                encoding="utf-8",
+                newline="",
             )
             paths = self._generated_paths(root)
             before = self._snapshot(paths)
@@ -99,7 +90,7 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
 
             self.assertEqual(1, result.returncode, result)
             self.assertEqual("", result.stdout)
-            self.assertIn("shared/VERSION", result.stderr)
+            self.assertIn(SHARED_SKILL_PATH.as_posix(), result.stderr)
             self.assertNotIn("Traceback", result.stderr)
             self.assertEqual(before, self._snapshot(paths))
 
@@ -126,11 +117,9 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
                 encoding="utf-8",
                 newline="",
             )
-            agent = root / "shared/agents/implementer.md"
-            agent.write_text(
-                agent.read_text(encoding="utf-8").replace(
-                    'description = "Claude implementer"\n', "", 1
-                ),
+            reference_source = root / "shared/skill/impl-lead/references/implementation-branches.md"
+            reference_source.write_text(
+                "<!-- codex-only:end -->\n",
                 encoding="utf-8",
                 newline="",
             )
@@ -140,7 +129,7 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
                 root,
                 (
                     SHARED_SKILL_PATH.as_posix(),
-                    "shared/agents/implementer.md",
+                    "shared/skill/impl-lead/references/implementation-branches.md",
                 ),
                 before,
             )
@@ -161,7 +150,7 @@ class BuildPluginAssetsCheckCliTest(IsolatedRepositorySupport, unittest.TestCase
             self.assertEqual(0, unchanged.returncode, unchanged)
             self.assertTrue(all(path.stat().st_mtime_ns == known_mtime for path in paths))
 
-            stale_path = root / "plugins/codex/install/agents/implementer.toml"
+            stale_path = root / GENERATED_SKILL_REFERENCE_PATHS["codex"]["implementation-branches.md"]
             stale_path.write_text("stale\n", encoding="utf-8", newline="")
             os.utime(stale_path, ns=(stale_mtime, stale_mtime))
             repaired = self._run(root)

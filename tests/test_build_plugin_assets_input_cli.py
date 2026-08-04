@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import unittest
 
 from build_plugin_assets_test_support import (
-    AGENT_NAMES,
     GENERATED_MARKDOWN_WARNING,
-    GENERATED_TOML_WARNING,
     IsolatedRepositorySupport,
     SHARED_SKILL_PATH,
     SHARED_SKILL_REFERENCE_PATHS,
@@ -119,26 +116,15 @@ class BuildPluginAssetsInputCliTest(IsolatedRepositorySupport, unittest.TestCase
     def test_build_requires_fixed_sources_and_rejects_unknown_shared_markdown(self) -> None:
         """Require every canonical input and reject unknown managed Markdown."""
         required_sources = (
-            "shared/VERSION",
             "shared/terms.toml",
             SHARED_SKILL_PATH.as_posix(),
             *(path.as_posix() for path in SHARED_SKILL_REFERENCE_PATHS.values()),
-            *(f"shared/agents/{name}.md" for name in AGENT_NAMES),
         )
         for missing in required_sources:
             with self.subTest(missing=missing), self._temporary_repository() as root:
                 (root / missing).unlink()
                 before = self._snapshot(self._generated_paths(root))
                 self._assert_validation_error(root, (missing,), before)
-
-        with self._temporary_repository() as root:
-            self._write(root, "shared/agents/unknown-agent.md", self._agent_source("unknown-agent"))
-            before = self._snapshot(self._generated_paths(root))
-            self._assert_validation_error(
-                root,
-                ("shared/agents/unknown-agent.md",),
-                before,
-            )
 
         unknown_skill_paths = (
             SHARED_SKILL_PATH.parent / "notes.md",
@@ -200,97 +186,8 @@ class BuildPluginAssetsInputCliTest(IsolatedRepositorySupport, unittest.TestCase
 
                 self.assertIn(expected_message, stderr.lower())
 
-    def test_build_rejects_invalid_bundle_versions(self) -> None:
-        """Accept only three-part decimal versions without leading zeroes."""
-        invalid_versions = (
-            "",
-            "01.2.3",
-            "1.02.3",
-            "1.2.03",
-            "1.2",
-            "v1.2.3",
-            "1.2.3.4",
-            "1.2.3\nextra",
-        )
-        for version in invalid_versions:
-            with self.subTest(version=version), self._temporary_repository() as root:
-                (root / "shared/VERSION").write_text(
-                    f"{version}\n", encoding="utf-8", newline=""
-                )
-                before = self._snapshot(self._generated_paths(root))
-                self._assert_validation_error(root, ("shared/VERSION",), before)
-
-    def test_build_accepts_zero_and_multi_digit_version_components(self) -> None:
-        """Accept zero and nonzero multi-digit components allowed by the version regex."""
-        for version in ("0.0.0", "10.20.30"):
-            with self.subTest(version=version), self._temporary_repository() as root:
-                (root / "shared/VERSION").write_text(
-                    f"{version}\n", encoding="utf-8", newline=""
-                )
-
-                result = self._run(root)
-
-                self.assertEqual(0, result.returncode, result)
-                self.assertEqual(
-                    f"{version}\n",
-                    (root / "plugins/codex/install/VERSION").read_text(encoding="utf-8"),
-                )
-
-    def test_build_validates_version_target_manifests_atomically(self) -> None:
-        """Reject malformed or incomplete manifests and aggregate independent errors."""
-        def apply_manifest_problem(path: Path, problem: str) -> None:
-            """Apply one invalid manifest shape without touching other fixture inputs."""
-            if problem == "missing file":
-                path.unlink()
-            elif problem == "invalid JSON":
-                path.write_text("{ invalid\n", encoding="utf-8", newline="")
-            elif problem == "top-level non-object":
-                path.write_text("[]\n", encoding="utf-8", newline="")
-            elif problem == "missing version":
-                path.write_text(
-                    '{"name": "tugite"}\n',
-                    encoding="utf-8",
-                    newline="",
-                )
-            elif problem == "non-string version":
-                path.write_text(
-                    '{"name": "tugite", "version": 1}\n',
-                    encoding="utf-8",
-                    newline="",
-                )
-            else:
-                self.fail(f"unknown manifest fixture problem: {problem}")
-
-        manifests = (
-            "plugins/claude/.claude-plugin/plugin.json",
-            "plugins/codex/.codex-plugin/plugin.json",
-        )
-        problems = (
-            "missing file",
-            "invalid JSON",
-            "top-level non-object",
-            "missing version",
-            "non-string version",
-        )
-        for manifest in manifests:
-            for problem in problems:
-                with (
-                    self.subTest(manifest=manifest, problem=problem),
-                    self._temporary_repository() as root,
-                ):
-                    apply_manifest_problem(root / manifest, problem)
-                    before = self._snapshot(self._generated_paths(root))
-                    self._assert_validation_error(root, (manifest,), before)
-
-        with self._temporary_repository() as root:
-            apply_manifest_problem(root / manifests[0], "invalid JSON")
-            apply_manifest_problem(root / manifests[1], "top-level non-object")
-            before = self._snapshot(self._generated_paths(root))
-
-            self._assert_validation_error(root, manifests, before)
-
-    def test_build_places_generated_warnings_only_on_markdown_and_agent_toml(self) -> None:
-        """Place exact warnings at generated frontmatter boundaries and nowhere else."""
+    def test_build_places_generated_warnings_on_skill_markdown(self) -> None:
+        """Place exact warnings at generated skill frontmatter boundaries."""
         with self._temporary_repository() as root:
             result = self._run(root)
             self.assertEqual(0, result.returncode, result)
@@ -298,7 +195,6 @@ class BuildPluginAssetsInputCliTest(IsolatedRepositorySupport, unittest.TestCase
             markdown_paths = [
                 root / "plugins/claude/skills/impl-lead/SKILL.md",
                 root / "plugins/codex/skills/impl-lead/SKILL.md",
-                *(root / f"plugins/claude/agents/{name}.md" for name in AGENT_NAMES),
             ]
             for path in markdown_paths:
                 content = path.read_text(encoding="utf-8")
@@ -309,20 +205,6 @@ class BuildPluginAssetsInputCliTest(IsolatedRepositorySupport, unittest.TestCase
                     path,
                 )
                 self.assertEqual(1, content.count(GENERATED_MARKDOWN_WARNING), path)
-
-            for name in AGENT_NAMES:
-                content = (
-                    root / f"plugins/codex/install/agents/{name}.toml"
-                ).read_text(encoding="utf-8")
-                self.assertEqual(GENERATED_TOML_WARNING, content.splitlines()[0])
-                self.assertEqual(1, content.count(GENERATED_TOML_WARNING))
-
-            for path in (
-                root / "plugins/claude/.claude-plugin/plugin.json",
-                root / "plugins/codex/.codex-plugin/plugin.json",
-                root / "plugins/codex/install/VERSION",
-            ):
-                self.assertNotIn("Generated from shared/", path.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

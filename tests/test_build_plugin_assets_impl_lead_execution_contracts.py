@@ -39,103 +39,8 @@ class ImplLeadExecutionContractsTest(
                 for contract in required_contract:
                     self.assertIn("".join(contract.split()), normalized)
 
-    def test_repository_expert_availability_rules_are_platform_specific(self) -> None:
-        """Keep unavailable expert profile names out of the other platform."""
-        source = self._repository_text(
-            SHARED_SKILL_REFERENCE_PATHS["expert-selection.md"]
-        )
-        claude = self._repository_text(
-            GENERATED_SKILL_REFERENCE_PATHS["claude"]["expert-selection.md"]
-        )
-        codex = self._repository_text(
-            GENERATED_SKILL_REFERENCE_PATHS["codex"]["expert-selection.md"]
-        )
 
-        self.assertIn("Fable", source)
-        self.assertIn("`gpt-5.6-sol`", source)
-        self.assertIn("Fable", claude)
-        self.assertNotIn("`gpt-5.6-sol`", claude)
-        self.assertIn("`gpt-5.6-sol`", codex)
-        self.assertNotIn("Fable", codex)
 
-    def test_repository_implementers_follow_mode_and_writing_contracts(self) -> None:
-        """Align every implementer with delegated stages and Why Not comments."""
-        for name in ("implementer", "senior-implementer", "expert-implementer"):
-            paths = (
-                Path("shared/agents") / f"{name}.md",
-                Path("plugins/claude/agents") / f"{name}.md",
-                Path("plugins/codex/install/agents") / f"{name}.toml",
-            )
-            for path in paths:
-                with self.subTest(name=name, path=path):
-                    content = self._repository_text(path)
-                    self.assertIn("委譲 mode", content)
-                    self.assertIn("指定された段階を越えない", content)
-                    self.assertIn("Why Not", content)
-                    self.assertIn("返却 commit SHA range", content)
-                    self.assertNotIn(
-                        "ロジック・制約・前提・テストの意図を残す",
-                        content,
-                    )
-
-        for name in ("implementer", "senior-implementer"):
-            source = self._repository_text(Path("shared/agents") / f"{name}.md")
-            self.assertIn(
-                "`lite` では親が求めた場合だけ Red 証跡と AC 対応表を返す",
-                source,
-            )
-            self.assertIn(
-                "`standard` では Red 証跡と AC 対応表を必ず返す",
-                source,
-            )
-
-    def test_repository_implementers_self_check_final_standard_and_strict_returns(
-        self,
-    ) -> None:
-        """Require final self-reconciliation while preserving lite/strict gates."""
-        expected_section = (
-            "- **返却前自己照合**: `standard` と `strict` の最終返却前に、"
-            "AC 対応表を task requirements および変更 file / tool outputs と照合し、"
-            "返却内容との整合を確認する。`lite` では自己照合を要求しない。"
-            "`strict` の途中段階には自己照合を要求しない。"
-            "- 不整合を検出した場合は不整合を含む最終返却を行わず、"
-            "授権済みの段階・scope内なら修正と再検証を行う。"
-            "修正が授権済み段階・scopeを越える場合は、状況と判断点を返す。"
-        )
-
-        for name in ("implementer", "senior-implementer", "expert-implementer"):
-            paths = (
-                Path("shared/agents") / f"{name}.md",
-                Path("plugins/claude/agents") / f"{name}.md",
-                Path("plugins/codex/install/agents") / f"{name}.toml",
-            )
-            for path in paths:
-                with self.subTest(name=name, path=path):
-                    content = self._repository_text(path)
-                    lines = content.splitlines()
-                    start = next(
-                        index
-                        for index, line in enumerate(lines)
-                        if line.startswith("- **返却前自己照合**:")
-                    )
-                    second = next(
-                        index
-                        for index in range(start + 1, len(lines))
-                        if lines[index].startswith("- ")
-                    )
-                    end = next(
-                        (
-                            index
-                            for index in range(second + 1, len(lines))
-                            if lines[index].startswith("- ")
-                        ),
-                        len(lines),
-                    )
-                    section = "".join(lines[start:end])
-                    self.assertEqual(
-                        "".join(expected_section.split()),
-                        "".join(section.split()),
-                    )
 
     def test_repository_workflow_selects_implementers_by_complexity_and_residual_judgment(
         self,
@@ -191,8 +96,8 @@ class ImplLeadExecutionContractsTest(
             "残存設計判断",
             "上位 model で減らせる誤実装・手戻り",
             "他候補より優先する理由",
-            "expert と異なり senior には事前 reviewer を挟まず",
-            "親の自己申告に留める",
+            "expert の選択手順は現 bundle で定義しない",
+            "停止境界に従う",
             "Why Not",
         )
         for platform, reference in self._impl_lead_reference_texts(
@@ -244,65 +149,7 @@ class ImplLeadExecutionContractsTest(
                 positions = [lifecycle.index(marker) for marker in ordered]
                 self.assertEqual(sorted(positions), positions)
 
-    def test_repository_implementer_profiles_separate_normal_and_high_complexity_branches(
-        self,
-    ) -> None:
-        """Keep source and generated implementer profiles aligned to routing role."""
-        for name in ("implementer", "senior-implementer"):
-            paths = (
-                Path("shared/agents") / f"{name}.md",
-                Path("plugins/claude/agents") / f"{name}.md",
-                Path("plugins/codex/install/agents") / f"{name}.toml",
-            )
-            for path in paths:
-                content = self._repository_text(path)
-                normalized = "".join(content.split())
-                with self.subTest(name=name, path=path):
-                    if name == "implementer":
-                        self.assertIn("implementation_complexity", content)
-                    else:
-                        self.assertIn("高判断密度", content)
-                        for excluded in (
-                            "複数 module への波及",
-                            "複数モジュールに波及",
-                            "broad module impact",
-                            "高い失敗コスト",
-                            "high cost of mistakes",
-                            "誤実装の代償",
-                        ):
-                            self.assertNotIn("".join(excluded.split()), normalized)
 
-    def test_repository_implementer_worktree_inputs_use_parent_managed_contract(
-        self,
-    ) -> None:
-        """Give both platforms a parent-managed worktree and start-condition gate."""
-        start_condition_contracts = (
-            "絶対 worktree path と git branch",
-            "`pwd -P`",
-            "`git status --short` が空",
-            "基準 commit",
-            "着手せず",
-        )
-        for name in ("implementer", "senior-implementer", "expert-implementer"):
-            claude = self._repository_text(
-                Path("plugins/claude/agents") / f"{name}.md"
-            )
-            codex = self._repository_text(
-                Path("plugins/codex/install/agents") / f"{name}.toml"
-            )
-
-            for platform, content in (("claude", claude), ("codex", codex)):
-                with self.subTest(name=name, platform=platform):
-                    normalized = "".join(content.split())
-                    for contract in start_condition_contracts:
-                        self.assertIn("".join(contract.split()), normalized)
-
-            with self.subTest(name=name, platform="claude", check="no-isolation"):
-                self.assertNotIn('isolation: "worktree"', claude)
-                self.assertNotIn(
-                    "起動後に実際の worktree path と git branch を確認",
-                    claude,
-                )
 
     def test_repository_reviewers_separate_boundary_and_safety_risks(self) -> None:
         """Route placement concerns separately from security and failure safety."""

@@ -28,14 +28,14 @@ implementation complexity だけから導出し、`failure_impact` は adaptive 
 `{fixed, lite}` の `delegation_mode_proposal`（安全助言）にだけ使います。
 complexity が high の枝は `strict` 候補です。
 
+- `agents/focused-implementer.md`
+  - scope が狭く検証方法が明確な汎用 Work Unit を担当します。
 - `agents/implementer.md`
   - implementation complexity が low / medium で残る判断が少ない通常実装を担当します。
 - `agents/senior-implementer.md`
   - implementation complexity が high、または非自明な設計・algorithm・concurrency判断が残る実装を担当します。
 - `agents/expert-implementer.md`
-  - 事前審査を通過した、親相当の推論能力が必要な実装を担当します。
-- `agents/expert-selection-reviewer.md`
-  - expert の高い実行コストを正当化する選択理由が揃っているか、起動前に審査します。
+  - 親相当の推論能力が必要な Work Unit 向けの agent surface です。選択手順は現 bundle では未定義です。
 - `agents/responsibility-boundary-reviewer.md`
   - 実装済み diff の責務混在、境界違反、副作用分散を確認します。
 - `agents/test-quality-reviewer.md`
@@ -48,8 +48,6 @@ complexity が high の枝は `strict` 候補です。
   - 起草済みの実装プランに対し、AC 充足・検証可能性・実現可能性を壊す具体的な失敗経路をread-onlyで探索し、ID付きの指摘Dataを返します。
 - `agents/security-side-effect-reviewer.md`
   - 外部 I/O、破壊的操作、機密データ、セキュリティ影響を確認します。
-- `agents/review-patch-refactorer.md`
-  - 専門 reviewer が具体的に指摘した範囲だけを、振る舞いを変えずに最小修正します。
 
 これらの skill と agent 定義はリポジトリの `shared/` から生成されています。生成済みファイルを直接編集せず、共通原稿を更新してください。開発方法は[ルート README](../../README.md)を参照してください。
 

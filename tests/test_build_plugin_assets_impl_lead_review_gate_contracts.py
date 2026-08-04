@@ -26,6 +26,27 @@ class ImplLeadReviewGateContractsTest(
     RepositoryContractSupport,
     unittest.TestCase,
 ):
+    def test_retired_patch_route_stops_without_defining_a_successor_actor(self) -> None:
+        """Stop on adopted changes without inventing a replacement execution route."""
+        references = (
+            "branch-review.md",
+            "finding-routing.md",
+            "expert-selection.md",
+        )
+        forbidden = (
+            "review-patch-refactorer",
+            "限定修正用 worker",
+            "汎用 worker",
+            "事前審査",
+            "expert の利用を直接判断",
+        )
+        for reference_name in references:
+            for platform, text in self._impl_lead_reference_texts(reference_name).items():
+                with self.subTest(reference=reference_name, platform=platform):
+                    self.assertIn("停止", text)
+                    for phrase in forbidden:
+                        self.assertNotIn(phrase, text)
+
     def test_repository_workflows_route_specialists_and_require_mandatory_completion_gates(
         self,
     ) -> None:
@@ -138,8 +159,6 @@ class ImplLeadReviewGateContractsTest(
         self,
     ) -> None:
         """Keep the specialist launch conditions in one section and subordinate the rest."""
-        # 初回の起動条件と、変更後 snapshot に対する再起動対象は別の規約である。
-        # 正本宣言が再起動まで覆うと、第1類型の再起動が打ち消される。
         single_source_declaration = (
             "専門 reviewer の起動条件はこの節だけが定め、他の節は具体化、"
             "起動時に渡す Data の受け渡し規約、または[枝レビューの4相](branch-review.md)の"
@@ -150,12 +169,10 @@ class ImplLeadReviewGateContractsTest(
             "対象リスクが成立する具体例も[専門 reviewer](reviewer-dispatch.md) が定める",
             "この節は専門 reviewer の起動条件を独自に定義しない",
         )
-        # 起動条件の文を移す際に同居していた義務を巻き添えで落とさないための下限。
         responsibility_obligations = (
             "`問題なし`: 通過。",
-            "`軽微` / `修正推奨`: 局所的で全起動条件を満たす場合だけ "
-            "`review-patch-refactorer`、それ以外は元 Implementer。",
-            "`修正必須`: 解消するまで完了しない。",
+            "`軽微` / `修正推奨`: 変更が必要なら元 Implementer へ差し戻す。",
+            "`修正必須`: 解消するまで完了せず、元 Implementer へ差し戻す。",
             "`responsibility-boundary-reviewer` は修正しない。",
             "diff にない既存問題は「既存課題」として判定から分ける。",
         )
@@ -166,7 +183,6 @@ class ImplLeadReviewGateContractsTest(
                 responsibility = self._qa_section(
                     finding_routings[platform], "## 責務境界"
                 )
-
                 normalized_specialist = self._normalize_contract(specialist)
                 normalized_example = self._normalize_contract(SPECIALIST_RISK_EXAMPLE)
                 self.assertIn(normalized_example, normalized_specialist)
@@ -178,7 +194,6 @@ class ImplLeadReviewGateContractsTest(
                     self._normalize_contract(single_source_declaration),
                     normalized_specialist,
                 )
-
                 normalized_responsibility = self._normalize_contract(responsibility)
                 for contract in subordination_contracts:
                     self.assertIn(
@@ -320,45 +335,23 @@ class ImplLeadReviewGateContractsTest(
     def test_repository_over_engineering_gate_bounds_parent_approved_removal(
         self,
     ) -> None:
-        """Approve each removal per finding id and return unlocatable coverage."""
+        """Approve each removal per finding id and stop when coverage is unlocatable."""
         qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
-        approval_conditions = (
+        contracts = (
             "## 過剰実装ゲートの除去許可",
             "親は指摘IDごとに次をすべて確認する。",
             "除去後も対象 AC を満たす実装と検証が残ること",
             "除去しても外部から観測可能な振る舞いと公開契約が変わらないこと",
             "除去する操作が局所的で、周辺の再設計を必要としないこと",
             "1つでも満たさない場合は元 Implementer へ差し戻す",
-        )
-        type_c_route = (
-            "類型 C（残る検証を特定できないテスト）は `review-patch-refactorer` へ渡さず、"
-            "元 Implementer へ差し戻す"
-        )
-        duplicate_test_identification = (
+            "類型 C（残る検証を特定できないテスト）は修正経路を選ばず、未完了として停止する",
             "削除する側と残す側をファイルとテスト名で特定",
             "個別許可のない除去を行わせない",
         )
-        launch_inputs = (
-            "除去を許可する場合の、指摘IDごとの除去対象と残す対象",
-            "pass-through 層の除去では、付け替えが必要な呼び出し箇所のファイルを"
-            "親が個別に許可した修正範囲へ含める",
-        )
-        # 「テストケースの削除」単体は親の再確認リストにも現れるため、
-        # 変更制約側へ入ったことは文全体で pin しないと判定できない。
-        scope_constraint = (
-            "新規作成・削除・移動、指摘外のテストケース追加、テストケースの削除、"
-            "fixture や helper の追加をさせない。"
-        )
-
         for platform, workflow in qa_workflows.items():
             with self.subTest(platform=platform):
                 normalized_workflow = "".join(workflow.split())
-                for contract in (
-                    approval_conditions
-                    + duplicate_test_identification
-                    + launch_inputs
-                    + (type_c_route, scope_constraint)
-                ):
+                for contract in contracts:
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
     def test_repository_workflow_passes_selected_reviewer_context(self) -> None:
@@ -437,6 +430,7 @@ class ImplLeadReviewGateContractsTest(
         for contract in required_contracts:
             with self.subTest(contract=contract):
                 self.assertIn(contract, eval_06)
+
 
     def test_repository_decision_corpus_requires_read_only_writing_review_gate(
         self,
@@ -524,6 +518,29 @@ class ImplLeadReviewGateContractsTest(
 
         self.assertNotIn("修正後は親QAで diff と test 結果を確認して reviewer を再実行する", eval_sections["required actions"])
         self.assertNotIn("修正後に親QAと reviewer 再確認を行っている", eval_sections["manual checks"])
+
+    def test_repository_mandatory_gates_resolve_structured_findings_before_acceptance(
+        self,
+    ) -> None:
+        """Block acceptance until every identified finding has a recorded outcome."""
+        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
+        required_contracts = (
+            "指摘ID",
+            "構造化 Data",
+            "各指摘ID",
+            "修正先または不採用",
+            "判断を記録",
+            "reviewer の指摘が0件",
+            "枝の受け入れ可否は「枝レビューの4相」の「枝の受け入れ点」で定める。"
+            "この節では受け入れ条件を重ねて定義しない。",
+        )
+        for platform, workflow in branch_reviews.items():
+            with self.subTest(platform=platform):
+                normalized_workflow = self._normalize_contract(workflow)
+                for contract in required_contracts:
+                    self.assertIn(
+                        self._normalize_contract(contract), normalized_workflow
+                    )
 
     def test_repository_decision_corpus_has_no_obsolete_four_phase_requirements(
         self,
@@ -813,174 +830,42 @@ class ImplLeadReviewGateContractsTest(
                 for contract in required_contracts:
                     self.assertIn("".join(contract.split()), normalized_workflow)
 
-    def test_repository_mandatory_gates_resolve_structured_findings_before_acceptance(
-        self,
-    ) -> None:
-        """Block acceptance until every identified finding has a recorded outcome."""
-        qa_workflows = self._impl_lead_reference_texts("branch-review.md")
-        required_contracts = (
-            "指摘ID",
-            "構造化 Data",
-            "各指摘ID",
-            "修正先または不採用",
-            "判断を記録",
-            "reviewer の指摘が0件",
-            "`review-patch-refactorer` による修正後",
-            # 受け入れ条件は「枝レビューの4相」の枝の受け入れ点へ一本化した。
-            # この節に残るのは参照だけで、条件本体を重ねて定義しないことまで固定する。
-            "枝の受け入れ可否は「枝レビューの4相」の「枝の受け入れ点」で定める。"
-            "この節では受け入れ条件を重ねて定義しない。",
-        )
 
-        for platform, workflow in qa_workflows.items():
-            with self.subTest(platform=platform):
-                normalized_workflow = "".join(workflow.split())
-                for contract in required_contracts:
-                    self.assertIn("".join(contract.split()), normalized_workflow)
 
-    def test_repository_workflow_defines_review_patch_routing_boundary(self) -> None:
-        """Patch only green implementations with concrete, behavior-preserving findings."""
-        workflows = self._repository_workflow_texts()
-        startup_conditions = (
-            "専門 reviewer（必須完了ゲートの reviewer を含む）の具体的な指摘が存在する。",
-            "Acceptance Criteria は満たされている。",
-            "機能的なテストは green である。",
-            "修正範囲が局所的である。",
-            "仕様の再解釈を必要としない。",
-            "新機能追加ではない。",
-            "振る舞いを維持したまま修正できる。",
-            "reviewer が修正方針または問題箇所を明示している。",
-            "evidence を欠く指摘は、「evidence を欠く指摘の扱い」に従い、"
-            "親が evidence を補って通常の判断へ戻している。",
-        )
-        implementer_routes = (
-            "Acceptance Criteria 未達",
-            "仕様誤解",
-            "機能欠落",
-            "テスト失敗",
-            "正常系・異常系・境界値不足",
-            "振る舞い変更が必要",
-            "テストケース追加",
-            "ケース追加や期待値の再検討が必要",
-            "仕様判断",
-            "設計変更",
-            "振る舞い判断",
-            "`strict` mode の Red / Green / Refactor 継続",
-            "過剰要素の除去に仕様判断、AC の再解釈、振る舞い変更が必要",
-            "失う AC が特定できないテストの除去",
-        )
 
-        for path, workflow in workflows.items():
-            with self.subTest(path=path):
-                normalized_workflow = "".join(workflow.split())
-
-                for condition in startup_conditions:
-                    self.assertIn("".join(condition.split()), normalized_workflow)
-                for route in implementer_routes:
-                    self.assertIn("".join(route.split()), normalized_workflow)
-
-    def test_repository_workflow_bounds_review_patch_inputs_and_parent_scope_qa(
-        self,
-    ) -> None:
-        """Launch the patch refactorer with bounded data and re-verify scope on return."""
-        qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
-        launch_contracts = (
-            "親が指摘を確認し、修正対象として採用している。",
-            "Acceptance Criteria を変更する必要がない。",
-            "指摘元 reviewer、対象となる指摘ID、指摘本文",
-            "親が採用した修正条件",
-            "親が個別に許可した修正範囲と変更を禁止するファイル",
-            "削除・移動・新規作成の可否と commit の要否",
-            "必須検証 command",
-            "推測で補わず、ファイルを変更せず親へ返す",
-        )
-        # 正規化比較は行境界を消すため、行単体の pin は限定句を行全体へ前置した
-        # 劣化版も部分一致で通してしまう。前の bullet と `-` マーカーまで含めて
-        # 行頭を固定する。
-        parent_scope_qa = (
-            "自己申告だけを信用せず",
-            "基準 commit からの変更ファイル一覧と diff",
-            "- 親が個別に許可した修正範囲外の変更がないこと\n"
-            "- 親が個別に許可していないファイルの追加・削除・移動がないこと",
-            "reviewer 指摘外の変更がないこと",
-            "- 親が個別に許可していないテストケースの削除がないこと\n"
-            "- テストケースの追加・変更、期待値、skip 設定の変更がないこと",
-            "除去を許可した場合は、除去対象が許可した指摘IDと一致し、"
-            "対象 AC を満たす実装と検証が残っていること",
-            "focused test と関連する全体検証が green であること",
-        )
-        relaxations_beyond_removal = (
-            "親が個別に許可していないテストケースの追加",
-            "親が個別に許可していない期待値",
-            "親が個別に許可していないskip",
-        )
-
-        for platform, workflow in qa_workflows.items():
-            with self.subTest(platform=platform):
-                normalized_workflow = "".join(workflow.split())
-                for contract in launch_contracts + parent_scope_qa:
-                    self.assertIn("".join(contract.split()), normalized_workflow)
-                for relaxation in relaxations_beyond_removal:
-                    self.assertNotIn(
-                        "".join(relaxation.split()), normalized_workflow
-                    )
 
     def test_repository_workflow_requires_parent_confirmed_severity_before_routing(
         self,
     ) -> None:
         """Derive every finding's severity from parent judgment before fix routing."""
         qa_workflows = self._impl_lead_reference_texts("finding-routing.md")
-        heading = "## 修正先の選択"
-        # AC-1 (d)
-        scope_and_timing = (
+        contracts = (
             "すべての reviewer の finding は、修正先または不採用のいずれを判断するより前に、"
             "親が重要度を確定する。",
-            "この適用範囲とタイミングは、以下に列挙する起動条件など本節内の他の記述の"
-            "適用有無に関わらず成立する。",
-        )
-        # AC-1 (a)
-        not_self_reported = ("親は reviewer が申告した重要度をそのまま採用しない。",)
-        # AC-1 (b)
-        evidence_based_grounds = (
+            "この適用範囲とタイミングは、本節内の他の記述の適用有無に関わらず成立する。",
+            "親は reviewer が申告した重要度をそのまま採用しない。",
             "親が確定する根拠は、finding の evidence と、その finding が影響する Acceptance"
             " Criteria・対象 risk への影響である。",
             "reviewer 原稿が `軽微` / `修正推奨` / `修正必須` の意味を定めている範囲については、"
             "その記述を正本として照合する。",
-            # 節名経由で reviewer を同定すると、「責務境界」節が起動条件を持つ節だと
-            # 読める。同節は起動条件を独自に定義しないため、reviewer 名で直接指す。
-            "現状、`impl-lead` が起動する reviewer に限れば、この範囲は"
-            " `responsibility-boundary-reviewer` の"
-            "「修正コストに見合わない指摘は `軽微` として扱う」だけである。",
             "`Pass` / `Needs attention` / `Blocker` のように3区分と異なる語彙で申告する"
             " reviewer の finding は、申告語彙から3区分への写像規則を定義しないため、"
             "evidence と AC・対象 risk への影響だけから確定する。",
             "判定区分に相当する項目を持たない reviewer の finding も同じ扱いとする。",
-        )
-        # AC-1 (c)
-        always_three_way = (
             "親が確定する値は、重要度に相当する項目を持たない finding を含め、常に"
             " `軽微` / `修正推奨` / `修正必須` のいずれかとする。",
-        )
-        # AC-1 (e)
-        routing_points_at_confirmed_value = (
             "原稿の他の記述が `軽微` / `修正推奨` / `修正必須` で分岐する場合、その分岐は"
             " reviewer の申告値ではなく親が確定したこの値を指す。",
             "「責務境界」節の routing はこれに当たる。",
         )
-
         for platform, workflow in qa_workflows.items():
             with self.subTest(platform=platform):
-                self.assertEqual(1, workflow.count(heading))
-                section = workflow.split(heading, 1)[1].split("\n## ", 1)[0]
-                normalized_section = "".join(section.split())
-                for contract in (
-                    scope_and_timing
-                    + not_self_reported
-                    + evidence_based_grounds
-                    + always_three_way
-                    + routing_points_at_confirmed_value
-                ):
-                    self.assertIn("".join(contract.split()), normalized_section)
+                section = self._qa_section(workflow, "## 修正先の選択")
+                normalized_section = self._normalize_contract(section)
+                for contract in contracts:
+                    self.assertIn(
+                        self._normalize_contract(contract), normalized_section
+                    )
 
     def test_repository_decision_corpus_bounds_review_patch_scope(self) -> None:
         """Evaluate bounded refactorer inputs and zero out-of-scope changes."""
@@ -999,31 +884,6 @@ class ImplLeadReviewGateContractsTest(
             with self.subTest(contract=contract):
                 self.assertIn(contract, eval_08)
 
-    def test_repository_mandatory_gates_recheck_only_pre_completion_phase_fixes(
-        self,
-    ) -> None:
-        """Keep pre-completion rechecks while exempting completion-phase fixes."""
-        branch_reviews = self._impl_lead_reference_texts("branch-review.md")
-        required_contracts = (
-            "相1〜相3で採用した指摘に起因するdiff変更には、"
-            "`review-patch-refactorer` による修正後の親QAと reviewer 再確認を適用する。",
-            "相4で採用した指摘に起因するdiff変更には、上記の reviewer 再確認義務を適用しない。",
-            "`review-patch-refactorer` または元 Implementer による修正後",
-            "親が変更後の diff とテスト結果を確認",
-            # 親 QA の再実行が観点0・5 だけへ縮退しないことは `## 親の QA` の mode 別規定へ
-            # 委ねる。ここでは委ね先を固定して、再実行義務が diff 確認だけへ痩せないようにする。
-            "[親の QA](qa-and-integration.md) の mode 別の適用範囲に従って親 QA を再実行する。",
-            "再確認する reviewer は\n「枝レビューの4相」の「再起動対象」で定める。",
-        )
-
-        for platform, workflow in branch_reviews.items():
-            with self.subTest(platform=platform):
-                normalized_workflow = "".join(workflow.split())
-                for contract in required_contracts:
-                    self.assertIn(
-                        "".join(contract.split()),
-                        normalized_workflow,
-                    )
 
     def test_repository_distribution_uses_four_phase_review_references(self) -> None:
         """Keep four-phase references synchronized across shared and generated review surfaces."""

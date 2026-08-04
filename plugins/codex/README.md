@@ -102,17 +102,16 @@ complexity が high の枝は `strict` 候補です。
 
 | Agent | 担当 |
 | --- | --- |
+| `focused-implementer` | scope が狭く検証方法が明確な汎用 Work Unit |
 | `implementer` | implementation complexity が low / medium で残る判断が少ない通常実装 |
 | `senior-implementer` | implementation complexity が high、または非自明な設計・algorithm・concurrency判断が残る実装 |
-| `expert-implementer` | 事前審査を通過した、親相当の推論能力が必要な実装 |
-| `expert-selection-reviewer` | expert の高い実行コストを正当化する選択理由の事前審査 |
+| `expert-implementer` | 親相当の推論能力が必要な Work Unit 向けの agent surface。選択手順は現 bundle では未定義 |
 | `responsibility-boundary-reviewer` | 責務混在、境界違反、副作用分散のレビュー |
 | `test-quality-reviewer` | テストの仕様対応、振る舞い、網羅性のレビュー |
 | `writing-principles-reviewer` | `How / What / Why / Why Not` の配置、命名、説明のread-onlyレビュー |
 | `over-engineering-reviewer` | 取り除いても AC と制約を満たせるテストと実装のread-only検出 |
 | `plan-adversarial-reviewer` | 起草済み実装プランの具体的な失敗経路のread-only探索 |
 | `security-side-effect-reviewer` | 外部 I/O、破壊的操作、機密データ、セキュリティ影響のレビュー |
-| `review-patch-refactorer` | 専門 reviewer が具体的に指摘した範囲の最小修正 |
 
 ## 使い方
 

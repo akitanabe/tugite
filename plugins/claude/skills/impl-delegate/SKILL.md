@@ -57,8 +57,7 @@ Red 証跡は親が要求した場合に確認する。Green と test、AC、dif
 - 基準 snapshot からの diff を確認する。親が focused test を実行すること。
 - 生成された配布物を直接編集しない。既存 test を弱体化しない。scope 外の変更がない。未承認の副作用がないこと。
 
-専門 reviewer と `writing-principles-reviewer` は同じ隔離 worktree の確定 snapshot を読む。`review-patch-refactorer`
-も同じ worktree を修正する。
+専門 reviewer と `writing-principles-reviewer` は同じ隔離 worktree の確定 snapshot を読む。
 
 親 QA は reviewer の結論で代替しない。reviewer は finding を返すだけで、最終的な採否を決めない。
 
@@ -93,11 +92,9 @@ Red 証跡は親が要求した場合に確認する。Green と test、AC、dif
 ## 最終 gate と終了
 
 最終 diff に対して `writing-principles-reviewer` を必ず1回起動する。これは専門 reviewer の選択数には含めない。
-採用した指摘だけを `review-patch-refactorer` に渡す。review-patch-refactorer は最小の behavior-preserving patch だけを行う。
-`writing-principles-reviewer` の finding が振る舞い変更、仕様判断、または再設計を要する場合は `review-patch-refactorer`
-へ渡さない。親が理由付き不採用または未完了と判断する。修正範囲を拡張しない。`writing-principles-reviewer` を再起動しない。
-`writing-principles-reviewer` 自身には変更をさせず、patch 後に同 reviewer を再起動しない。
-patch 後は親 QA と Green 確認で終了する。
+`writing-principles-reviewer` の finding を適用する後継実行経路は現 bundle では定義しない。
+変更が必要な finding を採用した場合は修正を開始せず、未完了として停止して親へ返す。
+`writing-principles-reviewer` 自身には変更をさせない。
 
 ## Closeout
 

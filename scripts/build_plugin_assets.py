@@ -5,12 +5,10 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-import json
 from pathlib import Path
 import re
 import sys
 import tomllib
-from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,22 +48,6 @@ SKILL_REFERENCE_NAMES = {
     ),
     "feature-lead": (),
 }
-AGENT_NAMES = (
-    "implementer",
-    "senior-implementer",
-    "expert-implementer",
-    "expert-selection-reviewer",
-    "responsibility-boundary-reviewer",
-    "test-quality-reviewer",
-    "writing-principles-reviewer",
-    "over-engineering-reviewer",
-    "plan-adversarial-reviewer",
-    "security-side-effect-reviewer",
-    "review-patch-refactorer",
-)
-VERSION_PATTERN = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
-)
 TERM_NAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 PLACEHOLDER_PATTERN = re.compile(r"\{\{([^{}\n]+)\}\}")
 MARKER_LIKE_PATTERN = re.compile(
@@ -100,18 +82,6 @@ class Diagnostic:
 
 
 @dataclass(frozen=True)
-class AgentSource:
-    """Hold validated agent metadata and its common Markdown body."""
-
-    path: Path
-    name: str
-    claude: dict[str, Any]
-    codex: dict[str, Any]
-    body: str
-    body_line: int
-
-
-@dataclass(frozen=True)
 class SkillSource:
     """Hold one skill's SKILL.md and its mapped reference sources."""
 
@@ -143,19 +113,6 @@ def read_source(path: Path, errors: list[Diagnostic]) -> str | None:
     except OSError as error:
         errors.append(Diagnostic(path, f"cannot read file: {error}"))
     return None
-
-
-def load_version(root: Path, errors: list[Diagnostic]) -> str | None:
-    """Load the single shared three-component bundle version."""
-    path = root / "shared/VERSION"
-    content = read_source(path, errors)
-    if content is None:
-        return None
-    lines = content.splitlines()
-    if len(lines) != 1 or VERSION_PATTERN.fullmatch(lines[0]) is None:
-        errors.append(Diagnostic(path, "expected a single X.Y.Z version without leading zeroes", 1))
-        return None
-    return lines[0]
 
 
 def toml_error_line(error: tomllib.TOMLDecodeError) -> int | None:
@@ -212,182 +169,6 @@ def load_terms(root: Path, errors: list[Diagnostic]) -> dict[str, dict[str, str]
         if not unknown and not missing and len(term_values) == len(PLATFORMS):
             validated[name] = term_values
     return validated
-
-
-def load_manifest(
-    path: Path,
-    errors: list[Diagnostic],
-) -> tuple[dict[str, Any], str] | None:
-    """Load one version synchronization target as a JSON object."""
-    content = read_source(path, errors)
-    if content is None:
-        return None
-    try:
-        document = json.loads(content)
-    except json.JSONDecodeError as error:
-        errors.append(Diagnostic(path, f"invalid JSON: {error.msg}", error.lineno))
-        return None
-    if not isinstance(document, dict):
-        errors.append(Diagnostic(path, "top-level JSON value must be an object"))
-        return None
-    if "version" not in document:
-        errors.append(Diagnostic(path, "version key is required"))
-        return None
-    if not isinstance(document["version"], str):
-        errors.append(Diagnostic(path, "version must be a string"))
-        return None
-    return document, content
-
-
-def validate_string_field(
-    path: Path,
-    table_name: str,
-    table: dict[str, Any],
-    key: str,
-    errors: list[Diagnostic],
-) -> None:
-    """Require one non-empty string metadata field."""
-    if key not in table:
-        errors.append(Diagnostic(path, f"[{table_name}] is missing required key: {key}"))
-    elif not isinstance(table[key], str) or not table[key]:
-        errors.append(Diagnostic(path, f"[{table_name}].{key} must be a non-empty string"))
-
-
-def validate_agent_metadata(
-    path: Path,
-    expected_name: str,
-    document: dict[str, Any],
-    errors: list[Diagnostic],
-) -> tuple[str, dict[str, Any], dict[str, Any]] | None:
-    """Validate the closed common, Claude, and Codex metadata schemas."""
-    allowed_top = {"name", "claude", "codex"}
-    for key in sorted(set(document) - allowed_top):
-        errors.append(Diagnostic(path, f"unknown top-level key: {key}"))
-
-    name = document.get("name")
-    if not isinstance(name, str) or not name:
-        errors.append(Diagnostic(path, "name must be a non-empty string"))
-    elif name != expected_name:
-        errors.append(Diagnostic(path, f"name must match filename stem: {expected_name}"))
-
-    claude = document.get("claude")
-    codex = document.get("codex")
-    if not isinstance(claude, dict):
-        errors.append(Diagnostic(path, "[claude] table is required"))
-        claude = {}
-    if not isinstance(codex, dict):
-        errors.append(Diagnostic(path, "[codex] table is required"))
-        codex = {}
-
-    claude_keys = {
-        "description",
-        "model",
-        "effort",
-        "tools",
-        "disallowed_tools",
-    }
-    codex_keys = {
-        "description",
-        "model",
-        "model_reasoning_effort",
-        "sandbox_mode",
-        "nickname_candidates",
-    }
-    for key in sorted(set(claude) - claude_keys):
-        errors.append(Diagnostic(path, f"[claude] has unknown key: {key}"))
-    for key in sorted(set(codex) - codex_keys):
-        errors.append(Diagnostic(path, f"[codex] has unknown key: {key}"))
-    for key in ("description", "model", "effort"):
-        validate_string_field(path, "claude", claude, key, errors)
-    for key in ("tools", "disallowed_tools"):
-        if key in claude and (
-            not isinstance(claude[key], list)
-            or not claude[key]
-            or any(not isinstance(tool, str) or not tool for tool in claude[key])
-        ):
-            errors.append(
-                Diagnostic(
-                    path,
-                    f"[claude].{key} must be a non-empty list of non-empty strings",
-                )
-            )
-    for key in ("description", "model", "model_reasoning_effort"):
-        validate_string_field(path, "codex", codex, key, errors)
-    if "sandbox_mode" in codex:
-        validate_string_field(path, "codex", codex, "sandbox_mode", errors)
-
-    nicknames = codex.get("nickname_candidates")
-    if nicknames is None:
-        errors.append(Diagnostic(path, "[codex] is missing required key: nickname_candidates"))
-    elif not isinstance(nicknames, list) or any(
-        not isinstance(candidate, str) or not candidate for candidate in nicknames
-    ):
-        errors.append(
-            Diagnostic(path, "[codex].nickname_candidates must be a list of non-empty strings")
-        )
-
-    if any(error.path == path for error in errors):
-        return None
-    return name, claude, codex
-
-
-def parse_agent_source(
-    path: Path,
-    expected_name: str,
-    content: str,
-    errors: list[Diagnostic],
-) -> AgentSource | None:
-    """Parse one TOML-frontmatter agent source and require a Markdown body."""
-    lines = content.splitlines(keepends=True)
-    if not lines or lines[0].rstrip("\r\n") != "+++":
-        errors.append(Diagnostic(path, "agent source must start with +++", 1))
-        return None
-    closing_index = next(
-        (index for index, line in enumerate(lines[1:], 1) if line.rstrip("\r\n") == "+++"),
-        None,
-    )
-    if closing_index is None:
-        errors.append(Diagnostic(path, "agent frontmatter is not closed", 1))
-        return None
-
-    frontmatter = "".join(lines[1:closing_index])
-    body = "".join(lines[closing_index + 1 :])
-    body_line = closing_index + 2
-    if PLACEHOLDER_PATTERN.search(frontmatter):
-        errors.append(Diagnostic(path, "placeholders are not allowed in agent frontmatter"))
-    if not body.strip():
-        errors.append(Diagnostic(path, "agent Markdown body must not be empty", body_line))
-    try:
-        document = tomllib.loads(frontmatter)
-    except tomllib.TOMLDecodeError as error:
-        errors.append(Diagnostic(path, f"invalid TOML frontmatter: {error}", toml_error_line(error)))
-        return None
-    metadata = validate_agent_metadata(path, expected_name, document, errors)
-    if metadata is None or not body.strip():
-        return None
-    name, claude, codex = metadata
-    return AgentSource(path, name, claude, codex, body, body_line)
-
-
-def load_agents(root: Path, errors: list[Diagnostic]) -> list[AgentSource]:
-    """Reject shared agent files outside the canonical distribution set."""
-    directory = root / "shared/agents"
-    if directory.is_dir():
-        expected = {f"{name}.md" for name in AGENT_NAMES}
-        for path in sorted(directory.glob("*.md")):
-            if path.name not in expected:
-                errors.append(Diagnostic(path, "unknown shared agent Markdown file"))
-
-    agents: list[AgentSource] = []
-    for name in AGENT_NAMES:
-        path = directory / f"{name}.md"
-        content = read_source(path, errors)
-        if content is None:
-            continue
-        agent = parse_agent_source(path, name, content, errors)
-        if agent is not None:
-            agents.append(agent)
-    return agents
 
 
 def load_skills(root: Path, errors: list[Diagnostic]) -> list[SkillSource]:
@@ -548,81 +329,15 @@ def render_skill_reference(
     return ensure_text(f"{MARKDOWN_WARNING}\n\n{normalize_body(content)}")
 
 
-def yaml_scalar(value: str) -> str:
-    """Encode a metadata string as a YAML-compatible JSON scalar."""
-    return json.dumps(value, ensure_ascii=False)
-
-
-def toml_scalar(value: str) -> str:
-    """Encode a single-line string as a TOML-compatible JSON scalar."""
-    return json.dumps(value, ensure_ascii=False)
-
-
-def toml_multiline(value: str) -> str:
-    """Encode Markdown as a readable TOML multiline basic string."""
-    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-    return f'"""\n{escaped}"""'
-
-
-def render_claude_agent(agent: AgentSource, body: str) -> str:
-    """Render Claude YAML frontmatter followed by the common Markdown body."""
-    metadata = agent.claude
-    tool_lines = ""
-    if "tools" in metadata:
-        tool_lines += f"tools: {', '.join(metadata['tools'])}\n"
-    if "disallowed_tools" in metadata:
-        tool_lines += f"disallowedTools: {', '.join(metadata['disallowed_tools'])}\n"
-    return ensure_text(
-        "---\n"
-        f"name: {yaml_scalar(agent.name)}\n"
-        f"description: {yaml_scalar(metadata['description'])}\n"
-        f"model: {metadata['model']}\n"
-        f"effort: {metadata['effort']}\n"
-        f"{tool_lines}"
-        "---\n"
-        f"{MARKDOWN_WARNING}\n\n"
-        f"{normalize_body(body)}"
-    )
-
-
-def render_codex_agent(agent: AgentSource, body: str) -> str:
-    """Render ordered Codex TOML metadata and an escaped Markdown instruction body."""
-    metadata = agent.codex
-    lines = [
-        TOML_WARNING,
-        f"name = {toml_scalar(agent.name)}",
-        f"description = {toml_scalar(metadata['description'])}",
-        f"model = {toml_scalar(metadata['model'])}",
-        f"model_reasoning_effort = {toml_scalar(metadata['model_reasoning_effort'])}",
-    ]
-    if "sandbox_mode" in metadata:
-        lines.append(f"sandbox_mode = {toml_scalar(metadata['sandbox_mode'])}")
-    nicknames = ", ".join(toml_scalar(candidate) for candidate in metadata["nickname_candidates"])
-    lines.append(f"nickname_candidates = [{nicknames}]")
-    lines.append(f"developer_instructions = {toml_multiline(normalize_body(body))}")
-    return ensure_text("\n".join(lines))
-
-
 def ensure_text(content: str) -> str:
     """Normalize generated text to LF with exactly one trailing newline."""
     return content.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n") + "\n"
 
 
-def render_manifest(document: dict[str, Any], original: str, version: str) -> str:
-    """Update only the manifest version while preserving already-matching bytes."""
-    if document["version"] == version:
-        return original
-    updated = dict(document)
-    updated["version"] = version
-    return json.dumps(updated, ensure_ascii=False, indent=2) + "\n"
-
-
 def build_outputs(root: Path) -> tuple[dict[Path, str], list[Diagnostic]]:
     """Validate every input and construct the complete generated output map."""
     errors: list[Diagnostic] = []
-    version = load_version(root, errors)
     terms = load_terms(root, errors)
-    agents = load_agents(root, errors)
     skills = load_skills(root, errors)
 
     skill_rendered: dict[str, dict[str, str]] = {}
@@ -637,32 +352,9 @@ def build_outputs(root: Path) -> tuple[dict[Path, str], list[Diagnostic]]:
             validate_placeholders(path, content, 1, terms, used_terms, errors)
             reference_rendered[skill.name][name] = process_markers(path, content, 1, errors)
 
-    rendered_agent_bodies: dict[str, dict[str, str]] = {}
-    for agent in agents:
-        validate_placeholders(
-            agent.path,
-            agent.body,
-            agent.body_line,
-            terms,
-            used_terms,
-            errors,
-        )
-        rendered_agent_bodies[agent.name] = process_markers(
-            agent.path,
-            agent.body,
-            agent.body_line,
-            errors,
-        )
-
     terms_path = root / "shared/terms.toml"
     for name in sorted(set(terms) - used_terms):
         errors.append(Diagnostic(terms_path, f"unused term: {name}"))
-
-    manifest_paths = (
-        root / "plugins/claude/.claude-plugin/plugin.json",
-        root / "plugins/codex/.codex-plugin/plugin.json",
-    )
-    manifests = {path: load_manifest(path, errors) for path in manifest_paths}
 
     if errors:
         return {}, errors
@@ -694,33 +386,8 @@ def build_outputs(root: Path) -> tuple[dict[Path, str], list[Diagnostic]]:
                         / f"plugins/{platform}/skills/{skill.name}/references/{name}"
                     ] = rendered_reference
 
-    for agent in agents:
-        bodies = rendered_agent_bodies[agent.name]
-        for platform in PLATFORMS:
-            body = replace_terms(bodies[platform], platform, terms)
-            if not body.strip():
-                errors.append(
-                    Diagnostic(agent.path, f"{platform} agent Markdown body must not be empty")
-                )
-        if errors:
-            continue
-        outputs[root / f"plugins/claude/agents/{agent.name}.md"] = render_claude_agent(
-            agent, bodies["claude"] and replace_terms(bodies["claude"], "claude", terms)
-        )
-        outputs[
-            root / f"plugins/codex/install/agents/{agent.name}.toml"
-        ] = render_codex_agent(
-            agent, bodies["codex"] and replace_terms(bodies["codex"], "codex", terms)
-        )
-
     if errors:
         return {}, errors
-    assert version is not None
-    for path, loaded in manifests.items():
-        assert loaded is not None
-        document, original = loaded
-        outputs[path] = render_manifest(document, original, version)
-    outputs[root / "plugins/codex/install/VERSION"] = f"{version}\n"
     return outputs, []
 
 

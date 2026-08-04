@@ -2,17 +2,16 @@ spec_version = 1
 
 [project]
 id = "tugite"
-version = "4.9.0"
+version = "5.0.0"
 
 [sources]
 files = [
+  "shared/agents/focused-implementer.md",
   "shared/agents/expert-implementer.md",
-  "shared/agents/expert-selection-reviewer.md",
   "shared/agents/implementer.md",
   "shared/agents/over-engineering-reviewer.md",
   "shared/agents/plan-adversarial-reviewer.md",
   "shared/agents/responsibility-boundary-reviewer.md",
-  "shared/agents/review-patch-refactorer.md",
   "shared/agents/security-side-effect-reviewer.md",
   "shared/agents/senior-implementer.md",
   "shared/agents/test-quality-reviewer.md",
