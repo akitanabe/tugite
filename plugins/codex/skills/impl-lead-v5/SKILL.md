@@ -2,7 +2,7 @@
 name: impl-lead-v5
 description: >-
   明示起動時だけ、親が一つ以上の Work Unit を正規化し、direct または各単位の worker を選び、
-  必要な場合だけ risk-directed review を選び、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる v5 実装 loop。
+  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる v5 実装 loop。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -10,8 +10,9 @@ description: >-
 
 この skill はユーザーが `$impl-lead-v5` を明示した場合だけ起動する。自然言語の作業内容、規模、現在の
 context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
-一名 worker という既存経路は保ちつつ、同じ run で複数単位を安全に処理できる。review は固定 phase や全作業の必須手順ではなく、
-親が具体的な risk と判断への影響を説明できる場合だけ実行する。
+一名 worker という既存経路は保ちつつ、同じ run で複数単位を安全に処理できる。
+`risk-directed review` は固定 phase や全作業の必須手順ではなく、親が具体的な risk と判断への影響を説明できる場合だけ実行する。
+これは run を閉じる直前の必須 `final writing gate` とは別責務である。
 
 ## Intake and Work Unit normalization
 
@@ -124,10 +125,11 @@ accept せず最後の Green へ rollback して再検証する。戻せなけ�
 ## Risk-directed review selection and handoff
 
 reviewer はユーザーが明示した review goal、または親が AC、diff、test、外部副作用、責務境界その他から特定した具体的な
-risk があり、review 結果が修正、`accept`、`stop-incomplete` の判断を変えうる場合だけ選ぶ。全作業を reviewer に通す固定
-phase、非選択 reviewer の台帳、固定 threshold、巨大な decision table は作らない。明示された reviewer、目的、回数その他の
-制約は守る。指定 reviewer が利用不能で、親と代替 evidence だけでは許容不能 risk を検証できない場合は確認を求めるか、
-`stop-incomplete` とする。
+risk があり、review 結果が修正、`accept`、`stop-incomplete` の判断を変えうる場合だけ選ぶ。ただし、この risk-directed な
+任意選択とは別に、全 Work Unit の run を閉じる直前には `writing-principles-reviewer` の final writing gate を必ず実施する。
+全作業を reviewer に通す固定 phase、非選択 reviewer の台帳、固定 threshold、巨大な decision table は作らない。明示された
+reviewer、目的、回数その他の制約は守る。指定 reviewer が利用不能で、親と代替 evidence だけでは許容不能 risk を検証できない
+場合は確認を求めるか、`stop-incomplete` とする。
 
 既存 reviewer の責務は review goal に対応するものだけを選ぶ。
 
@@ -157,7 +159,8 @@ reviewer の severity や結論を `accept` に直結させず、unresolved find
 同じ snapshot の全 reviewer 結果を集めてから、AC、evidence、security / data loss などの許容不能 risk、scope、rollback、
 検証可能性、最小性で競合を解消する。安全に解消できない競合は確認、再正規化または `stop-incomplete` とする。
 
-`adopted` finding の修正は既存の route / context 規則へ戻す。同じ ID で AC、scope、責任境界、依存が不変の限定修正だけを
+以下の一般的な `adopted` finding の修正・継続規則は `risk-directed review` に限る。`final writing gate` の finding はこの規則の
+対象外であり、後段の final writing gate 固有の stop / remediation 規則に従う。`adopted` finding の修正は既存の route / context 規則へ戻す。同じ ID で AC、scope、責任境界、依存が不変の限定修正だけを
 同じ context へ返す。意味契約が変わる修正は新しい ID と fresh context へ再正規化し、固定修正 agent を導入しない。修正後は
 親 QA と repository-native verification を再実行し、影響を受けた review goal
 だけを新しい snapshot で再 review する。親 QA、新 diff、新 test、副作用 evidence が新しい具体的 risk を示し、結果が判断を
@@ -166,6 +169,45 @@ reviewer の severity や結論を `accept` に直結させず、unresolved find
 review を `continue` するのは、次に確認する具体的な未解決 risk と期待する新しい evidence を説明できる場合だけとする。
 固定 round、0 findings、reviewer の Pass は打ち切りや accept の条件にしない。親が品質下限、known finding の処理、残存 risk
 の許容を独立して確認し、必要な判断が完了した時点で review を打ち切る。
+
+## Final writing acceptance gate
+
+全 Work Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
+accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
+risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
+理由に省略できない。ユーザーが途中または追加 review を指定した場合も実施するが、final writing gate の代替にはならない。
+review の回数・時点に衝突がある場合は最初の review 前に確認して解消し、解消できなければ `stop-incomplete` とする。
+
+`review_base_snapshot` は、final gate の対象として残る task-owned 変更集合が始まる前の、最後の accepted repository state とする。
+Work Unit ごとの統合で `accepted baseline` が更新されても、final gate の `review_base_snapshot` は更新せず、final gate で run が
+accept されるまで固定する。gate の `target_snapshot` はその固定 base から元変更と remediation を含む累積候補であり、先行
+Work Unit の変更を累積 diff から除外しない。protected dirty/untracked は別の `protected_dirty_record` として扱う。final finding
+後の remediation run でも未受入候補を新しい baseline にせず、同じ accepted base を継承する。この区別は既存の Work Unit 統合を
+置き換える状態機械を追加するものではない。
+reviewed artifact set は `review_base_snapshot` から `target_snapshot` までの repository 累積 diff、存在する commit range と
+各 commit message、reviewer の責務対象として handoff した説明 artifact の集合である。gate handoff には task、全 Work Unit、
+AC、scope / constraints、review base / target、commit range、全変更 file、累積 diff 全文、test 結果、周辺 context、artifact set を
+含める。checkout path、repository path、commit ID だけでこれらを代替しない。
+
+gate 中の target checkout には writer を入れず、親 QA、実装、integration、generator、formatter、write test を重ねない。開始前と
+終了後に target と protected dirty/untracked を再観測し、意味のある drift があればその結果を有効な一回として数えない。安全に
+同じ target / artifact set を再試行できなければ `stop-incomplete` とする。reviewer が利用不能、handoff が不足、read-only isolation
+を確保できない、または result を取得・照合できない場合も確認または `stop-incomplete` とする。
+
+reviewer の Pass、severity、または 0 findings だけで accept してはならない。親は reviewer の各 finding を一次情報で確認し、
+`adopted`、`rejected`、`unresolved` と理由を execution data に確定する。0 findings または全 finding が `rejected` の場合でも、
+同じ target_snapshot と reviewed artifact set に対して final verification を実行する。`adopted` finding が reviewed artifact の
+内容、identity、または commit range を変える場合は、同じ run で修正も accept もせず `stop-incomplete` とする。後続 remediation
+run は同じ accepted base から元変更と修正を含む累積 target を再び gate する。
+
+gate 対象外の execution data の記録は、gate 後に変更してよいのは reviewed artifact と AC の記録の更新、または事実を変えない
+表現修正だけである。reviewed artifact、AC、target_snapshot、reviewed artifact set、commit range 自体を変更する場合は、同じ run で
+accept せず `stop-incomplete` とする。final verification が target または reviewed artifact set を変えた場合も accept せず、安全な
+snapshot 不変の再検証だけを許す。
+
+closeout には `review_base_snapshot`、`target_snapshot`、reviewed artifact set、gate result、各 finding の採否、final verification、
+残存 risk を含める。これは execution data の報告であり、固定 QA report、固定 diff artifact、判断点台帳、全 reviewer 必須化、固定
+review loop、固定修正 agent、over-engineering reviewer の mandatory phase を新設するものではない。
 
 ## External side effects
 
@@ -223,6 +265,6 @@ route、result、verification、final run baseline、実行した command と結
 未検証事項、`git status --short` を含める。review を実施した場合は review goal / result、finding の adopted / rejected /
 unresolved と理由、残存 risk を含め、persistence resource がある場合だけ identity / ownership / lifecycle も含める。v4 の
 identifier/path/mode、固定 worktree、必須の追加報告形式を持ち込まず、explicit-only、暫定名、v4/v5 共存を維持する。v4
-mode、Branch Plan、固定 4 phase、writing / over-engineering reviewer の mandatory phase、固定修正経路、永続 artifact の通常必須化を
+mode、Branch Plan、固定 4 phase、over-engineering reviewer の mandatory phase、固定修正経路、永続 artifact の通常必須化を
 持ち込まない。固定 review phase、必須 QA report、必須 diff artifact、判断点台帳を v5 契約へ持ち込まない。親は run を accept したか
 `stop-incomplete` で停止したかを明示し、未承認の追加作業を残さない。
