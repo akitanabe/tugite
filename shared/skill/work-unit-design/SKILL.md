@@ -1,26 +1,26 @@
-<!-- claude-only:start -->
+<!-- @only claude -->
 ---
 name: work-unit-design
 description: >-
-  plan-craft-v5 または impl-lead-v5 の同じ親 context 内だけで使う internal Work Unit 設計手順。
+  plan-craft または impl-lead の同じ親 context 内だけで使う internal Work Unit 設計手順。
 ---
-<!-- claude-only:end -->
-<!-- codex-only:start -->
+<!-- @/only -->
+<!-- @only codex -->
 ---
 name: work-unit-design
 description: >-
-  plan-craft-v5 または impl-lead-v5 の同じ親 context 内だけで使う internal Work Unit 設計手順。
+  plan-craft または impl-lead の同じ親 context 内だけで使う internal Work Unit 設計手順。
 ---
-<!-- codex-only:end -->
+<!-- @/only -->
 
 # work-unit-design
 
 ## 位置づけと発火
 
 この Skill は新しい worker を起動するものではなく、呼び出し元の親が同じ context で従う判断手順書である。
-ユーザーの直接要求や通常会話から暗黙に設計を始めず、Work Unit の候補が必要な `plan-craft-v5` の工程、または
-実装単位の境界・依存・分割が非自明な `impl-lead-v5` の工程としてだけ使う。Work Unit の設計を求める入口は
-plan-craft-v5、実装の入口は impl-lead-v5 であり、この Skill 自身は実装・委譲・後続工程を開始しない。
+ユーザーの直接要求や通常会話から暗黙に設計を始めず、Work Unit の候補が必要な `plan-craft` の工程、または
+実装単位の境界・依存・分割が非自明な `impl-lead` の工程としてだけ使う。Work Unit の設計を求める入口は
+plan-craft、実装の入口は impl-lead であり、この Skill 自身は実装・委譲・後続工程を開始しない。
 
 Codex runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
 候補の裁定、blocking の扱い、採用・実行・保存を親が持つという責務は変えない。
