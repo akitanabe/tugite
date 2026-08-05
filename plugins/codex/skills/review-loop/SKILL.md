@@ -61,7 +61,7 @@ reviewer には対象 snapshot、要求と判定基準、goal、直前までの�
 1 round は、`snapshot 固定 → review goal に基づくレビュー → 親の finding 裁定 → 採用修正 → verification`
 である。verification は採用 finding が成果物へ反映されたことを確認し、成果物が実行可能な検証手段を
 持つ場合はそれも含める。同じ snapshot に複数 reviewer を起動しても同じ round なら 1 round と数える。
-`adversarial_review_count` は reviewer 起動回数ではなく、`plan-adversarial-reviewer` を含む round 数である。
+`adversarial_review_count` は reviewer 起動回数ではなく、`plan-adversarial-reviewer` を起動した round 数である。
 final trim は round 計数と誘発判定の窓から除外する。
 
 finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced`（通常
