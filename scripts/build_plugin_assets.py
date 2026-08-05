@@ -49,6 +49,7 @@ SKILL_REFERENCE_NAMES = {
     ),
     "feature-lead": (),
     "review-loop": (),
+    "plan-craft-v5": (),
 }
 TERM_NAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 PLACEHOLDER_PATTERN = re.compile(r"\{\{([^{}\n]+)\}\}")

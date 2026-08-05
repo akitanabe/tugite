@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plan Craft v5"
+  short_description: "Draft a free-form plan without starting implementation"
+  default_prompt: "Use $plan-craft-v5 to draft or refine a free-form planning artifact without implementing, delegating, or advancing to a next stage."
+policy:
+  allow_implicit_invocation: false

@@ -21,8 +21,9 @@ description: >-
 
 # review-loop
 
-この Skill は、成果物を変更する工程ではなく、明示された review goal に対して同じ snapshot を
-読む review loop である。起動元は `plan-craft-v5` に限らず、親が既存の成果物（issue 本文へ保存した
+この Skill は、入力 resource 自体を直接書き換えず、明示された review goal に対して各 round で固定した
+snapshot を読み、親が採用した変更と verification を snapshot ごとに反映する review loop である。起動元は
+`plan-craft-v5` に限らず、親が既存の成果物（issue 本文へ保存した
 プラン等）を単独でレビューする場合も含む。reviewer は確認できた事実と懸念に集中し、新しい仕様を
 補完せず、finding の採否・保留を確定しない。親は最終的な品質下限、残存 risk、成果物の受け入れを
 保持する。
@@ -38,10 +39,10 @@ description: >-
 
 ## 入力
 
-起動前に親は次の Data を渡す。入力 resource は無断更新せず、対象成果物を不変に識別できる snapshot
-として保持する。
+起動前に親は次の Data を渡す。入力 resource と各 round の対象 snapshot は不変として扱い、review 中に
+書き換えない。採用した修正は入力 resource へ戻さず、次 round が読む新しい snapshot Data を生成する。
 
-- `artifact_snapshot`: 対象成果物の識別子と内容。review 中は同じ内容を読む。
+- `artifact_snapshot`: 各 round が読む対象成果物の識別子と内容。round 中は不変として扱い、同じ内容を読む。
 - `artifact_kind`: 実装を前提とするプラン系か否か。reviewer の適用可否に使う。
 - `request`: 要求原文、AC 相当の判定基準、constraints、既知の依存。
 - `review_goal`: 確認する具体的な risk と、結果が変える親の判断。
@@ -72,8 +73,9 @@ reviewer には対象 snapshot、要求と判定基準、goal、直前までの�
 1 round は、`snapshot 固定 → review goal に基づくレビュー → 親の finding 裁定 → 採用修正 → verification`
 である。verification は採用 finding が成果物へ反映されたことを確認し、成果物が実行可能な検証手段を
 持つ場合はそれも含める。同じ snapshot に複数 reviewer を起動しても同じ round なら 1 round と数える。
-`adversarial_review_count` は reviewer 起動回数ではなく、`plan-adversarial-reviewer` を起動した round 数である。
-final trim は round 計数と誘発判定の窓から除外する。
+`adversarial_review_count` は reviewer 起動回数ではなく、全 review round 数である。final trim は round 計数と
+誘発判定の窓から除外する。`plan-adversarial-reviewer` を起動した round だけを baseline と induced 窓の計数へ使う。
+trim の finding も同じ指摘台帳へ記録し、発行元 reviewer で区別する。
 
 finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced`（通常
 reviewer の収束母数だけ）を記録する。全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
@@ -129,6 +131,8 @@ accept-candidate（`converged` または `induced-loop`）で未解決 finding �
 成果物へ final trim を行う。非適用成果物は trim を省略した事実と理由を出力する。trim は通常 loop へ戻らず、
 各回を新しい snapshot へ順に適用する。削減後の verification が失敗した場合は、新しい設計を足さず、該当
 削減 finding の裁定を原則 `採用` から `却下` へ戻す。`人間確認` が必要な trim finding は `範囲外` として渡す。
+trim の finding もその場で5区分へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
+残存する過剰の順を推奨観点とし、回数を上書きした場合の観点は親が決める。
 
 回数は次で決める。
 

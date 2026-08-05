@@ -71,6 +71,8 @@ PLATFORMS = ("claude", "codex")
 IMPL_LEAD_SKILL = "impl-lead"
 IMPL_LEAD_V5_SKILL = "impl-lead-v5"
 IMPL_DELEGATE_SKILL = "impl-delegate"
+REVIEW_LOOP_SKILL = "review-loop"
+PLAN_CRAFT_V5_SKILL = "plan-craft-v5"
 SHARED_SKILL_ROOT = Path("shared/skill")
 # Mirror the generator's skill-name -> reference-name mapping so fixtures and
 # path derivation stay data-driven per skill instead of hardcoding one skill.
@@ -107,7 +109,8 @@ SKILL_REFERENCE_NAMES = {
         "overengineering-plan-review.md",
     ),
     "feature-lead": (),
-    "review-loop": (),
+    REVIEW_LOOP_SKILL: (),
+    PLAN_CRAFT_V5_SKILL: (),
 }
 
 
@@ -596,6 +599,19 @@ class IsolatedRepositorySupport:
             root = Path(directory)
             self._make_repository(root, extra_skills)
             yield root
+
+    def _seed_real_skill_source(self, root: Path, skill: str) -> dict[str, bytes]:
+        """Use repository source bytes so stale fixtures cannot produce a false-green result."""
+        source = REPOSITORY_ROOT / shared_skill_path(skill)
+        fixture_source = root / shared_skill_path(skill)
+        fixture_source.write_bytes(source.read_bytes())
+        expected: dict[str, bytes] = {}
+        for platform in PLATFORMS:
+            expected[platform] = (
+                REPOSITORY_ROOT / generated_skill_path(platform, skill)
+            ).read_bytes()
+            (root / generated_skill_path(platform, skill)).write_bytes(b"stale\n")
+        return expected
 
     def _run(self, root: Path, *arguments: str) -> subprocess.CompletedProcess[str]:
         """Run the copied generator exactly as a user-facing Python CLI."""
