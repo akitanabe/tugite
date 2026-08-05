@@ -320,6 +320,36 @@ kind = "forbids"
 pattern = "review-patch-refactorer"
 applies_to = ["claude", "codex"]
 
+[contracts.no-feature-lead-skill]
+kind = "forbids"
+pattern = "feature-lead"
+applies_to = ["claude", "codex"]
+
+[contracts.no-impl-delegate-skill]
+kind = "forbids"
+pattern = "impl-delegate"
+applies_to = ["claude", "codex"]
+
+[contracts.no-branch-design-skill]
+kind = "forbids"
+pattern = "branch-design"
+applies_to = ["claude", "codex"]
+
+[contracts.no-test-audit-skill]
+kind = "forbids"
+pattern = "test-audit"
+applies_to = ["claude", "codex"]
+
+[contracts.no-impl-lead-v5-skill]
+kind = "forbids"
+pattern = "impl-lead-v5"
+applies_to = ["claude", "codex"]
+
+[contracts.no-plan-craft-v5-skill]
+kind = "forbids"
+pattern = "plan-craft-v5"
+applies_to = ["claude", "codex"]
+
 [contracts.test-quality-1]
 kind = "requires"
 slice = "gunte-test-quality"

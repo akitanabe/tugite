@@ -1,9 +1,9 @@
 ---
 name: review-loop
 description: >-
-  ユーザーが明示した成果物レビュー、または plan-craft-v5 が工程として起動する場合だけ、
+  ユーザーが明示した成果物レビュー、または plan-craft が工程として起動する場合だけ、
   不変 snapshot と review goal に対する bounded review round と final trim を実行する。
-  reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。v4 skill と impl-lead-v5 の
+  reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。v4 skill と impl-lead の
   実行中には発火せず、成果物を書き戻したり次工程を開始したりしない。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
@@ -12,7 +12,7 @@ description: >-
 
 この Skill は、入力 resource 自体を直接書き換えず、明示された review goal に対して各 round で固定した
 snapshot を読み、親が採用した変更と verification を snapshot ごとに反映する review loop である。起動元は
-`plan-craft-v5` に限らず、親が既存の成果物（issue 本文へ保存した
+`plan-craft` に限らず、親が既存の成果物（issue 本文へ保存した
 プラン等）を単独でレビューする場合も含む。reviewer は確認できた事実と懸念に集中し、新しい仕様を
 補完せず、finding の採否・保留を確定しない。親は最終的な品質下限、残存 risk、成果物の受け入れを
 保持する。
@@ -20,8 +20,8 @@ snapshot を読み、親が採用した変更と verification を snapshot ご�
 ## 発火制御
 
 - ユーザーがこの Skill によるレビューを明示した場合にだけ単独で起動する。
-- `plan-craft-v5` が起草工程の review として起動する場合は起動できる。
-- v4 skill の実行中、`impl-lead-v5` の実行中、またはレビューを求めない相談では起動しない。
+- `plan-craft` が起草工程の review として起動する場合は起動できる。
+- v4 skill の実行中、`impl-lead` の実行中、またはレビューを求めない相談では起動しない。
 - 発火条件を満たさない自然言語の作業内容や context から、起動を推測しない。
 - Claude の frontmatter は暗黙起動を無効にしない。ただし上記の description と本文の条件を守る。
 - Codex の metadata は `allow_implicit_invocation: true` とし、暗黙起動を許す範囲を上記の条件に限る。

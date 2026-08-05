@@ -25,9 +25,8 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use $plan-craft to draft and adversarially review an implementation plan without starting branch planning.",
-      "Use $branch-design to normalize a plan into a delegatable Branch Plan without starting delegation.",
-      "Use $impl-lead to delegate this implementation with parent QA.",
+      "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
+      "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."
     ]
   }

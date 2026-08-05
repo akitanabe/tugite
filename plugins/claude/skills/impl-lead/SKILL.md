@@ -1,212 +1,281 @@
 ---
 name: impl-lead
 description: >-
-  実装作業をサブエージェントに委譲しつつ、親エージェントが計画、受け入れ条件、worktree 隔離、
-  返却 diff の QA、テスト網羅性レビュー、副作用と責務境界の確認、最終検証、最終報告の責任を
-  持つためのワークフロー。ユーザーが実装委譲、マネージャーとしての進行、サブエージェント分担を
-  求めたとき、または `lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` を
-  明示したときに使う。`direct` の明示時や、委譲指示なしにタスク規模だけを理由として使わない。
-  一般的な実装委譲要求が明示された場合に発火する。
-  ユーザーによって `impl-delegate` が明示された場合は `impl-lead` を発火しない。
-  ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
-  プラン文書とレビュー状態を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
-  責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
-  通常どおり動作する。
+  明示起動時だけ、親が一つ以上の Work Unit を正規化し、direct または各単位の worker を選び、
+  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる v5 実装 loop。
+disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# マネージャー＋QA としての委譲
+# Active v5 main
 
-親はタスク分割、Acceptance Criteria、委譲指示、返却 diff の QA、統合、最終検証を担当する。
-Implementer は実装を担当するが、最終的な品質責任と受け入れ判断は親から移動しない。
+この skill はユーザーが `$impl-lead` を明示した場合だけ起動する。自然言語の作業内容、規模、現在の
+context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
+一名 worker という既存経路は保ちつつ、同じ run で複数単位を安全に処理できる。
+`risk-directed review` は固定 phase や全作業の必須手順ではなく、親が具体的な risk と判断への影響を説明できる場合だけ実行する。
+これは run を閉じる直前の必須 `final writing gate` とは別責務である。
 
-## workflow mode の選択
+## Intake and Work Unit normalization
 
-委譲の決定は次の3層に分ける。層をまたいで並列に選ばない。
+親は実装を始める前に要求、対象 repository、現在の dirty state、基準状態を観測する。Issue または doc と対象
+file、その周辺、呼び出し元・先、関連 test を読み、run の目的を一つ以上の Work Unit に正規化する。複数であること
+だけを停止理由にしない。各単位は次の Work Unit Data を持つ。
 
-1. 経路の選択 — `direct`（この skill の外）か、委譲（この skill）か。
-2. 配分方針の選択 — 委譲する場合に、配分方針 `policy` と基準 `baseline` を決める。
-3. 枝 mode の導出 — `policy`、`baseline`、枝の `implementation_complexity.level` から枝ごとの mode を導く。
+- `id`: run 内で一意な識別子。
+- `purpose`: 単一の目的。
+- `acceptance_criteria`: 外部から観測可能で検証可能な Acceptance Criteria。
+- `scope`: `change`（変更を許す範囲）と `exclude`（変更しない範囲）。
+- `implementation_freedom`: worker に任せてよい局所判断。なければ空。
+- `constraints`: ユーザー指定、互換性、依存、実行環境その他の制約。
+- `depends_on`: Work Unit ID の依存と、外部・repository・environment の precondition を分けた記述。
+- `verification`: AC ごとの native test、focused test、必要な最終 gate。
 
-```text
-配分方針  policy   : fixed | adaptive
-基準      baseline : lite | standard | strict
-枝 mode            : lite | standard | strict   ← policy / baseline と枝の implementation_complexity.level から導出する
-```
+Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept/revert できる
+変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界をすべて満たすものとする。同じ
+test でしか Green にならない過分割、片方だけでは invariant が成立しない分割、layer 横割りは統合する。価値の
+ない共通依存は最初に価値を生む単位が所有する。
 
-`adaptive` は新しい実装フローではなく、既存の `lite` / `standard` / `strict` を枝へ割り当てる配分方針である。
-枝へ割り当てられた後は、その枝を既存の各 mode のフローで実行する。
+不足、矛盾、または scope を閉じられない状態が品質に影響する場合、推測で補わず必要な情報を親へ戻すか、理由・
+未完了範囲・evidence・残存 risk を含む `stop-incomplete` とする。要求と repository の状態を観測せずに worker を
+起動しない。既存の dirty/untracked は scope に含めず、勝手に変更・削除しない。
 
-### 入力語彙の写像
+Work Unit Data は run 内一意の `id`、目的、AC、scope、implementation_freedom、constraints、depends_on、verification だけを
+表す。worker、base、route、order、isolation、result は実行時の execution data として親が記録し、Work Unit の
+意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Work Unit の意味ではなく
+execution data として扱う。
 
-| ユーザー入力 | policy | baseline | 意味と選択条件 |
-| --- | --- | --- | --- |
-| `direct` | — | — | この skill を発火しない skill 外の経路。委譲要求がなく、仕様が明確で影響範囲が閉じ、親が直接処理する変更。 |
-| 指定なし | `adaptive` | `standard` | 通常利用のデフォルト。mode 未指定の明示的な委譲でもこれを選ぶ。 |
-| `standard` / `standard-adaptive` | `adaptive` | `standard` | 通常の実装委譲。 |
-| `strict` / `strict-adaptive` | `adaptive` | `strict` | 全体として厳格な確認を要求するが、明らかに低 complexity の枝まで一律 `strict` にしない。`standard-adaptive` より保守的に導出する。 |
-| `strict-full` | `fixed` | `strict` | 全枝へ `strict` を固定適用する。枝ごとの導出を行わない。 |
-| `lite` | `fixed` | `lite` | 全枝を軽量フローで処理する。枝ごとの導出を行わない。ユーザーが明示し、仕様が明確で影響範囲が局所的、容易に戻せる変更にだけ選ぶ。 |
+### Optional work-unit design step
 
-`policy: fixed` は、全枝固定であることを明示的に表現する語彙だけに割り当てる。それ以外の語彙と
-mode 未指定はすべて `adaptive` へ写す。今後語彙を追加する場合の既定も `adaptive` とする。
+Intake または再正規化で分割、統合、責任境界、依存の設計が非自明な場合だけ、親は同じ context の内部工程として
+`work-unit-design` の手順を任意に参照できる。返された `work_units`、分割／統合 signal、`blocking_gaps` は候補であり、
+親が要求、AC、scope、既存 Work Unit、repository 状態を再検査してから採用する。候補の `acceptance_criteria` は accept の
+確定ではなく、worker、base、isolation、route、実行、後続 Skill の起動権限、保存を候補工程へ含めない。
 
-`lite` は名前で全枝固定を表さないため、この表で `{fixed, lite}` と定義することで担保する。`lite` の
-adaptive 化が必要になった場合の変更対象は、語彙の名前ではなくこの定義である。`lite` を `adaptive` の
-`baseline` にはしない。`baseline` を `lite` にすると low complexity 枝の割り当て先が `lite` しかなく導出が
-恒等写像になり、medium 以上を引き上げる用途は `{adaptive, standard}` と同一になるため、独立した
-配分方針として意味を持たない。
+Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
+親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
-### 経路の選択
+## Dependencies, snapshots, and isolation
 
-`direct` は親が実装する、この skill の外にある経路である。委譲 mode ではないため、配分方針や枝 mode と
-同じ層に並べて選ばない。委譲要求がなく `direct` も指定されていない場合、
-タスク規模だけでこの skill を発火しない。`direct` が明示された場合も、この skill を発火しない。
-`direct` でも、親は必要なテストと検証を実行し、diff review と最終報告を行う。
+`depends_on` の Work Unit ID は dispatch 前に run 内で存在し、unknown と cycle を解消する。当該 Work Unit の dispatch 直前に
+依存先が accepted であることを確認する。
+外部・repository・environment の precondition には、観測方法、成立条件、安定性、pin 方法を記録する。mutable な
+状態は dispatch 開始直前、外部 Action 直前、accept 直前に再観測する。drift または観測不能なら Action と accept を
+禁止する。pin できる precondition は親が dispatch 前に `base_snapshot` へ固定し、handoff はその識別を参照する。drift 時は
+新しい `base_snapshot` を確定し、task-owned isolation に安全に再適用できる場合だけ進む。ユーザー所有 branch や dirty
+checkout の ref・履歴を書き換えず、対象・所有権・旧 snapshot への復旧可能性を確認できなければ、確認・再正規化・
+`stop-incomplete` のいずれかにする。観測不能時は確認・再正規化・`stop-incomplete` とし、推測で Action を実行しない。
 
-`impl-delegate` が明示された場合は、`impl-lead` を発火しない。1名への軽量な委譲、親 QA、
-および `impl-delegate` が定める reviewer 選択を適用する。
+各 Work Unit の dispatch 直前に、親は repository、protected dirty/untracked、依存、現在の run baseline を再観測し、
+`protected_dirty_record` を更新する。統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を
+止めて再正規化・確認・`stop-incomplete` を選ぶ。
 
-ユーザーからプランから実装までの一括実行を直接要求された場合、および確定済みの
-プラン文書とレビュー状態を渡して実装までの一括実行を直接要求された場合は、`feature-lead` の
-責務であり発火しない。`feature-lead` の段として起動された場合はこの条件の対象外であり、
-通常どおり動作する。
+`base_snapshot` は編集前内容を後から比較・再現できる不変の識別を持つ（commit に限定しない）。保護対象の dirty
+state は `protected_dirty_record` として別管理し、uncommitted の変更を暗黙に commit、移送、破棄しない。snapshot
+を再現できなければ別 snapshot、直列化、確認、`stop-incomplete` のいずれかにする。review target は対象内容を不変に識別できる
+snapshot とし、review 中はその checkout へ writer を入れない。複数 reviewer は同じ snapshot を参照し、read-only と isolation が
+保証できる場合だけ同時に起動できる。実装、親 QA、integration、その他の書き込み Action とは重ねない。reviewer 起動前後に
+target と protected dirty/untracked state を再観測し、意味のある drift があればその snapshot の finding を受け入れ根拠に使わず、
+新しい snapshot で再 review、確認または `stop-incomplete` を選ぶ。
 
-### 配分方針の選択
+isolation は execution data であり、固定 worktree を必須にはしない。user constraint、dirty overlap、base、同時
+writer、external resource、integration/rollback の必要性から選び、`base`、`owner`、`single_writer`、`paths`（1件でも list）、
+`integration`、`cleanup` を確定する。親 direct、worker、継続修正、generator、formatter、write test などを含め、
+同一 checkout への同時 writer は禁止する。既存変更を commit、move、discard して isolation を作らない。
 
-`lite` / `standard(-adaptive)` / `strict(-adaptive)` / `strict-full` の明示は委譲要求を兼ねる。
-委譲だけが明示され mode が指定されていない場合は `{adaptive, standard}` を選ぶ。`lite` を自動選択しない。
-`direct` と委譲が同時に指定された場合は、実装前にユーザーへ確認する。`direct` から委譲へ変更する場合は、
-ユーザーへ確認する。
+## Route and execution order
 
-### 枝 mode の導出
+ユーザーの direct または委譲の制約をそのまま execution constraint として扱う。execution constraint には direct/委譲、
+指定 worker、isolation、order、parallel の禁止または要求を含める。direct が指定された単位は親が実装し、
+委譲が指定された単位は一名の worker にだけ割り当てる。指定が同時に存在して解決できない場合、無断で経路を変えず
+`stop-incomplete` とする。経路の指定がない場合、各単位について、親 direct の方が安く安全なら direct、それ以外で
+安全に委譲できるなら一名の worker を選ぶ。worker の能力は実装自由度、残存判断、推論難度、手戻り、検証可能性、
+実行コストを相対比較して選び、単なる変更量や file 数だけで上位の worker を選ばない。選択理由を execution data に
+記録する。
 
-`policy: adaptive` では、`baseline` と枝の `implementation_complexity.level` の決定表で枝ごとの mode を導出する。
-決定表の正本は [Branch Plan の受け入れ](references/branch-plan-intake.md) とする。
-`policy: fixed` では導出を行わず、全枝へ `baseline` をそのまま適用する。
+委譲時は v5 の4候補から、仕様が明確で既存 pattern を適用できる通常の `implementer` を原則とする。scope が特に狭く
+検証が明確なら `focused-implementer`、残存判断や手戻りが大きいなら `senior-implementer`、親相当の推論を必要とする
+具体的な理由があり品質を左右する場合だけ `expert-implementer` を選ぶ。単なる変更量や file 数で上位へ昇格せず、迷えば
+`implementer` とする。選択した worker、理由、`base_snapshot`、execution constraint を execution data に記録する。
+ユーザーが指定した worker が品質下限を満たせない場合も無断で変更・続行せず、制約緩和を確認するか、未完了範囲と判断点を
+付けて `stop-incomplete` とする。固定閾値や決定表、暗黙の追加実行環境は持ち込まない。
 
-adaptive の枝 mode は `implementation_complexity.level` だけから導出する。`failure_impact` は adaptive mode の
-直接導出に使わない。`failure_impact` は `{fixed, lite}` の安全性に関する `delegation_mode_proposal` に使う。
-mode の理由の正本は `implementation_complexity.reasons` とする。
+既定の実行順は直列である。各 worker の結果は accept 候補に過ぎず、親が run の baseline に適用して確認するまで
+accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
+を親が確認し、Green で再現可能な accepted baseline だけを後続単位の base にする。
 
-委譲 mode の強度は `lite < standard < strict` とする。導出した枝 mode は Branch Plan へ書き戻さず、
-実行 Data として保持して最終報告で報告する。
+## Fresh context and continuation
 
-### 引き上げと引き下げの契約
+委譲する新しい ID の Work Unit は、Work Unit Data、依存、`base_snapshot`、選択 worker と route、execution constraint、
+isolation、外部副作用の状態、禁止範囲、verification を含む自己完結 handoff で fresh context へ渡す。direct の単位は
+親 context で実行し、新しい worker を起動しない。
 
-引き下げ禁止の対象は配分方針 `{policy, baseline}` とする。ユーザーが明示した `baseline` を親都合で
-引き下げない。`policy` を親都合で `fixed` から `adaptive` へ変えない。
+委譲する新しい単位は新規の `Agent` 呼び出しで履歴を継承しない新規 `Agent` context に起動する。同じ ID の実装上の
+限定修正だけを`SendMessage`で同じ context に返す。
 
-`feature-lead` の経路で、写像した `requested_mode` が `branch-design` の branch-plan-schema.md の
-出力条件表が proposal を要求する組み合わせになる場合に、表が提案する `{policy, baseline}` を
-設定することは、この親都合の変更に含めない。ユーザーが mode を明示して一括実行を要求したことが、
-この引き上げの授権を兼ねる。引き上げ先は出力条件表に委ね、この原稿で別の値を選ばない。
-引き上げ前後の `{policy, baseline}` を記録し、引き上げが生むリスクをユーザーへ報告する。
-proposal の安全性判断は `failure_impact.level` を入力にする。
+AC、scope、責任境界、依存の意味が変わる再正規化は新しい ID とし、旧 context を継続しない。置換理由を execution
+data に残し、依存 edge を再接続する。一意に再接続できなければ `stop-incomplete` とし、同じ成果を二重計上しない。accepted 単位
+を書き換える修正・revert も新しい Work Unit とする。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて
+完了した場合だけ accept する。
 
-枝への mode 割り当ては決定表による導出結果であり、引き下げに当たらない。導出表を逸脱した割り当てだけを
-引き上げ / 引き下げとして扱う。
+## Safe parallel dispatch and integration
 
-mode を引き上げた場合は、その具体的な実装複雑度をユーザーへ報告する。導出結果より高い mode で枝を実行する
-場合も、枝単位で具体的な実装複雑度をユーザーへ報告する。`lite` の選択条件を満たさなくなった場合は
-`standard` 以上へ引き上げる。`standard` では扱えない実装複雑度が判明した場合は `strict` へ引き上げる。
-仕様が曖昧な場合は mode を選ぶ前に実装を止め、ユーザーへ確認する。
+ここで扱う並列化は実装 batch に限る。immutable snapshot と no writer を満たす reviewer の同時 read-only 観測は、実装 batch と重ねない別の実行として許す。候補間の依存がなく、path、derived output、semantic invariant、shared mutable state、
+external namespace の競合がなく、同じ再現可能な base から隔離され、個別 QA と統合 verification が可能で、適用順が
+結果を変えないことをすべて説明できる場合だけ並列に dispatch する。要求されても一つでも説明できない場合、ユーザーが
+parallel を要求していなければ直列化できるが、要求している場合は無断で直列化せず確認または `stop-incomplete` とする。
+判断理由と isolation を execution data に残す。並列中に hidden dependency、scope overlap、base drift が判明した場合は
+新規の並列 dispatch を止め、返却を個別候補として QA し、無理に merge しない。
 
-## 実行前サマリー
+並列の返却は accept 候補として、最後の Green な run baseline へ一件ずつ統合する。既に accepted な単位を含む現在
+baseline の diff、AC、scope、precondition、dirty state、side effect、native verification を毎回確認してから accept
+し、最後の候補の統合 verification をこの parallel batch の `final combined verification` とする。全候補を accepted
+とした後に別の combined gate は置かない。この扱いは run closeout の repository gate を省略するものではない。候補が失敗したら
+accept せず最後の Green へ rollback して再検証する。戻せなければ dispatch を停止し、再正規化または `stop-incomplete`
+とする。隠れた依存を無理に merge しない。
 
-実行前サマリーは Branch Plan 単位で提示する。
-Branch Plan ごとに配分方針、枝 mode ごとの件数、枝一覧を提示する。
-提示のたびにユーザーがその Branch Plan の実行コストを判断できるようにするためであり、
-Set 全体の枝一覧を1回だけ提示する形にはしない。
+## Risk-directed review selection and handoff
 
-導出後、委譲開始前に次を提示する。
+reviewer はユーザーが明示した review goal、または親が AC、diff、test、外部副作用、責務境界その他から特定した具体的な
+risk があり、review 結果が修正、`accept`、`stop-incomplete` の判断を変えうる場合だけ選ぶ。ただし、この risk-directed な
+任意選択とは別に、全 Work Unit の run を閉じる直前には `writing-principles-reviewer` の final writing gate を必ず実施する。
+全作業を reviewer に通す固定 phase、非選択 reviewer の台帳、固定 threshold、巨大な decision table は作らない。明示された
+reviewer、目的、回数その他の制約は守る。指定 reviewer が利用不能で、親と代替 evidence だけでは許容不能 risk を検証できない
+場合は確認を求めるか、`stop-incomplete` とする。
 
-- 解決後の配分方針。`strict` を指定したユーザーが、その場で `strict-adaptive` として解釈されたことを
-  確認できるようにする。
-- 枝 mode ごとの件数。
-- 各枝の `failure_impact.level`、`implementation_complexity.level`、導出した mode、手動上書きの有無。
+既存 reviewer の責務は review goal に対応するものだけを選ぶ。
 
-```text
-Mode: standard-adaptive  (policy: adaptive / baseline: standard)
+- `plan-adversarial-reviewer`: 実装前 plan の具体的な failure path。
+- `test-quality-reviewer`: test 設計、欠落 case、Gunte antipattern。
+- `responsibility-boundary-reviewer`: 責務混在、境界、分散した副作用。
+- `security-side-effect-reviewer`: security、破壊的操作、外部副作用。
+- `writing-principles-reviewer`: How / What / Why / Why Not の配置。
+- `over-engineering-reviewer`: 除去しても AC と制約を失わない要素。
 
-Branch allocation:
-  strict   1
-  standard 3
-  lite     1
+汎用 reviewer を作らず、選択理由と期待する判断変更を execution data に記録する。各 reviewer へは固有の既存入力・出力形式を
+保った自己完結 handoff を渡す。diff reviewer には task / Work Unit、AC、scope と constraints、base / target snapshot、
+commit range、変更 file、完全な diff text、必要な test 結果と周辺 context を含め、checkout path、repository path、commit ID
+だけで diff text を代替しない。plan reviewer には plan 全文と AC / constraints を渡す。diff artifact の存在は必須にせず、
+inline か reviewer が全文を読み込める artifact のいずれかを使う。
 
-1. authorization-check  impact:high / complexity:high    → strict
-2. domain-logic         impact:low  / complexity:medium  → standard
-3. repository-update    impact:medium / complexity:medium → standard
-4. api-response         impact:medium / complexity:low     → lite → standard  (override)
-5. label-text           impact:low / complexity:low        → lite
-```
+## Review findings and continuation
 
-枝 mode ごとの件数は、手動上書き後の実効 mode を集計する。実行コストは実効 mode で決まるため、
-導出 mode の集計では提示の目的を果たさない。各枝の行では、上書きがある場合に
-「導出 mode → 上書き後の mode」の両方を示す。
+親は reviewer の固有出力を execution data に正規化する。各 finding は `source_reviewer`、`target_snapshot`、reviewer の
+native ID（なければ run 内一意の normalized finding ID）、evidence、影響する AC / risk、提案、親の採否と理由を持つ。
+成立性は主張に応じた一次情報で確認する。repository 内の事実は diff / code / test、ユーザー制約は要求原文、外部契約は
+authoritative な契約または文書、外部状態は Action が観測した Data を根拠にする。repository 内に根拠がないという理由だけで
+不採用にしない。
 
-枝 mode ごとの件数は常に提示する。`strict` 枝が一定数を超えた場合の段階警告は持たない。閾値の根拠が
-単一事例であり、枝の重さと repository 規模に依存するため、固定値を契約として持てない。明示的な判断を
-促す目的は件数の常時提示で足りる。
+各 finding を `adopted`、`rejected`、`unresolved` のいずれかに確定し、evidence、AC、risk、上位制約に基づく理由を示す。
+reviewer の severity や結論を `accept` に直結させず、unresolved finding または許容不能 risk を残したまま accept しない。
+同じ snapshot の全 reviewer 結果を集めてから、AC、evidence、security / data loss などの許容不能 risk、scope、rollback、
+検証可能性、最小性で競合を解消する。安全に解消できない競合は確認、再正規化または `stop-incomplete` とする。
 
-### `strict-full` の確認ゲート
+以下の一般的な `adopted` finding の修正・継続規則は `risk-directed review` に限る。`final writing gate` の finding はこの規則の
+対象外であり、後段の final writing gate 固有の stop / remediation 規則に従う。`adopted` finding の修正は既存の route / context 規則へ戻す。同じ ID で AC、scope、責任境界、依存が不変の限定修正だけを
+同じ context へ返す。意味契約が変わる修正は新しい ID と fresh context へ再正規化し、固定修正 agent を導入しない。修正後は
+親 QA と repository-native verification を再実行し、影響を受けた review goal
+だけを新しい snapshot で再 review する。親 QA、新 diff、新 test、副作用 evidence が新しい具体的 risk を示し、結果が判断を
+変えうる場合だけ新しい review goal と対応 reviewer を追加する。影響も新 risk もない reviewer を一律再起動しない。
 
-`strict-full`（`{fixed, strict}`）は枝数に比例してコストが増えるため、枝数を明示したユーザー確認を
-委譲開始条件とする。確認が得られるまで委譲を開始しない。
+review を `continue` するのは、次に確認する具体的な未解決 risk と期待する新しい evidence を説明できる場合だけとする。
+固定 round、0 findings、reviewer の Pass は打ち切りや accept の条件にしない。親が品質下限、known finding の処理、残存 risk
+の許容を独立して確認し、必要な判断が完了した時点で review を打ち切る。
 
-`strict-full` の確認ゲートは Branch Plan 単位で行う。枝数に比例してコストが増えるという根拠が
-Branch Plan 単位で成立するためである。
+## Final writing acceptance gate
 
-## 委譲環境の前提
+全 Work Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
+accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
+risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
+理由に省略できない。ユーザーが途中または追加 review を指定した場合も実施するが、final writing gate の代替にはならない。
+review の回数・時点に衝突がある場合は最初の review 前に確認して解消し、解消できなければ `stop-incomplete` とする。
 
-各実装枝は専用 worktree で隔離する。worktree を用意できない場合は委譲を開始しない。
-委譲機構または必要な agent が利用できない場合は、利用不能の内容と未着手範囲を報告する。
-ユーザーの確認なく親の直接実装へ切り替えない。
+`review_base_snapshot` は、final gate の対象として残る task-owned 変更集合が始まる前の、最後の accepted repository state とする。
+Work Unit ごとの統合で `accepted baseline` が更新されても、final gate の `review_base_snapshot` は更新せず、final gate で run が
+accept されるまで固定する。gate の `target_snapshot` はその固定 base から元変更と remediation を含む累積候補であり、先行
+Work Unit の変更を累積 diff から除外しない。protected dirty/untracked は別の `protected_dirty_record` として扱う。final finding
+後の remediation run でも未受入候補を新しい baseline にせず、同じ accepted base を継承する。この区別は既存の Work Unit 統合を
+置き換える状態機械を追加するものではない。
+reviewed artifact set は `review_base_snapshot` から `target_snapshot` までの repository 累積 diff、存在する commit range と
+各 commit message、reviewer の責務対象として handoff した説明 artifact の集合である。gate handoff には task、全 Work Unit、
+AC、scope / constraints、review base / target、commit range、全変更 file、累積 diff 全文、test 結果、周辺 context、artifact set を
+含める。checkout path、repository path、commit ID だけでこれらを代替しない。
 
+gate 中の target checkout には writer を入れず、親 QA、実装、integration、generator、formatter、write test を重ねない。開始前と
+終了後に target と protected dirty/untracked を再観測し、意味のある drift があればその結果を有効な一回として数えない。安全に
+同じ target / artifact set を再試行できなければ `stop-incomplete` とする。reviewer が利用不能、handoff が不足、read-only isolation
+を確保できない、または result を取得・照合できない場合も確認または `stop-incomplete` とする。
 
-## 全体の流れ
+reviewer の Pass、severity、または 0 findings だけで accept してはならない。親は reviewer の各 finding を一次情報で確認し、
+`adopted`、`rejected`、`unresolved` と理由を execution data に確定する。0 findings または全 finding が `rejected` の場合でも、
+同じ target_snapshot と reviewed artifact set に対して final verification を実行する。`adopted` finding が reviewed artifact の
+内容、identity、または commit range を変える場合は、同じ run で修正も accept もせず `stop-incomplete` とする。後続 remediation
+run は同じ accepted base から元変更と修正を含む累積 target を再び gate する。
 
-1. 目的、入力、出力、Acceptance Criteria、禁止範囲を確定する。
-2. 配分方針を選び、共有土台と直列に受け入れる実装枝へ分け、枝ごとの mode を導出する。
-   確定済み Branch Plan Set が渡されている場合は
-   [Branch Plan の受け入れ](references/branch-plan-intake.md) を読み、再検証してから枝と
-   配分方針の入力にする。`order` に従って Branch Plan を順に実行する。以降の手順は、
-   いま実行している Branch Plan を対象にする。
-3. [実装枝の準備と委譲](references/implementation-branches.md) を読み、基準、worktree、Worker 選択、
-   委譲 prompt を準備する。この時点では起動しない。
-4. expert 候補の場合だけ、起動前に [Expert 選択](references/expert-selection.md) を読む。
-5. 実行前サマリーを提示する。提示と `strict-full` の確認は、いま実行している Branch Plan を
-   単位とする。`strict-full` では枝数を明示したユーザー確認を得るまで委譲を開始しない。
-   審査と準備が完了した先頭の枝だけを委譲する。
-6. Implementer の返答を待ち、返却 commit と実行結果を受け取る。
-7. [返却の QA と統合](references/qa-and-integration.md)、
-   [枝レビューの進行](references/branch-review.md)、
-   [Finding の修正 routing](references/finding-routing.md) を読み、diff、テスト、専門 review、修正経路を判断し、
-   その枝のレビューを initial レビュー群・レビューループ・最終レビュー群・完了レビュー群の4相で進める。どの相でどのゲートを
-   起動するか、1 round の数え方、打ち切り条件、枝の受け入れ点は「枝レビューの進行」を正本とする。
-   reviewer の findings は [Reviewer findings の共通契約](references/reviewer-findings.md) が要求する
-   指摘件数のサマリ行と指摘ごとの evidence を備えた形で受け取る。
-8. QA 修正を続ける場合は手順7の修正経路を継続する。「枝レビューの4相」の枝の受け入れ点を満たして受け入れる
-   場合は1枝だけを統合し、統合後の green を確認して、その commit を次の枝の基準にする。次の枝があれば手順3へ戻る。
-   いま実行している Branch Plan の全枝を完了した場合は、`order` に未実行の Branch Plan が残っていても手順9へ進む。
-   親が未統合の枝について `Rejected` / `Needs revision` を最終判断とし、top-level workflow を
-   終了する場合は、手順9へ進む。
-9. 全枝を完了した場合、または手順8で未統合のまま終了する場合は、
-   [Run の終了処理](references/run-closeout.md) に従い、適用可能な統合済み diff review と
-   最終検証を行い、親の最終判断を確定する。
-10. [Run の終了処理](references/run-closeout.md) に従い、最終 gate 後に、
-    各 worker worktree の cleanup の実施可否と結果を確定する。
-11. 永続 QA レポートの出力条件を満たす場合だけ
-    [永続 QA レポート](references/qa-report.md) を読む。
-12. [Run の終了処理](references/run-closeout.md) に従い、会話上の最終報告を行う。
-    採用した配分方針と枝ごとの mode を含める。ここからは Set 単位で判断する。
-    `order` に未実行の Branch Plan が残る場合は、次の Branch Plan の授権を確認する。未授権の Branch Plan に到達した場合は実行を止め、
-    [Branch Plan の受け入れ](references/branch-plan-intake.md) に従って完了済みの最終報告と
-    未実行 Branch Plan の一覧を提示し、授権を要求する。
-    授権された未実行の Branch Plan があれば手順2へ戻り、その Branch Plan を実行する。
+gate 対象外の execution data の記録は、gate 後に変更してよいのは reviewed artifact と AC の記録の更新、または事実を変えない
+表現修正だけである。reviewed artifact、AC、target_snapshot、reviewed artifact set、commit range 自体を変更する場合は、同じ run で
+accept せず `stop-incomplete` とする。final verification が target または reviewed artifact set を変えた場合も accept せず、安全な
+snapshot 不変の再検証だけを許す。
 
-共有土台の作成は、実装枝の委譲前に親が行える明示的な例外とする。複数枝が同じ fixture、設定、
-テストデータ、生成物を必要とするときだけ先に確定し、検証して基準 commit にする。この例外は、
-返却後の機能修正を親が引き取る根拠にはしない。
+closeout には `review_base_snapshot`、`target_snapshot`、reviewed artifact set、gate result、各 finding の採否、final verification、
+残存 risk を含める。これは execution data の報告であり、固定 QA report、固定 diff artifact、判断点台帳、全 reviewer 必須化、固定
+review loop、固定修正 agent、over-engineering reviewer の mandatory phase を新設するものではない。
 
-全ての委譲 mode で、親の最終判断を省略しない。受け入れた枝では統合後の検証を省略しない。
+## External side effects
+
+外部副作用は worktree と別に execution data で管理する。各 Action に `未実行`、`実行済み`、`結果不明`、resource、
+idempotency、照合方法、補償または rollback を記録する。partial failure または context loss の後は、fresh context で
+再観測し、安全に照合して retry できる場合だけ再実行する。結果不明なら再実行せず `stop-incomplete` とする。共有 resource の順序や
+競合がある場合は並列化しない。未実行の外部 Action について、選択済み review goal の結果が実行可否、対象 / 入力、
+authorization、idempotency、compensation / rollback を変えうる場合、その review 完了と関連 finding の解決を当該 Action の
+precondition にする。外部副作用を伴わない code 作成、および外部 Action を含まない local / read-only verification だけは先行できる。
+verification command 内に外部 Action が含まれる場合も、同じ review 完了と関連 finding 解決の precondition を適用する。外部 Action 後に初めて risk が判明した場合は
+外部状態と result identity を再観測し、既存の外部副作用契約に従って補償、確認または `stop-incomplete` を選ぶ。事後 review を
+実行前保証として扱わない。
+
+## Execution data and conditional persistence
+
+Work Unit、plan、finding、QA 結果は会話内 execution data を既定とする。ユーザー要求、後日再開、別 session / 別担当への
+handoff、外部 review、PR、監査、tool / repository 運用によって現在 context より長く生存する必要がある場合だけ、必要な data を
+一般化した persistence resource へ保存する。complexity、file 数、Work Unit 数を固定 threshold にしない。
+
+保存時は resource の purpose / content、identity、ownership / authorization、sensitivity、current state、idempotency、照合方法、
+retention / lifetime、update / cleanup / compensation を確定する。filesystem / repository では path、tracked / untracked、
+protected dirty state、overwrite の有無、書き込み後の content / status を確認する。PR / Issue / API / artifact store では URL、
+resource ID、revision、remote state、API result を確認する。ユーザー所有 resource を無断で上書きまたは削除しない。必須の永続化を
+安全に実行・照合できなければ確認または `stop-incomplete` とする。artifact が存在すること自体を quality evidence にしない。
+
+## Implementation and TDD
+
+親と worker は、確定した purpose、AC、scope、constraints、depends_on、verification を共有し、指定範囲だけを
+編集する。既存 test の削除、skip、期待値の弱体化、未承認の依存追加、生成物の直接編集はしない。
+
+observable な code behavior は各 Work Unit で Red → Green → Refactor を進める。
+
+1. **Red** — AC から正常系、境界値、異常系、例外経路を導いた test を先に追加し、意味のある failing output を記録する。
+   これを Red 証跡として返却 data に含める。意味のある failing test が成立しない場合は、変更前の evidence、成立しない
+   理由、代替 verification を返す。形式的な mutation は行わない。
+2. **Green** — 最小の実装で test を通し、focused test と必要な native verification の command と結果を記録する。
+3. **Refactor** — AC、責任境界、error handling、命名を保ったまま重複を整理し、Green を再実行する。意味が変わる場合は
+   Green に戻り、同じ Work Unit の範囲を越えない。
+
+## Parent QA and closeout
+
+direct でも委譲でも、親は各単位の結果を受け取った時点の baseline diff、AC、scope、precondition、dirty state、
+test、side effect、既知 risk を自分で確認する。親は worker の報告を鵜呑みにせず、Red/Green/Refactor の evidence、focused
+test、repository-native verification を再実行し、変更が同じ Work Unit の責任境界内にあることを確認する。
+
+AC、scope、責任境界、依存が不変で同じ単位の実装上の不足だけなら、親は同じ ID と context で `continue` して限定修正を
+返す。それ以外は限定修正を続けず、fresh context の新しい ID として再正規化する。親が品質下限を満たし、全要求単位を accepted とし、
+選択した review goal と finding の処理結果を確認し、AC、scope、制約、evidence、残存 risk を説明できる場合は、run accept 前に closeout の repository gate を含む final closeout verification を
+実施する。その verification が Green なら run を accept する。新しい failure が出た場合は run を accept せず Adapt または
+`stop-incomplete` へ戻す。品質下限等を満たせない場合は、未完了範囲、満たせない条件、判断点、evidence、残存 risk、未検証事項を明記して
+`stop-incomplete` とする。固定状態機械や常時必須の永続化された実行成果を新設しない。
+
+最終報告には変更 file、baseline からの diff summary、各 Work Unit の `id`、context、base_snapshot、isolation、依存、
+route、result、verification、final run baseline、実行した command と結果、AC 対応、選択理由、前提、判断点、残存 risk、
+未検証事項、`git status --short` を含める。review を実施した場合は review goal / result、finding の adopted / rejected /
+unresolved と理由、残存 risk を含め、persistence resource がある場合だけ identity / ownership / lifecycle も含める。v4 の
+identifier/path/mode、固定 worktree、必須の追加報告形式を持ち込まず、explicit-only、暫定名、v4/v5 共存を維持する。v4
+mode、Branch Plan、固定 4 phase、over-engineering reviewer の mandatory phase、固定修正経路、永続 artifact の通常必須化を
+持ち込まない。固定 review phase、必須 QA report、必須 diff artifact、判断点台帳を v5 契約へ持ち込まない。親は run を accept したか
+`stop-incomplete` で停止したかを明示し、未承認の追加作業を残さない。
