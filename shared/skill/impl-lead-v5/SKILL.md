@@ -53,6 +53,16 @@ Work Unit Data は run 内一意の `id`、目的、AC、scope、implementation_
 意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Work Unit の意味ではなく
 execution data として扱う。
 
+### Optional work-unit design step
+
+Intake または再正規化で分割、統合、責任境界、依存の設計が非自明な場合だけ、親は同じ context の内部工程として
+`work-unit-design` の手順を任意に参照できる。返された `work_units`、分割／統合 signal、`blocking_gaps` は候補であり、
+親が要求、AC、scope、既存 Work Unit、repository 状態を再検査してから採用する。候補の `acceptance_criteria` は accept の
+確定ではなく、worker、base、isolation、route、実行、後続 Skill の起動権限、保存を候補工程へ含めない。
+
+Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
+親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
+
 ## Dependencies, snapshots, and isolation
 
 `depends_on` の Work Unit ID は dispatch 前に run 内で存在し、unknown と cycle を解消する。当該 Work Unit の dispatch 直前に
