@@ -73,6 +73,7 @@ IMPL_LEAD_V5_SKILL = "impl-lead-v5"
 IMPL_DELEGATE_SKILL = "impl-delegate"
 REVIEW_LOOP_SKILL = "review-loop"
 PLAN_CRAFT_V5_SKILL = "plan-craft-v5"
+WORK_UNIT_DESIGN_SKILL = "work-unit-design"
 SHARED_SKILL_ROOT = Path("shared/skill")
 # Mirror the generator's skill-name -> reference-name mapping so fixtures and
 # path derivation stay data-driven per skill instead of hardcoding one skill.
@@ -111,6 +112,7 @@ SKILL_REFERENCE_NAMES = {
     "feature-lead": (),
     REVIEW_LOOP_SKILL: (),
     PLAN_CRAFT_V5_SKILL: (),
+    WORK_UNIT_DESIGN_SKILL: (),
 }
 
 

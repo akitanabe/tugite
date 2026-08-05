@@ -1,0 +1,6 @@
+interface:
+  display_name: "Internal Work Unit Design"
+  short_description: "Design candidate Work Units only inside plan-craft-v5 or impl-lead-v5"
+  default_prompt: "Use $work-unit-design only inside plan-craft-v5 or impl-lead-v5 as an internal step; do not invoke it directly."
+policy:
+  allow_implicit_invocation: true
