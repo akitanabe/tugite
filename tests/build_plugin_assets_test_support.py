@@ -107,6 +107,7 @@ SKILL_REFERENCE_NAMES = {
         "overengineering-plan-review.md",
     ),
     "feature-lead": (),
+    "review-loop": (),
 }
 
 

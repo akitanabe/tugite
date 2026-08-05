@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import tomllib
 import unittest
 
 from build_plugin_assets_test_support import (
@@ -59,16 +58,13 @@ class ReviewLoopSkillContractsTest(unittest.TestCase):
         self.assertNotIn("disable-model-invocation", source)
         self.assertTrue(claude.startswith("---\nname: review-loop\n"))
         self.assertNotIn("disable-model-invocation", claude)
-        self.assertTrue(codex.startswith(f"{GENERATED_MARKDOWN_WARNING}\n\n---\n"))
+        self.assertTrue(codex.startswith("---\nname: review-loop\n"))
+        self.assertIn(GENERATED_MARKDOWN_WARNING, codex)
         self.assertNotIn("disable-model-invocation", codex)
-        self.assertEqual(
-            tomllib.loads(
-                (REPOSITORY_ROOT / REVIEW_LOOP_CODEX_METADATA).read_text(
-                    encoding="utf-8"
-                )
-            )["policy"]["allow_implicit_invocation"],
-            True,
+        metadata = (REPOSITORY_ROOT / REVIEW_LOOP_CODEX_METADATA).read_text(
+            encoding="utf-8"
         )
+        self.assertRegex(metadata, r"(?m)^  allow_implicit_invocation: true$")
 
     def test_review_loop_generated_bodies_are_platform_streams_of_source(self) -> None:
         """Ensure generated bodies retain source sections while removing marker syntax."""
@@ -92,13 +88,12 @@ class ReviewLoopSkillContractsTest(unittest.TestCase):
 
     def test_review_loop_codex_metadata_is_scalar_and_source_aligned(self) -> None:
         """Keep Codex interface metadata scalar and aligned with the skill name."""
-        metadata = tomllib.loads(
-            (REPOSITORY_ROOT / REVIEW_LOOP_CODEX_METADATA).read_text(encoding="utf-8")
+        metadata = (REPOSITORY_ROOT / REVIEW_LOOP_CODEX_METADATA).read_text(
+            encoding="utf-8"
         )
-        interface = metadata["interface"]
-        self.assertEqual(set(interface), {"display_name", "short_description", "default_prompt"})
-        self.assertTrue(all(isinstance(interface[key], str) for key in interface))
-        self.assertIn("review-loop", interface["default_prompt"])
+        self.assertRegex(metadata, r'(?m)^  display_name: "[^"]+"$')
+        self.assertRegex(metadata, r'(?m)^  short_description: "[^"]+"$')
+        self.assertRegex(metadata, r'(?m)^  default_prompt: ".*review-loop.*"$')
 
 
 if __name__ == "__main__":

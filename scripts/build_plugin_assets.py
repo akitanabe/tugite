@@ -48,6 +48,7 @@ SKILL_REFERENCE_NAMES = {
         "overengineering-plan-review.md",
     ),
     "feature-lead": (),
+    "review-loop": (),
 }
 TERM_NAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 PLACEHOLDER_PATTERN = re.compile(r"\{\{([^{}\n]+)\}\}")
