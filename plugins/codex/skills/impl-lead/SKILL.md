@@ -76,10 +76,31 @@ snapshot とし、review 中はその checkout へ writer を入れない。複�
 target と protected dirty/untracked state を再観測し、意味のある drift があればその snapshot の finding を受け入れ根拠に使わず、
 新しい snapshot で再 review、確認または `stop-incomplete` を選ぶ。
 
-isolation は execution data であり、固定 worktree を必須にはしない。user constraint、dirty overlap、base、同時
+isolation は execution data であり、全環境に固定 path や branch を要求しない。user constraint、dirty overlap、base、同時
 writer、external resource、integration/rollback の必要性から選び、`base`、`owner`、`single_writer`、`paths`（1件でも list）、
 `integration`、`cleanup` を確定する。親 direct、worker、継続修正、generator、formatter、write test などを含め、
 同一 checkout への同時 writer は禁止する。既存変更を commit、move、discard して isolation を作らない。
+
+### Default run-owned checkout
+
+ユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は
+`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から
+run-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration
+を既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。
+既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の
+safe-parallel 条件に従って追加 isolation を選ぶ。
+
+この既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の
+親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback
+の責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する
+こと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を
+省略しない。
+
+ユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。
+その指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned
+worktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。
+作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は
+run の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。
 
 ## Route and execution order
 

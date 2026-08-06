@@ -2789,6 +2789,75 @@ finding の採否、remediation の適格性、再 gate、snapshot、最終状�
 - [ ] F/G は target 不変で final verification を実行し、Green / failure に応じて accepted / stop-incomplete を判定している。
 - [ ] 固定 decision table や実装判断の自動化を追加していない。
 
+## EVAL-39: isolation 未指定時の run-owned checkout 既定
+
+**目的**
+
+ユーザーが isolation を指定しない active v5 `impl-lead` で、最初の書き込み Action より前に確定済み
+`base_snapshot` から run-owned worktree を一つだけ準備し、それを run 全体の既定 checkout として扱うことを確認する。
+ユーザー所有の checkout と作成不能時の停止を、既定経路への無断置換なしに扱えることも確認する。
+
+**評価タイミング**
+
+`intake` 後、実装・test・generator・formatter の最初の書き込み Action より前。
+
+**入力**
+
+親は clean な基準 `S0` を `base_snapshot` に pin し、現在の checkout には保護対象の dirty/untracked が残っている。run には二つの
+Work Unit がある。成功・作成不能 variant は isolation 未指定の入力とし、user-owned checkout・別 isolation・不使用・品質衝突 variant
+はそれぞれ明示された user constraint を持つ入力とする。各 variant は独立して実行し、variant 間で user constraint や worktree の状態を
+共有しない。
+
+- **成功 variant**: run-owned worktree の作成が可能で、ユーザーが指定した既存 worktree を追加で与えない。
+- **作成不能 variant**: isolation 未指定だが、`base_snapshot` から run-owned worktree を作成する Action が失敗する。
+- **user-owned checkout variant**: ユーザーが既存 checkout を使うと明示し、その checkout を実装先として指定する。
+- **別 isolation variant**: ユーザーが別の isolation/worktree を使うと明示し、その resource を実装先として指定する。
+- **不使用 variant**: ユーザーが worktree を使わず current checkout を使うと明示する。
+- **品質衝突 variant**: user-owned checkout または worktree 不使用の指定を守ると品質下限を満たせないことを親が観測できる。
+
+**期待する判断**
+
+成功 variant では、親が最初の書き込み Action として `S0` から run-owned worktree を一つ作成し、二つの Work Unit を同じ run-wide
+既定 checkout で直列に処理する。execution data に `base`、`owner`、`single_writer`、`paths`、`integration`、`cleanup` を確定し、
+追加 worktree は Work Unit 数だけでは作らない。current checkout の dirty/untracked は変更しない。
+
+作成不能 variant では current checkout へ暗黙 fallback せず、未完了範囲と evidence を付けて `stop-incomplete` とする。ユーザーが
+既存 checkout を指定する user-owned checkout variant ではその checkout を既定より優先し、user-owned resource を無断変更・削除しない。
+別 isolation variant でも指定された isolation を既定より優先し、既定 worktree を追加作成しない。不使用 variant では worktree を作成せず、
+明示された current checkout 制約を守る。品質衝突 variant では無断で run-owned または別経路へ変えず、確認または `stop-incomplete` とする。
+
+**必須動作**
+
+- worktree 作成前に `base_snapshot` と protected dirty/untracked を観測・記録する。
+- 最初の write Action の順序、run-wide の一つの既定 checkout、single writer、六つの execution data field を trace で確認する。
+- 親 QA、必要な risk-directed review、final writing gate、integration、rollback を worktree の存在だけで省略しない。
+- safe-parallel の具体的必要がない限り直列を維持し、追加 isolation を選ぶ場合は理由と conflict を記録する。
+
+**禁止動作**
+
+- source/test/generator/formatter を current checkout へ先に書く、または作成不能時に current checkout へ fallback する。
+- dirty/untracked を commit、move、stash、discard して worktree を作る。
+- Work Unit ごとに機械的に worktree を増やす、固定 path/branch/cleanup timing を要求する。
+- worktree の存在自体を evidence、品質、accept の根拠にする。
+- user-owned checkout/worktree/branch を無断変更・削除する。
+
+**許容される差異**
+
+- worktree の具体的な path、branch、作成 mechanism、cleanup timing は実行環境と user constraint に合わせてよい。
+- Claude Code と Codex の起動 mechanism は異なってよいが、isolation の意味、順序、停止条件は共通とする。
+
+**手動評価項目**
+
+- [ ] 成功 variant で write Action 前の `S0` 起点 run-owned worktree が一つだけあり、二つの Work Unit が同じ既定 checkout を使っている。
+- [ ] `base`、`owner`、`single_writer`、`paths`、`integration`、`cleanup` が execution data として確認できる。
+- [ ] 作成不能 variant は fallback せず `stop-incomplete` になっている。
+- [ ] user-owned checkout variant は指定 checkout を優先し、dirty/untracked と user resource が保護されている。
+- [ ] 別 isolation variant は指定 isolation を優先し、run-owned worktree を追加作成していない。
+- [ ] 不使用 variant は worktree を作成せず、明示された current checkout 制約を守っている。
+- [ ] 品質衝突 variant は無断で別経路へ変えず、確認または `stop-incomplete` になっている。
+- [ ] 親 QA/review/final writing gate/integration/rollback が存在確認だけで省略されていない。
+- [ ] worktree の存在を accept 根拠にせず、semantic isolation の判断を追加 decision table や散文 substring へ固定していない。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、

@@ -172,7 +172,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
             f"declarations/codex/skills/{name}/openai.yaml" for name in WORKFLOW_SKILLS
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
-        self.assertEqual("5.0.0", config["project"]["version"])
+        self.assertEqual("5.1.0", config["project"]["version"])
 
     def test_gunte_owns_workflow_skills_and_codex_metadata(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
@@ -215,6 +215,17 @@ class V5RepositoryContractsTest(unittest.TestCase):
             ],
             codex_skill_rules,
         )
+
+    def test_impl_lead_defines_run_owned_default_isolation_contract(self) -> None:
+        source = (ROOT / "shared/skill/impl-lead/SKILL.md").read_text(encoding="utf-8")
+        heading = "### Default run-owned checkout"
+        self.assertEqual(1, source.count(heading))
+        self.assertLess(source.index(heading), source.index("\n## Route and execution order"))
+
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        eval_heading = "## EVAL-39: isolation 未指定時の run-owned checkout 既定"
+        self.assertEqual(1, corpus.count(eval_heading))
+        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
 
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
         implicit_skills = {"review-loop", "work-unit-design"}
@@ -413,7 +424,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
-        self.assertEqual("5.0.0", version)
+        self.assertEqual("5.1.0", version)
         self.assertEqual(
             version,
             json.loads((ROOT / "declarations/claude/plugin.json").read_text(encoding="utf-8"))["version"],
