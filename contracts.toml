@@ -409,3 +409,153 @@ kind = "requires"
 slice = "gunte-test-quality"
 pattern = "editorial review"
 applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-642457e2]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "final writing gate"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-89150988]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "finding Data"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-d2943276]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "final remediation Work Unit"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-4a11b1ea]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`id`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-f1331240]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`purpose`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-2cfdf68e]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`acceptance_criteria`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b5d7e713]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`scope`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-84248bf0]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`change`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-0ff7524e]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`exclude`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-596e7cad]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`implementation_freedom`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b8352482]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`constraints`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-c849323a]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`depends_on`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-8106515b]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`verification`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-5fb37d04]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit message"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-740b9168]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit range"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-a80e1199]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "before/after identity"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-dbe8c239]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "same-run accept exception"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-550cdb37]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "fresh Implementer context"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-19309f89]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "single writer"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-6bf30d81]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "mechanically restart"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-0b0c31ed]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "mandatory final writing review"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b05e9dec]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "closeout"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-1947765d]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "review-patch-refactorer"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-bb2ae611]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "fixed patch agent"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-19382517]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "全 finding の固定 loop"
+applies_to = ["claude", "codex"]
