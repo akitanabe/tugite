@@ -340,6 +340,47 @@ class V5RepositoryContractsTest(unittest.TestCase):
             with self.subTest(pattern=pattern):
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
 
+    def test_final_writing_remediation_registry_has_bounded_route_inventory(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        entries = [
+            entry
+            for entry in registry.values()
+            if entry.get("slice") == "final-writing-remediation"
+        ]
+        expected = {
+            "final-writing-remediation-requires-642457e2": ("requires", "final writing gate"),
+            "final-writing-remediation-requires-89150988": ("requires", "finding Data"),
+            "final-writing-remediation-requires-d2943276": ("requires", "final remediation Work Unit"),
+            "final-writing-remediation-requires-5247a6a0": ("requires", "scope / exclude"),
+            "final-writing-remediation-requires-550cdb37": ("requires", "fresh Implementer context"),
+            "final-writing-remediation-requires-19309f89": ("requires", "single writer"),
+            "final-writing-remediation-requires-6bf30d81": ("requires", "mechanically restart"),
+            "final-writing-remediation-requires-0b0c31ed": ("requires", "mandatory final writing review"),
+            "final-writing-remediation-requires-b05e9dec": ("requires", "closeout"),
+            "final-writing-remediation-forbids-1947765d": ("forbids", "review-patch-refactorer"),
+            "final-writing-remediation-forbids-bb2ae611": ("forbids", "fixed patch agent"),
+            "final-writing-remediation-forbids-19382517": ("forbids", "全 finding の固定 loop"),
+        }
+        names = [
+            name
+            for name, entry in registry.items()
+            if entry.get("slice") == "final-writing-remediation"
+        ]
+        self.assertEqual(len(expected), len(entries))
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(set(expected), set(names))
+        for name, (kind, pattern) in expected.items():
+            with self.subTest(contract=name):
+                entry = registry[name]
+                self.assertEqual(
+                    {"kind", "slice", "pattern", "applies_to"},
+                    set(entry),
+                )
+                self.assertEqual(kind, entry["kind"])
+                self.assertEqual("final-writing-remediation", entry["slice"])
+                self.assertEqual(pattern, entry["pattern"])
+                self.assertEqual(["claude", "codex"], entry["applies_to"])
+
     def test_sliced_contract_ids_are_stable_content_hashes(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         for name, entry in registry.items():

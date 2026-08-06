@@ -2660,6 +2660,130 @@ Implementer の返却後、親は (a) 設計確定して implementer に再委�
 - [ ] senior の事前 reviewer を起動せず、割当理由3点を親が自己申告している。
 - [ ] 返却時に3経路を選び、旧 worktree/git branch を破棄して新 context を基準 commit から作成している。
 
+## EVAL-38: final writing finding の局所 remediation と再 gate 境界
+
+**目的**
+
+必須 read-only `writing-principles-reviewer` の finding を親が一次情報で採否し、局所的・非semanticな採用指摘だけを
+同じ run の最終 remediation Work Unit として安全に閉じられることを確認する。semantic な指摘では通常 Work Unit と
+mandatory final writing review の再実行へ分岐する。各 subcase は独立した入力とし、reviewer / remediation writer の identity、
+target snapshot の前後、再 gate の有無、最終状態を観測できるようにする。
+
+**評価タイミング**
+
+全 Work Unit の親 QA と `writing-principles-reviewer` の final gate が完了した直後。
+
+**共通入力と境界**
+
+各 subcase は `review_base_snapshot = S0` とし、`S1` を remediation 前の元変更を含む累積 target、`S2` を remediation 後または
+通常 Work Unit 後の元変更を含む累積 target とする。read-only reviewer identity は `writing-principles-reviewer/WR-7` とする。
+remediation を実行する場合は reviewer と異なる `implementer/IMP-*` を writer とし、親が writer の同時実行なしを確認する。
+局所 remediation は `S1 -> S2` とし、semantic / 広い変更では現 run で `S1` を受け入れず、後続の通常 Work Unit が `S0` から
+元変更も含む `S2` を構築した後に mandatory final writing review を再実行する。
+
+### Subcase A: test 名と comment だけの局所 finding
+
+**入力**
+
+`F-A` は code の処理を言い換える comment と、公開出力を変えない test 名の曖昧な語を修正する提案。親は diff、AC、public
+contract、責任境界、依存、外部副作用、rollback、verification を確認でき、reviewer は変更せず finding Data だけを返す。
+
+**期待する判断**
+
+`F-A` を adopted とし、`FR-A`（一意な id、purpose、observable AC、scope / exclude、constraints、depends_on、verification、
+implementation freedom）を final remediation Work Unit として通常の worker 選択、fresh Implementer context、single writer で実行する。
+`implementer/IMP-A` が `S1 -> S2` を作成し、親 QA と focused / repository-native / final verification が Green なら、writing reviewer を
+再起動せず同じ run を `accepted` とする。
+
+### Subcase B: commit message の Why 不足
+
+**入力**
+
+`F-B` は diff の振る舞いを変えない commit message の動機不足を補う提案。変更対象は commit message のみで、AC、public
+contract、責任境界、依存、外部副作用、rollback、verification は不変である。
+
+**期待する判断**
+
+`F-B` を adopted として `FR-B` に正規化し、reviewer/WR-7 とは異なる `implementer/IMP-B` が `S1 -> S2` を作成する。親 QA と
+repository-native / final verification 後、writing reviewer の再 gate は行わず同じ run を `accepted` とする。finding 対応外の file、
+test、commit range を追加した場合はこの subcase の条件不成立として扱う。
+
+### Subcase C: public API rename
+
+**入力**
+
+`F-C` は公開 `formatDuration` を `formatElapsed` に rename する提案で、呼び出し元、fixture、public API contract の更新が必要になる。
+
+**期待する判断**
+
+`F-C` は semantic / public contract 変更として通常の新 Work Unit `WU-C` に再正規化し、現 run の最終状態を `stop-incomplete` とする。
+`implementer/IMP-C` が後続 context で `S0` から元変更も含む `S2` を実装・検証した後、累積 target に対して mandatory final writing review を再実行し、Green と
+親 QA の後だけ `accepted` に到達できる。現 run で局所 remediation として accept しない。
+
+### Subcase D: 責任境界の再設計
+
+**入力**
+
+`F-D` は calculation と外部 I/O を別責務へ分離する構造変更の提案で、責任境界と変更構造が広がる。
+
+**期待する判断**
+
+`F-D` は通常 Work Unit `WU-D` に再正規化し、現 run は `stop-incomplete` とする。`implementer/IMP-D` は reviewer/WR-7 と異なる fresh
+context で実装し、`S0` から元変更も含む `S2` を構築した後に mandatory final writing review を再実行する。再 gate 前に `accepted` として閉じない。
+
+### Subcase E: 局所性・rollback・verification が不明
+
+**入力**
+
+`F-E` は test 名を直す提案だが、変更許可 scope、rollback 手順、または verification のいずれかが親の一次情報で確定できない。
+
+**期待する判断**
+
+`F-E` は `unresolved` として writer を起動せず、`remediation_writer = none`、target は `S1` のまま、再 gate は `not-started` と記録する。
+確認できるまで `stop-incomplete`（または確認待ち）とし、reviewer/WR-7 を writer や受入決定者にしない。
+
+### Subcase F: findings 0 件
+
+**入力**
+
+`writing-principles-reviewer/WR-7` は `findings = []` を返し、reviewer は変更していない。元変更を含む target は `S1` である。
+
+**期待する判断**
+
+`remediation_writer = none`、target は不変の `S1`、再 gate は `not-needed` とし、同じ `S1` と reviewed artifact set に対して final verification を
+実行する。Green かつ unresolved risk がなければ最終状態を `accepted` とする。
+
+### Subcase G: findings 全件 rejected
+
+**入力**
+
+`F-G` は reviewer/WR-7 が返した finding だが、親が diff と AC の一次情報から採用根拠なしと確定し、`rejected` と理由を記録する。adopted / unresolved はない。
+
+**期待する判断**
+
+`remediation_writer = none`、target は不変の `S1`、再 gate は `not-needed` とし、同じ target_snapshot と reviewed artifact set に対して final verification を
+実行する。Green なら `accepted`、verification が不成立なら `stop-incomplete` とする。
+
+**共通の禁止動作**
+
+- writing reviewer に file 編集、test、commit、Work Unit ownership、受入判断をさせる。
+- reviewer と remediation writer を同一 agent または同時 writer にする。
+- 全 finding を固定 loop で回す、focused worker / 固定 patch agent を一律必須にする、または全 reviewer を再起動する。
+- semantic / 責任境界変更を局所 remediation として現 run で accept する。
+
+**Claude/Codex 差**
+
+finding の採否、remediation の適格性、再 gate、snapshot、最終状態の判断は共通で、worker / reviewer の起動 mechanism だけが異なる。
+
+**手動評価項目**
+
+- [ ] 各 subcase が独立し、reviewer と writer の identity、target 前後、再 gate 有無、最終状態を記録している。
+- [ ] A/B は必要な final remediation Work Unit の field、fresh context、single writer、親 QA、verification、同一 run accept が揃っている。
+- [ ] C/D は通常 Work Unit、現 run stop-incomplete、累積 target の mandatory final writing review 再実行へ分岐している。
+- [ ] E は局所性・rollback・verification 不明を理由に確認/stop し、writer を起動していない。
+- [ ] F/G は target 不変で final verification を実行し、Green / failure に応じて accepted / stop-incomplete を判定している。
+- [ ] 固定 decision table や実装判断の自動化を追加していない。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、
