@@ -227,6 +227,12 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertEqual(1, corpus.count(eval_heading))
         self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
 
+    def test_workflow_corpus_registers_eval_40_before_result_record(self) -> None:
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        eval_heading = "## EVAL-40: run-owned closeout の既定 Action"
+        self.assertEqual(1, corpus.count(eval_heading))
+        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
+
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
         implicit_skills = {"review-loop", "work-unit-design"}
         for name in WORKFLOW_SKILLS:
