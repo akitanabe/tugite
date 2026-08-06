@@ -216,6 +216,23 @@ class V5RepositoryContractsTest(unittest.TestCase):
             codex_skill_rules,
         )
 
+    def test_impl_lead_defines_run_owned_default_isolation_contract(self) -> None:
+        source = (ROOT / "shared/skill/impl-lead/SKILL.md").read_text(encoding="utf-8")
+        heading = "### Default run-owned checkout"
+        self.assertEqual(1, source.count(heading))
+        self.assertLess(source.index(heading), source.index("\n## Route and execution order"))
+
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        eval_heading = "## EVAL-39: isolation 未指定時の run-owned checkout 既定"
+        self.assertEqual(1, corpus.count(eval_heading))
+        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
+
+    def test_workflow_corpus_registers_eval_40_before_result_record(self) -> None:
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        eval_heading = "## EVAL-40: run-owned closeout の既定 Action"
+        self.assertEqual(1, corpus.count(eval_heading))
+        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
+
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
         implicit_skills = {"review-loop", "work-unit-design"}
         for name in WORKFLOW_SKILLS:
