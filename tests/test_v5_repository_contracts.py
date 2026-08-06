@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import tomllib
@@ -332,6 +333,23 @@ class V5RepositoryContractsTest(unittest.TestCase):
         for pattern, entry in retired_skill_entries.items():
             with self.subTest(pattern=pattern):
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_sliced_contract_ids_are_stable_content_hashes(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        for name, entry in registry.items():
+            if "slice" not in entry:
+                continue
+            canonical = "\0".join(
+                (
+                    entry["kind"],
+                    entry["slice"],
+                    entry["pattern"],
+                    ",".join(sorted(entry["applies_to"])),
+                )
+            )
+            digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:8]
+            with self.subTest(contract=name):
+                self.assertTrue(name.endswith(f"-{digest}"), name)
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
