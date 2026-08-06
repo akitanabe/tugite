@@ -33,6 +33,10 @@ workflow skill、metadata を生成し、未登録 source や stale path は走�
 契約は生成物から観測できる不変条件に限定します。Gunte の生成、projection、serialization、byte drift は `gunte check`
 に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
 
+`slice` を持つ契約の ID は `<意味を表す prefix>-<8桁 hash>` とします。hash は `kind`、`slice`、`pattern`、辞書順に
+並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の SHA-256 先頭8桁を小文字16進数で表します。
+列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
+
 ## 追加・変更時に触れる場所
 
 agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の

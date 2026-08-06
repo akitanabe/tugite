@@ -29,6 +29,10 @@ Gunte は `gunte.toml` の `sources.files` に列挙した agent、manifest、ve
 だけに使います。未登録 source、unknown/stale declaration、必須 path、retired path は repository contract の
 構造テストで保護し、LLM の判断品質は EVAL で扱います。
 
+`slice` を持つ契約の ID は `<意味を表す prefix>-<8桁 hash>` とします。hash は `kind`、`slice`、`pattern`、辞書順に
+並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の SHA-256 先頭8桁を小文字16進数で表します。
+列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
+
 ## コーディングスタイルと命名
 
 Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な `snake_case` 名を使用します。Bash は既存スタイルに

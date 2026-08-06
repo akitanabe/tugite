@@ -169,6 +169,11 @@ Bash を許可する reviewer も対象 repository では読み取りと検証�
 
 ## 編集と生成
 
+`contracts.toml` で `slice` を持つ契約の ID は、`<意味を表す prefix>-<8桁 hash>` とします。hash は
+`kind`、`slice`、`pattern`、辞書順に並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の
+SHA-256 先頭8桁を小文字16進数で表します。列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す
+安定した ID を使用できます。
+
 共通原稿を編集したら、配布物を再生成します。
 
 ```text

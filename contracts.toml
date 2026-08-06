@@ -1,310 +1,310 @@
-[contracts.focused-worker-boundary-requires-1]
+[contracts.focused-worker-boundary-requires-9b85e554]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "Acceptance Criteria"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-2]
+[contracts.focused-worker-boundary-requires-235488ac]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "scope"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-3]
+[contracts.focused-worker-boundary-requires-4132c5bb]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "責任境界"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-4]
+[contracts.focused-worker-boundary-requires-cb604fec]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "依存"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-5]
+[contracts.focused-worker-boundary-requires-06c83de3]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "再定義"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-6]
+[contracts.focused-worker-boundary-requires-4532d5e9]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "不足"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-7]
+[contracts.focused-worker-boundary-requires-4ab246f9]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "矛盾"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-8]
+[contracts.focused-worker-boundary-requires-6c850e19]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "推測せず親"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-requires-9]
+[contracts.focused-worker-boundary-requires-550c77bb]
 kind = "requires"
 slice = "focused-worker-boundary"
 pattern = "最終受入"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-forbids-1]
+[contracts.focused-worker-boundary-forbids-d343537a]
 kind = "forbids"
 slice = "focused-worker-boundary"
 pattern = "委譲 mode"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-forbids-2]
+[contracts.focused-worker-boundary-forbids-bf4e6142]
 kind = "forbids"
 slice = "focused-worker-boundary"
 pattern = "固定 worktree"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-forbids-3]
+[contracts.focused-worker-boundary-forbids-ff8b3e7d]
 kind = "forbids"
 slice = "focused-worker-boundary"
 pattern = "段階 gate"
 applies_to = ["claude", "codex"]
 
-[contracts.focused-worker-boundary-forbids-4]
+[contracts.focused-worker-boundary-forbids-61e7a193]
 kind = "forbids"
 slice = "focused-worker-boundary"
 pattern = "段階 commit"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-1]
+[contracts.implementer-boundary-requires-aa28bb77]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "Acceptance Criteria"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-2]
+[contracts.implementer-boundary-requires-72831c53]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "scope"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-3]
+[contracts.implementer-boundary-requires-6a1e0c11]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "責任境界"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-4]
+[contracts.implementer-boundary-requires-ae3fd2b2]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "依存"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-5]
+[contracts.implementer-boundary-requires-64105d5f]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "再定義"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-6]
+[contracts.implementer-boundary-requires-aaf16745]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "不足"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-7]
+[contracts.implementer-boundary-requires-f05f38a4]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "矛盾"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-8]
+[contracts.implementer-boundary-requires-ab54ceed]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "推測せず親"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-requires-9]
+[contracts.implementer-boundary-requires-9fa5842e]
 kind = "requires"
 slice = "implementer-boundary"
 pattern = "最終受入"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-forbids-1]
+[contracts.implementer-boundary-forbids-145e12de]
 kind = "forbids"
 slice = "implementer-boundary"
 pattern = "委譲 mode"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-forbids-2]
+[contracts.implementer-boundary-forbids-90d83e13]
 kind = "forbids"
 slice = "implementer-boundary"
 pattern = "固定 worktree"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-forbids-3]
+[contracts.implementer-boundary-forbids-8eb3b7ad]
 kind = "forbids"
 slice = "implementer-boundary"
 pattern = "段階 gate"
 applies_to = ["claude", "codex"]
 
-[contracts.implementer-boundary-forbids-4]
+[contracts.implementer-boundary-forbids-8ce79198]
 kind = "forbids"
 slice = "implementer-boundary"
 pattern = "段階 commit"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-1]
+[contracts.senior-worker-boundary-requires-c9687295]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "Acceptance Criteria"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-2]
+[contracts.senior-worker-boundary-requires-065efc01]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "scope"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-3]
+[contracts.senior-worker-boundary-requires-a4e51863]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "責任境界"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-4]
+[contracts.senior-worker-boundary-requires-d75e85ef]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "依存"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-5]
+[contracts.senior-worker-boundary-requires-928f2f60]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "再定義"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-6]
+[contracts.senior-worker-boundary-requires-352a2571]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "不足"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-7]
+[contracts.senior-worker-boundary-requires-d0e0b5a8]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "矛盾"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-8]
+[contracts.senior-worker-boundary-requires-a4770b7e]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "推測せず親"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-requires-9]
+[contracts.senior-worker-boundary-requires-6d2def62]
 kind = "requires"
 slice = "senior-worker-boundary"
 pattern = "最終受入"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-forbids-1]
+[contracts.senior-worker-boundary-forbids-a3a423e8]
 kind = "forbids"
 slice = "senior-worker-boundary"
 pattern = "委譲 mode"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-forbids-2]
+[contracts.senior-worker-boundary-forbids-831be51a]
 kind = "forbids"
 slice = "senior-worker-boundary"
 pattern = "固定 worktree"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-forbids-3]
+[contracts.senior-worker-boundary-forbids-a4fb3b74]
 kind = "forbids"
 slice = "senior-worker-boundary"
 pattern = "段階 gate"
 applies_to = ["claude", "codex"]
 
-[contracts.senior-worker-boundary-forbids-4]
+[contracts.senior-worker-boundary-forbids-863d8fb5]
 kind = "forbids"
 slice = "senior-worker-boundary"
 pattern = "段階 commit"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-1]
+[contracts.expert-worker-boundary-requires-5929d8dd]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "Acceptance Criteria"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-2]
+[contracts.expert-worker-boundary-requires-1c8ca5b5]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "scope"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-3]
+[contracts.expert-worker-boundary-requires-9155c315]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "責任境界"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-4]
+[contracts.expert-worker-boundary-requires-4ee97eeb]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "依存"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-5]
+[contracts.expert-worker-boundary-requires-3f23297f]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "再定義"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-6]
+[contracts.expert-worker-boundary-requires-78d729ea]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "不足"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-7]
+[contracts.expert-worker-boundary-requires-87d4dffa]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "矛盾"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-8]
+[contracts.expert-worker-boundary-requires-b466f788]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "推測せず親"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-requires-9]
+[contracts.expert-worker-boundary-requires-b99d5c20]
 kind = "requires"
 slice = "expert-worker-boundary"
 pattern = "最終受入"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-forbids-1]
+[contracts.expert-worker-boundary-forbids-12a0a54c]
 kind = "forbids"
 slice = "expert-worker-boundary"
 pattern = "委譲 mode"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-forbids-2]
+[contracts.expert-worker-boundary-forbids-b2263e12]
 kind = "forbids"
 slice = "expert-worker-boundary"
 pattern = "固定 worktree"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-forbids-3]
+[contracts.expert-worker-boundary-forbids-d62f4d21]
 kind = "forbids"
 slice = "expert-worker-boundary"
 pattern = "段階 gate"
 applies_to = ["claude", "codex"]
 
-[contracts.expert-worker-boundary-forbids-4]
+[contracts.expert-worker-boundary-forbids-bd1d7ec8]
 kind = "forbids"
 slice = "expert-worker-boundary"
 pattern = "段階 commit"
@@ -350,61 +350,61 @@ kind = "forbids"
 pattern = "plan-craft-v5"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-1]
+[contracts.test-quality-9691678e]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "散文見出し"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-2]
+[contracts.test-quality-c7589fd2]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "独自Markdown parser"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-3]
+[contracts.test-quality-bcfe89a2]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "空scope"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-4]
+[contracts.test-quality-2008acea]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "過広scope"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-5]
+[contracts.test-quality-da7c130d]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "囮substring"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-6]
+[contracts.test-quality-01557e90]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "Gunte の生成、projection、serialization、predicate、byte drift"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-7]
+[contracts.test-quality-c31d0a88]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "structural test"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-8]
+[contracts.test-quality-6ad5547b]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "requires / forbids / order"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-9]
+[contracts.test-quality-1e06c719]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "EVAL"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-10]
+[contracts.test-quality-4bb4764d]
 kind = "requires"
 slice = "gunte-test-quality"
 pattern = "editorial review"
