@@ -2,7 +2,7 @@ spec_version = 1
 
 [project]
 id = "tugite"
-version = "5.1.0"
+version = "5.0.0"
 
 [sources]
 files = [

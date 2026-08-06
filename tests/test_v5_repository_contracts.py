@@ -172,7 +172,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
             f"declarations/codex/skills/{name}/openai.yaml" for name in WORKFLOW_SKILLS
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
-        self.assertEqual("5.1.0", config["project"]["version"])
+        self.assertEqual("5.0.0", config["project"]["version"])
 
     def test_gunte_owns_workflow_skills_and_codex_metadata(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
@@ -424,7 +424,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
-        self.assertEqual("5.1.0", version)
+        self.assertEqual("5.0.0", version)
         self.assertEqual(
             version,
             json.loads((ROOT / "declarations/claude/plugin.json").read_text(encoding="utf-8"))["version"],
