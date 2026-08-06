@@ -235,13 +235,15 @@ Data と親の理由を closeout に残す。`unresolved` を残したまま acc
 すべて満たすかを確認する。
 
 - AC、公開 contract、責任境界、依存、外部副作用を変えない局所的・非semanticな変更である。
-- 変更を許す `scope / exclude`、rollback、verification を修正前に閉じられる。
+- `scope.change` / `scope.exclude`、rollback、verification を修正前に閉じられる。
 - 指摘対応以外の変更を含まず、同じ accepted base から前後の target snapshot を比較できる。
 
-条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化する。この Work Unit には
-`purpose`、observable な `acceptance criteria`、`scope / exclude`、`constraints`、`depends_on`、`verification`、
-`implementation freedom` を含め、元の Work Unit の意味を変更しない。これは同じ run の最終 remediation として、通常の
-worker 選択、fresh Implementer context、single writer で実装する。`writing-principles-reviewer` は writer、Implementer、Work Unit owner、
+条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化する。Work Unit Data は `id`、`purpose`、
+`acceptance_criteria`、`scope`（`change` / `exclude`）、`implementation_freedom`、`constraints`、`depends_on`、`verification` の
+canonical field に統一し、概念名を別 key のように置き換えない。
+
+元の Work Unit の意味を変更せず、同じ run の最終 remediation として通常の worker 選択、fresh Implementer context、single writer
+で実装する。`writing-principles-reviewer` は writer、Implementer、Work Unit owner、
 受入決定者にならず、reviewer と remediation writer を同一 agent または同時 writer にしない。`focused-implementer` や固定 patch agent を
 一律に要求しない。
 
@@ -250,15 +252,23 @@ focused / repository-native / final verification を実行する。これらを�
 `mechanically restart` せず、その finding Data、前後 snapshot、QA、verification を accept 根拠にできる。局所性、非semantic性、
 rollback、verification のいずれかを説明できなければ確認または `stop-incomplete` とする。
 
+この eligible remediation では、修正の結果として reviewed artifact content/identity、target_snapshot、reviewed artifact set、
+commit range/commit message が変わりうる。親は before/after identity と比較、指摘対応以外の変更がないこと、QA、verification を
+同じ run (same run) の accept 根拠として明示する。この扱いは final writing gate の通常の snapshot 不変規則に対する `same-run accept exception`
+であり、commit-message-only remediation もこの経路で実行できる。commit-message-only remediation として扱う場合に限り、commit message
+以外の file、test、無関係な commit/range を加えた変更はその subcase の eligible 条件を満たさず、`stop-incomplete` とする。commit
+message を対象にしない局所的な code/test/comment remediation は、先行する eligible 条件を満たす限り許可する。
+
 条件を満たさない finding、または semantic / public contract / 責任境界 / AC / 依存の変更や広い構造変更を要する finding は、
 通常の新しい Work Unit に再正規化する。現 run では修正を accept せず `stop-incomplete` とし、修正後の元変更を含む累積 target に
 対して `mandatory final writing review` を再実行してから受入判断する。#149 の optional risk-directed review は、影響する review
 goal または新しい具体的 risk がある場合だけ再確認し、writing finding の採否だけを理由に全 reviewer を再起動しない。
 
 gate 対象外の execution data の記録は、上記の bounded remediation Work Unit に伴う前後 snapshot・verification の更新、または
-事実を変えない表現修正だけを許す。これらの条件に該当しない reviewed artifact、AC、target_snapshot、reviewed artifact set、commit
-range 自体の変更は、同じ run で accept せず `stop-incomplete` とする。final verification が target または reviewed artifact set を
-変えた場合も accept せず、安全な snapshot 不変の再検証だけを許す。
+事実を変えない表現修正だけを許す。ただし上記の eligible remediation exception に該当する reviewed artifact、target_snapshot、
+reviewed artifact set、commit range/commit message の変更は、修正前後の identity と比較、QA、verification を記録することで同じ
+run に accept できる。exception に該当しないこれらの変更や、final verification が対象を変える変更は accept せず
+`stop-incomplete` とし、安全な snapshot 不変の再検証だけを許す。
 
 closeout には writing target、`review_base_snapshot` と remediation 前後の `target_snapshot`、reviewed artifact set、gate result、
 各 finding の adopted / rejected / unresolved と理由、remediation Work Unit（該当時）、focused / repository-native / final

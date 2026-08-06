@@ -428,10 +428,88 @@ slice = "final-writing-remediation"
 pattern = "final remediation Work Unit"
 applies_to = ["claude", "codex"]
 
-[contracts.final-writing-remediation-requires-5247a6a0]
+[contracts.final-writing-remediation-requires-4a11b1ea]
 kind = "requires"
 slice = "final-writing-remediation"
-pattern = "scope / exclude"
+pattern = "`id`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-f1331240]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`purpose`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-2cfdf68e]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`acceptance_criteria`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b5d7e713]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`scope`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-84248bf0]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`change`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-0ff7524e]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`exclude`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-596e7cad]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`implementation_freedom`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b8352482]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`constraints`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-c849323a]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`depends_on`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-8106515b]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`verification`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-5fb37d04]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit message"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-740b9168]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit range"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-a80e1199]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "before/after identity"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-dbe8c239]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "same-run accept exception"
 applies_to = ["claude", "codex"]
 
 [contracts.final-writing-remediation-requires-550cdb37]

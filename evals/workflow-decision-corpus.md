@@ -2671,13 +2671,15 @@ target snapshot の前後、再 gate の有無、最終状態を観測できる�
 
 **評価タイミング**
 
-全 Work Unit の親 QA と `writing-principles-reviewer` の final gate が完了した直後。
+全 Work Unit の親 QA と `writing-principles-reviewer` の final writing gate が完了した直後。
 
 **共通入力と境界**
 
 各 subcase は `review_base_snapshot = S0` とし、`S1` を remediation 前の元変更を含む累積 target、`S2` を remediation 後または
 通常 Work Unit 後の元変更を含む累積 target とする。read-only reviewer identity は `writing-principles-reviewer/WR-7` とする。
-remediation を実行する場合は reviewer と異なる `implementer/IMP-*` を writer とし、親が writer の同時実行なしを確認する。
+remediation を実行する場合は synthetic placeholder の writer identity（例: `REM-A`）を記録し、reviewer とは異なる writer identity
+であることと、親が通常の worker 選択で決めた worker 種別を別に記録する。`REM-A` などの placeholder は worker 種別を固定せず、
+focused / implementer / senior / expert のいずれかを指定しない。親が writer の同時実行なしを確認する。
 局所 remediation は `S1 -> S2` とし、semantic / 広い変更では現 run で `S1` を受け入れず、後続の通常 Work Unit が `S0` から
 元変更も含む `S2` を構築した後に mandatory final writing review を再実行する。
 
@@ -2690,9 +2692,10 @@ contract、責任境界、依存、外部副作用、rollback、verification を
 
 **期待する判断**
 
-`F-A` を adopted とし、`FR-A`（一意な id、purpose、observable AC、scope / exclude、constraints、depends_on、verification、
-implementation freedom）を final remediation Work Unit として通常の worker 選択、fresh Implementer context、single writer で実行する。
-`implementer/IMP-A` が `S1 -> S2` を作成し、親 QA と focused / repository-native / final verification が Green なら、writing reviewer を
+`F-A` を adopted とし、`FR-A`（`id`、`purpose`、`acceptance_criteria`、`scope.change`、`scope.exclude`、
+`implementation_freedom`、`constraints`、`depends_on`、`verification`）を final remediation Work Unit として通常の worker 選択、fresh
+context、single writer で実行する。synthetic writer identity `REM-A` が `S1 -> S2` を作成し、親 QA と focused / repository-native /
+final verification が Green なら、writing reviewer を
 再起動せず同じ run を `accepted` とする。
 
 ### Subcase B: commit message の Why 不足
@@ -2704,9 +2707,11 @@ contract、責任境界、依存、外部副作用、rollback、verification は
 
 **期待する判断**
 
-`F-B` を adopted として `FR-B` に正規化し、reviewer/WR-7 とは異なる `implementer/IMP-B` が `S1 -> S2` を作成する。親 QA と
-repository-native / final verification 後、writing reviewer の再 gate は行わず同じ run を `accepted` とする。finding 対応外の file、
-test、commit range を追加した場合はこの subcase の条件不成立として扱う。
+`F-B` を adopted として `FR-B` に正規化し、reviewer/WR-7 とは異なる synthetic writer identity `REM-B` が `S1 -> S2` を作成する。
+commit message の変更による commit identity/range/artifact set の before/after を記録し、これは eligible remediation
+exception として同じ run の accept 根拠にする。親 QA と repository-native / final verification 後、writing reviewer の再 gate は行わず
+同じ run を `accepted` とする。finding 対応外の file、test、無関係な commit または commit range を追加した場合はこの subcase の
+条件不成立として扱い、`stop-incomplete` とする。
 
 ### Subcase C: public API rename
 
@@ -2717,7 +2722,7 @@ test、commit range を追加した場合はこの subcase の条件不成立と
 **期待する判断**
 
 `F-C` は semantic / public contract 変更として通常の新 Work Unit `WU-C` に再正規化し、現 run の最終状態を `stop-incomplete` とする。
-`implementer/IMP-C` が後続 context で `S0` から元変更も含む `S2` を実装・検証した後、累積 target に対して mandatory final writing review を再実行し、Green と
+synthetic writer identity `REM-C` が後続 context で `S0` から元変更も含む `S2` を実装・検証した後、累積 target に対して mandatory final writing review を再実行し、Green と
 親 QA の後だけ `accepted` に到達できる。現 run で局所 remediation として accept しない。
 
 ### Subcase D: 責任境界の再設計
@@ -2728,7 +2733,7 @@ test、commit range を追加した場合はこの subcase の条件不成立と
 
 **期待する判断**
 
-`F-D` は通常 Work Unit `WU-D` に再正規化し、現 run は `stop-incomplete` とする。`implementer/IMP-D` は reviewer/WR-7 と異なる fresh
+`F-D` は通常 Work Unit `WU-D` に再正規化し、現 run は `stop-incomplete` とする。synthetic writer identity `REM-D` は reviewer/WR-7 と異なる fresh
 context で実装し、`S0` から元変更も含む `S2` を構築した後に mandatory final writing review を再実行する。再 gate 前に `accepted` として閉じない。
 
 ### Subcase E: 局所性・rollback・verification が不明
@@ -2799,11 +2804,23 @@ case ごとに次の template を複製して記録する。agent version は ag
 - model / model version:
 - plugin version:
 - agent version:
-  - Implementer:
+  - parent-selected worker version:
+  - remediation writer:
   - 起動した reviewer / refactorer:
 - agent mechanism と worktree の利用可否:
 - case:
-- 評価タイミング: intake / planning / plan-intake / post-return QA
+- 評価タイミング: intake / planning / plan-intake / post-return QA / final writing gate
+- review_base_snapshot:
+- remediation 前 target_snapshot:
+- remediation 後 target_snapshot:
+- reviewer identity:
+- writer identity:
+- parent-selected worker selection:
+- finding 採否:
+- remediation Work Unit:
+- re-gate:
+- final target:
+- final state:
 
 ## Case 判定
 
