@@ -54,6 +54,7 @@ RETIRED_IMPLEMENTATION_PATHS = (
     "tests/build_plugin_assets_test_support.py",
 )
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
+INTERNAL_CLAUDE_SKILLS = {"work-unit-design"}
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -247,6 +248,11 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     self.assertEqual(1, self._exact_line_count(lines, "disable-model-invocation", "true"), path)
                 else:
                     self.assertEqual(0, self._key_count(lines, "disable-model-invocation"), path)
+                if name in INTERNAL_CLAUDE_SKILLS:
+                    self.assertEqual(1, self._key_count(lines, "user-invocable"), path)
+                    self.assertEqual(1, self._exact_line_count(lines, "user-invocable", "false"), path)
+                else:
+                    self.assertEqual(0, self._key_count(lines, "user-invocable"), path)
 
     def test_all_reviewers_are_read_only_with_the_established_claude_tool_split(self) -> None:
         for name in REVIEWERS:
