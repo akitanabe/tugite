@@ -2,6 +2,7 @@
 name: work-unit-design
 description: >-
   plan-craft または impl-lead の同じ親 context 内だけで使う internal Work Unit 設計手順。
+user-invocable: false
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
