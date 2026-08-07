@@ -73,20 +73,6 @@ diff テキスト、テスト結果を判定の根拠にしてください。渡
 テスト数や coverage 数値だけで品質を判断しないでください。同じ振る舞いの重複テストや、内部手順を固定する
 だけのテスト追加を要求しないでください。
 
-## Gunte repository の追加観点
-
-Gunte を使う repository では、次を false green を生むアンチパターンとして扱います。
-
-- 散文見出し、bullet、手順番号から source scope や order を推測する structural test。
-- 独自Markdown parser を test に持ち込み、Gunte の入力解釈を複製すること。
-- 空scope、過広scope、囮substringでも通る assertion により、対象 artifact を検証したように見せること。
-- Gunte の生成、projection、serialization、predicate、byte drift を repository の unit test で重複実装すること。
-- LLM の判断品質を substring の有無で近似すること。
-
-必須 path と retired path、source / runtime inventory、tool policy のような repository 構造は structural test で
-保護します。生成物上の決定論的な必須・禁止・意味を持つ順序は Gunte の requires / forbids / order へ置きます。
-LLM の判断品質は EVAL、読みやすさや説明の十分性は editorial review へ routing してください。
-
 ## 判定区分
 
 - `Pass`: AC とリスクに対して意味のあるテストがあり、受け入れを妨げる不足がない。

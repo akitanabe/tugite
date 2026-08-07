@@ -350,66 +350,6 @@ kind = "forbids"
 pattern = "plan-craft-v5"
 applies_to = ["claude", "codex"]
 
-[contracts.test-quality-9691678e]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "散文見出し"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-c7589fd2]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "独自Markdown parser"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-bcfe89a2]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "空scope"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-2008acea]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "過広scope"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-da7c130d]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "囮substring"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-01557e90]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "Gunte の生成、projection、serialization、predicate、byte drift"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-c31d0a88]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "structural test"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-6ad5547b]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "requires / forbids / order"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-1e06c719]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "EVAL"
-applies_to = ["claude", "codex"]
-
-[contracts.test-quality-4bb4764d]
-kind = "requires"
-slice = "gunte-test-quality"
-pattern = "editorial review"
-applies_to = ["claude", "codex"]
-
 [contracts.final-writing-remediation-requires-642457e2]
 kind = "requires"
 slice = "final-writing-remediation"

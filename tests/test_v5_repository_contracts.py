@@ -60,6 +60,13 @@ RETIRED_IMPLEMENTATION_PATHS = (
 )
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
 INTERNAL_CLAUDE_SKILLS = {"proposal", "structural-health-gate", "work-unit-design"}
+PUBLIC_SKILLS = {"impl-lead", "plan-craft", "review-loop"}
+INTERNAL_SKILLS = {"proposal", "structural-health-gate", "work-unit-design"}
+RELEASE_READMES = (
+    ROOT / "README.md",
+    ROOT / "plugins/claude/README.md",
+    ROOT / "plugins/codex/README.md",
+)
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -652,7 +659,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     selected[name],
                 )
 
-    def test_gunte_contract_registry_owns_worker_and_test_quality_invariants(self) -> None:
+    def test_gunte_contract_registry_owns_worker_invariants_and_excludes_repository_specific_quality(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         worker_required = {
             "Acceptance Criteria",
@@ -676,23 +683,9 @@ class V5RepositoryContractsTest(unittest.TestCase):
             self.assertEqual(worker_required, {entry["pattern"] for entry in entries if entry["kind"] == "requires"})
             self.assertEqual(worker_forbidden, {entry["pattern"] for entry in entries if entry["kind"] == "forbids"})
 
-        test_quality_entries = [
-            entry for entry in registry.values() if entry.get("slice") == "gunte-test-quality"
-        ]
         self.assertEqual(
-            {
-                "散文見出し",
-                "独自Markdown parser",
-                "空scope",
-                "過広scope",
-                "囮substring",
-                "Gunte の生成、projection、serialization、predicate、byte drift",
-                "structural test",
-                "requires / forbids / order",
-                "EVAL",
-                "editorial review",
-            },
-            {entry["pattern"] for entry in test_quality_entries if entry["kind"] == "requires"},
+            [],
+            [entry for entry in registry.values() if entry.get("slice") == "gunte-test-quality"],
         )
 
         retired_skill_entries = {
@@ -704,6 +697,67 @@ class V5RepositoryContractsTest(unittest.TestCase):
         for pattern, entry in retired_skill_entries.items():
             with self.subTest(pattern=pattern):
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_test_quality_reviewer_keeps_general_quality_scope_without_gunte_specific_section(self) -> None:
+        paths = (
+            ROOT / "shared/agents/test-quality-reviewer.md",
+            ROOT / "plugins/claude/agents/test-quality-reviewer.md",
+            ROOT / "plugins/codex/install/agents/test-quality-reviewer.toml",
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                text = path.read_text(encoding="utf-8")
+                self.assertNotIn("gunte-test-quality", text)
+                self.assertNotIn("Gunte", text)
+                self.assertNotIn("Gunte repository の追加観点", text)
+                for marker in ("受け入れ条件", "観測可能な振る舞い", "境界値", "異常系"):
+                    self.assertIn(marker, text)
+        source = paths[0].read_text(encoding="utf-8")
+        self.assertIn("meaningful failure protection", source)
+
+    def test_release_readmes_describe_current_surface_and_exclude_retired_routes(self) -> None:
+        current_agents = WORKERS | REVIEWERS | ADVISORS
+        version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
+        for path in RELEASE_READMES:
+            with self.subTest(path=path):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn(f"v{version}", text)
+                for identifier in PUBLIC_SKILLS | INTERNAL_SKILLS | current_agents:
+                    self.assertIn(identifier, text)
+                for marker in ("shared/", "gunte.toml", "gunte emit", "gunte check"):
+                    self.assertIn(marker, text)
+                for retired in RETIRED_SKILLS:
+                    self.assertNotIn(retired, text)
+                for retired in RETIRED:
+                    self.assertNotIn(retired, text)
+                for retired_mode in (
+                    "workflow mode",
+                    "Branch Plan",
+                    "standard-adaptive",
+                    "strict-adaptive",
+                    "strict-full",
+                    "serial implementation branches",
+                    "each in its own worktree",
+                ):
+                    self.assertNotIn(retired_mode, text)
+
+    def test_plugin_manifests_describe_current_v5_route(self) -> None:
+        manifests = (
+            ROOT / "declarations/claude/plugin.json",
+            ROOT / "declarations/codex/plugin.json",
+        )
+        for path in manifests:
+            with self.subTest(path=path):
+                manifest = json.loads(path.read_text(encoding="utf-8"))
+                description = manifest["description"]
+                for skill in PUBLIC_SKILLS:
+                    self.assertIn(skill, description)
+                self.assertTrue("parent" in description.lower() or "親" in description)
+                self.assertNotIn("serial implementation branches", description)
+                self.assertNotIn("each in its own worktree", description)
+        codex = json.loads(manifests[1].read_text(encoding="utf-8"))
+        self.assertIn("Work Unit", codex["interface"]["longDescription"])
+        self.assertIn("parent QA", codex["interface"]["longDescription"])
 
     def test_common_downstream_routing_contract_registry_is_exact(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
@@ -907,14 +961,17 @@ class V5RepositoryContractsTest(unittest.TestCase):
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
         self.assertEqual("5.0.0", version)
-        self.assertEqual(
-            version,
-            json.loads((ROOT / "declarations/claude/plugin.json").read_text(encoding="utf-8"))["version"],
-        )
-        self.assertEqual(
-            version,
-            json.loads((ROOT / "declarations/codex/plugin.json").read_text(encoding="utf-8"))["version"],
-        )
+        for relative_path in (
+            "declarations/claude/plugin.json",
+            "declarations/codex/plugin.json",
+            "plugins/claude/.claude-plugin/plugin.json",
+            "plugins/codex/.codex-plugin/plugin.json",
+        ):
+            with self.subTest(manifest=relative_path):
+                self.assertEqual(
+                    version,
+                    json.loads((ROOT / relative_path).read_text(encoding="utf-8"))["version"],
+                )
         self.assertEqual(version, (ROOT / "plugins/codex/install/VERSION").read_text(encoding="utf-8").strip())
 
         runtime_roots = (

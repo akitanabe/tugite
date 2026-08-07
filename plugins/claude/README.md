@@ -1,59 +1,28 @@
 # Tugite for Claude Code
 
-実装をサブエージェントへ委譲しながら、親エージェントが計画、受け入れ判断、QA、最終検証の責任を持つための Claude Code plugin です。
+Tugite v5.0.0 は、親 Claude エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
-## 構成
+## Skill surface
 
-- `skills/impl-lead/SKILL.md`
-  - タスク分割、worktree 隔離、委譲、返却 diff とテストの QA、最終検証を定義します。
-- `skills/impl-lead/references/*.md`
-  - 実装枝、expert 選択、QA・統合の詳細を必要な段階で参照します。
-- `skills/branch-design/SKILL.md`
-  - 実装プランを委譲可能な Branch Plan Set へ正規化します。実装や委譲は行いません。
-- `skills/branch-design/references/*.md`
-  - Branch Plan Set スキーマ、枝分割判断、ユーザー確認の詳細を必要な段階で参照します。
-- `skills/test-audit/SKILL.md`
-  - 既存テストスイートを read-only で走査し、各テストの目的・分類を Test Inventory Data として棚卸しし、テスト設計技法の観点で不足を報告します。
-- `skills/test-audit/references/*.md`
-  - 棚卸しスキーマ、不足カタログ、走査手順、報告形式の詳細を必要な段階で参照します。
-- `skills/plan-craft/SKILL.md`
-  - ユーザー要求から実装プランを起草し、敵対的レビューループと過剰実装審査を経たプラン文書とレビュー状態の2 artifact を返します。実装・委譲・枝分割は行いません。
-- `skills/plan-craft/references/*.md`
-  - プラン artifact の規約（プラン文書とレビュー状態）、起草手順、レビューループ規約、過剰実装審査の詳細を必要な段階で参照します。
-- `skills/feature-lead/SKILL.md`
-  - `plan-craft` → `branch-design` → `impl-lead` を順に連結し、要求から実装完了までを一括で進めます。判断点は既定で停止し、`unattended` 明示時のみ自律解決します。
+Public skill は次の3つです。
 
-Branch Plan は `failure_impact` と `implementation_complexity` を独立して保持します。`adaptive` の枝 mode は
-implementation complexity だけから導出し、`failure_impact` は adaptive mode の直接導出には使わず、
-`{fixed, lite}` の `delegation_mode_proposal`（安全助言）にだけ使います。
-complexity が high の枝は `strict` 候補です。
+- `impl-lead`: Work Unit を正規化し、direct または worker の実装、TDD、必要な risk-directed review、親 QA、final writing gate を進めます。
+- `plan-craft`: 要求と repository の観測から plan candidate を作り、bounded review と親の裁定へ渡します。
+- `review-loop`: 不変 artifact snapshot を bounded round で review し、finding と evidence を親へ返します。
 
-- `agents/focused-implementer.md`
-  - scope が狭く検証方法が明確な汎用 Work Unit を担当します。
-- `agents/implementer.md`
-  - implementation complexity が low / medium で残る判断が少ない通常実装を担当します。
-- `agents/senior-implementer.md`
-  - implementation complexity が high、または非自明な設計・algorithm・concurrency判断が残る実装を担当します。
-- `agents/expert-implementer.md`
-  - 親相当の推論能力が必要な Work Unit 向けの agent surface です。選択手順は現 bundle では未定義です。
-- `agents/responsibility-boundary-reviewer.md`
-  - 実装済み diff の責務混在、境界違反、副作用分散を確認します。
-- `agents/test-quality-reviewer.md`
-  - 追加・変更されたテストの仕様対応、振る舞い、網羅性を確認します。
-- `agents/writing-principles-reviewer.md`
-  - `How / What / Why / Why Not` の配置、命名、説明をread-onlyで確認し、ID付きの指摘Dataを返します。
-- `agents/over-engineering-reviewer.md`
-  - 基準 commit からの diff のうち、取り除いても AC と制約を満たせるテストと実装をread-onlyで特定し、ID付きの指摘Dataを返します。
-- `agents/plan-adversarial-reviewer.md`
-  - 起草済みの実装プランに対し、AC 充足・検証可能性・実現可能性を壊す具体的な失敗経路をread-onlyで探索し、ID付きの指摘Dataを返します。
-- `agents/security-side-effect-reviewer.md`
-  - 外部 I/O、破壊的操作、機密データ、セキュリティ影響を確認します。
+`proposal`、`structural-health-gate`、`work-unit-design` は public workflow の同じ親 context だけで使う internal skill です。直接の user invocation は受け付けません。
 
-これらの skill と agent 定義はリポジトリの `shared/` から生成されています。生成済みファイルを直接編集せず、共通原稿を更新してください。開発方法は[ルート README](../../README.md)を参照してください。
+## Agent surface
 
-## インストール
+Worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
-Claude Code で次のコマンドを実行します。
+Reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は final writing gate に使います。
+
+Advisor は read-only の `plan-quality-advisor` です。reviewer と advisor は evidence を返し、受け入れ判断は親が行います。
+
+## Install and launch
+
+Claude Code で marketplace を登録し、plugin を導入します。
 
 ```text
 /plugin marketplace add akitanabe/tugite
@@ -61,28 +30,21 @@ Claude Code で次のコマンドを実行します。
 /reload-plugins
 ```
 
-`/plugin marketplace add` は GitHub 上の marketplace catalog を登録し、`/plugin install` はそこから plugin をインストールします。導入前に repository と plugin の内容を確認してください。
-
-Claude Code の marketplace と plugin scope の詳細は、[Claude Code の公式ドキュメント](https://code.claude.com/docs/en/discover-plugins)を参照してください。
-
-## 使い方
-
-実装委譲を明示して、skill を呼び出します。
+導入後、public skill を明示して起動します。
 
 ```text
 /tugite:impl-lead <実装タスク>
+/tugite:plan-craft <plan task>
+/tugite:review-loop <artifact review task>
 ```
 
-または「この実装をサブエージェントに委譲し、親が QA まで担当してください」のように依頼します。タスクが大きいという理由だけでは自動的に委譲しません。
+## Source of truth
 
-Skill はタスクの難易度と責務に応じて agent を選択します。親エージェントは返却報告だけで受け入れず、diff、テスト内容、副作用、責務境界を確認してから統合します。
-
-## 更新
-
-Marketplace の情報を更新します。
+共通原稿は `shared/`（version は `shared/VERSION`）、platform 宣言は `declarations/`、契約は `contracts.toml`、Gunte 設定は `gunte.toml` が正本です。`plugins/claude` の skill と agent は生成物なので直接編集せず、正本変更後に repository root で次を実行します。
 
 ```text
-/plugin marketplace update tugite-marketplace
+gunte emit
+gunte check
 ```
 
-Plugin の更新が適用された場合は `/reload-plugins` を実行します。インストール状態や自動更新の設定は `/plugin` の Installed、Marketplaces 画面で確認できます。
+詳細は [ルート README](../../README.md) を参照してください。
