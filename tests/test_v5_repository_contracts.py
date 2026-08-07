@@ -568,6 +568,21 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 "plan-craft-structural-health-handoff",
                 "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない",
             ),
+            "plan-craft-structural-health-handoff-requires-f6271de3": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-333e4dc6": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-06b909ed": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない",
+            ),
             "review-loop-structural-boundary-requires-0c775c51": (
                 "requires", "review-loop-structural-boundary", "局所的な構造欠陥を事前解消"
             ),

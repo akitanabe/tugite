@@ -44,6 +44,7 @@ gate が `context 不成立` Data を返した場合は assessment を開始せ�
 
 親は structural gate の予算を独立した `rounds` Data として管理する。gate assessment 1回を1 `round` と数える。
 `rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する。
+`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする。`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない。
 structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない。
 
 親は各 gate assessment を次の境界で判断する。
@@ -51,6 +52,7 @@ structural gate budget と review-loop budget は別 Data とし、gate round �
 `return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する。
 現在の round が `rounds.limit` 未満の場合だけこの再実行を行う。`rounds.limit` 到達 round の `return` は `stop-incomplete` とする。
 `rounds.limit` を超えて proposal と gate の循環を続けない。
+`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする。
 
 `insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする。再 proposal 後の構造不健全な `return` は
 現在の round が `rounds.limit` 未満なら上記のとおり継続し、limit 到達なら `stop-incomplete` とする。再 proposal 後の

@@ -890,6 +890,24 @@ slice = "plan-craft-structural-health-handoff"
 pattern = "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない"
 applies_to = ["claude", "codex"]
 
+[contracts.plan-craft-structural-health-handoff-requires-f6271de3]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-333e4dc6]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-06b909ed]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない"
+applies_to = ["claude", "codex"]
+
 [contracts.review-loop-structural-boundary-requires-0c775c51]
 kind = "requires"
 slice = "review-loop-structural-boundary"
