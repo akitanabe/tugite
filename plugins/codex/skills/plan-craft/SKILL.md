@@ -37,7 +37,11 @@ description: >-
 `review-loop` へ渡す。
 
 candidate snapshot を受け取った場合、同じ親 context の internal `structural-health-gate` に渡す。親が `pass` と
-判断した場合だけ後段へ進む。親が最初の `return` と判断した場合は、gate の evidence を新しい入力 Data として
+判断した場合だけ後段へ進む。渡す gate input には、明示起動された proposal-family public workflow parent を識別する
+generic `caller_context` Data（`workflow_family: proposal-family`、`invocation: explicit-public-parent`）を含める。
+gate が `context 不成立` Data を返した場合は assessment を開始せず、親は別 route へ切り替えずに
+`stop-incomplete` とし、candidate/resource の編集や advisor・producer・後段処理の起動を行わない。
+親が最初の `return` と判断した場合は、gate の evidence を新しい入力 Data として
 proposal を再実行し、別 identity の candidate snapshot を gate で再評価する。再 proposal 後も構造不健全、または
 必須 evidence 不足なら `stop-incomplete` とし、proposal と gate の循環を続けない。
 

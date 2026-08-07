@@ -692,6 +692,66 @@ slice = "structural-health-gate-boundary"
 pattern = "duplicated source of truth"
 applies_to = ["claude", "codex"]
 
+[contracts.structural-health-gate-caller-context-requires-ec2ccc46]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`caller_context` Data"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-d624e872]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`workflow_family`: `proposal-family`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-4fbc98a7]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`invocation`: `explicit-public-parent`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-4a432b13]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "context 不成立"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-d50aa7cd]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "assessment を開始せず"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-78715640]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-3cc1f92b]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`producer_context`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-af4f2954]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`return target`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-c500195c]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`next skill`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-42aaefd9]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`origin`"
+applies_to = ["claude", "codex"]
+
 [contracts.structural-health-gate-boundary-requires-765af3a3]
 kind = "requires"
 slice = "structural-health-gate-boundary"

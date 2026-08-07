@@ -457,6 +457,36 @@ class V5RepositoryContractsTest(unittest.TestCase):
     def test_structural_health_gate_contract_registry_is_exact(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         expected = {
+            "structural-health-gate-caller-context-requires-ec2ccc46": (
+                "requires", "structural-health-gate-caller-context", "`caller_context` Data"
+            ),
+            "structural-health-gate-caller-context-requires-d624e872": (
+                "requires", "structural-health-gate-caller-context", "`workflow_family`: `proposal-family`"
+            ),
+            "structural-health-gate-caller-context-requires-4fbc98a7": (
+                "requires", "structural-health-gate-caller-context", "`invocation`: `explicit-public-parent`"
+            ),
+            "structural-health-gate-caller-context-requires-4a432b13": (
+                "requires", "structural-health-gate-caller-context", "context 不成立"
+            ),
+            "structural-health-gate-caller-context-requires-d50aa7cd": (
+                "requires", "structural-health-gate-caller-context", "assessment を開始せず"
+            ),
+            "structural-health-gate-caller-context-requires-78715640": (
+                "requires", "structural-health-gate-caller-context", "`stop-incomplete`"
+            ),
+            "structural-health-gate-caller-context-forbids-3cc1f92b": (
+                "forbids", "structural-health-gate-caller-context", "`producer_context`"
+            ),
+            "structural-health-gate-caller-context-forbids-af4f2954": (
+                "forbids", "structural-health-gate-caller-context", "`return target`"
+            ),
+            "structural-health-gate-caller-context-forbids-c500195c": (
+                "forbids", "structural-health-gate-caller-context", "`next skill`"
+            ),
+            "structural-health-gate-caller-context-forbids-42aaefd9": (
+                "forbids", "structural-health-gate-caller-context", "`origin`"
+            ),
             "structural-health-gate-boundary-requires-08c3b623": (
                 "requires", "structural-health-gate-boundary", "duplicated source of truth"
             ),
@@ -544,6 +574,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
             for name, entry in registry.items()
             if entry.get("slice") in {
                 "structural-health-gate-boundary",
+                "structural-health-gate-caller-context",
                 "plan-craft-structural-health-handoff",
                 "review-loop-structural-boundary",
             }
@@ -700,6 +731,10 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertIn("stop-incomplete", proposal_metadata)
         self.assertIn("assessment Data", gate)
         self.assertIn("明示起動された proposal-family public workflow parent", gate)
+        self.assertIn("caller_context", gate_metadata)
+        self.assertIn("workflow_family: proposal-family", gate_metadata)
+        self.assertIn("invocation: explicit-public-parent", gate_metadata)
+        self.assertIn("reject missing or invalid caller_context before assessment", gate_metadata)
         for route_name in ("plan-craft", "review-loop"):
             self.assertNotIn(route_name, gate)
         self.assertIn("proposal-family public workflow", review)

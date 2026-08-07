@@ -20,9 +20,30 @@ proposal-family 外の workflow からの流用はしない。internal-only poli
 既知の repository evidence、producer の判断台帳と assumptions を渡す。必要な source や既存仕様を観測できない
 場合は、欠けた evidence を Data として記録し、構造欠陥だと推測しない。
 
+`caller_context` Data は必須の構造化 Data で、次の2 field/valueだけを受け付ける。
+
+```text
+{
+  "workflow_family": "proposal-family",
+  "invocation": "explicit-public-parent"
+}
+```
+
+- `workflow_family`: `proposal-family`
+- `invocation`: `explicit-public-parent`
+
+これは明示起動された proposal-family public workflow parent の同じ context であることだけを安定識別する。
+producer の判断、成果物の行き先、後段処理を識別する値はこの gate の入力に含めない。
+
+`caller_context` が欠落している、object でない、field/value が一致しない、または上記以外の field を含む場合は
+`context 不成立` Data を親へ返す。この場合は candidate assessment を開始せず、candidate や resource を編集せず、
+advisor、producer、その他の後段処理を起動しない。親は別 route へ切り替えず、未成立理由を添えて
+`stop-incomplete` とする。
+
 ## 観測
 
-caller context は明示起動された proposal-family public workflow parent に限る。
+caller context は明示起動された proposal-family public workflow parent に限る。上記の `caller_context` が成立した場合だけ、
+candidate の assessment を開始する。
 
 次を、表現上の指摘ではなく構造上の因果として確認する。
 
