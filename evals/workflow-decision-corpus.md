@@ -762,8 +762,8 @@ variantがないcaseは`-`を記録する。`case result`は、全variantが`Pas
 
 | field | value |
 | --- | --- |
-| semantic-core Pass / Fail / Not evaluated / Not applicable | `<counts>` |
-| platform-mechanism Pass / Fail / Not evaluated / Not applicable | `<counts>` |
+| semantic-core case/platform runs Pass / Fail / Not evaluated / Not applicable（18 cases × 2 platforms） | `<counts>` |
+| platform-mechanism case/platform runs Pass / Fail / Not evaluated / Not applicable（18 cases × 2 platforms） | `<counts>` |
 | failed case IDs | `<list or none>` |
 | not-evaluated required case IDs | `<list or none>` |
 | source drift observed | `<yes/no and identity>` |
@@ -832,4 +832,5 @@ AC-11の照合対象を固定する履歴監査Dataであり、current runのtar
 | 50 | EVAL-47: proposal-family public workflow の共通 downstream routing | 対応 | `plan-craft-proposal-family-routing`, `proposal-internal-entry`, `review-loop-output-ownership` |
 
 照合結果は、現行判断を含む46件がすべてcoverage inventoryと新caseへ到達し、retired契約だけを扱う4件を
-現行期待から除外した。36件目のreview選択caseは現行sourceから導出済みであり、旧corpus照合によるcase追加はなかった。
+現行期待から除外した。`plan-craft-risk-directed-review-selection` は現行sourceから導出済みであり、
+旧corpus照合によるcase追加はなかった。
