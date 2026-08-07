@@ -26,6 +26,7 @@
     ],
     "defaultPrompt": [
       "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
+      "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
       "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."
     ]

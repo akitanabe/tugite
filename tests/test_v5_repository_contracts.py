@@ -252,6 +252,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     source,
                 )
 
+    def test_codex_plugin_default_prompts_expose_public_review_loop(self) -> None:
+        manifest = json.loads((ROOT / "declarations/codex/plugin.json").read_text(encoding="utf-8"))
+        self.assertIn(
+            "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+            manifest["interface"]["defaultPrompt"],
+        )
+
     def test_claude_skill_frontmatter_has_bounded_invocation_policy(self) -> None:
         for name in WORKFLOW_SKILLS:
             with self.subTest(name=name):
