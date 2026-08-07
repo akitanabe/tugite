@@ -1,6 +1,6 @@
 interface:
   display_name: "Internal Structural Health Gate"
-  short_description: "Check plan structure between proposal and review"
-  default_prompt: "Use $structural-health-gate only inside plan-craft after proposal and before review-loop; return evidence without editing or making the final decision."
+  short_description: "Assess candidate structure and return evidence"
+  default_prompt: "Use $structural-health-gate only inside an explicitly invoked proposal-family public workflow parent context; return evidence and assessment without editing, routing, or making the final decision."
 policy:
   allow_implicit_invocation: true

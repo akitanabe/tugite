@@ -2,7 +2,7 @@
 name: proposal
 description: >-
   plan-craft の同じ親 context 内だけで、要求と repository の観測から計画 candidate を起草し、
-  read-only advisor の非拘束な insight を裁定して candidate snapshot または stop-incomplete を返す internal skill。
+  read-only advisor の非拘束な insight を裁定して candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
 user-invocable: false
 ---
 <!-- Generated from shared/. Do not edit directly. -->
@@ -12,8 +12,8 @@ user-invocable: false
 ## 位置づけと発火
 
 この Skill は `plan-craft` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。
-要求、repository、既存仕様を観測して計画 candidate を作る前段を担う。自身は実装、委譲、worktree 操作、
-保存、最終受入を行わない。
+要求、repository、既存仕様を観測して計画 candidate を作る producer を担う。
+自身は実装、委譲、worktree 操作、保存、最終受入を行わず、caller-owned parent へ判断材料を返す。
 
 ## 入力と観測
 
@@ -51,4 +51,4 @@ candidate の改善は、要求と一次情報から具体的な品質向上が�
 改善を終えた通常の返却は、`candidate_snapshot`、`adoption_ledger`（`adopted` / `rejected` /
 `unresolved`）、`assumptions`、`blocking_gaps`、`residual_risks`、`status` を持つ Data である。安全な
 candidate を作れない返却では `status: stop-incomplete` と未完了範囲、必要な判断、evidence、未検証事項を返す。
-いずれも後段工程を起動せず、受け入れを主張せず、caller へ返して終了する。
+いずれも後段工程を選択・起動せず、受け入れを主張せず、caller-owned parent へ返して終了する。

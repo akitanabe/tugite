@@ -13,6 +13,9 @@ description: >-
 改修方針、移行計画、比較検討、作業メモ、リスク整理、実装単位の候補案などでよく、特定の実行 schema や
 固定された後続工程の入力へ変換しない。規範本文はこの Skill 自身で完結し、別の実装 workflow の本文を前提にしない。
 
+`return target` は public workflow parent が所有する。現在の plan-craft は gate の assessment を受けて proposal へ
+返すか後段へ進むかを親として判断し、明示されていない別 workflow へ自動 switch しない。
+
 ## 発火制御と責務
 
 - ユーザーが `$plan-craft` または同等の明示要求をした場合だけ起動する。自然言語の作業内容や context から暗黙に起動しない。
@@ -29,8 +32,8 @@ description: >-
 自動採用せず、新仕様、scope、AC、ユーザー嗜好を推測しない。具体的な品質向上が残る間だけ bounded に改善し、
 人間の判断が必要、または安全な candidate を作れない場合は `stop-incomplete` と必要な判断・evidence を返す。
 
-`proposal` が返した `candidate snapshot` は内容を識別できる不変 Data として後段へ渡す。`stop-incomplete` の場合は
-plan-craft がそこで停止し、review-loop を起動しない。それ以外も gate を通過した candidate だけを
+`proposal` が caller-owned parent へ返した `candidate snapshot` は内容を識別できる不変 Data として後段へ渡す。
+`stop-incomplete` の場合は caller-owned parent がそこで停止し、後段工程を選択しない。それ以外も gate を通過した candidate だけを
 `review-loop` へ渡す。
 
 candidate snapshot を受け取った場合、同じ親 context の internal `structural-health-gate` に渡す。親が `pass` と

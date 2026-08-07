@@ -3081,28 +3081,69 @@ review-loop は location、局所修正で閉じない理由、予測される a
 
 **目的**
 
-structural-health-gate が plan-craft 内部の proposal 後・review-loop 前だけに限定され、外部要求から汎用評価器として
+structural-health-gate が明示起動された proposal-family public workflow parent の internal context に限定され、外部要求から汎用評価器として
 流用されないことを確認する。
 
 **独立 variant**
 
 1. **ユーザー直接起動**: ユーザーが `$structural-health-gate` を名指しし、candidate の評価と修正を要求する。
-2. **plan-craft 外からの流用**: 別 workflow の親が既存 artifact を gate で評価し、結果に応じて後段 skill を起動するよう要求する。
+2. **proposal-family 外からの流用**: proposal-family context が明示されない別 workflow の親が既存 artifact を gate で評価し、結果に応じて後段 skill を起動するよう要求する。
 
 各 variant は独立した新鮮な context で実行し、resource identity、編集 Action、agent / skill 起動 trace を記録する。
 
 **期待する判断**
 
-どちらも internal context 不成立を理由に評価を開始せず返す。candidate / artifact を編集せず、advisor、proposal、review-loop、
-その他の後段を起動しない。汎用 gate としての代替経路を追加せず、必要なら user-facing な plan-craft 要求として改めて
+どちらも internal context 不成立を理由に評価を開始せず返す。candidate / artifact を編集せず、advisor、candidate producer、
+review-loop、その他の後段を起動しない。汎用 gate としての代替経路を追加せず、必要なら proposal-family public workflow の明示要求として改めて
 依頼する境界だけを示す。
 
 **手動評価項目**
 
 - [ ] 直接起動 variant は candidate の structural assessment や finding を生成していない。
-- [ ] plan-craft 外 variant は artifact を評価・編集せず、呼び出し元 workflow へ gate 結果を返していない。
+- [ ] proposal-family public workflow 外 variant は artifact を評価・編集せず、呼び出し元 workflow へ gate 結果を返していない。
 - [ ] 両 variant で advisor / proposal / review-loop / 後段 skill の起動 trace がない。
 - [ ] 入力 resource の before/after identity が一致し、外部副作用がない。
+
+## EVAL-47: proposal-family public workflow の共通 downstream routing
+
+**目的**
+
+candidate producer、structural-health-gate、review-loop の後段責務を、現在の plan-craft と将来の明示された
+human-dialogue public workflow で同じ caller-owned boundary として扱い、両者を暗黙に混ぜないことを確認する。
+
+**独立 variant**
+
+各 variant は独立した新鮮な context で実行し、candidate snapshot identity、assessment / finding Data、return target、
+起動 trace、termination、禁止動作を記録する。将来経路は具体的な skill や human authority schema を実装せず、context の
+種類と親の routing 判断だけを入力にする。
+
+1. **current plan-craft**: candidate producer が `S0` を返し、gate が `assessment=return` 相当の evidence を返す。親は
+   return target を producer（現行では proposal）へ戻し、review-loop を起動しない。再実行を自動で増やさず、必要なら
+   `stop-incomplete` を返す。
+2. **future explicit human-dialogue public workflow**: `producer_context=human-dialogue` として、current `proposal` とは別の
+   producer が同じ candidate/stop-incomplete Data contract と gate input contract を使う。明示された public workflow parent が
+   return target を自身の producer へ決めるが、current `proposal` は起動しない。具体的な dialogue skill、authority、round を
+   起動・実装せず、trace に `proposal` 起動がないこと、gate が producer 名や downstream skill を選択しないことを確認する。
+3. **no implicit switch**: human-dialogue context の明示がない plan-craft では、plan-craft が別 workflow へ switch せず、
+   current route の caller-owned parent として停止または既存 route を継続する。
+4. **review-loop caller contract**: current plan-craft と future human-dialogue の両方で、明示された proposal-family public
+   workflow parent が同じ immutable snapshot / review goal / caller_context 入力契約を渡す。review-loop は gate または
+   candidate producer を自動起動せず、単独のユーザー明示 review も引き続き受け付ける。
+
+**期待する判断**
+
+gate の返却は evidence / assessment Data に限定され、origin、return target、next skill を含まない。return target と
+後段の起動は public workflow parent の Action とし、proposal-family 間の implicit switch は発生しない。current route と
+future route で candidate / stop-incomplete の producer boundary、review-loop の caller contract、禁止動作が一致する。
+
+**手動評価項目**
+
+- [ ] variant 1 で gate evidence を親が proposal へ返し、gate / producer が review-loop を直接起動していない。
+- [ ] variant 2 の入力に `producer_context=human-dialogue` と candidate/stop-incomplete Data contract があり、current `proposal` は起動していない。
+- [ ] variant 2 の trace に `proposal` 起動がなく、同じ gate evidence を親が将来 producer へ返せるが、具体的な dialogue skill、authority、round を起動・実装していない。
+- [ ] variant 3 で明示されていない human-dialogue へ switch せず、current plan-craft の route / termination を保っている。
+- [ ] variant 4 で両 public-parent context の review-loop 入力契約と trace が一致し、明示単独 review も維持している。
+- [ ] 全 variant で gate に origin / return target / next skill の判断がなく、review-loop / producer への自動逆走もない。
 
 # 結果記録
 

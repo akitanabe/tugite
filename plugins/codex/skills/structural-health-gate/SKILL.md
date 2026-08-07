@@ -1,24 +1,27 @@
 ---
 name: structural-health-gate
 description: >-
-  plan-craft の proposal 後かつ review-loop 前だけ、candidate の構造的局所性を evidence として評価する
-  internal gate。成果物を再設計・直接編集せず、最終判断を親へ残す。
+  明示起動された proposal-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する
+  internal gate。成果物を再設計・直接編集せず、
+  assessment と最終判断を public workflow parent へ残す。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
 # structural-health-gate
 
-この Skill は、`proposal` が返した candidate snapshot を `review-loop` へ渡す前に、局所修正で review 可能な
-構造かを評価する。plan-craft と同じ親 context 内だけで使い、単独起動、ユーザーからの直接起動、別 workflow
-からの流用はしない。
+この Skill は、candidate producer が返した candidate snapshot を後段処理へ渡す前に、局所修正で扱える
+構造かを評価する。明示起動された proposal-family public workflow parent の同じ context 内だけで使い、単独起動、ユーザーからの直接起動、
+proposal-family 外の workflow からの流用はしない。internal-only policy は維持し、gate 自身は後段の選択や caller routing を行わない。
 
 ## 入力
 
 親は不変な `candidate_snapshot`、要求原文、requirements、design、Acceptance Criteria、verification、scope、
-既知の repository evidence、proposal の判断台帳と assumptions を渡す。必要な source や既存仕様を観測できない
+既知の repository evidence、producer の判断台帳と assumptions を渡す。必要な source や既存仕様を観測できない
 場合は、欠けた evidence を Data として記録し、構造欠陥だと推測しない。
 
 ## 観測
+
+caller context は明示起動された proposal-family public workflow parent に限る。
 
 次を、表現上の指摘ではなく構造上の因果として確認する。
 
@@ -31,7 +34,7 @@ description: >-
 - 例外、停止条件、stop contract の追加が増殖し、共通責務の欠落を覆っていないか。
 
 長さ、複雑さ、finding 数だけを理由に `return` しない。局所修正で閉じる密度、詳細不足、文章上の重複は
-review-loop で扱えるため、構造欠陥の evidence と混同しない。
+通常の review で扱えるため、構造欠陥の evidence と混同しない。
 
 ## evidence Data
 
@@ -48,11 +51,12 @@ evidence のみであり、candidate の採否、修正、再起草、工程の�
 
 ## 責務境界
 
-この gate は成果物を再設計・直接編集しない。構造的に健全、不健全、または evidence 不足という assessment
-Data と finding を返し、親が最終的な `pass` / `return` / `stop-incomplete` を決める。`pass` は review-loop
-の品質判断や成果物の受け入れを意味しない。
+この gate は成果物を再設計・直接編集しない。構造的に健全、不健全、または evidence 不足という assessment Data と
+finding を返し、public workflow parent が最終的な `pass` / `return` / `stop-incomplete` を決める。
+出力 Data は evidence と assessment に限定し、caller routing を決める値を持たない。
+`pass` は後段処理の品質判断や成果物の受け入れを意味しない。
 
 ## 出力
 
 `candidate_snapshot` の identity、`assessment`、finding 一覧、insufficient evidence、観測した source、未検証事項を
-返す。Action は親が行い、この Skill は proposal や review-loop を起動せず、resource へ書き戻さない。
+返す。Action と caller routing は親が行い、この Skill は後段処理を起動せず、resource へ書き戻さない。
