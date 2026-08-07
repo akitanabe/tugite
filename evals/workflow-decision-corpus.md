@@ -99,7 +99,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | plan-craft は明示要求または判断を変える具体riskだけでreviewを選ぶ | #150; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動する |
 | proposal は一次情報と insight を bounded に裁定する | #172, #177; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot、adoption ledger、停止理由 | insight を自動採用せず人間判断を推測しない |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
-| proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、return trace | gate が route を決めず1回だけ再 proposal |
+| proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
 | gate は厳密な caller_context だけ受け付ける | #179; `shared/skill/structural-health-gate/SKILL.md` | `structural-health-gate-caller-context` | semantic-core | Claude / Codex | context validation、Action trace | 不正 context では assessment/後段0件 |
 | gate は複雑さでなく局所性を evidence で判定する | #172, #178; `structural-health-gate` | `structural-health-gate-locality` | semantic-core | Claude / Codex | finding 4 field、assessment | evidence 不足を return 根拠にせず直接編集しない |
 | review-loop は許可された caller と適用可能 artifact だけ扱う | #150; `shared/skill/review-loop/SKILL.md` | `review-loop-activation-boundary` | platform-mechanism | Claude / Codex | caller、artifact節、起動有無 | impl-lead中や入力不成立で reviewer を起動しない |
@@ -512,17 +512,17 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## plan-craft-proposal-family-routing
 
-- **目的**: public parentがproposal-familyの順序とreturn targetを所有する。
+- **目的**: public parentがproposal-familyの順序、bounded structural-gate rounds、return targetを所有する。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。Aのproposal snapshot `S0`全文は「設計とACが別々にretry責務を定義」、gate findingはlocation=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`で親が`return`、再proposal `S1`はretry責務をclientへ一元化しgate finding 0。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cの`S0`は参照先`policy.md`がrepositoryに存在せず、gateは必須evidenceを埋められない`insufficient-evidence`。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
-- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「S0から通常の計画を完成して」、B「途中で私が方向性を裁定する将来workflowを使って」、C「証跡不足でもproposalをやり直して進めて」と全Dataを渡す。responseではA〜Cのvariant別routingを観測する。
-- **期待する判断**: Aはproposal→gate→proposal(1回)→gate→必要時review-loop。Bは現行proposalを代用起動せず、未実装境界を示す。Cは再proposalもreview-loopも起動せず未検証事項付きでstop-incompleteにする。
-- **必須動作**: 各candidate identityとgeneric caller_contextを渡し、return先をplan-craftが決める。
-- **禁止動作**: gateがrouteを返す、2回目のreturn循環、暗黙に別public workflowへswitchする。
-- **許容される差異**: review不要ならgate pass後に通常確定へ進む。
-- **必要証跡**: invocation順、snapshot identity、parent routing Data。
-- **判定規則**: Aの順序/有界性、Bの非起動、Cの即時停止を全て満たせば `Pass`。
+- **前提 Data**: A/B/C/Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。Aはユーザー指定`rounds.limit=3`、gate round 1のproposal snapshot `S0`に構造finding（location=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`）があり親は`return`、gate evidenceだけを入力に再proposalした別identity `S1`は`pass`。Aのreview-loop Dataは独立して`adversarial_review_count=0`。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cは参照先`policy.md`がrepositoryに存在せず、gateが必須evidenceを埋められない`insufficient-evidence`。Dは`rounds.limit`未指定で、親がloop開始時に`limit=2`を決定して固定し、`S0`と別identityの`S1`が連続して`return`する。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
+- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「S0から通常の計画を完成して。rounds.limit=3」、B「途中で私が方向性を裁定する将来workflowを使って」、C「証跡不足でもproposalをやり直して進めて」、D「rounds.limitは指定しないので親の既定値で進めて」と全Dataを渡す。responseではA〜Dのvariant別routingとbudget Dataを観測する。
+- **期待する判断**: Aは`S0`のgate assessmentをround 1、gate evidenceだけを入力に別identity `S1`へproposalを一度再実行し、round 2の`pass`で上限未消化でもreview-loopへ進む。review-loopの`adversarial_review_count`へgate roundを加算しない。Bは現行proposalを代用起動せず、未実装境界を示す。Cは再proposalもreview-loopも起動せず未検証事項付きでstop-incompleteにする。Dは親が開始時に固定したlimit 2までroundを数え、round 2の`return`でstop-incompleteにする。
+- **必須動作**: 各candidate identityとgeneric caller_contextを渡し、gate assessment 1回を1 roundとして記録する。`pass`では即時に後段へ進み、`return`ではlimit未満のときだけgate evidenceをproposalへ渡して別identityを再評価する。
+- **禁止動作**: gateがrouteを返す、limit到達後のproposal再実行、`insufficient-evidence`からの再proposal、gate roundのreview-loop予算への加算、暗黙に別public workflowへswitchする。
+- **許容される差異**: review不要ならgate pass後に通常確定へ進む。未指定limitの具体値は親が開始時に固定すればよい。
+- **必要証跡**: invocation順、round ledgerと`rounds.limit`の決定時点、snapshot identity、gate evidenceの再入力、parent routing Data、review-loop budgetとの分離。
+- **判定規則**: A〜Dの有界性・即時pass・limit到達停止・evidence不足停止・budget分離・親routingを全て満たせば `Pass`。
 
 ## structural-health-gate-caller-context
 

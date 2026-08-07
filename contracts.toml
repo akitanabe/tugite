@@ -848,10 +848,46 @@ slice = "plan-craft-structural-health-handoff"
 pattern = "`stop-incomplete`"
 applies_to = ["claude", "codex"]
 
-[contracts.plan-craft-structural-health-handoff-requires-e9241f88]
+[contracts.plan-craft-structural-health-handoff-requires-a4f20d25]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
-pattern = "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す"
+pattern = "gate assessment 1回を1 `round` と数える"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-f2a5ac96]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-6a8f7d7d]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`pass` は上限未消化でも直ちに `review-loop` へ進む"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-80636f85]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-cb0fd10c]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` 到達 round の `return` は `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-36ddb773]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-9f964bf1]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない"
 applies_to = ["claude", "codex"]
 
 [contracts.review-loop-structural-boundary-requires-0c775c51]

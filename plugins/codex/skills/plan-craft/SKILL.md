@@ -41,12 +41,20 @@ candidate snapshot を受け取った場合、同じ親 context の internal `st
 generic `caller_context` Data（`workflow_family: proposal-family`、`invocation: explicit-public-parent`）を含める。
 gate が `context 不成立` Data を返した場合は assessment を開始せず、親は別 route へ切り替えずに
 `stop-incomplete` とし、candidate/resource の編集や advisor・producer・後段処理の起動を行わない。
-親が最初の `return` と判断した場合は、gate の evidence を新しい入力 Data として
-proposal を再実行し、別 identity の candidate snapshot を gate で再評価する。再 proposal 後も構造不健全、または
-必須 evidence 不足なら `stop-incomplete` とし、proposal と gate の循環を続けない。
 
-gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す。`return` の場合だけ最初の一回に限って proposal を再実行し、
-再 proposal 後の不健全または evidence 不足は上記のとおり停止する。
+親は structural gate の予算を独立した `rounds` Data として管理する。gate assessment 1回を1 `round` と数える。
+`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する。
+structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない。
+
+親は各 gate assessment を次の境界で判断する。
+`pass` は上限未消化でも直ちに `review-loop` へ進む。
+`return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する。
+現在の round が `rounds.limit` 未満の場合だけこの再実行を行う。`rounds.limit` 到達 round の `return` は `stop-incomplete` とする。
+`rounds.limit` を超えて proposal と gate の循環を続けない。
+
+`insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする。再 proposal 後の構造不健全な `return` は
+現在の round が `rounds.limit` 未満なら上記のとおり継続し、limit 到達なら `stop-incomplete` とする。再 proposal 後の
+`insufficient-evidence` は常に `stop-incomplete` とする。
 
 gate を通過した candidate snapshot だけを、必要な review goal とともに既存の `review-loop` へ渡す。この順序
 （proposal → structural-health-gate → review-loop）を飛ばさず、review-loop の採否・受け入れ・後続 Action は
