@@ -962,6 +962,12 @@ slice = "review-loop-induced-brake"
 pattern = "`induced-loop` は自己誘発 churn に対する補助ブレーキ"
 applies_to = ["claude", "codex"]
 
+[contracts.review-loop-induced-brake-forbids-dd813c83]
+kind = "forbids"
+slice = "review-loop-induced-brake"
+pattern = "`baseline_round`"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-proposal-before-structural-health-gate]
 kind = "order"
 before = "proposal-start"

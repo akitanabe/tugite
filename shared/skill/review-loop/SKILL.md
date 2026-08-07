@@ -136,6 +136,8 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 因果 evidence がある場合だけ付ける。対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは `induced: true` に
 しない。因果 evidence がなければ `induced: false` とし、採用した修正との対応を ledger に残す。
 
+旧基準状態を成立条件や窓の開始位置として保存・参照せず、各通常 round の観測から判定する。
+
 各通常 round で、親確定の `修正推奨` 以上だけを対象に、誘発 finding の数が非誘発 finding の数を上回るかを
 `induced_dominant` として記録する（母数が空の round は成立しない）。同じ判定を直近の `plan-adversarial-reviewer`
 通常 round 2 回で連続して満たし、両 round とも非誘発の `修正必須` が 0 の場合だけ、`induced-loop` を補助的な

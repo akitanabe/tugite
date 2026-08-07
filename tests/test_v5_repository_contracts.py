@@ -849,6 +849,11 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 "review-loop-induced-brake",
                 "`induced-loop` は自己誘発 churn に対する補助ブレーキ",
             ),
+            "review-loop-induced-brake-forbids-dd813c83": (
+                "forbids",
+                "review-loop-induced-brake",
+                "`baseline_round`",
+            ),
         }
         selected = {
             name: entry

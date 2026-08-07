@@ -585,14 +585,14 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 因果基準の誘発findingと直近2 round連続の補助 brake を正しく計算する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer`の通常 roundをA〜Dの境界 variantとして扱う。AはR1=`修正必須 NF-1(induced=false)`、R2=`必須0`、R3=`修正推奨 PF-2(induced=true, induced_by=R2で採用・verification済みのFix-2)`だけで、支配的なroundが1回のみ。BはAに続けてR4=`修正推奨 PF-4/PF-5(induced=true, R3の採用修正が因果)`を追加し、直近2 roundがいずれも支配的。CはR3にPF-2(induced=true)、R4にPF-4(induced=true)とPF-6(`修正必須`, induced=false)を持つ。Dはsnapshot差分でPF-7の対象文が新しくなったが、直前までの採用修正が成立原因ではないためinduced=falseとする。各findingはsnapshot/evidence/親裁定/採用修正/verification済み。別reviewerのTQ-1とfinal trimのOE-1もledgerにあるが通常母数外。未解決は0、round limitは6。
-- **入力**: {{invoke:review-loop}} A〜Dのledgerを復元し、各通常 roundの`induced_dominant`、非誘発`修正必須`数、terminationを返して。
-- **期待する判断**: Aは1 roundだけでは停止せず継続。BはR3/R4の直近2 roundがともにinduced dominant、非誘発必須0のためR4で`induced-loop`。Cは非誘発必須1があるため停止しない。Dは文面の新旧だけでinduced=trueにせず、因果evidenceなしとして停止しない。
-- **必須動作**: loop全体のdefault reviewer通常 roundを対象に、親が採用・verificationした修正との因果evidenceをledgerへ保持し、打切roundの採用修正と全裁定を反映する。
-- **禁止動作**: Aで1 roundだけの停止、Cの非誘発必須を無視、Dのsnapshot差分だけでinduced判定、半数を支配的扱い、別reviewer/trimを母数へ加える。
+- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer` の通常 roundをA〜Gの独立した境界 variantとして扱う。各findingの入力は `finding_condition`、snapshot前後、親の裁定、採用修正のID、修正のverification結果だけとし、`induced` / `induced_by` は与えない。Aは1通常roundだけで、因果対応しない修正必須NF-1が1件。BはR1の採用Fix-1（verification済み）後のR2、R2の採用Fix-2（verification済み）後のR3が、それぞれ「直前のFixが追加した処理が成立原因」となる修正推奨2件ずつで、非誘発の修正必須はない。CはR2/R3の各roundに、直前Fixが成立原因の修正推奨1件と、採用修正の有無に関係なくsnapshotの別文言だけで成立する修正推奨1件を持つ（両round tie、非誘発の修正必須0）。DはR2/R3の各roundに、直前Fixが成立原因の修正推奨2件と、採用修正とは別原因の修正必須1件を持つ（両round strict dominantだがrequired blockerあり）。Eはloop開始前に親が採用・verificationしたFix-0を渡し、R1/R2とも「直前Fixが追加した処理が成立原因」の修正必須1件と修正推奨2件を持つため、親確定の修正必須総数は各roundで0にならない。FはR2/R3の修正後snapshotで対象文が新しくなっただけで、成立条件は修正前から存在する修正推奨1件。GはR2/R3に採用修正と無関係な同一findingが再出現する。各variantには別reviewerのTQ-1とfinal trimのOE-1をledgerへ含め、通常母数から除外する。全findingの裁定・採用修正・verificationは完了、未解決0、round limitは6。
+- **入力**: {{invoke:review-loop}} A〜Gのledgerを復元し、各findingの成立条件と採用修正の因果を照合して `induced` / `induced_by` を導出し、各通常roundの `induced_dominant`、非誘発の修正必須数、terminationを返して。
+- **期待する判断**: Aは1通常roundだけなので継続。BはR2/R3の直近2通常roundがともにstrict dominantかつ非誘発の修正必須0なのでR3で`induced-loop`。Cはtieのためdominantにならず継続。Dはstrict dominantでも非誘発の修正必須1があるため継続。Eは旧 `baseline_round` が成立しない（修正必須総数が0にならない）ままでも、R1/R2ともstrict dominantかつ非誘発の修正必須0なのでR2で新規則の`induced-loop`。Fは対象文が新しいだけ、Gは同じfindingの再出現だけなので因果なしとして誘発扱いせず、いずれも停止しない。
+- **必須動作**: finding成立条件、snapshot前後、親が採用しverificationした修正、`induced_by` の因果evidenceをledgerへ保持する。loop全体のdefault reviewer通常roundだけを判定対象とし、打切roundの採用findingと全裁定を反映する。
+- **禁止動作**: 入力された結論ラベルを受け入れる、対象文の新旧やsnapshot差分だけで誘発扱いする、同じfindingの再出現を誘発扱いする、tieをstrict dominantとする、非誘発の修正必須を無視する、旧 `baseline_round` の成立を必須にする、別reviewer/trimを母数へ加える。
 - **許容される差異**: finding IDとledger表示。
-- **必要証跡**: round ledger、各roundのinduced_dominant/非誘発必須数、因果evidence、termination。
-- **判定規則**: A〜Dの境界分岐とBだけのinduced-loopが一致すれば `Pass`。
+- **必要証跡**: round ledger、各roundの誘発判定根拠、`induced_by`、`induced_dominant`、非誘発の修正必須数、termination。
+- **判定規則**: A〜Gの因果導出、tie、required-blocker、baseline未成立、負例の境界とB/Eだけの`induced-loop`が一致すれば `Pass`。
 
 ## review-loop-final-trim
 
@@ -627,7 +627,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review結果と成果物受入/書戻し/次Actionを分離する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨1+非誘発推奨1/R4誘発推奨2、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨2+非誘発推奨1/R4誘発推奨2、R3/R4とも非誘発の修正必須0、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
 - **入力**: {{invoke:review-loop}} 一つのcase promptにA〜Dの終了値を確定し、完了なら`issue://eval/7`本文を更新して実装を開始して、と全Dataを渡す。responseではA〜Dのvariant別terminationを観測する。
 - **期待する判断**: A=`converged`、B=`induced-loop`、C=`round-limit`、D=`stop-incomplete`。いずれも成果物、ledgers、trim有無、termination、round countをDataで返し、書戻しと実装判断はcallerへ残す。
 - **必須動作**: input resource identityと未実行Actionを明示する。
