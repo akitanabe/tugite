@@ -801,6 +801,58 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 self.assertEqual(pattern, entry["pattern"])
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
 
+    def test_review_loop_induced_brake_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "review-loop-induced-brake-requires-5f2d73b0": (
+                "requires",
+                "review-loop-induced-brake",
+                "直前までに親が採用して verification を完了した修正によって finding が新たに成立した",
+            ),
+            "review-loop-induced-brake-requires-a0199e5d": (
+                "requires",
+                "review-loop-induced-brake",
+                "対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは",
+            ),
+            "review-loop-induced-brake-requires-6949511b": (
+                "requires",
+                "review-loop-induced-brake",
+                "各通常 round で、親確定の `修正推奨` 以上",
+            ),
+            "review-loop-induced-brake-requires-cf51f4de": (
+                "requires",
+                "review-loop-induced-brake",
+                "通常 round 2 回で連続して",
+            ),
+            "review-loop-induced-brake-requires-3b7c1ff9": (
+                "requires",
+                "review-loop-induced-brake",
+                "両 round とも非誘発の `修正必須` が 0",
+            ),
+            "review-loop-induced-brake-requires-804e8353": (
+                "requires",
+                "review-loop-induced-brake",
+                "`induced-loop` は自己誘発 churn に対する補助ブレーキ",
+            ),
+        }
+        selected = {
+            name: entry
+            for name, entry in registry.items()
+            if entry.get("slice") == "review-loop-induced-brake"
+        }
+        self.assertEqual(set(expected), set(selected))
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": kind,
+                        "slice": slice_name,
+                        "pattern": pattern,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+
     def test_sliced_contract_ids_are_stable_content_hashes(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         for name, entry in registry.items():

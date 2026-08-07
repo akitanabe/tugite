@@ -104,7 +104,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | gate は複雑さでなく局所性を evidence で判定する | #172, #178; `structural-health-gate` | `structural-health-gate-locality` | semantic-core | Claude / Codex | finding 4 field、assessment | evidence 不足を return 根拠にせず直接編集しない |
 | review-loop は許可された caller と適用可能 artifact だけ扱う | #150; `shared/skill/review-loop/SKILL.md` | `review-loop-activation-boundary` | platform-mechanism | Claude / Codex | caller、artifact節、起動有無 | impl-lead中や入力不成立で reviewer を起動しない |
 | review finding は5区分で親が裁定し保留を凍結する | #150; `review-loop` | `review-loop-finding-adjudication` | semantic-core | Claude / Codex | ledger、hold ledger、次round入力 | reviewer が採否せず保留から仕様を派生しない |
-| baseline と直近2 round で induced-loop を判定する | #150; `review-loop` | `review-loop-induced-convergence` | semantic-core | Claude / Codex | round ledger、母数、termination | strict majority と非誘発必須0を同時に満たす |
+| 因果 induced と直近2 round連続で補助 brake を判定する | #183; `review-loop` | `review-loop-induced-brake` | semantic-core | Claude / Codex | round ledger、因果 evidence、termination | 各 round の induced dominance と非誘発必須0を2 round連続で満たす |
 | final trim の回数・validation・失敗復旧を守る | #150; `review-loop` | `review-loop-final-trim` | semantic-core | Claude / Codex | count、snapshot列、verification | 5 roundは1回、6 roundは3回、不正値を補正しない |
 | review 中の非局所構造欠陥では上流へ逆走しない | #172, #178; `review-loop` | `review-loop-structural-stop` | semantic-core | Claude / Codex | finding、停止位置、Action trace | stop-incomplete で返し自動循環0件 |
 | review-loop は成果物の受入・書戻し・次工程を所有しない | #145, #150; `review-loop` | `review-loop-output-ownership` | semantic-core | Claude / Codex | output fields、resource identity | termination を返すだけで入力を更新しない |
@@ -129,8 +129,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## coverage の除外と境界入力
 
-- #164 と #168 の baseline 依存廃止案、#169 の暫定運用は現行期待にしない。現行 `review-loop` の
-  `baseline_round` を評価する。
+- #164 と #168 の旧 baseline 依存案、#169 の暫定運用は現行期待にしない。#183 の `review-loop` は
+  loop 全体で因果 evidence と直近2 round連続の補助 brake を評価する。
 - #167 と #175 は未実装なので現行 surface として起動しない。#167 は
   `plan-craft-proposal-family-routing` の「将来の別 public workflow へ暗黙 switch しない」境界入力だけに使う。
 - installer、配布後 inventory、metadata 値の静的照合、runtime 導入後の起動 smoke は扱わない。静的構造は
@@ -580,19 +580,19 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **必要証跡**: finding/hold ledgerと次round入力。
 - **判定規則**: 5区分と凍結、未解決集合が一致すれば `Pass`。
 
-## review-loop-induced-convergence
+## review-loop-induced-brake
 
-- **目的**: baselineを取り直さず誘発findingの有界条件を正しく計算する。
+- **目的**: 因果基準の誘発findingと直近2 round連続の補助 brake を正しく計算する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer`のR1=`修正必須 PF-1(induced=false)`、R2=`必須0、修正推奨0`、R3=`修正推奨 PF-2(induced=true), PF-3(induced=false)`、R4=`修正推奨 PF-4/PF-5(induced=true)`。各findingはsnapshot/evidence/親裁定/採用修正/verification済みで、R2が初の必須0。R3にはtest reviewer finding TQ-1、R4後にはtrim finding OE-1もあるがdefault reviewerではない。未解決は0、round limitは6。
-- **入力**: {{invoke:review-loop}} 提示したR1〜R4 ledgerを復元し、各round後のterminationとinduced計算を返して。
-- **期待する判断**: baseline=R2固定。R3は基準2round後でなく継続。R4のR3+R4窓は誘発3/母数4でstrict majority、非誘発必須0のため`induced-loop`。
-- **必須動作**: default reviewerのroundだけを窓へ入れ、打切roundの採用修正と裁定を反映する。
-- **禁止動作**: R3で打切り、半数をmajority扱い、別reviewer/trimを母数へ加える、baseline取り直し。
-- **許容される差異**: ledger表示。
-- **必要証跡**: round ledger、baseline、rolling window計算、termination。
-- **判定規則**: R2固定かつR4だけでinduced-loopなら `Pass`。
+- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer`の通常 roundをA〜Dの境界 variantとして扱う。AはR1=`修正必須 NF-1(induced=false)`、R2=`必須0`、R3=`修正推奨 PF-2(induced=true, induced_by=R2で採用・verification済みのFix-2)`だけで、支配的なroundが1回のみ。BはAに続けてR4=`修正推奨 PF-4/PF-5(induced=true, R3の採用修正が因果)`を追加し、直近2 roundがいずれも支配的。CはR3にPF-2(induced=true)、R4にPF-4(induced=true)とPF-6(`修正必須`, induced=false)を持つ。Dはsnapshot差分でPF-7の対象文が新しくなったが、直前までの採用修正が成立原因ではないためinduced=falseとする。各findingはsnapshot/evidence/親裁定/採用修正/verification済み。別reviewerのTQ-1とfinal trimのOE-1もledgerにあるが通常母数外。未解決は0、round limitは6。
+- **入力**: {{invoke:review-loop}} A〜Dのledgerを復元し、各通常 roundの`induced_dominant`、非誘発`修正必須`数、terminationを返して。
+- **期待する判断**: Aは1 roundだけでは停止せず継続。BはR3/R4の直近2 roundがともにinduced dominant、非誘発必須0のためR4で`induced-loop`。Cは非誘発必須1があるため停止しない。Dは文面の新旧だけでinduced=trueにせず、因果evidenceなしとして停止しない。
+- **必須動作**: loop全体のdefault reviewer通常 roundを対象に、親が採用・verificationした修正との因果evidenceをledgerへ保持し、打切roundの採用修正と全裁定を反映する。
+- **禁止動作**: Aで1 roundだけの停止、Cの非誘発必須を無視、Dのsnapshot差分だけでinduced判定、半数を支配的扱い、別reviewer/trimを母数へ加える。
+- **許容される差異**: finding IDとledger表示。
+- **必要証跡**: round ledger、各roundのinduced_dominant/非誘発必須数、因果evidence、termination。
+- **判定規則**: A〜Dの境界分岐とBだけのinduced-loopが一致すれば `Pass`。
 
 ## review-loop-final-trim
 
@@ -806,7 +806,7 @@ AC-11の照合対象を固定する履歴監査Dataであり、current runのtar
 | 24 | EVAL-25: レビュー付きプラン起草の正常収束 | 一部対応 | `plan-craft-explicit-nonimplementation`, `plan-craft-risk-directed-review-selection`, `review-loop-finding-adjudication`, `review-loop-final-trim`, `review-loop-output-ownership`; status schemaはretired |
 | 25 | EVAL-26: rounds_limit 到達での打ち切りと未解決指摘の提示 | 対応 | `review-loop-finding-adjudication`, `review-loop-output-ownership` |
 | 26 | EVAL-27: プラン入力モードの過剰実装指摘 | 対応 | `review-loop-final-trim`, `impl-lead-reviewer-report-only` |
-| 27 | EVAL-37: 誘発指摘の二 round 窓による収束 | 対応 | `review-loop-induced-convergence` |
+| 27 | EVAL-37: 因果誘発指摘の二 round 連続補助 brake | 対応 | `review-loop-induced-brake` |
 | 28 | EVAL-17: 不正な Branch Plan Set の受領 | 一部対応 | `impl-lead-normalize-or-stop`, `impl-lead-dependency-drift`; Branch Plan再検証schemaはretired |
 | 29 | EVAL-18: 未授権 Branch Plan の境界での停止 | 一部対応 | `impl-lead-direct-or-delegate`, `impl-lead-dependency-drift`; Branch Plan授権schemaはretired |
 | 30 | EVAL-22: 混在 complexity と mode 未指定委譲の決定表導出 | 除外 | adaptive/standard/lite/strictの決定表はretiredで現行判断を持たない |

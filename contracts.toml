@@ -908,6 +908,42 @@ slice = "review-loop-structural-boundary"
 pattern = "`stop-incomplete`"
 applies_to = ["claude", "codex"]
 
+[contracts.review-loop-induced-brake-requires-5f2d73b0]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "直前までに親が採用して verification を完了した修正によって finding が新たに成立した"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-a0199e5d]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-6949511b]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "各通常 round で、親確定の `修正推奨` 以上"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-cf51f4de]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "通常 round 2 回で連続して"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-3b7c1ff9]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "両 round とも非誘発の `修正必須` が 0"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-804e8353]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "`induced-loop` は自己誘発 churn に対する補助ブレーキ"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-proposal-before-structural-health-gate]
 kind = "order"
 before = "proposal-start"
