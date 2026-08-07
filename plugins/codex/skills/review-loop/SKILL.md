@@ -47,6 +47,11 @@ snapshot を読み、親が採用した変更と verification を snapshot ご�
 持つ実装前提プラン系成果物である。前提を欠く場合、または非実装系成果物に goal 対応の既存 reviewer が
 ない場合は reviewer を起動せず、理由付きでレビュー不成立を返す。汎用 reviewer を新設しない。
 
+plan-craft から受け取る candidate は、局所的な構造欠陥を事前解消したものに限る。この loop はその後の指摘密度、
+実装可能性、検証可能性を扱う。review 中に local fix では閉じない構造欠陥が判明した場合は、location、局所修正で
+閉じない理由、予測される amplification / churn を未解決 finding に記録して `stop-incomplete` とする。自動で
+`structural-health-gate` または `proposal` へ逆走しない。
+
 ## reviewer の責務と選択
 
 通常 round の既定は `plan-adversarial-reviewer` で、具体的な failure path を指摘する。final trim は

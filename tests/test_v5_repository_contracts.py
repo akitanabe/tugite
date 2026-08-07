@@ -41,6 +41,7 @@ WORKFLOW_SKILLS = {
     "plan-craft",
     "proposal",
     "review-loop",
+    "structural-health-gate",
     "work-unit-design",
 }
 CODEX_ONLY_SKILLS = {"install-custom-agents"}
@@ -58,7 +59,7 @@ RETIRED_IMPLEMENTATION_PATHS = (
     "tests/build_plugin_assets_test_support.py",
 )
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
-INTERNAL_CLAUDE_SKILLS = {"proposal", "work-unit-design"}
+INTERNAL_CLAUDE_SKILLS = {"proposal", "structural-health-gate", "work-unit-design"}
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -238,7 +239,12 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
 
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
-        implicit_skills = {"proposal", "review-loop", "work-unit-design"}
+        implicit_skills = {
+            "proposal",
+            "review-loop",
+            "structural-health-gate",
+            "work-unit-design",
+        }
         for name in WORKFLOW_SKILLS:
             with self.subTest(name=name):
                 source = ROOT / f"declarations/codex/skills/{name}/openai.yaml"
@@ -442,6 +448,131 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     self.assertEqual("proposal-start", entry["before"])
                     self.assertEqual("review-loop-handoff", entry["after"])
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_structural_health_gate_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "structural-health-gate-boundary-requires-08c3b623": (
+                "requires", "structural-health-gate-boundary", "duplicated source of truth"
+            ),
+            "structural-health-gate-boundary-requires-f08a5bbf": (
+                "requires", "structural-health-gate-boundary", "`location`"
+            ),
+            "structural-health-gate-boundary-requires-89d00b8c": (
+                "requires", "structural-health-gate-boundary", "`non_local_reason`"
+            ),
+            "structural-health-gate-boundary-requires-57c9e9cb": (
+                "requires", "structural-health-gate-boundary", "`predicted_amplification`"
+            ),
+            "structural-health-gate-boundary-requires-2e003c43": (
+                "requires", "structural-health-gate-boundary", "`predicted_churn`"
+            ),
+            "structural-health-gate-boundary-requires-476b14c5": (
+                "requires",
+                "structural-health-gate-boundary",
+                "親が最終的な `pass` / `return` / `stop-incomplete` を決める",
+            ),
+            "structural-health-gate-boundary-requires-f63294d0": (
+                "requires", "structural-health-gate-boundary", "成果物を再設計・直接編集しない"
+            ),
+            "structural-health-gate-boundary-requires-2a8ee78f": (
+                "requires",
+                "structural-health-gate-boundary",
+                "長さ、複雑さ、finding 数だけを理由に `return` しない",
+            ),
+            "structural-health-gate-boundary-requires-d19bb5e9": (
+                "requires", "structural-health-gate-boundary", "`insufficient-evidence`"
+            ),
+            "structural-health-gate-boundary-requires-8d4d4e56": (
+                "requires", "structural-health-gate-boundary", "evidence のみ"
+            ),
+            "structural-health-gate-boundary-forbids-21466849": (
+                "forbids", "structural-health-gate-boundary", "gate が最終判断する"
+            ),
+            "structural-health-gate-boundary-forbids-fad0c88b": (
+                "forbids", "structural-health-gate-boundary", "gate が成果物を直接編集する"
+            ),
+            "plan-craft-structural-health-handoff-requires-8b8aab7f": (
+                "requires", "plan-craft-structural-health-handoff", "`structural-health-gate`"
+            ),
+            "plan-craft-structural-health-handoff-requires-945ff3f4": (
+                "requires", "plan-craft-structural-health-handoff", "proposal を再実行"
+            ),
+            "plan-craft-structural-health-handoff-requires-cd8aca82": (
+                "requires", "plan-craft-structural-health-handoff", "再 proposal 後"
+            ),
+            "plan-craft-structural-health-handoff-requires-bdaffd8e": (
+                "requires", "plan-craft-structural-health-handoff", "`stop-incomplete`"
+            ),
+            "review-loop-structural-boundary-requires-0c775c51": (
+                "requires", "review-loop-structural-boundary", "局所的な構造欠陥を事前解消"
+            ),
+            "review-loop-structural-boundary-requires-59c5fbc2": (
+                "requires",
+                "review-loop-structural-boundary",
+                "自動で `structural-health-gate` または `proposal` へ逆走しない",
+            ),
+            "review-loop-structural-boundary-requires-55ef9a2e": (
+                "requires", "review-loop-structural-boundary", "`stop-incomplete`"
+            ),
+        }
+        order_expected = {
+            "plan-craft-proposal-before-structural-health-gate": (
+                "proposal-start", "structural-health-gate-start"
+            ),
+            "plan-craft-structural-health-gate-before-review-loop": (
+                "structural-health-gate-start", "review-loop-handoff"
+            ),
+        }
+        selected = {
+            name: entry
+            for name, entry in registry.items()
+            if entry.get("slice") in {
+                "structural-health-gate-boundary",
+                "plan-craft-structural-health-handoff",
+                "review-loop-structural-boundary",
+            }
+            or name in order_expected
+        }
+        self.assertEqual(set(expected) | set(order_expected), set(selected))
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": kind,
+                        "slice": slice_name,
+                        "pattern": pattern,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+        for name, (before, after) in order_expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": "order",
+                        "before": before,
+                        "after": after,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+
+    def test_workflow_corpus_registers_structural_health_gate_evals(self) -> None:
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        result_record = corpus.index("\n# 結果記録")
+        headings = (
+            "## EVAL-41: structural defect は proposal へ return",
+            "## EVAL-42: 長いが局所修正可能な candidate は return しない",
+            "## EVAL-43: mandatory evidence 不足では return を確定しない",
+            "## EVAL-44: structural advisor は evidence のみ返す",
+            "## EVAL-45: review-loop 中の非局所的構造欠陥は逆走せず停止",
+            "## EVAL-46: structural-health-gate の internal context 外起動を拒否",
+        )
+        for heading in headings:
+            with self.subTest(eval=heading):
+                self.assertEqual(1, corpus.count(heading))
+                self.assertLess(corpus.index(heading), result_record)
 
     def test_gunte_contract_registry_owns_worker_and_test_quality_invariants(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]

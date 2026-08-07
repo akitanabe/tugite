@@ -21,6 +21,7 @@ files = [
   "shared/skill/plan-craft/SKILL.md",
   "shared/skill/proposal/SKILL.md",
   "shared/skill/review-loop/SKILL.md",
+  "shared/skill/structural-health-gate/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
   "declarations/claude/plugin.json",
   "declarations/codex/plugin.json",
@@ -28,6 +29,7 @@ files = [
   "declarations/codex/skills/plan-craft/openai.yaml",
   "declarations/codex/skills/proposal/openai.yaml",
   "declarations/codex/skills/review-loop/openai.yaml",
+  "declarations/codex/skills/structural-health-gate/openai.yaml",
   "declarations/codex/skills/work-unit-design/openai.yaml",
   "shared/VERSION",
 ]

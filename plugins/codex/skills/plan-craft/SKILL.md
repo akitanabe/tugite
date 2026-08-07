@@ -30,11 +30,17 @@ description: >-
 人間の判断が必要、または安全な candidate を作れない場合は `stop-incomplete` と必要な判断・evidence を返す。
 
 `proposal` が返した `candidate snapshot` は内容を識別できる不変 Data として後段へ渡す。`stop-incomplete` の場合は
-plan-craft がそこで停止し、review-loop を起動しない。
+plan-craft がそこで停止し、review-loop を起動しない。それ以外も gate を通過した candidate だけを
+`review-loop` へ渡す。
 
-candidate snapshot を受け取った場合だけ、必要な review goal と
-ともに既存の `review-loop` へ渡す。この順序（proposal → review-loop）を飛ばさず、review-loop の採否・受け入れ・
-後続 Action は既存の責務境界に従う。
+candidate snapshot を受け取った場合、同じ親 context の internal `structural-health-gate` に渡す。親が `pass` と
+判断した場合だけ後段へ進む。親が最初の `return` と判断した場合は、gate の evidence を新しい入力 Data として
+proposal を再実行し、別 identity の candidate snapshot を gate で再評価する。再 proposal 後も構造不健全、または
+必須 evidence 不足なら `stop-incomplete` とし、proposal と gate の循環を続けない。
+
+gate を通過した candidate snapshot だけを、必要な review goal とともに既存の `review-loop` へ渡す。この順序
+（proposal → structural-health-gate → review-loop）を飛ばさず、review-loop の採否・受け入れ・後続 Action は
+既存の責務境界に従う。
 
 ## 成果物
 

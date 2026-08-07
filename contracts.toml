@@ -679,3 +679,129 @@ kind = "order"
 before = "proposal-start"
 after = "review-loop-handoff"
 applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-08c3b623]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "duplicated source of truth"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-f08a5bbf]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`location`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-89d00b8c]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`non_local_reason`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-57c9e9cb]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`predicted_amplification`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-2e003c43]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`predicted_churn`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-476b14c5]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "親が最終的な `pass` / `return` / `stop-incomplete` を決める"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-f63294d0]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "成果物を再設計・直接編集しない"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-2a8ee78f]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "長さ、複雑さ、finding 数だけを理由に `return` しない"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-d19bb5e9]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`insufficient-evidence`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-8d4d4e56]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "evidence のみ"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-forbids-21466849]
+kind = "forbids"
+slice = "structural-health-gate-boundary"
+pattern = "gate が最終判断する"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-forbids-fad0c88b]
+kind = "forbids"
+slice = "structural-health-gate-boundary"
+pattern = "gate が成果物を直接編集する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-8b8aab7f]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`structural-health-gate`"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-945ff3f4]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "proposal を再実行"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-cd8aca82]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "再 proposal 後"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-bdaffd8e]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-0c775c51]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "局所的な構造欠陥を事前解消"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-59c5fbc2]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "自動で `structural-health-gate` または `proposal` へ逆走しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-55ef9a2e]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-before-structural-health-gate]
+kind = "order"
+before = "proposal-start"
+after = "structural-health-gate-start"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-gate-before-review-loop]
+kind = "order"
+before = "structural-health-gate-start"
+after = "review-loop-handoff"
+applies_to = ["claude", "codex"]
