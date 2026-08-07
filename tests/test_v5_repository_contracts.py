@@ -514,6 +514,11 @@ class V5RepositoryContractsTest(unittest.TestCase):
             "plan-craft-structural-health-handoff-requires-bdaffd8e": (
                 "requires", "plan-craft-structural-health-handoff", "`stop-incomplete`"
             ),
+            "plan-craft-structural-health-handoff-requires-e9241f88": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す",
+            ),
             "review-loop-structural-boundary-requires-0c775c51": (
                 "requires", "review-loop-structural-boundary", "局所的な構造欠陥を事前解消"
             ),

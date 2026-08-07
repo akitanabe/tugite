@@ -60,6 +60,9 @@ candidate snapshot を受け取った場合、同じ親 context の internal `st
 proposal を再実行し、別 identity の candidate snapshot を gate で再評価する。再 proposal 後も構造不健全、または
 必須 evidence 不足なら `stop-incomplete` とし、proposal と gate の循環を続けない。
 
+gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す。`return` の場合だけ最初の一回に限って proposal を再実行し、
+再 proposal 後の不健全または evidence 不足は上記のとおり停止する。
+
 <!-- @anchor review-loop-handoff -->
 gate を通過した candidate snapshot だけを、必要な review goal とともに既存の `review-loop` へ渡す。この順序
 （proposal → structural-health-gate → review-loop）を飛ばさず、review-loop の採否・受け入れ・後続 Action は

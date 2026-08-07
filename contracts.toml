@@ -788,6 +788,12 @@ slice = "plan-craft-structural-health-handoff"
 pattern = "`stop-incomplete`"
 applies_to = ["claude", "codex"]
 
+[contracts.plan-craft-structural-health-handoff-requires-e9241f88]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す"
+applies_to = ["claude", "codex"]
+
 [contracts.review-loop-structural-boundary-requires-0c775c51]
 kind = "requires"
 slice = "review-loop-structural-boundary"
