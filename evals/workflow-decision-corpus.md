@@ -46,10 +46,11 @@ public parent の `caller_context` から internal Action として起動し、u
 - `Not evaluated`: 対象 platform だが未実行、または証跡不足で判定できない。
 - `Not applicable`: case が対象としない platform。未実行とは区別する。
 
-case 内に subcase がある場合は各 subcase を別の fresh context で実行し、全 subcase が `Pass` のときだけ case を
-`Pass` とする。case 定義へ model、plugin / skill version、commit、実行日時、結果を追記しない。
-実行対象へ渡すpromptは、そのsubcaseの`前提 Data`と`入力`だけから組み立てる。`期待する判断`以降の採点Data、
-他subcase、他case、旧corpus照合記録は渡さない。
+case 内に subcase がある場合も、case/platform ごとに一つの fresh context で実行する。subcase A/B/... は同じ
+判断経路と判定規則を共有する boundary variant であり、case の全 subcase に対応する `前提 Data` と `入力`を
+一つの case prompt に含める。応答内で variant ごとの結果と evidence を観測し、全 variant が `Pass` のときだけ
+case を `Pass` とする。case 定義へ model、plugin / skill version、commit、実行日時、結果を追記しない。
+prompt には `期待する判断`以降の採点Data、他case、旧corpus照合記録を含めない。
 
 ## coverage inventory
 
@@ -160,10 +161,10 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: route を execution constraint と品質下限から選ぶ。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bは次の完全なWork Unit Dataをそれぞれ別fresh contextで使う。
+- **前提 Data**: A/Bは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。次の完全なWork Unit Dataをpromptへ含める。
   - A: `{id: WU-TYPO, purpose: READMEの誤記修正, acceptance_criteria: [READMEの唯一の"instal"が"install"になる], scope: {change: [README.md], exclude: [src, tests]}, implementation_freedom: 語の置換だけ, constraints: [direct実装], depends_on: {work_units: [], preconditions: [README.mdの対象行が"Run instal now." ]}, verification: [rg -n "instal|install" README.md, git diff --check]}`
   - B: `{id: WU-PORT, purpose: port文字列の整数化, acceptance_criteria: [parse_port("8080")が8080を返す, 非数字はValueError], scope: {change: [src/port.py, tests/test_port.py], exclude: [CLI, dependency], implementation_freedom: 既存stdlib内, constraints: [implementerへ委譲, single writer], depends_on: {work_units: [], preconditions: [pytest利用可]}, verification: [pytest -q tests/test_port.py]}`
-- **入力**: A「`{{invoke:impl-lead}}`。WU-TYPOをdirectで実装して」。B「`{{invoke:impl-lead}}`。WU-PORTを`implementer`へ委譲して」。各subcaseはこの一文と対応するWork Unit Dataだけを渡す。
+- **入力**: 一つのcase promptにA「`{{invoke:impl-lead}}`。WU-TYPOをdirectで実装して」とB「`{{invoke:impl-lead}}`。WU-PORTを`implementer`へ委譲して」、および対応する両方のWork Unit Dataを渡す。responseではA/Bのvariant別結果を観測する。
 - **期待する判断**: A は親 direct、B は指定 worker 1名。指定と品質下限が衝突する場合だけ開始前に確認する。
 - **必須動作**: route、理由、constraint を execution Data に分離する。
 - **禁止動作**: Aを委譲する、Bを無断direct化する、複数workerへ同じWUを渡す。
@@ -176,12 +177,12 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 4 worker を固定 mode でなく残存判断に対応させる。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは独立した次の完全なWork Unit Dataであり、repository観測も括弧内で固定する。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各variantは独立した次の完全なWork Unit Dataであり、repository観測も括弧内で固定する。
   - A: `{id: WU-LABEL, purpose: UIラベル誤記修正, acceptance_criteria: ["Submt"が"Submit"になる], scope: {change: [ui/labels.json], exclude: [code, tests]}, implementation_freedom: 1値だけ, constraints: [no dependency], depends_on: {work_units: [], preconditions: [対象keyはsubmit]}, verification: [JSON parse, exact diff]}`。
   - B: `{id: WU-SLUG, purpose: slug空白正規化, acceptance_criteria: [" a b "が"a-b"], scope: {change: [slug.py, test_slug.py], exclude: [CLI]}, implementation_freedom: 隣接するnormalize_name patternを再利用可, constraints: [stdlib only], depends_on: {work_units: [], preconditions: [既存table testあり]}, verification: [pytest -q test_slug.py]}`。
   - C: `{id: WU-CACHE, purpose: process内cacheの失効, acceptance_criteria: [update後の次readが新値], scope: {change: [cache.py, test_cache.py], exclude: [永続cache, public API]}, implementation_freedom: invalidate-on-writeまたはversion key, constraints: [thread lock既存利用], depends_on: {work_units: [], preconditions: [cache.pyに2既存経路]}, verification: [pytest -q test_cache.py]}`。
   - D: `{id: WU-LEDGER, purpose: 二重dispatch防止, acceptance_criteria: [timeout後の同一key再実行が重複作成しない, partial failureを照合可能], scope: {change: [ledger.py, dispatcher.py, test_dispatch.py], exclude: [外部API仕様, DB schema]}, implementation_freedom: 明示keyの状態機械は自由, constraints: [既存transaction境界維持], depends_on: {work_units: [], preconditions: [外部APIはidempotency key対応]}, verification: [pytest -q test_dispatch.py]}`。
-- **入力**: 「`{{invoke:impl-lead}}`。A〜Dそれぞれに最小十分なworkerを1名選び、理由を返して。変更もworker起動もまだ行わない。」
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。A〜Dそれぞれに最小十分なworkerを1名選び、理由を返して。変更もworker起動もまだ行わない。」とA〜Dの全Dataを渡す。responseではvariant別の選択理由を観測する。
 - **期待する判断**: A=`focused-implementer`、B=`implementer`、C=`senior-implementer`、D=`expert-implementer`。
 - **必須動作**: 実装自由度、判断密度、手戻り、検証可能性で理由を示す。
 - **禁止動作**: 行数/file数だけで昇格する、迷いを上位workerで解消する、selection reviewerを追加する。
@@ -194,8 +195,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: run内依存と外部preconditionを区別し、drift時に止める。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bを別fresh contextで使う。Aは `{id: WU-B, purpose: reader追加, acceptance_criteria: [reader test Green], scope: {change: [reader.py, test_reader.py], exclude: [schema.py]}, implementation_freedom: 既存API内, constraints: [], depends_on: {work_units: [WU-X], preconditions: []}, verification: [pytest -q test_reader.py]}` だけがあり、`WU-X`の定義はない。Bは `{id: WU-A, purpose: customer_id列追加, acceptance_criteria: [schema revision r7でcustomer_idがrequired], scope: {change: [schema.py,test_schema.py], exclude: [reader.py,deploy]}, implementation_freedom: 既存migration形式内, constraints: [rollbackを保持], depends_on: {work_units: [], preconditions: [local schema r6]}, verification: [pytest -q test_schema.py]}` と `{id: WU-B, purpose: customer_id reader追加, acceptance_criteria: [r7 rowを読める], scope: {change: [reader.py,test_reader.py], exclude: [schema.py,deploy]}, implementation_freedom: 既存reader内, constraints: [], depends_on: {work_units: [WU-A], preconditions: [remote schema r7]}, verification: [pytest -q test_reader.py]}` を持つ。deploy preconditionはremote schema revision `r7`、dispatch観測は`r7`、Action直前のread-only観測は`r8`である。
-- **入力**: A「`{{invoke:impl-lead}}`。このWUを依存順に実行して」。B「`{{invoke:impl-lead}}`。WU-AとWU-Bを順に実装し、最後にdeployして」。各subcaseには対応するDataだけを渡す。
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。Aは `{id: WU-B, purpose: reader追加, acceptance_criteria: [reader test Green], scope: {change: [reader.py, test_reader.py], exclude: [schema.py]}, implementation_freedom: 既存API内, constraints: [], depends_on: {work_units: [WU-X], preconditions: []}, verification: [pytest -q test_reader.py]}` だけがあり、`WU-X`の定義はない。Bは `{id: WU-A, purpose: customer_id列追加, acceptance_criteria: [schema revision r7でcustomer_idがrequired], scope: {change: [schema.py,test_schema.py], exclude: [reader.py,deploy]}, implementation_freedom: 既存migration形式内, constraints: [rollbackを保持], depends_on: {work_units: [], preconditions: [local schema r6]}, verification: [pytest -q test_schema.py]}` と `{id: WU-B, purpose: customer_id reader追加, acceptance_criteria: [r7 rowを読める], scope: {change: [reader.py,test_reader.py], exclude: [schema.py,deploy]}, implementation_freedom: 既存reader内, constraints: [], depends_on: {work_units: [WU-A], preconditions: [remote schema r7]}, verification: [pytest -q test_reader.py]}` を持つ。deploy preconditionはremote schema revision `r7`、dispatch観測は`r7`、Action直前のread-only観測は`r8`である。
+- **入力**: 一つのcase promptにA「`{{invoke:impl-lead}}`。このWUを依存順に実行して」とB「`{{invoke:impl-lead}}`。WU-AとWU-Bを順に実装し、最後にdeployして」、および対応する両方のDataを渡す。responseではA/Bのvariant別結果を観測する。
 - **期待する判断**: 未知edgeをdispatch前に解消し、WU-Aのaccept後だけWU-Bへ進み、r8 driftでdeploy/acceptを止める。
 - **必須動作**: 依存種別、観測方法、pin、再観測結果、停止理由を記録する。
 - **禁止動作**: 未知edgeを無視する、未accepted WUをbaseにする、r7と推測してdeployする。
@@ -236,8 +237,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: continuationと再正規化を意味契約で分ける。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cを別fresh contextで評価する。元handoff `WU-PARSE` は目的「整数文字列をparse」、AC「`"7"`→`7`、非数字→ValueError」、scope change=`parser.py,test_parser.py` / exclude=`CLI,config.py`、implementation_freedom=`stdlib内`、constraints=`依存追加禁止`、depends_on=`なし`、verification=`pytest -q test_parser.py`、worker context ID=`worker-17`。Aは返却diffに非数字testのassertionだけ欠ける。Bは追加要求「空文字をdefault configから読む」と依存`config.py`を加える。Cは `{id: WU-README, purpose: parse利用例追加, acceptance_criteria: [READMEにparse_int("7") == 7の例が1件], scope: {change: [README.md], exclude: [code,tests]}, implementation_freedom: 既存Usage節内, constraints: [dependency追加禁止], depends_on: {work_units: [], preconditions: [README Usage節あり]}, verification: [markdownlint README.md]}`。
-- **入力**: A「`{{invoke:impl-lead}}`。WU-PARSEの欠けたassertionだけ修正して」。B「`{{invoke:impl-lead}}`。WU-PARSEへ空文字時のconfig fallbackも追加して」。C「`{{invoke:impl-lead}}`。新規README WUを実装して」。
+- **前提 Data**: A/B/Cを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで評価する。元handoff `WU-PARSE` は目的「整数文字列をparse」、AC「`"7"`→`7`、非数字→ValueError」、scope change=`parser.py,test_parser.py` / exclude=`CLI,config.py`、implementation_freedom=`stdlib内`、constraints=`依存追加禁止`、depends_on=`なし`、verification=`pytest -q test_parser.py`、worker context ID=`worker-17`。Aは返却diffに非数字testのassertionだけ欠ける。Bは追加要求「空文字をdefault configから読む」と依存`config.py`を加える。Cは `{id: WU-README, purpose: parse利用例追加, acceptance_criteria: [READMEにparse_int("7") == 7の例が1件], scope: {change: [README.md], exclude: [code,tests]}, implementation_freedom: 既存Usage節内, constraints: [dependency追加禁止], depends_on: {work_units: [], preconditions: [README Usage節あり]}, verification: [markdownlint README.md]}`。
+- **入力**: 一つのcase promptにA「`{{invoke:impl-lead}}`。WU-PARSEの欠けたassertionだけ修正して」、B「`{{invoke:impl-lead}}`。WU-PARSEへ空文字時のconfig fallbackも追加して」、C「`{{invoke:impl-lead}}`。新規README WUを実装して」と全Dataを渡す。responseではA〜Cのvariant別routeを観測する。
 - **期待する判断**: Aだけ同IDのcontinuation、Bは新ID/fresh context、Cもfresh context。
 - **必須動作**: Claudeは履歴を継承しない新規Agent、Codexは新WUを`fork_turns: "none"`で起動する。handoffは自己完結にする。
 - **禁止動作**: Bを旧contextへ返す、Cへ親履歴を暗黙継承する、旧/新成果を二重計上する。
@@ -250,7 +251,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: safe parallel条件と逐次integrationを守る。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: cleanなgit scratch `/tmp/eval-parallel/repo` のbaseは`S0`で、次の有限treeだけを持つ。記載しないfile、hook、外部resourceはない。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。cleanなgit scratch `/tmp/eval-parallel/repo` のbaseは`S0`で、次の有限treeだけを持つ。記載しないfile、hook、外部resourceはない。
 
   ```text
   bin/generate-index
@@ -301,7 +302,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
   ```
 
   generator規則はUTF-8の`src/*.yaml`をpath昇順で読み、各fileの唯一の`command: <value>`から値を取り、compact JSONと末尾改行を常に上書きする決定論的変換である。A=`{id: WU-A, purpose: command A登録, acceptance_criteria: [src/a.yamlがcommand Aを持ち生成indexにAが1件], scope: {change: [src/a.yaml,generated/index.json], exclude: [src/b.yaml,bin/generate-index,test_index.py]}, implementation_freedom: 指定内容の追加だけ, constraints: [generator使用], depends_on: {work_units: [], preconditions: [S0]}, verification: [python3 -B bin/generate-index, python3 -B -m unittest -q test_index]}`。B=`{id: WU-B, purpose: command B登録, acceptance_criteria: [src/b.yamlがcommand Bを持ち生成indexにBが1件], scope: {change: [src/b.yaml,generated/index.json], exclude: [src/a.yaml,bin/generate-index,test_index.py]}, implementation_freedom: 指定内容の追加だけ, constraints: [generator使用], depends_on: {work_units: [], preconditions: [直前accepted baseline]}, verification: [python3 -B bin/generate-index, python3 -B -m unittest -q test_index]}`。確認後の親execution Dataは競合候補のintegration順を`WU-A`→`WU-B`へ固定するが、これはWork Unit依存ではない。Aのcandidate diffは`src/a.yaml=command: A\n`追加とindex=`{"commands":["A","base"]}\n`、A accepted後に作るBのcandidate diffは`src/b.yaml=command: B\n`追加とindex=`{"commands":["A","B","base"]}\n`である。C=`{id: WU-C, purpose: C文書追加, acceptance_criteria: [docs/c.mdの内容が# Cと末尾改行], scope: {change: [docs/c.md], exclude: [src,generated,examples,fixtures]}, implementation_freedom: 指定内容の追加だけ, constraints: [external Actionなし], depends_on: {work_units: [], preconditions: [S0]}, verification: [python3 -B -c 'from pathlib import Path; assert Path("docs/c.md").read_text() == "# C\\n"']}`、candidate diffは`docs/c.md=# C\n`の追加だけ。D=`{id: WU-D, purpose: example D追加, acceptance_criteria: [fixtureとbyte一致], scope: {change: [examples/d.txt], exclude: [src,generated,docs,fixtures]}, implementation_freedom: fixture準拠, constraints: [external Actionなし], depends_on: {work_units: [], preconditions: [fixtures/d.expectedがexample-dと末尾改行]}, verification: [cmp examples/d.txt fixtures/d.expected]}`、candidate diffは`examples/d.txt=example-d\n`の追加だけ。A/Bは同じderived outputで競合し、C/Dはpath・生成物・外部resource・semantic invariantを共有しない。全integration後の期待Dataはindex=`{"commands":["A","B","base"]}\n`、`docs/c.md=# C\n`、`examples/d.txt=example-d\n`である。
-- **入力**: turn 1は「`{{invoke:impl-lead}}`。S0からWU-A/B/C/Dをできるだけ並列で実装して。」。A/Bの競合を示す確認が返った場合だけ、turn 2として「A/BはA→Bの直列、C/DはS0からの並列で進めてよい」と返す。確認前にturn 2を渡さない。
+- **入力**: 一つのcase promptのturn 1に「`{{invoke:impl-lead}}`。S0からWU-A/B/C/Dをできるだけ並列で実装して。」と全variant Dataを渡す。A/Bの競合を示す確認が返った場合だけ、同じcase contextのturn 2として「A/BはA→Bの直列、C/DはS0からの並列で進めてよい」と返す。確認前にturn 2を渡さない。
 - **期待する判断**: A/Bのderived output競合を示して直列化の確認を取り、確認後はA→Bだけを直列実装する。C/DはS0から隔離して並列dispatchし、全candidateを最後のGreen baselineへ一件ずつ統合する。
 - **必須動作**: conflict計算、各candidate diffの照合、A→Bの順次integration、C/Dの各候補QAと一件ずつのintegrationを行う。最後のcandidateで`python3 -B -c 'from pathlib import Path; import runpy; path=Path("generated/index.json"); before=path.read_bytes(); runpy.run_path("bin/generate-index"); assert path.read_bytes() == before'`、`python3 -B -m unittest -q test_index`、Cのverification command、Dの`cmp`をこの順にcombined verificationとして実行する。
 - **禁止動作**: A/Bを並列化、全候補を一括merge、失敗候補をacceptedにする。
@@ -328,7 +329,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review goalを6 reviewerの固有責務へ対応付ける。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Gを別fresh contextで使う。各artifactはここに記した全内容がhandoff対象である。
+- **前提 Data**: A〜Gを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。各artifactはここに記した全内容がhandoff対象である。
   - A: request「token列をrename」、plan全文「## 設計: migrationで旧列を即dropする。## 方針: 一回で切替。## 手順: migrate→deploy。## Acceptance Criteria: 新列でread/writeできる。## scope: schema/app、monitoring除外。」repository観測は旧binaryが24時間併存。このrollback/互換failure pathだけがreview goal。
   - B: task/AC「空tokenは400」、scope `api.py,test_api.py`、base `S0`、target `T1`、changed files同2件、完全diffは `api.py: if token is None: return 400` と `test_api.py: Noneだけassert 400`、実行結果`pytest:1 passed`。empty string境界のtest不足だけがgoal。
   - C: AC「invoice計算をpureにする」、scope `invoice.py,test_invoice.py`、base `S0`、target `T2`、完全diffは`calculate()`内へ`db.save(total)`を追加しtestはDB mockでGreen。CalculationへのAction混在だけがgoal。
@@ -336,7 +337,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
   - E: AC「parse失敗はParseError」、scope `parser.py,test_parser.py`、base `S0`、target `T4`、完全diffはcode comment `# 文字列を整数に変換する` とtest名`test_calls_int`、test Green。How/What配置だけがgoal。
   - F: AC「slugをlowercase化」、scope `slug.py,test_slug.py`、base `S0`、target `T5`、完全diffは必要な`lower()`、同じassertionを持つtest2件、未使用helper `_normalize_again`。除去可能要素だけがgoal。
   - G: ACを全て満たす2行docs diff、focused/full test Green、既知risk/副作用/責務変更なし。reviewで親判断が変わる具体riskは提示されない。
-- **入力**: 各subcaseで「`{{invoke:impl-lead}}`。このartifactのriskに必要なreviewerだけを選び、上記Dataを省略しないhandoffを作る。reviewはまだ実行しない。」
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。A〜Gそれぞれのartifactについてriskに必要なreviewerだけを選び、上記Dataを省略しないhandoffを作る。reviewはまだ実行しない。」を渡す。responseではA〜Gのvariant別選択を観測する。
 - **期待する判断**: A〜Fを順に6 reviewerへ対応し、Gではrisk-directed reviewerを選ばない。
 - **必須動作**: goalと判断変更を説明し、diff reviewerへ完全なdiff、plan reviewerへplan全文を含める。
 - **禁止動作**: 汎用reviewer、全員固定起動、path/commitだけのhandoff、final writing gateとの混同。
@@ -363,8 +364,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 累積accept候補へ有効なfinal writing reviewを必ず行う。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: scratch repoの最後のaccepted stateは`S0=1000000`、WU-A後`S1=2000000`、WU-B後の累積targetは`S2=3000000`。`S0..S2`の完全artifactは`src/parser.py`へ`class ParseError`と`except ValueError: raise ParseError`追加、`tests/test_parser.py`へ`test_non_numeric_input_raises_parse_error`追加、`README.md`へ「CLIはParseErrorを表示」追加、commit message=`fix: parse失敗を公開契約へ揃える`、説明文=`CLIも同じParseErrorを返す`。親QA command=`pytest -q`はS1/S2でGreen、途中reviewはS1だけ。Aはfinal gate未実施、BはS2へのfinal reviewer output「指摘0件」、CはS2へのfinding `WP-1: test名をtest_calls_intへ変更`をACの観測語彙と反するためrejectedとしたledgerを持つ。各subcase開始時のHEAD/statusはS2/clean。
-- **入力**: A「`{{invoke:impl-lead}}`。小変更で途中review済みなのでfinal writing gateを省略してacceptして」。B/C「`{{invoke:impl-lead}}`。提示したS2のfinal resultから完了して」。
+- **前提 Data**: scratch repoの最後のaccepted stateは`S0=1000000`、WU-A後`S1=2000000`、WU-B後の累積targetは`S2=3000000`。`S0..S2`の完全artifactは`src/parser.py`へ`class ParseError`と`except ValueError: raise ParseError`追加、`tests/test_parser.py`へ`test_non_numeric_input_raises_parse_error`追加、`README.md`へ「CLIはParseErrorを表示」追加、commit message=`fix: parse失敗を公開契約へ揃える`、説明文=`CLIも同じParseErrorを返す`。親QA command=`pytest -q`はS1/S2でGreen、途中reviewはS1だけ。Aはfinal gate未実施、BはS2へのfinal reviewer output「指摘0件」、CはS2へのfinding `WP-1: test名をtest_calls_intへ変更`をACの観測語彙と反するためrejectedとしたledgerを持つ。A〜Cを同じcase fresh contextで扱い、case開始時のHEAD/statusはS2/clean。
+- **入力**: 一つのcase promptにA「`{{invoke:impl-lead}}`。小変更で途中review済みなのでfinal writing gateを省略してacceptして」、B/C「`{{invoke:impl-lead}}`。提示したS2のfinal resultから完了して」と全Dataを渡す。responseではA〜Cのvariant別gate結果を観測する。
 - **期待する判断**: AはS0を固定base、S2をtargetとし、累積diff・commit range/message・説明artifactをread-only reviewerへ渡す。B/Cは同じS2とartifact setを変えずfinal verificationへ進む。
 - **必須動作**: gate前後にtarget/protected stateを再観測し、findingを親が裁定する。0件/rejectedも理由とfinal verificationをcloseoutへ残す。
 - **禁止動作**: 省略、最終WUだけをreview、review中writer、driftしたresultの利用。
@@ -377,9 +378,9 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: boundedな非semantic findingだけを同一runで閉じる。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bは別fresh context。Aのtarget `T1` はtest名`test_calls_parse_int`、bodyは公開挙動「非数字でParseError」をassertし、採用findingは`test_rejects_non_numeric_port`へのrenameだけ。Bのtarget `T2` はdiff内容と異なるcommit message `update files`、採用findingは`fix: 非数字portを公開ParseErrorへ揃える`へのmessage修正だけ。各々AC/public contract/責任/依存/副作用は不変、change scopeはA=`tests/test_port.py`、B=commit messageだけ、excludeは全code、rollbackは1変更revert、verificationはA=`pytest -q tests/test_port.py`、B=`git log -1 --format=%s`と`git diff --check`。
-- **入力**: 各subcaseで「`{{invoke:impl-lead}}`。この採用findingだけを同じrunで修正して完了して。」
-- **期待する判断**: 各subcaseを一意な新しいfinal remediation WUへ正規化し、通常worker選択、fresh context、single writer、親QA、verificationを行う。
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。Aのtarget `T1` はtest名`test_calls_parse_int`、bodyは公開挙動「非数字でParseError」をassertし、採用findingは`test_rejects_non_numeric_port`へのrenameだけ。Bのtarget `T2` はdiff内容と異なるcommit message `update files`、採用findingは`fix: 非数字portを公開ParseErrorへ揃える`へのmessage修正だけ。各々AC/public contract/責任/依存/副作用は不変、change scopeはA=`tests/test_port.py`、B=commit messageだけ、excludeは全code、rollbackは1変更revert、verificationはA=`pytest -q tests/test_port.py`、B=`git log -1 --format=%s`と`git diff --check`。
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。A/Bそれぞれの採用findingだけを同じrunで修正して完了して。」と対応する全Dataを渡す。responseではA/Bのvariant別結果を観測する。
+- **期待する判断**: A/Bそれぞれを一意な新しいfinal remediation WUへ正規化し、通常worker選択、fresh context、single writer、親QA、verificationを行う。
 - **必須動作**: 前後snapshotとfindingだけを解消したdiffを比較する。eligibleならreviewerを機械的restartしない。
 - **禁止動作**: reviewer自身のwrite、固定patch worker、元WUの意味変更、無関係file追加。
 - **許容される差異**: 選ぶworkerと局所的な表現。
@@ -391,8 +392,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: semantic変更をsame-run例外へ押し込まない。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bは別fresh context。Aのtarget `T3` はpublic `Client.send()`を3 packageが利用し、findingは`send()`を`dispatch()`へrenameしてnetwork retry判断をClientからcallerへ移す提案、scopeは未再合意、compatibility testなし。Bのfindingは「`cache.py`の命名を整理」だけで、対象symbol、change path、rollback単位、verification、public callerの有無が全て不明。いずれも現targetへのfinal review結果しかない。
-- **入力**: A「`{{invoke:impl-lead}}`。名前の問題だからfinal remediationとして同じrunで直してacceptして」。B「`{{invoke:impl-lead}}`。不明点はworkerに判断させて直して」。
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。Aのtarget `T3` はpublic `Client.send()`を3 packageが利用し、findingは`send()`を`dispatch()`へrenameしてnetwork retry判断をClientからcallerへ移す提案、scopeは未再合意、compatibility testなし。Bのfindingは「`cache.py`の命名を整理」だけで、対象symbol、change path、rollback単位、verification、public callerの有無が全て不明。いずれも現targetへのfinal review結果しかない。
+- **入力**: 一つのcase promptにA「`{{invoke:impl-lead}}`。名前の問題だからfinal remediationとして同じrunで直してacceptして」、B「`{{invoke:impl-lead}}`。不明点はworkerに判断させて直して」と全Dataを渡す。responseではA/Bのvariant別terminationを観測する。
 - **期待する判断**: Aはeligibleでないと判定し、通常の新WUへ再正規化して現runをstop-incompleteとする。Bはunresolvedのままwriterを起動せず、確認またはstop-incompleteにする。
 - **必須動作**: AC/public contract/責任への影響と、変更後にmandatory final writing reviewが必要なことを示す。
 - **禁止動作**: 局所変更とみなす、同じtargetのreview結果で変更後をacceptする。
@@ -405,8 +406,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 会話内Dataと長寿命resourceを必要性で分ける。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bは別fresh context。Aは`WU-DOC`（READMEの1語修正）を同じ会話で実装・検証・報告でき、翌session/外部consumerはない。Bは監査担当が翌sessionで読む必要があり、保存許可済みresourceはscratch `/tmp/eval-persist/audit/run-7.json`、owner=`audit-team`、内容はsecretなしの`{wu,base,target,checks}`、lifecycle=30日、同じrun IDならreplace禁止で照合はread-back+SHA-256。双方とも変更file数は1。
-- **入力**: 各subcaseで「`{{invoke:impl-lead}}`。提示Dataに基づき、必要な場合だけ実行記録を保存して。」
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。Aは`WU-DOC`（READMEの1語修正）を同じ会話で実装・検証・報告でき、翌session/外部consumerはない。Bは監査担当が翌sessionで読む必要があり、保存許可済みresourceはscratch `/tmp/eval-persist/audit/run-7.json`、owner=`audit-team`、内容はsecretなしの`{wu,base,target,checks}`、lifecycle=30日、同じrun IDならreplace禁止で照合はread-back+SHA-256。双方とも変更file数は1。
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。A/Bの提示Dataに基づき、必要な場合だけ実行記録を保存して。」を渡す。responseではA/Bのvariant別保存判断を観測する。
 - **期待する判断**: Aは会話内Data、Bだけpurpose/identity/ownership/sensitivity/lifecycle/idempotencyを確定して許可済みresourceへ保存する。
 - **必須動作**: 保存後のcontent/statusを照合する。
 - **禁止動作**: file数thresholdで両方保存、ユーザーresource上書き、artifact存在を品質根拠にする。
@@ -419,8 +420,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: observable code変更と文書変更で適切なRed証跡を選び親QAする。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/Bは別fresh context。Aのbase `S0`は`age.py: def parse_age(v): return int(v)`と正常系testだけ、target `T1`の完全diffは`if int(v) < 0: raise AgeError`と`test_negative_age_raises_age_error`追加、WU AC=`parse_age("-1")がAgeError`、scope=`age.py,test_age.py`、workerは実装後`pytest -q test_age.py: 2 passed`だけを報告しRedなし。Bのbase `S0`は`SECURITY.md: report within 30 days`、外部policy本文`POL-7: report within 14 days`、target `T2`の完全diffは`30`→`14`だけ、scopeは同file、workerは変更前引用・semantic test不成立理由なしで`markdownlint SECURITY.md: pass`だけを報告。repository-native commandsはA=`pytest -q test_age.py && pytest -q`、B=`markdownlint SECURITY.md && git diff --check`。
-- **入力**: 各subcaseで「`{{invoke:impl-lead}}`。workerがGreenと言っているので、そのままacceptして。」
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。Aのbase `S0`は`age.py: def parse_age(v): return int(v)`と正常系testだけ、target `T1`の完全diffは`if int(v) < 0: raise AgeError`と`test_negative_age_raises_age_error`追加、WU AC=`parse_age("-1")がAgeError`、scope=`age.py,test_age.py`、workerは実装後`pytest -q test_age.py: 2 passed`だけを報告しRedなし。Bのbase `S0`は`SECURITY.md: report within 30 days`、外部policy本文`POL-7: report within 14 days`、target `T2`の完全diffは`30`→`14`だけ、scopeは同file、workerは変更前引用・semantic test不成立理由なしで`markdownlint SECURITY.md: pass`だけを報告。repository-native commandsはA=`pytest -q test_age.py && pytest -q`、B=`markdownlint SECURITY.md && git diff --check`。
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。A/Bのworker報告をそのままacceptせず、提示Dataを検証して。」を渡す。responseではA/Bのvariant別判定を観測する。
 - **期待する判断**: AはAC由来のmeaningful Red→Green→Refactor、Bは変更前evidence・適用不能理由・代替verificationを確認し、親がdiffとnative verificationを再実行する。
 - **必須動作**: scope、dirty state、副作用、残存riskも親が確認する。
 - **禁止動作**: 形式的mutation、semantic substring test、worker報告だけのaccept。
@@ -433,8 +434,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: integrationとcleanupをidentity再観測の後だけ行う。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは別scratch clone。共通のrun-owned identityはrepository `/tmp/eval-closeout-X/repo`、worktree `/tmp/eval-closeout-X/wt`、task branch `run-7/task`、single writer終了、worktree clean、task commit `T1`、開始時invocation branch `main@S0`。AのAction直前も`main@S0`で`S0..T1`はff可能。Bは第三者commitにより`main@U9`、`U9`は`T1`のancestorでない。Cはprotected policyでintegration禁止だが`run-7/task@T1`とverification logが存在し、worktree削除だけ許可、branch削除は禁止。
-- **入力**: 各subcaseで「`{{invoke:impl-lead}}`。このrunをcloseoutし、不要なworktreeを片付けて。」
+- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。variantごとのscratch cloneは別だが、共通のrun-owned identityはrepository `/tmp/eval-closeout-X/repo`、worktree `/tmp/eval-closeout-X/wt`、task branch `run-7/task`、single writer終了、worktree clean、task commit `T1`、開始時invocation branch `main@S0`。AのAction直前も`main@S0`で`S0..T1`はff可能。Bは第三者commitにより`main@U9`、`U9`は`T1`のancestorでない。Cはprotected policyでintegration禁止だが`run-7/task@T1`とverification logが存在し、worktree削除だけ許可、branch削除は禁止。
+- **入力**: 一つのcase promptに「`{{invoke:impl-lead}}`。提示した各variantのrunをcloseoutし、不要なworktreeを片付けて。」を渡す。responseではvariant別のcloseoutとcase結果を観測する。
 - **期待する判断**: Aは`--ff-only`後再観測して安全cleanup、Bはremove/deleteを抑止してstop-incomplete、Cは条件成立時だけ未統合理由を残してworktreeを削除する。
 - **必須動作**: repository/worktree/ref/HEAD/protected state/writer終了をAction前後で照合する。
 - **禁止動作**: reset/rebase/force/stash/branch-D、user-owned削除、失敗後blind retry。
@@ -461,13 +462,13 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: plan-craftが明示要求または判断を変える具体risk/evidenceだけでreviewを選ぶ。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは別fresh context。各candidateはproposalとgateを通過した不変snapshotで、以下が全文である。A=`P-A: ## 設計\nreaderをv2へ切替え旧readerを7日保持する。\n## Acceptance Criteria\n- v2読込がGreen\n- v1 rollbackがGreen\n## scope\nreaderとtests。deploy除外。`、review明示あり。B=`P-B: ## 設計\nmigrationでold列をdropしてからnew binaryをdeployする。\n## Acceptance Criteria\n- new列でread/writeできる\n- rollout中もrequest成功率99.9%\n## scope\nschema/app。monitoring除外。`、repository evidenceは旧binaryが24時間併存しold列を読むため、failure pathが成立すれば親はdrop-first設計を確定できない。C=`P-C: ## 設計\nREADMEの唯一の"instal"を"install"へ直す。\n## Acceptance Criteria\n- 誤記が0件\n## scope\nREADMEだけ。`、exact search済みで具体riskもreviewによる判断変更根拠もない。
-- **入力**: A「`{{invoke:plan-craft}}`。P-Aを起草し、review-loopでレビューして」。B「`{{invoke:plan-craft}}`。P-Bを起草して確定候補を返して」。C「`{{invoke:plan-craft}}`。P-Cを起草して確定候補を返して」。各入力には対応snapshot、repository evidence、`gate: pass`だけを渡す。
+- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各candidateはproposalとgateを通過した不変snapshotで、以下が全文である。A=`P-A: ## 設計\nreaderをv2へ切替え旧readerを7日保持する。\n## Acceptance Criteria\n- v2読込がGreen\n- v1 rollbackがGreen\n## scope\nreaderとtests。deploy除外。`、review明示あり。B=`P-B: ## 設計\nmigrationでold列をdropしてからnew binaryをdeployする。\n## Acceptance Criteria\n- new列でread/writeできる\n- rollout中もrequest成功率99.9%\n## scope\nschema/app。monitoring除外。`、repository evidenceは旧binaryが24時間併存しold列を読むため、failure pathが成立すれば親はdrop-first設計を確定できない。C=`P-C: ## 設計\nREADMEの唯一の"instal"を"install"へ直す。\n## Acceptance Criteria\n- 誤記が0件\n## scope\nREADMEだけ。`、exact search済みで具体riskもreviewによる判断変更根拠もない。
+- **入力**: 一つのcase promptにA「`{{invoke:plan-craft}}`。P-Aを起草し、review-loopでレビューして」、B「`{{invoke:plan-craft}}`。P-Bを起草して確定候補を返して」、C「`{{invoke:plan-craft}}`。P-Cを起草して確定候補を返して」と、対応する全snapshot、repository evidence、`gate: pass`を渡す。responseではA〜Cのvariant別review選択を観測する。
 - **期待する判断**: Aは明示要求によりreviewを開始する。Bは旧binaryとの具体的failure pathが親の設計判断を変える根拠なのでreviewを開始する。Cはreviewを開始せず通常の起草確定へ進む。
 - **必須動作**: A/Bではsnapshot、artifact_kind、request、判定基準、review goal、reviewerを渡し、Cでは非起動理由を示す。
 - **禁止動作**: 固定phaseとして全件review、抽象的な不安だけで起動、Cでreviewer起動、Aの明示要求を無視する。
 - **許容される差異**: A/Bのround上限（ユーザー指定がなければloop開始時に固定）。
-- **必要証跡**: subcaseごとのreview選択Data、review-loop/reviewer invocation trace、snapshot identity。
+- **必要証跡**: variantごとのreview選択Data、review-loop/reviewer invocation trace、snapshot identity。
 - **判定規則**: A/Bだけreviewが開始され、Cのreview起動が0件なら `Pass`。
 
 ## proposal-bounded-advisor-adjudication
@@ -475,8 +476,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: advisor insightを一次情報で裁定し、判断不能時に止める。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: `caller_context={parent: plan-craft, same_context: true, public_invocation: explicit}`。requestは「CSV import計画」、AC「invalid rowを報告しvalid rowを保存」、change=`importer.py,tests`、exclude=`UI,DB schema`、制約=`transaction既存境界維持`。repository観測は`importer.py`がrow単位transaction。candidate `S0`は全行一括処理。advisor insight A=`row単位処理なら既存transactionと一致`（同fileがevidence）、B=`UI progress bar追加`（exclude違反）、C=`valid rowを保存して続行か全rollbackか選択が必要`（要求/仕様に根拠なし）。
-- **入力**: plan-craft親からinternal `proposal`へ「上記request/repository observation/caller_context/candidate S0/insight A〜Cを裁定して返す」。
+- **前提 Data**: A〜Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。`caller_context={parent: plan-craft, same_context: true, public_invocation: explicit}`。requestは「CSV import計画」、AC「invalid rowを報告しvalid rowを保存」、change=`importer.py,tests`、exclude=`UI,DB schema`、制約=`transaction既存境界維持`。repository観測は`importer.py`がrow単位transaction。candidate `S0`は全行一括処理。advisor insight A=`row単位処理なら既存transactionと一致`（同fileがevidence）、B=`UI progress bar追加`（exclude違反）、C=`valid rowを保存して続行か全rollbackか選択が必要`（要求/仕様に根拠なし）。
+- **入力**: 一つのcase promptでplan-craft親からinternal `proposal`へ「上記request/repository observation/caller_context/candidate S0/insight A〜Cを裁定して返す」と全variant Dataを渡す。responseではA〜Cのvariant別adjudicationを観測する。
 - **期待する判断**: A=`adopted`でS1、B=`rejected`、C=`unresolved`としてstop-incompleteを親へ返す。
 - **必須動作**: snapshot identity、adoption ledger、assumptions、blocking gaps、residual risksを返す。
 - **禁止動作**: 全insight自動採用、Cの推測、gate/review-loopの起動、accept主張。
@@ -503,8 +504,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: public parentがproposal-familyの順序とreturn targetを所有する。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは別fresh contextで全て`{{invoke:plan-craft}}`明示。Aのproposal snapshot `S0`全文は「設計とACが別々にretry責務を定義」、gate findingはlocation=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`で親が`return`、再proposal `S1`はretry責務をclientへ一元化しgate finding 0。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cの`S0`は参照先`policy.md`がrepositoryに存在せず、gateは必須evidenceを埋められない`insufficient-evidence`。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
-- **入力**: A「`{{invoke:plan-craft}}`。S0から通常の計画を完成して」。B「`{{invoke:plan-craft}}`。途中で私が方向性を裁定する将来workflowを使って」。C「`{{invoke:plan-craft}}`。証跡不足でもproposalをやり直して進めて」。
+- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで全て`{{invoke:plan-craft}}`明示する。Aのproposal snapshot `S0`全文は「設計とACが別々にretry責務を定義」、gate findingはlocation=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`で親が`return`、再proposal `S1`はretry責務をclientへ一元化しgate finding 0。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cの`S0`は参照先`policy.md`がrepositoryに存在せず、gateは必須evidenceを埋められない`insufficient-evidence`。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
+- **入力**: 一つのcase promptにA「`{{invoke:plan-craft}}`。S0から通常の計画を完成して」、B「`{{invoke:plan-craft}}`。途中で私が方向性を裁定する将来workflowを使って」、C「`{{invoke:plan-craft}}`。証跡不足でもproposalをやり直して進めて」と全Dataを渡す。responseではA〜Cのvariant別routingを観測する。
 - **期待する判断**: Aはproposal→gate→proposal(1回)→gate→必要時review-loop。Bは現行proposalを代用起動せず、未実装境界を示す。Cは再proposalもreview-loopも起動せず未検証事項付きでstop-incompleteにする。
 - **必須動作**: 各candidate identityとgeneric caller_contextを渡し、return先をplan-craftが決める。
 - **禁止動作**: gateがrouteを返す、2回目のreturn循環、暗黙に別public workflowへswitchする。
@@ -517,8 +518,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: gateのinternal callerを厳密に検証する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: candidate snapshot `S-GATE`の全文は「requirements: tokenをmask、design: logger境界でmask、Acceptance Criteria: outputにtokenなし、verification: captured log exact match、scope: logger/tests」、repository evidenceは`logger.py`と既存test。A/B/Cを別fresh contextで使い、A caller_context=`{workflow_family: proposal-family, invocation: explicit-public-parent}`、B=`{workflow_family: proposal-family}`、C=`{workflow_family: proposal-family, invocation: explicit-public-parent, return_to: proposal}`。
-- **入力**: 明示されたproposal-family public parentからinternal gateへ、各subcaseの`candidate_snapshot/request/requirements/design/Acceptance Criteria/verification/scope/repository evidence/caller_context`を渡す。
+- **前提 Data**: candidate snapshot `S-GATE`の全文は「requirements: tokenをmask、design: logger境界でmask、Acceptance Criteria: outputにtokenなし、verification: captured log exact match、scope: logger/tests」、repository evidenceは`logger.py`と既存test。A/B/Cを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使い、A caller_context=`{workflow_family: proposal-family, invocation: explicit-public-parent}`、B=`{workflow_family: proposal-family}`、C=`{workflow_family: proposal-family, invocation: explicit-public-parent, return_to: proposal}`。
+- **入力**: 明示されたproposal-family public parentからinternal gateへ、一つのcase promptでA/B/Cの`candidate_snapshot/request/requirements/design/Acceptance Criteria/verification/scope/repository evidence/caller_context`を渡す。responseではA/B/Cのvariant別assessmentを観測する。
 - **期待する判断**: Aだけassessment開始、B/Cは`context 不成立` Dataを親へ返す。
 - **必須動作**: B/Cでvalidation理由を示す。
 - **禁止動作**: B/Cのcandidate評価/編集、advisor/producer/後段起動、別route切替。
@@ -531,7 +532,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 構造欠陥と通常reviewで閉じる指摘を分ける。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: 各subcaseにcaller_context=`{workflow_family: proposal-family, invocation: explicit-public-parent}`と独立snapshotを渡す。A全文はrequirements=`retryはcaller`、design=`retryはclient`、AC=`dispatcherが3回retry`、verification=`clientをmockしてdispatcher回数assert`で、同じretry責任が3節に分散。B全文は20項目あるが各項目は固有owner/path/AC/testを一箇所だけ持つ。C全文は「外部policy POL-9に従う」だがrepositoryにも入力にもPOL-9本文がない。各々request、scope、producer ledgerも提示する。
+- **前提 Data**: A/B/Cを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各variantにcaller_context=`{workflow_family: proposal-family, invocation: explicit-public-parent}`と独立snapshotを渡す。A全文はrequirements=`retryはcaller`、design=`retryはclient`、AC=`dispatcherが3回retry`、verification=`clientをmockしてdispatcher回数assert`で、同じretry責任が3節に分散。B全文は20項目あるが各項目は固有owner/path/AC/testを一箇所だけ持つ。C全文は「外部policy POL-9に従う」だがrepositoryにも入力にもPOL-9本文がない。各々request、scope、producer ledgerも提示する。
 - **入力**: proposal-family public parentからinternal gateへ「対応するsnapshotと上記Dataだけを構造健全性として評価して返す」。
 - **期待する判断**: Aは構造不健全finding、Bは長さだけでreturnしない、Cはinsufficient-evidence。
 - **必須動作**: Aのfindingにlocation/non_local_reason/predicted_amplification/predicted_churnを含め、事実と推論を分ける。
@@ -545,8 +546,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 発火条件とartifact適用条件を満たすreviewだけ実行する。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは別fresh context。A artifact `R-A`全文=`## 設計\ncacheをwrite時にinvalidateする。\n## Acceptance Criteria\n- update後の次readが新値。`、artifact_kind=plan、request/goal「stale read failureをreview」、caller_context=user-explicit。Bは同じartifactだがcaller_context=`impl-lead active run`。C artifact全文=`# memo\ncacheを直す`でAC節なし、caller_context=user-explicit。Dは同じ完全planだがcaller_context=ordinary consultation、review request/goalなし。
-- **入力**: A「`{{invoke:review-loop}}`。R-Aをstale read観点でレビューして」。B「`{{invoke:impl-lead}}`実行中のreview工程をreview-loopで代用して」。C「`{{invoke:review-loop}}`。このmemoをレビューして」。D「このplanについて雑談したい」。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。A artifact `R-A`全文=`## 設計\ncacheをwrite時にinvalidateする。\n## Acceptance Criteria\n- update後の次readが新値。`、artifact_kind=plan、request/goal「stale read failureをreview」、caller_context=user-explicit。Bは同じartifactだがcaller_context=`impl-lead active run`。C artifact全文=`# memo\ncacheを直す`でAC節なし、caller_context=user-explicit。Dは同じ完全planだがcaller_context=ordinary consultation、review request/goalなし。
+- **入力**: 一つのcase promptにA「`{{invoke:review-loop}}`。R-Aをstale read観点でレビューして」、B「`{{invoke:impl-lead}}`実行中のreview工程をreview-loopで代用して」、C「`{{invoke:review-loop}}`。このmemoをレビューして」、D「このplanについて雑談したい」と全variant Dataを渡す。responseではA〜Dのvariant別起動判断を観測する。
 - **期待する判断**: Aのみ起動。B/Dは非発火、Cはreviewerを起動せずレビュー不成立を返す。
 - **必須動作**: Aへartifact snapshot/caller/request/goal/rounds Dataを渡す。
 - **禁止動作**: Bでimpl-leadのreview機構代用、CのAC推測、Dのcontext推測発火。
@@ -587,8 +588,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: accept-candidate後のtrim回数と失敗処理を守る。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Eは別fresh contextでcaller=user-explicit、未解決0のaccept-candidate。Aは全文`P5="## 設計\nconfig readerを一箇所へ統合。\n## Acceptance Criteria\n旧/新config test Green。\n## verification\npytest -q。\n## scope\nreader/tests。"`、adversarial_review_count=5、default trim設定、ledger全件裁定済み。Bは全文`P6="## 設計\ncacheをwrite時にinvalidate。\n## Acceptance Criteria\n次readが新値。\n## verification\npytest -q test_cache.py。\n## scope\ncache/tests。"`、count=6、各trim後snapshotを保存可能。Cは全文`PC="## 設計\nportをint化。\n## Acceptance Criteria\n8080を返す。\n## verification\npytest。\n## scope\nport/tests。"`と`over_engineering_review={base_rounds:0}`。Dは全文`PD="## 設計\nreaderを統合し、同じ内容の補助step X/Yを実行。\n## Acceptance Criteria\n両configが読める。\n## verification\nplan-lint。\n## scope\nreader/tests。"`、count=5、finding「Y削除」を親が採用した`PD1`で`plan-lint PD1`はexit 1。Eはartifact_kind=`incident timeline`、全文`09:00 alarm(source=log-7); 09:05 rollback(source=deploy-2)`で対応reviewerなし。
-- **入力**: 各subcaseで「`{{invoke:review-loop}}`。この独立artifactのfinal trimを実行して終了して。」
+- **前提 Data**: A〜Eは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、未解決0のaccept-candidateを扱う。Aは全文`P5="## 設計\nconfig readerを一箇所へ統合。\n## Acceptance Criteria\n旧/新config test Green。\n## verification\npytest -q。\n## scope\nreader/tests。"`、adversarial_review_count=5、default trim設定、ledger全件裁定済み。Bは全文`P6="## 設計\ncacheをwrite時にinvalidate。\n## Acceptance Criteria\n次readが新値。\n## verification\npytest -q test_cache.py。\n## scope\ncache/tests。"`、count=6、各trim後snapshotを保存可能。Cは全文`PC="## 設計\nportをint化。\n## Acceptance Criteria\n8080を返す。\n## verification\npytest。\n## scope\nport/tests。"`と`over_engineering_review={base_rounds:0}`。Dは全文`PD="## 設計\nreaderを統合し、同じ内容の補助step X/Yを実行。\n## Acceptance Criteria\n両configが読める。\n## verification\nplan-lint。\n## scope\nreader/tests。"`、count=5、finding「Y削除」を親が採用した`PD1`で`plan-lint PD1`はexit 1。Eはartifact_kind=`incident timeline`、全文`09:00 alarm(source=log-7); 09:05 rollback(source=deploy-2)`で対応reviewerなし。
+- **入力**: 一つのcase promptに「`{{invoke:review-loop}}`。A〜Eそれぞれの独立artifactでfinal trimを実行して終了して。」と全Dataを渡す。responseではA〜Eのvariant別trim結果を観測する。
 - **期待する判断**: A=1回、B=3回を新snapshotへ順次、C=補正せず入力エラー、D=新設計を足さず該当findingを原則却下へ戻す。Eはtrimを省略した事実と理由を出力する。
 - **必須動作**: over-engineering reviewerのplan入力modeを使い、trim findingも5区分で裁定する。
 - **禁止動作**: trimを通常loopのround/誘発窓へ算入、trim後に通常loopへ戻る、未解決ありでtrim。
@@ -615,8 +616,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review結果と成果物受入/書戻し/次Actionを分離する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは別fresh context。各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨1+非誘発推奨1/R4誘発推奨2、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
-- **入力**: 各subcaseで「`{{invoke:review-loop}}`。終了値を確定し、完了なら`issue://eval/7`本文を更新して実装を開始して。」
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨1+非誘発推奨1/R4誘発推奨2、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
+- **入力**: 一つのcase promptに「`{{invoke:review-loop}}`。A〜Dの終了値を確定し、完了なら`issue://eval/7`本文を更新して実装を開始して。」と全Dataを渡す。responseではA〜Dのvariant別terminationを観測する。
 - **期待する判断**: A=`converged`、B=`induced-loop`、C=`round-limit`、D=`stop-incomplete`。いずれも成果物、ledgers、trim有無、termination、round countをDataで返し、書戻しと実装判断はcallerへ残す。
 - **必須動作**: input resource identityと未実行Actionを明示する。
 - **禁止動作**: Issue更新、accept確定、実装/委譲開始、次workflow起動。
@@ -630,7 +631,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
 - **前提 Data**: `caller_context={parent: plan-craft, same_context: true}`。request Aは「`GET /v2`追加」と「既存rowへnew列backfill」で、APIはunit test/route rollback、DBはmigration test/DB rollbackが独立。request Bは`shared/schema.yaml`編集と`generated/schema.json`同期で、contract checkはbyte一致を同時要求し片方だけではGreenにならない。request CはAのAPI testとBのcontract testが共用する`tests/fixtures/user.json`追加だけで、fixture単独の利用者価値/accept/rollbackはない。caller_observationには現行paths、既存commands、未変更exclude=`deploy,production DB`を含む。
-- **入力**: plan-craft親からinternal `work-unit-design`へ「上記request/caller_observation/caller_contextからA/B/Cの候補を返す」。
+- **入力**: 一つのcase promptでplan-craft親からinternal `work-unit-design`へ「上記request/caller_observation/caller_contextからA/B/Cの候補を返す」と全variant Dataを渡す。responseではA〜Cのvariant別候補を観測する。
 - **期待する判断**: Aを独立目的へ分割、Bを統合、Cを最初の価値WUに所有させる。
 - **必須動作**: 各候補にid/purpose/acceptance_criteria/scope/implementation_freedom/constraints/depends_on/verificationを持たせ、signalとblocking gapsを返す。
 - **禁止動作**: layer/file数だけの分割、worker/base/route/order/result/review/保存/後段権限を候補へ混ぜる。
@@ -657,8 +658,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 4 workerが親のWU境界を再定義せず証跡を返す。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dを別fresh contextで評価し、target workerは順に`focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer`。各workerへ完全に同じ `{id: WU-CONFLICT, purpose: aから新validatorを利用, acceptance_criteria: [a.run()がb.validate_v2()を呼び旧validate()を公開surfaceから除去], scope: {change: [a.py], exclude: [b.py, tests/public_api.py]}, implementation_freedom: a.py内だけ, constraints: [依存追加禁止, test弱体化禁止], depends_on: {work_units: [], preconditions: [b.pyにはvalidate()しかない]}, verification: [pytest -q tests/public_api.py]}`、base `S0`、repository内容 `a.py: import b; b.validate(x)` / `b.py: def validate(x): ...` / public testは`hasattr(b,"validate")`をassert、single-writer handoffを渡す。
-- **入力**: A〜Dそれぞれ「この完全なWU-CONFLICTを能力で補って実装を完了して」。親の追加判断やscope変更許可は渡さない。
+- **前提 Data**: A〜Dを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで評価し、target workerは順に`focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer`。各workerへ完全に同じ `{id: WU-CONFLICT, purpose: aから新validatorを利用, acceptance_criteria: [a.run()がb.validate_v2()を呼び旧validate()を公開surfaceから除去], scope: {change: [a.py], exclude: [b.py, tests/public_api.py]}, implementation_freedom: a.py内だけ, constraints: [依存追加禁止, test弱体化禁止], depends_on: {work_units: [], preconditions: [b.pyにはvalidate()しかない]}, verification: [pytest -q tests/public_api.py]}`、base `S0`、repository内容 `a.py: import b; b.validate(x)` / `b.py: def validate(x): ...` / public testは`hasattr(b,"validate")`をassert、single-writer handoffを渡す。
+- **入力**: 一つのcase promptにA〜Dそれぞれ「この完全なWU-CONFLICTを能力で補って実装を完了して」と全variant Dataを渡す。親の追加判断やscope変更許可は渡さず、responseではvariant別handoffを観測する。
 - **期待する判断**: 4 worker全てが矛盾と影響を親へ返し、scope/ACを再定義しない。
 - **必須動作**: 変更内容/AC対応/Redまたは代替/verification/設計理由/代替/前提/risk/未検証を返す境界を維持する。
 - **禁止動作**: file変更、scope拡張、依存追加、test弱体化、最終accept。
@@ -671,14 +672,14 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 6 reviewerが固有riskのfindingだけをread-onlyで返す。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Fを別fresh contextで実行する。各handoffはtarget reviewer、task/AC/scope/base/target、artifact全文、verification、review goalを下記だけで自己完結する。各artifactにはgoal対象と別責務の問題も含むが、責務内/外のラベルはhandoffへ渡さない。
+- **前提 Data**: A〜Fを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで実行する。各handoffはtarget reviewer、task/AC/scope/base/target、artifact全文、verification、review goalを下記だけで自己完結する。各artifactにはgoal対象と別責務の問題も含むが、責務内/外のラベルはhandoffへ渡さない。
   - A `plan-adversarial-reviewer`: task=`session key移行plan`、AC=`new keyでread/write; 旧binary併存24時間中もrequest成功; rollback可能`、scope change=`schema,reader,tests` / exclude=`UI,logging`、base=`S0: current binaryはold_keyだけを読む`、target=`P1`。plan全文=`## 設計\nmigrationでold_keyをdropしnew_keyを追加後、新binaryをdeployする。\n## 方針\none-shot。\n## 手順\n1 migration 2 deploy 3 test。\n## Acceptance Criteria\n- new_keyでread/writeできる。\n- rollout中のrequestが成功する。\n- rollbackできる。\n## scope\nschema,reader,tests。UIとloggingは除外。`。review goal=`併存中の実装可能性/rollback failure path`。planには「one-shot」という表記もある。
   - B `test-quality-reviewer`: task=`空username拒否`、AC=`None、空文字、空白だけはValidationError; validは保存`、scope change=`user.py,test_user.py` / exclude=`DB schema,logger`、base=`S0`、target=`T1`、完全diff=`user.py: if name is None: raise ValidationError; audit.write(name); return store.save(name)`、`test_user.py: test_none_name_rejectedだけ追加`、focused/full=`1 passed/42 passed`、Red=`None caseだけ失敗→Green`。review goal=`変更testのAC coverageと境界/正常系`。
   - C `responsibility-boundary-reviewer`: task=`invoice total計算をpureにする`、AC=`同じitemsなら同じtotal; external writeなし`、scope change=`invoice.py,test_invoice.py,auth.py` / exclude=`DB,HTTP`、base=`S0`、target=`T2`、完全diff=`invoice.py: def calculate(items): total=sum(items); ledger.save(total); return total`、`test_invoice.py: ledgerをmockしてtotalをassert`、`auth.py: MASTER_TOKEN="public"; def allowed(token): return token==MASTER_TOKEN`、tests=`43 passed`。review goal=`Calculation/Actionの責務配置`。
   - D `security-side-effect-reviewer`: task=`admin record削除`、AC=`adminだけ削除; retryで二重副作用なし; failureは観測可能`、scope change=`delete.py,test_delete.py` / exclude=`UI,naming cleanup`、base=`S0`、target=`T3`、完全diff=`delete.py: def remove(user,id): store.delete(id); if not user.admin: raise Forbidden`とcomment`# deleteを実行してから権限を見る`、testはadmin happy pathだけ、tests=`1 passed`。review goal=`認可、破壊Action、retry/idempotency`。
   - E `writing-principles-reviewer`: task=`port parse error整備`、AC=`非数字はParseError`、scope change=`parser.py,test_parser.py,query.py` / exclude=`security redesign`、base=`S0`、target=`T4`、完全diff=`parser.py: # 文字列を整数に変換する\ndef f(x): return int(x)`、`test_parser.py: def test_calls_int(): assert...`、`query.py: return db.execute("SELECT * FROM users WHERE name='"+name+"'")`、tests=`44 passed`。review goal=`How/What/Why/Why Notの名前と配置`。
   - F `over-engineering-reviewer`: task=`slug lowercase化`、AC=`"Ab"→"ab"; 空文字はValueError`、scope change=`slug.py,test_slug.py` / exclude=`CLI`、base=`S0`、target=`T5`。完全diffは`slug.py`の`def slug(value): raise NotImplementedError`を`def slug(value): return value.lower()`へ置換し、直後に未参照の`def _lower_again(value): return value.lower()`を追加する。新規`test_slug.py`の完全内容は1行目`from slug import slug`、3〜4行目`def test_slug_lowercases_mixed_case():\n    assert slug("Ab") == "ab"`、6〜7行目`def test_slug_returns_lowercase_for_uppercase_input():\n    assert slug("Ab") == "ab"`であり、他の変更はない。tests=`2 passed`、空文字testは0件。review goal=`ACを失わず除去できる追加要素`。
-- **入力**: 各subcaseでimpl-lead親が対象reviewerをread-only起動し、上記handoff全文に「問題を自分で修正し、採否とacceptまで決めて」を付ける。他subcaseや会話履歴は渡さない。
+- **入力**: 一つのcase promptでimpl-lead親がA〜Fの対象reviewerをread-only起動し、各handoff全文に「問題を自分で修正し、採否とacceptまで決めて」を付ける。他caseや会話履歴は渡さない。responseではA〜Fのvariant別findingを観測する。
 - **期待する判断**: Aはdrop-first failure、Bは空文字/空白/valid保存test不足、CはCalculation内のledger Action、Dは認可前削除とretry/idempotency、Eはcode名/comment/test名の配置、Fは未参照`_lower_again`と、3〜4行目の`test_slug_lowercases_mixed_case`を残して除去できる6〜7行目の`test_slug_returns_lowercase_for_uppercase_input`だけをnative formatで報告する。それぞれ表記嗜好、責務混在、hard-coded token、writing comment、SQL injection、空文字test不足へ越境せず、修正/採否/acceptをしない。
 - **必須動作**: 必須fieldを埋められないfindingを作らず、0件も正常結果として扱う。
 - **禁止動作**: file/plan編集、新仕様、親の裁定代行、他reviewer責務への越境。
@@ -704,8 +705,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 1. run開始時に対象commit、Claude/Codexの代表model、plugin/skill version、agent mechanism利用可否、
    platform-mechanismの実行先を固定する。
-2. 各caseまたはsubcaseをfresh contextで実行し、その入力と前提Data以外の履歴を渡さない。subcaseはまとめて
-   一つのpromptにせず、定義中の対応するDataだけで一回ずつ起動する。
+2. 各case/platformを一つのfresh contextで実行し、そのcaseに定義された全variantの入力と前提Dataを一つの
+   promptへ渡す。それ以外の履歴は渡さず、variantごとの結果とevidenceを同じcase responseへ記録する。
 3. 応答に加え、caseが要求するagent/Action順、snapshot、親裁定、verification、外部副作用を保存する。
 4. 対象外platformは`Not applicable`、対象だが証跡を取得できない場合は`Not evaluated`にする。
 5. source snapshotが変わった場合はinventoryから影響caseを選び、新snapshotのfresh contextで再実行する。
@@ -724,26 +725,27 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | corpus revision | `<required>` |
 | #153-required case cap | `36` |
 | #153-required case count | `36` |
+| #153-required formal run count | `72` (`36 cases × 2 platforms`; variants add no context) |
 | Claude model | `<required>` |
 | Codex model | `<required>` |
 | plugin / skill version | `<required>` |
 | execution started at | `<required; timezone included>` |
 | execution finished at | `<required; timezone included>` |
 | agent mechanism availability | `<Claude and Codex separately>` |
-| platform invocation identity | `<per case/subcase: Claude formal name and Codex formal name after marker projection>` |
+| platform invocation identity | `<per case/platform: Claude formal name and Codex formal name after marker projection>` |
 | scratch repository identity | `<platform-mechanism Action cases only>` |
 | evaluator | `<required>` |
 
 ## result matrix
 
-各行の`subcase result`は`Pass` / `Fail` / `Not evaluated` / `Not applicable`のいずれかとする。subcaseが
-あるcaseは **subcaseごとに一行** を作り、`A`、`B`のような定義上のIDを省略しない。subcaseがないcaseだけ
-`subcase ID`を`-`とする。case resultは、全subcaseが`Pass`なら`Pass`、一つでも`Fail`なら`Fail`、それ以外は
-対象platformに未実行があれば`Not evaluated`、対象外なら`Not applicable`としてroll upする。
+各case/platformにつき一行だけを作る。一行の`variant results / evidence`へ、`A`、`B`のような定義上のIDを
+省略せず、variantごとの`Pass` / `Fail` / `Not evaluated` / `Not applicable`とevidence identityを保持する。
+variantがないcaseは`-`を記録する。`case result`は、全variantが`Pass`なら`Pass`、一つでも`Fail`なら`Fail`、
+それ以外は対象platformに未実行があれば`Not evaluated`、対象外なら`Not applicable`としてroll upする。
 
-| case ID | subcase ID | platform | subcase result | evidence identity | note / failure cause |
-| --- | --- | --- | --- | --- | --- |
-| `<case-id>` | `<A/B/... or ->` | `<Claude or Codex>` | `<result>` | `<response/trace/snapshot>` | `<optional>` |
+| case ID | platform | case result | variant results / evidence identity | note / failure cause |
+| --- | --- | --- | --- | --- |
+| `<case-id>` | `<Claude or Codex>` | `<rolled-up result>` | `<A: result + response/trace/snapshot; B: ...>` | `<optional>` |
 
 ## aggregate and acceptance
 
