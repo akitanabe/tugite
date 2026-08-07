@@ -44,7 +44,7 @@ proposal-family public workflow の親が candidate producer 後段の review �
   自動決定して execution data に固定する。
 - `over_engineering_review`: `threshold`、`base_rounds`、`escalated_rounds` の部分設定（省略可）。
 - 継続 review では `finding_ledger`、`hold_ledger`、各 round の成果物 snapshot を復元可能な loop-owned
-  resource として渡す。復元不能なら induced convergence を確定しない。
+  resource として渡す。復元不能なら induced-loop の補助打ち切りを確定しない。
 
 通常 reviewer の適用対象は、観測可能な判定基準を「Acceptance Criteria」の節名で持ち、「設計」の節名を
 持つ実装前提プラン系成果物である。前提を欠く場合、または非実装系成果物に goal 対応の既存 reviewer が
@@ -71,11 +71,13 @@ reviewer には対象 snapshot、要求と判定基準、goal、直前までの�
 である。verification は採用 finding が成果物へ反映されたことを確認し、成果物が実行可能な検証手段を
 持つ場合はそれも含める。同じ snapshot に複数 reviewer を起動しても同じ round なら 1 round と数える。
 `adversarial_review_count` は reviewer 起動回数ではなく、全 review round 数である。final trim は round 計数と
-誘発判定の窓から除外する。`plan-adversarial-reviewer` を起動した round だけを baseline と induced 窓の計数へ使う。
+誘発判定の窓から除外する。誘発判定の対象は `plan-adversarial-reviewer` を起動した通常 round に限り、loop 全体で
+計数する。
 trim の finding も同じ指摘台帳へ記録し、発行元 reviewer で区別する。
 
-finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced`（通常
-reviewer の収束母数だけ）を記録する。全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
+finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced` と
+`induced_by`（因果対応する採用修正と verification、非誘発時は null。通常 reviewer の判定対象だけ）を記録する。
+全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
 未確定、採用修正の未反映、または `人間確認` とする。`判断保留` は凍結済みの完了した裁定なので未解決に
 含めない。
 
@@ -110,17 +112,26 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 固定 round、0 findings、reviewer の Pass、上限の消化だけを受け入れ根拠にしない。上限到達時は必ず
 `termination` を確定する。
 
-### 誘発指摘による有界収束
 
-`plan-adversarial-reviewer` を起動した round のうち、親確定の `修正必須` が初めて 0 になった round を
-`baseline_round` として記録し、取り直さない。既定 reviewer を起動していない round は基準にも「基準の
-2 round 後」の計数にも入れない。基準以降に採用した修正が導入した記述を対象とする finding へ `induced: true`
-を付ける。
+### 誘発指摘による補助ブレーキ
 
-基準の 2 round 後から、既定 reviewer の直近 2 round を rolling 窓として評価する。親確定の `修正推奨` 以上
-だけを母数とし、誘発 finding が strict majority を占め、窓に非誘発の `修正必須` がなく、母数が空でない
-場合だけ `induced-loop` として打ち切る。ちょうど半数は成立しない。final trim や同じ round の他 reviewer
-の finding はこの窓へ入れない。打ち切り round の採用 finding は反映し、裁定未記録を残さない。
+`plan-adversarial-reviewer` を起動した各通常 round について、全体の finding ledger を通じて `induced` を観測する。
+`induced: true` は、直前までに親が採用して verification を完了した修正によって finding が新たに成立したという
+因果 evidence がある場合だけ付ける。対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは `induced: true` に
+しない。因果 evidence がなければ `induced: false` とし、採用した修正との対応を ledger に残す。
+
+旧基準状態を成立条件や窓の開始位置として保存・参照せず、各通常 round の観測から判定する。
+
+各通常 round で、親確定の `修正推奨` 以上だけを対象に、誘発 finding の数が非誘発 finding の数を上回るかを
+`induced_dominant` として記録する（母数が空の round は成立しない）。同じ判定を直近の `plan-adversarial-reviewer`
+通常 round 2 回で連続して満たし、両 round とも非誘発の `修正必須` が 0 の場合だけ、`induced-loop` を補助的な
+早期打ち切りとして選べる。ちょうど半数は支配的とみなさない。1 round だけの成立では打ち切らない。final trim
+や同じ round の他 reviewer の finding は判定対象に入れない。
+
+`induced-loop` は自己誘発 churn に対する補助ブレーキであり、`converged` / `round-limit` の定義や必要な親裁定を
+置き換えない。打ち切り round の採用 finding は反映し、全 finding の裁定と因果 evidence を記録して裁定未記録を
+残さない。
+
 
 ## final trim
 
@@ -151,7 +162,7 @@ over_engineering_review_count =
 `termination` は次の4値だけである。
 
 - `converged`: 親が収束と判断した、または上限到達時に未解決がなく、trim へ進む。
-- `induced-loop`: 有界な誘発収束で打ち切った。未解決がなければ trim、残れば trim なしで返す。
+- `induced-loop`: 自己誘発 churn の補助ブレーキで打ち切った。未解決がなければ trim、残れば trim なしで返す。
 - `round-limit`: 上限到達時に未解決が残り、trim なしで返す。
 - `stop-incomplete`: 安全に継続・裁定完了できず、未解決を残して早期終了する。trim なしで返す。
 

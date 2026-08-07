@@ -99,12 +99,12 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | plan-craft は明示要求または判断を変える具体riskだけでreviewを選ぶ | #150; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動する |
 | proposal は一次情報と insight を bounded に裁定する | #172, #177; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot、adoption ledger、停止理由 | insight を自動採用せず人間判断を推測しない |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
-| proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、return trace | gate が route を決めず1回だけ再 proposal |
+| proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
 | gate は厳密な caller_context だけ受け付ける | #179; `shared/skill/structural-health-gate/SKILL.md` | `structural-health-gate-caller-context` | semantic-core | Claude / Codex | context validation、Action trace | 不正 context では assessment/後段0件 |
 | gate は複雑さでなく局所性を evidence で判定する | #172, #178; `structural-health-gate` | `structural-health-gate-locality` | semantic-core | Claude / Codex | finding 4 field、assessment | evidence 不足を return 根拠にせず直接編集しない |
 | review-loop は許可された caller と適用可能 artifact だけ扱う | #150; `shared/skill/review-loop/SKILL.md` | `review-loop-activation-boundary` | platform-mechanism | Claude / Codex | caller、artifact節、起動有無 | impl-lead中や入力不成立で reviewer を起動しない |
 | review finding は5区分で親が裁定し保留を凍結する | #150; `review-loop` | `review-loop-finding-adjudication` | semantic-core | Claude / Codex | ledger、hold ledger、次round入力 | reviewer が採否せず保留から仕様を派生しない |
-| baseline と直近2 round で induced-loop を判定する | #150; `review-loop` | `review-loop-induced-convergence` | semantic-core | Claude / Codex | round ledger、母数、termination | strict majority と非誘発必須0を同時に満たす |
+| 因果 induced と直近2 round連続で補助 brake を判定する | #183; `review-loop` | `review-loop-induced-brake` | semantic-core | Claude / Codex | round ledger、因果 evidence、termination | 各 round の induced dominance と非誘発必須0を2 round連続で満たす |
 | final trim の回数・validation・失敗復旧を守る | #150; `review-loop` | `review-loop-final-trim` | semantic-core | Claude / Codex | count、snapshot列、verification | 5 roundは1回、6 roundは3回、不正値を補正しない |
 | review 中の非局所構造欠陥では上流へ逆走しない | #172, #178; `review-loop` | `review-loop-structural-stop` | semantic-core | Claude / Codex | finding、停止位置、Action trace | stop-incomplete で返し自動循環0件 |
 | review-loop は成果物の受入・書戻し・次工程を所有しない | #145, #150; `review-loop` | `review-loop-output-ownership` | semantic-core | Claude / Codex | output fields、resource identity | termination を返すだけで入力を更新しない |
@@ -129,8 +129,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## coverage の除外と境界入力
 
-- #164 と #168 の baseline 依存廃止案、#169 の暫定運用は現行期待にしない。現行 `review-loop` の
-  `baseline_round` を評価する。
+- #164 と #168 の旧 baseline 依存案、#169 の暫定運用は現行期待にしない。#183 の `review-loop` は
+  loop 全体で因果 evidence と直近2 round連続の補助 brake を評価する。
 - #167 と #175 は未実装なので現行 surface として起動しない。#167 は
   `plan-craft-proposal-family-routing` の「将来の別 public workflow へ暗黙 switch しない」境界入力だけに使う。
 - installer、配布後 inventory、metadata 値の静的照合、runtime 導入後の起動 smoke は扱わない。静的構造は
@@ -512,17 +512,17 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## plan-craft-proposal-family-routing
 
-- **目的**: public parentがproposal-familyの順序とreturn targetを所有する。
+- **目的**: public parentがproposal-familyの順序、bounded structural-gate rounds、return targetを所有する。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。Aのproposal snapshot `S0`全文は「設計とACが別々にretry責務を定義」、gate findingはlocation=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`で親が`return`、再proposal `S1`はretry責務をclientへ一元化しgate finding 0。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cの`S0`は参照先`policy.md`がrepositoryに存在せず、gateは必須evidenceを埋められない`insufficient-evidence`。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
-- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「S0から通常の計画を完成して」、B「途中で私が方向性を裁定する将来workflowを使って」、C「証跡不足でもproposalをやり直して進めて」と全Dataを渡す。responseではA〜Cのvariant別routingを観測する。
-- **期待する判断**: Aはproposal→gate→proposal(1回)→gate→必要時review-loop。Bは現行proposalを代用起動せず、未実装境界を示す。Cは再proposalもreview-loopも起動せず未検証事項付きでstop-incompleteにする。
-- **必須動作**: 各candidate identityとgeneric caller_contextを渡し、return先をplan-craftが決める。
-- **禁止動作**: gateがrouteを返す、2回目のreturn循環、暗黙に別public workflowへswitchする。
-- **許容される差異**: review不要ならgate pass後に通常確定へ進む。
-- **必要証跡**: invocation順、snapshot identity、parent routing Data。
-- **判定規則**: Aの順序/有界性、Bの非起動、Cの即時停止を全て満たせば `Pass`。
+- **前提 Data**: A/B/C/Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。Aはユーザー指定`rounds.limit=3`、gate round 1のproposal snapshot `S0`に構造finding（location=`設計/AC`、non_local_reason=`callerとclient双方が決定`、amplification=`実装2箇所`、churn=`AC/test再変更`）があり親は`return`、gate evidenceだけを入力に再proposalした別identity `S1`は`pass`。Aのreview-loop Dataは独立して`adversarial_review_count=0`。A-limit1は同じfindingをユーザー指定`rounds.limit=1`で評価し、round 1の`return`を再proposalなしで`stop-incomplete`とする。Bの要求原文は「会話途中で人間が方向性を選ぶ別public workflowを使う」、現行inventoryにはplan-craft以外の該当surfaceなし。Cは参照先`policy.md`がrepositoryに存在せず、gateが必須evidenceを埋められない`insufficient-evidence`。Dは`rounds.limit`未指定で、親がloop開始時に`limit=2`を決定して固定し、`S0`と別identityの`S1`が連続して`return`する。D-limit0はユーザー指定`rounds.limit=0`を補正せず受理せず、理由付き`stop-incomplete`としてgate assessment、proposal再実行、review-loopを起動しない。全gate inputのcaller_contextは`{workflow_family: proposal-family, invocation: explicit-public-parent}`。
+- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「S0から通常の計画を完成して。rounds.limit=3」、A-limit1「同じS0でrounds.limit=1」、B「途中で私が方向性を裁定する将来workflowを使って」、C「証跡不足でもproposalをやり直して進めて」、D「rounds.limitは指定しないので親の既定値で進めて」、D-limit0「rounds.limit=0で進めて」と全Dataを渡す。responseではA〜Dのvariant別routingとbudget Dataを観測する。
+- **期待する判断**: Aは`S0`のgate assessmentをround 1、gate evidenceだけを入力に別identity `S1`へproposalを一度再実行し、round 2の`pass`で上限未消化でもreview-loopへ進む。review-loopの`adversarial_review_count`へgate roundを加算しない。A-limit1はround 1の`return`でproposalを再実行せず`stop-incomplete`にする。Bは現行proposalを代用起動せず、未実装境界を示す。Cは再proposalもreview-loopも起動せず未検証事項付きでstop-incompleteにする。Dは親が開始時に固定したlimit 2までroundを数え、round 2の`return`でstop-incompleteにする。D-limit0はlimitを1へ補正せず受理せず、理由を返してgate assessment、proposal再実行、review-loopを起動せずstop-incompleteにする。
+- **必須動作**: 各candidate identityとgeneric caller_contextを渡し、gate assessment 1回を1 roundとして記録する。`pass`では即時に後段へ進み、`return`ではlimit未満のときだけgate evidenceをproposalへ渡して別identityを再評価する。`rounds.limit`が1未満の入力はloop開始前に補正せず拒否理由を返す。
+- **禁止動作**: gateがrouteを返す、limit到達後のproposal再実行、`insufficient-evidence`からの再proposal、gate roundのreview-loop予算への加算、暗黙に別public workflowへswitchする。`rounds.limit`が1未満のときにlimitを補正してgate assessment・proposal再実行・review-loopを起動することも禁止する。
+- **許容される差異**: review不要ならgate pass後に通常確定へ進む。未指定limitの具体値は親が開始時に固定すればよい。invalid limitの拒否理由の文面は同じ意味を保てばよい。
+- **必要証跡**: invocation順、round ledgerと`rounds.limit`の決定時点、snapshot identity、gate evidenceの再入力、parent routing Data、review-loop budgetとの分離、limit<1の入力値・補正なし・停止理由・起動Action 0件。
+- **判定規則**: A〜Dおよびlimit境界variantの有界性・即時pass・limit=1停止・limit<1拒否・limit到達停止・evidence不足停止・budget分離・親routingを全て満たせば `Pass`。
 
 ## structural-health-gate-caller-context
 
@@ -580,19 +580,61 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **必要証跡**: finding/hold ledgerと次round入力。
 - **判定規則**: 5区分と凍結、未解決集合が一致すれば `Pass`。
 
-## review-loop-induced-convergence
+## review-loop-induced-brake
 
-- **目的**: baselineを取り直さず誘発findingの有界条件を正しく計算する。
+- **目的**: 因果基準の誘発findingと直近2 round連続の補助 brake を正しく計算する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer`のR1=`修正必須 PF-1(induced=false)`、R2=`必須0、修正推奨0`、R3=`修正推奨 PF-2(induced=true), PF-3(induced=false)`、R4=`修正推奨 PF-4/PF-5(induced=true)`。各findingはsnapshot/evidence/親裁定/採用修正/verification済みで、R2が初の必須0。R3にはtest reviewer finding TQ-1、R4後にはtrim finding OE-1もあるがdefault reviewerではない。未解決は0、round limitは6。
-- **入力**: {{invoke:review-loop}} 提示したR1〜R4 ledgerを復元し、各round後のterminationとinduced計算を返して。
-- **期待する判断**: baseline=R2固定。R3は基準2round後でなく継続。R4のR3+R4窓は誘発3/母数4でstrict majority、非誘発必須0のため`induced-loop`。
-- **必須動作**: default reviewerのroundだけを窓へ入れ、打切roundの採用修正と裁定を反映する。
-- **禁止動作**: R3で打切り、半数をmajority扱い、別reviewer/trimを母数へ加える、baseline取り直し。
-- **許容される差異**: ledger表示。
-- **必要証跡**: round ledger、baseline、rolling window計算、termination。
-- **判定規則**: R2固定かつR4だけでinduced-loopなら `Pass`。
+- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer` の通常 roundをA〜Gの独立した境界 variantとして扱う。通常 finding は全て同じ record 形式（`id`、`round`、`severity`、`finding_condition`、`snapshot_before`、`adopted_fix={id,change}`、`verification`、`snapshot_after`、`adjudication`）で渡し、判定結果のフィールドは持たせない。`adopted_fix` はcurrent findingへ適用した修正を示し、current findingをrejectしたF/Gでは `adopted_fix={id:null,change="not applied"}` と `prior_adopted_fix={id,change}` を併記して直前snapshotへ適用した修正を分離する。各修正は親が採用済みで、verification結果と修正前後の短いplan snapshotを同じrecordに含める。補助 reviewer の `TQ-1` と final trim の `OE-1` は各variantに同じ形式の補助recordとして追加するが、通常 reviewer の母数から除外する。全recordの裁定、採用修正、verificationは完了し、未解決0、round limitは6とする。
+- **生Data**: 次のA〜Eは `adjudication=accepted`、F/Gはcurrent findingを `adjudication=rejected` としてledgerへそのまま格納する。F/Gの `prior_adopted_fix` は各roundの修正後snapshotに反映された別findingの採用修正であり、verificationはその修正に対する結果である。同じ形式のため、修正の有無・roundをまたいで比較できる。
+  - **A**（1通常round）
+    - `A-NF-1` / R1 / required: `finding_condition="write後のreadが新しい値を返す"`; `snapshot_before="## cache\nwrite(k,v) -> store(k,v)\nread(k) -> cache[k]"`; `adopted_fix={id:A-Fix-1,change="write(k,v) -> store(k,v); invalidate(k)"}`; `verification="pytest -q tests/cache_test.py (8 passed)"`; `snapshot_after="## cache\nwrite(k,v) -> store(k,v); invalidate(k)\nread(k) -> cache[k]"`.
+  - **B**（R1の `B-Fix-1` 後にR2、R2の `B-Fix-2`/`B-Fix-3` 後にR3）
+    - setup: `B-Fix-1` は `"read(p) -> normalize(p) -> load(p)"` を追加し、`pytest -q tests/import_test.py (7 passed)`。R2のbeforeは `"## import\nread(p) -> normalize(p) -> load(p)\nmetric=none\naudit=none"`。
+    - `B-R2-PF-1` / R2 / recommended: `finding_condition="normalize(p)経由のimport metricが増分されない"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric=none\naudit=none"`; `adopted_fix={id:B-Fix-2,change="metric=none -> metric.increment('imports')"}`; `verification="pytest -q tests/import_metric_test.py (6 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit=none"`.
+    - `B-R2-PF-2` / R2 / recommended: `finding_condition="normalize(p)経由のimport auditにactorが記録されない"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric=none\naudit=none"`; `adopted_fix={id:B-Fix-3,change="audit=none -> audit.emit('import', actor)"}`; `verification="pytest -q tests/import_audit_test.py (5 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nmetric=none\naudit.emit('import', actor)"`.
+    - R3のbeforeは `"## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`。
+    - `B-R3-PF-1` / R3 / recommended: `finding_condition="追加されたmetric pathがretry時に二重計上される"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`; `adopted_fix={id:B-Fix-4,change="if not retry: metric.increment('imports')"}`; `verification="pytest -q tests/import_retry_test.py (4 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nif not retry: metric.increment('imports')\naudit.emit('import', actor)"`.
+    - `B-R3-PF-2` / R3 / recommended: `finding_condition="追加されたaudit pathがactorを検証しない"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`; `adopted_fix={id:B-Fix-5,change="audit.emit('import', actor) -> assert_actor(actor); audit.emit('import', actor)"}`; `verification="pytest -q tests/import_audit_test.py (6 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\nassert_actor(actor); audit.emit('import', actor)"`.
+  - **C**（R1の `C-Fix-1` 後にR2、R2の採用修正後にR3）
+    - setup: `C-Fix-1` は `"read(k) -> normalize(k) -> load(k)"` を追加し、`pytest -q tests/cache_read_test.py (7 passed)`。R2のbeforeは `"## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`。
+    - `C-R2-PF-1` / R2 / recommended: `finding_condition="normalize pathがretry時に古い値をclearしない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`; `adopted_fix={id:C-Fix-2,change="retry=on -> retry=on; clear(k)"}`; `verification="pytest -q tests/cache_retry_test.py (5 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=30s"`.
+    - `C-R2-PF-2` / R2 / recommended: `finding_condition="timeoutの本文値がAcceptance Criteriaの60sと異なる"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`; `adopted_fix={id:C-Fix-3,change="timeout=30s -> timeout=60s"}`; `verification="pytest -q tests/plan_text_test.py (3 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=60s"`.
+    - R3のbeforeは `"## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=60s"`。
+    - `C-R3-PF-1` / R3 / recommended: `finding_condition="追加されたclear(k) pathがerror metricを記録しない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=60s"`; `adopted_fix={id:C-Fix-4,change="clear(k) -> clear(k); metric.increment('clear_error')"}`; `verification="pytest -q tests/cache_error_metric_test.py (4 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k); metric.increment('clear_error')\ntimeout=60s"`.
+    - `C-R3-PF-2` / R3 / recommended: `finding_condition="plan見出しがAcceptance Criteriaの## cache windowではなく## cacheになっている"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=60s"`; `adopted_fix={id:C-Fix-5,change="## cache -> ## cache window"}`; `verification="pytest -q tests/plan_text_test.py (4 passed)"`; `snapshot_after="## cache window\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=60s"`.
+  - **D**（R1の `D-Fix-1` 後にR2、R2の `D-Fix-2`/`D-Fix-3`/`D-Fix-4` 後にR3）
+    - setup: `D-Fix-1` は `"read(k) -> normalize(k) -> load(k)"` を追加し、`pytest -q tests/cache_read_test.py (7 passed)`。R2のbeforeは `"## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit=none\nlog(request)"`（request logのretention ownerは未記載）。
+    - `D-R2-PF-1` / R2 / recommended: `finding_condition="normalize pathがmetricを記録しない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit=none\nlog(request)"`; `adopted_fix={id:D-Fix-2,change="metric=none -> metric.increment('reads')"}`; `verification="pytest -q tests/read_metric_test.py (5 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit=none\nlog(request)"`.
+    - `D-R2-PF-2` / R2 / recommended: `finding_condition="normalize pathがauditを発行しない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit=none\nlog(request)"`; `adopted_fix={id:D-Fix-3,change="audit=none -> audit.emit('read', actor)"}`; `verification="pytest -q tests/read_audit_test.py (5 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit.emit('read', actor)\nlog(request)"`.
+    - `D-R2-NF-1` / R2 / required: `finding_condition="PII requestのログにredaction ruleがない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit=none\nlog(request)"`; `adopted_fix={id:D-Fix-4,change="log(request) -> log(redact(request))"}`; `verification="pytest -q tests/pii_log_test.py (9 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric=none\naudit=none\nlog(redact(request))"`.
+    - R3のbeforeは `"## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`。
+    - `D-R3-PF-1` / R3 / recommended: `finding_condition="追加されたmetric pathがretry時に二重計上される"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-5,change="if not retry: metric.increment('reads')"}`; `verification="pytest -q tests/read_retry_test.py (4 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nif not retry: metric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`.
+    - `D-R3-PF-2` / R3 / recommended: `finding_condition="追加されたaudit pathがsystem actorを渡さない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-6,change="audit.emit('read', actor) -> audit.emit('read', actor, system)"}`; `verification="pytest -q tests/read_audit_test.py (6 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor, system)\nlog(redact(request))"`.
+    - `D-R3-NF-2` / R3 / required: `finding_condition="request logのretention ownerが未記載"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-7,change="log(redact(request)) -> log(redact(request), owner=security)"}`; `verification="pytest -q tests/pii_log_test.py (10 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request), owner=security)"`.
+  - **E**（loop開始前の `E-Fix-0` 後にR1、R1の採用修正後にR2）
+    - setup: `E-Fix-0` は `"schema=v2"` を追加し、`pytest -q tests/migration_schema_test.py (8 passed)`。R1のbeforeは `"## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`。
+    - `E-R1-NF-1` / R1 / required: `finding_condition="schema=v2 migrationにrollback branchがない"`; `snapshot_before="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`; `adopted_fix={id:E-Fix-1,change="rollback=none -> rollback=restore_v1"}`; `verification="pytest -q tests/migration_rollback_test.py (7 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=restore_v1\naudit=none\nmetric=none"`.
+    - `E-R1-PF-1` / R1 / recommended: `finding_condition="schema=v2 pathがauditを発行しない"`; `snapshot_before="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`; `adopted_fix={id:E-Fix-2,change="audit=none -> audit.emit('migrate', actor)"}`; `verification="pytest -q tests/migration_audit_test.py (5 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=none\naudit.emit('migrate', actor)\nmetric=none"`.
+    - `E-R1-PF-2` / R1 / recommended: `finding_condition="schema=v2 pathがmetricを増分しない"`; `snapshot_before="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`; `adopted_fix={id:E-Fix-3,change="metric=none -> metric.increment('migrations')"}`; `verification="pytest -q tests/migration_metric_test.py (5 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric.increment('migrations')"`.
+    - R2のbeforeは `"## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor)\nmetric.increment('migrations')"`。
+    - `E-R2-NF-2` / R2 / required: `finding_condition="追加されたrollback branchがrestore metricを記録しない"`; `snapshot_before="## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor)\nmetric.increment('migrations')"`; `adopted_fix={id:E-Fix-4,change="rollback=restore_v1 -> rollback=restore_v1; metric.increment('restores')"}`; `verification="pytest -q tests/migration_restore_metric_test.py (4 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=restore_v1; metric.increment('restores')\naudit.emit('migrate', actor)\nmetric.increment('migrations')"`.
+    - `E-R2-PF-3` / R2 / recommended: `finding_condition="追加されたaudit eventがsourceを渡さない"`; `snapshot_before="## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor)\nmetric.increment('migrations')"`; `adopted_fix={id:E-Fix-5,change="audit.emit('migrate', actor) -> audit.emit('migrate', actor, source)"}`; `verification="pytest -q tests/migration_audit_test.py (6 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor, source)\nmetric.increment('migrations')"`.
+    - `E-R2-PF-4` / R2 / recommended: `finding_condition="追加されたmigration metricがretry時に二重計上される"`; `snapshot_before="## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor)\nmetric.increment('migrations')"`; `adopted_fix={id:E-Fix-6,change="if not retry: metric.increment('migrations')"}`; `verification="pytest -q tests/migration_retry_test.py (4 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=restore_v1\naudit.emit('migrate', actor)\nif not retry: metric.increment('migrations')"`.
+  - **F**（R2/R3の対象文だけを更新）
+    - `F-R2-PF-1` / R2 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry'\nlimit=(none)"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:F-Fix-2,change="message='retry' -> message='retry request'"}`; `verification="F-Fix-2: git diff --check (clean)"`; `snapshot_after="## retry\nmessage='retry request'\nlimit=(none)"`; `adjudication=rejected`.
+    - `F-R3-PF-1` / R3 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry request'\nlimit=(none)"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:F-Fix-3,change="message='retry request' -> message='retry operation'"}`; `verification="F-Fix-3: git diff --check (clean)"`; `snapshot_after="## retry\nmessage='retry operation'\nlimit=(none)"`; `adjudication=rejected`.
+  - **G**（R2/R3に同じ `id` を再掲）
+    - `G-PF-1` / R2 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:G-Fix-2,change="role=reader -> role=reader,auditor"}`; `verification="G-Fix-2: pytest -q tests/auth_test.py (5 passed)"`; `snapshot_after="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor"`; `adjudication=rejected`.
+    - `G-PF-1` / R3 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor\n## timeout\n10s"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:G-Fix-3,change="timeout=10s -> timeout=15s"}`; `verification="G-Fix-3: pytest -q tests/timeout_test.py (4 passed)"`; `snapshot_after="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor\n## timeout\n15s"`; `adjudication=rejected`.
+- **入力**: `{{invoke:review-loop}}` A〜Gのledgerを復元し、recordの `finding_condition`、snapshot前後、採用Fixの変更、verification、親の裁定を照合して、各通常roundの判定値、修正必須の残数、terminationを返して。`TQ-1`/`OE-1` は通常roundの計算から除外する。
+- **期待する判断（採点側でのみ付与する値）**: A=`A-NF-1: induced=false`。B=`B-R2-PF-1: induced=true, induced_by=B-Fix-1`、`B-R2-PF-2: induced=true, induced_by=B-Fix-1`、`B-R3-PF-1: induced=true, induced_by=B-Fix-2`、`B-R3-PF-2: induced=true, induced_by=B-Fix-3`。C=`C-R2-PF-1: induced=true, induced_by=C-Fix-1`、`C-R2-PF-2: induced=false`、`C-R3-PF-1: induced=true, induced_by=C-Fix-2`、`C-R3-PF-2: induced=false`。D=`D-R2-PF-1: induced=true, induced_by=D-Fix-1`、`D-R2-PF-2: induced=true, induced_by=D-Fix-1`、`D-R2-NF-1: induced=false`、`D-R3-PF-1: induced=true, induced_by=D-Fix-2`、`D-R3-PF-2: induced=true, induced_by=D-Fix-3`、`D-R3-NF-2: induced=false`。E=`E-R1-NF-1: induced=true, induced_by=E-Fix-0`、`E-R1-PF-1: induced=true, induced_by=E-Fix-0`、`E-R1-PF-2: induced=true, induced_by=E-Fix-0`、`E-R2-NF-2: induced=true, induced_by=E-Fix-1`、`E-R2-PF-3: induced=true, induced_by=E-Fix-2`、`E-R2-PF-4: induced=true, induced_by=E-Fix-3`。F=`F-R2-PF-1: induced=false`、`F-R3-PF-1: induced=false`。Gは同一 `G-PF-1` のR2/R3とも `induced=false`。
+- **期待する判断（round/termination）**: Aは1通常roundだけなので継続。BはR2/R3の直近2通常roundがともにstrict dominantかつ非誘発の修正必須0なのでR3で`induced-loop`。Cは各roundがtieのためdominantにならず継続。Dは各roundがstrict dominantでも非誘発の修正必須1があるため継続。Eは旧 `baseline_round` が成立しない（修正必須総数が0にならない）ままでも、R1/R2ともstrict dominantかつ非誘発の修正必須0なのでR2で新規則の`induced-loop`。Fは対象文が新しいだけ、Gは同じfindingの再出現だけなので誘発扱いせず、いずれも停止しない。
+- **必須動作**: finding成立条件、snapshot前後、親が採用しverificationした修正、判定に用いた対応Fix IDのevidenceをledgerへ保持する。loop全体のdefault reviewer通常roundだけを判定対象とし、打切roundの採用findingと全裁定を反映する。
+- **禁止動作**: 入力された結論ラベルを受け入れる、対象文の新旧やsnapshot差分だけで誘発扱いする、同じfindingの再出現を誘発扱いする、tieをstrict dominantとする、非誘発の修正必須を無視する、旧 `baseline_round` の成立を必須にする、別reviewer/trimを母数へ加える。
+- **許容される差異**: finding IDとledger表示。
+- **必要証跡**: round ledger、各findingの判定値と対応Fix ID、各roundのdominance、非誘発の修正必須数、termination。
+- **判定規則**: A〜Gの因果導出、tie、required-blocker、baseline未成立、負例の境界とB/Eだけの`induced-loop`が一致すれば `Pass`。
 
 ## review-loop-final-trim
 
@@ -627,7 +669,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review結果と成果物受入/書戻し/次Actionを分離する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨1+非誘発推奨1/R4誘発推奨2、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨2+非誘発推奨1/R4誘発推奨2、R3/R4とも非誘発の修正必須0、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
 - **入力**: {{invoke:review-loop}} 一つのcase promptにA〜Dの終了値を確定し、完了なら`issue://eval/7`本文を更新して実装を開始して、と全Dataを渡す。responseではA〜Dのvariant別terminationを観測する。
 - **期待する判断**: A=`converged`、B=`induced-loop`、C=`round-limit`、D=`stop-incomplete`。いずれも成果物、ledgers、trim有無、termination、round countをDataで返し、書戻しと実装判断はcallerへ残す。
 - **必須動作**: input resource identityと未実行Actionを明示する。
@@ -806,7 +848,7 @@ AC-11の照合対象を固定する履歴監査Dataであり、current runのtar
 | 24 | EVAL-25: レビュー付きプラン起草の正常収束 | 一部対応 | `plan-craft-explicit-nonimplementation`, `plan-craft-risk-directed-review-selection`, `review-loop-finding-adjudication`, `review-loop-final-trim`, `review-loop-output-ownership`; status schemaはretired |
 | 25 | EVAL-26: rounds_limit 到達での打ち切りと未解決指摘の提示 | 対応 | `review-loop-finding-adjudication`, `review-loop-output-ownership` |
 | 26 | EVAL-27: プラン入力モードの過剰実装指摘 | 対応 | `review-loop-final-trim`, `impl-lead-reviewer-report-only` |
-| 27 | EVAL-37: 誘発指摘の二 round 窓による収束 | 対応 | `review-loop-induced-convergence` |
+| 27 | EVAL-37: 因果誘発指摘の二 round 連続補助 brake | 対応 | `review-loop-induced-brake` |
 | 28 | EVAL-17: 不正な Branch Plan Set の受領 | 一部対応 | `impl-lead-normalize-or-stop`, `impl-lead-dependency-drift`; Branch Plan再検証schemaはretired |
 | 29 | EVAL-18: 未授権 Branch Plan の境界での停止 | 一部対応 | `impl-lead-direct-or-delegate`, `impl-lead-dependency-drift`; Branch Plan授権schemaはretired |
 | 30 | EVAL-22: 混在 complexity と mode 未指定委譲の決定表導出 | 除外 | adaptive/standard/lite/strictの決定表はretiredで現行判断を持たない |

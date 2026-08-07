@@ -848,10 +848,64 @@ slice = "plan-craft-structural-health-handoff"
 pattern = "`stop-incomplete`"
 applies_to = ["claude", "codex"]
 
-[contracts.plan-craft-structural-health-handoff-requires-e9241f88]
+[contracts.plan-craft-structural-health-handoff-requires-a4f20d25]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
-pattern = "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す"
+pattern = "gate assessment 1回を1 `round` と数える"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-f2a5ac96]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-6a8f7d7d]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`pass` は上限未消化でも直ちに `review-loop` へ進む"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-80636f85]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-cb0fd10c]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` 到達 round の `return` は `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-36ddb773]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-9f964bf1]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-f6271de3]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-333e4dc6]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-06b909ed]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない"
 applies_to = ["claude", "codex"]
 
 [contracts.review-loop-structural-boundary-requires-0c775c51]
@@ -870,6 +924,48 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "review-loop-structural-boundary"
 pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-5f2d73b0]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "直前までに親が採用して verification を完了した修正によって finding が新たに成立した"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-a0199e5d]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-6949511b]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "各通常 round で、親確定の `修正推奨` 以上"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-cf51f4de]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "通常 round 2 回で連続して"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-3b7c1ff9]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "両 round とも非誘発の `修正必須` が 0"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-requires-804e8353]
+kind = "requires"
+slice = "review-loop-induced-brake"
+pattern = "`induced-loop` は自己誘発 churn に対する補助ブレーキ"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-induced-brake-forbids-dd813c83]
+kind = "forbids"
+slice = "review-loop-induced-brake"
+pattern = "`baseline_round`"
 applies_to = ["claude", "codex"]
 
 [contracts.plan-craft-proposal-before-structural-health-gate]

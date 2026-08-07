@@ -533,10 +533,55 @@ class V5RepositoryContractsTest(unittest.TestCase):
             "plan-craft-structural-health-handoff-requires-bdaffd8e": (
                 "requires", "plan-craft-structural-health-handoff", "`stop-incomplete`"
             ),
-            "plan-craft-structural-health-handoff-requires-e9241f88": (
+            "plan-craft-structural-health-handoff-requires-a4f20d25": (
                 "requires",
                 "plan-craft-structural-health-handoff",
-                "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す",
+                "gate assessment 1回を1 `round` と数える",
+            ),
+            "plan-craft-structural-health-handoff-requires-f2a5ac96": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する",
+            ),
+            "plan-craft-structural-health-handoff-requires-6a8f7d7d": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`pass` は上限未消化でも直ちに `review-loop` へ進む",
+            ),
+            "plan-craft-structural-health-handoff-requires-80636f85": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する",
+            ),
+            "plan-craft-structural-health-handoff-requires-cb0fd10c": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` 到達 round の `return` は `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-36ddb773": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-9f964bf1": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない",
+            ),
+            "plan-craft-structural-health-handoff-requires-f6271de3": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-333e4dc6": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする",
+            ),
+            "plan-craft-structural-health-handoff-requires-06b909ed": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない",
             ),
             "review-loop-structural-boundary-requires-0c775c51": (
                 "requires", "review-loop-structural-boundary", "局所的な構造欠陥を事前解消"
@@ -770,6 +815,63 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 self.assertEqual("final-writing-remediation", entry["slice"])
                 self.assertEqual(pattern, entry["pattern"])
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_review_loop_induced_brake_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "review-loop-induced-brake-requires-5f2d73b0": (
+                "requires",
+                "review-loop-induced-brake",
+                "直前までに親が採用して verification を完了した修正によって finding が新たに成立した",
+            ),
+            "review-loop-induced-brake-requires-a0199e5d": (
+                "requires",
+                "review-loop-induced-brake",
+                "対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは",
+            ),
+            "review-loop-induced-brake-requires-6949511b": (
+                "requires",
+                "review-loop-induced-brake",
+                "各通常 round で、親確定の `修正推奨` 以上",
+            ),
+            "review-loop-induced-brake-requires-cf51f4de": (
+                "requires",
+                "review-loop-induced-brake",
+                "通常 round 2 回で連続して",
+            ),
+            "review-loop-induced-brake-requires-3b7c1ff9": (
+                "requires",
+                "review-loop-induced-brake",
+                "両 round とも非誘発の `修正必須` が 0",
+            ),
+            "review-loop-induced-brake-requires-804e8353": (
+                "requires",
+                "review-loop-induced-brake",
+                "`induced-loop` は自己誘発 churn に対する補助ブレーキ",
+            ),
+            "review-loop-induced-brake-forbids-dd813c83": (
+                "forbids",
+                "review-loop-induced-brake",
+                "`baseline_round`",
+            ),
+        }
+        selected = {
+            name: entry
+            for name, entry in registry.items()
+            if entry.get("slice") == "review-loop-induced-brake"
+        }
+        self.assertEqual(set(expected), set(selected))
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": kind,
+                        "slice": slice_name,
+                        "pattern": pattern,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
 
     def test_sliced_contract_ids_are_stable_content_hashes(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
