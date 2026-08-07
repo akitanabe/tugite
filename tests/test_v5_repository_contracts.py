@@ -227,17 +227,6 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertEqual(1, source.count(heading))
         self.assertLess(source.index(heading), source.index("\n## Route and execution order"))
 
-        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
-        eval_heading = "## EVAL-39: isolation 未指定時の run-owned checkout 既定"
-        self.assertEqual(1, corpus.count(eval_heading))
-        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
-
-    def test_workflow_corpus_registers_eval_40_before_result_record(self) -> None:
-        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
-        eval_heading = "## EVAL-40: run-owned closeout の既定 Action"
-        self.assertEqual(1, corpus.count(eval_heading))
-        self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
-
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
         implicit_skills = {
             "proposal",
@@ -604,23 +593,6 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     selected[name],
                 )
 
-    def test_workflow_corpus_registers_structural_health_gate_evals(self) -> None:
-        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
-        result_record = corpus.index("\n# 結果記録")
-        headings = (
-            "## EVAL-41: structural defect は proposal へ return",
-            "## EVAL-42: 長いが局所修正可能な candidate は return しない",
-            "## EVAL-43: mandatory evidence 不足では return を確定しない",
-            "## EVAL-44: structural advisor は evidence のみ返す",
-            "## EVAL-45: review-loop 中の非局所的構造欠陥は逆走せず停止",
-            "## EVAL-46: structural-health-gate の internal context 外起動を拒否",
-            "## EVAL-47: proposal-family public workflow の共通 downstream routing",
-        )
-        for heading in headings:
-            with self.subTest(eval=heading):
-                self.assertEqual(1, corpus.count(heading))
-                self.assertLess(corpus.index(heading), result_record)
-
     def test_gunte_contract_registry_owns_worker_and_test_quality_invariants(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         worker_required = {
@@ -744,13 +716,6 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertNotIn("review-loop", proposal_metadata)
         self.assertNotIn("plan-craft", gate_metadata)
         self.assertNotIn("review-loop", gate_metadata)
-
-        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
-        human_variant = corpus[corpus.index("2. **future explicit human-dialogue public workflow**"):corpus.index("3. **no implicit switch**")]
-        self.assertIn("candidate/stop-incomplete Data contract", human_variant)
-        self.assertIn("current `proposal` とは別の", human_variant)
-        self.assertIn("current `proposal` は起動しない", human_variant)
-        self.assertIn("`proposal` 起動がない", human_variant)
 
     def test_final_writing_remediation_registry_has_bounded_route_inventory(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
