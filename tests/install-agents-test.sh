@@ -15,6 +15,7 @@ required_agents=(
   writing-principles-reviewer
   over-engineering-reviewer
   plan-adversarial-reviewer
+  plan-quality-advisor
   security-side-effect-reviewer
 )
 

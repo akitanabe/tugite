@@ -559,3 +559,363 @@ kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
 applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-222dd897]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "candidate snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-784e1e12]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "stop-incomplete"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-8802cc93]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "adopted"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-aab3ab4d]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "rejected"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-a5e6a77d]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "unresolved"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-8a5814e1]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "caller-owned parent"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-8c449450]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "後段工程を選択・起動せず"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-d1f15769]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "advisor insight を自動採用せず"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-318a8b6a]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-e5df9a7c]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "具体的な品質向上が残る間だけ bounded"
+applies_to = ["claude", "codex"]
+
+[contracts.candidate-producer-boundary-requires-a1fa509f]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-b920a922]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "read-only advisor"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-3d8191da]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "candidate を直接修正せず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-2d3924e4]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "第二の planner にならない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-af585f71]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "後段を起動せず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-8bb2deb8]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "採否を決めず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-e875fc13]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "最終受入を行いません"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-4fc3816c]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "candidate snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-646de56d]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "stop-incomplete"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-361ac902]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "caller-owned parent"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-before-review-loop]
+kind = "order"
+before = "proposal-start"
+after = "review-loop-handoff"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-08c3b623]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "duplicated source of truth"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-ec2ccc46]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`caller_context` Data"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-d624e872]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`workflow_family`: `proposal-family`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-4fbc98a7]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`invocation`: `explicit-public-parent`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-4a432b13]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "context 不成立"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-d50aa7cd]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "assessment を開始せず"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-requires-78715640]
+kind = "requires"
+slice = "structural-health-gate-caller-context"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-3cc1f92b]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`producer_context`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-af4f2954]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`return target`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-c500195c]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`next skill`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-caller-context-forbids-42aaefd9]
+kind = "forbids"
+slice = "structural-health-gate-caller-context"
+pattern = "`origin`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-765af3a3]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "明示起動された proposal-family public workflow parent"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-f08a5bbf]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`location`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-89d00b8c]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`non_local_reason`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-57c9e9cb]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`predicted_amplification`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-2e003c43]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`predicted_churn`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-0891a60b]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "public workflow parent が最終的な `pass` / `return` / `stop-incomplete` を決める"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-f63294d0]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "成果物を再設計・直接編集しない"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-2a8ee78f]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "長さ、複雑さ、finding 数だけを理由に `return` しない"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-d19bb5e9]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "`insufficient-evidence`"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-4c89c356]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "assessment Data"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-forbids-21466849]
+kind = "forbids"
+slice = "structural-health-gate-boundary"
+pattern = "gate が最終判断する"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-forbids-fad0c88b]
+kind = "forbids"
+slice = "structural-health-gate-boundary"
+pattern = "gate が成果物を直接編集する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-8b8aab7f]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`structural-health-gate`"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-945ff3f4]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "proposal を再実行"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-cd8aca82]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "再 proposal 後"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-bdaffd8e]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-handoff-requires-e9241f88]
+kind = "requires"
+slice = "plan-craft-structural-health-handoff"
+pattern = "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-0c775c51]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "局所的な構造欠陥を事前解消"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-212e71a7]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "自動で `structural-health-gate` または candidate producer へ逆走しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-structural-boundary-requires-55ef9a2e]
+kind = "requires"
+slice = "review-loop-structural-boundary"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-before-structural-health-gate]
+kind = "order"
+before = "proposal-start"
+after = "structural-health-gate-start"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-structural-health-gate-before-review-loop]
+kind = "order"
+before = "structural-health-gate-start"
+after = "review-loop-handoff"
+applies_to = ["claude", "codex"]
+
+[contracts.public-workflow-routing-requires-cb680296]
+kind = "requires"
+slice = "public-workflow-routing"
+pattern = "`return target` は public workflow parent が所有する"
+applies_to = ["claude", "codex"]
+
+[contracts.public-workflow-routing-requires-dc53d733]
+kind = "requires"
+slice = "public-workflow-routing"
+pattern = "明示されていない別 workflow へ自動 switch しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-proposal-family-caller-requires-88448999]
+kind = "requires"
+slice = "review-loop-proposal-family-caller"
+pattern = "proposal-family public workflow"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-proposal-family-caller-requires-2f49b189]
+kind = "requires"
+slice = "review-loop-proposal-family-caller"
+pattern = "public workflow parent"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-proposal-family-caller-requires-56553866]
+kind = "requires"
+slice = "review-loop-proposal-family-caller"
+pattern = "ユーザー明示の単独 review"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-proposal-family-caller-requires-322f4234]
+kind = "requires"
+slice = "review-loop-proposal-family-caller"
+pattern = "workflow 間も自動で切り替えない"
+applies_to = ["claude", "codex"]

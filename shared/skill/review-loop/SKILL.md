@@ -2,7 +2,7 @@
 ---
 name: review-loop
 description: >-
-  ユーザーが明示した成果物レビュー、または plan-craft が工程として起動する場合だけ、
+  ユーザーが明示した成果物レビュー、または明示起動された proposal-family public workflow が工程として起動する場合だけ、
   不変 snapshot と review goal に対する bounded review round と final trim を実行する。
   reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。v4 skill と impl-lead の
   実行中には発火せず、成果物を書き戻したり次工程を開始したりしない。
@@ -12,7 +12,7 @@ description: >-
 ---
 name: review-loop
 description: >-
-  ユーザーが明示した成果物レビュー、または plan-craft が工程として起動する場合だけ、
+  ユーザーが明示した成果物レビュー、または明示起動された proposal-family public workflow が工程として起動する場合だけ、
   不変 snapshot と review goal に対する bounded review round と final trim を実行する。
   reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。v4 skill と impl-lead の
   実行中には発火せず、成果物を書き戻したり次工程を開始したりしない。
@@ -23,19 +23,23 @@ description: >-
 
 この Skill は、入力 resource 自体を直接書き換えず、明示された review goal に対して各 round で固定した
 snapshot を読み、親が採用した変更と verification を snapshot ごとに反映する review loop である。起動元は
-`plan-craft` に限らず、親が既存の成果物（issue 本文へ保存した
-プラン等）を単独でレビューする場合も含む。reviewer は確認できた事実と懸念に集中し、新しい仕様を
+proposal-family public workflow の親が candidate producer 後段の review として明示起動する場合と、親が既存の成果物
+（issue 本文へ保存したプラン等）を単独でレビューする場合を含む。reviewer は確認できた事実と懸念に集中し、新しい仕様を
 補完せず、finding の採否・保留を確定しない。親は最終的な品質下限、残存 risk、成果物の受け入れを
 保持する。
 
 ## 発火制御
 
-- ユーザーがこの Skill によるレビューを明示した場合にだけ単独で起動する。
-- `plan-craft` が起草工程の review として起動する場合は起動できる。
+<!-- @contract review-loop-proposal-family-caller -->
+
+- ユーザーがこの Skill によるレビューを明示した場合にだけ単独で起動する（ユーザー明示の単独 review）。
+- proposal-family public workflow が candidate producer 後段の review として明示起動する場合は起動できる。
 - v4 skill の実行中、`impl-lead` の実行中、またはレビューを求めない相談では起動しない。
 - 発火条件を満たさない自然言語の作業内容や context から、起動を推測しない。
+- 明示された public workflow parent がない context へ自動 switch しない。proposal-family の workflow 間も自動で切り替えない。
 - Claude の frontmatter は暗黙起動を無効にしない。ただし上記の description と本文の条件を守る。
 - Codex の metadata は `allow_implicit_invocation: true` とし、暗黙起動を許す範囲を上記の条件に限る。
+<!-- @/contract -->
 
 ## 入力
 
@@ -44,6 +48,7 @@ snapshot を読み、親が採用した変更と verification を snapshot ご�
 
 - `artifact_snapshot`: 各 round が読む対象成果物の識別子と内容。round 中は不変として扱い、同じ内容を読む。
 - `artifact_kind`: 実装を前提とするプラン系か否か。reviewer の適用可否に使う。
+- `caller_context`: proposal-family public workflow の parent が明示起動した review か、ユーザー明示の単独 review かを識別する Data。
 - `request`: 要求原文、AC 相当の判定基準、constraints、既知の依存。
 - `review_goal`: 確認する具体的な risk と、結果が変える親の判断。
 - `reviewers`: ユーザー指定または goal に対応して親が選んだ reviewer。省略時の通常 reviewer は
@@ -57,6 +62,13 @@ snapshot を読み、親が採用した変更と verification を snapshot ご�
 通常 reviewer の適用対象は、観測可能な判定基準を「Acceptance Criteria」の節名で持ち、「設計」の節名を
 持つ実装前提プラン系成果物である。前提を欠く場合、または非実装系成果物に goal 対応の既存 reviewer が
 ない場合は reviewer を起動せず、理由付きでレビュー不成立を返す。汎用 reviewer を新設しない。
+
+<!-- @contract review-loop-structural-boundary -->
+proposal-family public workflow の親から受け取る candidate は、局所的な構造欠陥を事前解消したものに限る。この loop はその後の指摘密度、
+実装可能性、検証可能性を扱う。review 中に local fix では閉じない構造欠陥が判明した場合は、location、局所修正で
+閉じない理由、予測される amplification / churn を未解決 finding に記録して `stop-incomplete` とする。自動で
+`structural-health-gate` または candidate producer へ逆走しない。
+<!-- @/contract -->
 
 ## reviewer の責務と選択
 

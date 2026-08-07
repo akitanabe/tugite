@@ -1,0 +1,6 @@
+interface:
+  display_name: "Internal Proposal"
+  short_description: "Draft a plan candidate only inside plan-craft and return candidate or stop-incomplete to caller"
+  default_prompt: "Use $proposal only as the internal plan-craft前段; return a candidate snapshot or stop-incomplete to the caller-owned parent without selecting downstream work."
+policy:
+  allow_implicit_invocation: true

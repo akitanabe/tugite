@@ -13,6 +13,9 @@ description: >-
 改修方針、移行計画、比較検討、作業メモ、リスク整理、実装単位の候補案などでよく、特定の実行 schema や
 固定された後続工程の入力へ変換しない。規範本文はこの Skill 自身で完結し、別の実装 workflow の本文を前提にしない。
 
+`return target` は public workflow parent が所有する。現在の plan-craft は gate の assessment を受けて proposal へ
+返すか後段へ進むかを親として判断し、明示されていない別 workflow へ自動 switch しない。
+
 ## 発火制御と責務
 
 - ユーザーが `$plan-craft` または同等の明示要求をした場合だけ起動する。自然言語の作業内容や context から暗黙に起動しない。
@@ -20,6 +23,34 @@ description: >-
   `policy.allow_implicit_invocation: false` はこの explicit-only 契約を表す。
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
 - `review` の実行、成果物の確定候補、必要な問いの提示までを担い、受け入れと後続 Action は親へ残す。
+
+## proposal の前段
+
+起草は、同じ親 context 内の internal `proposal` を前段として開始する。`proposal` は要求、repository、既存仕様を
+調査して candidate を作り、必要なら read-only `plan-quality-advisor` の insight を受け取る。advisor insight は
+非拘束 Data であり、planner は一次情報と要求に照らして `adopted` / `rejected` / `unresolved` を裁定する。
+自動採用せず、新仕様、scope、AC、ユーザー嗜好を推測しない。具体的な品質向上が残る間だけ bounded に改善し、
+人間の判断が必要、または安全な candidate を作れない場合は `stop-incomplete` と必要な判断・evidence を返す。
+
+`proposal` が caller-owned parent へ返した `candidate snapshot` は内容を識別できる不変 Data として後段へ渡す。
+`stop-incomplete` の場合は caller-owned parent がそこで停止し、後段工程を選択しない。それ以外も gate を通過した candidate だけを
+`review-loop` へ渡す。
+
+candidate snapshot を受け取った場合、同じ親 context の internal `structural-health-gate` に渡す。親が `pass` と
+判断した場合だけ後段へ進む。渡す gate input には、明示起動された proposal-family public workflow parent を識別する
+generic `caller_context` Data（`workflow_family: proposal-family`、`invocation: explicit-public-parent`）を含める。
+gate が `context 不成立` Data を返した場合は assessment を開始せず、親は別 route へ切り替えずに
+`stop-incomplete` とし、candidate/resource の編集や advisor・producer・後段処理の起動を行わない。
+親が最初の `return` と判断した場合は、gate の evidence を新しい入力 Data として
+proposal を再実行し、別 identity の candidate snapshot を gate で再評価する。再 proposal 後も構造不健全、または
+必須 evidence 不足なら `stop-incomplete` とし、proposal と gate の循環を続けない。
+
+gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す。`return` の場合だけ最初の一回に限って proposal を再実行し、
+再 proposal 後の不健全または evidence 不足は上記のとおり停止する。
+
+gate を通過した candidate snapshot だけを、必要な review goal とともに既存の `review-loop` へ渡す。この順序
+（proposal → structural-health-gate → review-loop）を飛ばさず、review-loop の採否・受け入れ・後続 Action は
+既存の責務境界に従う。
 
 ## 成果物
 

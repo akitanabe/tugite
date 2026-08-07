@@ -26,8 +26,11 @@ REVIEWERS_WITHOUT_BASH = {
     "plan-adversarial-reviewer",
     "writing-principles-reviewer",
 }
+ADVISORS = {"plan-quality-advisor"}
 REVIEWERS = REVIEWERS_WITH_BASH | REVIEWERS_WITHOUT_BASH
-AGENTS = WORKERS | REVIEWERS
+READ_ONLY_AGENTS = REVIEWERS | ADVISORS
+READ_ONLY_WITHOUT_BASH = REVIEWERS_WITHOUT_BASH | ADVISORS
+AGENTS = WORKERS | READ_ONLY_AGENTS
 RETIRED = {
     "expert-selection-reviewer",
     "review-patch-refactorer",
@@ -36,7 +39,9 @@ RETIRED = {
 WORKFLOW_SKILLS = {
     "impl-lead",
     "plan-craft",
+    "proposal",
     "review-loop",
+    "structural-health-gate",
     "work-unit-design",
 }
 CODEX_ONLY_SKILLS = {"install-custom-agents"}
@@ -54,7 +59,7 @@ RETIRED_IMPLEMENTATION_PATHS = (
     "tests/build_plugin_assets_test_support.py",
 )
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
-INTERNAL_CLAUDE_SKILLS = {"work-unit-design"}
+INTERNAL_CLAUDE_SKILLS = {"proposal", "structural-health-gate", "work-unit-design"}
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -234,7 +239,12 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
 
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
-        implicit_skills = {"review-loop", "work-unit-design"}
+        implicit_skills = {
+            "proposal",
+            "review-loop",
+            "structural-health-gate",
+            "work-unit-design",
+        }
         for name in WORKFLOW_SKILLS:
             with self.subTest(name=name):
                 source = ROOT / f"declarations/codex/skills/{name}/openai.yaml"
@@ -271,13 +281,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 else:
                     self.assertEqual(0, self._key_count(lines, "user-invocable"), path)
 
-    def test_all_reviewers_are_read_only_with_the_established_claude_tool_split(self) -> None:
-        for name in REVIEWERS:
+    def test_read_only_agents_have_the_established_claude_tool_split(self) -> None:
+        for name in READ_ONLY_AGENTS:
             with self.subTest(name=name):
                 source = (ROOT / f"shared/agents/{name}.md").read_text(encoding="utf-8")
                 frontmatter = tomllib.loads(source.split("+++", 2)[1])
                 self.assertEqual("read-only", frontmatter["codex"]["sandbox_mode"])
-                if name in REVIEWERS_WITH_BASH:
+                if name not in READ_ONLY_WITHOUT_BASH:
                     self.assertCountEqual(
                         ["Read", "Grep", "Glob", "Bash"],
                         frontmatter["claude"]["tools"],
@@ -303,6 +313,313 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 self.assertNotIn("sandbox_mode", frontmatter["codex"])
                 self.assertNotIn("tools", frontmatter["claude"])
                 self.assertNotIn("disallowed_tools", frontmatter["claude"])
+
+    def test_candidate_producer_and_handoff_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "candidate-producer-boundary-requires-222dd897": (
+                "requires",
+                "candidate-producer-boundary",
+                "candidate snapshot",
+            ),
+            "candidate-producer-boundary-requires-784e1e12": (
+                "requires",
+                "candidate-producer-boundary",
+                "stop-incomplete",
+            ),
+            "candidate-producer-boundary-requires-8802cc93": (
+                "requires",
+                "candidate-producer-boundary",
+                "adopted",
+            ),
+            "candidate-producer-boundary-requires-aab3ab4d": (
+                "requires",
+                "candidate-producer-boundary",
+                "rejected",
+            ),
+            "candidate-producer-boundary-requires-a5e6a77d": (
+                "requires",
+                "candidate-producer-boundary",
+                "unresolved",
+            ),
+            "candidate-producer-boundary-requires-8a5814e1": (
+                "requires",
+                "candidate-producer-boundary",
+                "caller-owned parent",
+            ),
+            "candidate-producer-boundary-requires-8c449450": (
+                "requires",
+                "candidate-producer-boundary",
+                "後段工程を選択・起動せず",
+            ),
+            "candidate-producer-boundary-requires-d1f15769": (
+                "requires",
+                "candidate-producer-boundary",
+                "advisor insight を自動採用せず",
+            ),
+            "candidate-producer-boundary-requires-318a8b6a": (
+                "requires",
+                "candidate-producer-boundary",
+                "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する",
+            ),
+            "candidate-producer-boundary-requires-e5df9a7c": (
+                "requires",
+                "candidate-producer-boundary",
+                "具体的な品質向上が残る間だけ bounded",
+            ),
+            "candidate-producer-boundary-requires-a1fa509f": (
+                "requires",
+                "candidate-producer-boundary",
+                "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。",
+            ),
+            "plan-quality-advisor-boundary-requires-b920a922": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "read-only advisor",
+            ),
+            "plan-quality-advisor-boundary-requires-3d8191da": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "candidate を直接修正せず",
+            ),
+            "plan-quality-advisor-boundary-requires-2d3924e4": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "第二の planner にならない",
+            ),
+            "plan-quality-advisor-boundary-requires-af585f71": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "後段を起動せず",
+            ),
+            "plan-quality-advisor-boundary-requires-8bb2deb8": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "採否を決めず",
+            ),
+            "plan-quality-advisor-boundary-requires-e875fc13": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "最終受入を行いません",
+            ),
+            "plan-craft-proposal-handoff-requires-4fc3816c": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "candidate snapshot",
+            ),
+            "plan-craft-proposal-handoff-requires-646de56d": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "stop-incomplete",
+            ),
+            "plan-craft-proposal-handoff-requires-361ac902": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "caller-owned parent",
+            ),
+            "plan-craft-proposal-before-review-loop": (
+                "order",
+                None,
+                None,
+            ),
+        }
+        contract_names = {
+            name
+            for name, entry in registry.items()
+            if entry.get("slice") in {
+                "candidate-producer-boundary",
+                "plan-quality-advisor-boundary",
+                "plan-craft-proposal-handoff",
+            }
+            or name == "plan-craft-proposal-before-review-loop"
+        }
+        self.assertEqual(set(expected), contract_names)
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                entry = registry[name]
+                self.assertEqual(kind, entry["kind"])
+                if kind == "requires":
+                    self.assertEqual(
+                        {"kind", "slice", "pattern", "applies_to"},
+                        set(entry),
+                    )
+                    self.assertEqual(slice_name, entry["slice"])
+                    self.assertEqual(pattern, entry["pattern"])
+                else:
+                    self.assertEqual(
+                        {"kind", "before", "after", "applies_to"},
+                        set(entry),
+                    )
+                    self.assertEqual("proposal-start", entry["before"])
+                    self.assertEqual("review-loop-handoff", entry["after"])
+                self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_structural_health_gate_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "structural-health-gate-caller-context-requires-ec2ccc46": (
+                "requires", "structural-health-gate-caller-context", "`caller_context` Data"
+            ),
+            "structural-health-gate-caller-context-requires-d624e872": (
+                "requires", "structural-health-gate-caller-context", "`workflow_family`: `proposal-family`"
+            ),
+            "structural-health-gate-caller-context-requires-4fbc98a7": (
+                "requires", "structural-health-gate-caller-context", "`invocation`: `explicit-public-parent`"
+            ),
+            "structural-health-gate-caller-context-requires-4a432b13": (
+                "requires", "structural-health-gate-caller-context", "context 不成立"
+            ),
+            "structural-health-gate-caller-context-requires-d50aa7cd": (
+                "requires", "structural-health-gate-caller-context", "assessment を開始せず"
+            ),
+            "structural-health-gate-caller-context-requires-78715640": (
+                "requires", "structural-health-gate-caller-context", "`stop-incomplete`"
+            ),
+            "structural-health-gate-caller-context-forbids-3cc1f92b": (
+                "forbids", "structural-health-gate-caller-context", "`producer_context`"
+            ),
+            "structural-health-gate-caller-context-forbids-af4f2954": (
+                "forbids", "structural-health-gate-caller-context", "`return target`"
+            ),
+            "structural-health-gate-caller-context-forbids-c500195c": (
+                "forbids", "structural-health-gate-caller-context", "`next skill`"
+            ),
+            "structural-health-gate-caller-context-forbids-42aaefd9": (
+                "forbids", "structural-health-gate-caller-context", "`origin`"
+            ),
+            "structural-health-gate-boundary-requires-08c3b623": (
+                "requires", "structural-health-gate-boundary", "duplicated source of truth"
+            ),
+            "structural-health-gate-boundary-requires-765af3a3": (
+                "requires",
+                "structural-health-gate-boundary",
+                "明示起動された proposal-family public workflow parent",
+            ),
+            "structural-health-gate-boundary-requires-f08a5bbf": (
+                "requires", "structural-health-gate-boundary", "`location`"
+            ),
+            "structural-health-gate-boundary-requires-89d00b8c": (
+                "requires", "structural-health-gate-boundary", "`non_local_reason`"
+            ),
+            "structural-health-gate-boundary-requires-57c9e9cb": (
+                "requires", "structural-health-gate-boundary", "`predicted_amplification`"
+            ),
+            "structural-health-gate-boundary-requires-2e003c43": (
+                "requires", "structural-health-gate-boundary", "`predicted_churn`"
+            ),
+            "structural-health-gate-boundary-requires-0891a60b": (
+                "requires",
+                "structural-health-gate-boundary",
+                "public workflow parent が最終的な `pass` / `return` / `stop-incomplete` を決める",
+            ),
+            "structural-health-gate-boundary-requires-f63294d0": (
+                "requires", "structural-health-gate-boundary", "成果物を再設計・直接編集しない"
+            ),
+            "structural-health-gate-boundary-requires-2a8ee78f": (
+                "requires",
+                "structural-health-gate-boundary",
+                "長さ、複雑さ、finding 数だけを理由に `return` しない",
+            ),
+            "structural-health-gate-boundary-requires-d19bb5e9": (
+                "requires", "structural-health-gate-boundary", "`insufficient-evidence`"
+            ),
+            "structural-health-gate-boundary-requires-4c89c356": (
+                "requires", "structural-health-gate-boundary", "assessment Data"
+            ),
+            "structural-health-gate-boundary-forbids-21466849": (
+                "forbids", "structural-health-gate-boundary", "gate が最終判断する"
+            ),
+            "structural-health-gate-boundary-forbids-fad0c88b": (
+                "forbids", "structural-health-gate-boundary", "gate が成果物を直接編集する"
+            ),
+            "plan-craft-structural-health-handoff-requires-8b8aab7f": (
+                "requires", "plan-craft-structural-health-handoff", "`structural-health-gate`"
+            ),
+            "plan-craft-structural-health-handoff-requires-945ff3f4": (
+                "requires", "plan-craft-structural-health-handoff", "proposal を再実行"
+            ),
+            "plan-craft-structural-health-handoff-requires-cd8aca82": (
+                "requires", "plan-craft-structural-health-handoff", "再 proposal 後"
+            ),
+            "plan-craft-structural-health-handoff-requires-bdaffd8e": (
+                "requires", "plan-craft-structural-health-handoff", "`stop-incomplete`"
+            ),
+            "plan-craft-structural-health-handoff-requires-e9241f88": (
+                "requires",
+                "plan-craft-structural-health-handoff",
+                "gate の初回 assessment が `insufficient-evidence` の場合は、`return` として proposal を再実行せず、review-loop に進まず、親が未検証事項を添えて `stop-incomplete` を返す",
+            ),
+            "review-loop-structural-boundary-requires-0c775c51": (
+                "requires", "review-loop-structural-boundary", "局所的な構造欠陥を事前解消"
+            ),
+            "review-loop-structural-boundary-requires-212e71a7": (
+                "requires",
+                "review-loop-structural-boundary",
+                "自動で `structural-health-gate` または candidate producer へ逆走しない",
+            ),
+            "review-loop-structural-boundary-requires-55ef9a2e": (
+                "requires", "review-loop-structural-boundary", "`stop-incomplete`"
+            ),
+        }
+        order_expected = {
+            "plan-craft-proposal-before-structural-health-gate": (
+                "proposal-start", "structural-health-gate-start"
+            ),
+            "plan-craft-structural-health-gate-before-review-loop": (
+                "structural-health-gate-start", "review-loop-handoff"
+            ),
+        }
+        selected = {
+            name: entry
+            for name, entry in registry.items()
+            if entry.get("slice") in {
+                "structural-health-gate-boundary",
+                "structural-health-gate-caller-context",
+                "plan-craft-structural-health-handoff",
+                "review-loop-structural-boundary",
+            }
+            or name in order_expected
+        }
+        self.assertEqual(set(expected) | set(order_expected), set(selected))
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": kind,
+                        "slice": slice_name,
+                        "pattern": pattern,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+        for name, (before, after) in order_expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": "order",
+                        "before": before,
+                        "after": after,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+
+    def test_workflow_corpus_registers_structural_health_gate_evals(self) -> None:
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        result_record = corpus.index("\n# 結果記録")
+        headings = (
+            "## EVAL-41: structural defect は proposal へ return",
+            "## EVAL-42: 長いが局所修正可能な candidate は return しない",
+            "## EVAL-43: mandatory evidence 不足では return を確定しない",
+            "## EVAL-44: structural advisor は evidence のみ返す",
+            "## EVAL-45: review-loop 中の非局所的構造欠陥は逆走せず停止",
+            "## EVAL-46: structural-health-gate の internal context 外起動を拒否",
+            "## EVAL-47: proposal-family public workflow の共通 downstream routing",
+        )
+        for heading in headings:
+            with self.subTest(eval=heading):
+                self.assertEqual(1, corpus.count(heading))
+                self.assertLess(corpus.index(heading), result_record)
 
     def test_gunte_contract_registry_owns_worker_and_test_quality_invariants(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
@@ -356,6 +673,84 @@ class V5RepositoryContractsTest(unittest.TestCase):
         for pattern, entry in retired_skill_entries.items():
             with self.subTest(pattern=pattern):
                 self.assertEqual(["claude", "codex"], entry["applies_to"])
+
+    def test_common_downstream_routing_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "public-workflow-routing-requires-cb680296": (
+                "requires", "public-workflow-routing", "`return target` は public workflow parent が所有する"
+            ),
+            "public-workflow-routing-requires-dc53d733": (
+                "requires", "public-workflow-routing", "明示されていない別 workflow へ自動 switch しない"
+            ),
+            "review-loop-proposal-family-caller-requires-88448999": (
+                "requires", "review-loop-proposal-family-caller", "proposal-family public workflow"
+            ),
+            "review-loop-proposal-family-caller-requires-2f49b189": (
+                "requires", "review-loop-proposal-family-caller", "public workflow parent"
+            ),
+            "review-loop-proposal-family-caller-requires-56553866": (
+                "requires", "review-loop-proposal-family-caller", "ユーザー明示の単独 review"
+            ),
+            "review-loop-proposal-family-caller-requires-322f4234": (
+                "requires", "review-loop-proposal-family-caller", "workflow 間も自動で切り替えない"
+            ),
+        }
+        selected = {
+            name: entry
+            for name, entry in registry.items()
+            if entry.get("slice") in {"public-workflow-routing", "review-loop-proposal-family-caller"}
+        }
+        self.assertEqual(set(expected), set(selected))
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                self.assertEqual(
+                    {
+                        "kind": kind,
+                        "slice": slice_name,
+                        "pattern": pattern,
+                        "applies_to": ["claude", "codex"],
+                    },
+                    selected[name],
+                )
+
+    def test_common_downstream_skill_boundaries_are_explicit(self) -> None:
+        proposal = (ROOT / "shared/skill/proposal/SKILL.md").read_text(encoding="utf-8")
+        gate = (ROOT / "shared/skill/structural-health-gate/SKILL.md").read_text(encoding="utf-8")
+        review = (ROOT / "shared/skill/review-loop/SKILL.md").read_text(encoding="utf-8")
+        proposal_metadata = (ROOT / "declarations/codex/skills/proposal/openai.yaml").read_text(encoding="utf-8")
+        gate_metadata = (ROOT / "declarations/codex/skills/structural-health-gate/openai.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("caller-owned parent", proposal)
+        self.assertIn("candidate snapshot", proposal)
+        self.assertIn("stop-incomplete", proposal)
+        self.assertIn("後段工程を選択・起動せず", proposal)
+        self.assertNotIn("review-loop", proposal)
+        self.assertIn("plan-craft", proposal)
+        self.assertIn("plan-craft", proposal_metadata)
+        self.assertIn("stop-incomplete", proposal_metadata)
+        self.assertIn("assessment Data", gate)
+        self.assertIn("明示起動された proposal-family public workflow parent", gate)
+        self.assertIn("caller_context", gate_metadata)
+        self.assertIn("workflow_family: proposal-family", gate_metadata)
+        self.assertIn("invocation: explicit-public-parent", gate_metadata)
+        self.assertIn("reject missing or invalid caller_context before assessment", gate_metadata)
+        for route_name in ("plan-craft", "review-loop"):
+            self.assertNotIn(route_name, gate)
+        self.assertIn("proposal-family public workflow", review)
+        self.assertIn("caller_context", review)
+        self.assertIn("ユーザー明示の単独 review", review)
+        self.assertIn("workflow 間も自動で切り替えない", review)
+        self.assertNotIn("review-loop", proposal_metadata)
+        self.assertNotIn("plan-craft", gate_metadata)
+        self.assertNotIn("review-loop", gate_metadata)
+
+        corpus = (ROOT / "evals/workflow-decision-corpus.md").read_text(encoding="utf-8")
+        human_variant = corpus[corpus.index("2. **future explicit human-dialogue public workflow**"):corpus.index("3. **no implicit switch**")]
+        self.assertIn("candidate/stop-incomplete Data contract", human_variant)
+        self.assertIn("current `proposal` とは別の", human_variant)
+        self.assertIn("current `proposal` は起動しない", human_variant)
+        self.assertIn("`proposal` 起動がない", human_variant)
 
     def test_final_writing_remediation_registry_has_bounded_route_inventory(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]

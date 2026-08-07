@@ -2957,6 +2957,199 @@ baseline から名前付き差分だけを override し、case 14〜18 は該当
 - [ ] case 19 は PR 有無で cleanup 分岐を増やしていない。
 - [ ] semantic な closeout 判断を固定 decision table や散文 substring test に置き換えていない。
 
+## EVAL-41: structural defect は proposal へ return
+
+**目的**
+
+candidate に局所修正で閉じない構造欠陥がある場合、review-loop へ進めず、一度だけ proposal へ戻せることを確認する。
+
+**入力**
+
+次の二段階入力を同じ case で順に与える。各 snapshot の identity と、proposal / gate / review-loop の起動 trace を記録する。
+
+1. `candidate_snapshot=S0`: 同じ state の定義が requirements と design に別々の source of truth として存在し、両者で
+   priority と責務が矛盾する。片方だけを直すと AC と verification が不一致になり、後段では例外的な stop 条件が増える。
+2. 親が最初の `return` を決めた後、proposal が返す `candidate_snapshot=S1`: S0 と異なる identity を持つが、責務の分割位置を
+   変えただけで duplicated source of truth と AC / verification mismatch が残り、局所修正では閉じない。
+
+**期待する判断**
+
+gate は一つの structural defect に finding を統合し、`location`、`non_local_reason`、`predicted_amplification`、
+`predicted_churn` を事実と推論に分けて返す。S0 では親が `return` を決め、review-loop を起動せず proposal を1回だけ
+再実行する。S1 の gate 結果も構造不健全なので、親は `stop-incomplete` を返し、proposal、gate、review-loop を追加起動しない。
+
+**手動評価項目**
+
+- [ ] duplicated source of truth と requirements / design / AC / verification の ripple が同じ原因として説明されている。
+- [ ] local fix だけでは閉じない理由と、review または実装で予測される churn が具体的である。
+- [ ] gate は candidate を編集・再設計せず、親が `return` を決めている。
+- [ ] S0 と S1 の異なる snapshot identity、および `proposal(S0) → gate(S0) → proposal(S1) → gate(S1)` の trace がある。
+- [ ] S1 の評価後は `stop-incomplete` となり、proposal / gate / review-loop の追加起動がない。
+
+## EVAL-42: 長いが局所修正可能な candidate は return しない
+
+**目的**
+
+長さ、複雑さ、finding 数を structural defect と誤認せず、局所修正可能な candidate を review-loop 前に差し戻さないことを
+確認する。
+
+**入力**
+
+長い candidate に多数の表記揺れ、説明重複、個別 AC の明確化候補がある。ただし source of truth、責務、state、priority は
+一貫し、各 finding は他の要件や verification を変更せず該当箇所だけで修正できる。
+
+**期待する判断**
+
+gate は finding 数や文章量だけで `return` evidence を作らない。親は structural gate を `pass` と判断でき、密度、
+実装可能性、検証可能性の review goal がある場合だけ review-loop へ進める。
+
+**手動評価項目**
+
+- [ ] 局所修正可能性を因果で確認し、長さ・複雑さ・件数を閾値にしていない。
+- [ ] gate の `pass` を成果物の accept や review-loop の省略理由にしていない。
+- [ ] review-loop が扱う局所的な品質課題と gate の構造判断を分離している。
+
+## EVAL-43: mandatory evidence 不足では return を確定しない
+
+**目的**
+
+構造欠陥らしい懸念があっても mandatory evidence が欠ける場合、推測で proposal への `return` を確定しないことを確認する。
+
+**入力**
+
+candidate の state 定義が既存仕様と重複している可能性があるが、参照すべき repository source を取得できない。
+`location` は候補内で示せる一方、`non_local_reason` と予測される amplification / churn は裏付けられない。
+
+**期待する判断**
+
+gate は欠けた field と source を `insufficient-evidence` として返す。advisor の推測を補完に使わず、親は `return` を確定せず
+`stop-incomplete` と未検証事項を返す。再 proposal 後の evidence 不足でも循環しない。
+
+**手動評価項目**
+
+- [ ] 4つの mandatory evidence field の充足を個別に確認している。
+- [ ] evidence 不足を structural defect または健全性の確定へ読み替えていない。
+- [ ] proposal、gate、review-loop の無限循環を作らず `stop-incomplete` になっている。
+
+## EVAL-44: structural advisor は evidence のみ返す
+
+**目的**
+
+reviewer / advisor の evidence と、gate を実行する親の最終判断を分離できることを確認する。
+
+**入力**
+
+advisor が duplicated responsibility の location と ripple を報告し、candidate の差し戻しと再設計案も提案する。
+別 source は局所修正で閉じる可能性を示しており、親の照合が必要である。
+
+**期待する判断**
+
+advisor の location と因果は非拘束 evidence として記録するが、差し戻し判断と再設計案を自動採用しない。gate は成果物を
+直接編集せず assessment Data を返し、親が一次情報に照らして `pass` / `return` / `stop-incomplete` を決める。
+
+**手動評価項目**
+
+- [ ] advisor は evidence を返すだけで、candidate の採否、編集、工程の終了を確定していない。
+- [ ] 親が conflicting evidence を照合し、最終判断と理由を記録している。
+- [ ] review-loop で構造欠陥が判明した場合は `stop-incomplete` とし、gate / proposal へ自動逆走していない。
+
+## EVAL-45: review-loop 中の非局所的構造欠陥は逆走せず停止
+
+**目的**
+
+gate 通過後の review-loop で初めて非局所的構造欠陥が判明しても、自動で gate または proposal へ逆走しないことを確認する。
+
+**入力**
+
+gate が利用できた source では局所的に健全と評価された `candidate_snapshot=R0` を review-loop へ渡す。reviewer が追加で
+参照できた既存 verification contract により、requirements と design の責務分割を局所修正すると複数 AC が成立しなくなる
+非局所的構造欠陥を初めて発見する。review-loop 開始後の agent / skill 起動 trace を記録する。
+
+**期待する判断**
+
+review-loop は location、局所修正で閉じない理由、予測される amplification / churn を未解決 finding として記録し、
+`termination: stop-incomplete` で終了する。成果物を構造的に修正せず、structural-health-gate と proposal を起動しない。
+
+**手動評価項目**
+
+- [ ] gate 通過後に初めて得た source と、非局所性の因果が finding に記録されている。
+- [ ] finding は未解決のまま `stop-incomplete` に結び付いている。
+- [ ] review-loop 中および終了時の trace に gate / proposal の起動がない。
+- [ ] 自動修正、再設計、通常 round への継続、final trim が行われていない。
+
+## EVAL-46: structural-health-gate の internal context 外起動を拒否
+
+**目的**
+
+structural-health-gate が明示起動された proposal-family public workflow parent の internal context に限定され、外部要求から汎用評価器として
+流用されないことを確認する。gate は共通の構造化 `caller_context`（`workflow_family=proposal-family` と
+`invocation=explicit-public-parent`）だけで context を検証し、producer や後段の identity は受け取らない。
+
+**独立 variant**
+
+1. **ユーザー直接起動**: ユーザーが `$structural-health-gate` を名指しし、`caller_context` を渡さず candidate の評価と修正を要求する。
+2. **proposal-family 外からの流用**: `caller_context` の field/value が不一致、または proposal-family context が明示されない別 workflow の親が既存 artifact を gate で評価し、結果に応じて後段 skill を起動するよう要求する。
+
+各 variant は独立した新鮮な context で実行し、resource identity、編集 Action、agent / skill 起動 trace を記録する。
+
+**期待する判断**
+
+どちらも `context 不成立` Data を返し、assessment を開始しない。親は未成立理由を添えて `stop-incomplete` とし、
+candidate / artifact を編集せず、advisor、candidate producer、review-loop、その他の後段を起動しない。汎用 gate としての代替経路を
+追加せず、必要なら proposal-family public workflow の明示要求として改めて依頼する境界だけを示す。
+
+**手動評価項目**
+
+- [ ] 直接起動 variant は `caller_context` 不成立を返し、candidate の structural assessment や finding を生成していない。
+- [ ] proposal-family public workflow 外 variant は artifact を評価・編集せず、呼び出し元 workflow へ gate 結果を返していない。
+- [ ] 両 variant は context 不成立から `stop-incomplete` で停止し、別 route へ切り替えていない。
+- [ ] 両 variant で advisor / proposal / review-loop / 後段 skill の起動 trace がない。
+- [ ] 入力 resource の before/after identity が一致し、外部副作用がない。
+
+## EVAL-47: proposal-family public workflow の共通 downstream routing
+
+**目的**
+
+candidate producer、structural-health-gate、review-loop の後段責務を、現在の plan-craft と将来の明示された
+human-dialogue public workflow で同じ caller-owned boundary として扱い、両者を暗黙に混ぜないことを確認する。
+
+**独立 variant**
+
+各 variant は独立した新鮮な context で実行し、candidate snapshot identity、assessment / finding Data、return target、
+起動 trace、termination、禁止動作を記録する。将来経路は具体的な skill や human authority schema を実装せず、context の
+種類と親の routing 判断だけを入力にする。current と future は同じ generic `caller_context` を gate input に渡すが、
+`producer_context=human-dialogue` は public workflow parent が保持する Data であり、gate input には含めない。
+
+1. **current plan-craft**: candidate producer が `S0` を返し、親は generic `caller_context` を gate に渡す。gate が
+   `assessment=return` 相当の evidence を返す。親は
+   return target を producer（現行では proposal）へ戻し、review-loop を起動しない。再実行を自動で増やさず、必要なら
+   `stop-incomplete` を返す。
+2. **future explicit human-dialogue public workflow**: public workflow parent が `producer_context=human-dialogue` を保持し、current `proposal` とは別の
+   producer が同じ candidate/stop-incomplete Data contract と generic `caller_context` gate input contract を使う。`producer_context` は gate input には含めない。明示された public workflow parent が
+   return target を自身の producer へ決めるが、current `proposal` は起動しない。具体的な dialogue skill、authority、round を
+   起動・実装せず、trace に `proposal` 起動がないこと、gate が producer 名や downstream skill を選択しないことを確認する。
+3. **no implicit switch**: human-dialogue context の明示がない plan-craft では、plan-craft が別 workflow へ switch せず、
+   current route の caller-owned parent として停止または既存 route を継続する。
+4. **review-loop caller contract**: current plan-craft と future human-dialogue の両方で、明示された proposal-family public
+   workflow parent が同じ immutable snapshot / review goal / caller_context 入力契約を渡す。review-loop は gate または
+   candidate producer を自動起動せず、単独のユーザー明示 review も引き続き受け付ける。
+
+**期待する判断**
+
+gate の返却は evidence / assessment Data に限定され、origin、return target、next skill を含まない。producer_context は
+public workflow parent の Data に留まり、gate input へ渡さない。return target と
+後段の起動は public workflow parent の Action とし、proposal-family 間の implicit switch は発生しない。current route と
+future route で candidate / stop-incomplete の producer boundary、review-loop の caller contract、禁止動作が一致する。
+
+**手動評価項目**
+
+- [ ] variant 1 で gate evidence を親が proposal へ返し、gate / producer が review-loop を直接起動していない。
+- [ ] variant 2 の public workflow Data に `producer_context=human-dialogue` と candidate/stop-incomplete Data contract があり、gate input には generic `caller_context` だけを渡し、current `proposal` は起動していない。
+- [ ] variant 2 の trace に `proposal` 起動がなく、同じ gate evidence を親が将来 producer へ返せるが、具体的な dialogue skill、authority、round を起動・実装していない。
+- [ ] variant 3 で明示されていない human-dialogue へ switch せず、current plan-craft の route / termination を保っている。
+- [ ] variant 4 で両 public-parent context の review-loop 入力契約と trace が一致し、明示単独 review も維持している。
+- [ ] 全 variant で gate に origin / return target / next skill の判断がなく、review-loop / producer への自動逆走もない。
+
 # 結果記録
 
 case ごとに次の template を複製して記録する。agent version は agent 定義、model、設定の識別子を記録し、
