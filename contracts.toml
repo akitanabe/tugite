@@ -559,3 +559,123 @@ kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
 applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-bee5ed99]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "candidate snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-0a682690]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "stop-incomplete"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-17949de0]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "adopted"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-d9ee9138]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "rejected"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-f1ade5d2]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "unresolved"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-c906a1d6]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "`review-loop` を起動しない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-ad4ffebc]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "advisor insight を自動採用せず"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-3f981ba8]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-66e9410e]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "具体的な品質向上が残る間だけ bounded"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-boundary-requires-8e359464]
+kind = "requires"
+slice = "proposal-boundary"
+pattern = "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-b920a922]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "read-only advisor"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-3d8191da]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "candidate を直接修正せず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-2d3924e4]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "第二の planner にならない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-af585f71]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "後段を起動せず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-8bb2deb8]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "採否を決めず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-boundary-requires-e875fc13]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "最終受入を行いません"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-4fc3816c]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "candidate snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-177c5e05]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "review-loop を起動しない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-handoff-requires-c16b208c]
+kind = "requires"
+slice = "plan-craft-proposal-handoff"
+pattern = "`review-loop` へ渡す"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-proposal-before-review-loop]
+kind = "order"
+before = "proposal-start"
+after = "review-loop-handoff"
+applies_to = ["claude", "codex"]

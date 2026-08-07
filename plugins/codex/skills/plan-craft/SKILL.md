@@ -21,6 +21,21 @@ description: >-
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
 - `review` の実行、成果物の確定候補、必要な問いの提示までを担い、受け入れと後続 Action は親へ残す。
 
+## proposal の前段
+
+起草は、同じ親 context 内の internal `proposal` を前段として開始する。`proposal` は要求、repository、既存仕様を
+調査して candidate を作り、必要なら read-only `plan-quality-advisor` の insight を受け取る。advisor insight は
+非拘束 Data であり、planner は一次情報と要求に照らして `adopted` / `rejected` / `unresolved` を裁定する。
+自動採用せず、新仕様、scope、AC、ユーザー嗜好を推測しない。具体的な品質向上が残る間だけ bounded に改善し、
+人間の判断が必要、または安全な candidate を作れない場合は `stop-incomplete` と必要な判断・evidence を返す。
+
+`proposal` が返した `candidate snapshot` は内容を識別できる不変 Data として後段へ渡す。`stop-incomplete` の場合は
+plan-craft がそこで停止し、review-loop を起動しない。
+
+candidate snapshot を受け取った場合だけ、必要な review goal と
+ともに既存の `review-loop` へ渡す。この順序（proposal → review-loop）を飛ばさず、review-loop の採否・受け入れ・
+後続 Action は既存の責務境界に従う。
+
 ## 成果物
 
 成果物は依頼に適した自由形式の文書であり、次の最小要素を含める。

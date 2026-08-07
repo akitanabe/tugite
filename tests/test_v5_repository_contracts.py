@@ -26,8 +26,11 @@ REVIEWERS_WITHOUT_BASH = {
     "plan-adversarial-reviewer",
     "writing-principles-reviewer",
 }
+ADVISORS = {"plan-quality-advisor"}
 REVIEWERS = REVIEWERS_WITH_BASH | REVIEWERS_WITHOUT_BASH
-AGENTS = WORKERS | REVIEWERS
+READ_ONLY_AGENTS = REVIEWERS | ADVISORS
+READ_ONLY_WITHOUT_BASH = REVIEWERS_WITHOUT_BASH | ADVISORS
+AGENTS = WORKERS | READ_ONLY_AGENTS
 RETIRED = {
     "expert-selection-reviewer",
     "review-patch-refactorer",
@@ -36,6 +39,7 @@ RETIRED = {
 WORKFLOW_SKILLS = {
     "impl-lead",
     "plan-craft",
+    "proposal",
     "review-loop",
     "work-unit-design",
 }
@@ -54,7 +58,7 @@ RETIRED_IMPLEMENTATION_PATHS = (
     "tests/build_plugin_assets_test_support.py",
 )
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
-INTERNAL_CLAUDE_SKILLS = {"work-unit-design"}
+INTERNAL_CLAUDE_SKILLS = {"proposal", "work-unit-design"}
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -172,7 +176,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
             f"declarations/codex/skills/{name}/openai.yaml" for name in WORKFLOW_SKILLS
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
-        self.assertEqual("5.0.0", config["project"]["version"])
+        self.assertEqual("5.1.0", config["project"]["version"])
 
     def test_gunte_owns_workflow_skills_and_codex_metadata(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
@@ -234,7 +238,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertLess(corpus.index(eval_heading), corpus.index("\n# 結果記録"))
 
     def test_codex_skill_metadata_has_one_unambiguous_boolean_policy_scalar(self) -> None:
-        implicit_skills = {"review-loop", "work-unit-design"}
+        implicit_skills = {"proposal", "review-loop", "work-unit-design"}
         for name in WORKFLOW_SKILLS:
             with self.subTest(name=name):
                 source = ROOT / f"declarations/codex/skills/{name}/openai.yaml"
@@ -271,13 +275,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 else:
                     self.assertEqual(0, self._key_count(lines, "user-invocable"), path)
 
-    def test_all_reviewers_are_read_only_with_the_established_claude_tool_split(self) -> None:
-        for name in REVIEWERS:
+    def test_read_only_agents_have_the_established_claude_tool_split(self) -> None:
+        for name in READ_ONLY_AGENTS:
             with self.subTest(name=name):
                 source = (ROOT / f"shared/agents/{name}.md").read_text(encoding="utf-8")
                 frontmatter = tomllib.loads(source.split("+++", 2)[1])
                 self.assertEqual("read-only", frontmatter["codex"]["sandbox_mode"])
-                if name in REVIEWERS_WITH_BASH:
+                if name not in READ_ONLY_WITHOUT_BASH:
                     self.assertCountEqual(
                         ["Read", "Grep", "Glob", "Bash"],
                         frontmatter["claude"]["tools"],
@@ -303,6 +307,141 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 self.assertNotIn("sandbox_mode", frontmatter["codex"])
                 self.assertNotIn("tools", frontmatter["claude"])
                 self.assertNotIn("disallowed_tools", frontmatter["claude"])
+
+    def test_proposal_advisor_and_handoff_contract_registry_is_exact(self) -> None:
+        registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
+        expected = {
+            "proposal-boundary-requires-bee5ed99": (
+                "requires",
+                "proposal-boundary",
+                "candidate snapshot",
+            ),
+            "proposal-boundary-requires-0a682690": (
+                "requires",
+                "proposal-boundary",
+                "stop-incomplete",
+            ),
+            "proposal-boundary-requires-17949de0": (
+                "requires",
+                "proposal-boundary",
+                "adopted",
+            ),
+            "proposal-boundary-requires-d9ee9138": (
+                "requires",
+                "proposal-boundary",
+                "rejected",
+            ),
+            "proposal-boundary-requires-f1ade5d2": (
+                "requires",
+                "proposal-boundary",
+                "unresolved",
+            ),
+            "proposal-boundary-requires-c906a1d6": (
+                "requires",
+                "proposal-boundary",
+                "`review-loop` を起動しない",
+            ),
+            "proposal-boundary-requires-ad4ffebc": (
+                "requires",
+                "proposal-boundary",
+                "advisor insight を自動採用せず",
+            ),
+            "proposal-boundary-requires-3f981ba8": (
+                "requires",
+                "proposal-boundary",
+                "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する",
+            ),
+            "proposal-boundary-requires-66e9410e": (
+                "requires",
+                "proposal-boundary",
+                "具体的な品質向上が残る間だけ bounded",
+            ),
+            "proposal-boundary-requires-8e359464": (
+                "requires",
+                "proposal-boundary",
+                "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。",
+            ),
+            "plan-quality-advisor-boundary-requires-b920a922": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "read-only advisor",
+            ),
+            "plan-quality-advisor-boundary-requires-3d8191da": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "candidate を直接修正せず",
+            ),
+            "plan-quality-advisor-boundary-requires-2d3924e4": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "第二の planner にならない",
+            ),
+            "plan-quality-advisor-boundary-requires-af585f71": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "後段を起動せず",
+            ),
+            "plan-quality-advisor-boundary-requires-8bb2deb8": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "採否を決めず",
+            ),
+            "plan-quality-advisor-boundary-requires-e875fc13": (
+                "requires",
+                "plan-quality-advisor-boundary",
+                "最終受入を行いません",
+            ),
+            "plan-craft-proposal-handoff-requires-4fc3816c": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "candidate snapshot",
+            ),
+            "plan-craft-proposal-handoff-requires-177c5e05": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "review-loop を起動しない",
+            ),
+            "plan-craft-proposal-handoff-requires-c16b208c": (
+                "requires",
+                "plan-craft-proposal-handoff",
+                "`review-loop` へ渡す",
+            ),
+            "plan-craft-proposal-before-review-loop": (
+                "order",
+                None,
+                None,
+            ),
+        }
+        contract_names = {
+            name
+            for name, entry in registry.items()
+            if entry.get("slice") in {
+                "proposal-boundary",
+                "plan-quality-advisor-boundary",
+                "plan-craft-proposal-handoff",
+            }
+            or name == "plan-craft-proposal-before-review-loop"
+        }
+        self.assertEqual(set(expected), contract_names)
+        for name, (kind, slice_name, pattern) in expected.items():
+            with self.subTest(contract=name):
+                entry = registry[name]
+                self.assertEqual(kind, entry["kind"])
+                if kind == "requires":
+                    self.assertEqual(
+                        {"kind", "slice", "pattern", "applies_to"},
+                        set(entry),
+                    )
+                    self.assertEqual(slice_name, entry["slice"])
+                    self.assertEqual(pattern, entry["pattern"])
+                else:
+                    self.assertEqual(
+                        {"kind", "before", "after", "applies_to"},
+                        set(entry),
+                    )
+                    self.assertEqual("proposal-start", entry["before"])
+                    self.assertEqual("review-loop-handoff", entry["after"])
+                self.assertEqual(["claude", "codex"], entry["applies_to"])
 
     def test_gunte_contract_registry_owns_worker_and_test_quality_invariants(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
@@ -430,7 +569,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
-        self.assertEqual("5.0.0", version)
+        self.assertEqual("5.1.0", version)
         self.assertEqual(
             version,
             json.loads((ROOT / "declarations/claude/plugin.json").read_text(encoding="utf-8"))["version"],

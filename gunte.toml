@@ -2,7 +2,7 @@ spec_version = 1
 
 [project]
 id = "tugite"
-version = "5.0.0"
+version = "5.1.0"
 
 [sources]
 files = [
@@ -11,6 +11,7 @@ files = [
   "shared/agents/implementer.md",
   "shared/agents/over-engineering-reviewer.md",
   "shared/agents/plan-adversarial-reviewer.md",
+  "shared/agents/plan-quality-advisor.md",
   "shared/agents/responsibility-boundary-reviewer.md",
   "shared/agents/security-side-effect-reviewer.md",
   "shared/agents/senior-implementer.md",
@@ -18,12 +19,14 @@ files = [
   "shared/agents/writing-principles-reviewer.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/plan-craft/SKILL.md",
+  "shared/skill/proposal/SKILL.md",
   "shared/skill/review-loop/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
   "declarations/claude/plugin.json",
   "declarations/codex/plugin.json",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-craft/openai.yaml",
+  "declarations/codex/skills/proposal/openai.yaml",
   "declarations/codex/skills/review-loop/openai.yaml",
   "declarations/codex/skills/work-unit-design/openai.yaml",
   "shared/VERSION",

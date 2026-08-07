@@ -80,6 +80,7 @@ required_agents=(
   writing-principles-reviewer.toml
   over-engineering-reviewer.toml
   plan-adversarial-reviewer.toml
+  plan-quality-advisor.toml
   security-side-effect-reviewer.toml
 )
 retired_agents=(
@@ -196,6 +197,7 @@ Installed agents:
   writing-principles-reviewer
   over-engineering-reviewer
   plan-adversarial-reviewer
+  plan-quality-advisor
   security-side-effect-reviewer
 
 IMPORTANT:
