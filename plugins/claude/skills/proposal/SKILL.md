@@ -35,8 +35,6 @@ verification、残存 risk を含む candidate を起草する。candidate は�
 必要な場合だけ proposal の planner は read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
 advisor の返す insight は非拘束の Data であり、planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する。
 
-この Skill は `review-loop` を起動しない。
-
 - `adopted`: 根拠があり、candidate の具体的な品質向上になるため採用した insight。
 - `rejected`: 一次情報に反する、既存の制約で不要、または scope 外のため採用しない insight。
 - `unresolved`: 根拠または人間の判断が不足し、採否を決められない insight。
@@ -53,4 +51,4 @@ candidate の改善は、要求と一次情報から具体的な品質向上が�
 改善を終えた通常の返却は、`candidate_snapshot`、`adoption_ledger`（`adopted` / `rejected` /
 `unresolved`）、`assumptions`、`blocking_gaps`、`residual_risks`、`status` を持つ Data である。安全な
 candidate を作れない返却では `status: stop-incomplete` と未完了範囲、必要な判断、evidence、未検証事項を返す。
-いずれも後段の起動や受け入れを主張せず、caller へ返して終了する。
+いずれも後段工程を起動せず、受け入れを主張せず、caller へ返して終了する。

@@ -336,10 +336,10 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 "proposal-boundary",
                 "unresolved",
             ),
-            "proposal-boundary-requires-c906a1d6": (
+            "proposal-boundary-requires-c8d57d13": (
                 "requires",
                 "proposal-boundary",
-                "`review-loop` を起動しない",
+                "後段工程を起動せず",
             ),
             "proposal-boundary-requires-ad4ffebc": (
                 "requires",

@@ -590,10 +590,10 @@ slice = "proposal-boundary"
 pattern = "unresolved"
 applies_to = ["claude", "codex"]
 
-[contracts.proposal-boundary-requires-c906a1d6]
+[contracts.proposal-boundary-requires-c8d57d13]
 kind = "requires"
 slice = "proposal-boundary"
-pattern = "`review-loop` を起動しない"
+pattern = "後段工程を起動せず"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-boundary-requires-ad4ffebc]
