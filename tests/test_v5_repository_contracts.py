@@ -29,7 +29,7 @@ REVIEWERS_WITHOUT_BASH = {
 ADVISORS = {"plan-quality-advisor"}
 REVIEWERS = REVIEWERS_WITH_BASH | REVIEWERS_WITHOUT_BASH
 READ_ONLY_AGENTS = REVIEWERS | ADVISORS
-READ_ONLY_WITHOUT_BASH = REVIEWERS_WITHOUT_BASH | ADVISORS
+READ_ONLY_WITHOUT_BASH = REVIEWERS_WITHOUT_BASH
 AGENTS = WORKERS | READ_ONLY_AGENTS
 RETIRED = {
     "expert-selection-reviewer",
@@ -252,6 +252,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     source,
                 )
 
+    def test_codex_plugin_default_prompts_expose_public_review_loop(self) -> None:
+        manifest = json.loads((ROOT / "declarations/codex/plugin.json").read_text(encoding="utf-8"))
+        self.assertIn(
+            "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+            manifest["interface"]["defaultPrompt"],
+        )
+
     def test_claude_skill_frontmatter_has_bounded_invocation_policy(self) -> None:
         for name in WORKFLOW_SKILLS:
             with self.subTest(name=name):
@@ -302,6 +309,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 self.assertNotIn("sandbox_mode", frontmatter["codex"])
                 self.assertNotIn("tools", frontmatter["claude"])
                 self.assertNotIn("disallowed_tools", frontmatter["claude"])
+
+    def test_plan_quality_advisor_uses_opus_high_and_keeps_codex_read_only(self) -> None:
+        source = (ROOT / "shared/agents/plan-quality-advisor.md").read_text(encoding="utf-8")
+        frontmatter = tomllib.loads(source.split("+++", 2)[1])
+        self.assertEqual("opus", frontmatter["claude"]["model"])
+        self.assertEqual("high", frontmatter["claude"]["effort"])
+        self.assertEqual("read-only", frontmatter["codex"]["sandbox_mode"])
 
     def test_candidate_producer_and_handoff_contract_registry_is_exact(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]

@@ -1,10 +1,10 @@
 ---
 name: "plan-quality-advisor"
 description: "起草中の計画 candidate を read-only で観察し、要求・設計・AC・verificationの対応、scope・責務・制約の境界、推測・欠落・重複・判断密度・局所修正churnの具体的な insight Data だけを返すadvisor。"
-model: sonnet
+model: opus
 effort: high
-tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit
+tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
