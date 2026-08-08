@@ -42,6 +42,19 @@ planner は一次情報（要求原文、repository、既存仕様）を調査�
 verification、残存 risk を含む candidate を起草する。candidate は同じ内容を識別できる `candidate snapshot`
 として保持する。
 
+## necessity-kernel v1 の parent mapping
+
+candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の
+`判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。reference の不足、identity 不一致、
+読み取り失敗があれば推測せず `stop-incomplete` へ返し、advisor は plugin 相対 path を解決しない。
+
+候補 Claim の必要性は既存の判定基準に含めた Task Contract と Deletion Test で観察する。
+Claim は finding / insight 本文ではなく、candidate に追加・維持・変更・除去・検証・調査する obligation の候補
+であり、必要性の根拠を既存の observation / evidence から追跡する。`necessary` / `unnecessary` /
+`indeterminate` を新しい返却 field にせず、親は下記の adoption ledger の語彙へ写像する。候補を更新した後は
+更新された snapshot で再判定し、互いを witness とする同時削除を認めない。必要性分類は既存語彙へ写像し、新verdict fieldではない。round budget / termination へ直結させない。`structural-health-gate` の意味は
+この mapping の対象外である。
+
 必要な場合だけ proposal の planner は read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
 advisor の返す insight は非拘束の Data であり、planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する。
 

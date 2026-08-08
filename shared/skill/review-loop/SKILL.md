@@ -80,6 +80,19 @@ proposal-family public workflow の親から受け取る candidate は、局所�
 reviewer には対象 snapshot、要求と判定基準、goal、直前までの台帳、必要な周辺 context を渡す。reviewer の
 出力は事実・evidence・懸念・提案であり、仕様の追加、採用、却下、保留、成果物の書き戻しを含めない。
 
+## necessity-kernel v1 の parent mapping
+
+reviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または
+`必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。
+reference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。
+
+reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
+場合、親は既存の判定基準に含めた Task Contract と Deletion Test を一つの snapshot と一つの
+Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の
+`採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
+`stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または
+termination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。
+
 ## round と実行 Data
 
 1 round は、`snapshot 固定 → review goal に基づくレビュー → 親の finding 裁定 → 採用修正 → verification`

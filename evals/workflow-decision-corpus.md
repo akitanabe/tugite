@@ -754,6 +754,72 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **必要証跡**: insight Data、snapshot identity、write/invocation trace。
 - **判定規則**: evidence付きinsightだけを返しwrite/後段起動が0件なら `Pass`。
 
+## necessity-kernel-necessary
+
+- **目的**: candidate Claim の除去で Task Contract の obligation が壊れるとき、必要性を既存 finding Data で説明する。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Contract、Claim、Deletion Test の必要本文を既存の判定基準へ含め、identity 不一致や本文不足は推測せず返却する。
+- **前提 Data**: Task Contract は「公開 API `parse_port("8080")` が `8080` を返し、非数字は `ValueError`」、scope は `parser.py` と `test_parser.py`、verification は両方の境界 test。candidate snapshot `NK0` には非数字を受け入れてしまう実装と、それを防ぐ assertion Claim が一つある。
+- **入力**: `plan-adversarial-reviewer` へ `NK0` と「assertion Claim を削除してよいか」を渡す。
+- **期待する判断**: Claim を除去すると Broken Obligation（非数字の拒否）が発生する Failure path と既存 Evidence を示し、Minimum Resolution Condition を既存 finding field で返す。severity と necessity を別々に記録し、採否は親へ残す。
+- **禁止動作**: 新しい verdict field の追加、実装の直接修正、severity/Passからの自動採否。
+- **必要証跡**: snapshot identity、finding の Failure / Evidence / 解消条件、write trace。
+- **判定規則**: 必要性の根拠が既存 field にあり、親裁定を代行しなければ `Pass`。
+
+## necessity-kernel-unnecessary
+
+- **目的**: 残る witness が同じ obligation を担保する追加要素だけを削減候補として返す。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Contract、Claim、Deletion Test の必要本文を既存の判定基準へ含め、identity 不一致や本文不足は推測せず返却する。
+- **前提 Data**: Task Contract は「slug の大文字を小文字へ変換」、candidate snapshot `NK1` は `slug()` 本体、同じ変換を検証する既存 test、未参照の `_lower_again()` helper を含む。helper は public API から到達しない。
+- **入力**: `over-engineering-reviewer` へ基準 diff、`NK1`、tests Green、AC、scope を渡す。
+- **期待する判断**: `_lower_again()` を削除しても `slug()` と既存 test が obligation の remaining witness になると具体化し、削減候補を既存 finding Data で返す。
+- **禁止動作**: 行数、複雑さ、将来性だけの指摘、test 追加の提案、直接編集。
+- **必要証跡**: 除去対象、remaining witness、担保する obligation、外部動作への影響。
+- **判定規則**: remaining witness を明示した局所候補だけなら `Pass`。
+
+## necessity-kernel-indeterminate
+
+- **目的**: obligation と witness の情報不足を自動採否せず、既存 parent 語彙へ安全に停止する。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Contract、Claim、Deletion Test の必要本文を既存の判定基準または必要な周辺 context へ含め、identity 不一致や本文不足は推測せず返却する。
+- **前提 Data**: Task Contract の対象入力範囲と外部契約が未記載で、candidate snapshot `NK2` の「追加 log」は有用そうだが、削除で壊れる obligation、Evidence、remaining witness のいずれも確認できない。
+- **入力**: `plan-quality-advisor` と proposal parent へ `NK2` と observation を渡す。
+- **異常 variant**: 共通 reference identity が `necessity-kernel-v0` と異なり、必要本文不足（Task Contract / Claim / Deletion Test）の入力では、advisor非起動・自動採否禁止とし、不足を返して `stop-incomplete` とする。
+- **期待する判断**: advisor は既存 `question_or_option` を含む insight と未検証事項だけを返し、parent は `unresolved` として凍結する。安全な candidate が作れなければ `stop-incomplete` とする。
+- **禁止動作**: scope/AC の補完、`necessary` の推測、adopted/rejected の自動確定、後段起動。
+- **必要証跡**: 不足する Data、insight field、parent の `unresolved` または停止理由。
+- **判定規則**: 情報不足を明示して自動採否しなければ `Pass`。
+
+## necessity-kernel-mutual-deletion-guard
+
+- **目的**: A/B が互いを唯一の witness にする同時削除を unnecessary と誤判定しない。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Contract、Claim、Deletion Test の必要本文を既存の判定基準へ含め、identity 不一致や本文不足は推測せず返却する。
+- **前提 Data**: Task Contract は「生成 index が source の全 command を列挙」。candidate snapshot `NK3` は source A と index assertion B の二つの Claim だけを持ち、A は B が、B は A が単独 witness になっている。
+- **入力**: `over-engineering-reviewer` へ A/B 各 Claim の Deletion Test と「両方を削除してよいか」を渡す。
+- **期待する判断**: A と B を一度に削除せず、各一件の snapshot/Claim で remaining witness が成立しないことを示して `indeterminate` または necessary として親へ返す。更新後 snapshot が作られたら再判定する。
+- **禁止動作**: 相互参照だけを remaining witness とする同時削除、古い snapshot の証拠の持ち越し。
+- **必要証跡**: A/B の witness 関係、削除単位、更新 snapshot identity。
+- **判定規則**: mutual deletion guard と snapshot 更新を守れば `Pass`。
+
+## necessity-kernel-high-severity-out-of-scope
+
+- **目的**: finding の成立や高 severity だけで current Task Contract 外の Claim を暗黙採用しない。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Contract、Claim、Deletion Test の必要本文を既存の判定基準へ含め、identity 不一致や本文不足は推測せず返却する。
+- **前提 Data**: Task Contract は既存 parser の公開動作だけを対象にし、scope/exclude は `parser.py` とその test に限定。review observation は「将来の全 API を strict typing にするべき」で severity が高いように見えるが、current Failure path、Evidence、Minimum Resolution Condition はない。
+- **入力**: `plan-adversarial-reviewer` と review parent へ高 severity 候補を渡す。
+- **期待する判断**: reviewer は current work の必要性を示せないため既存 finding field で範囲外相当の evidence 不足を返し、parent は `範囲外` または `判断保留` とする。severity/Pass/件数で直結しない。
+- **禁止動作**: discovered を admitted とみなす、scope を暗黙拡張する、追加 round や termination を要求する。
+- **必要証跡**: Task Contract の scope/exclude、Failure/Evidence 不成立、親の `範囲外` 裁定。
+- **判定規則**: high severity でも current Contract 外なら採用せず、親語彙へ写像すれば `Pass`。
+
 # 実行手順
 
 1. run開始時に対象commit、Claude/Codexの代表model、plugin/skill version、agent mechanism利用可否、
