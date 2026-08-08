@@ -76,6 +76,28 @@ EXPECTED_PLUGIN_KEYWORDS = [
     "code-review",
     "tdd",
 ]
+KERNELS = {
+    "necessity-kernel": {
+        "identity": "necessity-kernel-v1",
+    }
+}
+KERNEL_INJECTION_CONTRACT_HEADING = "## Kernel injection contract"
+KERNEL_INJECTION_CONTRACT_MARKERS = (
+    "読み込み",
+    "検証",
+    "注入",
+    "解決しない",
+    "判定基準",
+    "必要な周辺 context",
+    "identity",
+    "必要本文",
+    "推測",
+    "依存解決",
+    "注入順序",
+    "裁定",
+    "round budget",
+    "termination",
+)
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -223,6 +245,22 @@ class V5RepositoryContractsTest(unittest.TestCase):
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
         self.assertEqual("5.1.0", config["project"]["version"])
+
+    def test_kernel_injection_contract_is_declared_once_and_names_every_kernel(self) -> None:
+        contract = self._section_body(
+            (ROOT / "CLAUDE.md").read_text(encoding="utf-8"),
+            KERNEL_INJECTION_CONTRACT_HEADING,
+        )
+        for marker in KERNEL_INJECTION_CONTRACT_MARKERS:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, contract)
+        for name, kernel in KERNELS.items():
+            with self.subTest(kernel=name):
+                self.assertIn(kernel["identity"], contract)
+        pointer = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("Kernel injection contract", pointer)
+        self.assertIn("CLAUDE.md", pointer)
+        self.assertNotIn(KERNEL_INJECTION_CONTRACT_HEADING, pointer)
 
     def test_necessity_kernel_has_one_shared_reference_target_per_runtime(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))

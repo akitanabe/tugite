@@ -33,6 +33,8 @@ Gunte は `gunte.toml` の `sources.files` に列挙した agent、manifest、ve
 並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の SHA-256 先頭8桁を小文字16進数で表します。
 列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
+Kernel の読み込み・検証・注入を親 Skill の責務とする共通規約は、CLAUDE.md の Kernel injection contract 節を正本とします。
+
 ## コーディングスタイルと命名
 
 Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な `snake_case` 名を使用します。Bash は既存スタイルに
