@@ -198,6 +198,7 @@ KERNELS = {
         },
     }
 }
+KERNEL_INJECTION_CONTRACT_DOCS = ("CLAUDE.md", "AGENTS.md")
 KERNEL_INJECTION_CONTRACT_HEADING = "## Kernel injection contract"
 KERNEL_INJECTION_CONTRACT_MARKERS = (
     "読み込み",
@@ -384,21 +385,22 @@ class V5RepositoryContractsTest(unittest.TestCase):
         self.assertEqual(expected, set(config["sources"]["files"]))
         self.assertEqual("5.1.0", config["project"]["version"])
 
-    def test_kernel_injection_contract_is_declared_once_and_names_every_kernel(self) -> None:
-        contract = self._section_body(
-            (ROOT / "CLAUDE.md").read_text(encoding="utf-8"),
-            KERNEL_INJECTION_CONTRACT_HEADING,
-        )
-        for marker in KERNEL_INJECTION_CONTRACT_MARKERS:
-            with self.subTest(marker=marker):
-                self.assertIn(marker, contract)
-        for name, kernel in KERNELS.items():
-            with self.subTest(kernel=name):
-                self.assertIn(kernel["identity"], contract)
-        pointer = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-        self.assertIn("Kernel injection contract", pointer)
-        self.assertIn("CLAUDE.md", pointer)
-        self.assertNotIn(KERNEL_INJECTION_CONTRACT_HEADING, pointer)
+    def test_kernel_injection_contract_is_declared_identically_in_every_authoring_doc(self) -> None:
+        declarations = {}
+        for relative_path in KERNEL_INJECTION_CONTRACT_DOCS:
+            contract = self._section_body(
+                (ROOT / relative_path).read_text(encoding="utf-8"),
+                KERNEL_INJECTION_CONTRACT_HEADING,
+            )
+            for marker in KERNEL_INJECTION_CONTRACT_MARKERS:
+                with self.subTest(doc=relative_path, marker=marker):
+                    self.assertIn(marker, contract)
+            for name, kernel in KERNELS.items():
+                with self.subTest(doc=relative_path, kernel=name):
+                    self.assertIn(kernel["identity"], contract)
+            declarations[relative_path] = contract
+        # 同じ契約を両 authoring doc へ載せるため、片側だけ更新した drift を許さない。
+        self.assertEqual(1, len(set(declarations.values())), sorted(declarations))
 
     def test_every_kernel_has_one_shared_reference_target_per_runtime(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
