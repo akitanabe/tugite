@@ -8,11 +8,12 @@
   "repository": "https://github.com/akitanabe/tugite",
   "license": "MIT",
   "keywords": [
-    "agentic-workflow",
-    "qa",
+    "multi-agent",
+    "software-development",
+    "planning",
     "delegation",
-    "tdd",
-    "worktree"
+    "code-review",
+    "tdd"
   ],
   "skills": "./skills/",
   "interface": {

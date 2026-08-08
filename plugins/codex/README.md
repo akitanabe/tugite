@@ -26,10 +26,10 @@ Git marketplace を登録して plugin を導入します。
 
 ```text
 codex plugin marketplace add akitanabe/tugite
-codex plugin add tugite@personal
+codex plugin add tugite@tugite
 ```
 
-ローカル checkout を使う場合は repository root で `codex plugin marketplace add .agents/plugins` を実行してから `codex plugin add tugite@personal` を実行します。導入後は Codex session を再起動してください。
+ローカル checkout を使う場合は repository root で `codex plugin marketplace add .agents/plugins` を実行してから `codex plugin add tugite@tugite` を実行します。導入後は Codex session を再起動してください。
 
 Public skill は明示して起動します。
 

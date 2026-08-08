@@ -1,7 +1,7 @@
 {
-  "name": "personal",
+  "name": "tugite",
   "interface": {
-    "displayName": "Personal"
+    "displayName": "Tugite"
   },
   "plugins": [
     {

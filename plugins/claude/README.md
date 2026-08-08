@@ -26,7 +26,7 @@ Claude Code で marketplace を登録し、plugin を導入します。
 
 ```text
 /plugin marketplace add akitanabe/tugite
-/plugin install tugite@tugite-marketplace
+/plugin install tugite@tugite
 /reload-plugins
 ```
 

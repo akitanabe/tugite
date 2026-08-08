@@ -67,6 +67,14 @@ RELEASE_READMES = (
     ROOT / "plugins/claude/README.md",
     ROOT / "plugins/codex/README.md",
 )
+EXPECTED_PLUGIN_KEYWORDS = [
+    "multi-agent",
+    "software-development",
+    "planning",
+    "delegation",
+    "code-review",
+    "tdd",
+]
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -758,6 +766,59 @@ class V5RepositoryContractsTest(unittest.TestCase):
         codex = json.loads(manifests[1].read_text(encoding="utf-8"))
         self.assertIn("Work Unit", codex["interface"]["longDescription"])
         self.assertIn("parent QA", codex["interface"]["longDescription"])
+
+    def test_public_marketplace_metadata_and_release_selectors_are_exact(self) -> None:
+        claude_marketplace = json.loads(
+            (ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual("tugite", claude_marketplace["name"])
+        self.assertEqual(
+            ["tugite"],
+            [plugin["name"] for plugin in claude_marketplace["plugins"]],
+        )
+
+        codex_marketplace = json.loads(
+            (ROOT / ".agents/plugins/marketplace.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual("tugite", codex_marketplace["name"])
+        self.assertEqual("Tugite", codex_marketplace["interface"]["displayName"])
+        self.assertEqual(
+            ["tugite"],
+            [plugin["name"] for plugin in codex_marketplace["plugins"]],
+        )
+
+        for relative_path in (
+            "declarations/claude/plugin.json",
+            "declarations/codex/plugin.json",
+            "plugins/claude/.claude-plugin/plugin.json",
+            "plugins/codex/.codex-plugin/plugin.json",
+        ):
+            with self.subTest(manifest=relative_path):
+                manifest = json.loads((ROOT / relative_path).read_text(encoding="utf-8"))
+                self.assertEqual("tugite", manifest["name"])
+                display_name = manifest.get("displayName")
+                if display_name is None:
+                    display_name = manifest["interface"]["displayName"]
+                self.assertEqual("Tugite", display_name)
+                self.assertEqual(EXPECTED_PLUGIN_KEYWORDS, manifest["keywords"])
+
+        claude_readme = (ROOT / "plugins/claude/README.md").read_text(encoding="utf-8")
+        self.assertEqual(
+            1,
+            claude_readme.splitlines().count("/plugin install tugite@tugite"),
+        )
+        self.assertNotIn("tugite-marketplace", claude_readme)
+
+        codex_readme = (ROOT / "plugins/codex/README.md").read_text(encoding="utf-8")
+        self.assertEqual(
+            1,
+            codex_readme.splitlines().count("codex plugin add tugite@tugite"),
+        )
+        self.assertEqual(
+            1,
+            codex_readme.count("`codex plugin add tugite@tugite`"),
+        )
+        self.assertNotIn("tugite@personal", codex_readme)
 
     def test_common_downstream_routing_contract_registry_is_exact(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]

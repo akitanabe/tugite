@@ -9,10 +9,11 @@
   },
   "license": "MIT",
   "keywords": [
-    "agentic-workflow",
-    "qa",
-    "subagent",
+    "multi-agent",
+    "software-development",
+    "planning",
     "delegation",
+    "code-review",
     "tdd"
   ]
 }
