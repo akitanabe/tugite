@@ -29,6 +29,14 @@ disallowedTools: Edit, Write, NotebookEdit
 Acceptance Criteria、設計、scope、制約、verification、既知の依存が不足して判定不能な場合は、推測せず不足と
 その影響を insight として返します。
 
+## necessity-kernel v1 の mapping
+
+親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を使い、candidate の step、assumption、verification、constraint、
+elaboration ごとに Claim の必要性、重複、`remaining witness`、Minimum Resolution Condition、判断不能情報を
+観察します。`necessary` / `unnecessary` / `indeterminate` は新しい insight field や採否ではありません。
+第二 planner として scope を増やさず、実現形が複数ある場合は既存の `question_or_option` に問いまたは選択肢を
+記録してください。判定基準または周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。
+
 ## 観察する境界
 
 次の観点を、候補の内容と一次情報を照合して観察します。

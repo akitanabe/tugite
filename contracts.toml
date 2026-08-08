@@ -955,3 +955,153 @@ kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "workflow 間も自動で切り替えない"
 applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-f5c9070d]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Task Contract"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-f4594656]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "requested outcome"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-1238f644]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "明示AC"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-3812bcb3]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "scope/exclude/constraints/verification"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-e6f267b7]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "公開/外部観測動作"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-fcdaa507]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "外部契約/API"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-c8c89f19]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "repository invariant"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-d23b0af1]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "サポート対象入力/状態/環境"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-debbd2a6]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "一般的に有用/将来有用だけ"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-238cb5f5]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Claim"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-91c41e23]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "observation/evidence/necessity basis"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-dbeb2a1a]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Deletion Test"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-110f861c]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "unnecessary"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-bf6099cb]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "necessary"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-22ed466c]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "indeterminate"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-2a899f17]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Broken Obligation"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-6f7405a9]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Failure"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-598c305a]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Evidence"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-2b110254]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Minimum Resolution Condition"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-81ac889b]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "remaining witness"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-2eb5615e]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "mutual deletion"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-953797cc]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "updated snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-1ad630c7]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "discovered != admitted"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-ef993008]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Stop Adding Rule"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-4e0cf845]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "structural-health-gate 適用外"
+applies_to = ["claude", "codex"]

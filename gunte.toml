@@ -2,7 +2,7 @@ spec_version = 1
 
 [project]
 id = "tugite"
-version = "5.0.0"
+version = "5.1.0"
 
 [sources]
 files = [
@@ -17,6 +17,7 @@ files = [
   "shared/agents/senior-implementer.md",
   "shared/agents/test-quality-reviewer.md",
   "shared/agents/writing-principles-reviewer.md",
+  "shared/necessity-kernel.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/plan-craft/SKILL.md",
   "shared/skill/proposal/SKILL.md",
@@ -58,6 +59,12 @@ codex = "`followup_task`"
 output_root = "plugins/claude"
 
 [[targets.claude.rules]]
+match = "shared/necessity-kernel.md"
+path = "references/necessity-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/agents/*.md"
 path = "agents/{1}.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -87,6 +94,12 @@ metadata = [
 
 [targets.codex]
 output_root = "plugins/codex"
+
+[[targets.codex.rules]]
+match = "shared/necessity-kernel.md"
+path = "references/necessity-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
 match = "shared/agents/*.md"
