@@ -9,7 +9,7 @@
     {
       "name": "tugite",
       "source": "./plugins/claude",
-      "description": "実装作業をサブエージェントへ委譲しつつ、親エージェントがマネージャー兼 QA として品質責任を持つための Claude Code プラグイン。",
+      "description": "v5 の impl-lead、plan-craft、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
       "author": {
         "name": "akitanabe"
       }

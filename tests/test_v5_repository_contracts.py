@@ -776,6 +776,13 @@ class V5RepositoryContractsTest(unittest.TestCase):
             ["tugite"],
             [plugin["name"] for plugin in claude_marketplace["plugins"]],
         )
+        claude_manifest = json.loads(
+            (ROOT / "declarations/claude/plugin.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            claude_manifest["description"],
+            claude_marketplace["plugins"][0]["description"],
+        )
 
         codex_marketplace = json.loads(
             (ROOT / ".agents/plugins/marketplace.json").read_text(encoding="utf-8")
