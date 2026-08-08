@@ -76,6 +76,146 @@ EXPECTED_PLUGIN_KEYWORDS = [
     "code-review",
     "tdd",
 ]
+# 走査 root と path 形は kernel 属性ではなく repository layout なので、Kernel registry へは入れない。
+KERNEL_MENTION_SCAN_ROOTS = (
+    "shared/agents",
+    "shared/skill",
+    "plugins/claude/agents",
+    "plugins/claude/skills",
+    "plugins/codex/install/agents",
+    "plugins/codex/skills",
+)
+AGENT_PATH_SHAPES = (
+    "shared/agents/{name}.md",
+    "plugins/claude/agents/{name}.md",
+    "plugins/codex/install/agents/{name}.toml",
+)
+SKILL_PATH_SHAPES = (
+    "shared/skill/{name}/SKILL.md",
+    "plugins/claude/skills/{name}/SKILL.md",
+    "plugins/codex/skills/{name}/SKILL.md",
+)
+KERNELS = {
+    "necessity-kernel": {
+        "source_path": "shared/necessity-kernel.md",
+        "generated_relative_path": "references/necessity-kernel.md",
+        "identity": "necessity-kernel-v1",
+        # 節見出しの表記は identity と異なるため、identity から機械導出しない。
+        "heading_base": "necessity-kernel v1",
+        "mention_token": "necessity-kernel",
+        "rule_shape": {
+            "profile": "markdown-v1",
+            "header": "<!-- Generated from shared/. Do not edit directly. -->",
+        },
+        "generated_title_marker": "# Necessity Kernel v1",
+        "excluded_roles": ("structural-health-gate",),
+        "extra_forbid_scan_paths": ("evals/workflow-decision-corpus.md",),
+        # 注入側 parent と適用側 role の inventory は required_markers の key を唯一の source とする。
+        "required_markers": {
+            "kernel": ("適用範囲", "適用外"),
+            "parent": {
+                "proposal": (
+                    "adopted",
+                    "rejected",
+                    "unresolved",
+                    "plan-quality-advisor",
+                    "判定基準",
+                    "必要な周辺 context",
+                    "identity",
+                    "Task Contract",
+                    "不足",
+                ),
+                "review-loop": (
+                    "採用",
+                    "却下",
+                    "範囲外",
+                    "判断保留",
+                    "人間確認",
+                    "plan-adversarial-reviewer",
+                    "over-engineering-reviewer",
+                    "判定基準",
+                    "必要な周辺 context",
+                    "identity",
+                    "Task Contract",
+                    "不足",
+                ),
+            },
+            "role": {
+                "plan-adversarial-reviewer": (
+                    "成立",
+                    "必要性",
+                    "Failure",
+                    "Minimum Resolution Condition",
+                    "判定基準",
+                    "identity",
+                    "適用範囲",
+                    "不足",
+                ),
+                "over-engineering-reviewer": (
+                    "Deletion Test",
+                    "remaining witness",
+                    "大きさ",
+                    "判定基準",
+                    "identity",
+                    "適用範囲",
+                    "不足",
+                ),
+                "plan-quality-advisor": (
+                    "question_or_option",
+                    "判断不能",
+                    "重複",
+                    "判定基準",
+                    "identity",
+                    "適用範囲",
+                    "不足",
+                ),
+            },
+        },
+        "parent_verdict_markers": (
+            "既存語彙へ写像",
+            "新verdict fieldではない",
+            "round budget",
+            "termination",
+            "直結させない",
+        ),
+        "forbidden_markers": {
+            "kernel": (
+                "necessity_verdict",
+                "necessity verdict",
+                "rounds",
+                "termination",
+                "induced-loop",
+                "## role-specific mapping",
+            ),
+            "parent_role": (
+                "_handoff",
+                "necessity_verdict",
+                "necessity_status",
+                "necessity_decision",
+                "necessity_field",
+                "necessity_result",
+            ),
+        },
+    }
+}
+KERNEL_INJECTION_CONTRACT_DOCS = ("CLAUDE.md", "AGENTS.md")
+KERNEL_INJECTION_CONTRACT_HEADING = "## Kernel injection contract"
+KERNEL_INJECTION_CONTRACT_MARKERS = (
+    "読み込み",
+    "検証",
+    "注入",
+    "解決しない",
+    "判定基準",
+    "必要な周辺 context",
+    "identity",
+    "必要本文",
+    "推測",
+    "依存解決",
+    "注入順序",
+    "裁定",
+    "round budget",
+    "termination",
+)
 
 
 class V5RepositoryContractsTest(unittest.TestCase):
@@ -120,6 +260,26 @@ class V5RepositoryContractsTest(unittest.TestCase):
             len(body),
         )
         return "\n".join(body[:next_heading])
+
+    def _shaped_paths(self, shapes: tuple[str, ...], name: str) -> tuple[str, ...]:
+        return tuple(shape.format(name=name) for shape in shapes)
+
+    def _kernel_runtime_paths(self, kernel: dict) -> tuple[str, ...]:
+        return tuple(
+            f"plugins/{target}/{kernel['generated_relative_path']}" for target in ("claude", "codex")
+        )
+
+    def _kernel_allowed_paths(self, kernel: dict) -> set[str]:
+        """Derive the finite set of files allowed to mention one kernel."""
+        allowed: set[str] = set()
+        for parent in kernel["required_markers"]["parent"]:
+            allowed.update(self._shaped_paths(SKILL_PATH_SHAPES, parent))
+        for role in kernel["required_markers"]["role"]:
+            allowed.update(self._shaped_paths(AGENT_PATH_SHAPES, role))
+        return allowed
+
+    def _kernel_reference_link(self, kernel: dict) -> str:
+        return f"../../{kernel['generated_relative_path']}"
 
     def _labeled_field(self, section: str, label: str) -> str:
         """Extract one uniquely labeled top-level Markdown field from a finite section."""
@@ -216,45 +376,64 @@ class V5RepositoryContractsTest(unittest.TestCase):
         expected = {f"shared/agents/{name}.md" for name in AGENTS} | {
             "declarations/claude/plugin.json",
             "declarations/codex/plugin.json",
-            "shared/necessity-kernel.md",
             "shared/VERSION",
-        } | {f"shared/skill/{name}/SKILL.md" for name in WORKFLOW_SKILLS} | {
+        } | {kernel["source_path"] for kernel in KERNELS.values()} | {
+            f"shared/skill/{name}/SKILL.md" for name in WORKFLOW_SKILLS
+        } | {
             f"declarations/codex/skills/{name}/openai.yaml" for name in WORKFLOW_SKILLS
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
         self.assertEqual("5.1.0", config["project"]["version"])
 
-    def test_necessity_kernel_has_one_shared_reference_target_per_runtime(self) -> None:
+    def test_kernel_injection_contract_is_declared_identically_in_every_authoring_doc(self) -> None:
+        declarations = {}
+        for relative_path in KERNEL_INJECTION_CONTRACT_DOCS:
+            contract = self._section_body(
+                (ROOT / relative_path).read_text(encoding="utf-8"),
+                KERNEL_INJECTION_CONTRACT_HEADING,
+            )
+            for marker in KERNEL_INJECTION_CONTRACT_MARKERS:
+                with self.subTest(doc=relative_path, marker=marker):
+                    self.assertIn(marker, contract)
+            for name, kernel in KERNELS.items():
+                with self.subTest(doc=relative_path, kernel=name):
+                    self.assertIn(kernel["identity"], contract)
+            declarations[relative_path] = contract
+        # 同じ契約を両 authoring doc へ載せるため、片側だけ更新した drift を許さない。
+        self.assertEqual(1, len(set(declarations.values())), sorted(declarations))
+
+    def test_every_kernel_has_one_shared_reference_target_per_runtime(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
-        expected_rule = {
-            "match": "shared/necessity-kernel.md",
-            "path": "references/necessity-kernel.md",
-            "profile": "markdown-v1",
-            "header": "<!-- Generated from shared/. Do not edit directly. -->",
-        }
+        for name, kernel in KERNELS.items():
+            expected_rule = {
+                "match": kernel["source_path"],
+                "path": kernel["generated_relative_path"],
+                **kernel["rule_shape"],
+            }
+            for target in ("claude", "codex"):
+                with self.subTest(kernel=name, target=target):
+                    source_owners = [
+                        rule
+                        for rule in config["targets"][target]["rules"]
+                        if rule.get("match") == kernel["source_path"]
+                    ]
+                    target_owners = [
+                        rule
+                        for rule in config["targets"][target]["rules"]
+                        if rule.get("path") == kernel["generated_relative_path"]
+                    ]
+                    self.assertEqual(1, len(source_owners))
+                    self.assertEqual(1, len(target_owners))
+                    self.assertEqual([expected_rule], source_owners)
+                    generated = ROOT / f"plugins/{target}/{kernel['generated_relative_path']}"
+                    self.assertTrue(generated.is_file(), generated)
+                    self.assertIn(
+                        kernel["generated_title_marker"], generated.read_text(encoding="utf-8")
+                    )
         for target in ("claude", "codex"):
             with self.subTest(target=target):
-                source_owners = [
-                    rule
-                    for rule in config["targets"][target]["rules"]
-                    if rule.get("match") == "shared/necessity-kernel.md"
-                ]
-                target_owners = [
-                    rule
-                    for rule in config["targets"][target]["rules"]
-                    if rule.get("path") == "references/necessity-kernel.md"
-                ]
-                self.assertEqual(1, len(source_owners))
-                self.assertEqual(1, len(target_owners))
                 self.assertEqual(
-                    [expected_rule],
-                    source_owners,
-                )
-                generated = ROOT / f"plugins/{target}/references/necessity-kernel.md"
-                self.assertTrue(generated.is_file(), generated)
-                self.assertIn("# Necessity Kernel v1", generated.read_text(encoding="utf-8"))
-                self.assertEqual(
-                    {"references/necessity-kernel.md"},
+                    {kernel["generated_relative_path"] for kernel in KERNELS.values()},
                     {
                         path.relative_to(ROOT / f"plugins/{target}").as_posix()
                         for path in (ROOT / f"plugins/{target}").rglob("*")
@@ -263,95 +442,80 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     },
                 )
 
-    def test_necessity_kernel_role_mapping_is_local_and_excludes_structural_gate(self) -> None:
-        kernel = (ROOT / "shared/necessity-kernel.md").read_text(encoding="utf-8")
-        self.assertIn("plan-adversarial-reviewer", kernel)
-        self.assertIn("over-engineering-reviewer", kernel)
-        self.assertIn("plan-quality-advisor", kernel)
-        self.assertIn("proposal", kernel)
-        self.assertIn("review-loop", kernel)
-        self.assertIn("structural-health-gate", kernel)
-        self.assertIn("適用外", kernel)
-        self.assertNotIn("## role-specific mapping", kernel)
-        for forbidden in ("necessity_verdict", "necessity verdict", "rounds", "termination", "induced-loop"):
-            self.assertNotIn(forbidden, kernel)
-
-        required_markers = {
-            "plan-adversarial-reviewer": ("成立", "必要性", "Failure", "Minimum Resolution Condition", "判定基準", "identity", "適用範囲", "不足"),
-            "over-engineering-reviewer": ("Deletion Test", "remaining witness", "大きさ", "判定基準", "identity", "適用範囲", "不足"),
-            "plan-quality-advisor": ("question_or_option", "判断不能", "重複", "判定基準", "identity", "適用範囲", "不足"),
-            "proposal": ("adopted", "rejected", "unresolved", "plan-quality-advisor", "../../references/necessity-kernel.md", "判定基準", "必要な周辺 context", "identity", "Task Contract", "不足"),
-            "review-loop": ("採用", "却下", "範囲外", "判断保留", "人間確認", "plan-adversarial-reviewer", "over-engineering-reviewer", "../../references/necessity-kernel.md", "判定基準", "必要な周辺 context", "identity", "Task Contract", "不足"),
-        }
-        allowed_paths = {
-            "shared/agents/plan-adversarial-reviewer.md",
-            "shared/agents/over-engineering-reviewer.md",
-            "shared/agents/plan-quality-advisor.md",
-            "shared/skill/proposal/SKILL.md",
-            "shared/skill/review-loop/SKILL.md",
-            "plugins/claude/agents/plan-adversarial-reviewer.md",
-            "plugins/claude/agents/over-engineering-reviewer.md",
-            "plugins/claude/agents/plan-quality-advisor.md",
-            "plugins/claude/skills/proposal/SKILL.md",
-            "plugins/claude/skills/review-loop/SKILL.md",
-            "plugins/codex/install/agents/plan-adversarial-reviewer.toml",
-            "plugins/codex/install/agents/over-engineering-reviewer.toml",
-            "plugins/codex/install/agents/plan-quality-advisor.toml",
-            "plugins/codex/skills/proposal/SKILL.md",
-            "plugins/codex/skills/review-loop/SKILL.md",
-        }
-        for root in (
-            ROOT / "shared/agents",
-            ROOT / "shared/skill",
-            ROOT / "plugins/claude/agents",
-            ROOT / "plugins/claude/skills",
-            ROOT / "plugins/codex/install/agents",
-            ROOT / "plugins/codex/skills",
-        ):
-            for path in root.rglob("*"):
-                if not path.is_file():
-                    continue
-                if "necessity-kernel" in path.read_text(encoding="utf-8"):
-                    relative = path.relative_to(ROOT).as_posix()
-                    self.assertIn(relative, allowed_paths)
-        for role, markers in required_markers.items():
-            section_heading = "## necessity-kernel v1 の mapping" if role not in {"proposal", "review-loop"} else "## necessity-kernel v1 の parent mapping"
-            for relative_path in (
-                f"shared/agents/{role}.md" if role.endswith("reviewer") or role.endswith("advisor") else f"shared/skill/{role}/SKILL.md",
-                f"plugins/claude/agents/{role}.md" if role.endswith("reviewer") or role.endswith("advisor") else f"plugins/claude/skills/{role}/SKILL.md",
-                f"plugins/codex/install/agents/{role}.toml" if role.endswith("reviewer") or role.endswith("advisor") else f"plugins/codex/skills/{role}/SKILL.md",
-            ):
-                with self.subTest(role=role, path=relative_path):
-                    text = self._section_body((ROOT / relative_path).read_text(encoding="utf-8"), section_heading)
-                    for marker in markers:
-                        self.assertIn(marker, text)
-                    if role in {"proposal", "review-loop"}:
-                        self.assertLess(text.index("../../references/necessity-kernel.md"), text.index("判定基準"))
-                    if role not in {"proposal", "review-loop"}:
-                        self.assertNotIn("necessity_kernel_handoff", text)
-                        self.assertNotIn("../../references/necessity-kernel.md", text)
-        for relative_path in (
-            "shared/necessity-kernel.md",
-            "shared/skill/proposal/SKILL.md",
-            "shared/skill/review-loop/SKILL.md",
-            "evals/workflow-decision-corpus.md",
-        ):
-            self.assertNotIn("necessity_kernel_handoff", (ROOT / relative_path).read_text(encoding="utf-8"))
-        for relative_path in allowed_paths:
-            self.assertNotIn("necessity_kernel_handoff", (ROOT / relative_path).read_text(encoding="utf-8"))
-        for target in ("claude", "codex"):
-            self.assertNotIn(
-                "necessity_kernel_handoff",
-                (ROOT / f"plugins/{target}/references/necessity-kernel.md").read_text(encoding="utf-8"),
+    def test_every_kernel_mapping_is_local_and_excludes_out_of_scope_roles(self) -> None:
+        for name, kernel in KERNELS.items():
+            parents = kernel["required_markers"]["parent"]
+            roles = kernel["required_markers"]["role"]
+            reference_link = self._kernel_reference_link(kernel)
+            allowed_paths = self._kernel_allowed_paths(kernel)
+            declared_scope = (
+                *parents,
+                *roles,
+                *kernel["excluded_roles"],
+                *kernel["required_markers"]["kernel"],
             )
-        for relative_path in (
-            "shared/skill/structural-health-gate/SKILL.md",
-            "plugins/claude/skills/structural-health-gate/SKILL.md",
-            "plugins/codex/skills/structural-health-gate/SKILL.md",
-        ):
-            self.assertNotIn("necessity-kernel", (ROOT / relative_path).read_text(encoding="utf-8"))
+            for relative_path in (kernel["source_path"], *self._kernel_runtime_paths(kernel)):
+                with self.subTest(kernel=name, path=relative_path):
+                    body = (ROOT / relative_path).read_text(encoding="utf-8")
+                    for marker in declared_scope:
+                        self.assertIn(marker, body)
+                    for forbidden in kernel["forbidden_markers"]["kernel"]:
+                        self.assertNotIn(forbidden, body)
 
-    def test_necessity_kernel_preserves_existing_role_return_fields_and_parent_verdict_boundary(self) -> None:
+            for root in KERNEL_MENTION_SCAN_ROOTS:
+                for path in (ROOT / root).rglob("*"):
+                    if not path.is_file():
+                        continue
+                    if kernel["mention_token"] in path.read_text(encoding="utf-8"):
+                        relative = path.relative_to(ROOT).as_posix()
+                        with self.subTest(kernel=name, path=relative):
+                            self.assertIn(relative, allowed_paths)
+
+            for parent, markers in parents.items():
+                for relative_path in self._shaped_paths(SKILL_PATH_SHAPES, parent):
+                    with self.subTest(kernel=name, parent=parent, path=relative_path):
+                        section = self._section_body(
+                            (ROOT / relative_path).read_text(encoding="utf-8"),
+                            f"## {kernel['heading_base']} の parent mapping",
+                        )
+                        for marker in markers:
+                            self.assertIn(marker, section)
+                        self.assertIn(reference_link, section)
+                        self.assertLess(section.index(reference_link), section.index("判定基準"))
+
+            for role, markers in roles.items():
+                for relative_path in self._shaped_paths(AGENT_PATH_SHAPES, role):
+                    with self.subTest(kernel=name, role=role, path=relative_path):
+                        section = self._section_body(
+                            (ROOT / relative_path).read_text(encoding="utf-8"),
+                            f"## {kernel['heading_base']} の mapping",
+                        )
+                        for marker in markers:
+                            self.assertIn(marker, section)
+                        self.assertNotIn(reference_link, section)
+
+            # test file 自身は走査対象にしない。禁止 pattern の assertion 文字列が自己 hit するため。
+            forbid_scan = {
+                kernel["source_path"],
+                *self._kernel_runtime_paths(kernel),
+                *allowed_paths,
+                *kernel["extra_forbid_scan_paths"],
+            }
+            for relative_path in sorted(forbid_scan):
+                with self.subTest(kernel=name, path=relative_path):
+                    body = (ROOT / relative_path).read_text(encoding="utf-8")
+                    for forbidden in kernel["forbidden_markers"]["parent_role"]:
+                        self.assertNotIn(forbidden, body)
+
+            for excluded in kernel["excluded_roles"]:
+                for relative_path in self._shaped_paths(SKILL_PATH_SHAPES, excluded):
+                    with self.subTest(kernel=name, excluded=excluded, path=relative_path):
+                        self.assertNotIn(
+                            kernel["mention_token"],
+                            (ROOT / relative_path).read_text(encoding="utf-8"),
+                        )
+
+    def test_kernel_roles_preserve_existing_return_fields_and_parent_verdict_boundary(self) -> None:
         role_return_sections = {
             "plan-adversarial-reviewer": (
                 "## 返却形式",
@@ -380,16 +544,9 @@ class V5RepositoryContractsTest(unittest.TestCase):
             ),
         }
         role_paths = {
-            role: (
-                f"shared/agents/{role}.md",
-                f"plugins/claude/agents/{role}.md",
-                f"plugins/codex/install/agents/{role}.toml",
-            )
-            for role in (
-                "plan-adversarial-reviewer",
-                "over-engineering-reviewer",
-                "plan-quality-advisor",
-            )
+            role: self._shaped_paths(AGENT_PATH_SHAPES, role)
+            for kernel in KERNELS.values()
+            for role in kernel["required_markers"]["role"]
         }
         for role, (heading, expected_fields) in role_return_sections.items():
             for relative_path in role_paths[role]:
@@ -417,30 +574,25 @@ class V5RepositoryContractsTest(unittest.TestCase):
                     tuple(re.findall(r"`([^`]+)`", declaration.group(1))),
                 )
 
-        for role, paths in role_paths.items():
-            for relative_path in paths:
-                with self.subTest(role=role, path=relative_path):
-                    text = (ROOT / relative_path).read_text(encoding="utf-8")
-                    for forbidden in ("necessity_verdict", "necessity_status", "necessity_decision", "necessity_field", "necessity_result"):
-                        self.assertNotIn(forbidden, text)
+        for kernel in KERNELS.values():
+            for role in kernel["required_markers"]["role"]:
+                for relative_path in role_paths[role]:
+                    with self.subTest(role=role, path=relative_path):
+                        text = (ROOT / relative_path).read_text(encoding="utf-8")
+                        for forbidden in kernel["forbidden_markers"]["parent_role"]:
+                            self.assertNotIn(forbidden, text)
 
-        for role in ("proposal", "review-loop"):
-            for relative_path in (
-                f"shared/skill/{role}/SKILL.md",
-                f"plugins/claude/skills/{role}/SKILL.md",
-                f"plugins/codex/skills/{role}/SKILL.md",
-            ):
-                with self.subTest(role=role, path=relative_path):
-                    section = self._section_body(
-                        (ROOT / relative_path).read_text(encoding="utf-8"),
-                        "## necessity-kernel v1 の parent mapping",
-                    )
-                    self.assertIn("既存語彙へ写像", section)
-                    self.assertIn("新verdict fieldではない", section)
-                    self.assertIn("round budget", section)
-                    self.assertIn("termination", section)
-                    self.assertIn("直結させない", section)
-                    self.assertNotIn("necessity_kernel_handoff", section)
+            for parent in kernel["required_markers"]["parent"]:
+                for relative_path in self._shaped_paths(SKILL_PATH_SHAPES, parent):
+                    with self.subTest(parent=parent, path=relative_path):
+                        section = self._section_body(
+                            (ROOT / relative_path).read_text(encoding="utf-8"),
+                            f"## {kernel['heading_base']} の parent mapping",
+                        )
+                        for marker in kernel["parent_verdict_markers"]:
+                            self.assertIn(marker, section)
+                        for forbidden in kernel["forbidden_markers"]["parent_role"]:
+                            self.assertNotIn(forbidden, section)
 
     def test_gunte_owns_workflow_skills_and_codex_metadata(self) -> None:
         config = tomllib.loads((ROOT / "gunte.toml").read_text(encoding="utf-8"))
