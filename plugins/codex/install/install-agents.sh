@@ -63,27 +63,48 @@ done
 
 [[ -n "$scope" ]] || { usage >&2; exit 2; }
 if [[ "$scope" == "user" ]]; then
+  scope_root="$HOME"
   agent_dir="$HOME/.codex/agents"
 else
+  scope_root="$repo_path"
   agent_dir="$repo_path/.codex/agents"
 fi
 
 required_agents=(
+  focused-implementer.toml
   implementer.toml
   senior-implementer.toml
   expert-implementer.toml
-  expert-selection-reviewer.toml
   responsibility-boundary-reviewer.toml
   test-quality-reviewer.toml
   writing-principles-reviewer.toml
   over-engineering-reviewer.toml
   plan-adversarial-reviewer.toml
+  plan-quality-advisor.toml
   security-side-effect-reviewer.toml
-  review-patch-refactorer.toml
 )
 retired_agents=(
+  expert-selection-reviewer.toml
+  review-patch-refactorer.toml
   writing-principles-refactorer.toml
 )
+
+reject_symlink() {
+  local path="$1"
+  local label="$2"
+  if [[ -L "$path" ]]; then
+    echo "Refusing symlinked $label: $path" >&2
+    exit 1
+  fi
+}
+
+reject_symlink "$scope_root" "scope root"
+reject_symlink "$scope_root/.codex" ".codex directory"
+reject_symlink "$agent_dir" "agent directory"
+reject_symlink "$agent_dir/$installed_version_file_name" "version marker"
+for agent in "${required_agents[@]}"; do
+  reject_symlink "$agent_dir/$agent" "required agent destination"
+done
 
 if [[ ! -f "$version_file" ]]; then
   echo "Missing bundled version: $version_file" >&2
@@ -167,17 +188,17 @@ Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:
+  focused-implementer
   implementer
   senior-implementer
   expert-implementer
-  expert-selection-reviewer
   responsibility-boundary-reviewer
   test-quality-reviewer
   writing-principles-reviewer
   over-engineering-reviewer
   plan-adversarial-reviewer
+  plan-quality-advisor
   security-side-effect-reviewer
-  review-patch-refactorer
 
 IMPORTANT:
   Restart the Codex session before using these custom agents.

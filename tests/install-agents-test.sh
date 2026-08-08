@@ -6,17 +6,17 @@ installer="$repo_root/plugins/codex/install/install-agents.sh"
 expected_version="$(cat "$repo_root/plugins/codex/install/VERSION")"
 plugin_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$repo_root/plugins/codex/.codex-plugin/plugin.json")"
 required_agents=(
+  focused-implementer
   implementer
   senior-implementer
   expert-implementer
-  expert-selection-reviewer
   responsibility-boundary-reviewer
   test-quality-reviewer
   writing-principles-reviewer
   over-engineering-reviewer
   plan-adversarial-reviewer
+  plan-quality-advisor
   security-side-effect-reviewer
-  review-patch-refactorer
 )
 
 # Fail the test with a concise diagnostic.
@@ -51,8 +51,15 @@ same_output="$("$installer" --check --repo "$target_repo")"
 [[ "$same_output" == *"up to date"* ]] || fail "check did not report up-to-date installation"
 
 test_install_preserves_retired_agent_when_update_is_refused() {
-  local retired_agent="$agent_dir/writing-principles-refactorer.toml"
-  printf '%s\n' 'retired local agent' > "$retired_agent"
+  local retired_agents=(
+    expert-selection-reviewer
+    review-patch-refactorer
+    writing-principles-refactorer
+  )
+  local retired_agent
+  for retired_agent in "${retired_agents[@]}"; do
+    printf '%s\n' 'retired local agent' > "$agent_dir/$retired_agent.toml"
+  done
 
   set +e
   local check_output
@@ -64,18 +71,20 @@ test_install_preserves_retired_agent_when_update_is_refused() {
   set -e
 
   [[ $check_status -eq 3 ]] || fail "check did not detect the retired agent"
-  [[ "$check_output" == *"writing-principles-refactorer"* ]] || fail "check did not identify the retired agent"
   [[ $refusal_status -eq 3 ]] || fail "retired-agent migration without --force should exit 3"
   [[ "$refusal_output" == *"--force"* ]] || fail "retired-agent refusal did not require explicit overwrite"
-  [[ -f "$retired_agent" ]] || fail "refused migration removed the retired agent"
+  for retired_agent in "${retired_agents[@]}"; do
+    [[ "$check_output" == *"$retired_agent"* ]] || fail "check did not identify $retired_agent"
+    [[ -f "$agent_dir/$retired_agent.toml" ]] || fail "refused migration removed $retired_agent"
+  done
 }
 
-test_force_update_replaces_retired_writing_principles_agent() {
-  local retired_agent="$agent_dir/writing-principles-refactorer.toml"
-
+test_force_update_removes_all_retired_agents() {
   "$installer" --force --repo "$target_repo"
 
-  [[ ! -e "$retired_agent" ]] || fail "forced update retained the retired agent"
+  [[ ! -e "$agent_dir/expert-selection-reviewer.toml" ]] || fail "forced update retained expert-selection-reviewer"
+  [[ ! -e "$agent_dir/review-patch-refactorer.toml" ]] || fail "forced update retained review-patch-refactorer"
+  [[ ! -e "$agent_dir/writing-principles-refactorer.toml" ]] || fail "forced update retained writing-principles-refactorer"
   assert_same \
     "$repo_root/plugins/codex/install/agents/writing-principles-reviewer.toml" \
     "$agent_dir/writing-principles-reviewer.toml"
@@ -107,9 +116,57 @@ test_dangling_retired_agent_requires_approved_migration() {
   [[ ! -L "$retired_agent" ]] || fail "forced migration retained the dangling retired-agent symlink"
 }
 
+test_install_rejects_symlinked_codex_directory() {
+  local case_dir="$tmp_dir/symlink-scope"
+  local outside="$case_dir/outside"
+  mkdir -p "$case_dir/repo" "$outside"
+  printf '%s\n' 'outside sentinel' > "$outside/sentinel"
+  ln -s "$outside" "$case_dir/repo/.codex"
+
+  set +e
+  "$installer" --force --repo "$case_dir/repo" >/dev/null 2>&1
+  local status=$?
+  set -e
+
+  [[ $status -ne 0 ]] || fail "installer accepted a symlinked .codex directory"
+  [[ "$(cat "$outside/sentinel")" == "outside sentinel" ]] || fail "scope escape changed outside sentinel"
+  [[ ! -e "$outside/focused-implementer.toml" ]] || fail "scope escape installed outside the repository"
+}
+
+test_install_rejects_agent_and_version_destination_symlinks() {
+  local case_dir="$tmp_dir/symlink-files"
+  local outside="$case_dir/outside"
+  local repo="$case_dir/repo"
+  mkdir -p "$repo/.codex/agents" "$outside"
+  printf '%s\n' 'agent sentinel' > "$outside/agent-sentinel"
+  ln -s "$outside/agent-sentinel" "$repo/.codex/agents/focused-implementer.toml"
+
+  set +e
+  "$installer" --force --repo "$repo" >/dev/null 2>&1
+  local agent_status=$?
+  set -e
+
+  [[ $agent_status -ne 0 ]] || fail "installer accepted a required-agent destination symlink"
+  [[ "$(cat "$outside/agent-sentinel")" == "agent sentinel" ]] || fail "required-agent symlink target was overwritten"
+
+  rm -f "$repo/.codex/agents/focused-implementer.toml"
+  printf '%s\n' 'version sentinel' > "$outside/version-sentinel"
+  ln -s "$outside/version-sentinel" "$repo/.codex/agents/.tugite-version"
+
+  set +e
+  "$installer" --force --repo "$repo" >/dev/null 2>&1
+  local version_status=$?
+  set -e
+
+  [[ $version_status -ne 0 ]] || fail "installer accepted a version marker symlink"
+  [[ "$(cat "$outside/version-sentinel")" == "version sentinel" ]] || fail "version symlink target was overwritten"
+}
+
 test_install_preserves_retired_agent_when_update_is_refused
-test_force_update_replaces_retired_writing_principles_agent
+test_force_update_removes_all_retired_agents
 test_dangling_retired_agent_requires_approved_migration
+test_install_rejects_symlinked_codex_directory
+test_install_rejects_agent_and_version_destination_symlinks
 
 printf '%s\n' 'local customization' > "$agent_dir/implementer.toml"
 printf '%s\n' '0.9.0' > "$agent_dir/.tugite-version"

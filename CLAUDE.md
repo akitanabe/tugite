@@ -1,113 +1,65 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## このリポジトリの性質
-
-アプリケーションコードのリポジトリではありません。成果物は Claude Code / Codex 向けの **skill と agent の定義文（プロンプト原稿）** であり、`shared/` の共通原稿から `plugins/claude/` と `plugins/codex/` の配布物を生成します。Python コードは生成器 `scripts/build_plugin_assets.py` とそのテストだけです。
-
-原稿は日本語で書かれています。README・コミットメッセージ・原稿本文はすべて日本語です。
+このリポジトリは Claude Code / Codex 向けの skill と agent 定義を配布します。正本は `shared/`、platform manifest と
+Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と契約 registry は `gunte.toml` と `contracts.toml` です。
+配布物は `plugins/` に生成され、原稿は日本語で書かれています。
 
 ## コマンド
 
 ```bash
-# 配布物を生成（shared/ を編集したら必ず実行）
-python3 scripts/build_plugin_assets.py
-
-# 生成物が共通原稿と一致するか確認（ファイルを書き換えない）
-python3 scripts/build_plugin_assets.py --check
-
-# Python テスト一式
-python3 -B -m unittest discover -s tests -p 'test_build_plugin_assets*.py'
-
-# 単一テスト（tests/ を sys.path に載せる必要があるため tests/ で実行する）
-cd tests && python3 -B -m unittest test_build_plugin_assets_cli.BuildPluginAssetsCliTest.test_build_generates_all_assets_and_syncs_versions
-
-# Codex custom agent インストーラのテスト
+gunte emit
+gunte check
+python3 -B -m unittest discover -s tests -p 'test_v5_repository_contracts.py'
+python3 -B -m unittest discover -s tests
 bash tests/install-agents-test.sh
+git diff --check
 ```
 
-`plugins/` 以下の生成対象ファイルを直接編集しないでください。対応する `shared/` の原稿を変更してから生成器を実行します。生成物には generated warning が付いています。
+`plugins/` 以下の生成物を直接編集せず、正本または宣言を変更したら repository root で `gunte emit` と `gunte check` を
+実行します。Gunte には Go 1.26.5 以上が必要で、公開版は次で導入します。
 
-## 生成パイプライン
+```bash
+go install github.com/akitanabe/gunte/cmd/gunte@latest
+```
 
-`scripts/build_plugin_assets.py` は「検証 → レンダリング → 比較または書き込み」の一方向処理です。入力に1つでもエラーがあれば何も書き込まず、`path:line: message` 形式の診断を stderr に出して終了コード 1 を返します。
+## v5 の Gunte 運用
 
-入力（`shared/`）から出力（`plugins/`）への変換は次の4段階です。
+`gunte.toml` は project、source、target、出力 rule、platform terms を定義し、`contracts.toml` は `requires`、
+`forbids`、`order` の決定論的契約を定義します。platform manifest は `declarations/`、Codex の4 workflow skill
+metadata は `declarations/codex/skills/` に置きます。Gunte は `sources.files` に列挙した agent、manifest、version、
+workflow skill、metadata を生成し、未登録 source や stale path は走査しないため、必須・retired path と exact inventory は
+`test_v5_repository_contracts.py` で保護します。
 
-1. **platform marker の選択** — `<!-- claude-only:start -->` / `<!-- codex-only:start -->` で囲んだ範囲は、その platform の出力にだけ残ります。marker はネスト不可・行単独必須で、対応が崩れると生成が失敗します。
-2. **placeholder 置換** — `{{parent_agent}}` のような placeholder を `shared/terms.toml` の platform 別の語で置き換えます。置換は1回限りで、挿入した値を再走査しません。marker 選択の**後**に行うため、片側 platform の分岐に marker で書いた語が反対側へ漏れません。
-3. **frontmatter 変換** — agent 原稿は TOML frontmatter（`+++` 区切り）で、Claude 向けには YAML frontmatter の `.md`、Codex 向けには本文を `developer_instructions` に埋めた `.toml` として出力されます。skill 原稿は YAML frontmatter 込みでそのまま各 platform へ出力されます。
-4. **version 同期** — `shared/VERSION`（現在 3.0.0）を両 plugin の `plugin.json` の `version` と `plugins/codex/install/VERSION` へ書き込みます。manifest は version 以外のバイト列を保存します。
+契約は生成物から観測できる不変条件に限定します。Gunte の生成、projection、serialization、byte drift は `gunte check`
+に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
 
-## 閉じたスキーマという設計方針
-
-生成器は「未知のもの」をすべてエラーにします。この性質が、原稿の追加漏れや置き忘れを検出する主要な仕組みです。
-
-- `shared/agents/` に `AGENT_NAMES` 以外の `.md` があればエラー
-- `shared/skill/` に `SKILL_REFERENCE_NAMES` に登録されていない directory があればエラー
-- reference directory に登録外の `.md` があればエラー
-- agent frontmatter に未知のキーがあればエラー（`[claude]` / `[codex]` それぞれ許可キーが固定）
-- `terms.toml` に定義されていて一度も使われない term があればエラー
-
-したがって、skill や agent を**追加・削除するときは生成器の定数を必ず更新**します。
+`slice` を持つ契約の ID は `<意味を表す prefix>-<8桁 hash>` とします。hash は `kind`、`slice`、`pattern`、辞書順に
+並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の SHA-256 先頭8桁を小文字16進数で表します。
+列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
 ## 追加・変更時に触れる場所
 
-新しい agent を追加する場合:
-
-1. `shared/agents/<name>.md` を作成
-2. `scripts/build_plugin_assets.py` の `AGENT_NAMES` に追加
-3. `tests/build_plugin_assets_test_support.py` の `AGENT_NAMES`、必要に応じて `REVIEWER_NAMES` / `BASH_GRANTED_REVIEWER_NAMES` / `BASH_WITHHELD_REVIEWER_NAMES` / `REFACTORER_NAMES`、`CLAUDE_MODEL_PROFILES` / `CODEX_MODEL_PROFILES` に追加
-4. `tests/install-agents-test.sh` の `required_agents` に追加
-5. 両 platform の README（`plugins/claude/README.md` / `plugins/codex/README.md`）に記載（契約テストが全 agent の記載を要求します）
-
-新しい skill を追加する場合は、`shared/skill/<name>/SKILL.md` と `references/*.md` を作り、生成器と test support 双方の `SKILL_REFERENCE_NAMES` に skill 名と reference 名の並びを登録します。空タプルは SKILL.md のみの skill を表します。
+agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の
+agent inventory を同じ変更で更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
+declarations、Gunte の `sources.files`、exact inventory の構造テストを更新し、target rule は出力 path、profile、shape が
+変わる場合だけ更新します。生成後は installer test で runtime inventory も確認します。
 
 ## VERSION の更新規約
 
-配布物が変わる変更では、`shared/VERSION` を更新してから生成器を実行します。手で書き換えるのは `shared/VERSION` だけで、両 plugin の `plugin.json` と `plugins/codex/install/VERSION` へは生成器が同期します。
+配布物、正本、宣言、Gunte の契約が変わるときは `shared/VERSION` を更新し、`gunte emit` と `gunte check` で plugin
+manifest と install version を同期します。README、CLAUDE、AGENTS、tests、evals だけの変更では version を更新しません。
 
-- **更新が必要** — `shared/` の原稿、`scripts/build_plugin_assets.py`、`plugins/` の生成物が変わる変更
-- **更新は不要** — `README.md` / `CLAUDE.md` / `AGENTS.md` / `tests/` / `evals/` だけの変更
+semver は公開面が壊れるかで割り当てます。skill・agent 名、起動方法・発火条件、保存して後から渡す artifact 形式、CLI の
+呼び出しが通らなくなる変更は major、skill・agent・契約の追加や内部契約変更は minor、モデル/effort 調整など契約の意味を
+変えない修正は patch です。旧入力を安全な再起草や停止へ送れる場合は major とは扱いません。
 
-semver は**公開面が壊れるか**で割り当てます。
+## workflow と agent の surface
 
-- **公開面** — skill 名、agent 名、mode 名（`direct` / `lite` / `standard` / `strict` / `strict-full`、`policy` / `baseline`）、skill の起動方法と発火条件、ユーザーが保存して後から渡す artifact の形式（`plan-craft` のプラン文書とレビュー状態）、`$install-custom-agents` などの CLI
-- **内部契約** — 同一 version 内で完結する skill 間の受け渡し Data。Branch Plan の field 名、blocking violation code、reference の節構成
-
-Branch Plan を内部契約に置くのは、`branch-design` と `impl-lead` が同じ version で同時に配布され、片方だけ古い組み合わせが生じないためです。プラン文書とレビュー状態は issue などへ保存して後日渡す運用があるため公開面に含めます。
-
-- **major** — 公開面を壊す変更（mode や skill・agent の改名・削除など、利用者の呼び出しが通らなくなるもの）
-- **minor** — skill・agent の追加、契約の追加や拡張、内部契約の変更
-- **patch** — model/effort プロファイルの調整など、契約の意味を変えない修正
-
-公開面に載ることは major を意味しません。major の定義は「利用者の呼び出しが通らなくなる」ことなので、判定は旧入力を渡したときに停止するかで行います。4.2.0 で `plan-craft` の出力を単一の Data からプラン文書とレビュー状態の2 artifact へ分けたときも、旧形式の Data を渡しても `feature-lead` は停止せず、2 artifact が揃わない入力として `plan-craft` から再起草へ落ちるだけで、skill・agent・mode 名も変わらないため minor としました。
-
-## テストの二層構造
-
-- **`tests/test_build_plugin_assets_cli.py`** — 生成器を CLI としてのみ扱う振る舞いテスト。tempdir に fixture repository を組み立てて実行するため、実リポジトリの原稿内容には依存しません。
-- **`tests/test_build_plugin_assets_repository_contracts.py`** — 実リポジトリの原稿本文そのものを検査する契約テスト。日本語の具体的な文言、model/effort プロファイル、reviewer の出力形式、`evals/workflow-decision-corpus.md` の記述、README の記載までを固定しています。
-
-原稿の文言を変えると契約テストが落ちるのは**意図された設計**です。ワークフロー契約の変更なので、テスト側の期待値も同じ意図で更新します。テストの定数付近には「なぜその文字列で切り詰めているか」を説明する Why Not コメントが付いているので、変更前に読んでください。
-
-## workflow の中身（原稿を読むときの地図）
-
-配布する skill は5つで、責務が分離されており、`feature-lead` が自身の段として `plan-craft` /
-`branch-design` / `impl-lead` を連結して起動する場合を除き、互いを直接起動しません。
-
-| skill | 責務 | 起動しないもの |
-| --- | --- | --- |
-| `plan-craft` | 要求から実装プランを起草し、敵対的レビューと過剰実装審査を通す | 実装・委譲・枝分割 |
-| `branch-design` | 実装プランを委譲可能な Branch Plan Set へ正規化する | 実装・委譲・`impl-lead` |
-| `impl-lead` | 枝を worktree 隔離して委譲し、親が QA と最終検証を担う | — |
-| `test-audit` | 既存テストスイートを read-only で棚卸しし gap を報告する | 修正・テスト実行・受け入れ判断 |
-| `feature-lead` | `plan-craft` → `branch-design` → `impl-lead` を連結し、要求から実装完了までを一括で進める | 各段の判断基準の再定義・プラン起草・枝分割・実装自体 |
-
-`impl-lead` の mode は3層構造で決まります。`direct`（skill の外・親が直接実装）か委譲かをまず選び、委譲なら配分方針 `policy`（`fixed` / `adaptive`）と `baseline`（`lite` / `standard` / `strict`）を決め、枝ごとの `risk.level` から枝 mode を導出します。v2.0.0 で旧 `strict`（全枝固定）は `strict-full` へ改名され、`strict` は adaptive 配分を指すようになりました。詳細は README と `shared/skill/impl-lead/SKILL.md` を正本とします。
-
-`evals/workflow-decision-corpus.md` は、これらの判断を代表入力に対して人間が評価するための Phase 1 データです。正本ではなく評価用であり、自動採点は行いません。
+現行の workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-craft`（実装を開始しない計画成果物）、
+`review-loop`（不変 snapshot に対する bounded review）、`work-unit-design`（親 context 内の内部 Work Unit 設計）の4つです。
+agent の正本は `shared/agents/`、Claude/Codex runtime の exact inventory は repository contract と installer test で確認します。
 
 ## コミット規約
 
-コミットメッセージは日本語の要約1行で、末尾に PR 番号を付けます（例: `reviewer起動を穴埋めテンプレート化しdiffをartifactのpathで渡す (#91)`）。
+コミットメッセージは日本語の要約1行にし、本文では変更理由を説明します。Pull Request には目的、scope、関連 Issue、検証結果、
+生成物・version の変更を記載し、無関係な変更を含めません。
