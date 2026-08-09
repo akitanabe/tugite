@@ -388,7 +388,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
             f"declarations/codex/skills/{name}/openai.yaml" for name in WORKFLOW_SKILLS
         }
         self.assertEqual(expected, set(config["sources"]["files"]))
-        self.assertEqual("5.1.0", config["project"]["version"])
+        self.assertEqual("5.2.0", config["project"]["version"])
 
     def test_kernel_injection_contract_is_declared_identically_in_every_authoring_doc(self) -> None:
         declarations = {}
@@ -795,6 +795,11 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 "candidate-producer-boundary",
                 "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。",
             ),
+            "candidate-producer-boundary-requires-2c4fd141": (
+                "requires",
+                "candidate-producer-boundary",
+                "`structural-health-gate` の意味は この mapping の対象外である",
+            ),
             "plan-quality-advisor-boundary-requires-b920a922": (
                 "requires",
                 "plan-quality-advisor-boundary",
@@ -912,6 +917,46 @@ class V5RepositoryContractsTest(unittest.TestCase):
             ),
             "structural-health-gate-boundary-requires-08c3b623": (
                 "requires", "structural-health-gate-boundary", "duplicated source of truth"
+            ),
+            "structural-health-gate-boundary-requires-cf13d6a0": (
+                "requires",
+                "structural-health-gate-boundary",
+                "未解決の方向性または責務が、新しい設計判断を後段へ要求していないか",
+            ),
+            "structural-health-gate-boundary-requires-d4a5dd8e": (
+                "requires",
+                "structural-health-gate-boundary",
+                "requirements、design、Acceptance Criteria、verification の対応漏れまたは矛盾",
+            ),
+            "structural-health-gate-boundary-requires-da5407c3": (
+                "requires",
+                "structural-health-gate-boundary",
+                "用語、state、priority、responsibility の定義または遷移の不整合",
+            ),
+            "structural-health-gate-boundary-requires-bd70c0ca": (
+                "requires",
+                "structural-health-gate-boundary",
+                "局所修正が他の要件、責務、成果物全体へ広く波及する ripple",
+            ),
+            "structural-health-gate-boundary-requires-9ba9b48a": (
+                "requires",
+                "structural-health-gate-boundary",
+                "複数 finding に見える問題が、一つの structural defect から派生していないか",
+            ),
+            "structural-health-gate-boundary-requires-ea0a682d": (
+                "requires",
+                "structural-health-gate-boundary",
+                "例外、停止条件、stop contract の追加が増殖し、共通責務の欠落を覆っていないか",
+            ),
+            "structural-health-gate-boundary-requires-3060be44": (
+                "requires",
+                "structural-health-gate-boundary",
+                "局所修正で閉じる密度、詳細不足、文章上の重複は 通常の review で扱えるため、構造欠陥の evidence と混同しない",
+            ),
+            "structural-health-gate-boundary-requires-724b5c82": (
+                "requires",
+                "structural-health-gate-boundary",
+                "reviewer または advisor を使う場合、その出力は evidence のみであり、candidate の採否、修正、再起草、工程の終了を決めさせない",
             ),
             "structural-health-gate-boundary-requires-765af3a3": (
                 "requires",
@@ -1522,7 +1567,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()
-        self.assertEqual("5.1.0", version)
+        self.assertEqual("5.2.0", version)
         for relative_path in (
             "declarations/claude/plugin.json",
             "declarations/codex/plugin.json",
