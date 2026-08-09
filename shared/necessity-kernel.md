@@ -5,7 +5,7 @@ Kernel identity: `necessity-kernel-v1`.
 <!-- @contract necessity-kernel-v1 -->
 
 この共有規範は、reviewer または advisor が返す observation / evidence から導かれた候補を、現在の
-Task Contract に対する必要性で裁定するための最小規範である。正本はこのファイルであり、Claude / Codex
+Task Specification に対する必要性で裁定するための最小規範である。正本はこのファイルであり、Claude / Codex
 の配布物では `references/necessity-kernel.md` として生成される。各 role は全文を複製せず、この規範との
 自分の既存返却形式への mapping だけを持つ。parent は package reference を読み、role には既存の
 判定基準または必要な周辺 context の一部として identity / 必要な本文を渡す。
@@ -17,9 +17,9 @@ v1 の適用対象は `plan-adversarial-reviewer`、`over-engineering-reviewer`�
 `structural-health-gate 適用外`。gate の意味、assessment、caller contract を
 この規範で変更しない。
 
-## Task Contract
+## Task Specification
 
-判定に使う Task Contract は、次の観測可能な Data を含む。
+判定に使う Task Specification は、次の観測可能な Data を含む。
 
 - `requested outcome`（要求された成果）
 - 明示AC（Acceptance Criteria）
@@ -30,10 +30,10 @@ v1 の適用対象は `plan-adversarial-reviewer`、`over-engineering-reviewer`�
 - repository invariant
 - サポート対象入力/状態/環境
 
-Task Contract field group: scope/exclude/constraints/verification.
+Task Specification field group: scope/exclude/constraints/verification.
 
-Task Contract は current task の受入境界である。一般的に有用/将来有用だけの改善、きれいさ、網羅性、
-将来の拡張余地を Contract に含めない。不足または矛盾が判定を変える場合、推測で埋めず既存の親の停止・
+Task Specification は current task の受入境界である。一般的に有用/将来有用だけの改善、きれいさ、網羅性、
+将来の拡張余地を Task Specification に含めない。不足または矛盾が判定を変える場合、推測で埋めず既存の親の停止・
 確認経路へ返す。
 
 ## Claim と evidence
@@ -41,7 +41,7 @@ Task Contract は current task の受入境界である。一般的に有用/将
 `Claim` は finding / insight 本文そのものではなく、candidate snapshot に追加、維持、変更、除去、検証、
 調査する候補 obligation である。finding / insight は observation、evidence、necessity basis として
 Claim の根拠を示す。test / log / measurement / investigation / additional review の実施も、必要なら
-それ自体を Claim として扱うが、現在の Task Contract を破らない限り暗黙に scope へ追加しない。
+それ自体を Claim として扱うが、現在の Task Specification を破らない限り暗黙に scope へ追加しない。
 Claim basis fields: observation/evidence/necessity basis.
 
 ## Deletion Test
@@ -51,7 +51,7 @@ snapshot 全体を一括して「きれいにする」判断に置き換えな�
 
 1. Claim が担う obligation、候補を除去した場合の Failure、観測された Evidence、必要な
    Minimum Resolution Condition を既存 Data から特定する。
-2. 候補だけを仮想的に除去した更新前提を置き、Task Contract の obligation が壊れるかを確認する。
+2. 候補だけを仮想的に除去した更新前提を置き、Task Specification の obligation が壊れるかを確認する。
 3. 次のいずれかへ分類し、既存 role の返却 field と parent の語彙へ写像する。
 
 ### `necessary`
@@ -84,12 +84,12 @@ Deletion Test を再判定する。古い snapshot の witness を更新後へ�
 
 `discovered != admitted`。新発見の問題は Claim になり得るが、発見しただけで admitted にはならない。
 evidence collection（test、log、measurement、investigation、additional review）も必要性を判定し、
-Task Contract の scope を親の裁定なしに拡張しない。
+Task Specification の scope を親の裁定なしに拡張しない。
 
 ### Stop Adding Rule
 
-必要または indeterminate の未処理 Claim がなく、Task Contract を受入可能な evidence が揃ったら、
-綺麗さ、網羅性、将来性、厳密さだけを理由に Task Contract 外の Claim や work を追加しない。この Rule は
-Claim / work の current Contract への追加可否だけを扱い、workflow の進行や停止を要求・決定せず、存在しない
+必要または indeterminate の未処理 Claim がなく、Task Specification を受入可能な evidence が揃ったら、
+綺麗さ、網羅性、将来性、厳密さだけを理由に Task Specification 外の Claim や work を追加しない。この Rule は
+Claim / work の current Task Specification への追加可否だけを扱い、workflow の進行や停止を要求・決定せず、存在しない
 ことの証明も要求しない。新 Claim の探索を要求せず、親が保持する既存の責務と語彙へ返す。
 <!-- @/contract -->

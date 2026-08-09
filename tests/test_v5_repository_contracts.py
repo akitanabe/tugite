@@ -59,6 +59,11 @@ RETIRED_IMPLEMENTATION_PATHS = (
     "shared/terms.toml",
     "tests/build_plugin_assets_test_support.py",
 )
+# necessity-kernel の "Task Contract" は「gunte check が検証する contracts.toml の
+# requires/forbids/order」と語が衝突するため "Task Specification" へ改名済み（issue #193）。
+# docs/ubiquitous-language.md は旧語を改名経緯の記録として意図的に残すため検査対象から外す。
+RETIRED_TASK_CONTRACT_WORDING = "Task Contract"
+RETIRED_TASK_CONTRACT_WORDING_SCAN_ROOTS = ("shared", "evals", "contracts.toml", "plugins")
 EXPLICIT_CLAUDE_SKILLS = {"impl-lead", "plan-craft"}
 INTERNAL_CLAUDE_SKILLS = {"proposal", "structural-health-gate", "work-unit-design"}
 PUBLIC_SKILLS = {"impl-lead", "plan-craft", "review-loop"}
@@ -122,7 +127,7 @@ KERNELS = {
                     "判定基準",
                     "必要な周辺 context",
                     "identity",
-                    "Task Contract",
+                    "Task Specification",
                     "不足",
                 ),
                 "review-loop": (
@@ -136,7 +141,7 @@ KERNELS = {
                     "判定基準",
                     "必要な周辺 context",
                     "identity",
-                    "Task Contract",
+                    "Task Specification",
                     "不足",
                 ),
             },
@@ -1412,7 +1417,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
     def test_necessity_kernel_contract_registry_is_exact(self) -> None:
         registry = tomllib.loads((ROOT / "contracts.toml").read_text(encoding="utf-8"))["contracts"]
         expected = {
-            "necessity-kernel-v1-requires-f5c9070d": ("requires", "necessity-kernel-v1", "Task Contract"),
+            "necessity-kernel-v1-requires-523d39d3": ("requires", "necessity-kernel-v1", "Task Specification"),
             "necessity-kernel-v1-requires-f4594656": ("requires", "necessity-kernel-v1", "requested outcome"),
             "necessity-kernel-v1-requires-1238f644": ("requires", "necessity-kernel-v1", "明示AC"),
             "necessity-kernel-v1-requires-3812bcb3": ("requires", "necessity-kernel-v1", "scope/exclude/constraints/verification"),
@@ -1473,7 +1478,7 @@ class V5RepositoryContractsTest(unittest.TestCase):
                 for marker in markers:
                     self.assertIn(marker, section)
                 criteria = self._labeled_field(section, "判定基準")
-                for marker in ("necessity-kernel-v1", "Task Contract", "Claim", "Deletion Test"):
+                for marker in ("necessity-kernel-v1", "Task Specification", "Claim", "Deletion Test"):
                     self.assertIn(marker, criteria)
                 if case_id == "necessity-kernel-indeterminate":
                     anomaly = self._labeled_field(section, "異常 variant")
@@ -1502,6 +1507,18 @@ class V5RepositoryContractsTest(unittest.TestCase):
             digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:8]
             with self.subTest(contract=name):
                 self.assertTrue(name.endswith(f"-{digest}"), name)
+
+    def test_retired_task_contract_wording_is_absent_outside_docs(self) -> None:
+        for relative_root in RETIRED_TASK_CONTRACT_WORDING_SCAN_ROOTS:
+            target = ROOT / relative_root
+            paths = [target] if target.is_file() else target.rglob("*")
+            for path in paths:
+                if path.is_file():
+                    with self.subTest(path=path.relative_to(ROOT)):
+                        self.assertNotIn(
+                            RETIRED_TASK_CONTRACT_WORDING,
+                            path.read_text(encoding="utf-8"),
+                        )
 
     def test_version_is_synchronized_and_retired_names_are_absent_from_runtimes(self) -> None:
         version = (ROOT / "shared/VERSION").read_text(encoding="utf-8").strip()

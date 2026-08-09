@@ -6,7 +6,8 @@ Tugite は Claude Code と Codex 向けの agent・skill 定義を配布しま�
 `shared/skill/`、agent は `shared/agents/` に置きます。v5 の workflow skill は `impl-lead`、`plan-craft`、
 `review-loop`、`work-unit-design` の4つです。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
 `contracts.toml`、platform manifest と Codex skill metadata の宣言は `declarations/` が正本です。配布物は
-`plugins/` に生成されます。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。
+`plugins/` に生成されます。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。`Contract`、
+`Task Specification`、`Work Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
 ## ビルド・テスト・開発コマンド
 

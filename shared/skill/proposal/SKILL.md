@@ -48,7 +48,7 @@ candidate Claim を判定する前に、advisor 起動の有無にかかわら�
 `判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。reference の不足、identity 不一致、
 読み取り失敗があれば推測せず `stop-incomplete` へ返し、advisor は plugin 相対 path を解決しない。
 
-候補 Claim の必要性は既存の判定基準に含めた Task Contract と Deletion Test で観察する。
+候補 Claim の必要性は既存の判定基準に含めた Task Specification と Deletion Test で観察する。
 Claim は finding / insight 本文ではなく、candidate に追加・維持・変更・除去・検証・調査する obligation の候補
 であり、必要性の根拠を既存の observation / evidence から追跡する。`necessary` / `unnecessary` /
 `indeterminate` を新しい返却 field にせず、親は下記の adoption ledger の語彙へ写像する。候補を更新した後は

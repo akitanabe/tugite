@@ -956,10 +956,10 @@ slice = "review-loop-proposal-family-caller"
 pattern = "workflow 間も自動で切り替えない"
 applies_to = ["claude", "codex"]
 
-[contracts.necessity-kernel-v1-requires-f5c9070d]
+[contracts.necessity-kernel-v1-requires-523d39d3]
 kind = "requires"
 slice = "necessity-kernel-v1"
-pattern = "Task Contract"
+pattern = "Task Specification"
 applies_to = ["claude", "codex"]
 
 [contracts.necessity-kernel-v1-requires-f4594656]
