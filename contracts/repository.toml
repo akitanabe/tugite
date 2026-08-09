@@ -41,6 +41,7 @@ subject = "artifact"
 paths = [
   "plugins/claude/skills/impl-lead/SKILL.md",
   "plugins/claude/skills/plan-craft/SKILL.md",
+  "plugins/claude/skills/plan-craft-approval/SKILL.md",
 ]
 format = "yaml"
 applies_to = ["claude"]
@@ -59,6 +60,7 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/proposal-dialogue/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/work-unit-design/SKILL.md",
 ]
@@ -238,7 +240,7 @@ value = "./plugins/claude"
 [[contracts.claude-marketplace-shape.assertions]]
 path = "plugins.*.description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-marketplace-shape]
 kind = "structure"
@@ -307,7 +309,7 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.claude-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-plugin-manifest-shape]
 kind = "structure"
@@ -334,18 +336,19 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use v5 impl-lead, plan-craft, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use v5 impl-lead, plan-craft, plan-craft-approval, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the v5 public workflows impl-lead, plan-craft, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility."
+value = "Codex skills for the v5 public workflows impl-lead, plan-craft, plan-craft-approval, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
 op = "list_order"
 value = [
   "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
+  "Use $plan-craft-approval to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
   "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
   "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
   "Use $install-custom-agents to check, install, or update the bundled custom agents.",

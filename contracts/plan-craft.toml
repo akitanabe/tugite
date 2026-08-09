@@ -760,6 +760,72 @@ before = "proposal-start"
 after = "structural-health-gate-start"
 applies_to = ["claude", "codex"]
 
+[contracts.plan-craft-review-routing-requires-799b33badbff]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを判定する。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-b742eb46d34e]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-4e9a834e505c]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "`review` の明示要求がなくても `review-loop` を既定で起動する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-35210ae75235]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "ユーザーが review 省略を明示した場合は、`review-loop` を実行せず通常の起草確定へ進む"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-5b013a4ddf74]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "`artifact_kind` の適用可否を review 省略の判定より先に行う"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-fb8f89e59cbb]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "ユーザー明示なしの既定 review は、具体的な risk を理由に親が自発選択した review と同じ非 accept 分岐を適用する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-goal-requires-cc2a54966b25]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "`review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-goal-requires-6aad8209e3e0]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-goal-requires-6aacfaa2cb24]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-goal-forbids-a17c2d4b80b1]
+kind = "forbids"
+slice = "plan-craft-review-routing"
+pattern = "追加 risk がなければ `review_goal` を設定しない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-applicability-before-opt-out]
+kind = "order"
+before = "review-applicability"
+after = "review-opt-out"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-structural-health-gate-before-review-loop]
 kind = "order"
 before = "structural-health-gate-start"

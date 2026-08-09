@@ -2,7 +2,8 @@
 name: plan-craft
 description: >-
   ユーザーが明示した場合だけ、実装接続を前提にしない自由形式の計画・設計成果物を起草し、
-  必要な場合だけ review-loop を起動して確定候補を返す。実装・委譲・次工程の自動前進は行わず、
+  gate pass 後は reviewer 適用対象の成果物を review 省略の明示がない限り既定で review-loop へ渡して確定候補を返す。
+  実装・委譲・次工程の自動前進は行わず、
   親が成果物の受け入れを判断する。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
@@ -96,13 +97,19 @@ Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit
 
 ## review の判断
 
-review は固定 phase ではない。ユーザーが review を明示した場合は実行する。それ以外は、具体的な risk と
-review 結果が親の判断を変えることを期待できる evidence を説明できる場合だけ `review-loop` を起動する。明示も具体的な
-risk もなければ review を起動せず、通常の起草確定へ進む。
+まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを判定する。
+既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。
+`artifact_kind` の適用可否を review 省略の判定より先に行う。
+適用対象なら、ユーザーが review 省略を明示した場合は、`review-loop` を実行せず通常の起草確定へ進む。
+適用対象で review 省略が明示されていない場合は、`review` の明示要求がなくても `review-loop` を既定で起動する。
+`review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。
+これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。
+review の明示要求は既定起動の前提にせず、具体的な risk を review goal として追加する場合だけ親が記録する。
+ユーザー明示なしの既定 review は、具体的な risk を理由に親が自発選択した review と同じ非 accept 分岐を適用する。
 
 既定 reviewer は `plan-adversarial-reviewer`、final trim は `over-engineering-reviewer`（プラン入力モード）である。
-他の reviewer はユーザーが明示した場合、または risk が既存 reviewer の責務に対応する場合だけ親が選ぶ。review を
-予定し既定 reviewer の適用対象となる成果物は、reviewer の入力前提である「Acceptance Criteria」の節名と「設計」の
+適用対象の成果物に対する他の reviewer はユーザーが明示した場合、または risk が既存 reviewer の責務に対応する場合だけ親が選ぶ。
+review を予定し既定 reviewer の適用対象となる成果物は、reviewer の入力前提である「Acceptance Criteria」の節名と「設計」の
 節名を持つように起草する。前提不足は review-loop へ渡さず、問いを補って再投入するか、レビュー不成立として返す。
 
 `review-loop` へ渡す入力は成果物の不変 snapshot、artifact_kind、要求と判定基準、review goal、ユーザー指定の
@@ -128,7 +135,7 @@ reviewer は指摘だけを行い、採否や保留を確定しない。親は r
 review を実行した場合、`converged` または未解決 finding のない `induced-loop` だけを確定候補とする。
 ユーザーが review を明示したのにレビュー不成立、`round-limit`、`stop-incomplete`、未解決を伴う `induced-loop`
 になった場合は、代替 evidence で完了扱いにせず、ユーザー確認または未完了終了だけを選ぶ。親が具体的な risk を理由に
-自発選択した review のレビュー不成立に限り、代替 evidence で品質下限を独立確認できた場合は確定候補にできる。
+自発選択した review、またはユーザー明示なしの既定 review のレビュー不成立に限り、代替 evidence で品質下限を独立確認できた場合は確定候補にできる。
 それ以外の非 accept 返却では成果物を確定せず、残存 risk と問いを示す。
 
 review を実行しない場合は、要求の不足、scope、制約、残存 risk を親が確認できる通常の起草確定へ進める。どちらの場合も

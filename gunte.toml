@@ -10,6 +10,7 @@ files = [
   "contracts/workers.toml",
   "contracts/impl-lead.toml",
   "contracts/plan-craft.toml",
+  "contracts/plan-craft-approval.toml",
   "contracts/necessity-kernel.toml",
 ]
 
@@ -29,7 +30,9 @@ files = [
   "shared/necessity-kernel.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/plan-craft/SKILL.md",
+  "shared/skill/plan-craft-approval/SKILL.md",
   "shared/skill/proposal/SKILL.md",
+  "shared/skill/proposal-dialogue/SKILL.md",
   "shared/skill/review-loop/SKILL.md",
   "shared/skill/structural-health-gate/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
@@ -39,7 +42,9 @@ files = [
   "declarations/codex/marketplace.json",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-craft/openai.yaml",
+  "declarations/codex/skills/plan-craft-approval/openai.yaml",
   "declarations/codex/skills/proposal/openai.yaml",
+  "declarations/codex/skills/proposal-dialogue/openai.yaml",
   "declarations/codex/skills/review-loop/openai.yaml",
   "declarations/codex/skills/structural-health-gate/openai.yaml",
   "declarations/codex/skills/work-unit-design/openai.yaml",

@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "version": "5.2.0",
-  "description": "Use v5 impl-lead, plan-craft, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
+  "description": "Use v5 impl-lead, plan-craft, plan-craft-approval, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
   "author": {
     "name": "akitanabe"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install agents and delegate with parent QA.",
-    "longDescription": "Codex skills for the v5 public workflows impl-lead, plan-craft, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility.",
+    "longDescription": "Codex skills for the v5 public workflows impl-lead, plan-craft, plan-craft-approval, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -27,6 +27,7 @@
     ],
     "defaultPrompt": [
       "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
+      "Use $plan-craft-approval to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
       "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
       "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."

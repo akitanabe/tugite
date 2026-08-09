@@ -24,7 +24,7 @@ go install github.com/akitanabe/gunte/cmd/gunte@latest
 ## v5 の Gunte 運用
 
 `gunte.toml` は project、source、target、出力 rule、platform terms と managed inventory を定義し、`contracts/*.toml` は
-text/structure contract を定義します。platform manifest は `declarations/`、Codex の4 workflow skill
+text/structure contract を定義します。platform manifest は `declarations/`、Codex の6 workflow skill
 metadata は `declarations/codex/skills/` に置きます。Gunte は `sources.files` に列挙した agent、manifest、version、
 workflow skill、metadata を生成し、未登録 source、stale path、必須・retired path、metadata policy は `gunte check` で保護します。
 
@@ -72,7 +72,8 @@ semver は公開面が壊れるかで割り当てます。skill・agent 名、�
 ## workflow と agent の surface
 
 現行の workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-craft`（実装を開始しない計画成果物）、
-`review-loop`（不変 snapshot に対する bounded review）、`work-unit-design`（親 context 内の内部 Work Unit 設計）の4つです。
+`plan-craft-approval`（人間参加型の計画成果物）、`proposal-dialogue`（親 context 内の方向性対話）、
+`review-loop`（不変 snapshot に対する bounded review）、`work-unit-design`（親 context 内の内部 Work Unit 設計）の6つです。
 agent の正本は `shared/agents/`、Claude/Codex runtime の exact inventory は repository contract と installer test で確認します。
 
 ## コミット規約
