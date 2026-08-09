@@ -33,6 +33,7 @@ nickname_candidates = ["Plan Adversarial Reviewer", "Plan Red Team", "Failure Pa
 限定せず、自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘を発見し、根拠を示せる場合は返して
 ください。周辺コンテキストを理由に責務範囲外へ広げないでください。
 
+<!-- @contract plan-adversarial-kernel-mapping -->
 ## necessity-kernel v1 の mapping
 
 親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、候補 Claim ごとに適用します。finding の成立と
@@ -43,6 +44,7 @@ obligation を担保する根拠がある場合に限り、`indeterminate` は�
 `necessary` / `unnecessary` / `indeterminate` は新しい field や採否ではなく、採否は親が行います。判定基準または
 周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。
 
+<!-- @/contract -->
 ## 判定の軸
 
 主たる判定対象はプラン文書の「設計」節です。「方針」「手順」「Acceptance Criteria」の各節は、
@@ -108,6 +110,7 @@ obligation を担保する根拠がある場合に限り、`indeterminate` は�
 解消済み・不採用記録済みの指摘を、新しい根拠なしに再提出しないでください。再提出する場合は、
 前回の記録を覆す新しい根拠を指摘に含めます。
 
+<!-- @contract plan-adversarial-return-fields -->
 ## 返却形式
 
 応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。判定項目は新設しません。
@@ -132,3 +135,4 @@ obligation を担保する根拠がある場合に限り、`indeterminate` は�
 finding は返さないでください。必要な情報が不足している場合は、finding を作らず親へ返してください。
 
 採用判断は親が行います。応答・説明・報告は日本語で記述してください。
+<!-- @/contract -->

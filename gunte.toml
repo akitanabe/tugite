@@ -1,8 +1,17 @@
-spec_version = 1
+spec_version = 2
 
 [project]
 id = "tugite"
-version = "5.2.0"
+version_from = "shared/VERSION"
+
+[contracts]
+files = [
+  "contracts/repository.toml",
+  "contracts/workers.toml",
+  "contracts/impl-lead.toml",
+  "contracts/plan-craft.toml",
+  "contracts/necessity-kernel.toml",
+]
 
 [sources]
 files = [
@@ -25,7 +34,9 @@ files = [
   "shared/skill/structural-health-gate/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
   "declarations/claude/plugin.json",
+  "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
+  "declarations/codex/marketplace.json",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-craft/openai.yaml",
   "declarations/codex/skills/proposal/openai.yaml",
@@ -34,29 +45,55 @@ files = [
   "declarations/codex/skills/work-unit-design/openai.yaml",
   "shared/VERSION",
 ]
+managed_roots = [
+  "shared",
+  "declarations",
+  "contracts",
+  "tests",
+  "scripts",
+  "contracts.toml",
+  ".claude-plugin",
+  ".agents/plugins",
+]
+allow_files = [
+  "tests/install-agents-test.sh",
+  ".claude-plugin/marketplace.json",
+  ".agents/plugins/marketplace.json",
+]
 
 [terms.parent_agent]
 claude = "親エージェント"
 codex = "親 Codex エージェント"
+claude-marketplace = "親エージェント"
+codex-marketplace = "親 Codex エージェント"
 
 [terms.reviewer_invocation]
 claude = "新規 Agent"
 codex = "新しい reviewer worker"
+claude-marketplace = "新規 Agent"
+codex-marketplace = "新しい reviewer worker"
 
 [terms.new_worker_invocation]
 claude = "新規の `Agent` 呼び出し"
 codex = "新しい worker の起動"
+claude-marketplace = "新規の `Agent` 呼び出し"
+codex-marketplace = "新しい worker の起動"
 
 [terms.new_worker]
 claude = "新規 `Agent`"
 codex = "新しい worker"
+claude-marketplace = "新規 `Agent`"
+codex-marketplace = "新しい worker"
 
 [terms.continuation_mechanism]
 claude = "`SendMessage`"
 codex = "`followup_task`"
+claude-marketplace = "`SendMessage`"
+codex-marketplace = "`followup_task`"
 
 [targets.claude]
 output_root = "plugins/claude"
+managed_roots = ["agents", "skills", "references", ".claude-plugin"]
 
 [[targets.claude.rules]]
 match = "shared/necessity-kernel.md"
@@ -94,6 +131,9 @@ metadata = [
 
 [targets.codex]
 output_root = "plugins/codex"
+managed_roots = ["install", "skills", "references", ".codex-plugin"]
+allow_files = ["install/install-agents.sh"]
+allow_dirs = ["skills/install-custom-agents"]
 
 [[targets.codex.rules]]
 match = "shared/necessity-kernel.md"
@@ -140,3 +180,19 @@ match = "shared/VERSION"
 path = "install/VERSION"
 profile = "plain-text-v1"
 value_from = "project:version"
+
+[targets.claude-marketplace]
+output_root = ".claude-plugin"
+
+[[targets.claude-marketplace.rules]]
+match = "declarations/claude/marketplace.json"
+path = "marketplace.json"
+profile = "json-v1"
+
+[targets.codex-marketplace]
+output_root = ".agents/plugins"
+
+[[targets.codex-marketplace.rules]]
+match = "declarations/codex/marketplace.json"
+path = "marketplace.json"
+profile = "json-v1"

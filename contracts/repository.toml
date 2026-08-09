@@ -1,0 +1,352 @@
+[contracts]
+
+[contracts.no-retired-task-contract-wording]
+kind = "forbids"
+pattern = "Task\u0020Contract"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-handoff-field]
+kind = "forbids"
+pattern = "_handoff"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-verdict-field]
+kind = "forbids"
+pattern = "necessity_verdict"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-status-field]
+kind = "forbids"
+pattern = "necessity_status"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-decision-field]
+kind = "forbids"
+pattern = "necessity_decision"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-field-field]
+kind = "forbids"
+pattern = "necessity_field"
+applies_to = ["claude", "codex"]
+
+[contracts.no-kernel-result-field]
+kind = "forbids"
+pattern = "necessity_result"
+applies_to = ["claude", "codex"]
+
+[contracts.claude-explicit-skill-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/claude/skills/plan-craft/SKILL.md",
+]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-explicit-skill-policy.assertions]]
+path = "disable-model-invocation"
+op = "equals"
+value = true
+
+[[contracts.claude-explicit-skill-policy.assertions]]
+path = "user-invocable"
+op = "absent"
+
+[contracts.claude-internal-skill-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/structural-health-gate/SKILL.md",
+  "plugins/claude/skills/work-unit-design/SKILL.md",
+]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-internal-skill-policy.assertions]]
+path = "user-invocable"
+op = "equals"
+value = false
+
+[[contracts.claude-internal-skill-policy.assertions]]
+path = "disable-model-invocation"
+op = "absent"
+
+[contracts.claude-review-loop-policy]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/review-loop/SKILL.md"]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-review-loop-policy.assertions]]
+path = "disable-model-invocation"
+op = "absent"
+
+[[contracts.claude-review-loop-policy.assertions]]
+path = "user-invocable"
+op = "absent"
+
+[contracts.claude-structural-health-gate-kernel-exclusion]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/structural-health-gate/SKILL.md"]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-structural-health-gate-kernel-exclusion.assertions]]
+path = "description"
+op = "equals"
+value = "明示起動された proposal-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する internal gate。成果物を再設計・直接編集せず、 assessment と最終判断を public workflow parent へ残す。"
+
+[contracts.worker-agent-policy]
+kind = "structure"
+subject = "source_frontmatter"
+paths = [
+  "shared/agents/expert-implementer.md",
+  "shared/agents/focused-implementer.md",
+  "shared/agents/implementer.md",
+  "shared/agents/senior-implementer.md",
+]
+
+[[contracts.worker-agent-policy.assertions]]
+path = "claude"
+op = "exact_keys"
+value = ["description", "model", "effort"]
+
+[[contracts.worker-agent-policy.assertions]]
+path = "codex"
+op = "exact_keys"
+value = ["description", "model", "model_reasoning_effort", "nickname_candidates"]
+
+[contracts.read-only-agent-policy]
+kind = "structure"
+subject = "source_frontmatter"
+paths = [
+  "shared/agents/over-engineering-reviewer.md",
+  "shared/agents/plan-adversarial-reviewer.md",
+  "shared/agents/plan-quality-advisor.md",
+  "shared/agents/responsibility-boundary-reviewer.md",
+  "shared/agents/security-side-effect-reviewer.md",
+  "shared/agents/test-quality-reviewer.md",
+  "shared/agents/writing-principles-reviewer.md",
+]
+
+[[contracts.read-only-agent-policy.assertions]]
+path = "claude"
+op = "exact_keys"
+value = ["description", "model", "effort", "tools", "disallowed_tools"]
+
+[[contracts.read-only-agent-policy.assertions]]
+path = "codex"
+op = "exact_keys"
+value = ["description", "model", "model_reasoning_effort", "sandbox_mode", "nickname_candidates"]
+
+[[contracts.read-only-agent-policy.assertions]]
+path = "codex.sandbox_mode"
+op = "equals"
+value = "read-only"
+
+[contracts.read-only-agent-with-bash-policy]
+kind = "structure"
+subject = "source_frontmatter"
+paths = [
+  "shared/agents/over-engineering-reviewer.md",
+  "shared/agents/plan-quality-advisor.md",
+  "shared/agents/responsibility-boundary-reviewer.md",
+  "shared/agents/security-side-effect-reviewer.md",
+  "shared/agents/test-quality-reviewer.md",
+]
+
+[[contracts.read-only-agent-with-bash-policy.assertions]]
+path = "claude.tools"
+op = "list_set"
+value = ["Read", "Grep", "Glob", "Bash"]
+
+[[contracts.read-only-agent-with-bash-policy.assertions]]
+path = "claude.disallowed_tools"
+op = "list_set"
+value = ["Edit", "Write", "NotebookEdit"]
+
+[contracts.read-only-agent-without-bash-policy]
+kind = "structure"
+subject = "source_frontmatter"
+paths = [
+  "shared/agents/plan-adversarial-reviewer.md",
+  "shared/agents/writing-principles-reviewer.md",
+]
+
+[[contracts.read-only-agent-without-bash-policy.assertions]]
+path = "claude.tools"
+op = "list_set"
+value = ["Read", "Grep", "Glob"]
+
+[[contracts.read-only-agent-without-bash-policy.assertions]]
+path = "claude.disallowed_tools"
+op = "list_set"
+value = ["Bash", "Edit", "Write", "NotebookEdit"]
+
+[contracts.plan-quality-advisor-model-policy]
+kind = "structure"
+subject = "source_frontmatter"
+paths = ["shared/agents/plan-quality-advisor.md"]
+
+[[contracts.plan-quality-advisor-model-policy.assertions]]
+path = "claude.model"
+op = "equals"
+value = "opus"
+
+[[contracts.plan-quality-advisor-model-policy.assertions]]
+path = "claude.effort"
+op = "equals"
+value = "high"
+
+[contracts.claude-marketplace-shape]
+kind = "structure"
+subject = "artifact"
+paths = [".claude-plugin/marketplace.json"]
+format = "json"
+applies_to = ["claude-marketplace"]
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "name"
+op = "equals"
+value = "tugite"
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "plugins.*"
+op = "cardinality"
+count = 1
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "plugins.*"
+op = "exact_keys"
+value = ["name", "source", "description", "author"]
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "plugins.*.name"
+op = "equals"
+value = "tugite"
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "plugins.*.source"
+op = "equals"
+value = "./plugins/claude"
+
+[[contracts.claude-marketplace-shape.assertions]]
+path = "plugins.*.description"
+op = "equals"
+value = "v5 の impl-lead、plan-craft、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+
+[contracts.codex-marketplace-shape]
+kind = "structure"
+subject = "artifact"
+paths = [".agents/plugins/marketplace.json"]
+format = "json"
+applies_to = ["codex-marketplace"]
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "name"
+op = "equals"
+value = "tugite"
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "interface.displayName"
+op = "equals"
+value = "Tugite"
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "plugins.*"
+op = "cardinality"
+count = 1
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "plugins.*"
+op = "exact_keys"
+value = ["name", "source", "policy", "category"]
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "plugins.*.name"
+op = "equals"
+value = "tugite"
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "plugins.*.source"
+op = "equals"
+value = { source = "local", path = "./plugins/codex" }
+
+[[contracts.codex-marketplace-shape.assertions]]
+path = "plugins.*.policy"
+op = "equals"
+value = { installation = "AVAILABLE", authentication = "ON_INSTALL" }
+
+[contracts.claude-plugin-manifest-shape]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/.claude-plugin/plugin.json"]
+format = "json"
+applies_to = ["claude"]
+
+[[contracts.claude-plugin-manifest-shape.assertions]]
+path = "name"
+op = "equals"
+value = "tugite"
+
+[[contracts.claude-plugin-manifest-shape.assertions]]
+path = "displayName"
+op = "equals"
+value = "Tugite"
+
+[[contracts.claude-plugin-manifest-shape.assertions]]
+path = "keywords"
+op = "list_order"
+value = ["multi-agent", "software-development", "planning", "delegation", "code-review", "tdd"]
+
+[[contracts.claude-plugin-manifest-shape.assertions]]
+path = "description"
+op = "equals"
+value = "v5 の impl-lead、plan-craft、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+
+[contracts.codex-plugin-manifest-shape]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/.codex-plugin/plugin.json"]
+format = "json"
+applies_to = ["codex"]
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "name"
+op = "equals"
+value = "tugite"
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "interface.displayName"
+op = "equals"
+value = "Tugite"
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "keywords"
+op = "list_order"
+value = ["multi-agent", "software-development", "planning", "delegation", "code-review", "tdd"]
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "description"
+op = "equals"
+value = "Use v5 impl-lead, plan-craft, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "interface.longDescription"
+op = "equals"
+value = "Codex skills for the v5 public workflows impl-lead, plan-craft, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility."
+
+[[contracts.codex-plugin-manifest-shape.assertions]]
+path = "interface.defaultPrompt"
+op = "list_order"
+value = [
+  "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
+  "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+  "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
+  "Use $install-custom-agents to check, install, or update the bundled custom agents.",
+]

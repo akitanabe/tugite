@@ -6,17 +6,17 @@ Tugite の Skill、Agent、Issue、実装で同じ語を同じ意味で使うた
 
 ## Contract
 
-システムが機械的に検証する構造・不変条件です。`contracts.toml` に `requires`、`forbids`、`order` として宣言し、
+システムが機械的に検証する構造・不変条件です。`contracts/*.toml` に text/structure contract として宣言し、
 `gunte check` が生成物に対して検証します。Skill と Agent の定義そのものを対象とする definition-time の保証であり、
 内容の妥当性は判断しません。
 
-- 正本: `contracts.toml`
+- 正本: `contracts/*.toml`（選択順は `gunte.toml` の `[contracts].files`）
 - 契約 ID の規約と運用: `CLAUDE.md` / `AGENTS.md`
 
 ## Task Specification
 
 Task または Work Unit が何を達成すべきかを、LLM が意味的に解釈するための定義です。必要性判定に使う受入境界であり、
-何を含むかは正本が定めます。issue #193 は略記 `Task Spec` も候補に挙げていますが、正本本文と `contracts.toml` の
+何を含むかは正本が定めます。issue #193 は略記 `Task Spec` も候補に挙げていますが、正本本文と `contracts/*.toml` の
 pattern では正式名だけを使います。
 
 - 正本: `shared/necessity-kernel.md` の `## Task Specification`

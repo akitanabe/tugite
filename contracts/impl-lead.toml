@@ -1,0 +1,173 @@
+[contracts.impl-default-exact-requires-91aab3de3408]
+kind = "requires"
+slice = "impl-run-owned-default"
+pattern = "### Default run-owned checkout\n\nユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は\n`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から\nrun-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration\nを既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。\n既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の\nsafe-parallel 条件に従って追加 isolation を選ぶ。\n\nこの既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の\n親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback\nの責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する\nこと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を\n省略しない。\n\nユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。\nその指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned\nworktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。\n作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は\nrun の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。\n\n## Route and execution order"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-run-owned-default-requires-24af2bb38936]
+kind = "requires"
+slice = "impl-run-owned-default"
+pattern = "### Default run-owned checkout"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-run-owned-default-forbids-3524f110a885]
+kind = "forbids"
+slice = "impl-run-owned-default"
+pattern = "### Default run-owned checkout\n\n### Default run-owned checkout"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-run-owned-default-before-route]
+kind = "order"
+before = "impl-run-owned-default-start"
+after = "impl-route-execution-start"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-dfe4f75786cc]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "final writing gate"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-71697deb87bc]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "finding Data"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-f8cc133d2c1b]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "final remediation Work Unit"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-ac9dff940f63]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`id`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-aa7bc91d6a8b]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`purpose`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-eb0936c15816]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`acceptance_criteria`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-726f62ee839f]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`scope`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-7cd8ffcceff8]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`change`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-e1b93aad133e]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`exclude`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-aac4a2eb09bc]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`implementation_freedom`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-abee221073c9]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`constraints`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-562450be2674]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`depends_on`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-ee1e8ef3af7c]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "`verification`"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-ae4be56e2479]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit message"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-fc399aa1677a]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "commit range"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-3d02034ce816]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "before/after identity"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-0ffe47a66ac3]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "same-run accept exception"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-b93e9dbdec97]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "fresh Implementer context"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-4e3a0feb7633]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "single writer"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-7be6362fa4f0]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "mechanically restart"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-5fd5573f6598]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "mandatory final writing review"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-requires-ac5476bde199]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "closeout"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-a3252e730491]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "review-patch-refactorer"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-dfc45d5af397]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "fixed patch agent"
+applies_to = ["claude", "codex"]
+
+[contracts.final-writing-remediation-forbids-5e94eb370949]
+kind = "forbids"
+slice = "final-writing-remediation"
+pattern = "全 finding の固定 loop"
+applies_to = ["claude", "codex"]

@@ -34,6 +34,7 @@ diff テキスト、テスト結果が必要です。AC または制約が渡さ
 限定せず、自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘を発見し、根拠を示せる場合は返して
 ください。周辺コンテキストを理由に責務範囲外へ広げないでください。
 
+<!-- @contract over-engineering-kernel-mapping -->
 ## necessity-kernel v1 の mapping
 
 親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、基準 commit から diff が導入した plan /
@@ -56,6 +57,7 @@ verdict field は追加しません。大きさ、複雑さ、行数のみを根
 `update-ref` / `symbolic-ref` / `reflog expire` / `gc --prune=now` / `config` の変更 /
 `.git/hooks/*` への書き込み / `clean -fdx` / `restore` / `push` など）。
 
+<!-- @/contract -->
 ## 判定の軸
 
 > その要素を取り除いたとき、検証または実装を失う Acceptance Criteria・明示された制約・repository の既存規約が存在するか。
@@ -101,6 +103,7 @@ traceability では重複を扱えず、この reviewer の主目的が成立し
 具体的に特定できない場合、および重複テストで削除する側と残す側の両方を特定できない場合は、指摘として返さず、
 根拠が不足していることを親へ返してください。
 
+<!-- @contract over-engineering-return-fields -->
 ## 返却形式
 
 応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。判定項目は新設しません。
@@ -136,6 +139,7 @@ finding は返さないでください。必要な情報が不足している場
 推奨する修正先には actor を記載せず、必要な変更の性質と範囲を示してください。修正経路と採用判断は親が扱います。
 既存課題に気付いた場合は、今回の判定と分けて報告してください。応答・説明・報告は日本語で記述してください。
 
+<!-- @/contract -->
 ## プラン入力モード
 
 既定は現行の diff 入力モードです。{{parent_agent}}が明示してプラン文書を渡した場合のみ、

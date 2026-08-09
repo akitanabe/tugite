@@ -1,0 +1,239 @@
+[contracts.necessity-kernel-title-requires-a9c4fda91047]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "# Necessity Kernel v1"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-identity-requires-de489e160a6b]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "necessity-kernel-v1"
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-scope-proposal-requires-870f0920c4ab]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "proposal"
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-scope-review-loop-requires-ec1a8cef2bd7]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "review-loop"
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-scope-plan-adversarial-requires-19429a987f6f]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "plan-adversarial-reviewer"
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-scope-over-engineering-requires-8580d73a9f1b]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "over-engineering-reviewer"
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-scope-plan-quality-requires-760d07f58e46]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "plan-quality-advisor"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-532f32e0761e]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "適用範囲"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-a69babc87448]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "適用外"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-30fae7822cc4]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "necessity_verdict"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-131df798d803]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "necessity verdict"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-ee8f1d4c8f7e]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "rounds"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-965155d6ffa3]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "termination"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-5e63942f7f9f]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "induced-loop"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-forbids-da4437f8c263]
+kind = "forbids"
+slice = "necessity-kernel-v1"
+pattern = "## role-specific mapping"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-2ef437cb17e3]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Task Specification"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-19673120a99a]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "requested outcome"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-8df048db8077]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "明示AC"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-22638705bf12]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "scope/exclude/constraints/verification"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-bba4d36aa2d4]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "公開/外部観測動作"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-65c0d4d38d3f]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "外部契約/API"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-f261e15074eb]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "repository invariant"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-dbee4fa54089]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "サポート対象入力/状態/環境"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-a8fd391a8b58]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "一般的に有用/将来有用だけ"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-fda366bc599d]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Claim"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-d9415db3f942]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "observation/evidence/necessity basis"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-27933a7d5e13]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Deletion Test"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-46fe8bf23ce6]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "unnecessary"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-5f4d13f91904]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "necessary"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-0bc3ff514642]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "indeterminate"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-fbf05403f69b]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Broken Obligation"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-f8572664fde1]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Failure"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-edb7336573c8]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Evidence"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-6e67585f2340]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Minimum Resolution Condition"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-2259cb92b794]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "remaining witness"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-4ffaf01d4a67]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "mutual deletion"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-c469693b3f92]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "updated snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-8b653a568d00]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "discovered != admitted"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-98d3183dd418]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "Stop Adding Rule"
+applies_to = ["claude", "codex"]
+
+[contracts.necessity-kernel-v1-requires-904448c7bdf2]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "structural-health-gate 適用外"
+applies_to = ["claude", "codex"]

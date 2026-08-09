@@ -18,6 +18,7 @@ description: >-
 ---
 <!-- @/only -->
 
+<!-- @contract structural-health-gate-kernel-exclusion-intro -->
 # structural-health-gate
 
 この Skill は、candidate producer が返した candidate snapshot を後段処理へ渡す前に、局所修正で扱える
@@ -29,6 +30,7 @@ proposal-family 外の workflow からの流用はしない。internal-only poli
 親は不変な `candidate_snapshot`、要求原文、requirements、design、Acceptance Criteria、verification、scope、
 既知の repository evidence、producer の判断台帳と assumptions を渡す。必要な source や既存仕様を観測できない
 場合は、欠けた evidence を Data として記録し、構造欠陥だと推測しない。
+<!-- @/contract -->
 
 <!-- @contract structural-health-gate-caller-context -->
 `caller_context` Data は必須の構造化 Data で、次の2 field/valueだけを受け付ける。
@@ -92,7 +94,9 @@ finding を返し、public workflow parent が最終的な `pass` / `return` / `
 `pass` は後段処理の品質判断や成果物の受け入れを意味しない。
 <!-- @/contract -->
 
+<!-- @contract structural-health-gate-kernel-exclusion-output -->
 ## 出力
 
 `candidate_snapshot` の identity、`assessment`、finding 一覧、insufficient evidence、観測した source、未検証事項を
 返す。Action と caller routing は親が行い、この Skill は後段処理を起動せず、resource へ書き戻さない。
+<!-- @/contract -->
