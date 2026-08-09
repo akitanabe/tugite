@@ -13,7 +13,7 @@ Task Specification に対する必要性で裁定するための最小規範で�
 ## 適用範囲
 
 v1 の適用対象は `plan-adversarial-reviewer`、`over-engineering-reviewer`、`plan-quality-advisor` と、
-それらを呼び出す `proposal` / `review-loop` の既存 parent responsibility に限る。
+それらを呼び出す `proposal` / `proposal-dialogue` / `review-loop` の既存 parent responsibility に限る。
 `structural-health-gate 適用外`。gate の意味、assessment、caller contract を
 この規範で変更しない。
 

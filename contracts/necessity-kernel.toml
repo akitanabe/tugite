@@ -16,6 +16,12 @@ slice = "necessity-kernel-v1"
 pattern = "proposal"
 applies_to = ["claude", "codex"]
 
+[contracts.kernel-scope-proposal-dialogue-requires-4bb5365021ab]
+kind = "requires"
+slice = "necessity-kernel-v1"
+pattern = "proposal-dialogue"
+applies_to = ["claude", "codex"]
+
 [contracts.kernel-scope-review-loop-requires-ec1a8cef2bd7]
 kind = "requires"
 slice = "necessity-kernel-v1"

@@ -4,7 +4,7 @@
 
 Tugite は Claude Code と Codex 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
 `shared/skill/`、agent は `shared/agents/` に置きます。v5 の workflow skill は `impl-lead`、`plan-craft`、
-`review-loop`、`work-unit-design` の4つです。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
+`plan-craft-approval`、`proposal-dialogue`、`review-loop`、`work-unit-design` の6つです。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
 `contracts/*.toml`、platform manifest と Codex skill metadata の宣言は `declarations/` が正本です。配布物は
 `plugins/` に生成されます。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。`Contract`、
 `Task Specification`、`Work Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
@@ -21,7 +21,7 @@ Gunte には Go 1.26.5 以上が必要です。公開版は `go install github.c
 
 ## Gunte の運用
 
-Gunte は `gunte.toml` の `sources.files` に列挙した agent、manifest、version、4 workflow skill、Codex metadata
+Gunte は `gunte.toml` の `sources.files` に列挙した agent、manifest、version、6 workflow skill、Codex metadata
 を管理します。platform 差分は正本内の `@only claude` / `@only codex` marker で表現し、`plugins/` 以下の生成物を
 直接編集しません。`contracts/*.toml` の text/structure contract は生成物または source frontmatter 上で決定論的に
 検査できる不変条件だけに使います。未登録 source、unknown/stale declaration、必須 path、retired path は
