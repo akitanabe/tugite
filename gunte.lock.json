@@ -72,6 +72,14 @@
       "sha256": "8c5d132cc18aaf61159f991f5a4b02bb8c110018bf249eac4b114c0301c96dba"
     },
     {
+      "id": "codex-openai-enabled-policy",
+      "sha256": "be74374cb7be0a92a0901931aa9d309fcf30bdf3a898ac283494f0e74121c8e0"
+    },
+    {
+      "id": "codex-openai-disabled-policy",
+      "sha256": "4b73301f71a56887fe63580a6bdd6daf873afa8c8dad92bcd5fe8a5be1fdfa3b"
+    },
+    {
       "id": "claude-explicit-skill-policy",
       "sha256": "0f3077053256a713edb22e1305f9495cbea434684a9bb592b433e2278024ee04"
     },
@@ -604,8 +612,8 @@
       "sha256": "17cc0dedb203e73256e622c89561a6405ceba6faf023876836f7e06b25264f3e"
     },
     {
-      "id": "impl-run-owned-default-forbids-3524f110a885",
-      "sha256": "894c7340e43abc1afe45534f908867ff9e308a6c2fa95a31cd36909696a7f72b"
+      "id": "impl-run-owned-default-occurrences",
+      "sha256": "75adb853d6ae16ed3608a210828b66a870061b0764ff547d076e15b0034d9383"
     },
     {
       "id": "impl-run-owned-default-before-route",
@@ -1522,6 +1530,10 @@
     {
       "id": "necessity-kernel-title-requires-a9c4fda91047",
       "sha256": "884b771e7c76a35ee281097f5eabc638d4edde41869c89613f72f09de13f1995"
+    },
+    {
+      "id": "necessity-kernel-mention-allowlist",
+      "sha256": "1da5edfc7069c3c68a1c3b3b6d373e92397a2bb4914427f4b3e4c457004cf8b2"
     },
     {
       "id": "necessity-kernel-identity-requires-de489e160a6b",

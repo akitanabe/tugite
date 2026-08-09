@@ -35,6 +35,70 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex"]
 
+[contracts.codex-openai-enabled-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/codex/skills/proposal/agents/openai.yaml",
+  "plugins/codex/skills/proposal-dialogue/agents/openai.yaml",
+  "plugins/codex/skills/review-loop/agents/openai.yaml",
+  "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
+  "plugins/codex/skills/work-unit-design/agents/openai.yaml",
+]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-openai-enabled-policy.assertions]]
+path = ""
+op = "exact_keys"
+value = ["interface", "policy"]
+
+[[contracts.codex-openai-enabled-policy.assertions]]
+path = "interface"
+op = "exact_keys"
+value = ["display_name", "short_description", "default_prompt"]
+
+[[contracts.codex-openai-enabled-policy.assertions]]
+path = "policy"
+op = "exact_keys"
+value = ["allow_implicit_invocation"]
+
+[[contracts.codex-openai-enabled-policy.assertions]]
+path = "policy.allow_implicit_invocation"
+op = "equals"
+value = true
+
+[contracts.codex-openai-disabled-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/codex/skills/impl-lead/agents/openai.yaml",
+  "plugins/codex/skills/plan-craft/agents/openai.yaml",
+  "plugins/codex/skills/plan-craft-approval/agents/openai.yaml",
+]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-openai-disabled-policy.assertions]]
+path = ""
+op = "exact_keys"
+value = ["interface", "policy"]
+
+[[contracts.codex-openai-disabled-policy.assertions]]
+path = "interface"
+op = "exact_keys"
+value = ["display_name", "short_description", "default_prompt"]
+
+[[contracts.codex-openai-disabled-policy.assertions]]
+path = "policy"
+op = "exact_keys"
+value = ["allow_implicit_invocation"]
+
+[[contracts.codex-openai-disabled-policy.assertions]]
+path = "policy.allow_implicit_invocation"
+op = "equals"
+value = false
+
 [contracts.claude-explicit-skill-policy]
 kind = "structure"
 subject = "artifact"

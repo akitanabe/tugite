@@ -10,10 +10,14 @@ slice = "impl-run-owned-default"
 pattern = "### Default run-owned checkout"
 applies_to = ["claude", "codex"]
 
-[contracts.impl-run-owned-default-forbids-3524f110a885]
-kind = "forbids"
-slice = "impl-run-owned-default"
-pattern = "### Default run-owned checkout\n\n### Default run-owned checkout"
+[contracts.impl-run-owned-default-occurrences]
+kind = "occurrences"
+pattern = "### Default run-owned checkout"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/codex/skills/impl-lead/SKILL.md",
+]
 applies_to = ["claude", "codex"]
 
 [contracts.impl-run-owned-default-before-route]
