@@ -566,6 +566,12 @@ slice = "candidate-producer-boundary"
 pattern = "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。"
 applies_to = ["claude", "codex"]
 
+[contracts.candidate-producer-boundary-requires-2c4fd141]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "`structural-health-gate` の意味は この mapping の対象外である"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-quality-advisor-boundary-requires-b920a922]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
@@ -750,6 +756,54 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "assessment Data"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-cf13d6a0]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "未解決の方向性または責務が、新しい設計判断を後段へ要求していないか"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-d4a5dd8e]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "requirements、design、Acceptance Criteria、verification の対応漏れまたは矛盾"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-da5407c3]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "用語、state、priority、responsibility の定義または遷移の不整合"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-bd70c0ca]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "局所修正が他の要件、責務、成果物全体へ広く波及する ripple"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-9ba9b48a]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "複数 finding に見える問題が、一つの structural defect から派生していないか"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-ea0a682d]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "例外、停止条件、stop contract の追加が増殖し、共通責務の欠落を覆っていないか"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-3060be44]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "局所修正で閉じる密度、詳細不足、文章上の重複は 通常の review で扱えるため、構造欠陥の evidence と混同しない"
+applies_to = ["claude", "codex"]
+
+[contracts.structural-health-gate-boundary-requires-724b5c82]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "reviewer または advisor を使う場合、その出力は evidence のみであり、candidate の採否、修正、再起草、工程の終了を決めさせない"
 applies_to = ["claude", "codex"]
 
 [contracts.structural-health-gate-boundary-forbids-21466849]

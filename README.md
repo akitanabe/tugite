@@ -1,4 +1,4 @@
-# Tugite v5.1.0
+# Tugite v5.2.0
 
 Tugite は Claude Code と Codex のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
