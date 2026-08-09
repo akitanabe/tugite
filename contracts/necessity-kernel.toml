@@ -4,6 +4,27 @@ slice = "necessity-kernel-v1"
 pattern = "# Necessity Kernel v1"
 applies_to = ["claude", "codex"]
 
+[contracts.necessity-kernel-mention-allowlist]
+kind = "forbids"
+pattern = "necessity-kernel"
+exclude_paths = [
+  "plugins/claude/agents/over-engineering-reviewer.md",
+  "plugins/claude/agents/plan-adversarial-reviewer.md",
+  "plugins/claude/agents/plan-quality-advisor.md",
+  "plugins/claude/references/necessity-kernel.md",
+  "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/proposal-dialogue/SKILL.md",
+  "plugins/claude/skills/review-loop/SKILL.md",
+  "plugins/codex/install/agents/over-engineering-reviewer.toml",
+  "plugins/codex/install/agents/plan-adversarial-reviewer.toml",
+  "plugins/codex/install/agents/plan-quality-advisor.toml",
+  "plugins/codex/references/necessity-kernel.md",
+  "plugins/codex/skills/proposal/SKILL.md",
+  "plugins/codex/skills/proposal-dialogue/SKILL.md",
+  "plugins/codex/skills/review-loop/SKILL.md",
+]
+applies_to = ["claude", "codex", "claude-marketplace", "codex-marketplace"]
+
 [contracts.necessity-kernel-identity-requires-de489e160a6b]
 kind = "requires"
 slice = "necessity-kernel-v1"
