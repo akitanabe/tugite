@@ -45,7 +45,7 @@ Claim は finding / insight 本文ではなく、candidate に追加・維持・
 更新された snapshot で再判定し、互いを witness とする同時削除を認めない。必要性分類は既存語彙へ写像し、新verdict fieldではない。round budget / termination へ直結させない。`structural-health-gate` の意味は
 この mapping の対象外である。
 
-必要な場合だけ proposal の planner は read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
+必要な場合だけ `plan-craft` 内の proposal planner は read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
 advisor の返す insight は非拘束の Data であり、planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する。
 
 - `adopted`: 根拠があり、candidate の具体的な品質向上になるため採用した insight。

@@ -91,6 +91,8 @@ writer、external resource、integration/rollback の必要性から選び、`ba
 `integration`、`cleanup` を確定する。親 direct、worker、継続修正、generator、formatter、write test などを含め、
 同一 checkout への同時 writer は禁止する。既存変更を commit、move、discard して isolation を作らない。
 
+<!-- @contract impl-run-owned-default -->
+<!-- @anchor impl-run-owned-default-start -->
 ### Default run-owned checkout
 
 ユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は
@@ -112,7 +114,9 @@ worktree を作成できない場合も current checkout へ暗黙 fallback し�
 作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は
 run の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。
 
+<!-- @anchor impl-route-execution-start -->
 ## Route and execution order
+<!-- @/contract -->
 
 ユーザーの direct または委譲の制約をそのまま execution constraint として扱う。execution constraint には direct/委譲、
 指定 worker、isolation、order、parallel の禁止または要求を含める。direct が指定された単位は親が実装し、

@@ -1,4 +1,4 @@
-# Tugite v5.2.0
+# Tugite v5.3.0
 
 Tugite は Claude Code と Codex のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
@@ -24,7 +24,7 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 
 ## 正本と生成
 
-skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、Codex/Claude の宣言定義の正本は `declarations/`、契約レジストリは `contracts.toml`、Gunte のプロジェクト設定は `gunte.toml` です。`gunte.toml` が管理する `plugins/` 以下の生成対象は直接編集しません。
+skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、Codex/Claude の宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
 
 変更後はリポジトリのルートで次を実行します。
 

@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 このリポジトリは Claude Code / Codex 向けの skill と agent 定義を配布します。正本は `shared/`、platform manifest と
-Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と契約 registry は `gunte.toml` と `contracts.toml` です。
+Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と契約 registry は `gunte.toml` と `contracts/*.toml` です。
 配布物は `plugins/` に生成され、原稿は日本語で書かれています。`Contract`、`Task Specification`、`Work Unit` など
 近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
@@ -10,8 +10,6 @@ Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と�
 ```bash
 gunte emit
 gunte check
-python3 -B -m unittest discover -s tests -p 'test_v5_repository_contracts.py'
-python3 -B -m unittest discover -s tests
 bash tests/install-agents-test.sh
 git diff --check
 ```
@@ -25,17 +23,16 @@ go install github.com/akitanabe/gunte/cmd/gunte@latest
 
 ## v5 の Gunte 運用
 
-`gunte.toml` は project、source、target、出力 rule、platform terms を定義し、`contracts.toml` は `requires`、
-`forbids`、`order` の決定論的契約を定義します。platform manifest は `declarations/`、Codex の4 workflow skill
+`gunte.toml` は project、source、target、出力 rule、platform terms と managed inventory を定義し、`contracts/*.toml` は
+text/structure contract を定義します。platform manifest は `declarations/`、Codex の4 workflow skill
 metadata は `declarations/codex/skills/` に置きます。Gunte は `sources.files` に列挙した agent、manifest、version、
-workflow skill、metadata を生成し、未登録 source や stale path は走査しないため、必須・retired path と exact inventory は
-`test_v5_repository_contracts.py` で保護します。
+workflow skill、metadata を生成し、未登録 source、stale path、必須・retired path、metadata policy は `gunte check` で保護します。
 
 契約は生成物から観測できる不変条件に限定します。Gunte の生成、projection、serialization、byte drift は `gunte check`
 に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
 
-`slice` を持つ契約の ID は `<意味を表す prefix>-<8桁 hash>` とします。hash は `kind`、`slice`、`pattern`、辞書順に
-並べた `applies_to` のカンマ区切り値をこの順に NUL で連結し、UTF-8 byte 列の SHA-256 先頭8桁を小文字16進数で表します。
+`slice` を持つ契約の ID は `<意味を表す prefix>-<12桁 hash>` とします。hash は `kind`、`slice`、`pattern`、
+宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
 列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
 ## Kernel injection contract
@@ -60,7 +57,7 @@ contract の標準例です。
 
 agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の
 agent inventory を同じ変更で更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
-declarations、Gunte の `sources.files`、exact inventory の構造テストを更新し、target rule は出力 path、profile、shape が
+declarations、Gunte の `sources.files`、managed inventory を更新し、target rule は出力 path、profile、shape が
 変わる場合だけ更新します。生成後は installer test で runtime inventory も確認します。
 
 ## VERSION の更新規約

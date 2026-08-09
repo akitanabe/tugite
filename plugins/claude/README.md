@@ -1,6 +1,6 @@
 # Tugite for Claude Code
 
-Tugite v5.2.0 は、親 Claude エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+Tugite v5.3.0 は、親 Claude エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
 ## Skill surface
 
@@ -40,7 +40,7 @@ Claude Code で marketplace を登録し、plugin を導入します。
 
 ## Source of truth
 
-共通原稿は `shared/`（version は `shared/VERSION`）、platform 宣言は `declarations/`、契約は `contracts.toml`、Gunte 設定は `gunte.toml` が正本です。`plugins/claude` の skill と agent は生成物なので直接編集せず、正本変更後に repository root で次を実行します。
+共通原稿は `shared/`（version は `shared/VERSION`）、platform 宣言は `declarations/`、契約は `contracts/*.toml`、Gunte 設定は `gunte.toml` が正本です。`plugins/claude` の skill と agent は生成物なので直接編集せず、正本変更後に repository root で次を実行します。
 
 ```text
 gunte emit

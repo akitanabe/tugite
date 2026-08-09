@@ -1,8 +1,7 @@
+<!-- @contract necessity-kernel-v1 -->
 # Necessity Kernel v1
 
 Kernel identity: `necessity-kernel-v1`.
-
-<!-- @contract necessity-kernel-v1 -->
 
 この共有規範は、reviewer または advisor が返す observation / evidence から導かれた候補を、現在の
 Task Specification に対する必要性で裁定するための最小規範である。正本はこのファイルであり、Claude / Codex
