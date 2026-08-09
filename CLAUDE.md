@@ -2,7 +2,8 @@
 
 このリポジトリは Claude Code / Codex 向けの skill と agent 定義を配布します。正本は `shared/`、platform manifest と
 Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と契約 registry は `gunte.toml` と `contracts.toml` です。
-配布物は `plugins/` に生成され、原稿は日本語で書かれています。
+配布物は `plugins/` に生成され、原稿は日本語で書かれています。`Contract`、`Task Specification`、`Work Unit` など
+近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
 ## コマンド
 

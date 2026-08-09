@@ -72,7 +72,7 @@ reviewer 起動または parent 裁定の前に、親は生成後の skill direc
 reference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。
 
 reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
-場合、親は既存の判定基準に含めた Task Contract と Deletion Test を一つの snapshot と一つの
+場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
 Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の
 `採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
 `stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または
