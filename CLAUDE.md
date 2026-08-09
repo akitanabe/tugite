@@ -1,35 +1,33 @@
-# CLAUDE.md
+# Repository Guidelines
 
-このリポジトリは Claude Code / Codex 向けの skill と agent 定義を配布します。正本は `shared/`、platform manifest と
-Codex skill metadata の宣言は `declarations/`、Gunte の project 設定と契約 registry は `gunte.toml` と `contracts/*.toml` です。
-配布物は `plugins/` に生成され、原稿は日本語で書かれています。`Contract`、`Task Specification`、`Work Unit` など
-近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
+## プロジェクト構成
 
-## コマンド
+Tugite は Claude Code と Codex 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
+`shared/skill/`、agent は `shared/agents/` に置きます。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
+`contracts/*.toml`、platform manifest と Codex skill metadata の宣言は `declarations/` が正本です。配布物は
+`plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。`Contract`、
+`Task Specification`、`Work Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
-```bash
-gunte emit
-gunte check
-bash tests/install-agents-test.sh
-git diff --check
-```
+## ビルド・テスト・開発コマンド
 
-`plugins/` 以下の生成物を直接編集せず、正本または宣言を変更したら repository root で `gunte emit` と `gunte check` を
-実行します。Gunte には Go 1.26.5 以上が必要で、公開版は次で導入します。
+- `gunte emit`: `gunte.toml` の `sources.files` から Gunte 管理対象を生成します。
+- `gunte check`: Gunte 管理対象の byte drift と契約違反を確認します。
+- `bash tests/install-agents-test.sh`: Codex custom-agent installer と agent inventory を検証します。
+- `git diff --check`: 提出前に空白エラーを検出します。
 
-```bash
-go install github.com/akitanabe/gunte/cmd/gunte@latest
-```
+Gunte には Go 1.26.5 以上が必要です。公開版は `go install github.com/akitanabe/gunte/cmd/gunte@latest` で
+導入します。生成物を伴う変更では、repository root で `gunte emit`、`gunte check`、installer、diff check の順に実行します。
 
-## v5 の Gunte 運用
+## Gunte の運用
 
 `gunte.toml` は project、source、target、出力 rule、platform terms と managed inventory を定義し、`contracts/*.toml` は
-text/structure contract を定義します。platform manifest は `declarations/`、Codex の6 workflow skill
-metadata は `declarations/codex/skills/` に置きます。Gunte は `sources.files` に列挙した agent、manifest、version、
-workflow skill、metadata を生成し、未登録 source、stale path、必須・retired path、metadata policy は `gunte check` で保護します。
+text/structure contract を定義します。Gunte は `sources.files` に列挙した agent、manifest、version、workflow skill、
+Codex metadata を管理します。Codex の6 workflow skill metadata は `declarations/codex/skills/` に置きます。platform 差分は
+正本内の `@only claude` / `@only codex` marker で表現し、`plugins/` 以下の生成物を直接編集しません。
 
-契約は生成物から観測できる不変条件に限定します。Gunte の生成、projection、serialization、byte drift は `gunte check`
-に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
+契約は生成物または source frontmatter から決定論的に観測できる不変条件に限定します。未登録 source、unknown/stale
+declaration、必須 path、retired path、metadata policy は `gunte check` で保護します。Gunte の生成、projection、
+serialization、byte drift は `gunte check` に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
 
 `slice` を持つ契約の ID は `<意味を表す prefix>-<12桁 hash>` とします。hash は `kind`、`slice`、`pattern`、
 宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
@@ -60,15 +58,6 @@ agent inventory を同じ変更で更新します。skill を追加・削除す�
 declarations、Gunte の `sources.files`、managed inventory を更新し、target rule は出力 path、profile、shape が
 変わる場合だけ更新します。生成後は installer test で runtime inventory も確認します。
 
-## VERSION の更新規約
-
-配布物、正本、宣言、Gunte の契約が変わるときは `shared/VERSION` を更新し、`gunte emit` と `gunte check` で plugin
-manifest と install version を同期します。README、CLAUDE、AGENTS、tests、evals だけの変更では version を更新しません。
-
-semver は公開面が壊れるかで割り当てます。skill・agent 名、起動方法・発火条件、保存して後から渡す artifact 形式、CLI の
-呼び出しが通らなくなる変更は major、skill・agent・契約の追加や内部契約変更は minor、モデル/effort 調整など契約の意味を
-変えない修正は patch です。旧入力を安全な再起草や停止へ送れる場合は major とは扱いません。
-
 ## workflow と agent の surface
 
 現行の workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-craft`（実装を開始しない計画成果物）、
@@ -76,7 +65,36 @@ semver は公開面が壊れるかで割り当てます。skill・agent 名、�
 `review-loop`（不変 snapshot に対する bounded review）、`work-unit-design`（親 context 内の内部 Work Unit 設計）の6つです。
 agent の正本は `shared/agents/`、Claude/Codex runtime の exact inventory は repository contract と installer test で確認します。
 
-## コミット規約
+## コーディングスタイルと命名
 
-コミットメッセージは日本語の要約1行にし、本文では変更理由を説明します。Pull Request には目的、scope、関連 Issue、検証結果、
-生成物・version の変更を記載し、無関係な変更を含めません。
+Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な `snake_case` 名を使用します。Bash は既存スタイルに
+従い、変数展開を引用符で囲みます。skill directory と agent file は小文字の kebab-case で命名します。原稿を複製せず、
+platform 差分は `gunte.toml` の terms または明示的な `@only` marker で表現します。
+
+## テスト指針
+
+Red、Green、Refactor の順で進めます。Python test を追加する場合は `unittest` を使い、実装詳細ではなく観測可能な
+CLI の振る舞いを記述します。repository の inventory、frontmatter、declaration scalar、retired path は Gunte contract で確認し、
+生成、projection、serialization、byte drift を別のテストで再実装しません。関連する振る舞いと失敗経路を保護し、
+数値による coverage 基準は設けません。
+
+## Version 更新指針
+
+`shared/` の原稿、`gunte.toml`、`contracts/*.toml`、`declarations/`、または配布物が変わる変更では、必要な公開面を
+確認して `shared/VERSION` を更新し、`gunte emit` と `gunte check` で宣言・生成物・version を同期します。README、
+AGENTS、CLAUDE、tests、evals だけの変更では version を更新しません。
+
+公開面（skill・agent の名前、起動方法と発火条件、保存して後から渡す artifact の形式、CLI）の呼び出しが通らなくなる
+変更は major、skill・agent・契約の追加や同一 version 内の内部契約変更は minor、契約の意味を変えないモデル/effort
+調整は patch です。旧入力を渡しても再起草などの安全な停止へ進める場合は、呼び出しが壊れていないため major とは扱いません。
+
+## Commit・Pull Request 指針
+
+コミットメッセージは変更理由を表す簡潔な日本語件名にします。必要に応じて `feat:`、`test:`、`docs:` などの prefix を
+使い、本文では変更が必要な理由を説明します。Pull Request には目的、変更範囲、関連 Issue、検証コマンドと結果を記載し、
+生成物や version の変更を明示します。無関係な変更を含めません。
+
+## 変更報告
+
+完了時には変更内容、実行した検証と結果、未検証事項または残存 risk を簡潔に報告します。無関係な dirty state や
+untracked artifact は保持します。

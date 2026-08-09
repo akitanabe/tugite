@@ -29,6 +29,7 @@
     "shared/skill/review-loop/SKILL.md",
     "shared/skill/structural-health-gate/SKILL.md",
     "shared/skill/work-unit-design/SKILL.md",
+    "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",

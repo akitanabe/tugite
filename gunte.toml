@@ -36,6 +36,7 @@ files = [
   "shared/skill/review-loop/SKILL.md",
   "shared/skill/structural-health-gate/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
+  "shared/repository-guidelines.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
@@ -71,30 +72,40 @@ claude = "親エージェント"
 codex = "親 Codex エージェント"
 claude-marketplace = "親エージェント"
 codex-marketplace = "親 Codex エージェント"
+agents-guidance = "親 Codex エージェント"
+claude-guidance = "親エージェント"
 
 [terms.reviewer_invocation]
 claude = "新規 Agent"
 codex = "新しい reviewer worker"
 claude-marketplace = "新規 Agent"
 codex-marketplace = "新しい reviewer worker"
+agents-guidance = "新しい reviewer worker"
+claude-guidance = "新規 Agent"
 
 [terms.new_worker_invocation]
 claude = "新規の `Agent` 呼び出し"
 codex = "新しい worker の起動"
 claude-marketplace = "新規の `Agent` 呼び出し"
 codex-marketplace = "新しい worker の起動"
+agents-guidance = "新しい worker の起動"
+claude-guidance = "新規の `Agent` 呼び出し"
 
 [terms.new_worker]
 claude = "新規 `Agent`"
 codex = "新しい worker"
 claude-marketplace = "新規 `Agent`"
 codex-marketplace = "新しい worker"
+agents-guidance = "新しい worker"
+claude-guidance = "新規 `Agent`"
 
 [terms.continuation_mechanism]
 claude = "`SendMessage`"
 codex = "`followup_task`"
 claude-marketplace = "`SendMessage`"
 codex-marketplace = "`followup_task`"
+agents-guidance = "`followup_task`"
+claude-guidance = "`SendMessage`"
 
 [targets.claude]
 output_root = "plugins/claude"
@@ -201,3 +212,19 @@ output_root = ".agents/plugins"
 match = "declarations/codex/marketplace.json"
 path = "marketplace.json"
 profile = "json-v1"
+
+[targets.agents-guidance]
+output_root = "."
+
+[[targets.agents-guidance.rules]]
+match = "shared/repository-guidelines.md"
+path = "AGENTS.md"
+profile = "markdown-v1"
+
+[targets.claude-guidance]
+output_root = "."
+
+[[targets.claude-guidance.rules]]
+match = "shared/repository-guidelines.md"
+path = "CLAUDE.md"
+profile = "markdown-v1"
