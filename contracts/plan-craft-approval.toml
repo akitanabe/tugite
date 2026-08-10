@@ -226,10 +226,10 @@ slice = "proposal-dialogue-boundary"
 pattern = "advisor insight をそのまま人間へ提示する"
 applies_to = ["claude", "codex"]
 
-[contracts.proposal-dialogue-fixed-density-variant-forbids-3a6b731b2e4c]
+[contracts.proposal-dialogue-fixed-density-variant-forbids-e85e310aa2a9]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
-pattern = "A / B / C は会話全体で固定 state"
+pattern = "`A` / `B` / `C` は会話全体で固定 state"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-advisor-direct-variant-forbids-a51e10cfcfa2]
