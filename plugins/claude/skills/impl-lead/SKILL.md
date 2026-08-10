@@ -84,24 +84,14 @@ writer、external resource、integration/rollback の必要性から選び、`ba
 
 ### Default run-owned checkout
 
-ユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は
-`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から
-run-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration
-を既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。
-既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の
-safe-parallel 条件に従って追加 isolation を選ぶ。
+ユーザーが既存 checkout、別 isolation/worktree、または worktree を使わない制約を指定していない場合は、最初の書き込み
+Action より前に `base_snapshot` から run-owned worktree を一つ作り、run 全体の既定 checkout とする。ユーザー指定はこの既定より
+優先し、作成不能時に current checkout へ暗黙 fallback しない。
 
-この既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の
-親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback
-の責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する
-こと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を
-省略しない。
-
-ユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。
-その指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned
-worktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。
-作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は
-run の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。
+この経路を選ぶ場合、親は作成 Action より前に skill-relative `references/run-owned-lifecycle.md` の全文を読み、identity
+`# impl-lead run-owned lifecycle v1`、`Creation`、`Closeout` の各 section と必要本文を確認する。不足、identity 不一致、必要本文の
+欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は run-owned resource の作成、integration、cleanup の詳細を
+定義し、親が ownership、判断、Action、結果照合を保持する。
 
 ## Route and execution order
 
@@ -207,78 +197,13 @@ review を `continue` するのは、次に確認する具体的な未解決 ris
 全 Work Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
 accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
 risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
-理由に省略できない。ユーザーが途中または追加 review を指定した場合も実施するが、final writing gate の代替にはならない。
-review の回数・時点に衝突がある場合は最初の review 前に確認して解消し、解消できなければ `stop-incomplete` とする。
+理由に省略できない。
 
-`review_base_snapshot` は、final gate の対象として残る task-owned 変更集合が始まる前の、最後の accepted repository state とする。
-Work Unit ごとの統合で `accepted baseline` が更新されても、final gate の `review_base_snapshot` は更新せず、final gate で run が
-accept されるまで固定する。gate の `target_snapshot` はその固定 base から元変更と remediation を含む累積候補であり、先行
-Work Unit の変更を累積 diff から除外しない。protected dirty/untracked は別の `protected_dirty_record` として扱う。final finding
-後の remediation run でも未受入候補を新しい baseline にせず、同じ accepted base を継承する。この区別は既存の Work Unit 統合を
-置き換える状態機械を追加するものではない。
-reviewed artifact set は `review_base_snapshot` から `target_snapshot` までの repository 累積 diff、存在する commit range と
-各 commit message、reviewer の責務対象として handoff した説明 artifact の集合である。gate handoff には task、全 Work Unit、
-AC、scope / constraints、review base / target、commit range、全変更 file、累積 diff 全文、test 結果、周辺 context、artifact set を
-含める。checkout path、repository path、commit ID だけでこれらを代替しない。
-
-gate 中の target checkout には writer を入れず、親 QA、実装、integration、generator、formatter、write test を重ねない。開始前と
-終了後に target と protected dirty/untracked を再観測し、意味のある drift があればその結果を有効な一回として数えない。安全に
-同じ target / artifact set を再試行できなければ `stop-incomplete` とする。reviewer が利用不能、handoff が不足、read-only isolation
-を確保できない、または result を取得・照合できない場合も確認または `stop-incomplete` とする。
-
-reviewer の Pass、severity、または 0 findings だけで accept してはならない。親は reviewer の各 finding を一次情報で確認し、
-`adopted`、`rejected`、`unresolved` と理由を execution data に確定する。0 findings または全 finding が `rejected` の場合でも、
-同じ target_snapshot と reviewed artifact set に対して final verification を実行する。この場合 target は不変であり、finding の
-Data と親の理由を closeout に残す。`unresolved` を残したまま accept してはならない。
-
-### Final writing findings and remediation
-
-`writing-principles-reviewer` は read-only / report-only のまま finding Data を返し、自身で修正、Implementer、Work Unit owner、受入決定者を
-担わない。親だけが一次情報を確認して adopted / rejected / unresolved と理由を確定する。
-
-`adopted` finding を修正できるかは reviewer の結論ではなく、親が一次情報で確定する。親は proposed change が次の条件を
-すべて満たすかを確認する。
-
-- AC、公開 contract、責任境界、依存、外部副作用を変えない局所的・非semanticな変更である。
-- `scope.change` / `scope.exclude`、rollback、verification を修正前に閉じられる。
-- 指摘対応以外の変更を含まず、同じ accepted base から前後の target snapshot を比較できる。
-
-条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化する。Work Unit Data は `id`、`purpose`、
-`acceptance_criteria`、`scope`（`change` / `exclude`）、`implementation_freedom`、`constraints`、`depends_on`、`verification` の
-canonical field に統一し、概念名を別 key のように置き換えない。
-
-元の Work Unit の意味を変更せず、同じ run の最終 remediation として通常の worker 選択、fresh Implementer context、single writer
-で実装する。`writing-principles-reviewer` は writer、Implementer、Work Unit owner、
-受入決定者にならず、reviewer と remediation writer を同一 agent または同時 writer にしない。`focused-implementer` や固定 patch agent を
-一律に要求しない。
-
-remediation 後は親が指摘対応、余分な変更なし、AC / public contract / 責任境界 / 依存の不変を diff の一次情報で QA し、
-focused / repository-native / final verification を実行する。これらを説明できる場合、親は同じ final writing gate を
-`mechanically restart` せず、その finding Data、前後 snapshot、QA、verification を accept 根拠にできる。局所性、非semantic性、
-rollback、verification のいずれかを説明できなければ確認または `stop-incomplete` とする。
-
-この eligible remediation では、修正の結果として reviewed artifact content/identity、target_snapshot、reviewed artifact set、
-commit range/commit message が変わりうる。親は before/after identity と比較、指摘対応以外の変更がないこと、QA、verification を
-同じ run (same run) の accept 根拠として明示する。この扱いは final writing gate の通常の snapshot 不変規則に対する `same-run accept exception`
-であり、commit-message-only remediation もこの経路で実行できる。commit-message-only remediation として扱う場合に限り、commit message
-以外の file、test、無関係な commit/range を加えた変更はその subcase の eligible 条件を満たさず、`stop-incomplete` とする。commit
-message を対象にしない局所的な code/test/comment remediation は、先行する eligible 条件を満たす限り許可する。
-
-条件を満たさない finding、または semantic / public contract / 責任境界 / AC / 依存の変更や広い構造変更を要する finding は、
-通常の新しい Work Unit に再正規化する。現 run では修正を accept せず `stop-incomplete` とし、修正後の元変更を含む累積 target に
-対して `mandatory final writing review` を再実行してから受入判断する。#149 の optional risk-directed review は、影響する review
-goal または新しい具体的 risk がある場合だけ再確認し、writing finding の採否だけを理由に全 reviewer を再起動しない。
-
-gate 対象外の execution data の記録は、上記の bounded remediation Work Unit に伴う前後 snapshot・verification の更新、または
-事実を変えない表現修正だけを許す。ただし上記の eligible remediation exception に該当する reviewed artifact、target_snapshot、
-reviewed artifact set、commit range/commit message の変更は、修正前後の identity と比較、QA、verification を記録することで同じ
-run に accept できる。exception に該当しないこれらの変更や、final verification が対象を変える変更は accept せず
-`stop-incomplete` とし、安全な snapshot 不変の再検証だけを許す。
-
-closeout には writing target、`review_base_snapshot` と remediation 前後の `target_snapshot`、reviewed artifact set、gate result、
-各 finding の adopted / rejected / unresolved と理由、remediation Work Unit（該当時）、focused / repository-native / final
-verification、最終 target、残存 risk を含める。これは execution data の報告であり、固定 QA report、固定 diff artifact、判断点台帳、
-全 reviewer 必須化、固定 review loop、固定修正 agent、over-engineering reviewer の mandatory phase を新設するものではない。
+gate の開始前に、親は skill-relative `references/final-writing-gate.md` の全文を読み、identity
+`# impl-lead final writing gate v1`、`Final writing acceptance gate`、`Final writing findings and remediation` の各 section と
+必要本文を確認する。不足、identity 不一致、必要本文の欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は
+snapshot、handoff、read-only isolation、finding の裁定、局所 remediation、再 gate、closeout data を定義し、reviewer を writer または
+受入決定者にしない。親が finding の採否、修正経路、final verification、run の受入判断を保持する。
 
 ## External side effects
 
@@ -326,52 +251,10 @@ test、repository-native verification を再実行し、変更が同じ Work Uni
 
 ### Run-owned closeout
 
-run-owned worktree は成果保管場所ではなく一時的な実行 resource である。ユーザーが保持を指定していない場合、親は
-`accepted` と `stop-incomplete` のどちらで終わる run でも、次の closeout 判定を経て安全なときは削除する既定を持つ。
-削除は品質 evidence や accept の根拠ではなく、親 QA、選択した risk-directed review、final writing gate、final verification、
-必要な外部副作用の照合がすべて完了した後にだけ行う最後の Action である。PR の有無で分岐を作らず、local/remote の
-persistence と integration の観測結果を共通の Data として扱う。
-
-closeout は `Action → Data → Calculation → Data → Action → Data` の順に進める。まず親は target の repository identity、worktree identity、
-canonical path、exact full branch ref、`invocation_start_head`、HEAD、clean status、全 writer/reviewer の終了、worktree 内だけに残る
-exclusive evidence、ユーザーの保持指定、別 run resource との識別を再観測する。Work Unit の `base_snapshot` と invocation branch の
-baseline は別の Data として pin し、同じ HEAD でも branch ref が違えば同一実行先とは扱わない。継続 PR のように
-`base_snapshot` と `invocation_start_head` が異なる場合も、各値を混同せず exact identity を再照合する。
-
-次に Calculation が、(a) run-owned で user-owned checkout/worktree/branch、固定 path、別 run resource ではない、(b) 成果を task-owned
-local branch の commit に固定済みで、再開に必要な branch/commit（利用可能なら remote ref も）を報告できる、(c) worktree が clean、全
-writer/reviewer が終了し、worktree 内だけの未統合成果/evidence がない、(d) target identity と invocation repository/branch ref が一意、
-(e) user retention がなく、protected state（dirty/untracked に加えて ignored entry）の観測が完了している、を判定 Data にする。
-どれかを観測できない、または false なら削除 Action を実行せず、path、branch、commit、理由を付けた `stop-incomplete` を返す。
-
-local integration は別の Action として、integration 直前に invocation repository identity、worktree identity/canonical path、exact full branch
-ref、その ref の target、`invocation_start_head`、protected dirty/untracked/ignored state を再照合する。invocation branch の HEAD は開始時
-`invocation_start_head` から drift していないことを確認し、Work Unit の `base_snapshot` と一致することは要求しない。開始時 HEAD..task
-commit の変更 path と ancestor path が protected dirty/untracked/ignored entry と衝突しないこと、task commit への fast-forward が可能なことを
-Calculation してから `--ff-only` で行う。衝突、identity/ref の不一致、観測不能、drift、protected state の変化、non-FF は統合禁止とし、
-task-owned branch/commit を保持して未統合理由を Data にする。無条件 checkout/merge、merge commit、rebase、reset、stash、force、
-`branch -D` は使わない。
-
-`--ff-only` 成功後は同じ exact branch ref の target と HEAD が task commit に一致すること、protected state と内容 identity が不変であることを
-再観測する。secret の内容は報告せず、path/type/mode/size と安全な content digest などの identity だけで照合する。`--ff-only` の Action status
-だけを terminal outcome にせず、失敗後は exact ref/HEAD を再観測する。再観測が (a) `invocation_start_head` のままなら未統合として扱い、
-他の安全条件が成立するときだけ worktree を削除して `stop-incomplete`、(b) task commit なら統合済みとして扱い、protected state/content identity と
-全 postcondition が成立するときだけ通常 cleanup と `accepted`、(c) unexpected または観測不能なら worktree を保持して `stop-incomplete` とする。
-不一致、照合不能、または Action の結果不明なら branch delete と worktree remove を抑止し、blind retry/force をせず、path、branch、commit、
-blocker、risk を含む result Data にする。Action 失敗後は再観測してからでなければ次の Action へ進まない。
-
-統合できない場合でも、task-owned branch/commit に成果が永続化され、worktree が clean、protected state が不変で exclusive evidence がなく、
-target identity が一意なら、無理に統合せず `stop-incomplete` と未統合理由を Data にして run-owned worktree を削除する。成果が commit 前、
-evidence が worktree 内だけ、writer/reviewer が active、保持指定がある、削除対象 identity が不明、または protected state の照合不能なら
-worktree を残す。
-
-安全な local integration 後、または上記の安全な未統合終了後の closeout は run-owned worktree を通常削除し、worktree list から対象 identity
-が消えたことを照合する。remove が失敗した、または remove 後も identity が list に残る場合は branch delete を行わず、実際に残る path、branch、
-commit、blocker、risk を `stop-incomplete` として報告する。merge 済み task branch の safe delete（`git branch -d` 相当）が不成立・失敗でも
-worktree の安全な削除を取り消さず、branch を保持して報告する。user-owned branch や別 run resource は変更・削除しない。
-closeout の result Data には、`run_outcome`（`accepted` / `stop-incomplete`）、統合/未統合、削除/保持、対象 path、branch、commit、
-protected state identity、観測した blocker、残存 risk を含める。integration と worktree removal が成立した後の task branch retained は
-残存 risk として報告するが、それだけで `accepted` を妨げない。
+run-owned worktree を作成した run は、先に読み込んだ `run-owned lifecycle` reference の `Closeout` に従う。親 QA、選択した
+risk-directed review、final writing gate、final verification、必要な外部副作用の照合後に、親が観測 Data から integration と cleanup の
+可否を計算し、最後の Action と事後照合を行う。成果の永続化、resource identity、protected state、writer/reviewer の終了を確認できない
+場合は削除せず `stop-incomplete` とし、user-owned resource や別 run resource を変更しない。
 
 AC、scope、責任境界、依存が不変で同じ単位の実装上の不足だけなら、親は同じ ID と context で `continue` して限定修正を
 返す。それ以外は限定修正を続けず、fresh context の新しい ID として再正規化する。親が品質下限を満たし、全要求単位を accepted とし、
