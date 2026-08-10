@@ -190,6 +190,42 @@ slice = "proposal-dialogue-boundary"
 pattern = "review-loop"
 applies_to = ["claude", "codex"]
 
+[contracts.proposal-dialogue-responsibility-requires-b01d31f5587e]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "人間は結果責任を、planner は evidence に基づく経過責任を担う。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-no-research-delegation-requires-04a1ef6f157c]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "Agent で解消可能な曖昧さを人間へ返さない。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-density-requires-b06fdf3ef4bc]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-freeze-meaning-requires-291f374b875e]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "direction freeze は成果物全文ではなく"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-mode-state-forbids-1edf5c5386d1]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "`dialogue_mode`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-advisor-direct-forbids-cb8dcd75e095]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "advisor insight をそのまま人間へ提示する"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-approval-order-requires-f8347c3031bb]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
@@ -320,6 +356,42 @@ applies_to = ["claude", "codex"]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "ただし goal に対応する別 reviewer があれば `review-loop` へ渡す"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-final-acceptance-requires-0aa1c8018ae3]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance は direction freeze と分離し、既定で必須"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-semantic-delta-requires-a95b222bd59e]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "Semantic Delta"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-verification-delta-requires-526d5e93a188]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "Verification Delta"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-replan-requires-e1c83193e6a2]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "大きな purpose または scope の変更"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "direction freeze を final acceptance とみなす"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-optional-final-forbids-aec3ccb2d647]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance は任意"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-kernel-reference-before-criteria]

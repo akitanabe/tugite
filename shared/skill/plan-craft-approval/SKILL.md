@@ -27,7 +27,8 @@ description: >-
 - Claude の `disable-model-invocation: true` と Codex metadata の `policy.allow_implicit_invocation: false` が
   explicit-only 契約を表す。
 - 実装、委譲、Worker 起動、worktree 操作、後続の実装開始を行わず、workflow は成果物を自律的に保存しない。
-- 起草、対話、gate、review、確定候補または未完了の返却までを担い、受け入れと後続 Action は人間へ残す。
+- 起草、対話、gate、review、final acceptance 候補または未完了の返却までを担う。人間は方向性と最終結果の責任を持ち、
+  親は調査、具体化、整合性、verification、工程の経過責任を持つ。後続 Action は人間へ残す。
 
 ## 入力と成果物
 
@@ -44,6 +45,11 @@ description: >-
 
 同じ親 context の internal `proposal-dialogue` を開始し、人間の裁定を逐次反映・verification した direction freeze
 候補を受け取る。blocking な人間判断が残る、または `stop-incomplete` の場合はそこで停止し、後段へ進めない。
+
+direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、
+重要な verification を圧縮して人間へ示し、freeze 後の gate と review へ frozen decisions と変更可能な具体化を区別して渡す。
+大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。
+過去 decision は自動継承せず、candidate prior decisions と再利用知見として現在の要求と evidence で再検証する。
 
 <!-- @anchor plan-craft-approval-structural-health-gate-start -->
 ## structural-health-gate
@@ -85,7 +91,10 @@ evidence と理由付きで裁定する。判断保留は loop 中凍結し、ro
 decision ledger で人間が裁定済みの方向性を変更・撤回する finding は、局所修正で閉じる場合も親だけで採用せず
 `人間確認` へ裁定する。人間の再判断後だけ成果物へ反映し、既存の裁定区分を増やさない。
 
-## 確定
+review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の
+変更が必要なら、改善案を採用せず `人間確認` へ止める。
+
+## review 完了と final acceptance
 
 review 実行経路では `converged` または未解決 finding のない `induced-loop` だけを確定候補とする。レビュー不成立、
 `round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop` は確定候補とせず、理由、台帳、残存 risk を
@@ -94,6 +103,15 @@ review 実行経路では `converged` または未解決 finding のない `indu
 `review-loop` が新しい設計選択を必要として `stop-incomplete` を返しても `proposal-dialogue` へ自動逆遷移しない。
 人間へ対話の再開、未完了終了、scope 外への分離を提示する。未完了返却後の受け入れと再投入、および保存を許可するかは
 人間が明示的に判断する。
+
+final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を
+省略できるが、final report は省略しない。親は全文精読を要求せず、方向変更の有無を明記した `Semantic Delta`、追加・変更した
+検証とその結果を示す `Verification Delta`、残存 risk を提示する。Verification Delta は特に境界、異常・failure path、
+壊れやすい既存挙動、禁止副作用、責務境界を優先し、成果物全文は人間が要求した場合だけ提示する。
+
+final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけを新しい `proposal-dialogue` loop で
+局所 reopen し、decision ledger 全体をリセットしない。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ
+探索を広げない。大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。
 <!-- @/contract -->
 
 ## persistence と出力境界
