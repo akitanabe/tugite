@@ -1327,6 +1327,106 @@
       "sha256": "b6534ef1b5c8a4c273b5537ca3664f941e9131bf9334371146bca4ec649ddbd9"
     },
     {
+      "id": "plan-craft-autonomy-requires-30338d673080",
+      "sha256": "2c1f679e3ae49ac5abb5ab1595be61ce913384fc001ff7138590bb7b20cfdca1"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-2a41b87ada45",
+      "sha256": "ef63ccac4c3b7b501594971027aed2d6126a1dbf1d7107510db3e203486b01c1"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-0db4ccbf49fe",
+      "sha256": "fbb332c3ed7c3ee921624a0c89d3619478e32e33524a1fd6bfdcb17d828a5c83"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-462a6e61c232",
+      "sha256": "21d0e298b58052e964ccc287bcdc05d8028b5baddab2916148b695f243d1a06f"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-b810cd7afce4",
+      "sha256": "a57f263302b1ccf1d83924e06aa00b995b448cac364a0619a6c4f7d4003d2bf0"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-c3c75dcc81c8",
+      "sha256": "698f117a3031cade9f40dfa2cb7d5bd9e8b950335ce00de4c551e1a6b8813119"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-50b8d17c1828",
+      "sha256": "25f004a0e7113bc267cb2d262cc9bd589cb4eab3505263778cac8e365e641195"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-0432df07d13f",
+      "sha256": "d7b2b1e9dbad4fb8812e0e5225f1011c2e0162d96798bfb3c794f866b824b238"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-cc79045467b3",
+      "sha256": "8079639e39c7673432db54b0a1b6f689f2b1a97b82a2e8c5822a432a8b46bdf7"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-bcfefc1e686b",
+      "sha256": "24960c7a63e9d18610c934e7eb4a37cbdd0cbb259d892209b3bca66fe5dbedf8"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-478e759521a5",
+      "sha256": "7246b64fc2c99cb9c18761d6bec085905e6b5b3ba834da2322cce850ddd1fe70"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-884dbf0e26fb",
+      "sha256": "d745062b53f4a8a17f7a1b4b6fed0d2fa8431e1d691da3420978cfe1de265f4c"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-e4475a1423d7",
+      "sha256": "12732b2bc1cb0bf3452fcbe4bb72424394b7eff81fa6fe2503a693fc49d738fe"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-cfeabb11af85",
+      "sha256": "4832d0554676cfaa8b772fe0ac579ad8ba9f65f91fcdf1b3c875709bef696b83"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-77006c8b6ddf",
+      "sha256": "d0ac954bd03bf953f6efc45de2830fde8718ebe04739a0b4ef8c1589898b0088"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-578aa0114bce",
+      "sha256": "db5d3355e3c2780b65cbff44e3757fd64e7b86a7c216825e23725154125a891d"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-1be3686d1ef2",
+      "sha256": "9adec48d712e05427b93020ffb2d07eee3620abcd5a9a4a105af85cfc16defa7"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-e5cf93f077a2",
+      "sha256": "129f810399647d562c1ff907a42f06cc1cf00dd226d09e8d89c076a01ee5603d"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-ca0442aab9a1",
+      "sha256": "20b73fb0d698b85e1960f8ad69c70564e630d6993bc3acb651889fdf853bed16"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-12433b9bd3d7",
+      "sha256": "77f2fa4ede246216cd6f06367b4fd96d8e907bfe8f50416f7b81ab3db7e47ba9"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-e18e0a8f5efc",
+      "sha256": "6f1c0584d89e6c6b4a92fe1fab139b986653eee6d396ccf811ca79975ec83b33"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-0e89d72aaa3d",
+      "sha256": "e4024d4740f72a2ab43699c354a50c123d814000d40d2979b9ca5e2a7100d78c"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-05a9eab2b845",
+      "sha256": "bf8ce3397a6e08b54fce14ba419a447f6fe47d99ac87b3048603b33b2097de49"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-bf682381eb60",
+      "sha256": "0507a6df4d2453313c2126f7b4ada3a3d8aa225b75db41f1eb77f7b8f3817393"
+    },
+    {
+      "id": "plan-craft-autonomy-requires-012eb1c06460",
+      "sha256": "4ccd73d1920263d77654425d4c1e1833b53178955e53ecb1906e0505569c4985"
+    },
+    {
       "id": "proposal-dialogue-parent-requires-0655da896300",
       "sha256": "37f269a15ed4edb26557384f8a1fc80bc538331fcff3c12fac94165aabf0d90f"
     },
@@ -1872,6 +1972,11 @@
       "kind": "span",
       "id": "impl-run-owned-default",
       "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-autonomy",
+      "path": "shared/skill/plan-craft/SKILL.md"
     },
     {
       "kind": "span",
