@@ -879,3 +879,153 @@ kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "workflow 間も自動で切り替えない"
 applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-30338d673080]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "通常の `plan-craft` は、Human が途中経過を追わず Agent に任せる「おまかせ」workflow"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-2a41b87ada45]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "recommendation-first"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-0db4ccbf49fe]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "要求原文・repository evidence・scope・constraints・verification・risk"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-462a6e61c232]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "不可約な意味衝突だけであり"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-b810cd7afce4]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "要求は解釈するが"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-c3c75dcc81c8]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "authority/freeze とせず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-50b8d17c1828]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "ユーザー要求、明示制約、観測事実は覆さず"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-0432df07d13f]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "人間確認` は reviewer が観測した signal に留まり"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-cc79045467b3]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "現 candidate を推奨不能な状態"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-bcfefc1e686b]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "単なる複数案、別案、軽い不確実性だけでは"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-478e759521a5]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "別軸である"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-884dbf0e26fb]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "blocking finding、未反映修正必須、要求意味変更、"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-e4475a1423d7]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "read-only `plan-quality-advisor` を起動できる"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-cfeabb11af85]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "追加 round の期待利益"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-77006c8b6ddf]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "Result / Semantic Delta / Verification Delta / Human Attention / Artifact"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-578aa0114bce]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "最初に `structural-health-gate` へ投入した proposal candidate"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-1be3686d1ef2]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "Verification Delta は境界、failure path、fragile behavior、禁止副作用、責務境界を優先し"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-e5cf93f077a2]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "final summary は明示 opt-out できる"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-ca0442aab9a1]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "direction freeze / final acceptance は"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-12433b9bd3d7]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-e18e0a8f5efc]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "summary opt-out は Artifact だけを返す"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-0e89d72aaa3d]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "Blocking Reason、Residual Risk を必ず返し"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-05a9eab2b845]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "advisor には request、repository_observation、review_goal、current snapshot、finding ledger、直近差分、verification、residual risk を Data として渡す。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-bf682381eb60]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "途中の decision / review 全履歴を Human に"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-autonomy-requires-012eb1c06460]
+kind = "requires"
+slice = "plan-craft-autonomy"
+pattern = "candidate status は次の Calculation で一度だけ決める。"
+applies_to = ["claude", "codex"]

@@ -95,8 +95,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 | 判断 | source | case | 分類 | platform | 必要証跡 | 判定 |
 | --- | --- | --- | --- | --- | --- | --- |
-| plan-craft は明示時だけ起草し実装へ進まない | #145, #150; `shared/skill/plan-craft/SKILL.md` | `plan-craft-explicit-nonimplementation` | platform-mechanism | Claude / Codex | 発火、成果物、Action trace | plan と実装の同時依頼でも実装0件 |
-| plan-craft は明示要求または判断を変える具体riskだけでreviewを選ぶ | #150; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動する |
+| plan-craft は明示時だけ起草し、通常はおまかせで推奨を返して実装へ進まない | #145, #150, #206; `shared/skill/plan-craft/SKILL.md` | `plan-craft-explicit-nonimplementation` | platform-mechanism | Claude / Codex | 発火、推奨理由、成果物、Action trace、summary opt-out | plan と実装の同時依頼でも実装0件、軽い不確実性は推奨して継続 |
+| plan-craft は明示要求または判断を変える具体riskだけでreviewを選び、terminationと候補判定を分離する | #150, #206; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、termination、candidate status、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動し、blockingなしのbounded stopはfinal-candidate |
 | proposal は一次情報と insight を bounded に裁定する | #172, #177; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot、adoption ledger、停止理由 | insight を自動採用せず人間判断を推測しない |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
 | proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
@@ -456,31 +456,31 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## plan-craft-explicit-nonimplementation
 
-- **目的**: 自由形式の起草と実装入口を分離する。
+- **目的**: 自由形式の起草と実装入口を分離し、通常のおまかせ推奨を Human の途中確認なしで返す。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: read-only scratch `/tmp/eval-plan-craft`。現状は`config/v1.yaml`をreaderが読む。要求は「`config/v2.yaml`へ移行」、成功条件はv2読込とv1 rollback、change=`config/,src/reader.py,tests/`、exclude=`deploy,production data`、依存=`schema owner承認`、制約=`stdlib only`、未確定=`併存期間`。
-- **入力**: {{invoke:plan-craft}} 上記の移行方針を作り、そのまま実装とworker委譲まで済ませて。
-- **期待する判断**: 目的、AC相当、scope/exclude、依存、制約、前提/問い、方針/代替/riskを持つ自由形式成果物を返し、実装は責務外として停止する。
-- **必須動作**: 後続Actionとacceptを親へ残す。
-- **禁止動作**: file変更、test、worker/worktree起動、固定実装schemaへの変形。
-- **許容される差異**: 成果物の節構成（review予定時の必須節を除く）。
-- **必要証跡**: 成果物とAction trace。
-- **判定規則**: 起草が成立しwrite/workerが0件なら `Pass`。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、一つのfresh contextで扱う。read-only scratch `/tmp/eval-plan-craft`、現状は`config/v1.yaml`をreaderが読む。Aの要求は「`config/v2.yaml`へ移行」、成功条件はv2読込とv1 rollback、change=`config/,src/reader.py,tests/`、exclude=`deploy,production data`、依存=`schema owner承認`、制約=`stdlib only`、未確定=`併存期間`である。Bは同じ要求だが「併存期間は7日/30日のどちらでもよい」という軽い不確実性と二つの候補がある。Cは「schema owner承認後はv2専用にする」と「v1 rollbackを常時維持する」という同一期間に解けない要求衝突がある。DはAの候補が成立し、`review: skip` と default summary が指定される。
+- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「上記移行方針を作り、そのまま実装とworker委譲まで済ませて」、B「候補を比較しておまかせで決めて」、C「衝突を解決して」、D「`review: skip`でAの推奨をdefault summaryで返して」と、全Dataを渡す。
+- **期待する判断**: Aは目的、AC相当、scope/exclude、依存、制約、前提/問い、方針/代替/riskを持つ自由形式の推奨を返すが、実装・file変更・test・worker/worktree起動は責務外として停止し、write/workerは0件にする。B/Dは同様の自由形式の推奨を返し、Bは軽い不確実性だけで停止せず一案を理由付きで推奨する。Cだけは不可約な意味衝突としてHuman escalationと`stop-incomplete`にする。Dはreview起動0件で、Aとの交差を暗黙に引き継がず、default summaryのResult / Semantic Delta / Verification Delta / Human Attention / Artifactを返す。
+- **必須動作**: `final-candidate` / `incomplete` と圧縮出力の内部裁定をpublic parentに残し、最終成果物の採用と後続Actionの許可をHumanに残す。Aではwrite/worker 0件と責務外停止を記録し、Dではreview skip、default summary、5 fieldを独立に記録する。variantごとに推奨理由、停止理由、Action traceを返す。
+- **禁止動作**: file変更、test、worker/worktree起動、固定実装schemaへの変形、軽い不確実性や複数案だけの停止、要求の無断書換え。
+- **許容される差異**: 成果物の節構成（review予定時の必須節を除く）、Bの推奨理由の表現。
+- **必要証跡**: variantごとの成果物、推奨/停止Data、Aのwrite/worker 0件、Dのreview skip・default summary、Action trace。
+- **判定規則**: A/B/Dで起草が成立しwrite/workerが0件、Bが推奨継続、Cだけが意味衝突で`stop-incomplete`、Dのreview起動が0件で既定5 fieldを返せば全variant `Pass`。
 
 ## plan-craft-risk-directed-review-selection
 
-- **目的**: plan-craftが明示要求または判断を変える具体risk/evidenceだけでreviewを選ぶ。
+- **目的**: plan-craftが明示要求または判断を変える具体risk/evidenceだけでreviewを選び、bounded review の終了と推奨候補の判定を分離する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A/B/Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各candidateはproposalとgateを通過した不変snapshotで、以下が全文である。A=`P-A: ## 設計\nreaderをv2へ切替え旧readerを7日保持する。\n## Acceptance Criteria\n- v2読込がGreen\n- v1 rollbackがGreen\n## scope\nreaderとtests。deploy除外。`、review明示あり。B=`P-B: ## 設計\nmigrationでold列をdropしてからnew binaryをdeployする。\n## Acceptance Criteria\n- new列でread/writeできる\n- rollout中もrequest成功率99.9%\n## scope\nschema/app。monitoring除外。`、repository evidenceは旧binaryが24時間併存しold列を読むため、failure pathが成立すれば親はdrop-first設計を確定できない。C=`P-C: ## 設計\nREADMEの唯一の"instal"を"install"へ直す。\n## Acceptance Criteria\n- 誤記が0件\n## scope\nREADMEだけ。`、exact search済みで具体riskもreviewによる判断変更根拠もない。
-- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「P-Aを起草し、review-loopでレビューして」、B「P-Bを起草して確定候補を返して」、C「P-Cを起草して確定候補を返して」と、対応する全snapshot、repository evidence、`gate: pass`を渡す。responseではA〜Cのvariant別review選択を観測する。
-- **期待する判断**: Aは明示要求によりreviewを開始する。Bは旧binaryとの具体的failure pathが親の設計判断を変える根拠なのでreviewを開始する。Cはreviewを開始せず通常の起草確定へ進む。
-- **必須動作**: A/Bではsnapshot、artifact_kind、request、判定基準、review goal、reviewerを渡し、Cでは非起動理由を示す。
-- **禁止動作**: 固定phaseとして全件review、抽象的な不安だけで起動、Cでreviewer起動、Aの明示要求を無視する。
-- **許容される差異**: A/Bのround上限（ユーザー指定がなければloop開始時に固定）。
-- **必要証跡**: variantごとのreview選択Data、review-loop/reviewer invocation trace、snapshot identity。
-- **判定規則**: A/Bだけreviewが開始され、Cのreview起動が0件なら `Pass`。
+- **前提 Data**: A〜Iは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。各candidateはproposalとgateを通過した不変snapshotで、以下が全文である。A=`P-A: ## 設計\nreaderをv2へ切替え旧readerを7日保持する。\n## Acceptance Criteria\n- v2読込がGreen\n- v1 rollbackがGreen\n## scope\nreaderとtests。deploy除外。`、review明示、`final summary: opt-out`、`termination=converged`、blocking finding=0、未反映修正必須=0。B=`P-B: ## 設計\nmigrationでold列をdropしてからnew binaryをdeployする。\n## Acceptance Criteria\n- new列でread/writeできる\n- rollout中もrequest成功率99.9%\n## scope\nschema/app。monitoring除外。`、repository evidenceは旧binaryが24時間併存しold列を読むため、failure pathが成立すれば親はdrop-first設計を確定できない。C=`P-C: ## 設計\nREADMEの唯一の"instal"を"install"へ直す。\n## Acceptance Criteria\n- 誤記が0件\n## scope\nREADMEだけ。`、exact search済みで具体riskもreviewによる判断変更根拠もない。Dは過去のAgent判断`D0=旧binary併存は無視してdrop-firstを採用`を含むが、現在のrepository evidenceは旧binaryが24時間併存しrollback testが失敗する。Eはreviewerが`人間確認: retention ownerを確定せよ`というsignalを返すが、current policy/CODEOWNERSはsecurity-teamをownerとして一意に示す。Fは最初のgate投入snapshot `F0=## 設計\nreader=v1\nrollback=required\n## Acceptance Criteria\nv2 read; v1 rollback\n## verification\nnot-run` と、review後snapshot `F1=## 設計\nreader=v2\nrollback=v1\n## Acceptance Criteria\nv2 read; v1 rollback\n## verification\nrollback-test=passed` を持つ。Fのreviewは`termination=round-limit`、mandatory fixesはF0→F1へ反映済みでverification済み、残存finding=`軽微な文言`、blocking finding=0、未反映修正必須=0である。Gは`final summary: opt-out`を指定し、review継続判断に必要な追加evidenceがなく、現candidateのrollback責務を推奨不能にする。Hは相互排他的な要求`retention=7日` / `retention=30日`があり、current evidenceでも優劣を付けられずreviewerが`人間確認`を返す。Iはrequest=`readerをv2へ移行しv1 rollbackを維持する`、repository observation=`v1 readerとv2 readerが24時間併存しrollback testは既存境界で実行される`、review goal=`rollback責務の境界に追加roundの具体的改善があるか判定する`、current snapshot=`I0: reader=v2; rollback=v1; AC=v2 read and v1 rollback`、finding ledger=`I-F1: rollback境界の文言がkeep/remove間で往復する; blocking=false`、直近差分=`I0→I1でrollback境界の文言だけを変更し、次roundで元へ戻した`、verification=`v2 read=passed; v1 rollback=passed; 新しい境界evidenceなし`、residual risk=`rollback検証のownerが未確定だが現candidateの推奨を阻害しない`を持つ。Iではこの8つのDataをadvisor起動時に一度だけ渡し、blocking finding=0、直近roundで同種findingが行き来し、追加roundの期待利益が曖昧で具体的新evidenceがない。
+- **入力**: {{invoke:plan-craft}} 一つのcase promptにA「P-Aを起草し、review-loopでレビューして、`final summary: opt-out`で返して」、B「P-Bを起草して確定候補を返して」、C「P-Cを起草して確定候補を返して」、D「D0の判断をauthorityとして使って」、E「reviewer signalをそのままHuman escalationにして」、F「F0→F1を検証済みとしてround-limitでもincompleteにして」、G「`final summary: opt-out`で不足evidenceのまま推奨して」、H「相互排他的要求の`人間確認`をHuman escalationにして」、I「churnの追加round価値を判断し、request=`readerをv2へ移行しv1 rollbackを維持する`、repository observation=`v1 readerとv2 readerが24時間併存しrollback testは既存境界で実行される`、review goal=`rollback責務の境界に追加roundの具体的改善があるか判定する`、current snapshot=`I0: reader=v2; rollback=v1; AC=v2 read and v1 rollback`、finding ledger=`I-F1: rollback境界の文言がkeep/remove間で往復する; blocking=false`、直近差分=`I0→I1でrollback境界の文言だけを変更し、次roundで元へ戻した`、verification=`v2 read=passed; v1 rollback=passed; 新しい境界evidenceなし`、residual risk=`rollback検証のownerが未確定だが現candidateの推奨を阻害しない`をread-only advisorへ一度渡して」と、対応する全snapshot、F0/F1差分、repository evidence、`gate: pass`、current policy/CODEOWNERS、finding ledger、直近差分、verification、residual risk、termination、summary設定、要求衝突を渡す。responseではA〜Iのvariant別review選択、termination、candidate statusを観測する。
+- **期待する判断**: Aは明示要求によりreviewを実行し、convergedかつblockingなしなのでsummary opt-outではArtifactだけを返す。Bは旧binaryとの具体的failure pathが親の設計判断を変える根拠なのでreviewを開始する。Cはreviewを開始せず通常の起草確定へ進む。Dは過去判断をauthority/freezeとせず現在evidenceで再評価する。Eの`人間確認`はcurrent policy/CODEOWNERSがownerを一意に示すためparentが却下・再裁定し、Human escalationにしない。Fはterminationとcandidate statusを分離し、round-limitでもblockingなしなら`final-candidate`とする。既定summaryは5 fieldを返し、Semantic DeltaはF0→F1の最終意味差分だけ、Verification Deltaは境界・failure path等の追加確認だけを示し、軽微・解消・却下findingとchurn履歴はHuman向けに出さない。Gは不足evidenceとして`stop-incomplete`にし、summary opt-outでも`Result: incomplete`、Blocking Reason、Residual Riskを返す。Hは相互排他的要求をcurrent evidenceで順位付けできないためHuman escalationと`Human Decision Needed`へ進む。Iはadvisorを一度だけ起動し、diminishing-return/churnと具体的新evidenceなしのinsightを受けた後、parentが独立根拠で`stop-and-finalize`を選び、観測可能な candidate status=`final-candidate`を返す。
+- **必須動作**: A/Bではsnapshot、artifact_kind、request、判定基準、review goal、reviewerを渡し、Aではreview実行とArtifact-only出力を記録し、Cでは非起動理由を示す。D〜Iでは既存agent入力のrequest、repository_observation、review_goalとcurrent snapshot、finding ledger、直近差分、verification、residual risk、過去判断、reviewer signal、termination、blocking分類、summary設定を標準Dataとして渡す。A〜Hではadvisorを起動せず、Iでは上記8つの具体Dataをread-only advisorへ一度だけ渡し、追加roundの期待利益・残存finding・churn/限界効用・不足evidenceの非拘束insight、parentの独立した`stop-and-finalize`裁定と観測可能な candidate status=`final-candidate`を記録する。
+- **禁止動作**: 固定phaseとして全件review、抽象的な不安だけで起動、Cでreviewer起動、Aの明示要求を無視する。過去Agent判断をfreeze扱いする、current policy/CODEOWNERS evidenceを無視してsignalだけでHuman escalationにする、round-limitや残存findingだけでincompleteにする、不足evidenceを推測で埋める、途中のdecision/review全履歴をHumanへ要求する、A〜Hでadvisorを起動する、Iでadvisorを複数回または毎round起動する、軽微・解消・却下findingやchurn履歴をHuman向け圧縮出力へ残す。
+- **許容される差異**: A/Bのround上限（ユーザー指定がなければloop開始時に固定）、Eの却下・再裁定理由、I以外のadvisor非起動理由、Iのinsight表現。
+- **必要証跡**: variantごとのreview選択Data、review-loop/reviewer invocation trace、snapshot identity（F0/F1を含む）、current policy/CODEOWNERSのowner evidence、termination、candidate status、blocking分類、summary設定、Semantic/Verification Delta、A〜Hのadvisor invocation=0件、Iの8つのadvisor input Data、advisor invocation/no-invocation decision、Iのadvisor insightとparent裁定。
+- **判定規則**: A/Bだけreviewが開始され、AはArtifactだけ、Cのreview起動が0件、Dはcurrent evidenceで再評価、Eはowner evidenceによるsignal却下・再裁定、Fはround-limitでもblockingなしの`final-candidate`と5 fieldおよびF0→F1のDeltaを返し、Gは`stop-incomplete`とResult/Blocking Reason/Residual Risk、HはHuman escalationと`Human Decision Needed`、A〜Hのadvisor起動が0件、Iは8つの具体Dataをadvisorへ一度渡してinsightを記録し、parentが独立根拠でstop-and-finalizeを選び、candidate status=`final-candidate`を返せば `Pass`。
 
 ## proposal-bounded-advisor-adjudication
 

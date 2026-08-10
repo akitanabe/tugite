@@ -2,10 +2,10 @@
 ---
 name: plan-craft
 description: >-
-  ユーザーが明示した場合だけ、実装接続を前提にしない自由形式の計画・設計成果物を起草し、
-  gate pass 後は reviewer 適用対象の成果物を review 省略の明示がない限り既定で review-loop へ渡して確定候補を返す。
-  実装・委譲・次工程の自動前進は行わず、
-  親が成果物の受け入れを判断する。
+  ユーザーが明示した場合だけ、Human が途中経過を追わず Agent に任せる「おまかせ」workflow として、
+  recommendation-first の自由形式の計画・設計成果物を起草する。gate pass 後は review 適用対象を bounded に確認し、
+  圧縮した結果と推奨候補を返す。public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、
+  Human が最終成果物を採用して後続 Action を許可する。実装・委譲・次工程の自動前進は行わない。
 disable-model-invocation: true
 ---
 <!-- @/only -->
@@ -13,10 +13,10 @@ disable-model-invocation: true
 ---
 name: plan-craft
 description: >-
-  ユーザーが明示した場合だけ、実装接続を前提にしない自由形式の計画・設計成果物を起草し、
-  gate pass 後は reviewer 適用対象の成果物を review 省略の明示がない限り既定で review-loop へ渡して確定候補を返す。
-  実装・委譲・次工程の自動前進は行わず、
-  親が成果物の受け入れを判断する。
+  ユーザーが明示した場合だけ、Human が途中経過を追わず Agent に任せる「おまかせ」workflow として、
+  recommendation-first の自由形式の計画・設計成果物を起草する。gate pass 後は review 適用対象を bounded に確認し、
+  圧縮した結果と推奨候補を返す。public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、
+  Human が最終成果物を採用して後続 Action を許可する。実装・委譲・次工程の自動前進は行わない。
 ---
 <!-- @/only -->
 
@@ -25,6 +25,54 @@ description: >-
 この Skill は、依頼に応じた自由形式の計画・設計成果物を起草し、親へ確定候補を返す。成果物は設計判断書、
 改修方針、移行計画、比較検討、作業メモ、リスク整理、実装単位の候補案などでよく、特定の実行 schema や
 固定された後続工程の入力へ変換しない。規範本文はこの Skill 自身で完結し、別の実装 workflow の本文を前提にしない。
+
+<!-- @contract plan-craft-autonomy -->
+通常の `plan-craft` は、Human が途中経過を追わず Agent に任せる「おまかせ」workflow である。Agent が要求と
+repository の evidence を調査し、推奨できる計画を理由付きでまとめ、Human には圧縮した結果だけを返す
+recommendation-first を既定とする。Human の途中承認や逐次確認を既定の工程にしない。
+
+推奨の判断は、要求原文・repository evidence・scope・constraints・verification・risk と、親から注入された共有判定基準を同じ
+判定基準へ揃えて行う。十分な根拠があれば Agent が方針を選び、選んだ理由と棄却した代替案を残す。要求は解釈するが
+書き換えない。ユーザー要求、明示制約、観測事実は覆さず、既存の Agent の判断、過去の plan、review の結論は
+authority/freeze とせず、現在の evidence で再評価する。例外は、要求同士または要求と明示制約の不可約な意味衝突だけであり、
+その場合だけ Human escalation として必要な一点を返す。`plan-craft-approval` の direction freeze / final acceptance は
+この通常 workflow へ持ち込まず、その public workflow の境界を変更しない。
+
+reviewer の `人間確認` は reviewer が観測した signal に留まり、採否・停止・推奨を決めない。public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、Human が最終成果物を採用して後続 Action を許可する。
+
+### candidate status Calculation
+
+candidate status は次の Calculation で一度だけ決める。
+`incomplete` は、不可約な意味衝突、blocking evidence 不足、structural budget 等で安全継続不可、workflow/context 不成立、
+現 candidate を推奨不能な状態、blocking finding、未反映修正必須、要求意味変更、または evidence不足のいずれかがある場合である。
+`final-candidate` は上記の理由が一つもなく、現在の candidate を推奨できる場合である。単なる複数案、別案、軽い不確実性だけでは
+`stop-incomplete` にせず、Agent が比較して一案を推奨し、残る不確実性を risk または Human Attention へ記録する。
+
+## おまかせ workflow の review と推奨判定
+
+review の `termination` は review-loop がどのように終了したかを示す process Data であり、`final-candidate` / `incomplete`
+という計画の判定とは別軸である。criticism exhaustion、round-limit、残存 finding は process Data として保持し、candidate status は
+上記 Calculation の結果を参照する。
+
+review を続ける価値の判断が難しい場合だけ、read-only `plan-quality-advisor` を起動できる。毎 round 起動せず、advisor には request、repository_observation、review_goal、current snapshot、finding ledger、直近差分、verification、residual risk を Data として渡す。advisor は追加 round の期待利益、
+残存 finding、churn/限界効用、不足 evidence を非拘束 insight として返す。advisor は candidate を修正せず、parent が
+continue / stop-and-finalize / stop-incomplete を裁定する。
+
+上記 Calculation で `final-candidate` となった場合、bounded stop 後の残存 finding は Accepted risk / Out of scope /
+Human Attention のうち最終判断に影響するものだけを残す。解消済み、却下済み、軽微な文言、churn の履歴は Human 向け出力へ
+残さない。
+
+## おまかせ workflow の圧縮出力
+
+`final-candidate` の既定出力は Result / Semantic Delta / Verification Delta / Human Attention / Artifact である。
+Semantic Delta の baseline は最初に `structural-health-gate` へ投入した proposal candidate とし、その後の修正だけを示す。
+Verification Delta は境界、failure path、fragile behavior、禁止副作用、責務境界を優先し、差分がなければ短縮する。
+
+final summary は明示 opt-out できる。review skip と final summary skip は独立であり、一方を指定しても他方を暗黙に変更しない。
+`final-candidate` の summary opt-out は Artifact だけを返す。ただし `incomplete` の summary opt-out では `Result: incomplete`、
+Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human Decision Needed を示す。途中の decision / review 全履歴を Human に
+要求しない。Artifact は通常会話内 Data とし、最終採用と保存・後続 Action の許可は Human が判断する。
+<!-- @/contract -->
 
 <!-- @contract public-workflow-routing -->
 `return target` は public workflow parent が所有する。現在の plan-craft は gate の assessment を受けて proposal へ
@@ -37,7 +85,7 @@ description: >-
 - Claude frontmatter の `disable-model-invocation: true` と Codex metadata の
   `policy.allow_implicit_invocation: false` はこの explicit-only 契約を表す。
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
-- `review` の実行、成果物の確定候補、必要な問いの提示までを担い、受け入れと後続 Action は親へ残す。
+- `review` の実行、`final-candidate` / `incomplete` と圧縮出力の内部裁定までを担う。最終成果物の採用と保存・後続 Action の許可は Human が判断する。
 
 <!-- @anchor proposal-start -->
 ## proposal の前段
@@ -46,7 +94,8 @@ description: >-
 調査して candidate を作り、必要なら read-only `plan-quality-advisor` の insight を受け取る。advisor insight は
 非拘束 Data であり、planner は一次情報と要求に照らして `adopted` / `rejected` / `unresolved` を裁定する。
 自動採用せず、新仕様、scope、AC、ユーザー嗜好を推測しない。具体的な品質向上が残る間だけ bounded に改善し、
-人間の判断が必要、または安全な candidate を作れない場合は `stop-incomplete` と必要な判断・evidence を返す。
+不可約な意味衝突、blocking evidence 不足、または安全な candidate を推奨できない場合だけ `stop-incomplete` と必要な判断・evidence を返す。
+軽い不確実性や複数案は evidence と比較理由を添えて Agent が推奨する。
 
 <!-- @anchor proposal-stop-boundary -->
 <!-- @contract plan-craft-proposal-handoff -->
@@ -157,15 +206,15 @@ reviewer は指摘だけを行い、採否や保留を確定しない。親は r
 
 ## 確定
 
-review を実行した場合、`converged` または未解決 finding のない `induced-loop` だけを確定候補とする。
-ユーザーが review を明示したのにレビュー不成立、`round-limit`、`stop-incomplete`、未解決を伴う `induced-loop`
-になった場合は、代替 evidence で完了扱いにせず、ユーザー確認または未完了終了だけを選ぶ。親が具体的な risk を理由に
-自発選択した review、またはユーザー明示なしの既定 review のレビュー不成立に限り、代替 evidence で品質下限を独立確認できた場合は確定候補にできる。
-それ以外の非 accept 返却では成果物を確定せず、残存 risk と問いを示す。
+status は上記 `candidate status Calculation` を唯一の判定として参照し、ここで条件を再定義しない。review を実行した場合も
+`termination` と計画の `final-candidate` / `incomplete` を別々に親へ返す。`round-limit`、批判の出尽くし、または残存 finding は
+process Data として保持し、status Calculationの入力へ渡す。レビュー不成立や review-loop が `stop-incomplete` を返した場合は、
+その process failure を隠さず、status Calculationの結果を返す。
+`final-candidate` では残存事項を Accepted risk / Out of scope / Human Attention に絞り、Human 向けに必要なものだけを返す。
 <!-- @/contract -->
 
 review を実行しない場合は、要求の不足、scope、制約、残存 risk を親が確認できる通常の起草確定へ進める。どちらの場合も
-成果物の受け入れ、保存、issue や file への書き戻し、実装・委譲の開始は親の明示 Action とする。
+成果物の最終採用、保存、issue や file への書き戻し、実装・委譲の開始は Human の許可を受けて親が実行する。
 
 ## persistence と出力境界
 
@@ -173,5 +222,5 @@ review を実行しない場合は、要求の不足、scope、制約、残存 r
 のために必要な場合だけ、親が指定した resource へ書き出す。保存する場合も、対象 path、snapshot、書き戻し権限、更新結果を
 親が記録し、入力 resource を無断更新しない。
 
-出力には成果物本文と、review を実行したか、確定候補か、未完了か、親へ返した問い・残存 risk を含める。実装を開始した、
+通常の既定出力には成果物本文と、review を実行したか、確定候補か、未完了か、親へ返した問い・残存 risk を含め、`summary opt-out` 指定時は先行する「おまかせ workflow の圧縮出力」の例外契約に従う。実装を開始した、
 委譲した、次工程へ進んだと誤解される status や invocation を返さない。
