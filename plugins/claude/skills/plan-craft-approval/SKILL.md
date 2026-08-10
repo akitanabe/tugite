@@ -19,7 +19,8 @@ disable-model-invocation: true
   explicit-only 契約を表す。
 - 実装、委譲、Worker 起動、worktree 操作、後続の実装開始を行わず、workflow は成果物を自律的に保存しない。
 - 起草、対話、gate、review、final acceptance 候補または未完了の返却までを担う。人間は方向性と最終結果の責任を持ち、
-  親は調査、具体化、整合性、verification、工程の経過責任を持つ。後続 Action は人間へ残す。
+  public workflow parent は planner として、調査、具体化、整合性、verification、工程の経過責任を持つ。後続 Action は
+  人間へ残す。
 
 ## 入力と成果物
 
