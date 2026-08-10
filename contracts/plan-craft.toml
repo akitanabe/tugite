@@ -394,6 +394,18 @@ slice = "plan-quality-advisor-boundary"
 pattern = "最終受入を行いません"
 applies_to = ["claude", "codex"]
 
+[contracts.plan-quality-advisor-no-human-route-requires-5d3fa4f02ba1]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "人間への質問、選択肢、承認要求、仲裁経路を作りません。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-quality-advisor-planner-input-requires-963d03bbc412]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "`question_or_option` は planner 専用の裁定入力"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-proposal-handoff-requires-7840027c4f6e]
 kind = "requires"
 slice = "plan-craft-proposal-handoff"

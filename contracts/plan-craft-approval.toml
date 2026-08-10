@@ -190,16 +190,64 @@ slice = "proposal-dialogue-boundary"
 pattern = "review-loop"
 applies_to = ["claude", "codex"]
 
+[contracts.proposal-dialogue-responsibility-requires-b01d31f5587e]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "人間は結果責任を、planner は evidence に基づく経過責任を担う。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-no-research-delegation-requires-04a1ef6f157c]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "Agent で解消可能な曖昧さを人間へ返さない。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-density-requires-b06fdf3ef4bc]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-freeze-meaning-requires-ad7d432c50e6]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "direction freeze は成果物全文ではなく、人間が\n結果責任として確定した価値、重要な scope と exclude、責務、意図的な非採用、raw specification の意味判断を対象とする。\n人間には方向性、実装イメージ、重要な verification を圧縮して示す。実装イメージは raw specification でない限り、後段の\ngate と review が frozen decisions を守って改善できる。"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-mode-state-forbids-1edf5c5386d1]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "`dialogue_mode`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-advisor-direct-forbids-cb8dcd75e095]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "advisor insight をそのまま人間へ提示する"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-fixed-density-variant-forbids-e85e310aa2a9]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "`A` / `B` / `C` は会話全体で固定 state"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-advisor-direct-variant-forbids-a51e10cfcfa2]
+kind = "forbids"
+slice = "proposal-dialogue-boundary"
+pattern = "advisor の raw insight を planner を介さず直接人間へ送る"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-approval-order-requires-f8347c3031bb]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "proposal-dialogue → structural-health-gate → review-loop"
 applies_to = ["claude", "codex"]
 
-[contracts.plan-craft-approval-freeze-requires-22d39a73091d]
+[contracts.plan-craft-approval-freeze-requires-6285eb428ab5]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
-pattern = "direction freeze"
+pattern = "direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、\n重要な verification を圧縮して人間へ示し、freeze 後の gate と review へ frozen decisions と変更可能な具体化を区別して渡す。\n大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。\n過去 decision は自動継承せず、candidate prior decisions と再利用知見として現在の要求と evidence で再検証する。"
 applies_to = ["claude", "codex"]
 
 [contracts.plan-craft-approval-applicability-first-requires-606808497aff]
@@ -320,6 +368,54 @@ applies_to = ["claude", "codex"]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "ただし goal に対応する別 reviewer があれば `review-loop` へ渡す"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-final-acceptance-requires-fc69834046e6]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を\n省略できるが、final report は省略しない。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-deltas-requires-31dac0e0463a]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "親は全文精読を要求せず、方向変更の有無を明記した `Semantic Delta`、追加・変更した\n検証とその結果を示す `Verification Delta`、残存 risk を提示する。Verification Delta は特に境界、異常・failure path、\n壊れやすい既存挙動、禁止副作用、責務境界を優先し、成果物全文は人間が要求した場合だけ提示する。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-review-change-boundary-requires-6ace3cd5bf9a]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の\n変更が必要なら、改善案を採用せず `人間確認` へ止める。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-reopen-requires-b9e78802d407]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけを新しい `proposal-dialogue` loop で\n局所 reopen し、decision ledger 全体をリセットしない。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ\n探索を広げない。大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "direction freeze を final acceptance とみなす"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-optional-final-forbids-aec3ccb2d647]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance は任意"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-freeze-as-final-variant-forbids-e273ecba654c]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "direction freeze を最終承認として扱う"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-optional-final-variant-forbids-7c26c3fdd1e2]
+kind = "forbids"
+slice = "plan-craft-approval-handoff"
+pattern = "final acceptance は省略可能"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-kernel-reference-before-criteria]

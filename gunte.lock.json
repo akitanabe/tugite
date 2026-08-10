@@ -985,6 +985,14 @@
       "sha256": "67b780c2daf8559ea4d8ee3ad8156fb7a79ba2c84b37d75d00a2f6960d5863dc"
     },
     {
+      "id": "plan-quality-advisor-no-human-route-requires-5d3fa4f02ba1",
+      "sha256": "fead09bfdc1c595d414eb0e8243daee1a26718f04213628cf72ed2f360ced86b"
+    },
+    {
+      "id": "plan-quality-advisor-planner-input-requires-963d03bbc412",
+      "sha256": "4743add2dcb7508996b3e20c7f70c532cd6654508566501b5fe380fe4f33f254"
+    },
+    {
       "id": "plan-craft-proposal-handoff-requires-7840027c4f6e",
       "sha256": "b85d4f1b4115bfc62686cc0cea4a2bafbf6750d613056fc0e01efbcd1d88db04"
     },
@@ -1429,12 +1437,44 @@
       "sha256": "e6cf1d872ba4fb8cc3b6119351c50c31873652f0bf3100237c43e9da22015723"
     },
     {
+      "id": "proposal-dialogue-responsibility-requires-b01d31f5587e",
+      "sha256": "ac9fd06a6b8a4d55af8c23ac5da550651c8d0bdec8c00bc39c19947ccc2ed9ec"
+    },
+    {
+      "id": "proposal-dialogue-no-research-delegation-requires-04a1ef6f157c",
+      "sha256": "8f36955e5bb30bb23c8f44a8ce7f173c48348e7d9bad448490a3460112773f1e"
+    },
+    {
+      "id": "proposal-dialogue-density-requires-b06fdf3ef4bc",
+      "sha256": "ff2aeee037ab2c9fcebc65df63ca086f68fc03d393cb84eca36e62d8ed6fe66c"
+    },
+    {
+      "id": "proposal-dialogue-freeze-meaning-requires-ad7d432c50e6",
+      "sha256": "49ee7c16d560a8c4ba1c6ae5334149ac52e96a369098a5ee21f1a6b59ec6b5ab"
+    },
+    {
+      "id": "proposal-dialogue-mode-state-forbids-1edf5c5386d1",
+      "sha256": "24109bac83f8cb52d00f9df5db816d4a877c0a8e4fa2ac51e976cfe2d549096d"
+    },
+    {
+      "id": "proposal-dialogue-advisor-direct-forbids-cb8dcd75e095",
+      "sha256": "7b7da10eebea01c432a02db6f0d240e19e356bbba62712bb07e36b4920fd41bf"
+    },
+    {
+      "id": "proposal-dialogue-fixed-density-variant-forbids-e85e310aa2a9",
+      "sha256": "5e654ddd2a09de13096ca00e865172e96133253d01574d46947c241f9013c81c"
+    },
+    {
+      "id": "proposal-dialogue-advisor-direct-variant-forbids-a51e10cfcfa2",
+      "sha256": "97624c9a8691cebd8a798fb3f6a69d0a05063f7b158346a63d0a297f0c8c843f"
+    },
+    {
       "id": "plan-craft-approval-order-requires-f8347c3031bb",
       "sha256": "402f9fd2e7b8cc9e5acb992434f3ed8a39deab94d151f218d20ac2ed214fd264"
     },
     {
-      "id": "plan-craft-approval-freeze-requires-22d39a73091d",
-      "sha256": "d5e0901ec2827aebccaa112593f4b8456f23265e03f0ed4dc92c6b71cbe956ce"
+      "id": "plan-craft-approval-freeze-requires-6285eb428ab5",
+      "sha256": "f55b4d2603da185be47b33bb8fc2f0c84cda9d03ddf23a0110d4c8e4aef39bd4"
     },
     {
       "id": "plan-craft-approval-applicability-first-requires-606808497aff",
@@ -1515,6 +1555,38 @@
     {
       "id": "plan-craft-approval-fallback-forbids-c8fe8122f54a",
       "sha256": "0d8cd7f021a17cc40b3cf4020e8f9b73ca7f80b3324821df31faf6104bbc01e3"
+    },
+    {
+      "id": "plan-craft-approval-final-acceptance-requires-fc69834046e6",
+      "sha256": "e0439c7c6d60aad2db699afbb1eef86b435b9d3d10e5446b7b11ea4734037efe"
+    },
+    {
+      "id": "plan-craft-approval-deltas-requires-31dac0e0463a",
+      "sha256": "c3205f65c4a21e2c0656be64df314b0752c3c2609744a9a36d7859cf87c81f07"
+    },
+    {
+      "id": "plan-craft-approval-review-change-boundary-requires-6ace3cd5bf9a",
+      "sha256": "26504d640f7cb0962c297139fa88a3682911ff7935462d6cc3a3d8e6ff465c5b"
+    },
+    {
+      "id": "plan-craft-approval-reopen-requires-b9e78802d407",
+      "sha256": "0cda408b50d74603edb7b4574f253000d1e95de87c42dcf17079d05a1e488513"
+    },
+    {
+      "id": "plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5",
+      "sha256": "d3baae51bd72678ecf1890aa485442ddd6880151edb51dcb1883cd42a734a1ad"
+    },
+    {
+      "id": "plan-craft-approval-optional-final-forbids-aec3ccb2d647",
+      "sha256": "09638c36e888f1ce27d48297c6600ff5e2b6101e4858dcccdfc86b7624c4df52"
+    },
+    {
+      "id": "plan-craft-approval-freeze-as-final-variant-forbids-e273ecba654c",
+      "sha256": "a8ef1ff40f07c41fdce6a00d5519e24866fbadcc1f58c1172edc6c5b288ecba9"
+    },
+    {
+      "id": "plan-craft-approval-optional-final-variant-forbids-7c26c3fdd1e2",
+      "sha256": "cb256cc2c75243d55c1a42b3e7dcf514c92786396ca78dee7a29ee0bf9bcf3c0"
     },
     {
       "id": "proposal-dialogue-kernel-reference-before-criteria",
