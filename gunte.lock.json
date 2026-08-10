@@ -1449,8 +1449,8 @@
       "sha256": "ff2aeee037ab2c9fcebc65df63ca086f68fc03d393cb84eca36e62d8ed6fe66c"
     },
     {
-      "id": "proposal-dialogue-freeze-meaning-requires-291f374b875e",
-      "sha256": "a4dffb8e6d324e500902b1b275ba713c89de384666a19a0d8c511367f7a8e7d8"
+      "id": "proposal-dialogue-freeze-meaning-requires-ad7d432c50e6",
+      "sha256": "49ee7c16d560a8c4ba1c6ae5334149ac52e96a369098a5ee21f1a6b59ec6b5ab"
     },
     {
       "id": "proposal-dialogue-mode-state-forbids-1edf5c5386d1",
@@ -1461,12 +1461,20 @@
       "sha256": "7b7da10eebea01c432a02db6f0d240e19e356bbba62712bb07e36b4920fd41bf"
     },
     {
+      "id": "proposal-dialogue-fixed-density-variant-forbids-3a6b731b2e4c",
+      "sha256": "af6596235bcb400c63922d2e3ba7129150555f7814668829c43ce56a627eb77d"
+    },
+    {
+      "id": "proposal-dialogue-advisor-direct-variant-forbids-a51e10cfcfa2",
+      "sha256": "97624c9a8691cebd8a798fb3f6a69d0a05063f7b158346a63d0a297f0c8c843f"
+    },
+    {
       "id": "plan-craft-approval-order-requires-f8347c3031bb",
       "sha256": "402f9fd2e7b8cc9e5acb992434f3ed8a39deab94d151f218d20ac2ed214fd264"
     },
     {
-      "id": "plan-craft-approval-freeze-requires-22d39a73091d",
-      "sha256": "d5e0901ec2827aebccaa112593f4b8456f23265e03f0ed4dc92c6b71cbe956ce"
+      "id": "plan-craft-approval-freeze-requires-6285eb428ab5",
+      "sha256": "f55b4d2603da185be47b33bb8fc2f0c84cda9d03ddf23a0110d4c8e4aef39bd4"
     },
     {
       "id": "plan-craft-approval-applicability-first-requires-606808497aff",
@@ -1549,20 +1557,20 @@
       "sha256": "0d8cd7f021a17cc40b3cf4020e8f9b73ca7f80b3324821df31faf6104bbc01e3"
     },
     {
-      "id": "plan-craft-approval-final-acceptance-requires-0aa1c8018ae3",
-      "sha256": "b23e90c0e567ae751322c4a3d5045cb2e9722b9094139a34091afd8d0a02e254"
+      "id": "plan-craft-approval-final-acceptance-requires-fc69834046e6",
+      "sha256": "e0439c7c6d60aad2db699afbb1eef86b435b9d3d10e5446b7b11ea4734037efe"
     },
     {
-      "id": "plan-craft-approval-semantic-delta-requires-a95b222bd59e",
-      "sha256": "4985fbc8a544834f2d8add11644b82d5aa4bc87c42da246b0dcb325c11f1ab6d"
+      "id": "plan-craft-approval-deltas-requires-31dac0e0463a",
+      "sha256": "c3205f65c4a21e2c0656be64df314b0752c3c2609744a9a36d7859cf87c81f07"
     },
     {
-      "id": "plan-craft-approval-verification-delta-requires-526d5e93a188",
-      "sha256": "640347bf1483b703cedc2e70a09a6b64ff6e7b3653e8e788fabfcc08c84a4f32"
+      "id": "plan-craft-approval-review-change-boundary-requires-6ace3cd5bf9a",
+      "sha256": "26504d640f7cb0962c297139fa88a3682911ff7935462d6cc3a3d8e6ff465c5b"
     },
     {
-      "id": "plan-craft-approval-replan-requires-e1c83193e6a2",
-      "sha256": "2a30e66b6dfdfd51e1a9a928febe42dbefd5e69c738382d7ff5d6d3c0f5ef39a"
+      "id": "plan-craft-approval-reopen-requires-b9e78802d407",
+      "sha256": "0cda408b50d74603edb7b4574f253000d1e95de87c42dcf17079d05a1e488513"
     },
     {
       "id": "plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5",
@@ -1571,6 +1579,14 @@
     {
       "id": "plan-craft-approval-optional-final-forbids-aec3ccb2d647",
       "sha256": "09638c36e888f1ce27d48297c6600ff5e2b6101e4858dcccdfc86b7624c4df52"
+    },
+    {
+      "id": "plan-craft-approval-freeze-as-final-variant-forbids-e273ecba654c",
+      "sha256": "a8ef1ff40f07c41fdce6a00d5519e24866fbadcc1f58c1172edc6c5b288ecba9"
+    },
+    {
+      "id": "plan-craft-approval-optional-final-variant-forbids-7c26c3fdd1e2",
+      "sha256": "cb256cc2c75243d55c1a42b3e7dcf514c92786396ca78dee7a29ee0bf9bcf3c0"
     },
     {
       "id": "proposal-dialogue-kernel-reference-before-criteria",
