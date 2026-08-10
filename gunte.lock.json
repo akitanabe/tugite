@@ -22,6 +22,8 @@
     "shared/agents/writing-principles-reviewer.md",
     "shared/necessity-kernel.md",
     "shared/skill/impl-lead/SKILL.md",
+    "shared/skill/impl-lead/references/final-writing-gate.md",
+    "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-craft/SKILL.md",
     "shared/skill/plan-craft-approval/SKILL.md",
     "shared/skill/proposal/SKILL.md",
@@ -605,8 +607,8 @@
       "sha256": "da706ccb4c13cafde1cfed1cc2bcce6a1d573ab46b438c1c2605ef8d3b086289"
     },
     {
-      "id": "impl-default-exact-requires-91aab3de3408",
-      "sha256": "37868d282281a4580bfb043abd3bfc066a179a7ad1ac9c27275ba6cff533f462"
+      "id": "impl-default-exact-requires-91ec20f8d7c6",
+      "sha256": "b769aabe0baa729a10d715cbe05e0516a1d4af8cb04fb408326868044be6260e"
     },
     {
       "id": "impl-run-owned-default-requires-24af2bb38936",
@@ -614,11 +616,27 @@
     },
     {
       "id": "impl-run-owned-default-occurrences",
-      "sha256": "75adb853d6ae16ed3608a210828b66a870061b0764ff547d076e15b0034d9383"
+      "sha256": "41d8a8c4a5441184f4d58026a94ae70dce5a0eddd06e089d15d1bde9c59456d2"
     },
     {
       "id": "impl-run-owned-default-before-route",
       "sha256": "f9620ab628d433e7abf1272f52a3bc56cad868ef0b3a4d3f438fcc56cf9f2119"
+    },
+    {
+      "id": "impl-run-owned-lifecycle-loader-requires-11ecfc78e5d5",
+      "sha256": "e400e46608d982df62eba3e205ed7cd723dd9983ebfa5c48e8cc71ab5a3630ac"
+    },
+    {
+      "id": "impl-run-owned-lifecycle-reference-identity",
+      "sha256": "e55ffc59127d17cfce64ac238d3564e893e849f7bb8085e7cbb102ab6af2677d"
+    },
+    {
+      "id": "impl-final-writing-loader-requires-19336586c08e",
+      "sha256": "3497d3aba6c75f0ef90d2a2bb09b42d0125f05079dc210369d5a59a826caff16"
+    },
+    {
+      "id": "impl-final-writing-reference-identity",
+      "sha256": "8a5e9ca465e1254d34df82e900b75df2ce4c17d90f7b12298ff015f9edf00587"
     },
     {
       "id": "final-writing-remediation-requires-dfe4f75786cc",
@@ -1826,13 +1844,13 @@
       "path": "shared/necessity-kernel.md"
     },
     {
-      "kind": "span",
-      "id": "impl-run-owned-default",
+      "kind": "anchor",
+      "id": "impl-run-owned-default-start",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "impl-run-owned-default-start",
+      "kind": "span",
+      "id": "impl-run-owned-lifecycle-loader",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -1842,8 +1860,18 @@
     },
     {
       "kind": "span",
-      "id": "final-writing-remediation",
+      "id": "impl-final-writing-loader",
       "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "final-writing-remediation",
+      "path": "shared/skill/impl-lead/references/final-writing-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-run-owned-default",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {
       "kind": "span",

@@ -1,0 +1,78 @@
+# impl-lead run-owned lifecycle v1
+
+この reference は、`impl-lead` が所有する一時 worktree の作成、local integration、cleanup を定義する。
+親は `SKILL.md` で指定された時点に全文を読み、判断と Action を自身の execution data として扱う。
+
+## Creation
+
+<!-- @contract impl-run-owned-default -->
+### Default run-owned checkout
+
+ユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は
+`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から
+run-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration
+を既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。
+既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の
+safe-parallel 条件に従って追加 isolation を選ぶ。
+
+この既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の
+親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback
+の責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する
+こと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を
+省略しない。
+
+ユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。
+その指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned
+worktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。
+作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は
+run の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。
+<!-- @/contract -->
+
+## Closeout
+
+run-owned worktree は成果保管場所ではなく一時的な実行 resource である。ユーザーが保持を指定していない場合、親は
+`accepted` と `stop-incomplete` のどちらで終わる run でも、次の closeout 判定を経て安全なときは削除する既定を持つ。
+削除は品質 evidence や accept の根拠ではなく、親 QA、選択した risk-directed review、final writing gate、final verification、
+必要な外部副作用の照合がすべて完了した後にだけ行う最後の Action である。PR の有無で分岐を作らず、local/remote の
+persistence と integration の観測結果を共通の Data として扱う。
+
+closeout は `Action → Data → Calculation → Data → Action → Data` の順に進める。まず親は target の repository identity、worktree identity、
+canonical path、exact full branch ref、`invocation_start_head`、HEAD、clean status、全 writer/reviewer の終了、worktree 内だけに残る
+exclusive evidence、ユーザーの保持指定、別 run resource との識別を再観測する。Work Unit の `base_snapshot` と invocation branch の
+baseline は別の Data として pin し、同じ HEAD でも branch ref が違えば同一実行先とは扱わない。継続 PR のように
+`base_snapshot` と `invocation_start_head` が異なる場合も、各値を混同せず exact identity を再照合する。
+
+次に Calculation が、(a) run-owned で user-owned checkout/worktree/branch、固定 path、別 run resource ではない、(b) 成果を task-owned
+local branch の commit に固定済みで、再開に必要な branch/commit（利用可能なら remote ref も）を報告できる、(c) worktree が clean、全
+writer/reviewer が終了し、worktree 内だけの未統合成果/evidence がない、(d) target identity と invocation repository/branch ref が一意、
+(e) user retention がなく、protected state（dirty/untracked に加えて ignored entry）の観測が完了している、を判定 Data にする。
+どれかを観測できない、または false なら削除 Action を実行せず、path、branch、commit、理由を付けた `stop-incomplete` を返す。
+
+local integration は別の Action として、integration 直前に invocation repository identity、worktree identity/canonical path、exact full branch
+ref、その ref の target、`invocation_start_head`、protected dirty/untracked/ignored state を再照合する。invocation branch の HEAD は開始時
+`invocation_start_head` から drift していないことを確認し、Work Unit の `base_snapshot` と一致することは要求しない。開始時 HEAD..task
+commit の変更 path と ancestor path が protected dirty/untracked/ignored entry と衝突しないこと、task commit への fast-forward が可能なことを
+Calculation してから `--ff-only` で行う。衝突、identity/ref の不一致、観測不能、drift、protected state の変化、non-FF は統合禁止とし、
+task-owned branch/commit を保持して未統合理由を Data にする。無条件 checkout/merge、merge commit、rebase、reset、stash、force、
+`branch -D` は使わない。
+
+`--ff-only` 成功後は同じ exact branch ref の target と HEAD が task commit に一致すること、protected state と内容 identity が不変であることを
+再観測する。secret の内容は報告せず、path/type/mode/size と安全な content digest などの identity だけで照合する。`--ff-only` の Action status
+だけを terminal outcome にせず、失敗後は exact ref/HEAD を再観測する。再観測が (a) `invocation_start_head` のままなら未統合として扱い、
+他の安全条件が成立するときだけ worktree を削除して `stop-incomplete`、(b) task commit なら統合済みとして扱い、protected state/content identity と
+全 postcondition が成立するときだけ通常 cleanup と `accepted`、(c) unexpected または観測不能なら worktree を保持して `stop-incomplete` とする。
+不一致、照合不能、または Action の結果不明なら branch delete と worktree remove を抑止し、blind retry/force をせず、path、branch、commit、
+blocker、risk を含む result Data にする。Action 失敗後は再観測してからでなければ次の Action へ進まない。
+
+統合できない場合でも、task-owned branch/commit に成果が永続化され、worktree が clean、protected state が不変で exclusive evidence がなく、
+target identity が一意なら、無理に統合せず `stop-incomplete` と未統合理由を Data にして run-owned worktree を削除する。成果が commit 前、
+evidence が worktree 内だけ、writer/reviewer が active、保持指定がある、削除対象 identity が不明、または protected state の照合不能なら
+worktree を残す。
+
+安全な local integration 後、または上記の安全な未統合終了後の closeout は run-owned worktree を通常削除し、worktree list から対象 identity
+が消えたことを照合する。remove が失敗した、または remove 後も identity が list に残る場合は branch delete を行わず、実際に残る path、branch、
+commit、blocker、risk を `stop-incomplete` として報告する。merge 済み task branch の safe delete（`git branch -d` 相当）が不成立・失敗でも
+worktree の安全な削除を取り消さず、branch を保持して報告する。user-owned branch や別 run resource は変更・削除しない。
+closeout の result Data には、`run_outcome`（`accepted` / `stop-incomplete`）、統合/未統合、削除/保持、対象 path、branch、commit、
+protected state identity、観測した blocker、残存 risk を含める。integration と worktree removal が成立した後の task branch retained は
+残存 risk として報告するが、それだけで `accepted` を妨げない。

@@ -1,7 +1,7 @@
-[contracts.impl-default-exact-requires-91aab3de3408]
+[contracts.impl-default-exact-requires-91ec20f8d7c6]
 kind = "requires"
 slice = "impl-run-owned-default"
-pattern = "### Default run-owned checkout\n\nユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は\n`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から\nrun-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration\nを既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。\n既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の\nsafe-parallel 条件に従って追加 isolation を選ぶ。\n\nこの既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の\n親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback\nの責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する\nこと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を\n省略しない。\n\nユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。\nその指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned\nworktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。\n作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は\nrun の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。\n\n## Route and execution order"
+pattern = "### Default run-owned checkout\n\nユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は\n`base_snapshot` を確定し、保護する dirty/untracked を記録した後、最初の書き込み Action より前に、その snapshot から\nrun-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration\nを既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。\n既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の\nsafe-parallel 条件に従って追加 isolation を選ぶ。\n\nこの既定の作成では、execution data に `base`（`base_snapshot`）、`owner`（run が所有する resource）、`single_writer`（その時点の\n親または委譲 worker）、`paths`（worktree の絶対 path を含む list）、`integration`（親 QA、review、final writing gate、統合、rollback\nの責任）、`cleanup`（未統合成果、evidence、再開可能性、user constraint を確認してから決める条件）を確定する。worktree が存在する\nこと自体は quality の evidence または accept の根拠にせず、既存の parent QA、review、final writing gate、integration、rollback を\n省略しない。\n\nユーザーが指定した既存 checkout、別 isolation/worktree、または不使用の制約は execution constraint として既定より優先する。\nその指定と品質下限が衝突する場合、無断で run-owned または別経路へ変更せず、確認を求めるか `stop-incomplete` とする。run-owned\nworktree を作成できない場合も current checkout へ暗黙 fallback しない。未完了範囲と evidence を付けて `stop-incomplete` とする。\n作成のために既存の dirty/untracked を commit、move、stash、discard しない。run-owned resource は親が所有し、cleanup は\nrun の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。"
 applies_to = ["claude", "codex"]
 
 [contracts.impl-run-owned-default-requires-24af2bb38936]
@@ -15,8 +15,8 @@ kind = "occurrences"
 pattern = "### Default run-owned checkout"
 count = 1
 paths = [
-  "plugins/claude/skills/impl-lead/SKILL.md",
-  "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/claude/skills/impl-lead/references/run-owned-lifecycle.md",
+  "plugins/codex/skills/impl-lead/references/run-owned-lifecycle.md",
 ]
 applies_to = ["claude", "codex"]
 
@@ -24,6 +24,38 @@ applies_to = ["claude", "codex"]
 kind = "order"
 before = "impl-run-owned-default-start"
 after = "impl-route-execution-start"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-run-owned-lifecycle-loader-requires-11ecfc78e5d5]
+kind = "requires"
+slice = "impl-run-owned-lifecycle-loader"
+pattern = "この経路を選ぶ場合、親は作成 Action より前に skill-relative `references/run-owned-lifecycle.md` の全文を読み、identity\n`# impl-lead run-owned lifecycle v1`、`Creation`、`Closeout` の各 section と必要本文を確認する。不足、identity 不一致、必要本文の\n欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は run-owned resource の作成、integration、cleanup の詳細を\n定義し、親が ownership、判断、Action、結果照合を保持する。"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-run-owned-lifecycle-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead run-owned lifecycle v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/run-owned-lifecycle.md",
+  "plugins/codex/skills/impl-lead/references/run-owned-lifecycle.md",
+]
+applies_to = ["claude", "codex"]
+
+[contracts.impl-final-writing-loader-requires-19336586c08e]
+kind = "requires"
+slice = "impl-final-writing-loader"
+pattern = "gate の開始前に、親は skill-relative `references/final-writing-gate.md` の全文を読み、identity\n`# impl-lead final writing gate v1`、`Final writing acceptance gate`、`Final writing findings and remediation` の各 section と\n必要本文を確認する。不足、identity 不一致、必要本文の欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は\nsnapshot、handoff、read-only isolation、finding の裁定、局所 remediation、再 gate、closeout data を定義し、reviewer を writer または\n受入決定者にしない。親が finding の採否、修正経路、final verification、run の受入判断を保持する。"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-final-writing-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead final writing gate v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/final-writing-gate.md",
+  "plugins/codex/skills/impl-lead/references/final-writing-gate.md",
+]
 applies_to = ["claude", "codex"]
 
 [contracts.final-writing-remediation-requires-dfe4f75786cc]
