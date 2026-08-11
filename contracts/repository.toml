@@ -35,7 +35,7 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex"]
 
-# Why Not: this TOML block is the route-independent Test QA declaration Data introduced by WU-1.
+# Why Not: keep ownership, evidence, and acceptance prohibitions in one coherent declaration; splitting them could permit cross-section false greens.
 [contracts.repository-test-qa-baseline-a0b98d2f7393]
 kind = "requires"
 slice = "repository-test-qa-baseline"
