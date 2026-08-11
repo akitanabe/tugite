@@ -98,7 +98,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | plan-craft は明示時だけ起草し、通常はおまかせで推奨を返して実装へ進まない | #145, #150, #206; `shared/skill/plan-craft/SKILL.md` | `plan-craft-explicit-nonimplementation` | platform-mechanism | Claude / Codex | 発火、推奨理由、成果物、Action trace、summary opt-out | plan と実装の同時依頼でも実装0件、軽い不確実性は推奨して継続 |
 | plan-craft は明示要求または判断を変える具体riskだけでreviewを選び、terminationと候補判定を分離する | #150, #206; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、termination、candidate status、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動し、blockingなしのbounded stopはfinal-candidate |
 | proposal-dialogue は検証済み snapshot 上で Human の binding resolution を一件ずつ反映する | #167, #203, #208; `plan-craft-approval`, `proposal-dialogue` | `proposal-dialogue-verified-resolution-cycle` | semantic-core | Claude / Codex | snapshot列、frontier、decision ledger、Human判断、apply/verify順、停止理由 | 一件のverify成功後だけsnapshotを更新して再評価し、失敗・no-progress・bound到達では残るfrontierを保持して停止 |
-| proposal は一次情報と insight を bounded に裁定する | #172, #177; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot、adoption ledger、停止理由 | insight を自動採用せず人間判断を推測しない |
+| proposal はcurrent verified snapshot上でadvisor insightを一件ずつboundedに裁定する | #172, #177, #208; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot列、frontier、adoption ledger、apply/verify順、advisor起動trace、停止理由 | verify後だけsnapshotを更新して残りを再評価し、毎cycle再起動や黙殺をせず安全なcandidate不可なら停止 |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
 | proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
 | gate は厳密な caller_context だけ受け付ける | #179; `shared/skill/structural-health-gate/SKILL.md` | `structural-health-gate-caller-context` | semantic-core | Claude / Codex | context validation、Action trace | 不正 context では assessment/後段0件 |
@@ -499,17 +499,17 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## proposal-bounded-advisor-adjudication
 
-- **目的**: advisor insightを一次情報で裁定し、判断不能時に止める。
+- **目的**: advisor insightをcurrent verified snapshot上で一件ずつ裁定し、残りを再評価して安全に返却または停止する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Cは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。`caller_context={parent: plan-craft, same_context: true, public_invocation: explicit}`。requestは「CSV import計画」、AC「invalid rowを報告しvalid rowを保存」、change=`importer.py,tests`、exclude=`UI,DB schema`、制約=`transaction既存境界維持`。repository観測は`importer.py`がrow単位transaction。candidate `S0`は全行一括処理。advisor insight A=`row単位処理なら既存transactionと一致`（同fileがevidence）、B=`UI progress bar追加`（exclude違反）、C=`valid rowを保存して続行か全rollbackか選択が必要`（要求/仕様に根拠なし）。
-- **入力**: 一つのcase promptでplan-craft親からinternal `proposal`へ「上記request/repository observation/caller_context/candidate S0/insight A〜Cを裁定して返す」と全variant Dataを渡す。responseではA〜Cのvariant別adjudicationを観測する。
-- **期待する判断**: A=`adopted`でS1、B=`rejected`、C=`unresolved`としてstop-incompleteを親へ返す。
-- **必須動作**: snapshot identity、adoption ledger、assumptions、blocking gaps、residual risksを返す。
-- **禁止動作**: 全insight自動採用、Cの推測、gate/review-loopの起動、accept主張。
-- **許容される差異**: ledger IDと説明文。
-- **必要証跡**: S0/S1 identity、一次情報、ledger、後段invocation trace。
-- **判定規則**: A/B/Cの裁定と停止境界が一致すれば `Pass`。
+- **前提 Data**: A〜Cは同じserial resolution disciplineを通るboundary variantとして、このcaseの一つのfresh contextで扱う。全variantで`caller_context={parent: plan-craft, same_context: true, public_invocation: explicit}`、requestは「CSV import計画」、ACは「invalid rowを報告しvalid rowを保存」、change=`importer.py,tests`、exclude=`UI,DB schema`、制約=`transaction既存境界維持`、repository観測は`importer.py`がrow単位transactionである。Aのcandidate `A0`は全行一括処理で、最初のadvisor invocationはinsight `P1=row単位処理なら既存transactionと一致`、`P2=UI progress bar追加`、`P3=valid rowを保存して続行か全rollbackか選択が必要`、`P4=既存row transactionを維持する`を一度に返す。P1だけを最初のcurrent pointとして採用・applyし、verification=`row単位transaction test passed`ならupdated snapshot `A1`になる。A1ではP2はexclude違反、P3は選択根拠不足、P4のobligationはP1で充足済みである。B-emptyの`B0`にはinsight `Q1=invalid row report testをverificationへ追加`だけがあり、採用・apply後のverificationはpassedで`B1`となる。C-no-progressの`C0`にはmaterial frontier `R1=外部CSV dialect policyへの適合`があるが、policy本文は入力にもrepositoryにもなく、同じinsight・evidence・snapshotのままでは安全なcandidateを作れない。親は各variantのproposal loop開始時にresolution boundを固定済みで、structural/review budgetとは別Dataである。
+- **入力**: 一つのcase promptでplan-craft親からinternal `proposal`へ、AはA0とP1〜P4をserialに処理、B-emptyはB0とQ1を処理、C-no-progressはC0とR1を処理して返すよう全Dataを渡す。responseではvariant別のverified snapshot、frontier、current point、adoption ledger、Action順、advisor invocation trace、停止またはcandidate return判定を観測する。
+- **期待する判断**: Aは`A0→P1 adopted→一件apply→verify passed→A1`の後だけ残りinsightをA1で再評価し、P2を理由付き`rejected`、P3を`unresolved`、P4を「P1でobligation充足済み」の理由付き`rejected`として、P3とblocking evidenceを保持した`stop-incomplete`を親へ返す。A1更新やfrontier減少だけではadvisorを再起動しない。B-emptyはQ1のverification成功後にfrontier emptyとなり、念押しadvisorやlatent探索をせず通常のcandidate return判定へ進むが、completionやacceptを主張しない。C-no-progressは同じ判断を積まず、R1をmaterial frontierと`blocking_gaps`に保持して既存`stop-incomplete`へ返し、具体的価値のないadvisor再起動を行わない。
+- **必須動作**: 各variantでcurrent verified snapshot、snapshot-bound frontier、一件のcurrent point、discretionary resolution、apply対象、verification、semantic progress、updated snapshotまたは停止、残りinsightの再評価を順に記録する。snapshot identity、既存adoption ledger、assumptions、blocking gaps、residual risksも返す。
+- **禁止動作**: 複数insightの一括裁定/反映、未検証working state上の次判断、P2〜P4の黙殺、全insight自動採用、P3/R1の推測、advisorの毎cycle起動、frontier empty後の念押しreview/latent探索、新ledger/status/public parameter、gate/review-loop起動、accept主張。
+- **許容される差異**: ledger IDと説明文、B-emptyのcandidate return Dataの表示形式。
+- **必要証跡**: A0/A1、B0/B1、各frontier/current point、一次情報、adoption ledger、apply/verification Action順、semantic progress、advisor invocation count、Cの停止理由とremaining frontier、後段invocation trace。
+- **判定規則**: Aが一件のverify成功後だけA1を更新してP2〜P4を既存statusへ再評価し、B-emptyが再起動せずcandidate return判定へ進み、C-no-progressがR1を保持して停止し、全variantでadvisor invocationとcycle、resolution boundとgate/review budgetを分離すれば `Pass`。
 
 ## proposal-internal-entry
 

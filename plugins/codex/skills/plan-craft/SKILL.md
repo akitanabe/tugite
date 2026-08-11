@@ -71,6 +71,17 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human De
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
 - `review` の実行、`final-candidate` / `incomplete` と圧縮出力の内部裁定までを担う。最終成果物の採用と保存・後続 Action の許可は Human が判断する。
 
+## proposal resolution の caller ownership
+
+proposal の invocation boundary、discretionary authority、resolution execution bound は `plan-craft` が所有する。
+internal `proposal` の開始時に、caller=`plan-craft`、resolver=planner、counterpart=`plan-quality-advisor`、
+authority=discretionary として mapping し、proposal が規定する resolve-kernel loader を親 Action として一度だけ実行する。
+advisor は非拘束 Data を返し、planner が一次情報を基準に既存 adoption ledger へ裁定する。
+
+ユーザーが安全上限を指定していない場合、親は proposal loop の開始時に resolution execution bound を internal responsibility
+として決定し、loop 中は固定する。固定数、新しい public parameter / schema、`resolve_rounds` は追加しない。この bound は
+structural gate budget および review-loop budget と別 Data とし、相互に加算・流用しない。
+
 ## proposal の前段
 
 起草は、同じ親 context 内の internal `proposal` を前段として開始する。`proposal` は要求、repository、既存仕様を

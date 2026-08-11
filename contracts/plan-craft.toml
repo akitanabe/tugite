@@ -16,6 +16,252 @@ slice = "candidate-producer-boundary"
 pattern = "review-loop"
 applies_to = ["claude", "codex"]
 
+[contracts.proposal-resolve-kernel-loader-requires-0a677f84afba]
+kind = "requires"
+slice = "proposal-resolve-kernel-loader"
+pattern = "skill-relative `../../references/resolve-kernel.md`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolution-role-mapping-requires-fe1511a4fcc3]
+kind = "requires"
+slice = "proposal-resolution-role-mapping"
+pattern = "caller=`plan-craft`、resolver=planner、counterpart=`plan-quality-advisor`、authority=discretionary"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-serial-resolution-requires-be2916ab10ea]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "一件の current point を resolve し、許可された変更だけを apply して verify"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-reinvoke-discipline-requires-1aae648e55c4]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "単なる snapshot 更新、frontier が一件減ったこと、一件の insight の採否、frontier empty の念押しだけでは再起動しない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-resolution-ownership-requires-ae86a9ab644f]
+kind = "requires"
+slice = "plan-craft-proposal-resolution-ownership"
+pattern = "proposal の invocation boundary、discretionary authority、resolution execution bound は `plan-craft` が所有する"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-before-use]
+kind = "order"
+before = "proposal-resolve-kernel-loader-start"
+after = "proposal-resolve-kernel-use"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-before-cycle]
+kind = "order"
+before = "proposal-resolve-kernel-loader-start"
+after = "proposal-serial-resolution-start"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-before-verified-baseline]
+kind = "order"
+before = "proposal-resolve-kernel-loader-start"
+after = "proposal-verified-baseline-start"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolution-before-bounded-return]
+kind = "order"
+before = "proposal-serial-resolution-start"
+after = "proposal-bounded-return-start"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-caller-verified-snapshot-requires-08d539e62aad]
+kind = "requires"
+slice = "proposal-verified-snapshot-baseline"
+pattern = "既存 candidate を受け取る場合は current verified candidate snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-initial-verified-snapshot-requires-989b53be6aaa]
+kind = "requires"
+slice = "proposal-verified-snapshot-baseline"
+pattern = "verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-improvement-working-state-requires-9c251797357c]
+kind = "requires"
+slice = "proposal-verified-snapshot-baseline"
+pattern = "各改善は working state へ apply"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-working-state-promotion-requires-bfd4c3f09770]
+kind = "requires"
+slice = "proposal-verified-snapshot-baseline"
+pattern = "verify と semantic progress が成功した後にだけ current verified snapshot を更新する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-resolution-mapping-before-proposal]
+kind = "order"
+before = "plan-craft-proposal-resolution-caller-mapping"
+after = "proposal-start"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-identity-requires-64b15bdcec23]
+kind = "requires"
+slice = "proposal-resolve-kernel-loader"
+pattern = "identity `resolve-kernel-v1`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-once-requires-f985bf4ffdf7]
+kind = "requires"
+slice = "proposal-resolve-kernel-loader"
+pattern = "一度だけ読み"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-failure-requires-b953902bb829]
+kind = "requires"
+slice = "proposal-resolve-kernel-loader"
+pattern = "reference の不足、identity 不一致、読み取り失敗、必要本文不足"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolve-loader-no-delegation-requires-b2e9d6926bb5]
+kind = "requires"
+slice = "proposal-resolve-kernel-loader"
+pattern = "path の解決、reference の探索、読み込みを委ねない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-resolution-ledger-requires-85ad7e4f6e35]
+kind = "requires"
+slice = "proposal-resolution-role-mapping"
+pattern = "adoption ledger（`adopted` / `rejected` / `unresolved`）"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-kernel-independence-requires-08e0ed89ce2c]
+kind = "requires"
+slice = "proposal-resolution-role-mapping"
+pattern = "互いの本文を前提にせず、相互の読み込み順に依存させない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-no-bulk-resolution-requires-f6f975cef8df]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "planner は一括裁定しない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-verify-failure-reopen-requires-ca5101a7ebd0]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "verification が失敗した場合は current point を reopen"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-no-unverified-stacking-requires-518ecc30935e]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "未検証 working state 上へ次の判断を積まない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-remaining-insight-reevaluation-requires-33a75a41f496]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "未処理 insight を updated snapshot と一次情報で一件ずつ再評価する"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-no-new-ledger-status-requires-cc2080fd53d3]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "未処理 insight を黙って捨てず、`stale`、`superseded`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-empty-not-completion-requires-101e6c73a3d1]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "frontier empty は通常の candidate return 判定へ進む条件にすぎず、workflow completion ではない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-stop-mapping-requires-1cca0de26060]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "新statusを作らず既存の `stop-incomplete` と"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-invocation-not-cycle-requires-d9a4c3a4ffc2]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "advisor invocation は resolution cycle と同義ではなく、advisor を毎 cycle 起動しない"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-reinvoke-positive-requires-3275d6a29cbb]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "snapshot 更新で前提が"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-resolution-bound-fixed-requires-d63d8ece7480]
+kind = "requires"
+slice = "plan-craft-proposal-resolution-ownership"
+pattern = "proposal loop の開始時に resolution execution bound を internal responsibility"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-no-resolution-surface-requires-e31502a5491e]
+kind = "requires"
+slice = "plan-craft-proposal-resolution-ownership"
+pattern = "固定数、新しい public parameter / schema、`resolve_rounds` は追加しない"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-resolution-budget-separation-requires-38f1a14015d5]
+kind = "requires"
+slice = "plan-craft-proposal-resolution-ownership"
+pattern = "structural gate budget および review-loop budget と別 Data"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-material-remains-frontier-requires-c422208f8ee8]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "まだ material なら frontier"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-unnecessary-rejected-requires-8de3cc580455]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "不要になった場合は理由付き `rejected`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-evidence-gap-unresolved-requires-ea036f0662f2]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "evidence が不足する場合は `unresolved`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-fulfilled-obligation-rejected-requires-748013394c3d]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "obligation が充足済みならその理由付き `rejected`"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-no-progress-stop-requires-04b3de3eafbf]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "semantic progress がなく、安全な candidate を作れない material frontier が残る場合"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-bound-remaining-stop-requires-9c8dbee99516]
+kind = "requires"
+slice = "proposal-serial-resolution-cycle"
+pattern = "bound 到達時に frontier が残る場合"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-reinvoke-new-boundary-requires-f40b502d509c]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "新しい material な設計境界が現れた"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-reinvoke-missing-input-requires-febe5a4ac271]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "必要な evidence / option / objection が不足した"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-reinvoke-scope-boundary-requires-14c43487ee06]
+kind = "requires"
+slice = "proposal-advisor-reinvocation"
+pattern = "scope / responsibility 境界が変化した"
+applies_to = ["claude", "codex"]
+
 [contracts.review-kernel-exact-requires-51c54590dac0]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
@@ -316,15 +562,15 @@ slice = "candidate-producer-boundary"
 pattern = "unresolved"
 applies_to = ["claude", "codex"]
 
-[contracts.candidate-producer-boundary-requires-dc630826704e]
+[contracts.candidate-producer-boundary-requires-0a1a3eb621ed]
 kind = "requires"
-slice = "candidate-producer-boundary"
+slice = "proposal-bounded-return"
 pattern = "caller-owned parent"
 applies_to = ["claude", "codex"]
 
-[contracts.candidate-producer-boundary-requires-039e73d79d24]
+[contracts.candidate-producer-boundary-requires-f14b1e0eaf7f]
 kind = "requires"
-slice = "candidate-producer-boundary"
+slice = "proposal-bounded-return"
 pattern = "後段工程を選択・起動せず"
 applies_to = ["claude", "codex"]
 
@@ -340,16 +586,28 @@ slice = "candidate-producer-boundary"
 pattern = "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する"
 applies_to = ["claude", "codex"]
 
-[contracts.candidate-producer-boundary-requires-d1c6fe46d9c0]
+[contracts.candidate-producer-boundary-requires-163ccc844c0a]
 kind = "requires"
-slice = "candidate-producer-boundary"
+slice = "proposal-bounded-return"
 pattern = "具体的な品質向上が残る間だけ bounded"
 applies_to = ["claude", "codex"]
 
-[contracts.candidate-producer-boundary-requires-238a8fae9940]
+[contracts.candidate-producer-boundary-requires-4f817cdb98c4]
 kind = "requires"
-slice = "candidate-producer-boundary"
-pattern = "人間の選択が必要な `unresolved` が残る場合は、勝手に進めず判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。"
+slice = "proposal-bounded-return"
+pattern = "安全な candidate を推奨できない場合"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-return-after-frontier-requires-12a9bb898898]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "current frontier を処理し、必要な advisor"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-return-after-reinvoke-requires-7c67c30dfca6]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "reinvocation の判断を終えた後にだけ return を判定する"
 applies_to = ["claude", "codex"]
 
 [contracts.candidate-producer-boundary-requires-0dd78f082cd5]
