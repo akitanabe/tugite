@@ -1,85 +1,35 @@
-[contracts.plan-role-kernel-exact-requires-f9a2868fea86]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "## necessity-kernel v1 の mapping\n\n親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、候補 Claim ごとに適用します。finding の成立と\nseverity（`軽微` / `修正推奨` / `修正必須`）を判定することと、Claim が current work に必要かを判定することを\n分離してください。必要性が `necessary` のときだけ、既存の finding Data に Broken Obligation、具体的な Failure\npath、Evidence、Minimum Resolution Condition を示せる場合に報告します。`unnecessary` は残る witness が\nobligation を担保する根拠がある場合に限り、`indeterminate` は不足する根拠とともに既存 field で返します。\n`necessary` / `unnecessary` / `indeterminate` は新しい field や採否ではなく、採否は親が行います。判定基準または\n周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。"
-applies_to = ["claude", "codex"]
-
-[contracts.over-role-kernel-exact-requires-d2daf270356d]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "## necessity-kernel v1 の mapping\n\n親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、基準 commit から diff が導入した plan /\nimplementation / test / abstraction の各候補 Claim に適用します。除去後に残る具体的な `remaining witness` と\nそれが担保する obligation を示せる削減候補だけを、既存の finding Data で返してください。`necessary` は除去で\nBroken Obligation が生じること、`indeterminate` は witness または Evidence が不足することを表しますが、共通\nverdict field は追加しません。大きさ、複雑さ、行数のみを根拠にせず、A/B が互いを witness にする同時削除も\n認めません。判定基準または周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。\n\n到達したいかなる repository に対して command を実行する場合であっても、読み取りと検証の実行だけを\n行い、追跡ファイルを変更しないでください。書き込みは、対象とした repository の外の一時領域へ\n作成した複製に限り、それ以外のいかなる path へも書き込まないでください。書き込みを伴う検証は、\n`mktemp -d` などで新規作成した一時 directory 配下へ複製して行い、run 中に、自分が作成した\nその directory に限って削除してください。削除できない場合は path を返却物へ記録し、非追跡ファイルを\n複製対象に含めないでください。\nあわせて、HEAD・refs・object DB・git 設定・hooks を\n変更する操作、および到達可能性や reflog を失わせる操作を行わないでください\n（`commit` / `checkout` / `switch` / `reset` / `stash` / `rebase` / `merge` / `cherry-pick` /\n`worktree add` / `worktree remove` / `branch -d` / `branch -D` / `branch -f` / `branch -m` /\n`update-ref` / `symbolic-ref` / `reflog expire` / `gc --prune=now` / `config` の変更 /\n`.git/hooks/*` への書き込み / `clean -fdx` / `restore` / `push` など）。"
-applies_to = ["claude", "codex"]
-
-[contracts.advisor-kernel-exact-requires-2ac2892118cc]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "## necessity-kernel v1 の mapping\n\n親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を使い、candidate の step、assumption、verification、constraint、\nelaboration ごとに Claim の必要性、重複、`remaining witness`、Minimum Resolution Condition、判断不能情報を\n観察します。`necessary` / `unnecessary` / `indeterminate` は新しい insight field や採否ではありません。\n第二 planner として scope を増やさず、実現形が複数ある場合は既存の `question_or_option` に問いまたは選択肢を\n記録してください。判定基準または周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-return-exact-requires-507f46a7aab3]
+# Why Not: the ordered field block is the external reviewer return interface, not editorial prose.
+[contracts.plan-return-fields-data-1ee0deaf5037]
 kind = "requires"
 slice = "plan-adversarial-return-fields"
-pattern = "## 返却形式\n\n応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。判定項目は新設しません。\n\n各指摘を次のDataとして返してください。指摘がない場合は、指摘0件として正常に報告してください。\n\n- 指摘ID\n- 対象（プラン文書の節または AC id）\n- 類型\n- 判定（`軽微` / `修正推奨` / `修正必須`）\n- 具体的な失敗経路\n- 根拠。\n  evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す\n- 解消を確認する条件\n\n判定または重要度の欄がある場合は、既存の語彙で高い順に並べてください。欄がない場合は、返却 Data の既存項目に示す\n受け入れ影響を根拠に比較できる場合だけ影響の大きい順に並べてください。同等または比較できない指摘の順序は問いません。\n判定語彙や field を新設せず、比較できないことだけを理由に未定義の情報を要求しないでください。低い重要度の指摘で\n高い重要度の指摘を希釈しないでください。"
+pattern = '''- 指摘ID
+- 対象（プラン文書の節または AC id）
+- 類型
+- 判定（`軽微` / `修正推奨` / `修正必須`）
+- 具体的な失敗経路
+- 根拠。
+  evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す
+- 解消を確認する条件'''
 applies_to = ["claude", "codex"]
-
-[contracts.over-return-exact-requires-b9922ee59261]
+# Why Not: the ordered field block is the external reviewer return interface, not editorial prose.
+[contracts.over-return-fields-data-231c8e357f36]
 kind = "requires"
 slice = "over-engineering-return-fields"
-pattern = "## 返却形式\n\n応答の冒頭に指摘件数のサマリ行を置いてください。指摘件数は0件でも必ず示します。判定項目は新設しません。\n\n各指摘を次のDataとして返してください。指摘がない場合は、指摘0件として正常に報告してください。\n\n- 指摘ID\n- 対象ファイルと該当箇所。\n  evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す\n- 過剰の類型\n- 除去しても失われる AC・制約が無いと判断した根拠\n- 取り除いた後も残る実装または検証とそれが担保する AC\n- 外部から観測可能な振る舞いへの影響有無\n- 局所的かつ振る舞いを変えずに取り除けるか\n- 推奨する修正先\n\n判定または重要度の欄がある場合は、既存の語彙で高い順に並べてください。欄がない場合は、返却 Data の既存項目に示す\n受け入れ影響を根拠に比較できる場合だけ影響の大きい順に並べてください。同等または比較できない指摘の順序は問いません。\n判定語彙や field を新設せず、比較できないことだけを理由に未定義の情報を要求しないでください。低い重要度の指摘で\n高い重要度の指摘を希釈しないでください。"
+pattern = '''- 指摘ID
+- 対象ファイルと該当箇所。
+  evidence（該当ファイルと行の引用 / 再現手順 / 参照した Data の path と id のいずれか）を示す
+- 過剰の類型
+- 除去しても失われる AC・制約が無いと判断した根拠
+- 取り除いた後も残る実装または検証とそれが担保する AC
+- 外部から観測可能な振る舞いへの影響有無
+- 局所的かつ振る舞いを変えずに取り除けるか
+- 推奨する修正先'''
 applies_to = ["claude", "codex"]
-
-[contracts.advisor-return-exact-requires-f90ab12230b4]
+# Why Not: the field list is explicit declaration Data for the external advisor return interface.
+[contracts.advisor-return-fields-data-eb3fb802df39]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
-pattern = "## 返却 Data\n\n返却は親が裁定する非拘束 Data です。各 insight は `id`、`observation`、`evidence`、`impact`、\n`question_or_option` を持ち、candidate の更新、`adopted` / `rejected` / `unresolved` の確定、後段開始を\n含めません。採否が必要な事項は `question_or_option` として返し、planner が要求と一次情報に照らして裁定できるようにします。\n\n応答の冒頭に insight 件数を置き、観察範囲、未検証事項、根拠のないため返さなかった事項を明示します。親が安全に\n判断できないほど一次情報が不足している場合も、追加仕様を推測せず、必要な観測と `stop-incomplete` の判断点だけを返します。"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-b3f5a695c22b]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "成立"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-84c415e7a13e]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "必要性"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-a694f59ef894]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "Failure"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-04f5fa7d253f]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "Minimum Resolution Condition"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-c71c8e38cc65]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "判定基準"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-71f072423465]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "identity"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-8ddaedbdcff5]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "適用範囲"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-kernel-mapping-requires-944faacd7094]
-kind = "requires"
-slice = "plan-adversarial-kernel-mapping"
-pattern = "不足"
+pattern = "insight_fields = [id, observation, evidence, impact, question_or_option]"
 applies_to = ["claude", "codex"]
 
 [contracts.plan-adversarial-kernel-mapping-forbids-fde1677c3539]
@@ -88,220 +38,16 @@ slice = "plan-adversarial-kernel-mapping"
 pattern = "../../references/necessity-kernel.md"
 applies_to = ["claude", "codex"]
 
-[contracts.over-engineering-kernel-mapping-requires-a3279eca10fd]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "Deletion Test"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-cd3807c42f45]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "remaining witness"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-862f2359a4ef]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "大きさ"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-920ceb8f0f5d]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "判定基準"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-d982880965a4]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "identity"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-661fa2fe3c2f]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "適用範囲"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-kernel-mapping-requires-7019443794cf]
-kind = "requires"
-slice = "over-engineering-kernel-mapping"
-pattern = "不足"
-applies_to = ["claude", "codex"]
-
 [contracts.over-engineering-kernel-mapping-forbids-ee1ddb742c6d]
 kind = "forbids"
 slice = "over-engineering-kernel-mapping"
 pattern = "../../references/necessity-kernel.md"
 applies_to = ["claude", "codex"]
 
-[contracts.plan-quality-advisor-boundary-requires-708b193aa6cc]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "question_or_option"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-d9321012dad2]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "判断不能"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-827003ee8f01]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "重複"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-106bd8f62698]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "判定基準"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-7f5850b45f02]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "identity"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-7360daaa24c7]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "適用範囲"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-requires-c1ab9aade86f]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "不足"
-applies_to = ["claude", "codex"]
-
 [contracts.plan-quality-advisor-boundary-forbids-1728b8d5c868]
 kind = "forbids"
 slice = "plan-quality-advisor-boundary"
 pattern = "../../references/necessity-kernel.md"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-ecc7a415cdef]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "指摘ID"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-9e6d21557012]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "対象（プラン文書の節または AC id）"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-b6c9185db09e]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "類型"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-c80803c0ad7b]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "判定（`軽微` / `修正推奨` / `修正必須`）"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-02cdd8bab4b1]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "具体的な失敗経路"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-9666770d13bf]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "根拠。"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-adversarial-return-fields-field-requires-55432cddbd8a]
-kind = "requires"
-slice = "plan-adversarial-return-fields"
-pattern = "解消を確認する条件"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-3032aa2e5b42]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "指摘ID"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-364287020ee2]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "対象ファイルと該当箇所。"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-92d3c8fe3b6a]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "過剰の類型"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-f0475fba1f6d]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "除去しても失われる AC・制約が無いと判断した根拠"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-2d87dbb40975]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "取り除いた後も残る実装または検証とそれが担保する AC"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-8db501036dfc]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "外部から観測可能な振る舞いへの影響有無"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-37b0a77e9d07]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "局所的かつ振る舞いを変えずに取り除けるか"
-applies_to = ["claude", "codex"]
-
-[contracts.over-engineering-return-fields-field-requires-b217679dd9a7]
-kind = "requires"
-slice = "over-engineering-return-fields"
-pattern = "推奨する修正先"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-field-requires-2ba997853fef]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "`id`"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-field-requires-d11625868fbc]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "`observation`"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-field-requires-6c13bee79fc4]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "`evidence`"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-field-requires-83819b8d229a]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "`impact`"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-quality-advisor-boundary-field-requires-be5ed98b0784]
-kind = "requires"
-slice = "plan-quality-advisor-boundary"
-pattern = "`question_or_option`"
 applies_to = ["claude", "codex"]
 
 [contracts.test-quality-general-scope-requires-7609ba30043d]

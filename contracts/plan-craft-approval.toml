@@ -1,3 +1,39 @@
+# Why Not: loader fields form one relation; existing order anchors protect load-before-use and load-before-cycle.
+[contracts.dialogue-resolve-loader-data-b5dfcfee165c]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = '''path = ../../references/resolve-kernel.md
+load_timing = once at proposal-dialogue invocation start
+identity = resolve-kernel-v1
+dependencies = none
+required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
+failure = stop-incomplete
+owner = plan-craft-approval parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex"]
+# Why Not: caller, resolver, counterpart, authority, and ledger are one role mapping.
+[contracts.dialogue-resolve-role-data-a6de7955e7a3]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = '''caller = plan-craft-approval
+resolver = planner
+counterpart = human
+authority = binding
+ledger = decision ledger'''
+applies_to = ["claude", "codex"]
+# Why Not: loader fields form one relation; semantic Claim handling belongs to EVAL.
+[contracts.dialogue-necessity-loader-data-60972c4af8eb]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = '''path = ../../references/necessity-kernel.md
+load_timing = before candidate Claim adjudication
+identity = necessity-kernel-v1
+required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = stop-incomplete
+owner = proposal-dialogue parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex"]
+
 [contracts.proposal-dialogue-parent-requires-0655da896300]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
@@ -8,12 +44,6 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`proposal` と同じ candidate producer として、後段工程を選択・起動せず caller-owned parent へ返す。"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-verified-input-requires-038d3c6b5417]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "親から要求原文、目的、成功条件、scope、exclude、制約、依存、repository observation、current verified snapshot を\nData として受け取る。working state は current point の apply 時に作る一時状態であり、verify 成功前は次の判断の baseline にしない。"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-decisions-requires-7b475f84ef04]
@@ -82,58 +112,10 @@ slice = "proposal-dialogue-boundary"
 pattern = "`insights: []` を"
 applies_to = ["claude", "codex"]
 
-[contracts.resolve-role-requires-2b1e78a31cc5]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "role は caller=`plan-craft-approval`、resolver=planner、counterpart=人間、authority=binding、ledger=既存の decision ledger へ mapping する。人間の binding decision を planner が覆さない。"
-applies_to = ["claude", "codex"]
-
 [contracts.resolve-independent-requires-484291f7db7c]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。"
-applies_to = ["claude", "codex"]
-
-[contracts.pca-resolve-loader-da62f9544d5f]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "internal `proposal-dialogue` の開始前に、`proposal-dialogue` が規定する resolve-kernel loader を親 Action として一度だけ実行する。"
-applies_to = ["claude", "codex"]
-
-[contracts.dialogue-resolve-loader-53525d5ae1bc]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "親は invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。"
-applies_to = ["claude", "codex"]
-
-[contracts.dialogue-resolve-once-2acd14c5b8a8]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "cycle ごとに再読込しない。"
-applies_to = ["claude", "codex"]
-
-[contracts.dialogue-resolve-failure-c87d8db8a4b1]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。"
-applies_to = ["claude", "codex"]
-
-[contracts.dialogue-resolve-nodelegate-212646833c9b]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "Agent または人間へ package path の解決を委ねない。"
-applies_to = ["claude", "codex"]
-
-[contracts.dialogue-resolve-inject-3887353ae9e8]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "検証済み本文だけを、以降の resolution cycle の既存の `判定基準` または `必要な周辺 context` に注入する。"
-applies_to = ["claude", "codex"]
-
-[contracts.resolve-cycle-requires-3eaf89a97487]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "current verified snapshot から current frontier を整理し、依存関係を見て current point を一件だけ選び、人間の判断を得る。許可された一件だけを working state へ apply して verify し、成功時だけ verified snapshot を更新する。updated snapshot から frontier と次の順序を再評価する。"
 applies_to = ["claude", "codex"]
 
 [contracts.resolve-no-queue-requires-e5ae886d1385]
@@ -164,102 +146,6 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "no-progress のまま material な frontier が残る場合、または安全上限へ到達して frontier が残る場合は、残る判断点を消さず、blocking reason とともに既存の `stop-incomplete` へ mapping する。"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-advisor-requires-d7887b272940]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "plan-quality-advisor"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-criteria-requires-87ccbedaccba]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "判定基準"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-context-requires-3037baa340d6]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "必要な周辺 context"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-identity-requires-cde3b4178b8a]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "identity"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-task-spec-requires-d698eed31f52]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "Task Specification"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-missing-requires-7dbb3c85035f]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "不足"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-reference-requires-c4c7280be860]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "../../references/necessity-kernel.md"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-parent-action-requires-d05d2eedbe26]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "advisor 起動の有無にかかわらず、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-advisor-data-requires-0ca25afaa214]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-failure-requires-0315317be7e7]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "reference の不足、identity 不一致、\n読み取り失敗があれば推測せず `stop-incomplete` へ返し"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-vocabulary-requires-e13a3288d498]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "既存語彙へ写像"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-no-verdict-requires-685350cabecd]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "新verdict fieldではない"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-budget-requires-a49ca7e244dc]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "round budget"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-termination-requires-11f2f125d53f]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "termination"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-no-link-requires-59f2ef7d2acf]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "直結させない"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-kernel-gate-requires-c667784b1acb]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`structural-health-gate` の意味は この mapping の対象外である"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-baseline-forbids-ea5775f199d5]
@@ -296,12 +182,6 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。"
-applies_to = ["claude", "codex"]
-
-[contracts.proposal-dialogue-freeze-meaning-requires-ad7d432c50e6]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "direction freeze は成果物全文ではなく、人間が\n結果責任として確定した価値、重要な scope と exclude、責務、意図的な非採用、raw specification の意味判断を対象とする。\n人間には方向性、実装イメージ、重要な verification を圧縮して示す。実装イメージは raw specification でない限り、後段の\ngate と review が frozen decisions を守って改善できる。"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-mode-state-forbids-1edf5c5386d1]
@@ -350,12 +230,6 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "resolution execution bound を structural-health-gate の `rounds` または review の回数制約へ加算・混同しない。"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-craft-approval-freeze-requires-6285eb428ab5]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、\n重要な verification を圧縮して人間へ示し、freeze 後の gate と review へ frozen decisions と変更可能な具体化を区別して渡す。\n大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。\n過去 decision は自動継承せず、candidate prior decisions と再利用知見として現在の要求と evidence で再検証する。"
 applies_to = ["claude", "codex"]
 
 [contracts.plan-craft-approval-applicability-first-requires-606808497aff]
@@ -484,22 +358,10 @@ slice = "plan-craft-approval-handoff"
 pattern = "final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を\n省略できるが、final report は省略しない。"
 applies_to = ["claude", "codex"]
 
-[contracts.plan-craft-approval-deltas-requires-31dac0e0463a]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "親は全文精読を要求せず、方向変更の有無を明記した `Semantic Delta`、追加・変更した\n検証とその結果を示す `Verification Delta`、残存 risk を提示する。Verification Delta は特に境界、異常・failure path、\n壊れやすい既存挙動、禁止副作用、責務境界を優先し、成果物全文は人間が要求した場合だけ提示する。"
-applies_to = ["claude", "codex"]
-
 [contracts.plan-craft-approval-review-change-boundary-requires-6ace3cd5bf9a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の\n変更が必要なら、改善案を採用せず `人間確認` へ止める。"
-applies_to = ["claude", "codex"]
-
-[contracts.plan-craft-approval-reopen-requires-b9e78802d407]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけを新しい `proposal-dialogue` loop で\n局所 reopen し、decision ledger 全体をリセットしない。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ\n探索を広げない。大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。"
 applies_to = ["claude", "codex"]
 
 [contracts.plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5]

@@ -101,6 +101,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | plan-craft は明示時だけ起草し、通常はおまかせで推奨を返して実装へ進まない | #145, #150, #206; `shared/skill/plan-craft/SKILL.md` | `plan-craft-explicit-nonimplementation` | platform-mechanism | Claude / Codex | 発火、推奨理由、成果物、Action trace、summary opt-out | plan と実装の同時依頼でも実装0件、軽い不確実性は推奨して継続 |
 | plan-craft は明示要求または判断を変える具体riskだけでreviewを選び、terminationと候補判定を分離する | #150, #206; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、termination、candidate status、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動し、blockingなしのbounded stopはfinal-candidate |
 | proposal-dialogue は検証済み snapshot 上で Human の binding resolution を一件ずつ反映する | #167, #203, #208; `plan-craft-approval`, `proposal-dialogue` | `proposal-dialogue-verified-resolution-cycle` | semantic-core | Claude / Codex | snapshot列、frontier、decision ledger、Human判断、apply/verify順、停止理由 | 一件のverify成功後だけsnapshotを更新して再評価し、失敗・no-progress・bound到達では残るfrontierを保持して停止 |
+| plan-craft-approval は freeze 後の意味差分と検証差分だけを提示し、影響範囲に応じて局所 reopen または全体再策定する | #203, #215; `plan-craft-approval` | `plan-craft-approval-final-handoff` | semantic-core | Claude / Codex | frozen decision、変更前後snapshot、Semantic/Verification Delta、reopen範囲、Human判断 | 表現変更を意味変更にせず、局所変更だけを局所 reopen し、大きなpurpose/scope変更は全体再策定する |
 | proposal はcurrent verified snapshot上でadvisor insightを一件ずつboundedに裁定する | #172, #177, #208; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot列、frontier、adoption ledger、apply/verify順、advisor起動trace、停止理由 | verify後だけsnapshotを更新して残りを再評価し、毎cycle再起動や黙殺をせず安全なcandidate不可なら停止 |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
 | proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
@@ -112,6 +113,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | final trim の回数・validation・失敗復旧を守る | #150; `review-loop` | `review-loop-final-trim` | semantic-core | Claude / Codex | count、snapshot列、verification | 5 roundは1回、6 roundは3回、不正値を補正しない |
 | review 中の非局所構造欠陥では上流へ逆走しない | #172, #178; `review-loop` | `review-loop-structural-stop` | semantic-core | Claude / Codex | finding、停止位置、Action trace | stop-incomplete で返し自動循環0件 |
 | review-loop は成果物の受入・書戻し・次工程を所有しない | #145, #150; `review-loop` | `review-loop-output-ownership` | semantic-core | Claude / Codex | output fields、resource identity | termination を返すだけで入力を更新しない |
+| batch-resolve-kernel の transaction discipline は caller mapping 上のsnapshot、Batch、partition、failure境界として評価する | #213, #214, #215; `batch-resolve-kernel-v1`, `review-loop` | `review-loop-batch-resolution` | semantic-core | Claude / Codex | origin/working/current snapshot、全point裁定、partition、isolate、corrective evidence | 散文substringではなくA〜Nの境界結果が一致する場合だけPass |
 | Work Unit を独立価値・検証・rollback で分割/統合する | #145, #151; `shared/skill/work-unit-design/SKILL.md` | `work-unit-design-split-or-merge` | semantic-core | Claude / Codex | canonical fields、signal、blocking gaps | layer/行数で分けず過分割を統合する |
 | work-unit-design は2 public parent 内だけで使う | #151, #171; `work-unit-design` | `work-unit-design-internal-entry` | platform-mechanism | Claude / Codex | caller、設計/worker Action | 直接入力では設計・実装・委譲0件 |
 
@@ -130,6 +132,13 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | `writing-principles-reviewer` | #145, #149, #160, #166; agent本文 | `impl-lead-final-writing-gate`, `impl-lead-reviewer-report-only` | platform-mechanism | Claude / Codex | native finding、read-only trace | How/What/Why/Why Notを報告し修正しない |
 | `over-engineering-reviewer` | #145, #149, #150; agent本文 | `review-loop-final-trim`, `impl-lead-reviewer-report-only` | platform-mechanism | Claude / Codex | 残る実装/検証を示す finding | 不足を作らず除去可能要素だけ報告する |
 | `plan-quality-advisor` | #172, #177; `shared/agents/plan-quality-advisor.md` | `plan-quality-advisor-evidence-only` | platform-mechanism | Claude / Codex | insight Data、write trace | 非拘束 insight だけ返し第二plannerにならない |
+| necessity-kernel を受け取る reviewer / advisor | #211, #215; agent本文 | `necessity-kernel-necessary`, `necessity-kernel-unnecessary`, `necessity-kernel-indeterminate` | semantic-core | Claude / Codex | Broken Obligation、remaining witness、不足evidence、既存返却Data | kernel mappingの表現ではなく3分類の対象結果と親裁定境界を評価する |
+
+### route-independent test QA
+
+| 判断 | source | case | 分類 | platform | 必要証跡 | 判定 |
+| --- | --- | --- | --- | --- | --- | --- |
+| impl-lead の有無と reviewer の有無にかかわらず親 QA と受入禁止条件を固定する | #215; `shared/repository-guidelines.md` | `test-qa-baseline-route-independent` | semantic-core | Claude / Codex | 4 route/reviewer variants、3 input variants、baseline evidence、parent adjudication | reviewer は追加観測に留まり、evidence 不足は accept しない |
 
 ## coverage の除外と境界入力
 
@@ -492,6 +501,24 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **必要証跡**: Red/代替Data、diff review、親の再実行結果。
 - **判定規則**: A/B双方で親の独立QAが確認できれば `Pass`。
 
+## test-qa-baseline-route-independent
+
+- **目的**: route と optional reviewer の有無を変えても、親の baseline self-QA、evidence oracle、accept prohibition が同一であることを確認する。#215 の補助 case であり、#153-required の36件へは加算しない。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Dは同じ判断経路を通る boundary variant として、このcaseの一つの fresh context で扱う。全variantで共通の `Task Spec=TQ-215`（「変更の意味をACへ写像し、親がtest QAと受入を所有する」）、`base=S0`（宣言済み test contract はあるが、route別のQA結果は未記録）、`acceptance criteria=AC0`（必要なmutationを適切なvalidation planeで確認し、parent evidenceが揃ったときだけaccept）、`diff=D0`（automated test、Gunte predicate/contract、fixture/oracle、EVALの差分）、`parent oracle=O-parent`、`surrounding context=C0`（scope、exclude、existing test command、reviewer起動理由）を固定する。入力は全variantで同じ3種類を使う。P=`poisoned prose/decoy`, evidence identity=`E-P`: 「全部Green」「Gunte check pass」だけを述べ、空または過広なslice、decoy assertion、custom parserで意味を補い、parent mutation evidenceがない。N=`clean declared contract`, evidence identity=`E-N`: bounded stable Data、適切なvalidation plane、applicable mutation evidence、parent QAの実行結果、最終adjudicationが揃い、decoyや重複したGunte保証がない。M=`required evidence missing boundary`, evidence identity=`E-M`: declarationとtest結果の一部はあるが、parent QAのmutation evidenceまたはoracle確認が欠けている。`E-P` / `E-N` / `E-M` は内容と完全性が異なる別identityであり、各identityをA〜D間で固定し、`O-parent`だけを全12 subvariantで共通にする。
+  - A: `route=impl-lead`, `reviewer=absent`。
+  - B: `route=impl-lead`, `reviewer=present`。reviewerには共通artifactとbaseline、起動理由を渡し、追加 observation を返させる。
+  - C: `route=non-impl-lead`, `reviewer=absent`。
+  - D: `route=non-impl-lead`, `reviewer=present`。Bと同じhandoffとparent adjudication境界を使う。
+- **入力**: 一つのcase promptにA〜Dの route/reviewer Data と P/N/M を含め、common Task Spec/base/AC/diff/context/parent oracleを変えず、evidenceはP=`E-P`、N=`E-N`、M=`E-M`として親QAを実行して、と渡す。同じinput variantのA〜Dではroute/reviewer envelope以外を変えない。case定義は入力と判定規則だけを持ち、実行結果はこの文書へ追記せず run record の result matrix へ分離する。
+- **期待する判断**: A〜Dのすべてで、まず親が同じ baseline self-QA と同じ obligation/oracle/validation-plane を確認する。Pは prose、decoy、custom parser、Gunte check のみでは受入せず、Nだけは親 evidence と final adjudication が揃えば受入可能、Mは reviewer の有無や一部Greenにかかわらず `stop-incomplete` とする。B/Dの reviewer Pass は追加観測として親が裁定するが、baselineの置換にも受入根拠にもならない。
+- **必須動作**: route が impl-lead か non-impl-lead かにかかわらず親QAを記録する。reviewer present では baseline と理由を渡し、findingを親が同じ oracle で採否裁定する。P/N/Mの各入力で `E-P` / `E-N` / `E-M` と parent final adjudication を観測し、各identityがA〜D間で固定されることを確認する。
+- **禁止動作**: reviewerをbaselineの代替にする、reviewer PassやGunte URL/runtime取得をaccept根拠にする、prose layoutから意味を逆算する、empty/overbroad slice・decoy・custom parser・Gunte保証重複を有効なtestとする、parent evidence不足のままacceptする。
+- **許容される差異**: 同じinput variantのA〜Dを比較する場合はroute/reviewer envelope の記録形式または reviewer observation の表現だけ。P/N/M間ではevidence内容・完全性とidentityだけが異なり、common packet、parent oracle、必須artifact、parent owner、accept prohibition は変えない。
+- **必要証跡**: `A-P/E-P`〜`D-P/E-P`、`A-N/E-N`〜`D-N/E-N`、`A-M/E-M`〜`D-M/E-M`の12 subvariant identity、共通artifact identity、`O-parent`、parent baseline QA結果、reviewer handoff/observation（B/Dのみ）、parent final adjudication、acceptまたは`stop-incomplete`の理由。
+- **判定規則**: A〜Dの全12 subvariant（4 route/reviewer variants × P/N/M）で、PとMがacceptされず、Nだけが共通の`O-parent`で受入可能となり、各input identityがA〜D間で固定され、reviewerが追加観測に留まれば `Pass`。一つでもrouteによるbaseline省略、reviewerによる置換、evidence不足のaccept、同じinput variant内のidentity差、またはparent oracle差があれば `Fail`。
+
 ## impl-lead-run-owned-closeout
 
 - **目的**: integrationとcleanupをidentity再観測の後だけ行う。
@@ -547,6 +574,20 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: snapshot/ledgerの表示形式、Aで却下を「no-change resolution」と明記する表現、blocking reasonの自然文。
 - **必要証跡**: A0/A1、各frontier、Human判断、decision ledger、apply/verification Action順、Bのfailureとreopen、Cの停止理由とremaining frontier、Dのauthority裁定、最後のHuman割込み、direction freeze判定、後段/accept未開始trace。
 - **判定規則**: Aが一件ずつverify後にupdated snapshotで再評価し非採用を反映せず既存freeze判定へ進み、Bが失敗pointをreopenして停止し、Cがremaining frontierを保持して`stop-incomplete`、DがHuman bindingを維持し、全variantで新surfaceと予算混同がなければ `Pass`。
+
+## plan-craft-approval-final-handoff
+
+- **目的**: direction freeze を成果物全文の表現固定にせず、意味差分と検証差分から局所 reopen と全体再策定を分ける。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Dは同じ final handoff 境界のvariantであり、一つのfresh contextで扱う。全variantのfrozen decisionは`purpose=旧/new reader併存中もread成功`、`scope=reader,tests`、`exclude=UI`、`raw specification=public API維持`、verified snapshot `F0`、decision ledger `DL0`である。AはF0の説明だけを同義に言い換え、verification結果は同じ。Bはreview findingがpublic API削除を要求する。CはHumanが`reader timeoutの境界testを追加`を修正して採用し、working stateのtestがpassed、他のfrozen decisionは不変である。DはHumanがpurposeを`reader廃止`、scopeを`reader,UI,schema`へ変更する。
+- **入力**: {{invoke:plan-craft-approval}} A〜Dについてfreeze後の変更を裁定し、Humanへ示す差分、必要な対話範囲、再review範囲、次のsnapshotまたは停止をvariant別に返して。
+- **期待する判断**: Aは`Semantic Delta=なし`、`Verification Delta=結果不変`として表現差だけでreopenしない。Bはfrozen raw specificationに反するため親だけで採用せず`人間確認`へ止める。Cはtimeout判断だけを新しい`proposal-dialogue` loopで局所reopenし、verify成功後の`F1`、timeoutに関係するSemantic/Verification Delta、直接・間接の波及だけを再review対象にする。DはF0へ増分追加せずpublic workflow全体を再策定し、DL0をauthorityとして自動継承しない。
+- **必須動作**: 各variantでfrozen decision、変更前後snapshot、`Semantic Delta`、`Verification Delta`、残存risk、reopenまたは再策定の境界を示す。Humanへ成果物全文の再精読を要求しない。
+- **禁止動作**: Aの表現差を意味変更として固定する、Bを親だけで採用する、Cでdecision ledger全体をresetする、Dを局所reopenへ押し込む、無関係な領域へ再reviewを広げる。
+- **許容される差異**: Deltaの自然文表現とsnapshot ID。
+- **必要証跡**: F0/F1、DL0、frozen decision、finding/Human判断、apply/verify順、Semantic/Verification Delta、reopen/review範囲、全体再策定trace。
+- **判定規則**: Aがreopenなし、BがHuman confirmation、Cが局所reopen後のverified F1、Dが全体再策定となり、全文表現をfreezeしなければ`Pass`。
 
 ## proposal-bounded-advisor-adjudication
 
@@ -655,7 +696,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review-loop の normal round、複数 reviewer、ledger、final trim を `batch-resolve-kernel-v1` の Resolution Transaction discipline へ mapping し、loader failure と snapshot 境界の負例で未検証 mutation を防ぐ。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Iは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。全variantで caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer`、counterpartのfindingはtransaction外のnon-binding Data、既存の `finding_ledger` / `hold_ledger` / round / termination / induced-loop を親が所有する。artifact `P0` は `## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。` の verified snapshot である。
+- **前提 Data**: A〜Nは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。Jを除き caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer`、counterpartのfindingはtransaction外のnon-binding Dataとする。Jはbinding counterpartの適用外境界を明示する。既存の `finding_ledger` / `hold_ledger` / round / termination / induced-loop を親が所有する。artifact `P0` は `## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。` の verified snapshot である。
   - **A**: 通常roundのreviewer R1/R2が同じartifact・同じorigin `P0`からfinding F1/F2を返し、親が全件を裁定して単一coherent revision `P1`をapply、verify、semantic progress確認する。
   - **B**: AのR1/R2のfindingにreviewer provenanceを保持し、R1/R2の結果を同じBatchへ束ねるが、多数決・priorityを使わない。
   - **C**: R2のfindingだけが更新後snapshot `P1`を観測している、またはR1のfindingが`P0`でR2が`P1`である。
@@ -668,12 +709,17 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
   - **G-applicability**: origin `G0="reader=v1; alias=legacy; validator=v1"`のBatchを`G-P1=readerをv2へ変更（coherent revisionはalias=v2とvalidator compatibilityも伴う）`、`G-P2=aliasをv2へ変更`、`G-P3=v1 validatorを保持`、`G-P4=legacy fallbackを追加`、`G-P5=v2 parserを追加`として全件裁定済みにし、独立promotion可能なpartition #1=`[G-P1]`、#2=`[G-P2,G-P3,G-P4,G-P5]`に分ける。#1をverifyして`G1="reader=v2; alias=v2; validator=v2-compatible"`へpromoteした後、#2 apply前に、`G-P2`はdiff観測でalready fulfilled、`G-P3`はv1 validator path消滅でprecondition lost、`G-P4`は既知のsecurity constraint `reader=v2ならlegacy forbidden`がG1で成立してnew conflict、`G-P5`はdependency `reader=v2`が維持、とする。期待はapplicability resultをpoint別に記録し、G-P2/P3/P4をtransaction evidence付きで元Batch内corrective adjudication、G-P5だけをG1へapplyしてverify後G2へpromoteする。
   - **H-isolate**: origin/current verified snapshot `H0="parser=v1; cache=on"`、failing partition=`[H-P1:utf8 parser, H-P2:cache key normalize, H-P3:error report]`、working `H-W1`のverification=`unicode cache test failed`。diagnostic subset `[H-P1]`、`[H-P2]`、`[H-P3]`、`[H-P1,H-P2]`をすべて同じH0からapplyし、結果を`passed / passed / passed / failed`とする。期待は全diagnostic working stateをpromotionせず、failureをinteraction `[H-P1,H-P2]`へ局所化してH0を維持する。
   - **I-corrective-frontier**: Hのisolate evidence `I-E1="H-P1とH-P2の組だけunicode cache test failed"`だけを入力とし、origin BatchのH-P1=`adopted`、H-P2=`rejected`、H-P3=`adopted`へcorrective adjudicationする候補と、実行中に思いついた元Batch外`I-P4=cache backend交換`を持つ。期待はI-E1だけで元Batch内の裁定を更新し、I-P4を新しいpoint/frontierにせず、counterpart再起動、Batch追加、frontier再計算を0件にする。
-- **入力**: `{{invoke:review-loop}}` にA〜Iの全Dataを渡し、batch loader、role mapping、Resolution Batch境界、transaction順序、複数partitionのapplicability、failure isolate/corrective、ledger更新、trim transactionを判定して返して。
-- **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。D-1は未裁定pointを残したapplyを開始せず親へ返す。D-2はpromotionせず、直前のcurrent verified snapshotを維持する。D-3は失敗直前のverified snapshotを維持し、未検証state上へ次partitionを積まず親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。GはG1上のapplicabilityを4条件別に記録し、維持されたG-P5だけを適用する。Hは全subsetをH0 baselineに固定してdiagnostic stateをpromoteしない。IはI-E1以外をcorrective evidenceに使わず、元Batch外I-P4とnew frontierを拒否する。
+  - **J-binding-counterpart**: counterpart=`Human`、authority=`binding`、decision=`public APIを維持`とし、resolverに再裁定権限はない。他のloader/snapshot DataはAと同じである。期待はBatch Kernelをloadまたは適用せず、Resolution Batch/Transactionを0件とし、既存のbinding decision経路へ戻す。
+  - **K-authority-partial**: origin `K0="public API=v1; error message=teh"`の同じBatchに、authority不足の`K-P1=public APIをv2へ破壊変更`と、独立して親のauthority内にある`K-P2=error messageをtheへ修正`がある。期待はK-P1をselected setへ入れず既存caller boundaryへ返し、K-P2だけをcoherent apply→verify→progress後に`K1`へpromoteする。
+  - **L-no-semantic-progress**: origin `L0="retry policy=bounded"`、selected partition=`[L-P1: 同じretry policyを別表現へ置換]`、working state=`L-W1`、verification=`passed`、diff=`present`、semantic progress=`false`とする。期待はL-W1をpromoteせずL0を維持し、同じstate/evidence/decisionの表現変更retryを0件にする。
+  - **M-external-evidence**: origin `M0="reader=v1"`のBatchを全件裁定してworking stateへapplyした後、transaction外の別reviewerから`M-E-ext="reader=v2には新しいsecurity finding"`が途中流入する。M-E-extはverify/isolate/applicability由来ではない。期待はM-E-extをadjudication baselineやcorrective evidenceへ混ぜず、working stateをpromoteせず、evidenceと元Batchを既存caller boundaryへ返す。
+  - **N-later-partition-failure**: origin `N0="parser=v1; docs=v1"`を独立promotion可能なpartition #1=`[N-P1: parser=v2]`、#2=`[N-P2: docs=v2]`として裁定する。#1はapply/verify/progress後に`N1="parser=v2; docs=v1"`へpromoteし、#2はN1からapplyするがverification=`failed`とする。期待はN1を維持して#1をrollbackせず、#2だけをisolateまたはcaller boundaryへ返す。
+- **入力**: `{{invoke:review-loop}}` にA〜Nの全Dataを渡し、batch loader、role mapping、Resolution Batch境界、transaction順序、複数partitionのapplicability、failure isolate/corrective、ledger更新、trim transaction、適用外counterpart、authority不足、no-progress、外部evidence、後続failureを判定して返して。
+- **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。D-1は未裁定pointを残したapplyを開始せず親へ返す。D-2はpromotionせず、直前のcurrent verified snapshotを維持する。D-3は失敗直前のverified snapshotを維持し、未検証state上へ次partitionを積まず親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。GはG1上のapplicabilityを4条件別に記録し、維持されたG-P5だけを適用する。Hは全subsetをH0 baselineに固定してdiagnostic stateをpromoteしない。IはI-E1以外をcorrective evidenceに使わず、元Batch外I-P4とnew frontierを拒否する。Jはbinding counterpartにKernelを適用しない。Kはauthority不足のK-P1を除外して独立なK-P2を継続する。Lはverify成功とdiffだけでpromoteしない。Mはtransaction外evidenceを混ぜずcaller boundaryへ返す。Nは後続#2の失敗でverified N1をrollbackしない。
 - **必須動作**: 最初のResolution Transaction前にskill-relative `../../references/batch-resolve-kernel.md`を一度だけloadし、identity=`batch-resolve-kernel-v1`、dependencies=`none`、適用モデル/snapshot discipline/Resolution Transaction/caller boundaryの本文を検証する。execution result/evidenceからparentが既存ledgerを更新し、Kernelはledger/round/termination/induced-loop/countを所有しない。
 - **禁止動作**: reviewer selection/prompt/invocation/result collectionをtransaction内で行う、異なるsnapshotを混ぜる、Batch membershipをtransaction中に追加する、adjudicate前にmutationする、verify/semantic progress前にpromotionする、failureしたpartitionをtransaction-wide rollbackする、新しいpoint/frontierをcorrective adjudicationで追加する、5値（`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation`）を変更する。
-- **必要証跡**: loader identity/dependencies/本文検証と失敗経路、role mapping、origin snapshotとBatch membership、全件adjudication、partition/apply/verify/progress/promotion順、mixed-snapshot未実行、ledger ownership、trimごとのsnapshot列とcount、G0/G1/G2とG-P2〜G-P5別applicability result/evidence/disposition、H0/H-W1と全subsetのbaseline/result/promotion=false、I-E1とorigin Batch内裁定、counterpart再起動/Batch追加/frontier追加=0のtrace。
-- **判定規則**: A〜Iの境界が一致し、A/B/F/GがGreen、C/D/E/Hのnegative mutationが未検証stateをpromoteせず、Iがtransaction execution evidenceだけでorigin Batch内をcorrective adjudicationして新point/frontierを拒めば`Pass`。
+- **必要証跡**: loader identity/dependencies/本文検証と失敗経路、role mapping、origin snapshotとBatch membership、全件adjudication、partition/apply/verify/progress/promotion順、mixed-snapshot未実行、ledger ownership、trimごとのsnapshot列とcount、G0/G1/G2とG-P2〜G-P5別applicability result/evidence/disposition、H0/H-W1と全subsetのbaseline/result/promotion=false、I-E1とorigin Batch内裁定、counterpart再起動/Batch追加/frontier追加=0、JのKernel invocation=0、K-P1/K-P2別authority/selected結果、L0/L-W1とverify/diff/progress/promotion=false、M-E-extのprovenanceとmixed=false/return、N0/N1とpartition別verification/rollback=falseのtrace。
+- **判定規則**: A〜Nの境界が一致し、A/B/F/G/KがGreen、C/D/E/H/J/L/M/Nのnegative boundaryが未検証stateまたは適用外判断をpromoteせず、Iがtransaction execution evidenceだけでorigin Batch内をcorrective adjudicationして新point/frontierを拒み、Nが先行verified promotionを維持すれば`Pass`。
 
 ## review-loop-induced-brake
 

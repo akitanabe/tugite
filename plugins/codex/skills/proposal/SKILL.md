@@ -27,20 +27,40 @@ description: >-
 
 ## batch-resolve-kernel v1 の parent mapping
 
-proposal invocation の開始時に、親は生成後の skill directory から skill-relative
-`../../references/batch-resolve-kernel.md` を一度だけ読み、identity `batch-resolve-kernel-v1`、Kernel dependencies
-`none`、この Skill が必要とする適用モデル、snapshot discipline、Resolution Transaction、caller boundary の本文を
-検証する。Resolution Transaction ごとには再読込しない。reference の不足、identity 不一致、dependencies 不一致、
-読み取り失敗、必要本文不足があれば、本文を推測で再現せず既存の `stop-incomplete` へ返す。proposal planner と
-`plan-quality-advisor` に package / plugin 相対 path の解決、reference の探索、読み込みを委ねない。
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/batch-resolve-kernel.md
+load_timing = once at proposal invocation start
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, Snapshot discipline, Resolution Transaction, Caller boundary]
+failure = stop-incomplete
+owner = proposal parent
+delegate_path_resolution = false
+```
+
+親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
+Resolution Transaction ごとには再読込せず、owner / delegate_path_resolution の境界を維持する。
 検証済み本文だけを、以降の Resolution Transaction の既存の `判定基準` または `必要な周辺 context` に注入する。
 
 ## batch-resolve-kernel v1 の role mapping
 
-この invocation の mapping は caller=`plan-craft`、resolver=planner、counterpart=`plan-quality-advisor`
-(Resolution Transaction 外の one-shot observation)、authority=discretionary であり、ledger は既存の adoption ledger
-（`adopted` / `rejected` / `unresolved`）である。advisor insight は非拘束の Data に留まり、planner が要求、一次情報、
-current verified snapshot を基準に裁定する。
+次の role Data が列挙値の唯一の正本である。
+
+```text
+caller = plan-craft
+resolver = proposal planner
+counterpart = plan-quality-advisor
+target_snapshot = origin verified candidate snapshot
+insight = Resolution Point
+same_snapshot_insights = Resolution Batch
+authority = discretionary
+ledger = adoption ledger
+```
+
+親は上記 role field を使って既存責務へ mapping する。counterpart observation Action は Resolution Transaction 外の
+one-shotとし、resolver が要求、一次情報、current verified snapshot を基準に裁定する。
 
 この batch-resolve-kernel mapping と後述の necessity-kernel mapping は別 section の独立した規範である。互いの本文を
 前提にせず、相互の読み込み順に依存させない。
@@ -60,9 +80,20 @@ verification、残存 risk を含む working candidate を起草する。上記 
 
 ## necessity-kernel v1 の parent mapping
 
-candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の
-`判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。reference の不足、identity 不一致、
-読み取り失敗があれば推測せず `stop-incomplete` へ返し、advisor は plugin 相対 path を解決しない。
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/necessity-kernel.md
+load_timing = before candidate Claim adjudication
+identity = necessity-kernel-v1
+required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = stop-incomplete
+owner = proposal parent
+delegate_path_resolution = false
+```
+
+candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。検証済み本文を既存の
+`判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡し、owner / delegate_path_resolution の境界を維持する。
 
 候補 Claim の必要性は既存の判定基準に含めた Task Specification と Deletion Test で観察する。
 Claim は finding / insight 本文ではなく、candidate に追加・維持・変更・除去・検証・調査する obligation の候補

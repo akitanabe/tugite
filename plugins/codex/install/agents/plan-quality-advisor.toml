@@ -52,9 +52,14 @@ elaboration ごとに Claim の必要性、重複、`remaining witness`、Minimu
 
 ## 返却 Data
 
-返却は親が裁定する非拘束 Data です。各 insight は `id`、`observation`、`evidence`、`impact`、
-`question_or_option` を持ち、candidate の更新、`adopted` / `rejected` / `unresolved` の確定、後段開始を
-含めません。採否が必要な事項は `question_or_option` として返し、planner が要求と一次情報に照らして裁定できるようにします。
+次の Data block が返却 field の唯一の正本です。
+
+```text
+insight_fields = [id, observation, evidence, impact, question_or_option]
+```
+
+上記 field を使って親へ非拘束 Data を返し、candidate の更新、親の裁定、後段開始を含めません。
+採否が必要な事項は対応 field に記録し、planner が要求と一次情報に照らして裁定できるようにします。
 
 応答の冒頭に insight 件数を置き、観察範囲、未検証事項、根拠のないため返さなかった事項を明示します。親が安全に
 判断できないほど一次情報が不足している場合も、追加仕様を推測せず、必要な観測と `stop-incomplete` の判断点だけを返します。

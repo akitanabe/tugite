@@ -98,3 +98,48 @@ AGENTS、CLAUDE、tests、evals だけの変更では version を更新しませ
 
 完了時には変更内容、実行した検証と結果、未検証事項または残存 risk を簡潔に報告します。無関係な dirty state や
 untracked artifact は保持します。
+
+## Test QA baseline contract
+
+この section は、実装の入口や reviewer の有無に依存しない親 QA の共通下限を定義します。次の stable Data がこの
+section の判断基準であり、Gunte の URL は provenance の参照だけに使います。
+`test_artifacts` は適用対象、`qa_inputs` は全 route/reviewer variant で固定する判断 packet、`common_evidence` は input
+variant 内で固定する evidence identity と、全 input variant に共通する parent oracle を表します。
+
+```toml
+policy_id = "test-qa-baseline-v1"
+test_artifacts = ["automated test", "Gunte predicate/contract", "fixture/oracle", "EVAL"]
+qa_inputs = ["Task Spec", "base", "acceptance criteria", "diff", "evidence", "surrounding context"]
+common_evidence = ["evidence identity is fixed within each input variant", "parent oracle is common across input variants"]
+owner = "parent QA"
+routes = ["impl-lead", "non-impl-lead"]
+baseline_self_qa = "required on every route"
+reviewer = "optional additional observation"
+reviewer_handoff = "pass baseline and reason in existing context; parent adjudicates findings"
+parent_responsibility = "obligation, oracle, validation plane, final adjudication"
+reviewer_scope = "changed mutation, structural test, EVAL case quality only"
+gunte_antipattern_url = "https://github.com/akitanabe/gunte/blob/main/docs/gunte-antipatterns.md"
+gunte_antipattern_url_use = "provenance only; runtime retrieval is not required"
+minimum_checks = [
+  "obligation/oracle owner = parent QA",
+  "appropriate validation plane is explicit",
+  "do not infer semantics from prose layout",
+  "reject empty or overbroad slice, decoy, custom parser, and duplicate Gunte guarantee",
+  "applicable mutation evidence is present",
+]
+accept_prohibition = [
+  "reviewer Pass is never an accept basis",
+  "reviewer observation is additive and never replaces baseline self-QA",
+  "missing evidence prohibits accept",
+]
+```
+
+全 route で親が `qa_inputs` の `Task Spec`、`base`、`acceptance criteria`、`diff`、`evidence`、`surrounding context` と
+`common_evidence` の input-variant identity / common parent oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
+`test_artifacts` は automated test、Gunte predicate/contract、fixture/oracle、EVAL であり、qa input と混同しません。
+reviewer を使う場合も baseline と起動理由を既存の確認観点・周辺
+context と一緒に渡し、reviewer は追加観測だけを返します。`obligation`、`oracle`、`validation plane` の責任と最終
+adjudication は親に残し、`test-quality-reviewer` は既存 scope 内の changed mutation、structural test、EVAL case の
+品質だけを見ます。baseline 不適用の failure を再現できない限り、`test-quality-reviewer` の原稿・contracts は変更しません。
+reviewer の Pass、Gunte check の結果、または文章の配置そのものを受入根拠にせず、applicable mutation
+evidence を含む親 evidence が不足する場合は accept せず `stop-incomplete` とします。

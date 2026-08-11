@@ -88,10 +88,20 @@ writer、external resource、integration/rollback の必要性から選び、`ba
 Action より前に `base_snapshot` から run-owned worktree を一つ作り、run 全体の既定 checkout とする。ユーザー指定はこの既定より
 優先し、作成不能時に current checkout へ暗黙 fallback しない。
 
-この経路を選ぶ場合、親は作成 Action より前に skill-relative `references/run-owned-lifecycle.md` の全文を読み、identity
-`# impl-lead run-owned lifecycle v1`、`Creation`、`Closeout` の各 section と必要本文を確認する。不足、identity 不一致、必要本文の
-欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は run-owned resource の作成、integration、cleanup の詳細を
-定義し、親が ownership、判断、Action、結果照合を保持する。
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = references/run-owned-lifecycle.md
+load_timing = before run-owned Creation Action
+identity = impl-lead run-owned lifecycle v1
+required_sections = [Creation, Closeout]
+required_scope = [creation, integration, cleanup]
+failure = stop-incomplete
+owner = impl-lead parent
+```
+
+この経路を選ぶ場合、親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
+owner が run-owned resource の ownership、判断、Action、結果照合を保持する。
 
 ## Route and execution order
 
@@ -171,8 +181,7 @@ inline か reviewer が全文を読み込める artifact のいずれかを使�
 
 ## batch-resolve-kernel v1 の risk-directed review mapping
 
-risk-directed review で最初の Resolution Transaction を開始する前に、親は生成後の skill directory から package-root reference へ
-skill-relative reference を一度だけ読み、次の Loader Data と必要本文を検証する。
+次の Loader Data が列挙値の唯一の正本である。
 
 ```text
 path = ../../references/batch-resolve-kernel.md
@@ -183,9 +192,11 @@ failure = stop-incomplete
 owner = impl-lead parent
 ```
 
-reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず
-`stop-incomplete` へ返す。親が生成後の相対 path を解決して読み込み、reviewer に path 解決、reference の探索、読み込みを委ねない。
+親は risk-directed review の最初の Resolution Transaction 前に、上記 Loader Data の field を使って load と必要本文の検証を行い、
+failure field に従って失敗処理する。owner の path-resolution boundary を維持する。
 この loader は finding が0件の review、final writing gate だけの処理のためには起動しない。
+
+次の role Data が列挙値の唯一の正本である。
 
 ```text
 caller = impl-lead parent
@@ -197,7 +208,8 @@ same_snapshot_findings = Resolution Batch
 dispositions = [adopted, rejected, unresolved]
 ```
 
-counterpart の finding は transaction 外の non-binding Data であり、authority、return boundary、Work Unit / run acceptance は親が保持する。
+親は上記 role field と後続の transaction field を使って finding の mapping、return、Work Unit / run acceptance の
+Action を行い、既存の親境界を変更しない。
 
 ### risk-directed review の Resolution Transaction
 
@@ -264,11 +276,21 @@ accept する直前に `writing-principles-reviewer` の read-only final writing
 risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
 理由に省略できない。
 
-gate の開始前に、親は skill-relative `references/final-writing-gate.md` の全文を読み、identity
-`# impl-lead final writing gate v1`、`Final writing acceptance gate`、`Final writing findings and remediation` の各 section と
-必要本文を確認する。不足、identity 不一致、必要本文の欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は
-snapshot、handoff、read-only isolation、finding の裁定、局所 remediation、再 gate、closeout data を定義し、reviewer を writer または
-受入決定者にしない。親が finding の採否、修正経路、final verification、run の受入判断を保持する。
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = references/final-writing-gate.md
+load_timing = before final writing gate
+identity = impl-lead final writing gate v1
+required_sections = [Final writing acceptance gate, Final writing findings and remediation]
+required_scope = [snapshot, handoff, read-only isolation, finding adjudication, bounded remediation, re-gate, closeout data]
+failure = stop-incomplete
+owner = impl-lead parent
+reviewer_authority = report-only
+```
+
+親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
+owner / reviewer_authority の境界を維持し、reviewer を writer または受入決定者にしない。
 
 ## External side effects
 
