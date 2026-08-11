@@ -292,6 +292,210 @@ slice = "review-loop-kernel-parent-mapping"
 pattern = "## necessity-kernel v1 の parent mapping\n\nreviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または\n`必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。\nreference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。\n\nreviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる\n場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの\nClaim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の\n`採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら\n`stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または\ntermination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。"
 applies_to = ["claude", "codex"]
 
+[contracts.review-loop-batch-loader-path-3b156e637f29]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "skill-relative `../../references/batch-resolve-kernel.md`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-identity-37b27b7b78d2]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "identity は `batch-resolve-kernel-v1`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-dependencies-f43bcdcd6d5b]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "Kernel dependencies は `none`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-sections-e3b05350fa50]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-once-1845d68bba91]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "一度だけ読み"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-failure-5873cb6460c1]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-no-delegation-a277f93bb104]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "path 解決、reference の探索、読み込みを委ねない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-role-caller-b98b2f801776]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "caller=`review-loop parent`、resolver=`review-loop parent`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-role-counterpart-c23d47259e63]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "counterpart=`reviewer`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-role-non-binding-3cef0e6130bb]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "Resolution Transaction 外で non-binding"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-reviewer-boundary-7daed2e2c0a5]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "reviewer の selection、prompt、invocation、result collection は transaction 外"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-origin-6c8504b17a3f]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "origin verified snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-fixed-membership-629f987a2ee5]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "Resolution Batch を transaction 開始時までに固定"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-adjudicate-all-ed04ab886ff3]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "mutation 前に Batch 全体の裁定を完了"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-coherent-apply-7b4b53eed6d8]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "selected set を原則 single partition の coherent revision として apply"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-promotion-a0ea02a83c52]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "verify と semantic progress の両方が成功した後だけ current verified snapshot を更新"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-applicability-2dabc502347a]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "applicability check"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-isolate-dc41e99f04bb]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "`isolate`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-corrective-f5405c89f0bc]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "corrective adjudication"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-no-frontier-288cf3c22f67]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "新しい point や frontier を追加しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-fixed-membership-no-recalc-3ecf21580c7e]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "transaction 中に Batch membership を増やさず、snapshot 更新後に frontier を再計算しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-existing-semantics-7085b9fb3d4f]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "既存 review-loop の round、termination、"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-reviewers-origin-d4b3c9f0d13c]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "同じ round、同じ artifact、同じ origin verified snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-reviewers-provenance-f5199400bf2d]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "reviewer provenance は保持"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-reviewers-no-priority-3939f2c9e427]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "多数決や priority"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-reviewers-no-mixed-2391162980e2]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "異なる snapshot の finding は混ぜず"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-ledger-parent-ab52494c76fa]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "review-loop parent が既存の `finding_ledger` と `hold_ledger` を更新"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-ledger-kernel-forbid-f0515d635c73]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-final-trim-independent-81f5a8c2bcf2]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "final trim の各回は独立した Resolution Transaction"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-final-trim-origin-76d01f01f51c]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "current verified snapshot を各回の origin に固定"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-final-trim-next-8f7004596801]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "trim を行う場合は新しい snapshot を origin とする新しい transaction"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-final-trim-count-78e09f18dc13]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "trim を通常 round や誘発判定の窓へ加算しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-kernel-independence-02f7f55ed2ba]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = "necessity-kernel v1 の mapping はこの batch mapping から独立して不変"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-batch-loader-before-transaction]
+kind = "order"
+before = "review-loop-batch-loader-start"
+after = "review-loop-resolution-transaction-start"
+applies_to = ["claude", "codex"]
+
 [contracts.shg-kernel-intro-forbids-c13074ce5cc4]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-intro"

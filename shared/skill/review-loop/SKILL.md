@@ -97,6 +97,77 @@ Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新し�
 termination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。
 <!-- @/contract -->
 
+<!-- @contract review-loop-batch-resolve-kernel-parent-mapping -->
+## batch-resolve-kernel-v1 の parent mapping
+
+<!-- @anchor review-loop-batch-loader-start -->
+review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から package-root reference へ
+skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
+
+- identity は `batch-resolve-kernel-v1` である。
+- Kernel dependencies は `none` である。
+- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
+
+reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず、既存の
+`stop-incomplete` またはレビュー不成立の boundary へ返す。reviewer に path 解決、reference の探索、読み込みを委ねない。
+
+この mapping の role は caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer` とする。
+counterpart は Resolution Transaction 外で non-binding な finding を返し、authority と return boundary は既存の親責務が保持する。
+reviewer の selection、prompt、invocation、result collection は transaction 外で行い、Kernel はこれらを行わない。
+
+### Normal round の Resolution Transaction
+
+<!-- @anchor review-loop-resolution-transaction-start -->
+通常の review round は、同じ artifact の origin verified snapshot を固定し、transaction 外で完了した reviewer observation
+を finding から Resolution Point へ mapping して、Resolution Batch を transaction 開始時までに固定する。1 normal review round は
+原則として1つの Resolution Transaction であり、その内部を次の順序で実行する。
+
+```text
+origin verified snapshot + caller-supplied evidence + Resolution Batch
+→ 全 finding を裁定し conflict / dependency を解消
+→ 親が既存の裁定区分を確定
+→ selected set を原則 single partition の coherent revision として apply
+→ verify
+→ caller-owned semantic progress を確認
+→ current verified snapshot を promote
+```
+
+mutation 前に Batch 全体の裁定を完了し、未裁定または両立不能な point を selected set に残さない。working state は検証前に
+current verified snapshot へ昇格させず、partition ごとに閉じて未検証状態の上へ次の partition を積まない。複数 partition が必要な
+場合は applicability check を行い、verify failure は同じ isolation baseline から `isolate` して局所化する。transaction 内で新しい
+execution evidence が得られた場合だけ元 Batch の point へ corrective adjudication を行い、新しい point や frontier を追加しない。
+成功済み partition は rollback せず、安全に継続できない結果は既存の親 boundary へ返す。
+
+transaction 中に Batch membership を増やさず、snapshot 更新後に frontier を再計算しない。既存 review-loop の round、termination、
+adversarial review count、induced-loop、final trim count の意味と境界は維持し、Kernel mapping から変更しない。
+
+verify と semantic progress の両方が成功した後だけ current verified snapshot を更新する。次 round の decision は review-loop-owned
+であり、更新済み snapshot を観測する次 round は新しい Resolution Transaction とする。
+
+### Multiple reviewer の Batch 境界
+
+同じ round、同じ artifact、同じ origin verified snapshot に対する複数 reviewer の finding は原則1つの Resolution Batch に束ねる。
+各 finding の reviewer provenance は保持するが、reviewer ごとの多数決や priority は導入しない。異なる snapshot の finding は混ぜず、
+reviewer identity ではなく observation snapshot を Batch boundary とする。snapshot が混在している場合は推測で統合せず、未検証の
+mutation を行わずに既存の caller boundary へ返す。
+
+### Parent-owned ledger
+
+Kernel の execution result と evidence を使い、review-loop parent が既存の `finding_ledger` と `hold_ledger` を更新する。Kernel は
+ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない。既存の5区分（`採用`、`却下`、`範囲外`、
+`判断保留`、`人間確認`）の語彙と意味は変更せず、reviewer の非拘束 finding を親が既存の裁定境界へ写像する。
+
+### final trim の Resolution Transaction
+
+final trim の各回は独立した Resolution Transaction とする。reviewer、goal、trim 回数は review-loop-owned とし、その時点の current
+verified snapshot を各回の origin に固定する。trim finding を Resolution Batch に束ねて transaction を閉じ、promotion 後に次の
+trim を行う場合は新しい snapshot を origin とする新しい transaction を開始する。Kernel は trim、over-engineering、count semantics
+を所有せず、trim を通常 round や誘発判定の窓へ加算しない。
+
+necessity-kernel v1 の mapping はこの batch mapping から独立して不変であり、相互の本文、identity、読み込み順、結果を成立条件に
+しない。
+<!-- @/contract -->
+
 ## round と実行 Data
 
 1 round は、`snapshot 固定 → review goal に基づくレビュー → 親の finding 裁定 → 採用修正 → verification`

@@ -16,8 +16,10 @@ exclude_paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/claude/skills/proposal/SKILL.md",
   "plugins/claude/skills/plan-craft/SKILL.md",
+  "plugins/claude/skills/review-loop/SKILL.md",
   "plugins/codex/skills/proposal/SKILL.md",
   "plugins/codex/skills/plan-craft/SKILL.md",
+  "plugins/codex/skills/review-loop/SKILL.md",
 ]
 applies_to = ["claude", "codex", "claude-marketplace", "codex-marketplace"]
 

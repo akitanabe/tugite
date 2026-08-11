@@ -595,6 +595,25 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **必要証跡**: finding/hold ledgerと次round入力。
 - **判定規則**: 5区分と凍結、未解決集合が一致すれば `Pass`。
 
+## review-loop-batch-resolution
+
+- **目的**: review-loop の normal round、複数 reviewer、ledger、final trim を `batch-resolve-kernel-v1` の Resolution Transaction discipline へ mapping し、loader failure と snapshot 境界の負例で未検証 mutation を防ぐ。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Fは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで扱う。全variantで caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer`、counterpartのfindingはtransaction外のnon-binding Data、既存の `finding_ledger` / `hold_ledger` / round / termination / induced-loop を親が所有する。artifact `P0` は `## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。` の verified snapshot である。
+  - **A**: 通常roundのreviewer R1/R2が同じartifact・同じorigin `P0`からfinding F1/F2を返し、親が全件を裁定して単一coherent revision `P1`をapply、verify、semantic progress確認する。
+  - **B**: AのR1/R2のfindingにreviewer provenanceを保持し、R1/R2の結果を同じBatchへ束ねるが、多数決・priorityを使わない。
+  - **C**: R2のfindingだけが更新後snapshot `P1`を観測している、またはR1のfindingが`P0`でR2が`P1`である。
+  - **D**: AのBatchに未裁定F2を残したままF1だけをapplyする、verify前にworking stateをcurrent verified snapshotへpromoteする、またはverify failure後に未検証state上へ次partitionを積む。
+  - **E**: loader referenceが不足、identityが`resolve-kernel-v1`、dependenciesが`necessity-kernel-v1`、または必要本文が欠落している。
+  - **F**: accept-candidate後のtrimを二回行う。trim #1は`P1`をoriginとしてpromotionし、trim #2は`P2`をoriginとして独立transactionでverifyする。
+- **入力**: `{{invoke:review-loop}}` にA〜Fの全Dataを渡し、batch loader、role mapping、Resolution Batch境界、transaction順序、ledger更新、trim transactionを判定して返して。
+- **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。Dはapplyを開始せず、未裁定point、working state、失敗partitionを親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。
+- **必須動作**: 最初のResolution Transaction前にskill-relative `../../references/batch-resolve-kernel.md`を一度だけloadし、identity=`batch-resolve-kernel-v1`、dependencies=`none`、適用モデル/snapshot discipline/Resolution Transaction/caller boundaryの本文を検証する。execution result/evidenceからparentが既存ledgerを更新し、Kernelはledger/round/termination/induced-loop/countを所有しない。
+- **禁止動作**: reviewer selection/prompt/invocation/result collectionをtransaction内で行う、異なるsnapshotを混ぜる、Batch membershipをtransaction中に追加する、adjudicate前にmutationする、verify/semantic progress前にpromotionする、failureしたpartitionをtransaction-wide rollbackする、新しいpoint/frontierをcorrective adjudicationで追加する、5区分の日本語tokenを変更する。
+- **必要証跡**: loader identity/dependencies/本文検証と失敗経路、role mapping、origin snapshotとBatch membership、全件adjudication、partition/apply/verify/progress/promotion順、mixed-snapshot未実行、ledger ownership、trimごとのsnapshot列とcount。
+- **判定規則**: A〜Fの境界が一致し、A/B/FがGreen、C/D/Eのnegative mutationが未検証stateを残さずcaller boundaryへ返れば`Pass`。
+
 ## review-loop-induced-brake
 
 - **目的**: 因果基準の誘発findingと直近2 round連続の補助 brake を正しく計算する。

@@ -940,6 +940,142 @@
       "sha256": "bb779d5bcba783aadc9625d7bec465267a749b395e266caf3fb004e2bfdcc7c0"
     },
     {
+      "id": "review-loop-batch-loader-path-3b156e637f29",
+      "sha256": "fd6a1a763f3e9f032c6473dda70e58b40ee3f93751a5d3bd2447b37966ecd642"
+    },
+    {
+      "id": "review-loop-batch-loader-identity-37b27b7b78d2",
+      "sha256": "b890dcd85e4dd70df7149304b2b16b7c5d5783d75237b02602f0d64dabc783b5"
+    },
+    {
+      "id": "review-loop-batch-loader-dependencies-f43bcdcd6d5b",
+      "sha256": "dba1ca8a84f95cc653ff2c9eb3db82a3ede6e1c2f2564693f77175cf84f36f54"
+    },
+    {
+      "id": "review-loop-batch-loader-sections-e3b05350fa50",
+      "sha256": "630d93e457f7db7380f7ef534fa98b9cc63bef6927fb21e8766cc932b93d848d"
+    },
+    {
+      "id": "review-loop-batch-loader-once-1845d68bba91",
+      "sha256": "41275e1548c87b7692edc13bd06452662def2f436aa667f8cdb043f2507914e8"
+    },
+    {
+      "id": "review-loop-batch-loader-failure-5873cb6460c1",
+      "sha256": "613072cd5940fcdb70a2c3f3405e436a211a54381cee44dc9fbc5dd1442cb4a4"
+    },
+    {
+      "id": "review-loop-batch-loader-no-delegation-a277f93bb104",
+      "sha256": "5e7521a85c9168fdfef3b1d454349c9a158e5e7f251a1e52821b3d92fafcb0c5"
+    },
+    {
+      "id": "review-loop-batch-role-caller-b98b2f801776",
+      "sha256": "fb6c2b1602a8d93d3f8c11f9e2ef728cd08aba7061f11797f06d62f03e7ca7dd"
+    },
+    {
+      "id": "review-loop-batch-role-counterpart-c23d47259e63",
+      "sha256": "dfe2bd7e54af52b0aa8d22a3d1830b58b9ad319e634d44b1fe09b15a28affc45"
+    },
+    {
+      "id": "review-loop-batch-role-non-binding-3cef0e6130bb",
+      "sha256": "3197ce16f03bd9fc7c304276d510aeb427b240a091827c919f9d455409c434b0"
+    },
+    {
+      "id": "review-loop-batch-reviewer-boundary-7daed2e2c0a5",
+      "sha256": "c55ad87874227cc044afd337a0eec01dc27654efbc2388785444646cf875f259"
+    },
+    {
+      "id": "review-loop-batch-origin-6c8504b17a3f",
+      "sha256": "deea851b2385773135b4045ecf70744968657f5b97f6dd171d137de6a2fdeac4"
+    },
+    {
+      "id": "review-loop-batch-fixed-membership-629f987a2ee5",
+      "sha256": "a27959145c5673e920e5241cd7bd10408bbd83be3f102f8b27355ec628ab5506"
+    },
+    {
+      "id": "review-loop-batch-adjudicate-all-ed04ab886ff3",
+      "sha256": "3a5bf3c89032bcfe895af530dd0811fbcb849f819c26da76a393c6aa16d21c0e"
+    },
+    {
+      "id": "review-loop-batch-coherent-apply-7b4b53eed6d8",
+      "sha256": "aceb5a9dc4b738588c5f005a6ec3af04b1a339eddb36da8e5adf1ab07915d0a0"
+    },
+    {
+      "id": "review-loop-batch-promotion-a0ea02a83c52",
+      "sha256": "9ce34e26db5c7cb68a23588e4d17a3c19ca14870a249a9084617965c917f8389"
+    },
+    {
+      "id": "review-loop-batch-applicability-2dabc502347a",
+      "sha256": "34e5cf89b6ed633e84a894d85eb9040c46152a90d1728c8f3808ba3ac816256d"
+    },
+    {
+      "id": "review-loop-batch-isolate-dc41e99f04bb",
+      "sha256": "0d1ae40c4a77c50487805f7721990a4830232c0ce1f444106cc52a61134765b2"
+    },
+    {
+      "id": "review-loop-batch-corrective-f5405c89f0bc",
+      "sha256": "e34423331b348b3056f4d9759df3526f78176d0db74c55d68ce6f7adb465a511"
+    },
+    {
+      "id": "review-loop-batch-no-frontier-288cf3c22f67",
+      "sha256": "e295a9ddbe92e443ddbc66f4b9cfa242d2829aa01eb4f21d4d708e052cfa8d66"
+    },
+    {
+      "id": "review-loop-batch-fixed-membership-no-recalc-3ecf21580c7e",
+      "sha256": "13e80731f8fbf1cce682ebb89eb4576294918a08098fa97071029643a1cfbac0"
+    },
+    {
+      "id": "review-loop-batch-existing-semantics-7085b9fb3d4f",
+      "sha256": "f2340e02eb2f519cab7a919b30cc1e400d26ec7363776ab7afaaed5d3c638cc2"
+    },
+    {
+      "id": "review-loop-batch-reviewers-origin-d4b3c9f0d13c",
+      "sha256": "1cf645eb36dd45a538e7307492e055d1d923edea6e98c2beb7b047fc5200970a"
+    },
+    {
+      "id": "review-loop-batch-reviewers-provenance-f5199400bf2d",
+      "sha256": "5379fb3e078935fc18fe3ca6551bc8eb0659cd405311942430fb18c62af53ce4"
+    },
+    {
+      "id": "review-loop-batch-reviewers-no-priority-3939f2c9e427",
+      "sha256": "791e1f01f026037800bb46fb5630994c3fc3af693ecee8e13ae35f165e17a9f1"
+    },
+    {
+      "id": "review-loop-batch-reviewers-no-mixed-2391162980e2",
+      "sha256": "ae590c5b342c6dcb881285092ed833013f25713f2c2447596884548c8e9b28f2"
+    },
+    {
+      "id": "review-loop-batch-ledger-parent-ab52494c76fa",
+      "sha256": "19736d3f8eb27da46490b4a082c0859bfbb6f3c0b30cd3bc850931f722d0f384"
+    },
+    {
+      "id": "review-loop-batch-ledger-kernel-forbid-f0515d635c73",
+      "sha256": "c5390ad6ff06168cebc363f1c4dce0b69a04af047bf35730ef9dc1aee4043e8a"
+    },
+    {
+      "id": "review-loop-batch-final-trim-independent-81f5a8c2bcf2",
+      "sha256": "3a8c9b347e702db7df9ca4f6cbab8163b28d89d0b0a0f7b1ba56d2e4f03b3211"
+    },
+    {
+      "id": "review-loop-batch-final-trim-origin-76d01f01f51c",
+      "sha256": "c0b336dc39758ce6707d414304c23021f87db281ad42bce13936ef35f61ea6d3"
+    },
+    {
+      "id": "review-loop-batch-final-trim-next-8f7004596801",
+      "sha256": "3e503fdabe037cf4104bf4409973af170f91211c188ef0cc91dd13a46081c77a"
+    },
+    {
+      "id": "review-loop-batch-final-trim-count-78e09f18dc13",
+      "sha256": "230b3f0aca0fad5e2353006e5dd3d69a8ce3d22e849cbf3e3d04799383f0240d"
+    },
+    {
+      "id": "review-loop-batch-kernel-independence-02f7f55ed2ba",
+      "sha256": "a51dd69d751220400f1a83f6aae60210cdfe6149fe7c443cae566a13a4b9b605"
+    },
+    {
+      "id": "review-loop-batch-loader-before-transaction",
+      "sha256": "5d3429771178933982d3914c9ff52ca75abd10a2bd3ffdbe60ea9b6d66ac1433"
+    },
+    {
       "id": "shg-kernel-intro-forbids-c13074ce5cc4",
       "sha256": "d2793793cbd53ec28c31e2ce70b2292cc38e2a33f36c18751ab220b59eb61aa1"
     },
@@ -2033,7 +2169,7 @@
     },
     {
       "id": "batch-resolve-kernel-mention-allowlist",
-      "sha256": "cf849fa443a3cfd9b4b6529608709639ef74523cd05d74a3a2cf11dc7630f5e6"
+      "sha256": "a960a2faec790c4a4e85cc6bd6d62d1907333bbbf37e2387f3e457dca13aae8e"
     },
     {
       "id": "batch-resolve-kernel-requires-c151425c26b4",
@@ -2734,6 +2870,21 @@
     {
       "kind": "anchor",
       "id": "review-loop-kernel-criteria",
+      "path": "shared/skill/review-loop/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-loop-batch-resolve-kernel-parent-mapping",
+      "path": "shared/skill/review-loop/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-loop-batch-loader-start",
+      "path": "shared/skill/review-loop/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-loop-resolution-transaction-start",
       "path": "shared/skill/review-loop/SKILL.md"
     },
     {
