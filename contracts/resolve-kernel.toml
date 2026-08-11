@@ -1,0 +1,109 @@
+[contracts.resolve-kernel-distribution]
+kind = "occurrences"
+pattern = "# Resolve Kernel v1"
+paths = [
+  "plugins/claude/references/resolve-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-reference-identity]
+kind = "occurrences"
+pattern = "Kernel identity: `resolve-kernel-v1`."
+paths = [
+  "plugins/claude/references/resolve-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-caller-845c25b48391]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "caller-owned boundary"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-stable-9e120abdb7f4]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "初期 caller は `proposal` と `proposal-dialogue` の2つに限定する。"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-scope-6e5bfe772492]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "caller 固有 mapping は各 caller Skill が所有し、この Kernel は caller role mapping を複製しない。"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-scope-5a2f31a86441]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "共通 `resolve` Skill の新設と、他 workflow への適用は対象外である。"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-fe3b5659dc9f]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "workflow や orchestration ではなく"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-804855b821a8]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "atomic one-at-a-time"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-queue-not-4ca5591f24a7]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "判断 queue を最初に固定しない"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-8c9571ea6519]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "resolve → apply → verify → semantic progress observation → frontier re-evaluation"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-updated-dd8d70eaf04d]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "semantic progress を確認した updated snapshot"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-a9a01c7bb1b4]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "verify failure reopen"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-no-d528e97bd453]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "latent な issue を新たに探索して frontier へ追加しない"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-1f03be852816]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "caller-owned bound"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-no-5295682cf462]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "no-progress cycle は進展とみなさず"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-frontier-not-7c2711fb85d6]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "frontier empty is not workflow completion"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-no-new-public-7281e4e76ede]
+kind = "requires"
+slice = "resolve-kernel-v1"
+pattern = "新しい workflow-level status、ledger schema、public parameter を所有・導入しない。"
+applies_to = ["claude", "codex"]

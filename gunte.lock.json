@@ -7,7 +7,9 @@
     "contracts/impl-lead.toml",
     "contracts/plan-craft.toml",
     "contracts/plan-craft-approval.toml",
+    "contracts/kernel.toml",
     "contracts/necessity-kernel.toml",
+    "contracts/resolve-kernel.toml",
     "shared/VERSION",
     "shared/agents/focused-implementer.md",
     "shared/agents/expert-implementer.md",
@@ -21,6 +23,7 @@
     "shared/agents/test-quality-reviewer.md",
     "shared/agents/writing-principles-reviewer.md",
     "shared/necessity-kernel.md",
+    "shared/resolve-kernel.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -1719,6 +1722,14 @@
       "sha256": "52e20e4aa24478517e63218d75a0ecf14f2f8062ce84939b70d11560910fcb38"
     },
     {
+      "id": "kernel-dependencies-none-claude",
+      "sha256": "92d3211233ff4d06bf58577ae6cc60f2f18fd63b3014b2605200a038e42c1ad1"
+    },
+    {
+      "id": "kernel-dependencies-none-codex",
+      "sha256": "ab946f9724fbb745fd9698d396657487e5daa369f43b73f27f39d887c05f38a1"
+    },
+    {
       "id": "necessity-kernel-title-requires-a9c4fda91047",
       "sha256": "884b771e7c76a35ee281097f5eabc638d4edde41869c89613f72f09de13f1995"
     },
@@ -1885,6 +1896,74 @@
     {
       "id": "necessity-kernel-v1-requires-904448c7bdf2",
       "sha256": "c09792886a9a55f9e18bf82e22aafac6037289f4ac61a10dc82b870c0a3dea02"
+    },
+    {
+      "id": "resolve-kernel-distribution",
+      "sha256": "7afe51aa3b9d7dbdb045f94275d70d3e3ea8ae7c3330d8903036880be67a6b56"
+    },
+    {
+      "id": "resolve-kernel-reference-identity",
+      "sha256": "ee1ad583e98b5544258375a859add28a21486d91bd759365b67c55d414cd07b9"
+    },
+    {
+      "id": "resolve-kernel-caller-845c25b48391",
+      "sha256": "2941f288175f3029ff79f025ddd446668173c7cc74335e2b9cef95ae9f58e831"
+    },
+    {
+      "id": "resolve-kernel-stable-9e120abdb7f4",
+      "sha256": "645235036394c7ca48b10ad4fc25341e5009cb0ff0d0529f7db459836a4acb9c"
+    },
+    {
+      "id": "resolve-kernel-scope-6e5bfe772492",
+      "sha256": "4dceabc3cb287207db7630dd5f5a216e76239b5c8709bcb911e2382c7eb8a95e"
+    },
+    {
+      "id": "resolve-kernel-scope-5a2f31a86441",
+      "sha256": "e95e50c6f0bef0c56fbda2a34c4cb3f9dded556636c1355eedd5f0d4d53db87c"
+    },
+    {
+      "id": "resolve-kernel-fe3b5659dc9f",
+      "sha256": "2c3c8bfc390a0803bd5107b79258da07943e6fda93da410ddeb168fd93ffaffb"
+    },
+    {
+      "id": "resolve-kernel-804855b821a8",
+      "sha256": "c4f019d3047f0e3d8f338bacb9d9071b1ed3d126fdee53e20b0bcb42b7b02b68"
+    },
+    {
+      "id": "resolve-kernel-queue-not-4ca5591f24a7",
+      "sha256": "1190b0ad1b6daefa996f9274b2b91a0ffa851f987f9262f1683997b4276d6921"
+    },
+    {
+      "id": "resolve-kernel-8c9571ea6519",
+      "sha256": "8ff8c9e5089e8c596fe99b6292c1d928a76d8f0fac0aed7399d2ed5a5f75d69e"
+    },
+    {
+      "id": "resolve-kernel-updated-dd8d70eaf04d",
+      "sha256": "d697722131d4d34e030a5110b4fb9c281fb4f11eff8e99bbed90acde12395876"
+    },
+    {
+      "id": "resolve-kernel-a9a01c7bb1b4",
+      "sha256": "7a20a1d9e9e4e40e2d844e9a8292f55a192b7f2516debc407f73983ef46ffe45"
+    },
+    {
+      "id": "resolve-kernel-no-d528e97bd453",
+      "sha256": "a46f18e94a27d28590fd1d22d45ae2b46dae3acee3e5630b8b9e47c98922ee35"
+    },
+    {
+      "id": "resolve-kernel-1f03be852816",
+      "sha256": "04e7a0802d67813a31f6b470f9ca8aa866d7dbbb23b3a41fb4a6c425d2adde44"
+    },
+    {
+      "id": "resolve-kernel-no-5295682cf462",
+      "sha256": "c6fe79d9503adeb4c7a8f21ca69ac1c79002a5d9782d952c980e88e284dbe85f"
+    },
+    {
+      "id": "resolve-kernel-frontier-not-7c2711fb85d6",
+      "sha256": "5b7744c48b0e279a653c88e46546e484e9dc7e108f05b38e085184c65c47f1f8"
+    },
+    {
+      "id": "resolve-kernel-no-new-public-7281e4e76ede",
+      "sha256": "b786e806577589cb1924b3000c1d0fe051fc272609a59292718efcb1b3369a82"
     }
   ],
   "declarations": [
@@ -1942,6 +2021,11 @@
       "kind": "span",
       "id": "necessity-kernel-v1",
       "path": "shared/necessity-kernel.md"
+    },
+    {
+      "kind": "span",
+      "id": "resolve-kernel-v1",
+      "path": "shared/resolve-kernel.md"
     },
     {
       "kind": "anchor",
