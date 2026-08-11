@@ -3,7 +3,7 @@
   "name": "tugite",
   "displayName": "Tugite",
   "description": "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
-  "version": "5.11.0",
+  "version": "5.12.0",
   "author": {
     "name": "akitanabe"
   },

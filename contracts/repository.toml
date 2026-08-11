@@ -35,6 +35,36 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex"]
 
+[contracts.repository-test-qa-baseline-d0061c3c8b96]
+kind = "requires"
+slice = "repository-test-qa-baseline"
+pattern = '''policy_id = "test-qa-baseline-v1"
+test_artifacts = ["automated test", "Gunte predicate/contract", "fixture/oracle", "EVAL"]
+qa_inputs = ["Task Spec", "base", "acceptance criteria", "diff", "evidence", "surrounding context"]
+common_evidence = ["evidence identity", "parent oracle"]
+owner = "parent QA"
+routes = ["impl-lead", "non-impl-lead"]
+baseline_self_qa = "required on every route"
+reviewer = "optional additional observation"
+reviewer_handoff = "pass baseline and reason in existing context; parent adjudicates findings"
+parent_responsibility = "obligation, oracle, validation plane, final adjudication"
+reviewer_scope = "changed mutation, structural test, EVAL case quality only"
+gunte_antipattern_url = "https://github.com/akitanabe/gunte/blob/main/docs/gunte-antipatterns.md"
+gunte_antipattern_url_use = "provenance only; runtime retrieval is not required"
+minimum_checks = [
+  "obligation/oracle owner = parent QA",
+  "appropriate validation plane is explicit",
+  "do not infer semantics from prose layout",
+  "reject empty or overbroad slice, decoy, custom parser, and duplicate Gunte guarantee",
+  "applicable mutation evidence is present",
+]
+accept_prohibition = [
+  "reviewer Pass is never an accept basis",
+  "reviewer observation is additive and never replaces baseline self-QA",
+  "missing evidence prohibits accept",
+]'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
 [contracts.codex-openai-enabled-policy]
 kind = "structure"
 subject = "artifact"

@@ -80,6 +80,10 @@
       "sha256": "8c5d132cc18aaf61159f991f5a4b02bb8c110018bf249eac4b114c0301c96dba"
     },
     {
+      "id": "repository-test-qa-baseline-d0061c3c8b96",
+      "sha256": "5d0c98c2a0c5677c8da12e975fc97166a7b967f0ba0807b79fed28b1c64398bd"
+    },
+    {
       "id": "codex-openai-enabled-policy",
       "sha256": "be74374cb7be0a92a0901931aa9d309fcf30bdf3a898ac283494f0e74121c8e0"
     },
@@ -2997,6 +3001,11 @@
       "kind": "span",
       "id": "structural-health-gate-kernel-exclusion-output",
       "path": "shared/skill/structural-health-gate/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-test-qa-baseline",
+      "path": "shared/repository-guidelines.md"
     }
   ]
 }

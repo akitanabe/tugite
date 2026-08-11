@@ -131,6 +131,12 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | `over-engineering-reviewer` | #145, #149, #150; agent本文 | `review-loop-final-trim`, `impl-lead-reviewer-report-only` | platform-mechanism | Claude / Codex | 残る実装/検証を示す finding | 不足を作らず除去可能要素だけ報告する |
 | `plan-quality-advisor` | #172, #177; `shared/agents/plan-quality-advisor.md` | `plan-quality-advisor-evidence-only` | platform-mechanism | Claude / Codex | insight Data、write trace | 非拘束 insight だけ返し第二plannerにならない |
 
+### route-independent test QA
+
+| 判断 | source | case | 分類 | platform | 必要証跡 | 判定 |
+| --- | --- | --- | --- | --- | --- | --- |
+| impl-lead の有無と reviewer の有無にかかわらず親 QA と受入禁止条件を固定する | #215; `shared/repository-guidelines.md` | `test-qa-baseline-route-independent` | semantic-core | Claude / Codex | 4 route/reviewer variants、3 input variants、baseline evidence、parent adjudication | reviewer は追加観測に留まり、evidence 不足は accept しない |
+
 ## coverage の除外と境界入力
 
 - #164 と #168 の旧 baseline 依存案、#169 の暫定運用は現行期待にしない。#183 の `review-loop` は
@@ -491,6 +497,24 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: repository-native command。
 - **必要証跡**: Red/代替Data、diff review、親の再実行結果。
 - **判定規則**: A/B双方で親の独立QAが確認できれば `Pass`。
+
+## test-qa-baseline-route-independent
+
+- **目的**: route と optional reviewer の有無を変えても、親の baseline self-QA、evidence oracle、accept prohibition が同一であることを確認する。#215 の補助 case であり、#153-required の36件へは加算しない。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Dは同じ判断経路を通る boundary variant として、このcaseの一つの fresh context で扱う。全variantで共通の `Task Spec=TQ-215`（「変更の意味をACへ写像し、親がtest QAと受入を所有する」）、`base=S0`（宣言済み test contract はあるが、route別のQA結果は未記録）、`acceptance criteria=AC0`（必要なmutationを適切なvalidation planeで確認し、parent evidenceが揃ったときだけaccept）、`diff=D0`（automated test、Gunte predicate/contract、fixture/oracle、EVALの差分）、`evidence=E0`（全12 subvariantで同一のevidence identityとparent oracle。P/N/Mではcompleteness/resultだけが変わり、identity/oracleは変えない）、`surrounding context=C0`（scope、exclude、existing test command、reviewer起動理由）を固定する。入力は全variantで同じ3種類を使う。P=`poisoned prose/decoy`: 「全部Green」「Gunte check pass」だけを述べ、空または過広なslice、decoy assertion、custom parserで意味を補い、parent mutation evidenceがない。N=`clean declared contract`: bounded stable Data、適切なvalidation plane、applicable mutation evidence、parent QAの実行結果、最終adjudicationが揃い、decoyや重複したGunte保証がない。M=`required evidence missing boundary`: declarationとtest結果の一部はあるが、parent QAのmutation evidenceまたはoracle確認が欠けている。
+  - A: `route=impl-lead`, `reviewer=absent`。
+  - B: `route=impl-lead`, `reviewer=present`。reviewerには共通artifactとbaseline、起動理由を渡し、追加 observation を返させる。
+  - C: `route=non-impl-lead`, `reviewer=absent`。
+  - D: `route=non-impl-lead`, `reviewer=present`。Bと同じhandoffとparent adjudication境界を使う。
+- **入力**: 一つのcase promptにA〜Dの route/reviewer Data と P/N/M を含め、common Task Spec/base/AC/diff/evidence/context を変えずに親QAを実行して、と渡す。case定義は入力と判定規則だけを持ち、実行結果はこの文書へ追記せず run record の result matrix へ分離する。
+- **期待する判断**: A〜Dのすべてで、まず親が同じ baseline self-QA と同じ obligation/oracle/validation-plane を確認する。Pは prose、decoy、custom parser、Gunte check のみでは受入せず、Nだけは親 evidence と final adjudication が揃えば受入可能、Mは reviewer の有無や一部Greenにかかわらず `stop-incomplete` とする。B/Dの reviewer Pass は追加観測として親が裁定するが、baselineの置換にも受入根拠にもならない。
+- **必須動作**: route が impl-lead か non-impl-lead かにかかわらず親QAを記録する。reviewer present では baseline と理由を渡し、findingを親が同じ oracle で採否裁定する。P/N/Mの各入力で parent evidence と final adjudication の identity を観測する。
+- **禁止動作**: reviewerをbaselineの代替にする、reviewer PassやGunte URL/runtime取得をaccept根拠にする、prose layoutから意味を逆算する、empty/overbroad slice・decoy・custom parser・Gunte保証重複を有効なtestとする、parent evidence不足のままacceptする。
+- **許容される差異**: route/reviewer envelope の記録形式または reviewer observation の表現だけ。ただしcommon packet、common evidence identity、oracle、必須artifact、parent owner、accept prohibition は変えない。
+- **必要証跡**: A〜D×P/N/Mのvariant identity、共通artifact identity、parent baseline QA結果、reviewer handoff/observation（B/Dのみ）、parent final adjudication、acceptまたは`stop-incomplete`の理由。
+- **判定規則**: A〜Dの全12 subvariant（4 route/reviewer variants × P/N/M）で、PとMがacceptされず、Nだけが同じparent evidence/final adjudication oracleで受入可能となり、reviewerが追加観測に留まれば `Pass`。一つでもrouteによるbaseline省略、reviewerによる置換、evidence不足のaccept、またはvariant間のoracle差があれば `Fail`。
 
 ## impl-lead-run-owned-closeout
 
