@@ -855,7 +855,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **期待する判断**: reviewer は current work の必要性を示せないため既存 finding field で out-of-scope 相当の evidence 不足を返し、parent は `out-of-scope` または `deferred` とする。severity/Pass/件数で直結しない。
 - **禁止動作**: discovered を admitted とみなす、scope を暗黙拡張する、追加 round や termination を要求する。
 - **必要証跡**: Task Specification の scope/exclude、Failure/Evidence 不成立、親の `out-of-scope` 裁定。
-- **判定規則**: high severity でも current Task Specification 外なら `rejected` とし、親の5値へ写像すれば `Pass`。
+- **判定規則**: high severity でも current Task Specification 外なら `adopted` にせず、evidence に応じて既存の5値（このcaseでは `out-of-scope` / `deferred`）へ写像すれば `Pass`。
 
 # 実行手順
 
