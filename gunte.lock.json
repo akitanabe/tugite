@@ -756,20 +756,48 @@
       "sha256": "12f7f8373abc265d78f57018e8b5d8f326c91043580b512f35cc0c5aaa16e7ff"
     },
     {
-      "id": "proposal-resolve-kernel-loader-requires-0a677f84afba",
-      "sha256": "b0cc6d5354396c383917f949aa48eb4907cce84c9016d87b635ddd77e0d0f554"
+      "id": "proposal-batch-loader-path-2aaa9a47b3d4",
+      "sha256": "4d4969822073ee429761132b1a11537d4c0a2dc571b8faa14c95f81a9131ef96"
     },
     {
-      "id": "proposal-resolution-role-mapping-requires-fe1511a4fcc3",
-      "sha256": "193e3b4c5d7026718b300974bff4a3c4fd69a53ccfc87ee39a9fb867997aad2b"
+      "id": "proposal-batch-loader-identity-8b53c55914b3",
+      "sha256": "d5b32aab9ab362f9396a671357d6458041936fea646d55ad4409faa5314d838f"
     },
     {
-      "id": "proposal-serial-resolution-requires-be2916ab10ea",
-      "sha256": "9c3f99b1a43e0e8db406528ab3e5657379605e57061ad19b7beaac80639b5d71"
+      "id": "proposal-batch-loader-dependencies-17fb733a70b5",
+      "sha256": "0e21247360ef9338448f57935c0321796b43a98bfa4c6768bcccf116ffc38165"
     },
     {
-      "id": "proposal-reinvoke-discipline-requires-1aae648e55c4",
-      "sha256": "aa6865238711a6884f2d3e4748abefee4e89646b28a0e7c30eb2f6cb58bb7b1a"
+      "id": "proposal-batch-loader-sections-e91adee3d955",
+      "sha256": "71dd7fff8f5019b0da3527df9049c22ca80fd13d2a82e78194931209232a7386"
+    },
+    {
+      "id": "proposal-batch-loader-once-80888a31c0b8",
+      "sha256": "b46decf53b2572962b9b341e69323d156194e5f3894efc5c231008ce4772356c"
+    },
+    {
+      "id": "proposal-batch-loader-failure-2ea1fdf26e15",
+      "sha256": "c4171229437c3cc659c0a72ae3c65cb9912b042ba34f4620d9a95688199507e9"
+    },
+    {
+      "id": "proposal-batch-loader-no-delegation-eea323e722d4",
+      "sha256": "dbbcc2017f555461015217d02cfd47db17015a8ae86a58be3010b27475e6142f"
+    },
+    {
+      "id": "proposal-batch-role-mapping-86931a3e2bb5",
+      "sha256": "a5a04a17d1209d6857591f2e31ddda322581b4ba41a3daa7bbf3bbaf0d574477"
+    },
+    {
+      "id": "proposal-batch-counterpart-boundary-5e7142121bb7",
+      "sha256": "8cdd7a0f26385a3f460bab25462c7e35e3bfa7a7510a7ac6a0c6d3ce57811299"
+    },
+    {
+      "id": "proposal-batch-ledger-c0d6160790fd",
+      "sha256": "907e65617fe02bf9252395a78f77df6bf09e8694cc55581ec9c5bd6d5173e459"
+    },
+    {
+      "id": "proposal-batch-kernel-independence-1ea07df935f7",
+      "sha256": "5119b8f24b51c8d2e7d06775a3f70672b54a61d4e6a3a64c22fe97ba20c03e37"
     },
     {
       "id": "plan-craft-resolution-ownership-requires-ae86a9ab644f",
@@ -777,19 +805,19 @@
     },
     {
       "id": "proposal-resolve-loader-before-use",
-      "sha256": "a280d2239701e40f86f015936753805626bb6deae1d4f4a33ce9d60bb0939112"
+      "sha256": "5fa982f12924a149ddc7698eb5b972a822b5f76044b0b3a0000bded6da25d90e"
     },
     {
       "id": "proposal-resolve-loader-before-cycle",
-      "sha256": "6d2b015dc525f98ed42e05633c2dfda10de162db5fef4692ee432d64aef168ba"
+      "sha256": "6efe75468f921e1adc1bac0657fdd98ac7f7b92ef39dd833805364675ae57d51"
     },
     {
       "id": "proposal-resolve-loader-before-verified-baseline",
-      "sha256": "3d37464e0277ef1cf8e0c44b39aa6500e9c80b5ee492076d75cc60d8f2bc8381"
+      "sha256": "4c407ea24e0b66e3a7ee4dce404c6856cec250de648197508589e63ef80a1916"
     },
     {
       "id": "proposal-resolution-before-bounded-return",
-      "sha256": "dcb30239ff84783157813040a65ace631e7e043bac7e41b791de14254adb21cd"
+      "sha256": "89955bb19d9c306a83596e0bb0e489e94452246359be148a801c7fb4069b7831"
     },
     {
       "id": "proposal-caller-verified-snapshot-requires-08d539e62aad",
@@ -812,64 +840,84 @@
       "sha256": "ccb3baf158caa85f48d95ab1febcaf4e9ce1a5569c882c4c32b0ed4bd8153c00"
     },
     {
-      "id": "proposal-resolve-loader-identity-requires-64b15bdcec23",
-      "sha256": "6ffef740c56880a9fe472a4400fe6ac3efd84fafdec17fa2c84a760b09d90cde"
+      "id": "proposal-batch-origin-2211b63fb388",
+      "sha256": "3391775219b8355f284e53646c30f6fd865ab95bd147cb12feddcfa8a806aaf3"
     },
     {
-      "id": "proposal-resolve-loader-once-requires-f985bf4ffdf7",
-      "sha256": "86327dde479be4c1c595ad6ef44599dac871af1e5f8f64cc68418b98bc73cbc8"
+      "id": "proposal-batch-fixed-membership-4db7340b6326",
+      "sha256": "07177cc4089fabdf631fac50095ac9d3f3943a161f81a4bca66dc73addac6c60"
     },
     {
-      "id": "proposal-resolve-loader-failure-requires-b953902bb829",
-      "sha256": "5773bee28293f22ffab19f8a8b0516216dec11b36fc8615eebe75353348263ae"
+      "id": "proposal-batch-adjudicate-all-6ee7f1a9850f",
+      "sha256": "75c2890ca4db03e3036373ff75998af288ec7199e1b580ac353515f160e44450"
     },
     {
-      "id": "proposal-resolve-loader-no-delegation-requires-b2e9d6926bb5",
-      "sha256": "0a9c2bb7f6cbebb3e7079241bbee6a737dc575f13abf50538d98409a7371ea7d"
+      "id": "proposal-batch-coherent-apply-335e392d8c41",
+      "sha256": "d7424ef1cb03f9576a6447ae391ef0e8a0f2bf0e18d6fb65c33cca308b3e34b4"
     },
     {
-      "id": "proposal-resolution-ledger-requires-85ad7e4f6e35",
-      "sha256": "a8ed9137971c0f3c616c7e84884535385f1adc9d3d14bea52130223b644bc1e1"
+      "id": "proposal-batch-promotion-ad1147d54281",
+      "sha256": "19e4b4a5d04d24ea373d3d35611fa4176ca95c72418505961b98848276b37668"
     },
     {
-      "id": "proposal-kernel-independence-requires-08e0ed89ce2c",
-      "sha256": "d70c3e74e8327ad4452f6cd1c202b5ab5965b5dde7266437969feacb23024dff"
+      "id": "proposal-batch-isolate-6649b7d9e6ca",
+      "sha256": "ee90f361b0a94010753a6c1c72f52e361a35d9d222b21d1b1fccaa1bc65dcf3e"
     },
     {
-      "id": "proposal-no-bulk-resolution-requires-f6f975cef8df",
-      "sha256": "8563951638ba63d7c03a8cb88a39f9d78d667025f1ccf69f195f021b493f81ee"
+      "id": "proposal-batch-corrective-a4c3c2f5459c",
+      "sha256": "0203657fd73e26a9dc392342d92212dcd5c9697a218ad3980a05248a37149408"
     },
     {
-      "id": "proposal-verify-failure-reopen-requires-ca5101a7ebd0",
-      "sha256": "aa9b333cdccbfc39987303b4ab7be8b1b2db2dec991b3ee8e1ac169a665e30f7"
+      "id": "proposal-batch-boundary-e6f71215223a",
+      "sha256": "4d98784bd7b7eb947fbc3e372c0f1ac377860a034bd3303139c375abd99c8f0d"
     },
     {
-      "id": "proposal-no-unverified-stacking-requires-518ecc30935e",
-      "sha256": "d9f711091c17f1ddb9e137d8f65a29533497b76332c9803da9205a7863760c4a"
+      "id": "proposal-two-pass-flow-417135ee9357",
+      "sha256": "b23b4104a691903f43b12c6f258ddeafe3637e57f4229707f7350bd758ab235d"
     },
     {
-      "id": "proposal-remaining-insight-reevaluation-requires-33a75a41f496",
-      "sha256": "f69755b850c42a97f863d4e1937cfea301404983bdfc45a6e104138f6947c2ba"
+      "id": "proposal-two-pass-second-b31d71cc88b6",
+      "sha256": "7baa98fdb2401e6af5df6ec1dbecd8d635a1fcbc19a77a2e10fde2665f579af8"
     },
     {
-      "id": "proposal-no-new-ledger-status-requires-cc2080fd53d3",
-      "sha256": "cf110c5033d834bd38d7aeb1b4755f01cd3d6621e53a511c758cb78774c12f4a"
+      "id": "proposal-two-pass-exactly-11b22b42e064",
+      "sha256": "0ae5c12040f469b8e397e30eae4c8a409f4b56b4e9c932f86438d10f34b710dc"
     },
     {
-      "id": "proposal-empty-not-completion-requires-101e6c73a3d1",
-      "sha256": "3725d5ba2bb58d5aeb7c3c32f7fce69ccf3e7718ab93ebcbacc8659aa3b5ce02"
+      "id": "proposal-two-pass-empty-ea59c6b44031",
+      "sha256": "23abffdde26bdc0722e90fc3275906fd5e6bfc290f9337324791dccc4cf83c80"
     },
     {
-      "id": "proposal-stop-mapping-requires-1cca0de26060",
-      "sha256": "f5865dba962170a37de80cacb50dab450ff849faa439c2b1f6ce86f3aa7b0eac"
+      "id": "proposal-two-pass-no-third-3c3e54864736",
+      "sha256": "75bc912630c5856313ac5fdb4c652cab6af9cf783f3c72d13f8a674f553efdbf"
     },
     {
-      "id": "proposal-invocation-not-cycle-requires-d9a4c3a4ffc2",
-      "sha256": "1471dabdee02dfe7f3aeeed2b90faeb8976f9baeea8357481c7581029d032ba6"
+      "id": "proposal-two-pass-scope-53bfec344c16",
+      "sha256": "31a1806e4398ed8f086f370098b9d384fa83643abbed1706dc99d9288803a6a8"
     },
     {
-      "id": "proposal-reinvoke-positive-requires-3275d6a29cbb",
-      "sha256": "4025ec25a36224fc62b573a217a792dee241e2538641fb51feb5cf342d57e680"
+      "id": "proposal-two-pass-induced-ac3f1a24ac4c",
+      "sha256": "dd102a6b9f6cca1905cc6eed73bf9a830301b6be17e298ad74c3587c89632157"
+    },
+    {
+      "id": "proposal-two-pass-contest-a20fa1fd2f95",
+      "sha256": "7244817cce438920f2b34fa98df50ae6a2241c9c186b35d2d3786bff70ce52d9"
+    },
+    {
+      "id": "proposal-two-pass-unresolved-389ba27cc67b",
+      "sha256": "e8214812e0de04bb5a9500d6b2d230353ffcbb41d50750b0b3d944f613cf210f"
+    },
+    {
+      "id": "proposal-two-pass-data-5702c7aba455",
+      "sha256": "9ef6c0f6cfd027b9f4992535e748c498a02b67c52dca24adbfa0ac6a8f16dcb0"
+    },
+    {
+      "id": "proposal-two-pass-no-output-17c82ed2be2e",
+      "sha256": "60deb4519468f81b241287a0a5fee2491ff21b7d58b33f317179867db8a6eb00"
+    },
+    {
+      "id": "proposal-two-pass-empty-batch-e88f6e888446",
+      "sha256": "0e90e7d31e20061335f523dc298a1a8f3d1e681a89faac37d99a04eefae2d32b"
     },
     {
       "id": "plan-craft-resolution-bound-fixed-requires-d63d8ece7480",
@@ -884,40 +932,8 @@
       "sha256": "8dd3c3bb94d48920c9c0edb1641c17010bee1e3c19730a572e9bc3c6e1688880"
     },
     {
-      "id": "proposal-material-remains-frontier-requires-c422208f8ee8",
-      "sha256": "bec1ebda4f2601fc2b6e35cd016f9d6a5baca078c772f4bd046bdb5f05f3796e"
-    },
-    {
-      "id": "proposal-unnecessary-rejected-requires-8de3cc580455",
-      "sha256": "1c04cf10fff1806c81ac0ded6e96a87d0a559a8beb63013a45fa93325aaeb114"
-    },
-    {
-      "id": "proposal-evidence-gap-unresolved-requires-ea036f0662f2",
-      "sha256": "deb798d6df0526c10ff3421ec450d9f4970efcb8f07b7239f74c4c8acf52a835"
-    },
-    {
-      "id": "proposal-fulfilled-obligation-rejected-requires-748013394c3d",
-      "sha256": "a7160519bb18ad6164d80ef1a48b2340afc9df284a7c8f1b6cfb70d0d9c7198c"
-    },
-    {
-      "id": "proposal-no-progress-stop-requires-04b3de3eafbf",
-      "sha256": "3537a6aa0c052a9d8ed8f5a91b7a7730f6eb51ff6c3b916a0da88880cf0e33a1"
-    },
-    {
-      "id": "proposal-bound-remaining-stop-requires-9c8dbee99516",
-      "sha256": "91c584896d846bc78d824337040bd47ccc02309a181307a25e949d982f7dc22b"
-    },
-    {
-      "id": "proposal-reinvoke-new-boundary-requires-f40b502d509c",
-      "sha256": "3c7b949476fdd092d51cdaf0d2a80e891a680a4d6415eeda62e4354e426abe52"
-    },
-    {
-      "id": "proposal-reinvoke-missing-input-requires-febe5a4ac271",
-      "sha256": "5baaf95e95c2a66236954075d0d441ab85707a85ee0d75fb3c45cb3225fdb4c3"
-    },
-    {
-      "id": "proposal-reinvoke-scope-boundary-requires-14c43487ee06",
-      "sha256": "ad8b816aac82183cdc59210f6748de9252fbc1c5e289c0a02ea8a01ed6ae96a9"
+      "id": "proposal-batch-stop-boundary-b1cb9ce1fe0c",
+      "sha256": "ac39b2da538d7fd07f53a1181c4e8ac8a9600346e453623d4a4d2dd18e8bf878"
     },
     {
       "id": "review-kernel-exact-requires-51c54590dac0",
@@ -1144,12 +1160,8 @@
       "sha256": "711ca56ab4854cb4fae784876271589a6285ad7f5307427db8df2f63a8a641a8"
     },
     {
-      "id": "proposal-return-after-frontier-requires-12a9bb898898",
-      "sha256": "75fe740f6b4677e08c58163c1d895ddd5123cf948d85fdb405d30181ba3320c7"
-    },
-    {
-      "id": "proposal-return-after-reinvoke-requires-7c67c30dfca6",
-      "sha256": "d2db855b80e1f6e2d1e635d88cf85d13a512549e1e461d1299ce397e0bb68237"
+      "id": "proposal-return-after-two-pass-08378821d3bf",
+      "sha256": "97d2d1e655413633e180fc39b538826a039984e58f50646e2357afbab120155b"
     },
     {
       "id": "candidate-producer-boundary-requires-0dd78f082cd5",
@@ -2021,7 +2033,7 @@
     },
     {
       "id": "batch-resolve-kernel-mention-allowlist",
-      "sha256": "a8584b73cb02fea007ed6996d7757175a5de87bc08749aee7afb686fb79780b1"
+      "sha256": "cf849fa443a3cfd9b4b6529608709639ef74523cd05d74a3a2cf11dc7630f5e6"
     },
     {
       "id": "batch-resolve-kernel-requires-c151425c26b4",
@@ -2601,22 +2613,22 @@
     },
     {
       "kind": "span",
-      "id": "proposal-resolve-kernel-loader",
+      "id": "proposal-batch-resolve-kernel-loader",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-resolve-kernel-loader-start",
+      "id": "proposal-batch-resolve-kernel-loader-start",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-resolve-kernel-use",
+      "id": "proposal-batch-resolve-kernel-use",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-resolution-role-mapping",
+      "id": "proposal-batch-resolution-role-mapping",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
@@ -2646,17 +2658,17 @@
     },
     {
       "kind": "anchor",
-      "id": "proposal-serial-resolution-start",
+      "id": "proposal-batch-resolution-transaction-start",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-serial-resolution-cycle",
+      "id": "proposal-batch-resolution-transaction",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-advisor-reinvocation",
+      "id": "proposal-two-advisor-passes",
       "path": "shared/skill/proposal/SKILL.md"
     },
     {
