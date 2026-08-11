@@ -936,8 +936,8 @@
       "sha256": "ac39b2da538d7fd07f53a1181c4e8ac8a9600346e453623d4a4d2dd18e8bf878"
     },
     {
-      "id": "review-kernel-exact-requires-51c54590dac0",
-      "sha256": "bb779d5bcba783aadc9625d7bec465267a749b395e266caf3fb004e2bfdcc7c0"
+      "id": "review-kernel-exact-requires-5e9ebad1d38b",
+      "sha256": "db009fda339081f296d6430dc3f12db4d9be6dc83d135f3b7a2b1cd95e4f8f66"
     },
     {
       "id": "review-loop-batch-loader-path-3b156e637f29",
@@ -1184,24 +1184,24 @@
       "sha256": "8d79092999ee541d89f2201a2ae38ca6c00a2684a9e0a802b24f9962eec454eb"
     },
     {
-      "id": "review-loop-kernel-parent-mapping-requires-7a04569b4d28",
-      "sha256": "d082057bf2d15d109ce8b0cddb8a55378e1d668d882d245d0c5e34b5884856fd"
+      "id": "review-loop-kernel-parent-mapping-requires-23f3727b2b86",
+      "sha256": "16e25f9665184fd8152014c6262141223e1c9028fad02ca89a857e3812530429"
     },
     {
-      "id": "review-loop-kernel-parent-mapping-requires-e40f2057c417",
-      "sha256": "63b5bfdd69568dca340425ebbf0a35b5e4987d2b88dfa2887caddf2fb365dbe0"
+      "id": "review-loop-kernel-parent-mapping-requires-71d17b01e2a4",
+      "sha256": "371c42c19c5e4627403e142669437cb37260913e17b7ba6cc151275a897e54cc"
     },
     {
-      "id": "review-loop-kernel-parent-mapping-requires-32c7746a23b6",
-      "sha256": "7b7c981ab7731adf573ecbf08af381ce890a9b0a856315c7771be694ec4dc9a2"
+      "id": "review-loop-kernel-parent-mapping-requires-da3aec43f38e",
+      "sha256": "5e301e7e9a5feafbc5a8dedc0692c1f9b1836f25c5361e942ebcea6e0bacc01d"
     },
     {
-      "id": "review-loop-kernel-parent-mapping-requires-db0e7fd79639",
-      "sha256": "dc24752cecae645d86a97e66efb82342722aab43b730318d60f366354bdd30d2"
+      "id": "review-loop-kernel-parent-mapping-requires-c6adfec32252",
+      "sha256": "2c1d2b529f25fcecbee8fa3b45339311fe67eba5917dd7aba6602d13a83ef081"
     },
     {
-      "id": "review-loop-kernel-parent-mapping-requires-31ebfebfe366",
-      "sha256": "39ff5dfbafcb0c212c7901dbec708be989cea6f37e1458f543e7af1323ec4668"
+      "id": "review-loop-kernel-parent-mapping-requires-f33a903ee62d",
+      "sha256": "09e59bbce4c326cf72a4e551312958cad757e10f20184013c08f8bfbd5b77b11"
     },
     {
       "id": "review-loop-kernel-parent-mapping-requires-15cad9e435a1",
@@ -1254,6 +1254,54 @@
     {
       "id": "review-loop-kernel-parent-mapping-requires-eec5f3408ba1",
       "sha256": "413450898412056eae0e7cf098a80adc6aea69ab5dc4c2a227ad16fcf700161b"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-0376fb4b4a65",
+      "sha256": "23b7fc8af672bfc7d1613017ed716c30b0440097069852381193c3839f15bdbf"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-41ae4a64df0c",
+      "sha256": "1226034ae368a382aa0f72095f0877c5f0ec2ad09feee667c43679f5cc588827"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-6a44d5e6d7ae",
+      "sha256": "ef43c2e21fc3ec3cc412e214ebb21593b19401fd47b226debabaa935e80a97f9"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-8fed98ad10ec",
+      "sha256": "cd788a5d93e3c2434cc2641aeb732a4baa49f1366e1471271e00db84c7a33087"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-f230f34e06bf",
+      "sha256": "c24579396581ba06c05c6991cf0c0f2a0dbc6090d7c601f55e3833a8cf8236f7"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-requires-ecfb19f4cfec",
+      "sha256": "dd7596ba68faae8f97ba0866a2d2e992baf19cf8aa378d5073db50dd944e71f9"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-a1b3ba4a8657",
+      "sha256": "3b10521c42e395fbc162eb5d91d2c64d78af88d7912661dbf6d4b4030b09dc4d"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-9d200f892181",
+      "sha256": "6d4bd4eae536481ce4597a6e9a5806e43cf470ca7cbe4386773aa0a63bd47e81"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-76d00c5f9b09",
+      "sha256": "1c3fa6bb413d14d80ac878519995cbf184de29a6b393b827dd00f5562bae7fc2"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-65e549c90b05",
+      "sha256": "76d5cba5485bc7440669d674eb7c0810e504778535fa0a96e130a387ead7fd08"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-a5aa446e561d",
+      "sha256": "a7f650e82d8efbf1dabf039bf253f09d11b3a735a5be0886ba636770fd3a228c"
+    },
+    {
+      "id": "review-loop-parent-adjudication-vocabulary-forbids-c7d8d9c05883",
+      "sha256": "5d07109b2994d6e2f2f8c97168b5b092037e17d0f975f8cadf7a75f86015abcf"
     },
     {
       "id": "candidate-producer-boundary-requires-5ebf70e139de",
@@ -2874,6 +2922,11 @@
     {
       "kind": "anchor",
       "id": "review-loop-kernel-criteria",
+      "path": "shared/skill/review-loop/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-loop-parent-adjudication-vocabulary",
       "path": "shared/skill/review-loop/SKILL.md"
     },
     {

@@ -286,10 +286,10 @@ slice = "proposal-batch-resolution-transaction"
 pattern = "独立して処理できる point を止めずに caller-owned boundary へ返す"
 applies_to = ["claude", "codex"]
 
-[contracts.review-kernel-exact-requires-51c54590dac0]
+[contracts.review-kernel-exact-requires-5e9ebad1d38b]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "## necessity-kernel v1 の parent mapping\n\nreviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または\n`必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。\nreference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。\n\nreviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる\n場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの\nClaim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の\n`採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら\n`stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または\ntermination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。"
+pattern = "## necessity-kernel v1 の parent mapping\n\nreviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または\n`必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。\nreference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。\n\nreviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる\n場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの\nClaim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の\n`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら\n`stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または\ntermination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。"
 applies_to = ["claude", "codex"]
 
 [contracts.review-loop-batch-loader-path-3b156e637f29]
@@ -670,34 +670,34 @@ slice = "candidate-producer-boundary"
 pattern = "直結させない"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-kernel-parent-mapping-requires-7a04569b4d28]
+[contracts.review-loop-kernel-parent-mapping-requires-23f3727b2b86]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "採用"
+pattern = "adopted"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-kernel-parent-mapping-requires-e40f2057c417]
+[contracts.review-loop-kernel-parent-mapping-requires-71d17b01e2a4]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "却下"
+pattern = "rejected"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-kernel-parent-mapping-requires-32c7746a23b6]
+[contracts.review-loop-kernel-parent-mapping-requires-da3aec43f38e]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "範囲外"
+pattern = "out-of-scope"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-kernel-parent-mapping-requires-db0e7fd79639]
+[contracts.review-loop-kernel-parent-mapping-requires-c6adfec32252]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "判断保留"
+pattern = "deferred"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-kernel-parent-mapping-requires-31ebfebfe366]
+[contracts.review-loop-kernel-parent-mapping-requires-f33a903ee62d]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
-pattern = "人間確認"
+pattern = "human-confirmation"
 applies_to = ["claude", "codex"]
 
 [contracts.review-loop-kernel-parent-mapping-requires-15cad9e435a1]
@@ -776,6 +776,78 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
 pattern = "直結させない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-0376fb4b4a65]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-of-scope`, `deferred`, and `human-confirmation`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-41ae4a64df0c]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`adopted`: 成果物を修正して verification する"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-6a44d5e6d7ae]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`rejected`: 既存仕様または evidence に基づき修正しない"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-8fed98ad10ec]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`out-of-scope`: 成立性は否定しないが対象外として残存事項へ渡す"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-f230f34e06bf]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`deferred`: 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-requires-ecfb19f4cfec]
+kind = "requires"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`human-confirmation`: 実装・公開・互換性など、親だけでは決められない確認を要求する"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-a1b3ba4a8657]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`採用`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-9d200f892181]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`却下`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-76d00c5f9b09]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`範囲外`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-65e549c90b05]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`判断保留`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-a5aa446e561d]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "`人間確認`"
+applies_to = ["claude", "codex"]
+
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-c7d8d9c05883]
+kind = "forbids"
+slice = "review-loop-parent-adjudication-vocabulary"
+pattern = "adjudication=accepted"
 applies_to = ["claude", "codex"]
 
 [contracts.candidate-producer-boundary-requires-5ebf70e139de]

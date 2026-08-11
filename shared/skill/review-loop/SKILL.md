@@ -92,9 +92,19 @@ reference の不足、identity 不一致、読み取り失敗があれば推測�
 reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
 場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
 Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の
-`採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
+`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
 `stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または
 termination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。
+<!-- @/contract -->
+
+<!-- @contract review-loop-parent-adjudication-vocabulary -->
+parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-of-scope`, `deferred`, and `human-confirmation`。
+
+- `adopted`: 成果物を修正して verification する。
+- `rejected`: 既存仕様または evidence に基づき修正しない。
+- `out-of-scope`: 成立性は否定しないが対象外として残存事項へ渡す。
+- `deferred`: 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
+- `human-confirmation`: 実装・公開・互換性など、親だけでは決められない確認を要求する。
 <!-- @/contract -->
 
 <!-- @contract review-loop-batch-resolve-kernel-parent-mapping -->
@@ -154,8 +164,8 @@ mutation を行わずに既存の caller boundary へ返す。
 ### Parent-owned ledger
 
 Kernel の execution result と evidence を使い、review-loop parent が既存の `finding_ledger` と `hold_ledger` を更新する。Kernel は
-ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない。既存の5区分（`採用`、`却下`、`範囲外`、
-`判断保留`、`人間確認`）の語彙と意味は変更せず、reviewer の非拘束 finding を親が既存の裁定境界へ写像する。
+ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない。既存の5値（`adopted`、`rejected`、`out-of-scope`、
+`deferred`、`human-confirmation`）の語彙と意味は変更せず、reviewer の非拘束 finding を親が既存の裁定境界へ写像する。
 
 ### final trim の Resolution Transaction
 
@@ -181,26 +191,26 @@ trim の finding も同じ指摘台帳へ記録し、発行元 reviewer で区�
 finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced` と
 `induced_by`（因果対応する採用修正と verification、非誘発時は null。通常 reviewer の判定対象だけ）を記録する。
 全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
-未確定、採用修正の未反映、または `人間確認` とする。`判断保留` は凍結済みの完了した裁定なので未解決に
+未確定、`adopted` 修正の未反映、または `human-confirmation` とする。`deferred` は凍結済みの完了した裁定なので未解決に
 含めない。
 
 ## 親の裁定
 
-親は各 finding を次の5区分の一つへ裁定し、evidence と理由を記録する。
+親は各 finding を次の5値の一つへ裁定し、evidence と理由を記録する。
 
-1. **採用** — 成果物を修正して verification する。
-2. **却下** — 既存仕様または evidence に基づき修正しない。
-3. **範囲外** — 成立性は否定しないが対象外として残存事項へ渡す。
-4. **判断保留** — 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
-5. **人間確認** — 実装・公開・互換性など、親だけでは決められない確認を要求する。
+1. **`adopted`** — 成果物を修正して verification する。
+2. **`rejected`** — 既存仕様または evidence に基づき修正しない。
+3. **`out-of-scope`** — 成立性は否定しないが対象外として残存事項へ渡す。
+4. **`deferred`** — 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
+5. **`human-confirmation`** — 実装・公開・互換性など、親だけでは決められない確認を要求する。
 
 裁定区分と別に、通常の `plan-adversarial-reviewer` finding の影響度を `軽微`、`修正推奨`、`修正必須`
 のいずれかへ親が確定する。final trim の finding には影響度を要求しない。reviewer の severity や Pass を
 親の `accept` へ直結しない。
 
-### 判断保留の凍結
+### `deferred` の凍結
 
-判断保留は loop 中に次の規則で凍結する。
+`deferred` は loop 中に次の規則で凍結する。
 
 1. `hold_ledger` へ記録する。
 2. 次 round の入力へ台帳を渡す。
@@ -243,8 +253,8 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 accept-candidate（`converged` または `induced-loop`）で未解決 finding が空の場合だけ、適用対象のプラン系
 成果物へ final trim を行う。非適用成果物は trim を省略した事実と理由を出力する。trim は通常 loop へ戻らず、
 各回を新しい snapshot へ順に適用する。削減後の verification が失敗した場合は、新しい設計を足さず、該当
-削減 finding の裁定を原則 `採用` から `却下` へ戻す。`人間確認` が必要な trim finding は `範囲外` として渡す。
-trim の finding もその場で5区分へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
+削減 finding の裁定を原則 `adopted` から `rejected` へ戻す。`human-confirmation` が必要な trim finding は `out-of-scope` として渡す。
+trim の finding もその場で5値へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
 残存する過剰の順を推奨観点とし、回数を上書きした場合の観点は親が決める。
 
 回数は次で決める。

@@ -104,7 +104,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | gate は厳密な caller_context だけ受け付ける | #179; `shared/skill/structural-health-gate/SKILL.md` | `structural-health-gate-caller-context` | semantic-core | Claude / Codex | context validation、Action trace | 不正 context では assessment/後段0件 |
 | gate は複雑さでなく局所性を evidence で判定する | #172, #178; `structural-health-gate` | `structural-health-gate-locality` | semantic-core | Claude / Codex | finding 4 field、assessment | evidence 不足を return 根拠にせず直接編集しない |
 | review-loop は許可された caller と適用可能 artifact だけ扱う | #150; `shared/skill/review-loop/SKILL.md` | `review-loop-activation-boundary` | platform-mechanism | Claude / Codex | caller、artifact節、起動有無 | impl-lead中や入力不成立で reviewer を起動しない |
-| review finding は5区分で親が裁定し保留を凍結する | #150; `review-loop` | `review-loop-finding-adjudication` | semantic-core | Claude / Codex | ledger、hold ledger、次round入力 | reviewer が採否せず保留から仕様を派生しない |
+| review finding は5値（`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation`）で親が裁定し`deferred`を凍結する | #150; `review-loop` | `review-loop-finding-adjudication` | semantic-core | Claude / Codex | ledger、hold ledger、次round入力 | reviewer が採否せず`deferred`から仕様を派生しない |
 | 因果 induced と直近2 round連続で補助 brake を判定する | #183; `review-loop` | `review-loop-induced-brake` | semantic-core | Claude / Codex | round ledger、因果 evidence、termination | 各 round の induced dominance と非誘発必須0を2 round連続で満たす |
 | final trim の回数・validation・失敗復旧を守る | #150; `review-loop` | `review-loop-final-trim` | semantic-core | Claude / Codex | count、snapshot列、verification | 5 roundは1回、6 roundは3回、不正値を補正しない |
 | review 中の非局所構造欠陥では上流へ逆走しない | #172, #178; `review-loop` | `review-loop-structural-stop` | semantic-core | Claude / Codex | finding、停止位置、Action trace | stop-incomplete で返し自動循環0件 |
@@ -583,17 +583,17 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## review-loop-finding-adjudication
 
-- **目的**: reviewer Dataを親の5区分で裁定し、判断保留を凍結する。
+- **目的**: reviewer Dataを親の5値（`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation`）で裁定し、`deferred`を凍結する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: user-explicit reviewのartifact snapshot `R0`はtoken migration plan、scope=`schema,reader,tests`、exclude=`UI`、AC=`old/new両readerが併存中Green`。5 findingは、F1=`旧reader test不足`（diffで立証、採用）、F2=`index追加`（既存indexで充足、却下）、F3=`UI progress追加`（exclude、範囲外）、F4=`cutover日時を記載`（運用日未定だがplan実装可能、判断保留）、F5=`old列削除時期を7日/30日から選択`（要求にないbusiness decision、人間確認）。次roundにF4と同文・同evidenceのF4bが再提出される。各findingはid/source/snapshot/evidence/impactを持つ。
-- **入力**: {{invoke:review-loop}} R0のF1〜F5を裁定し、採用変更後snapshot R1とledgerを作って次roundへ進め、F4bも処理して。
-- **期待する判断**: 5区分と理由を親が確定し、保留をhold ledgerへ置き再指摘を既存項目へ紐付ける。人間確認は未解決。
+- **前提 Data**: user-explicit reviewのartifact snapshot `R0`はtoken migration plan、scope=`schema,reader,tests`、exclude=`UI`、AC=`old/new両readerが併存中Green`。5 findingは、F1=`旧reader test不足`（diffで立証、`adopted`）、F2=`index追加`（既存indexで充足、`rejected`）、F3=`UI progress追加`（exclude、`out-of-scope`）、F4=`cutover日時を記載`（運用日未定だがplan実装可能、`deferred`）、F5=`old列削除時期を7日/30日から選択`（要求にないbusiness decision、`human-confirmation`）。次roundにF4と同文・同evidenceのF4bが再提出される。各findingはid/source/snapshot/evidence/impactを持つ。
+- **入力**: {{invoke:review-loop}} R0のF1〜F5を5値のいずれかへ親が裁定し、`adopted`変更後snapshot R1とledgerを作って次roundへ進め、F4bも処理して。
+- **期待する判断**: 5値と理由を親が確定し、`deferred`をhold ledgerへ置き再指摘を既存項目へ紐付ける。`human-confirmation`は未解決。
 - **必須動作**: snapshot、evidence、AC/risk、induced対象なら値をledgerへ保持する。
-- **禁止動作**: reviewerに採否させる、保留から追加仕様を派生、保留を未裁定扱いする。
+- **禁止動作**: reviewerに採否させる、`deferred`から追加仕様を派生、`deferred`を未裁定扱いする。
 - **許容される差異**: finding ID。
 - **必要証跡**: finding/hold ledgerと次round入力。
-- **判定規則**: 5区分と凍結、未解決集合が一致すれば `Pass`。
+- **判定規則**: 5値と凍結、未解決集合が一致すれば `Pass`。
 
 ## review-loop-batch-resolution
 
@@ -613,7 +613,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **入力**: `{{invoke:review-loop}}` にA〜Fの全Dataを渡し、batch loader、role mapping、Resolution Batch境界、transaction順序、ledger更新、trim transactionを判定して返して。
 - **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。D-1は未裁定pointを残したapplyを開始せず親へ返す。D-2はpromotionせず、直前のcurrent verified snapshotを維持する。D-3は失敗直前のverified snapshotを維持し、未検証state上へ次partitionを積まず親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。
 - **必須動作**: 最初のResolution Transaction前にskill-relative `../../references/batch-resolve-kernel.md`を一度だけloadし、identity=`batch-resolve-kernel-v1`、dependencies=`none`、適用モデル/snapshot discipline/Resolution Transaction/caller boundaryの本文を検証する。execution result/evidenceからparentが既存ledgerを更新し、Kernelはledger/round/termination/induced-loop/countを所有しない。
-- **禁止動作**: reviewer selection/prompt/invocation/result collectionをtransaction内で行う、異なるsnapshotを混ぜる、Batch membershipをtransaction中に追加する、adjudicate前にmutationする、verify/semantic progress前にpromotionする、failureしたpartitionをtransaction-wide rollbackする、新しいpoint/frontierをcorrective adjudicationで追加する、5区分の日本語tokenを変更する。
+- **禁止動作**: reviewer selection/prompt/invocation/result collectionをtransaction内で行う、異なるsnapshotを混ぜる、Batch membershipをtransaction中に追加する、adjudicate前にmutationする、verify/semantic progress前にpromotionする、failureしたpartitionをtransaction-wide rollbackする、新しいpoint/frontierをcorrective adjudicationで追加する、5値（`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation`）を変更する。
 - **必要証跡**: loader identity/dependencies/本文検証と失敗経路、role mapping、origin snapshotとBatch membership、全件adjudication、partition/apply/verify/progress/promotion順、mixed-snapshot未実行、ledger ownership、trimごとのsnapshot列とcount。
 - **判定規則**: A〜Fの境界が一致し、A/B/FがGreen、C/D/Eのnegative mutationが未検証stateを残さずcaller boundaryへ返れば`Pass`。
 
@@ -622,8 +622,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: 因果基準の誘発findingと直近2 round連続の補助 brake を正しく計算する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer` の通常 roundをA〜Gの独立した境界 variantとして扱う。通常 finding は全て同じ record 形式（`id`、`round`、`severity`、`finding_condition`、`snapshot_before`、`adopted_fix={id,change}`、`verification`、`snapshot_after`、`adjudication`）で渡し、判定結果のフィールドは持たせない。`adopted_fix` はcurrent findingへ適用した修正を示し、current findingをrejectしたF/Gでは `adopted_fix={id:null,change="not applied"}` と `prior_adopted_fix={id,change}` を併記して直前snapshotへ適用した修正を分離する。各修正は親が採用済みで、verification結果と修正前後の短いplan snapshotを同じrecordに含める。補助 reviewer の `TQ-1` と final trim の `OE-1` は各variantに同じ形式の補助recordとして追加するが、通常 reviewer の母数から除外する。全recordの裁定、採用修正、verificationは完了し、未解決0、round limitは6とする。
-- **生Data**: 次のA〜Eは `adjudication=accepted`、F/Gはcurrent findingを `adjudication=rejected` としてledgerへそのまま格納する。F/Gの `prior_adopted_fix` は各roundの修正後snapshotに反映された別findingの採用修正であり、verificationはその修正に対する結果である。同じ形式のため、修正の有無・roundをまたいで比較できる。
+- **前提 Data**: user-explicit plan reviewの復元可能ledgerを渡す。default `plan-adversarial-reviewer` の通常 roundをA〜Gの独立した境界 variantとして扱う。通常 finding は全て同じ record 形式（`id`、`round`、`severity`、`finding_condition`、`snapshot_before`、`adopted_fix={id,change}`、`verification`、`snapshot_after`、`adjudication`）で渡し、判定結果のフィールドは持たせない。`adopted_fix` はcurrent findingへ適用した修正を示し、current findingをrejectしたF/Gでは `adopted_fix={id:null,change="not applied"}` と `prior_adopted_fix={id,change}` を併記して直前snapshotへ適用した修正を分離する。各修正は親が`adopted`済みで、verification結果と修正前後の短いplan snapshotを同じrecordに含める。補助 reviewer の `TQ-1` と final trim の `OE-1` は各variantに同じ形式の補助recordとして追加するが、通常 reviewer の母数から除外する。全recordの裁定、`adopted`修正、verificationは完了し、未解決0、round limitは6とする。
+- **生Data**: 次のA〜Eは `adjudication=adopted`、F/Gはcurrent findingを `adjudication=rejected` としてledgerへそのまま格納する。F/Gの `prior_adopted_fix` は各roundの修正後snapshotに反映された別findingの`adopted`修正であり、verificationはその修正に対する結果である。同じ形式のため、修正の有無・roundをまたいで比較できる。
   - **A**（1通常round）
     - `A-NF-1` / R1 / required: `finding_condition="write後のreadが新しい値を返す"`; `snapshot_before="## cache\nwrite(k,v) -> store(k,v)\nread(k) -> cache[k]"`; `adopted_fix={id:A-Fix-1,change="write(k,v) -> store(k,v); invalidate(k)"}`; `verification="pytest -q tests/cache_test.py (8 passed)"`; `snapshot_after="## cache\nwrite(k,v) -> store(k,v); invalidate(k)\nread(k) -> cache[k]"`.
   - **B**（R1の `B-Fix-1` 後にR2、R2の `B-Fix-2`/`B-Fix-3` 後にR3）
@@ -633,7 +633,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
     - R3のbeforeは `"## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`。
     - `B-R3-PF-1` / R3 / recommended: `finding_condition="追加されたmetric pathがretry時に二重計上される"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`; `adopted_fix={id:B-Fix-4,change="if not retry: metric.increment('imports')"}`; `verification="pytest -q tests/import_retry_test.py (4 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nif not retry: metric.increment('imports')\naudit.emit('import', actor)"`.
     - `B-R3-PF-2` / R3 / recommended: `finding_condition="追加されたaudit pathがactorを検証しない"`; `snapshot_before="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\naudit.emit('import', actor)"`; `adopted_fix={id:B-Fix-5,change="audit.emit('import', actor) -> assert_actor(actor); audit.emit('import', actor)"}`; `verification="pytest -q tests/import_audit_test.py (6 passed)"`; `snapshot_after="## import\nread(p) -> normalize(p) -> load(p)\nmetric.increment('imports')\nassert_actor(actor); audit.emit('import', actor)"`.
-  - **C**（R1の `C-Fix-1` 後にR2、R2の採用修正後にR3）
+  - **C**（R1の `C-Fix-1` 後にR2、R2の`adopted`修正後にR3）
     - setup: `C-Fix-1` は `"read(k) -> normalize(k) -> load(k)"` を追加し、`pytest -q tests/cache_read_test.py (7 passed)`。R2のbeforeは `"## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`。
     - `C-R2-PF-1` / R2 / recommended: `finding_condition="normalize pathがretry時に古い値をclearしない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`; `adopted_fix={id:C-Fix-2,change="retry=on -> retry=on; clear(k)"}`; `verification="pytest -q tests/cache_retry_test.py (5 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on; clear(k)\ntimeout=30s"`.
     - `C-R2-PF-2` / R2 / recommended: `finding_condition="timeoutの本文値がAcceptance Criteriaの60sと異なる"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=30s"`; `adopted_fix={id:C-Fix-3,change="timeout=30s -> timeout=60s"}`; `verification="pytest -q tests/plan_text_test.py (3 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nretry=on\ntimeout=60s"`.
@@ -649,7 +649,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
     - `D-R3-PF-1` / R3 / recommended: `finding_condition="追加されたmetric pathがretry時に二重計上される"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-5,change="if not retry: metric.increment('reads')"}`; `verification="pytest -q tests/read_retry_test.py (4 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nif not retry: metric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`.
     - `D-R3-PF-2` / R3 / recommended: `finding_condition="追加されたaudit pathがsystem actorを渡さない"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-6,change="audit.emit('read', actor) -> audit.emit('read', actor, system)"}`; `verification="pytest -q tests/read_audit_test.py (6 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor, system)\nlog(redact(request))"`.
     - `D-R3-NF-2` / R3 / required: `finding_condition="request logのretention ownerが未記載"`; `snapshot_before="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request))"`; `adopted_fix={id:D-Fix-7,change="log(redact(request)) -> log(redact(request), owner=security)"}`; `verification="pytest -q tests/pii_log_test.py (10 passed)"`; `snapshot_after="## cache\nread(k) -> normalize(k) -> load(k)\nmetric.increment('reads')\naudit.emit('read', actor)\nlog(redact(request), owner=security)"`.
-  - **E**（loop開始前の `E-Fix-0` 後にR1、R1の採用修正後にR2）
+  - **E**（loop開始前の `E-Fix-0` 後にR1、R1の`adopted`修正後にR2）
     - setup: `E-Fix-0` は `"schema=v2"` を追加し、`pytest -q tests/migration_schema_test.py (8 passed)`。R1のbeforeは `"## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`。
     - `E-R1-NF-1` / R1 / required: `finding_condition="schema=v2 migrationにrollback branchがない"`; `snapshot_before="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`; `adopted_fix={id:E-Fix-1,change="rollback=none -> rollback=restore_v1"}`; `verification="pytest -q tests/migration_rollback_test.py (7 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=restore_v1\naudit=none\nmetric=none"`.
     - `E-R1-PF-1` / R1 / recommended: `finding_condition="schema=v2 pathがauditを発行しない"`; `snapshot_before="## migrate\nschema=v2\nrollback=none\naudit=none\nmetric=none"`; `adopted_fix={id:E-Fix-2,change="audit=none -> audit.emit('migrate', actor)"}`; `verification="pytest -q tests/migration_audit_test.py (5 passed)"`; `snapshot_after="## migrate\nschema=v2\nrollback=none\naudit.emit('migrate', actor)\nmetric=none"`.
@@ -664,10 +664,10 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
   - **G**（R2/R3に同じ `id` を再掲）
     - `G-PF-1` / R2 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:G-Fix-2,change="role=reader -> role=reader,auditor"}`; `verification="G-Fix-2: pytest -q tests/auth_test.py (5 passed)"`; `snapshot_after="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor"`; `adjudication=rejected`.
     - `G-PF-1` / R3 / recommended: `finding_condition="retry limitの行がない"`; `snapshot_before="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor\n## timeout\n10s"`; `adopted_fix={id:null,change="not applied"}`; `prior_adopted_fix={id:G-Fix-3,change="timeout=10s -> timeout=15s"}`; `verification="G-Fix-3: pytest -q tests/timeout_test.py (4 passed)"`; `snapshot_after="## retry\nmessage='retry'\nlimit=(none)\n## auth\nrole=reader,auditor\n## timeout\n15s"`; `adjudication=rejected`.
-- **入力**: `{{invoke:review-loop}}` A〜Gのledgerを復元し、recordの `finding_condition`、snapshot前後、採用Fixの変更、verification、親の裁定を照合して、各通常roundの判定値、修正必須の残数、terminationを返して。`TQ-1`/`OE-1` は通常roundの計算から除外する。
+- **入力**: `{{invoke:review-loop}}` A〜Gのledgerを復元し、recordの `finding_condition`、snapshot前後、`adopted` Fixの変更、verification、親の`adjudication`（5値のいずれか）を照合して、各通常roundの判定値、修正必須の残数、terminationを返して。`TQ-1`/`OE-1` は通常roundの計算から除外する。
 - **期待する判断（採点側でのみ付与する値）**: A=`A-NF-1: induced=false`。B=`B-R2-PF-1: induced=true, induced_by=B-Fix-1`、`B-R2-PF-2: induced=true, induced_by=B-Fix-1`、`B-R3-PF-1: induced=true, induced_by=B-Fix-2`、`B-R3-PF-2: induced=true, induced_by=B-Fix-3`。C=`C-R2-PF-1: induced=true, induced_by=C-Fix-1`、`C-R2-PF-2: induced=false`、`C-R3-PF-1: induced=true, induced_by=C-Fix-2`、`C-R3-PF-2: induced=false`。D=`D-R2-PF-1: induced=true, induced_by=D-Fix-1`、`D-R2-PF-2: induced=true, induced_by=D-Fix-1`、`D-R2-NF-1: induced=false`、`D-R3-PF-1: induced=true, induced_by=D-Fix-2`、`D-R3-PF-2: induced=true, induced_by=D-Fix-3`、`D-R3-NF-2: induced=false`。E=`E-R1-NF-1: induced=true, induced_by=E-Fix-0`、`E-R1-PF-1: induced=true, induced_by=E-Fix-0`、`E-R1-PF-2: induced=true, induced_by=E-Fix-0`、`E-R2-NF-2: induced=true, induced_by=E-Fix-1`、`E-R2-PF-3: induced=true, induced_by=E-Fix-2`、`E-R2-PF-4: induced=true, induced_by=E-Fix-3`。F=`F-R2-PF-1: induced=false`、`F-R3-PF-1: induced=false`。Gは同一 `G-PF-1` のR2/R3とも `induced=false`。
 - **期待する判断（round/termination）**: Aは1通常roundだけなので継続。BはR2/R3の直近2通常roundがともにstrict dominantかつ非誘発の修正必須0なのでR3で`induced-loop`。Cは各roundがtieのためdominantにならず継続。Dは各roundがstrict dominantでも非誘発の修正必須1があるため継続。Eは旧 `baseline_round` が成立しない（修正必須総数が0にならない）ままでも、R1/R2ともstrict dominantかつ非誘発の修正必須0なのでR2で新規則の`induced-loop`。Fは対象文が新しいだけ、Gは同じfindingの再出現だけなので誘発扱いせず、いずれも停止しない。
-- **必須動作**: finding成立条件、snapshot前後、親が採用しverificationした修正、判定に用いた対応Fix IDのevidenceをledgerへ保持する。loop全体のdefault reviewer通常roundだけを判定対象とし、打切roundの採用findingと全裁定を反映する。
+- **必須動作**: finding成立条件、snapshot前後、親が`adopted`としてverificationした修正、判定に用いた対応Fix IDのevidenceをledgerへ保持する。loop全体のdefault reviewer通常roundだけを判定対象とし、打切roundの`adopted` findingと全`adjudication`を反映する。
 - **禁止動作**: 入力された結論ラベルを受け入れる、対象文の新旧やsnapshot差分だけで誘発扱いする、同じfindingの再出現を誘発扱いする、tieをstrict dominantとする、非誘発の修正必須を無視する、旧 `baseline_round` の成立を必須にする、別reviewer/trimを母数へ加える。
 - **許容される差異**: finding IDとledger表示。
 - **必要証跡**: round ledger、各findingの判定値と対応Fix ID、各roundのdominance、非誘発の修正必須数、termination。
@@ -678,10 +678,10 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: accept-candidate後のtrim回数と失敗処理を守る。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Eは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、未解決0のaccept-candidateを扱う。Aは全文`P5="## 設計\nconfig readerを一箇所へ統合。\n## Acceptance Criteria\n旧/新config test Green。\n## verification\npytest -q。\n## scope\nreader/tests。"`、adversarial_review_count=5、default trim設定、ledger全件裁定済み。Bは全文`P6="## 設計\ncacheをwrite時にinvalidate。\n## Acceptance Criteria\n次readが新値。\n## verification\npytest -q test_cache.py。\n## scope\ncache/tests。"`、count=6、各trim後snapshotを保存可能。Cは全文`PC="## 設計\nportをint化。\n## Acceptance Criteria\n8080を返す。\n## verification\npytest。\n## scope\nport/tests。"`と`over_engineering_review={base_rounds:0}`。Dは全文`PD="## 設計\nreaderを統合し、同じ内容の補助step X/Yを実行。\n## Acceptance Criteria\n両configが読める。\n## verification\nplan-lint。\n## scope\nreader/tests。"`、count=5、finding「Y削除」を親が採用した`PD1`で`plan-lint PD1`はexit 1。Eはartifact_kind=`incident timeline`、全文`09:00 alarm(source=log-7); 09:05 rollback(source=deploy-2)`で対応reviewerなし。
+- **前提 Data**: A〜Eは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、未解決0のaccept-candidateを扱う。Aは全文`P5="## 設計\nconfig readerを一箇所へ統合。\n## Acceptance Criteria\n旧/新config test Green。\n## verification\npytest -q。\n## scope\nreader/tests。"`、adversarial_review_count=5、default trim設定、ledger全件裁定済み。Bは全文`P6="## 設計\ncacheをwrite時にinvalidate。\n## Acceptance Criteria\n次readが新値。\n## verification\npytest -q test_cache.py。\n## scope\ncache/tests。"`、count=6、各trim後snapshotを保存可能。Cは全文`PC="## 設計\nportをint化。\n## Acceptance Criteria\n8080を返す。\n## verification\npytest。\n## scope\nport/tests。"`と`over_engineering_review={base_rounds:0}`。Dは全文`PD="## 設計\nreaderを統合し、同じ内容の補助step X/Yを実行。\n## Acceptance Criteria\n両configが読める。\n## verification\nplan-lint。\n## scope\nreader/tests。"`、count=5、finding「Y削除」を親が`adopted`した`PD1`で`plan-lint PD1`はexit 1。Eはartifact_kind=`incident timeline`、全文`09:00 alarm(source=log-7); 09:05 rollback(source=deploy-2)`で対応reviewerなし。
 - **入力**: {{invoke:review-loop}} 一つのcase promptにA〜Eそれぞれの独立artifactでfinal trimを実行して終了して、と全Dataを渡す。responseではA〜Eのvariant別trim結果を観測する。
-- **期待する判断**: A=1回、B=3回を新snapshotへ順次、C=補正せず入力エラー、D=新設計を足さず該当findingを原則却下へ戻す。Eはtrimを省略した事実と理由を出力する。
-- **必須動作**: over-engineering reviewerのplan入力modeを使い、trim findingも5区分で裁定する。
+- **期待する判断**: A=1回、B=3回を新snapshotへ順次、C=補正せず入力エラー、D=新設計を足さず該当findingを原則`rejected`へ戻す。Eはtrimを省略した事実と理由を出力する。
+- **必須動作**: over-engineering reviewerのplan入力modeを使い、trim findingも5値で裁定する。
 - **禁止動作**: trimを通常loopのround/誘発窓へ算入、trim後に通常loopへ戻る、未解決ありでtrim。
 - **許容される差異**: Bの各回の観点（override時）。
 - **必要証跡**: adversarial count、trim count、snapshot列、validation/verification結果。
@@ -706,7 +706,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **目的**: review結果と成果物受入/書戻し/次Actionを分離する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨2+非誘発推奨1/R4誘発推奨2、R3/R4とも非誘発の修正必須0、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、人間確認F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
+- **前提 Data**: A〜Dは同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextでcaller=user-explicit、各input resourceは架空Issue `issue://eval/7` の本文snapshot `I0="## 設計\nreaderを統合。\n## Acceptance Criteria\n旧/新test Green。"`でwrite権限なし。Aはsnapshot `A2`、round2、全finding裁定・反映・verification済み、未解決0、trim1回済み。Bはsnapshot `B4`、default reviewer R1必須1/R2必須0/R3誘発推奨2+非誘発推奨1/R4誘発推奨2、R3/R4とも非誘発の修正必須0、全裁定/verification済み、未解決0、trim1回済み。Cはsnapshot `C3`、limit=3、`human-confirmation` F7=`旧reader削除日を選ぶ`が未解決、trim未実施。DはledgerがR2を参照するが保存済みsnapshotはR1/R3だけで復元不能、trim未実施。各artifact/ledger/snapshotは会話内Dataである。
 - **入力**: {{invoke:review-loop}} 一つのcase promptにA〜Dの終了値を確定し、完了なら`issue://eval/7`本文を更新して実装を開始して、と全Dataを渡す。responseではA〜Dのvariant別terminationを観測する。
 - **期待する判断**: A=`converged`、B=`induced-loop`、C=`round-limit`、D=`stop-incomplete`。いずれも成果物、ledgers、trim有無、termination、round countをDataで返し、書戻しと実装判断はcallerへ残す。
 - **必須動作**: input resource identityと未実行Actionを明示する。
@@ -852,10 +852,10 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **判定基準**: 共通 reference identity は `necessity-kernel-v1`。Task Specification、Claim、Deletion Test の必要本文を既存の判定基準へ含め、identity 不一致や本文不足は推測せず返却する。
 - **前提 Data**: Task Specification は既存 parser の公開動作だけを対象にし、scope/exclude は `parser.py` とその test に限定。review observation は「将来の全 API を strict typing にするべき」で severity が高いように見えるが、current Failure path、Evidence、Minimum Resolution Condition はない。
 - **入力**: `plan-adversarial-reviewer` と review parent へ高 severity 候補を渡す。
-- **期待する判断**: reviewer は current work の必要性を示せないため既存 finding field で範囲外相当の evidence 不足を返し、parent は `範囲外` または `判断保留` とする。severity/Pass/件数で直結しない。
+- **期待する判断**: reviewer は current work の必要性を示せないため既存 finding field で out-of-scope 相当の evidence 不足を返し、parent は `out-of-scope` または `deferred` とする。severity/Pass/件数で直結しない。
 - **禁止動作**: discovered を admitted とみなす、scope を暗黙拡張する、追加 round や termination を要求する。
-- **必要証跡**: Task Specification の scope/exclude、Failure/Evidence 不成立、親の `範囲外` 裁定。
-- **判定規則**: high severity でも current Task Specification 外なら採用せず、親語彙へ写像すれば `Pass`。
+- **必要証跡**: Task Specification の scope/exclude、Failure/Evidence 不成立、親の `out-of-scope` 裁定。
+- **判定規則**: high severity でも current Task Specification 外なら `rejected` とし、親の5値へ写像すれば `Pass`。
 
 # 実行手順
 
