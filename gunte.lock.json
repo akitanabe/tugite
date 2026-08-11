@@ -2007,11 +2007,11 @@
     },
     {
       "id": "kernel-positive-dependency-verb",
-      "sha256": "04cbe7641afbe887eece9e7652f5e64daa7ad463a37f4475ce19510a5463d98f"
+      "sha256": "c5cf675b40a4c40650c3094c8fb0ca24b2b04f395d3ca5548b498240893f36ee"
     },
     {
       "id": "kernel-positive-dependency-condition",
-      "sha256": "d978d6c5124b02efc58eb500bb4c1f97357f1e33c8484f38028ea171d997a676"
+      "sha256": "9bc766760ec4127b9f4a41084d224d1cf8fd4aeda23209ffe04eeda7a9908b45"
     },
     {
       "id": "necessity-kernel-title-requires-a9c4fda91047",
@@ -2208,6 +2208,22 @@
     {
       "id": "resolve-kernel-mapping-forbids-c1de4f22daa0",
       "sha256": "6ae195a5a5559225fc1d0e4743189a5ddd1c168207b4cd90eb578d97ad733516"
+    },
+    {
+      "id": "resolve-kernel-mapping-identity-forbids-7cbc895ba5d3",
+      "sha256": "8bb0632b0d06b03e13e712409c270fa4796b08d5c62f501422957af84f53fce3"
+    },
+    {
+      "id": "resolve-kernel-mapping-identity-forbids-b5fb9491a377",
+      "sha256": "4dd472ffbf8e34ee7a2c14a67233e9f77fbfa1918132ac9405a0f25ce75563b4"
+    },
+    {
+      "id": "resolve-kernel-mapping-identity-forbids-c6a81d73c12c",
+      "sha256": "9df125d43f307be67b3ce56b32da5791a8938e859d870b5d97935eabe6432a96"
+    },
+    {
+      "id": "resolve-kernel-mapping-identity-forbids-0688d2cd2703",
+      "sha256": "7a95262003025e0dd4969b1f26010cfe1b96cab6da509569f3a60835dc89a215"
     },
     {
       "id": "resolve-kernel-caller-845c25b48391",

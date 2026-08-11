@@ -59,6 +59,30 @@ slice = "resolve-kernel-v1"
 pattern = "authority="
 applies_to = ["claude", "codex"]
 
+[contracts.resolve-kernel-mapping-identity-forbids-7cbc895ba5d3]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "plan-craft"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-identity-forbids-b5fb9491a377]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "planner"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-identity-forbids-c6a81d73c12c]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "plan-quality-advisor"
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-identity-forbids-0688d2cd2703]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "人間"
+applies_to = ["claude", "codex"]
+
 [contracts.resolve-kernel-caller-845c25b48391]
 kind = "requires"
 slice = "resolve-kernel-v1"

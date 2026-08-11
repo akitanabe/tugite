@@ -40,7 +40,7 @@ applies_to = ["codex"]
 
 [contracts.kernel-positive-dependency-verb]
 kind = "forbids"
-pattern = "に依存する"
+pattern = "に依存する。"
 paths = [
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
@@ -51,7 +51,7 @@ applies_to = ["claude", "codex"]
 
 [contracts.kernel-positive-dependency-condition]
 kind = "forbids"
-pattern = "成立条件として要求する"
+pattern = "成立条件として要求する。"
 paths = [
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
