@@ -52,7 +52,7 @@ role は caller=`plan-craft-approval`、resolver=planner、counterpart=人間、
 raw specification として明示した場合は意味を変えず、成立性または既存制約との衝突時だけ返す。
 
 判断 queue を事前に固定しない。
-採用分だけを working snapshot へ逐次反映して verification し、複数の判断を一括反映しない。
+採用分だけを working state へ一件ずつ apply して verification し、複数の判断を一括反映しない。
 current verified snapshot から current frontier を整理し、依存関係を見て current point を一件だけ選び、人間の判断を得る。許可された一件だけを working state へ apply して verify し、成功時だけ verified snapshot を更新する。updated snapshot から frontier と次の順序を再評価する。
 複数の判断を一括裁定・反映しない。verify failure では working state を verified snapshot にせず current point を reopen し、その上へ次の判断を積まない。
 却下または保留は apply せず、暗黙に resolved として frontier から消さない。判断点、期待する価値、trade-off、親の推奨と理由、人間の判断、
@@ -72,8 +72,8 @@ gate と review が frozen decisions を守って改善できる。
 
 direction freeze 候補は、採用提案が反映・verification 済み、主要判断が明示裁定済み、保留事項が scope 外へ分離済み、
 blocking な人間判断がなく、ユーザーが現在の方向を確認済みの場合だけ成立する。大きな purpose または scope の変更は
-working snapshot へ増分追加せず、親へ全体再策定を返す。過去 decision は自動継承せず、候補 prior decisions または再利用
-可能な知見として再検証する。プラン系の working snapshot は `Acceptance Criteria` と `設計` の節名を持つ。自由形式成果物には
+current verified snapshot へ増分追加せず、親へ全体再策定を返す。過去 decision は自動継承せず、候補 prior decisions または再利用
+可能な知見として再検証する。プラン系の candidate snapshot は `Acceptance Criteria` と `設計` の節名を持つ。自由形式成果物には
 この節構成を強制しない。
 
 ## necessity-kernel v1 の parent mapping

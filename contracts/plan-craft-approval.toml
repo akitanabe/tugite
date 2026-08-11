@@ -34,10 +34,10 @@ slice = "proposal-dialogue-boundary"
 pattern = "無回答・曖昧な反応を承認として扱わず"
 applies_to = ["claude", "codex"]
 
-[contracts.proposal-dialogue-sequential-snapshot-requires-70f6381f565e]
+[contracts.proposal-dialogue-sequential-snapshot-requires-2efa118654bd]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
-pattern = "採用分だけを working snapshot へ逐次反映して verification し、複数の判断を一括反映しない。"
+pattern = "採用分だけを working state へ一件ずつ apply して verification し、複数の判断を一括反映しない。"
 applies_to = ["claude", "codex"]
 
 [contracts.proposal-dialogue-freeze-requires-41ed8038cc5f]
