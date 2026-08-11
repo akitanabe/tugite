@@ -1,7 +1,7 @@
 ---
 name: work-unit-design
 description: >-
-  plan-craft または impl-lead の同じ親 context 内だけで使う internal Work Unit 設計手順。
+  impl-lead の同じ親 context 内だけで、関連成果候補群を受け入れ可能な Work Unit 集合へ正規化する internal skill。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -10,25 +10,28 @@ description: >-
 ## 位置づけと発火
 
 この Skill は新しい worker を起動するものではなく、呼び出し元の親が同じ context で従う判断手順書である。
-ユーザーの直接要求や通常会話から暗黙に設計を始めず、Work Unit の候補が必要な `plan-craft` の工程、または
-実装単位の境界・依存・分割が非自明な `impl-lead` の工程としてだけ使う。Work Unit の設計を求める入口は
-plan-craft、実装の入口は impl-lead であり、この Skill 自身は実装・委譲・後続工程を開始しない。
+ユーザーの直接要求、通常会話、`plan-craft` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
+非自明な `impl-lead` の工程としてだけ使う。正式な Work Unit normalization の入口は `impl-lead` だけであり、この Skill
+自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。
 
 Codex runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
 候補の裁定、blocking の扱い、採用・実行・保存を親が持つという責務は変えない。
 
 ## 入力と出力
 
-親から、次の入力 Data を受け取る。
+親から、次の入力を受け取る。
 
-- `request`: 要求原文、AC の素材、constraints、既知の依存。
-- `caller_observation`: repository の現状、既存 plan・調査、再正規化なら既存 Work Unit 集合、accepted 状況、worker 返却。
+- `impl-lead` が要求全体から観測した、相互に境界判断が影響する関連成果候補群。
+- grounding としての要求原文、AC の素材、constraints、既知の依存、repository の現状と既存調査。再正規化では
+  既存 Work Unit 集合、accepted 状況、worker 返却も含む。
 
-親が要求、対象、成功条件、scope、exclude、依存、制約、current state を観測できていない場合は推測せず、
-不足を `blocking_gaps` に返す。
+成果候補は意味上区別できる到達結果についての transient observation であり、この Skill の固定 input schema、必須 ID、
+Work Unit Data field、provenance field、永続 artifact にしない。raw request を起点に成果候補を再抽出しない。
 
 出力は会話内 execution data の候補であり、`work_units`、各単位の分割／統合 signal と理由・残存判断密度等の観測、
-`blocking_gaps`（blocking不足一覧）で構成する。
+`blocking_gaps` で構成する。`blocking_gaps` は、与えられた関連成果候補群を安全に Work Unit 集合へ正規化できない不足、
+矛盾、閉じていない scope に限定する。成果候補不足、要求解釈、run-wide coverage の問題を観測しても自身で修復せず、
+既存の signal と理由により `impl-lead` へ返す。
 各 `work_units` 要素は、次の fields を自己完結に持つ。
 
 - `id`
@@ -46,16 +49,20 @@ Codex runtime で Skill 間起動が提供されない場合、親はこの本�
 
 ## 判断の進め方
 
-1. 要求と caller observation を照合し、対象、責任境界、依存、検証可能な成果を抽出する。既存 Work Unit がある場合は
-   accepted 状況、部分成果、worker の返却を現在の観測として扱う。
+1. 関連成果候補群を grounding と照合し、各候補の purpose、AC、責任境界、依存、検証、accept と rollback の境界を確認する。
+   新しい成果を発明せず、候補を暗黙に削除せず、意味を再定義しない。既存 Work Unit がある場合は accepted 状況、部分成果、
+   worker の返却を現在の観測として扱う。
 2. 各候補について「新しい Implementer がこの単位だけを読み、AC・責任境界・依存・分割を再定義せず、受け入れ候補の
    diff を返せるか」を判定する。否定ならその不足と影響を `blocking_gaps` に記録する。
-3. 独立した目的、検証、rollback 境界がある候補を分け、共通依存は独立価値がある場合だけ単独化する。それ以外は最初に
-   振る舞い価値を生む単位が所有し、後続は accepted 基準に依存させる。
+3. 一つの候補内に独立した purpose、AC、verification、accept と rollback の境界が複数ある場合は split する。foundation は
+   独立 capability または contract、単独 AC、単独 verification、accept boundary を持つ場合だけ単独化し、それ以外の共通依存は
+   最初に振る舞い価値を生む単位が所有する。
 4. 同じ検証でしか成立しない候補、片方だけでは invariant が成立しない候補、または handoff が内部結合より複雑な候補を
-   統合する。再正規化では統合、追加分割、部分成果の独立した再構成、依存 edge の再接続を候補として示す。
-5. 受け取り側の親が安全に設計を採用できない不足・矛盾・閉じていない scope を列挙し、影響と追加観測を添えて返す。安全な
-   設計不能の差し戻し、fresh context での再委譲、再配車、stop-incomplete の確定は親の責務である。
+   merge する。再正規化では統合、追加分割、部分成果の独立した再構成、依存 edge の再接続を候補として示す。
+5. 独立 Work Unit 間の意味上の前提だけを `depends_on` として設計する。同じ file、generated output、writer、generator、contract
+   registry、verification surface の共有は execution conflict であり、semantic dependency や merge の根拠にしない。
+6. 返却前に既存 signal を使い、明らかな under-split、単独 Green／accept できない over-split、必要な semantic dependency の
+   欠落を自己再検査する。安全に正規化できない理由は `blocking_gaps` にし、実行順、isolation、worker、dispatch で補わない。
 
 ## 分割を検討する signal
 
@@ -89,6 +96,8 @@ layer 固有の要求が独立検証できる場合だけ、結果として 1 un
 
 ## 親への返却境界
 
-この Skill は候補と観測を返して終了する。直接起動を促さず、正しい入口を案内して終了する。ユーザーの通常要求を設計へ変換しない。候補を採用したか、
-親が再検査したか、実装・委譲・worker 起動を実行したか、AC を確定したか、結果を保存したかを主張しない。不足が解消されない場合は
-不足、影響、残存 risk、必要な観測を `blocking_gaps` に残し、親が確認または stop-incomplete を選べるようにする。
+この Skill は候補と観測を返して終了する。直接起動を促さず、正式な normalization と実装の入口として `impl-lead` を案内する。
+ユーザーの通常要求や `plan-craft` の自由形式成果物を正式な Work Unit Data へ変換しない。候補を採用したか、run-wide requirement
+coverage と primary owner を確定したか、親が再検査したか、実装・委譲・worker 起動を実行したか、AC を確定したか、結果を保存したかを
+主張しない。execution conflict、order、isolation、base_snapshot、worker selection、dispatch、final accept は `impl-lead` 親へ残す。
+不足が解消されない場合は影響と必要な観測を `blocking_gaps` に残し、親が確認または stop-incomplete を選べるようにする。

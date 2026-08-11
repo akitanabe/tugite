@@ -9,6 +9,8 @@
 
 - #153-required の case 数上限は、起草前に人間が **36件** と確定した。
 - この corpus の #153-required case は **36件**（`semantic-core` 18件、`platform-mechanism` 18件）である。
+- #211-required の `semantic-core` 1件を追加し、現行 corpus は **37件**（`semantic-core` 19件、
+  `platform-mechanism` 18件）である。#153-required の上限と既存36件は変更しない。
 - `release-surface` は #154 の install / package smoke に残し、この corpus には case を置かない。
 - 実行器、自動採点、実行結果はこの文書に含めない。
 - case 入力は架空データである。repository 操作を要する case は使い捨ての scratch repository だけで実行する。
@@ -74,6 +76,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | --- | --- | --- | --- | --- | --- | --- |
 | 明示された実装入口だけを使う | #145, #147; `shared/skill/impl-lead/SKILL.md` | `impl-lead-explicit-entry` | platform-mechanism | Claude / Codex | 発火有無、最初の Action | 未明示なら workflow Action が0件 |
 | 不足を推測せず Work Unit を正規化または停止する | #147; `impl-lead` | `impl-lead-normalize-or-stop` | semantic-core | Claude / Codex | Work Unit Data または停止 Data | canonical field が閉じないまま実装しない |
+| 初期 Intake で source boundary を外して成果候補と要求 coverage から Work Unit を正規化する | #211; `impl-lead` | `impl-lead-initial-work-unit-normalization` | semantic-core | Claude / Codex | A〜Eの成果候補、coverage、Work Unit集合、dependency/order | 独立受入境界を保ち、source/file/writer共有だけで境界を決めない |
 | direct / 委譲とユーザー制約を親が選ぶ | #145, #147; `impl-lead` | `impl-lead-direct-or-delegate` | semantic-core | Claude / Codex | route、理由、制約の扱い | 指定を無断変更せず最小安全 route を選ぶ |
 | 4 worker を判断密度と検証可能性で選ぶ | #145, #147; `impl-lead` | `impl-lead-worker-selection` | platform-mechanism | Claude / Codex | worker 選択と理由 | file数ではなく各 worker 境界へ対応する |
 | Work Unit 依存と mutable precondition を分ける | #148; `impl-lead` | `impl-lead-dependency-drift` | semantic-core | Claude / Codex | dependency graph、再観測、停止位置 | unknown/cycle/drift のまま Action/accept しない |
@@ -114,8 +117,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | review 中の非局所構造欠陥では上流へ逆走しない | #172, #178; `review-loop` | `review-loop-structural-stop` | semantic-core | Claude / Codex | finding、停止位置、Action trace | stop-incomplete で返し自動循環0件 |
 | review-loop は成果物の受入・書戻し・次工程を所有しない | #145, #150; `review-loop` | `review-loop-output-ownership` | semantic-core | Claude / Codex | output fields、resource identity | termination を返すだけで入力を更新しない |
 | batch-resolve-kernel の transaction discipline は caller mapping 上のsnapshot、Batch、partition、failure境界として評価する | #213, #214, #215; `batch-resolve-kernel-v1`, `review-loop` | `review-loop-batch-resolution` | semantic-core | Claude / Codex | origin/working/current snapshot、全point裁定、partition、isolate、corrective evidence | 散文substringではなくA〜Nの境界結果が一致する場合だけPass |
-| Work Unit を独立価値・検証・rollback で分割/統合する | #145, #151; `shared/skill/work-unit-design/SKILL.md` | `work-unit-design-split-or-merge` | semantic-core | Claude / Codex | canonical fields、signal、blocking gaps | layer/行数で分けず過分割を統合する |
-| work-unit-design は2 public parent 内だけで使う | #151, #171; `work-unit-design` | `work-unit-design-internal-entry` | platform-mechanism | Claude / Codex | caller、設計/worker Action | 直接入力では設計・実装・委譲0件 |
+| 関連成果候補群を独立価値・検証・rollback で Work Unit 集合へ正規化する | #145, #151, #211; `shared/skill/work-unit-design/SKILL.md` | `work-unit-design-split-or-merge` | semantic-core | Claude / Codex | canonical fields、signal、blocking gaps | 成果を発明・削除・再定義せず、layer/行数で分けず過分割を統合する |
+| work-unit-design は impl-lead parent 内だけで使う | #151, #211; `work-unit-design` | `work-unit-design-internal-entry` | platform-mechanism | Claude / Codex | caller、設計/worker Action | 直接入力や plan-craft 内では設計・実装・委譲0件 |
 
 ### agent surface
 
@@ -179,6 +182,20 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: blocking な問いの順序と表現。
 - **必要証跡**: 質問/停止 Data、worker と write Action の trace。
 - **判定規則**: 不足を特定し、worker/write が0件なら `Pass`。
+
+## impl-lead-initial-work-unit-normalization
+
+- **目的**: initial Intake で成果候補を recall 寄りに観測し、要求 coverage と独立受入境界から Work Unit を確定する。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Eは同じ初期 Intake 判断のboundary variantである。Aはsource `#301`に独立成果「CSV export」と「監査event」、source `#302`に独立成果「不正range拒否」、横断constraint=`既存API互換`、non-goal=`UI変更なし`。Bはsource `#310`の「timezone入力」と`#311`の「offset保存」が、片方だけではGreenにならない一つのround-trip成果を構成する。Cは単独contract/test/accept boundaryを持つidempotency capabilityと、それを利用するcaller applicationである。Dはrecall寄りに「入力検証」と「invalid入力のerror報告」を別候補にしたが、同じCLI invariant/testでしかGreenにならず片方だけでacceptできない。Eは意味上独立した二成果が同じ`shared/skill/x/SKILL.md`、generator、generated output、writerを共有するが、互いの成立を前提にしない。全variantでcurrent repository observation、既存verification、scope/excludeは取得済みである。
+- **入力**: {{invoke:impl-lead}} 一つのcase promptでA〜Eを初期 Intake からdispatch直前まで正規化し、variant別の成果候補観測、要求coverage、Work Unit Data、semantic dependency、execution order/isolationを示して、と全Dataを渡す。
+- **期待する判断**: Aはsource単位へ固定せず3 WUとし、各成果要求に一意なprimary owner、横断constraintに必要な適用先、non-goalにownerなしと除外理由を持つ。Bはsourceをまたぐ1 WUへmergeする。Cはfoundationとapplicationを分け、applicationだけがfoundationへ`depends_on`を持つ。Dは1 WUへmergeする。Eは`depends_on`を作らず、execution conflictとして直列order/isolationとlatest accepted baselineを選ぶ。
+- **必須動作**: 成果候補をsemantic end-stateとしてtransientに観測し、抽出時と最終WU確定時の二段階でcoverageを確認する。単一WUのB/Dでも独立Green/accept可能な成果やfoundation/applicationが内部に残っていないか再検査する。境界が非自明なC/Dの関連候補群はまとめてwork-unit-designへ渡し、返却後は候補消失、新成果発明、coverage、blocking_gaps、Data境界だけをrun-wideに再確認する。
+- **禁止動作**: sourceごとの1 WU固定、成果候補ごとのwork-unit-design起動、成果候補の固定schema/ID/Work Unit field/永続artifact化、file/writer共有だけのmerge/dependency、未割当要求・成果候補消失・unresolved blocking_gapsを残したdispatch、execution-time再正規化への新しい成果候補抽出phase追加。
+- **許容される差異**: Work Unit ID、Aの実行順、Eの直列順。
+- **必要証跡**: A〜E別のtransient観測、coverage対応、Work Unit Data、work-unit-design invocation trace、depends_on、execution data、dispatch可否。
+- **判定規則**: A〜Eの境界、coverage、dependency/orderが期待と一致し、禁止動作がなければ `Pass`。
 
 ## impl-lead-direct-or-delegate
 
@@ -821,31 +838,31 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## work-unit-design-split-or-merge
 
-- **目的**: 独立価値と検証境界でWU候補を設計する。
+- **目的**: impl-lead が観測した関連成果候補群を、独立価値と検証境界で受け入れ可能なWU候補へ正規化する。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: `caller_context={parent: plan-craft, same_context: true}`。request Aは「`GET /v2`追加」と「既存rowへnew列backfill」で、APIはunit test/route rollback、DBはmigration test/DB rollbackが独立。request Bは`shared/schema.yaml`編集と`generated/schema.json`同期で、contract checkはbyte一致を同時要求し片方だけではGreenにならない。request CはAのAPI testとBのcontract testが共用する`tests/fixtures/user.json`追加だけで、fixture単独の利用者価値/accept/rollbackはない。caller_observationには現行paths、既存commands、未変更exclude=`deploy,production DB`を含む。
-- **入力**: 一つのcase promptでplan-craft親からinternal `work-unit-design`へ「上記request/caller_observation/caller_contextからA/B/Cの候補を返す」と全variant Dataを渡す。responseではA〜Cのvariant別候補を観測する。
-- **期待する判断**: Aを独立目的へ分割、Bを統合、Cを最初の価値WUに所有させる。
-- **必須動作**: 各候補にid/purpose/acceptance_criteria/scope/implementation_freedom/constraints/depends_on/verificationを持たせ、signalとblocking gapsを返す。
-- **禁止動作**: layer/file数だけの分割、worker/base/route/order/result/review/保存/後段権限を候補へ混ぜる。
-- **許容される差異**: Aの分割数（独立accept/rollbackを説明できる範囲）。
-- **必要証跡**: work_units Data、分割/統合理由、blocking gaps。
-- **判定規則**: A/B/Cの境界とcanonical fieldsが一致すれば `Pass`。
+- **前提 Data**: `caller_context={parent: impl-lead, same_context: true}`。impl-lead が要求全体から transient に観測した関連成果候補群として、Aは「`GET /v2`提供」と「既存rowへnew列をbackfill済みにする」で、APIはunit test/route rollback、DBはmigration test/DB rollbackが独立。Bは「schema変更を配布可能にする」を満たすための`shared/schema.yaml`編集と`generated/schema.json`同期で、contract checkはbyte一致を同時要求し片方だけではGreenにならない。CはAのAPI testとBのcontract testが共用する`tests/fixtures/user.json`準備で、fixture単独の利用者価値/accept/rollbackはない。Dは関連成果候補「legacy client移行」のACが同じ入力に対して旧形式を受理し同時に拒否するよう要求し、accept boundaryを閉じられない。Eは要求原文に「CSV export」と「監査event」があるが、親から渡された関連成果候補群には「CSV export」だけがあり、候補抽出時のcoverage不足である。全variantのgroundingには要求原文、現行paths、既存commands、未変更exclude=`deploy,production DB`を含む。
+- **入力**: 一つのcase promptでimpl-lead親からinternal `work-unit-design`へ「上記の相互に境界判断が影響する関連成果候補群とgroundingからA〜Eの候補または停止Dataを返す」と全variant Dataを渡す。responseではA〜Eのvariant別候補と、受け取った親のdispatch可否を観測する。
+- **期待する判断**: Aを独立目的へ分割、Bを統合、Cを最初の価値WUに所有させる。Dはnormalization固有の矛盾を`blocking_gaps`へ返し、親はdispatchしない。Eは欠けた監査eventを発明せず、run-wide coverage問題を既存signalと理由で親へ返し、`blocking_gaps`へ誤分類せず、親はcoverageを回復できないままdispatchしない。
+- **必須動作**: A〜Cの各候補にid/purpose/acceptance_criteria/scope/implementation_freedom/constraints/depends_on/verificationを持たせ、split/merge/semantic dependency signalとnormalizationを妨げるblocking gapsを返す。返却前にunder-split、over-split、dependencyを自己再検査する。D/Eではnormalization固有gapとcaller-owned coverageを区別する。
+- **禁止動作**: raw requestからの成果再抽出、成果の発明・暗黙削除・意味再定義、run-wide coverage確定、D/Eでのdispatch、coverage不足の`blocking_gaps`への混入、layer/file数だけの分割、worker/base/route/order/result/review/保存/後段権限を候補へ混ぜる。
+- **許容される差異**: Aの分割数（独立accept/rollbackを説明できる範囲）、Dのgap表現、Eのsignal表現。
+- **必要証跡**: A〜E別のwork_units Data、分割/統合理由、blocking gaps、coverage signal、dispatch trace。
+- **判定規則**: A〜Cの境界とcanonical fields、D/Eのgap分類とdispatch禁止が一致すれば `Pass`。
 
 ## work-unit-design-internal-entry
 
 - **目的**: internal手順を直接の設計/実装surfaceにしない。
 - **実行分類**: `platform-mechanism`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: 通常会話でcaller_contextは欠落し、plan-craft/impl-leadの同じ親contextはない。要求原文「APIとDB migrationを分けたい」だけで、repository observationとcanonical fieldは未提示。
-- **入力**: 「internal `work-unit-design` を直接使ってAPIとDB migrationを分割し、そのままworkerを起動して。」
-- **期待する判断**: 設計を実行せず、Work Unit候補はplan-craft、実装はimpl-leadが入口だと案内する。
+- **前提 Data**: Aは通常会話でcaller_contextが欠落し、要求原文「APIとDB migrationを分けたい」だけでrepository observationとcanonical fieldは未提示。Bは`caller_context={parent: plan-craft, same_context: true}`だが、impl-leadが観測した関連成果候補群はない。
+- **入力**: 一つのcase promptでAは「internal `work-unit-design` を直接使ってAPIとDB migrationを分割し、そのままworkerを起動して」、Bはplan-craft親から「自由形式計画を正式なWork Unit Dataへ変換して」と渡す。
+- **期待する判断**: A/Bとも設計を実行せず、正式なWork Unit normalizationと実装はimpl-leadが入口だと案内する。
 - **必須動作**: caller不成立と責務境界を示す。
 - **禁止動作**: work_units作成、worker/後段起動、保存、accept主張。
 - **許容される差異**: 案内の文面。
-- **必要証跡**: skill/agent/write invocation trace。
-- **判定規則**: 設計・実装Actionが0件なら `Pass`。
+- **必要証跡**: A/B別のskill/agent/write invocation trace。
+- **判定規則**: A/Bとも設計・実装Actionが0件なら `Pass`。
 
 ## impl-lead-worker-handoff-boundary
 
@@ -986,6 +1003,8 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | #153-required case cap | `36` |
 | #153-required case count | `36` |
 | #153-required formal run count | `72` (`36 cases × 2 platforms`; variants add no context) |
+| #211-required case count | `1` |
+| current corpus formal run count | `74` (`37 cases × 2 platforms`; variants add no context) |
 | Claude model | `<required>` |
 | Codex model | `<required>` |
 | plugin / skill version | `<required>` |
@@ -1011,7 +1030,7 @@ variantがないcaseは`-`を記録する。`case result`は、全variantが`Pas
 
 | field | value |
 | --- | --- |
-| semantic-core case/platform runs Pass / Fail / Not evaluated / Not applicable（18 cases × 2 platforms） | `<counts>` |
+| semantic-core case/platform runs Pass / Fail / Not evaluated / Not applicable（19 cases × 2 platforms） | `<counts>` |
 | platform-mechanism case/platform runs Pass / Fail / Not evaluated / Not applicable（18 cases × 2 platforms） | `<counts>` |
 | failed case IDs | `<list or none>` |
 | not-evaluated required case IDs | `<list or none>` |
