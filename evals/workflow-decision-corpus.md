@@ -84,6 +84,9 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | 外部 Action の結果不明時に blind retry しない | #148; `impl-lead` | `impl-lead-external-action-retry` | semantic-core | Claude / Codex | side-effect state、照合、retry 判断 | 結果を照合不能なら stop-incomplete |
 | risk と goal に対応する reviewer だけを選ぶ | #149; `impl-lead` | `impl-lead-reviewer-routing` | platform-mechanism | Claude / Codex | reviewer、goal、完全な handoff | 固定全員起動をせず6責務を混同しない |
 | 同一 snapshot の finding を親が裁定する | #149; `impl-lead` | `impl-lead-finding-adjudication` | semantic-core | Claude / Codex | finding、一次情報、採否理由 | unresolved/競合を残して accept しない |
+| risk-directed finding を同一 snapshot の Resolution Batch へ mapping する | #213; `impl-lead` | `impl-lead-risk-directed-batch-mapping` | semantic-core | Claude / Codex | role、origin snapshot、review set、全 finding、mutation順 | 全 observation後に親が一括裁定し、未裁定の mutation を始めない |
+| updated snapshot の risk-directed re-review を新しい Transaction として扱う | #213; `impl-lead` | `impl-lead-risk-directed-re-review` | semantic-core | Claude / Codex | S0/S1、Transaction identity、review trace | promotion後の再reviewを旧Transactionへ混ぜない |
+| final writing gate を risk-directed batch mapping から除外する | #213; `impl-lead` | `impl-lead-risk-directed-final-writing-exclusion` | semantic-core | Claude / Codex | gate種別、loader/Transaction trace、採否責任 | final writing-onlyではbatch loader/empty Transactionを起動しない |
 | 累積候補へ必須 final writing gate を行う | #160; `impl-lead` | `impl-lead-final-writing-gate` | platform-mechanism | Claude / Codex | base/target、artifact set、gate trace | 小変更でも省略せず drift 結果を使わない |
 | 局所・非semantic finding を同一 run で修復する | #166; `impl-lead` | `impl-lead-local-writing-remediation` | platform-mechanism | Claude / Codex | finding、remediation WU、前後 diff、QA | bounded 条件を満たす修正だけ同一 run で閉じる |
 | semantic finding を bounded remediation へ押し込まない | #166; `impl-lead` | `impl-lead-semantic-writing-remediation` | semantic-core | Claude / Codex | 変更影響、停止、再 review 要否 | 通常 WU と再 gate なしに accept しない |
@@ -370,6 +373,48 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: evidenceで一意に解消できた場合の採否。
 - **必要証跡**: finding ledger、親の理由、最終判断。
 - **判定規則**: 競合処理が完了するまでacceptしなければ `Pass`。
+
+## impl-lead-risk-directed-batch-mapping
+
+- **目的**: risk-directed review の複数 finding を、親所有の同一 snapshot Batch として一括裁定する。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: caller/resolver=`impl-lead parent`、counterpart=`risk-directed reviewer`。caller-owned の事前 verification 済み candidate snapshot `R0` が `target_snapshot` かつ `origin verified snapshot` である。review set は reviewer invocation 前に `R0` と handoff を固定し、counterpart は transaction 外で F1=`境界test不足`、F2=`scope外のdocs追加` を返す。F1/F2は同じR0に束縛され、親は既存の `adopted` / `rejected` / `unresolved` を持つ。境界入力MではF2に必要なobservationまたはresultが欠けている。
+- **入力**: {{invoke:impl-lead}} R0のrisk-directed reviewを実行し、全observation・result collection・finding normalize・evidence確認後にF1/F2をResolution Pointへmappingして裁定して。F1だけを先にmutationする候補も同時に示す。
+- **期待する判断**: reviewer selectionからevidence確認までをTransaction外で完了し、同一R0の全findingを一つのResolution Batchとして固定する。親がF1/F2を全件裁定してから、adoptedをcoherent remediationとして扱う。unresolvedとadoptedが不可分ならmutationせず既存stop boundaryへ返す。Mは必要observation不足を暗黙に縮退せず、Transactionを開始しない。
+- **必須動作**: role、target/origin snapshot、review set固定時点、F1/F2のpoint mapping、全件裁定、mutation開始時点を記録する。
+- **禁止動作**: reviewerをTransaction内で再起動する、観測途中でBatchを開始する、必要observation不足を黙って縮退する、F1だけを先に適用する、reviewerの結論を親裁定へ直結する。
+- **許容される差異**: finding IDと採否理由の表現。
+- **必要証跡**: loader identity/dependencies/required sections、role、R0、review set、F1/F2、adjudication、mutation trace。
+- **判定規則**: 全observation後の同一Batch、mutation前の全件裁定、不可分なunresolvedの停止が一致すれば `Pass`。
+
+## impl-lead-risk-directed-re-review
+
+- **目的**: verified promotion後に更新snapshotを再reviewする場合、別のResolution Transactionとして境界を切り替える。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: 初回risk-directed reviewはorigin `R0`、F1をadoptedとしてverifyとcaller-owned semantic progressを確認し、current verified snapshot `R1`へpromote済み。R1には新しい具体riskがあり、counterpartの再reviewが必要である。
+- **入力**: {{invoke:impl-lead}} R0のTransactionを閉じた後、R1をreviewしてF2をResolution Pointとして裁定して。R0のBatch/TransactionへF2を追加する候補も示す。
+- **期待する判断**: R1のreview setとF2は新しいResolution Batch/Resolution Transactionへ入り、R0のclosure・adjudication・evidenceへ混ぜない。Transaction closureとWork Unit/run acceptanceを別に記録する。
+- **必須動作**: R0→R1のpromotion、Transaction identity、R1の新規counterpart observation、親の再裁定を記録する。
+- **禁止動作**: R0のTransactionを再開する、R0 BatchへF2を追加する、promotion前にR1をverifiedと扱う、Transaction closureだけでWork Unit/runをacceptする。
+- **許容される差異**: transaction IDとsnapshot表現。
+- **必要証跡**: R0/R1 identity、verify/progress、2つのTransaction、review invocation trace、closureとacceptの別記録。
+- **判定規則**: R1の再reviewが新Transactionとして観測され、R0へ混入せずaccept判断が別なら `Pass`。
+
+## impl-lead-risk-directed-final-writing-exclusion
+
+- **目的**: mandatory final writing gateをrisk-directed batch mappingへ誤って取り込まない。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: Work Unitのparent QAはGreenで、risk-directed review findingは0件。累積target `R2` に対して、run close直前の `writing-principles-reviewer` final writing gateだけが必要である。
+- **入力**: {{invoke:impl-lead}} R2のfinal writing gateを完了してacceptして。risk-directed batch loaderと空Transactionも実行する候補を比較する。
+- **期待する判断**: final writing gateは既存のfinal-writing referenceと親裁定へ進み、risk-directed batch loaderをこの理由だけでloadせず、empty Resolution Transactionを開始しない。final writingの採否・verification・run acceptanceは親が保持する。
+- **必須動作**: gate種別、loader/Transaction invocationの有無、親のfinal verificationとaccept判断を記録する。
+- **禁止動作**: final writing findingをrisk-directed Resolution Pointへmappingする、Kernelのpartition/isolate/corrective adjudicationをimpl-lead本文へ複製する、reviewerへaccept権限を渡す。
+- **許容される差異**: final writing handoffのartifact搬送方法。
+- **必要証跡**: final-writing loader trace、risk-directed loader trace、Transaction trace、親の採否とcloseout。
+- **判定規則**: final writing-onlyでrisk-directed loader/empty Transactionが0件、親のfinal gate責任が維持されれば `Pass`。
 
 ## impl-lead-final-writing-gate
 

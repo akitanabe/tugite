@@ -207,3 +207,126 @@ kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
 applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-path-60417af73cb4]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "skill-relative `../../references/batch-resolve-kernel.md`"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-identity-62381fc15b69]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "identity は `batch-resolve-kernel-v1`"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-dependencies-0113ad083471]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "Kernel dependencies は `none`"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-sections-2ebc74335332]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "`適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary`"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-once-f2304334c9d9]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "一度だけ読み"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-failure-2928b0992abf]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-loader-full-958687828fc2]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = '''risk-directed review で最初の Resolution Transaction を開始する前に、親は生成後の skill directory から package-root reference へ
+skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
+
+- identity は `batch-resolve-kernel-v1` である。
+- Kernel dependencies は `none` である。
+- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
+
+reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず
+`stop-incomplete` へ返す。親が生成後の相対 path を解決して読み込み、reviewer に path 解決、reference の探索、読み込みを委ねない。
+この loader は finding が0件の review、final writing gate だけの処理のためには起動しない。'''
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-batch-role-1bae258c3ff3]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "caller/resolver=`impl-lead parent`、counterpart=`risk-directed reviewer`"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-review-boundary-078e9580b195]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "reviewer の selection、invocation、observation、result collection、normalize、evidence確認は transaction 外"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-review-set-7fd519347766]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "review set を counterpart invocation 前に固定"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-target-snapshot-0d36cbee11a0]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "`target_snapshot` は artifact-neutral な caller-owned candidate とし、必要な事前 verification を通過した immutable candidate を\n`origin verified snapshot` として固定"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-resolution-batch-7c2524e487b3]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "各 finding を `Resolution Point` へ mapping し、同じ `origin verified snapshot` の全 findings を一つの `Resolution Batch` として固定"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-adjudication-a4e4d603976f]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "`adopted` / `rejected` / `unresolved` を維持し、mutation 前に全 point を裁定"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-promotion-de5119e2eb28]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "verify と caller-owned semantic progress の後だけ promote し、updated snapshot の re-review は新しい Resolution Transaction"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-final-writing-exclusion-081d334780e8]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "final writing gate はこの mapping の対象外であり、Kernel の partition、isolate、corrective adjudication を重複定義しない"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-observation-completeness-121620bfcfb1]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "必要な observation または result が一部でも欠けている場合は、暗黙に縮退して transaction を開始せず"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-loader-before-transaction]
+kind = "order"
+before = "impl-risk-directed-batch-loader-start"
+after = "impl-risk-directed-resolution-transaction-start"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-selection-before-loader]
+kind = "order"
+before = "impl-risk-selection-handoff-end"
+after = "impl-risk-directed-batch-loader-start"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-loader-before-findings]
+kind = "order"
+before = "impl-risk-directed-resolution-transaction-start"
+after = "impl-review-findings-start"
+applies_to = ["claude", "codex"]
