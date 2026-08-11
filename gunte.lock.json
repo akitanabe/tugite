@@ -1438,6 +1438,10 @@
       "sha256": "19b5caf209a30f5feaa2876f22a7dbf3b86eb6ff7c5e14638f8e28f6bf415889"
     },
     {
+      "id": "proposal-dialogue-verified-input-requires-038d3c6b5417",
+      "sha256": "241f850d43fe3b52ad495daf4f6f948b13bd1e61a8f9f743b8ed16fdfc3385cc"
+    },
+    {
       "id": "proposal-dialogue-decisions-requires-7b475f84ef04",
       "sha256": "2e7c868dadff4f8ca4477920b34a976f279cce318b867d2cb276c11594d0ef41"
     },
@@ -1480,6 +1484,42 @@
     {
       "id": "proposal-dialogue-empty-insight-requires-30f4ef1af0eb",
       "sha256": "3adae4c86b92e9058e3e3971e543fceddac61143334b03f371cd4a928ea76411"
+    },
+    {
+      "id": "resolve-loader-requires-2d80f288e75b",
+      "sha256": "5e079722fe4fa316f1a94b49dc6c399fcc4e532289e106ec588c9fee0ea437d5"
+    },
+    {
+      "id": "resolve-role-requires-2b1e78a31cc5",
+      "sha256": "4fc498f5842a036f8bf74bcdc6e6180bb218e58adcafca37ce6e130a63d34e66"
+    },
+    {
+      "id": "resolve-independent-requires-484291f7db7c",
+      "sha256": "9ca98a761ad28b1e106b25871e4899b5c18d6c40a464e17f8eedb8603ff27df1"
+    },
+    {
+      "id": "resolve-cycle-requires-3eaf89a97487",
+      "sha256": "335eb98c7fb990ee4af06415f23e7c788b61f033b3f9bda5ff6ed2e22a56dba7"
+    },
+    {
+      "id": "resolve-no-queue-requires-e5ae886d1385",
+      "sha256": "b33cac1e80c65c26c94ca361658b409159f6341742d4c0eb21c1ed7e166ca489"
+    },
+    {
+      "id": "resolve-verify-failure-requires-5a14b9300042",
+      "sha256": "9cd33743b88860f9178d3cbd0de2041e52f2c6cf9448cbd7359c817d136e0022"
+    },
+    {
+      "id": "resolve-rejection-requires-2c04e195eb39",
+      "sha256": "2a43843d7b0180527294376ba7e2774890192b7d40226c00ce5d708bea564a30"
+    },
+    {
+      "id": "resolve-frontier-empty-requires-61a8afc55fdb",
+      "sha256": "c9eeb346436e149a965fbdbe92cbe39bcba4c72df322684c00be9a180686d79c"
+    },
+    {
+      "id": "resolve-stop-requires-10b3db26f454",
+      "sha256": "01347cca53d667db0c2a774b7af8ba18092f5675ca9a76fd227641efff7153f2"
     },
     {
       "id": "proposal-dialogue-kernel-advisor-requires-d7887b272940",
@@ -1592,6 +1632,18 @@
     {
       "id": "plan-craft-approval-order-requires-f8347c3031bb",
       "sha256": "402f9fd2e7b8cc9e5acb992434f3ed8a39deab94d151f218d20ac2ed214fd264"
+    },
+    {
+      "id": "dialogue-boundary-owner-requires-1ce28efa5224",
+      "sha256": "1dc74136a84566c35a1249a8ff512ac2916e08642212197a6674431a6a6e397b"
+    },
+    {
+      "id": "dialogue-bound-default-requires-3de3ba853cdb",
+      "sha256": "761b7c332580644f7be3f5a3659f2af51224c8677031e93c45cd5b2b39f5a667"
+    },
+    {
+      "id": "dialogue-budget-separate-requires-9b55d2149bcd",
+      "sha256": "e47012d83e25c3bf05ed986a06c803c8574e14f955b58a7d3239b0d643a6673d"
     },
     {
       "id": "plan-craft-approval-freeze-requires-6285eb428ab5",
@@ -1712,6 +1764,14 @@
     {
       "id": "proposal-dialogue-kernel-reference-before-criteria",
       "sha256": "d4c258fc72b9246f85bad8b46ecb698219ef3619790b2030f9b27ec989730cf2"
+    },
+    {
+      "id": "proposal-dialogue-resolve-loader-before-cycle",
+      "sha256": "e172912b3946cec130db0291f9b7ffb743ea7421414cde99bf81a616d1ab2600"
+    },
+    {
+      "id": "plan-craft-approval-dialogue-mapping-before-start",
+      "sha256": "0ac1483a82c0fce74db38041b172fc5a08719ff491cb49c8df0303c36217262c"
     },
     {
       "id": "plan-craft-approval-dialogue-before-gate",
@@ -2119,6 +2179,11 @@
     },
     {
       "kind": "anchor",
+      "id": "plan-craft-approval-dialogue-mapping",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
       "id": "plan-craft-approval-proposal-dialogue-start",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
@@ -2150,6 +2215,16 @@
     {
       "kind": "span",
       "id": "proposal-dialogue-boundary",
+      "path": "shared/skill/proposal-dialogue/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "proposal-dialogue-resolve-kernel-load",
+      "path": "shared/skill/proposal-dialogue/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "proposal-dialogue-resolution-cycle-start",
       "path": "shared/skill/proposal-dialogue/SKILL.md"
     },
     {

@@ -25,8 +25,9 @@ description: >-
 `proposal` と同じ candidate producer として、後段工程を選択・起動せず caller-owned parent へ返す。差分は、方向性を
 変えうる主要判断を planner ではなく人間が裁定することである。
 
-親から要求原文、目的、成功条件、scope、exclude、制約、依存、repository observation、現在の working snapshot を
-Data として受け取る。repository、Issue、既存仕様から確認できる事実は先に調査し、調査可能な事実を人間へ質問しない。
+親から要求原文、目的、成功条件、scope、exclude、制約、依存、repository observation、current verified snapshot を
+Data として受け取る。working state は current point の apply 時に作る一時状態であり、verify 成功前は次の判断の baseline にしない。
+repository、Issue、既存仕様から確認できる事実は先に調査し、調査可能な事実を人間へ質問しない。
 不足または矛盾が方向性を変える場合は推測せず、必要な判断と evidence を付けて `stop-incomplete` を返す。
 
 人間は結果責任を、planner は evidence に基づく経過責任を担う。人間が担うのは、Task Specification だけでは一意に
@@ -37,10 +38,18 @@ acceptance である。planner は repository、code、test、Issue、仕様、�
 説明できるまで調査する。説明または evidence の不足は質問理由ではなく planner の未完成として扱い、人間を evidence
 収集の代替にしない。ただし、人間固有の暗黙知は人間へ確認する。
 
-## 方向性判断と逐次 snapshot
+<!-- @anchor proposal-dialogue-resolve-kernel-load -->
+## resolve-kernel v1 の parent mapping
 
-方向性を変えうる判断点を抽出して依存関係で順序付け、原則として一度に一つの独立した主要判断を扱う。各質問では、
-その判断だけに必要な repository evidence と過去判断から最小の working context を再構成し、技術案を得失と具体的帰結へ
+invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。cycle ごとに再読込しない。reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。Agent または人間へ package path の解決を委ねない。
+
+role は caller=`plan-craft-approval`、resolver=planner、counterpart=人間、authority=binding、ledger=既存の decision ledger へ mapping する。人間の binding decision を planner が覆さない。
+`resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。
+
+## 方向性判断と逐次 snapshot
+<!-- @anchor proposal-dialogue-resolution-cycle-start -->
+
+各質問では、その判断だけに必要な repository evidence と過去判断から最小の working context を再構成し、技術案を得失と具体的帰結へ
 翻訳して、原則として推奨と理由を添える。`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。
 重要判断だけを対話する `B` を基準にし、人間が迷う、または比較を求めた論点だけ `A` の密度へ上げる。evidence 上実質一意、
 または人間が明示的に委譲した論点は `C` の密度で planner が具体化する。`A` でも planner が成立案を探索して劣位案を除外し、
@@ -53,8 +62,11 @@ acceptance である。planner は repository、code、test、Issue、仕様、�
 正常な判断結果であり、敵対的な未解決指摘へ読み替えない。人間が API、Acceptance Criteria、scope、変更禁止事項などを
 raw specification として明示した場合は意味を変えず、成立性または既存制約との衝突時だけ返す。
 
-採用分だけを working snapshot へ逐次反映して verification し、複数の判断を一括反映しない。却下・保留した提案を
-暗黙反映せず、後続判断は更新済み snapshot を基準にする。判断点、期待する価値、trade-off、親の推奨と理由、人間の判断、
+判断 queue を事前に固定しない。
+採用分だけを working snapshot へ逐次反映して verification し、複数の判断を一括反映しない。
+current verified snapshot から current frontier を整理し、依存関係を見て current point を一件だけ選び、人間の判断を得る。許可された一件だけを working state へ apply して verify し、成功時だけ verified snapshot を更新する。updated snapshot から frontier と次の順序を再評価する。
+複数の判断を一括裁定・反映しない。verify failure では working state を verified snapshot にせず current point を reopen し、その上へ次の判断を積まない。
+却下または保留は apply せず、暗黙に resolved として frontier から消さない。判断点、期待する価値、trade-off、親の推奨と理由、人間の判断、
 反映 snapshot、verification を decision ledger として会話内 Data に保持するが、YAML、内部 schema、raw ledger は
 ユーザーへ提示しない。
 
@@ -62,7 +74,8 @@ direction freeze 前に、正常系と非退行に加えて境界、異常・fai
 制約を実装後にどう観察するかを導出する。不足は人間へ網羅を委ねず plan 未完成として調査する。人間へは特に境界、
 異常・failure path、壊れやすい既存挙動、禁止副作用、責務境界へ verification を圧縮し、何をもって受入可能かを示す。
 
-人間判断 frontier が空になったら探索責任を人間へ戻さず、未表明の意図または暗黙知を訂正できる最後の割込み機会を一度だけ
+frontier が空なら既存の direction freeze 判定へ進むだけであり、workflow completion または candidate acceptance ではない。
+探索責任を人間へ戻さず、未表明の意図または暗黙知を訂正できる最後の割込み機会を一度だけ
 設ける。運用環境などに関する evidence がある場合は問いをその制約へ絞る。direction freeze は成果物全文ではなく、人間が
 結果責任として確定した価値、重要な scope と exclude、責務、意図的な非採用、raw specification の意味判断を対象とする。
 人間には方向性、実装イメージ、重要な verification を圧縮して示す。実装イメージは raw specification でない限り、後段の
@@ -109,7 +122,8 @@ direction freeze の自動根拠にしない。人間が採用した方向性へ
 打ち切りの成立条件として保存・参照しない。
 
 通常の返却 Data は `candidate_snapshot`、`decision_ledger`、`adoption_ledger`、`assumptions`、
-`blocking_gaps`、`residual_risks`、`status` を持つ。blocking な人間判断が残る、ユーザーが対話終了を求める、または
-安全上限に達して判断候補が残る場合は `status: stop-incomplete` と必要な判断を返す。いずれも成果物の受け入れを
+`blocking_gaps`、`residual_risks`、`status` を持つ。
+no-progress のまま material な frontier が残る場合、または安全上限へ到達して frontier が残る場合は、残る判断点を消さず、blocking reason とともに既存の `stop-incomplete` へ mapping する。
+blocking な人間判断が残る、ユーザーが対話終了を求める場合も `status: stop-incomplete` と必要な判断を返す。いずれも成果物の受け入れを
 主張せず、caller-owned parent へ返して終了する。
 <!-- @/contract -->

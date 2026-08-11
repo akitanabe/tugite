@@ -97,6 +97,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | --- | --- | --- | --- | --- | --- | --- |
 | plan-craft は明示時だけ起草し、通常はおまかせで推奨を返して実装へ進まない | #145, #150, #206; `shared/skill/plan-craft/SKILL.md` | `plan-craft-explicit-nonimplementation` | platform-mechanism | Claude / Codex | 発火、推奨理由、成果物、Action trace、summary opt-out | plan と実装の同時依頼でも実装0件、軽い不確実性は推奨して継続 |
 | plan-craft は明示要求または判断を変える具体riskだけでreviewを選び、terminationと候補判定を分離する | #150, #206; `plan-craft` | `plan-craft-risk-directed-review-selection` | semantic-core | Claude / Codex | 明示要求、risk/evidence、review起動判断、termination、candidate status、subcase別trace | 明示あり、または判断変更を期待できる根拠ありだけ起動し、blockingなしのbounded stopはfinal-candidate |
+| proposal-dialogue は検証済み snapshot 上で Human の binding resolution を一件ずつ反映する | #167, #203, #208; `plan-craft-approval`, `proposal-dialogue` | `proposal-dialogue-verified-resolution-cycle` | semantic-core | Claude / Codex | snapshot列、frontier、decision ledger、Human判断、apply/verify順、停止理由 | 一件のverify成功後だけsnapshotを更新して再評価し、失敗・no-progress・bound到達では残るfrontierを保持して停止 |
 | proposal は一次情報と insight を bounded に裁定する | #172, #177; `shared/skill/proposal/SKILL.md` | `proposal-bounded-advisor-adjudication` | semantic-core | Claude / Codex | snapshot、adoption ledger、停止理由 | insight を自動採用せず人間判断を推測しない |
 | proposal は parent context 外で producer を開始しない | #171, #177; `proposal` | `proposal-internal-entry` | platform-mechanism | Claude / Codex | caller、起草/後段 Action | 直接入力では candidate を起草しない |
 | proposal-family の return target は public parent が持つ | #172, #179; `plan-craft`, `proposal` | `plan-craft-proposal-family-routing` | platform-mechanism | Claude / Codex | snapshot identity、工程順、round ledger、return trace | gate が route を決めず、limit未満のroundだけboundedに再 proposal |
@@ -481,6 +482,20 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: A/Bのround上限（ユーザー指定がなければloop開始時に固定）、Eの却下・再裁定理由、I以外のadvisor非起動理由、Iのinsight表現。
 - **必要証跡**: variantごとのreview選択Data、review-loop/reviewer invocation trace、snapshot identity（F0/F1を含む）、current policy/CODEOWNERSのowner evidence、termination、candidate status、blocking分類、summary設定、Semantic/Verification Delta、A〜Hのadvisor invocation=0件、Iの8つのadvisor input Data、advisor invocation/no-invocation decision、Iのadvisor insightとparent裁定。
 - **判定規則**: A/Bだけreviewが開始され、AはArtifactだけ、Cのreview起動が0件、Dはcurrent evidenceで再評価、Eはowner evidenceによるsignal却下・再裁定、Fはround-limitでもblockingなしの`final-candidate`と5 fieldおよびF0→F1のDeltaを返し、Gは`stop-incomplete`とResult/Blocking Reason/Residual Risk、HはHuman escalationと`Human Decision Needed`、A〜Hのadvisor起動が0件、Iは8つの具体Dataをadvisorへ一度渡してinsightを記録し、parentが独立根拠でstop-and-finalizeを選び、candidate status=`final-candidate`を返せば `Pass`。
+
+## proposal-dialogue-verified-resolution-cycle
+
+- **目的**: Human の binding authority を保ったまま、current verified snapshot 上の一件だけを apply、verify してから frontier を再評価する。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex
+- **前提 Data**: A〜Dは同じ resolution discipline の境界 variantとして、このcaseの一つのfresh contextで扱う。callerは明示起動された`plan-craft-approval`、resolverはplanner、counterpartはHuman、authorityはbinding、ledgerは既存decision ledgerである。各variantのdialogue boundは親がloop開始時に固定済みで、gate/reviewの予算とは別Dataである。Aはverified snapshot `A0={storage: local, encryption: undecided, retention: undecided}`、frontier=`P1: encryption方式`, `P2: retention期間`で、P2はP1に依存する。HumanはP1=`修正して採用: platform keyを使う`、apply後verification=`key policy適合=passed`。updated snapshot `A1={storage: local, encryption: platform-key, retention: undecided}`ではpolicyによりP2が`30日/90日`から`30日/削除`へ変わる。Humanは再評価後のP2=`却下: retentionを追加しない`、追加運用提案P3=`保留してscope外へ明示分離`とし、最後の割込み機会で`訂正なし、現在の方向を確認`と答える。Bは`B0`のpoint `Q1: cache invalidation`をHumanが採用しapplyしたがverification=`stale read test failed`。C-no-progressは`C0`とfrontier `R1`が同一の質問・回答・snapshotを繰り返してsemantic progressなし、C-boundは`C2`で親が固定したboundへ到達しfrontier=`R2: rollback owner`が残る。Dは`D0`でHumanが`public APIを維持`を採用済みだがplannerの推奨は`APIを削除`である。
+- **入力**: {{invoke:plan-craft-approval}} AはP1からdirection freeze判定まで進め、BはQ1のverification失敗後を処理し、C-no-progress/C-boundは残る判断点を扱い、Dはplanner推奨とHuman判断の衝突を裁定して、と全Dataを渡す。responseではvariant別のsnapshot、frontier、decision ledger、Action順、停止またはfreeze判定を観測する。
+- **期待する判断**: Aは`A0→P1 Human judgment→一件apply→verify passed→A1`の後だけfrontierと順序を再評価し、更新後のP2をHumanへ一件提示する。P2の却下とP3の保留はsnapshotへ反映せず、それぞれのbinding判断とP3の明示的なscope外分離をledgerへ残す。frontier emptyだけで完了扱いせず、最後のHuman割込みを経て既存条件でdirection freeze候補へ進む。Bは`B0`をverified snapshotのままQ1をreopenし、次pointを提示しない。Cはいずれも残るfrontierとblocking reasonを保持して既存`stop-incomplete`へ返す。Dはplanner推奨でHuman判断を覆さず、API維持をcurrent verified snapshotの基準にする。
+- **必須動作**: 判断queueを事前固定せず、各variantでcurrent verified snapshot、current frontier、一件のcurrent point、Human judgment、apply対象、verification、updated snapshotまたはreopen、再評価結果を順に記録する。却下・保留は非反映を記録し、direction freeze、final acceptance、structural gate、reviewの判定と予算をresolution cycleから分離する。
+- **禁止動作**: 複数pointの一括裁定/反映、未検証working state上の次判断、却下・保留の暗黙反映または暗黙解決、plannerによるbinding判断の上書き、frontier emptyをworkflow completion扱い、残るfrontierの削除、新status・ledger・public parameter、latent探索、gate/review予算との合算。
+- **許容される差異**: snapshot/ledgerの表示形式、Aで却下を「no-change resolution」と明記する表現、blocking reasonの自然文。
+- **必要証跡**: A0/A1、各frontier、Human判断、decision ledger、apply/verification Action順、Bのfailureとreopen、Cの停止理由とremaining frontier、Dのauthority裁定、最後のHuman割込み、direction freeze判定、後段/accept未開始trace。
+- **判定規則**: Aが一件ずつverify後にupdated snapshotで再評価し非採用を反映せず既存freeze判定へ進み、Bが失敗pointをreopenして停止し、Cがremaining frontierを保持して`stop-incomplete`、DがHuman bindingを維持し、全variantで新surfaceと予算混同がなければ `Pass`。
 
 ## proposal-bounded-advisor-adjudication
 
