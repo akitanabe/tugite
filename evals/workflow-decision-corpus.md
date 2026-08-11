@@ -499,7 +499,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## proposal-bounded-advisor-adjudication
 
-- **目的**: 同一origin snapshotのadvisor insightを固定Resolution Batchへ束ね、2つのResolution Transactionでcoherent revisionを反映する。
+- **目的**: 観測可能な What は、exactly two advisor observations を受け、verified candidate S2 を return し、third advisor invocation を 0 件にすること。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
 - **前提 Data**: A〜Eは同じfixed-2-pass boundaryを通るvariantとして、このcaseの一つのfresh contextで扱う。全variantで`caller_context={parent: plan-craft, same_context: true, public_invocation: explicit}`、requestは「CSV import計画」、ACは「invalid rowを報告しvalid rowを保存」、change=`importer.py,tests`、exclude=`UI,DB schema`、制約=`transaction既存境界維持`、repository観測は`importer.py`がrow単位transactionである。

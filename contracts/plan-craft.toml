@@ -1388,6 +1388,24 @@ slice = "plan-craft-review-routing"
 pattern = "追加 risk がなければ `review_goal` を設定しない"
 applies_to = ["claude", "codex"]
 
+[contracts.plan-craft-review-routing-requires-0aa3fea88450]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "review-loop の結果を `adopted` / `rejected` / `out-of-scope` /\n`deferred` / `human-confirmation` のいずれかへ evidence・理由とともに裁定して保持する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-requires-cde081b14efc]
+kind = "requires"
+slice = "plan-craft-review-routing"
+pattern = "`deferred` は既存の hold ledger を\n通じて次回入力へ渡し、loop 中は凍結する"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-review-routing-forbids-5e933511001d]
+kind = "forbids"
+slice = "plan-craft-review-routing"
+pattern = "review-loop の5区分（採用、却下、範囲外、判断保留、\n人間確認）"
+applies_to = ["claude", "codex"]
+
 [contracts.plan-craft-review-applicability-before-opt-out]
 kind = "order"
 before = "review-applicability"

@@ -188,9 +188,10 @@ review-loop の通常出力は、採用 finding を反映した成果物、指�
 の有無と理由、`termination`、`adversarial_review_count` である。レビュー不成立（差し戻し、対応 reviewer 不在、
 入力エラー）は通常出力と排他であり、理由をそのまま親へ示す。
 
-reviewer は指摘だけを行い、採否や保留を確定しない。親は review-loop の5区分（採用、却下、範囲外、判断保留、
-人間確認）と evidence・理由を保持する。判断保留は次回入力へ渡して loop 中凍結し、保留を根拠に新しい仕様を
-派生させない。round、誘発収束、final trim の判定は review-loop の出力契約に従い、ここで再計算しない。
+reviewer は指摘だけを行い、採否や保留を確定しない。親は review-loop の結果を `adopted` / `rejected` / `out-of-scope` /
+`deferred` / `human-confirmation` のいずれかへ evidence・理由とともに裁定して保持する。`deferred` は既存の hold ledger を
+通じて次回入力へ渡し、loop 中は凍結する。保留を根拠に新しい仕様を派生させない。round、誘発収束、final trim の判定は
+review-loop の出力契約に従い、ここで再計算しない。
 
 ## 確定
 

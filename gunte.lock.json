@@ -1660,6 +1660,18 @@
       "sha256": "c6cf94ed9dbd68da085e3aa2476f5370e4e3c65c388c98009b7bb75754d2adf4"
     },
     {
+      "id": "plan-craft-review-routing-requires-0aa3fea88450",
+      "sha256": "aebeac86fb01ffcb062ef30487ecf175273649acfb4f1fe782c74b8159f8627d"
+    },
+    {
+      "id": "plan-craft-review-routing-requires-cde081b14efc",
+      "sha256": "b544a4e5db355ac14ceab0f4adcd9f7d98eb455f75a4ac68fa9eab28fd8f5590"
+    },
+    {
+      "id": "plan-craft-review-routing-forbids-5e933511001d",
+      "sha256": "dfdcf865b0eaedfff78fd67b9e0d425b330d7a26e53d92c9ac643e02dcc56e8a"
+    },
+    {
       "id": "plan-craft-review-applicability-before-opt-out",
       "sha256": "2a630dbf221651e74b8400f8ef03beafd82748b54aafb6f62a40e647f7de32fe"
     },
