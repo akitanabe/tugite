@@ -41,6 +41,16 @@ description: >-
 成果物をプラン系へ変える理由にしない。実装前提プラン系は `Acceptance Criteria` と `設計` の節名を持つ。
 
 <!-- @contract plan-craft-approval-handoff -->
+<!-- @anchor plan-craft-approval-dialogue-mapping -->
+## proposal-dialogue の caller mapping
+
+`plan-craft-approval` は `proposal-dialogue` の invocation boundary、人間判断の binding authority、resolution execution bound を所有する。
+ユーザーが安全上限を指定しない場合は、親が dialogue loop の開始時に internal responsibility として固定する。固定値、新しい public parameter または schema、`resolve_rounds` は追加しない。
+resolution execution bound を structural-health-gate の `rounds` または review の回数制約へ加算・混同しない。
+
+<!-- @anchor plan-craft-approval-resolve-kernel-load -->
+internal `proposal-dialogue` の開始前に、`proposal-dialogue` が規定する resolve-kernel loader を親 Action として一度だけ実行する。
+
 <!-- @anchor plan-craft-approval-proposal-dialogue-start -->
 ## proposal-dialogue の前段
 

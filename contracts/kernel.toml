@@ -1,0 +1,61 @@
+[contracts.kernel-dependencies-none-claude]
+kind = "occurrences"
+pattern = "Kernel dependencies: `none`."
+paths = [
+  "plugins/claude/references/necessity-kernel.md",
+  "plugins/claude/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["claude"]
+
+[contracts.kernel-dependencies-none-codex]
+kind = "occurrences"
+pattern = "Kernel dependencies: `none`."
+paths = [
+  "plugins/codex/references/necessity-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["codex"]
+
+[contracts.kernel-dependencies-key-claude]
+kind = "occurrences"
+pattern = "Kernel dependencies:"
+paths = [
+  "plugins/claude/references/necessity-kernel.md",
+  "plugins/claude/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["claude"]
+
+[contracts.kernel-dependencies-key-codex]
+kind = "occurrences"
+pattern = "Kernel dependencies:"
+paths = [
+  "plugins/codex/references/necessity-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["codex"]
+
+[contracts.kernel-positive-dependency-verb]
+kind = "forbids"
+pattern = "に依存する。"
+paths = [
+  "plugins/claude/references/necessity-kernel.md",
+  "plugins/claude/references/resolve-kernel.md",
+  "plugins/codex/references/necessity-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+applies_to = ["claude", "codex"]
+
+[contracts.kernel-positive-dependency-condition]
+kind = "forbids"
+pattern = "成立条件として要求する。"
+paths = [
+  "plugins/claude/references/necessity-kernel.md",
+  "plugins/claude/references/resolve-kernel.md",
+  "plugins/codex/references/necessity-kernel.md",
+  "plugins/codex/references/resolve-kernel.md",
+]
+applies_to = ["claude", "codex"]
