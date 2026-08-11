@@ -18,6 +18,47 @@ paths = [
 count = 1
 applies_to = ["claude", "codex"]
 
+[contracts.resolve-kernel-mention-allowlist]
+kind = "forbids"
+pattern = "resolve-kernel"
+exclude_paths = [
+  "plugins/claude/references/resolve-kernel.md",
+  "plugins/claude/skills/plan-craft/SKILL.md",
+  "plugins/claude/skills/plan-craft-approval/SKILL.md",
+  "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/proposal-dialogue/SKILL.md",
+  "plugins/codex/references/resolve-kernel.md",
+  "plugins/codex/skills/plan-craft/SKILL.md",
+  "plugins/codex/skills/plan-craft-approval/SKILL.md",
+  "plugins/codex/skills/proposal/SKILL.md",
+  "plugins/codex/skills/proposal-dialogue/SKILL.md",
+]
+applies_to = ["claude", "codex", "claude-marketplace", "codex-marketplace"]
+
+[contracts.resolve-kernel-mapping-forbids-fcbb76e95193]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "caller="
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-forbids-477d1a61c25a]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "resolver="
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-forbids-d4e1171b6bf1]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "counterpart="
+applies_to = ["claude", "codex"]
+
+[contracts.resolve-kernel-mapping-forbids-c1de4f22daa0]
+kind = "forbids"
+slice = "resolve-kernel-v1"
+pattern = "authority="
+applies_to = ["claude", "codex"]
+
 [contracts.resolve-kernel-caller-845c25b48391]
 kind = "requires"
 slice = "resolve-kernel-v1"

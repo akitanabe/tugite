@@ -1658,16 +1658,36 @@
       "sha256": "3adae4c86b92e9058e3e3971e543fceddac61143334b03f371cd4a928ea76411"
     },
     {
-      "id": "resolve-loader-requires-2d80f288e75b",
-      "sha256": "5e079722fe4fa316f1a94b49dc6c399fcc4e532289e106ec588c9fee0ea437d5"
-    },
-    {
       "id": "resolve-role-requires-2b1e78a31cc5",
       "sha256": "4fc498f5842a036f8bf74bcdc6e6180bb218e58adcafca37ce6e130a63d34e66"
     },
     {
       "id": "resolve-independent-requires-484291f7db7c",
       "sha256": "9ca98a761ad28b1e106b25871e4899b5c18d6c40a464e17f8eedb8603ff27df1"
+    },
+    {
+      "id": "pca-resolve-loader-da62f9544d5f",
+      "sha256": "41d62fff002938ce37e8e97fcf396dc4134d9b1b4c390487084db738108d8ce1"
+    },
+    {
+      "id": "dialogue-resolve-loader-53525d5ae1bc",
+      "sha256": "1bae305db6228d400fe335ef3c6b141d11300a33b92e709f1c767af1bc7aff90"
+    },
+    {
+      "id": "dialogue-resolve-once-2acd14c5b8a8",
+      "sha256": "db161a444c5268e01590e8da51e8007565cdeb9a67bc20bb66d2794c9261897a"
+    },
+    {
+      "id": "dialogue-resolve-failure-c87d8db8a4b1",
+      "sha256": "ff81fd182309954f67fd7b940cbad3efde265a44f200bf6e51c0708d26660559"
+    },
+    {
+      "id": "dialogue-resolve-nodelegate-212646833c9b",
+      "sha256": "b34c34a6e627379ab8646a91f611b5ffe23005f3b0e5fc6c01119ae7bc3f320f"
+    },
+    {
+      "id": "dialogue-resolve-inject-3887353ae9e8",
+      "sha256": "c6737aa95524c11abe5cce4dc7d3c76553cfa830d84429f5d31220967e38c01a"
     },
     {
       "id": "resolve-cycle-requires-3eaf89a97487",
@@ -1942,6 +1962,22 @@
       "sha256": "e172912b3946cec130db0291f9b7ffb743ea7421414cde99bf81a616d1ab2600"
     },
     {
+      "id": "plan-craft-approval-resolve-loader-before-dialogue",
+      "sha256": "3c8a17daf061a7acfe9e0e2c73d06fa339d192a4e001bc3f9741447071db538b"
+    },
+    {
+      "id": "plan-craft-approval-mapping-before-resolve-loader",
+      "sha256": "0b9b22b2d5e0c79704ba065cb7d7f1e8f630afe2cff6cfad7d722f838e093836"
+    },
+    {
+      "id": "proposal-dialogue-resolve-loader-before-injection",
+      "sha256": "6e0796317c7a9e2292279628e7960e34b7950788a8e993403efc12fc1b4343f9"
+    },
+    {
+      "id": "proposal-dialogue-resolve-injection-before-cycle",
+      "sha256": "c0f9902386493e934b07ae02ae95d46fe0456cbaf0e924d73e07ff0c9db2f143"
+    },
+    {
       "id": "plan-craft-approval-dialogue-mapping-before-start",
       "sha256": "0ac1483a82c0fce74db38041b172fc5a08719ff491cb49c8df0303c36217262c"
     },
@@ -1960,6 +1996,22 @@
     {
       "id": "kernel-dependencies-none-codex",
       "sha256": "ab946f9724fbb745fd9698d396657487e5daa369f43b73f27f39d887c05f38a1"
+    },
+    {
+      "id": "kernel-dependencies-key-claude",
+      "sha256": "3866dd500fb3b527a44817658bc05f6898339f378dbcf04d78461bcd2bb8cc55"
+    },
+    {
+      "id": "kernel-dependencies-key-codex",
+      "sha256": "f18c2694f453d8ab9e98f52d08932912c020fece771226c404b3e630bcc25d6c"
+    },
+    {
+      "id": "kernel-positive-dependency-verb",
+      "sha256": "04cbe7641afbe887eece9e7652f5e64daa7ad463a37f4475ce19510a5463d98f"
+    },
+    {
+      "id": "kernel-positive-dependency-condition",
+      "sha256": "d978d6c5124b02efc58eb500bb4c1f97357f1e33c8484f38028ea171d997a676"
     },
     {
       "id": "necessity-kernel-title-requires-a9c4fda91047",
@@ -2136,6 +2188,26 @@
     {
       "id": "resolve-kernel-reference-identity",
       "sha256": "ee1ad583e98b5544258375a859add28a21486d91bd759365b67c55d414cd07b9"
+    },
+    {
+      "id": "resolve-kernel-mention-allowlist",
+      "sha256": "393e2c8c4134d9cea17cdda2a63de430f7733ef29546beaa499fcb4fbaedb17e"
+    },
+    {
+      "id": "resolve-kernel-mapping-forbids-fcbb76e95193",
+      "sha256": "3649a0199ed84788f8a7410664f5b3802d2898d3bbab21f006cf75db27469dc9"
+    },
+    {
+      "id": "resolve-kernel-mapping-forbids-477d1a61c25a",
+      "sha256": "79d7875802660c667da77cde00b94580d4243a52b851a709066ea46d75b757b2"
+    },
+    {
+      "id": "resolve-kernel-mapping-forbids-d4e1171b6bf1",
+      "sha256": "c2798051d2710c18ac3ec0d48b29b8f27b592b5834f810ed9ed6a4ed557e5696"
+    },
+    {
+      "id": "resolve-kernel-mapping-forbids-c1de4f22daa0",
+      "sha256": "6ae195a5a5559225fc1d0e4743189a5ddd1c168207b4cd90eb578d97ad733516"
     },
     {
       "id": "resolve-kernel-caller-845c25b48391",
@@ -2366,6 +2438,11 @@
     },
     {
       "kind": "anchor",
+      "id": "plan-craft-approval-resolve-kernel-load",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
       "id": "plan-craft-approval-proposal-dialogue-start",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
@@ -2457,6 +2534,11 @@
     {
       "kind": "anchor",
       "id": "proposal-dialogue-resolve-kernel-load",
+      "path": "shared/skill/proposal-dialogue/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "proposal-dialogue-resolve-kernel-use",
       "path": "shared/skill/proposal-dialogue/SKILL.md"
     },
     {

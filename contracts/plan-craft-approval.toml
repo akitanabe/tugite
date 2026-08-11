@@ -82,12 +82,6 @@ slice = "proposal-dialogue-boundary"
 pattern = "`insights: []` を"
 applies_to = ["claude", "codex"]
 
-[contracts.resolve-loader-requires-2d80f288e75b]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。cycle ごとに再読込しない。reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。Agent または人間へ package path の解決を委ねない。"
-applies_to = ["claude", "codex"]
-
 [contracts.resolve-role-requires-2b1e78a31cc5]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
@@ -98,6 +92,42 @@ applies_to = ["claude", "codex"]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。"
+applies_to = ["claude", "codex"]
+
+[contracts.pca-resolve-loader-da62f9544d5f]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "internal `proposal-dialogue` の開始前に、`proposal-dialogue` が規定する resolve-kernel loader を親 Action として一度だけ実行する。"
+applies_to = ["claude", "codex"]
+
+[contracts.dialogue-resolve-loader-53525d5ae1bc]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "親は invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。"
+applies_to = ["claude", "codex"]
+
+[contracts.dialogue-resolve-once-2acd14c5b8a8]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "cycle ごとに再読込しない。"
+applies_to = ["claude", "codex"]
+
+[contracts.dialogue-resolve-failure-c87d8db8a4b1]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。"
+applies_to = ["claude", "codex"]
+
+[contracts.dialogue-resolve-nodelegate-212646833c9b]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "Agent または人間へ package path の解決を委ねない。"
+applies_to = ["claude", "codex"]
+
+[contracts.dialogue-resolve-inject-3887353ae9e8]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "検証済み本文だけを、以降の resolution cycle の既存の `判定基準` または `必要な周辺 context` に注入する。"
 applies_to = ["claude", "codex"]
 
 [contracts.resolve-cycle-requires-3eaf89a97487]
@@ -505,6 +535,30 @@ applies_to = ["claude", "codex"]
 [contracts.proposal-dialogue-resolve-loader-before-cycle]
 kind = "order"
 before = "proposal-dialogue-resolve-kernel-load"
+after = "proposal-dialogue-resolution-cycle-start"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-resolve-loader-before-dialogue]
+kind = "order"
+before = "plan-craft-approval-resolve-kernel-load"
+after = "plan-craft-approval-proposal-dialogue-start"
+applies_to = ["claude", "codex"]
+
+[contracts.plan-craft-approval-mapping-before-resolve-loader]
+kind = "order"
+before = "plan-craft-approval-dialogue-mapping"
+after = "plan-craft-approval-resolve-kernel-load"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-resolve-loader-before-injection]
+kind = "order"
+before = "proposal-dialogue-resolve-kernel-load"
+after = "proposal-dialogue-resolve-kernel-use"
+applies_to = ["claude", "codex"]
+
+[contracts.proposal-dialogue-resolve-injection-before-cycle]
+kind = "order"
+before = "proposal-dialogue-resolve-kernel-use"
 after = "proposal-dialogue-resolution-cycle-start"
 applies_to = ["claude", "codex"]
 

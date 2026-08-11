@@ -38,10 +38,13 @@ acceptance である。planner は repository、code、test、Issue、仕様、�
 説明できるまで調査する。説明または evidence の不足は質問理由ではなく planner の未完成として扱い、人間を evidence
 収集の代替にしない。ただし、人間固有の暗黙知は人間へ確認する。
 
-<!-- @anchor proposal-dialogue-resolve-kernel-load -->
 ## resolve-kernel v1 の parent mapping
 
-invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。cycle ごとに再読込しない。reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。Agent または人間へ package path の解決を委ねない。
+<!-- @anchor proposal-dialogue-resolve-kernel-load -->
+親は invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。cycle ごとに再読込しない。reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。Agent または人間へ package path の解決を委ねない。
+
+<!-- @anchor proposal-dialogue-resolve-kernel-use -->
+検証済み本文だけを、以降の resolution cycle の既存の `判定基準` または `必要な周辺 context` に注入する。
 
 role は caller=`plan-craft-approval`、resolver=planner、counterpart=人間、authority=binding、ledger=既存の decision ledger へ mapping する。人間の binding decision を planner が覆さない。
 `resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。
