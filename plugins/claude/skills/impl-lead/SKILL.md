@@ -88,6 +88,16 @@ writer、external resource、integration/rollback の必要性から選び、`ba
 Action より前に `base_snapshot` から run-owned worktree を一つ作り、run 全体の既定 checkout とする。ユーザー指定はこの既定より
 優先し、作成不能時に current checkout へ暗黙 fallback しない。
 
+```text
+path = references/run-owned-lifecycle.md
+load_timing = before run-owned Creation Action
+identity = impl-lead run-owned lifecycle v1
+required_sections = [Creation, Closeout]
+required_scope = [creation, integration, cleanup]
+failure = stop-incomplete
+owner = impl-lead parent
+```
+
 この経路を選ぶ場合、親は作成 Action より前に skill-relative `references/run-owned-lifecycle.md` の全文を読み、identity
 `# impl-lead run-owned lifecycle v1`、`Creation`、`Closeout` の各 section と必要本文を確認する。不足、identity 不一致、必要本文の
 欠落、読み取り失敗では推測せず `stop-incomplete` とする。reference は run-owned resource の作成、integration、cleanup の詳細を
@@ -263,6 +273,17 @@ review を `continue` するのは、次に確認する具体的な未解決 ris
 accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
 risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
 理由に省略できない。
+
+```text
+path = references/final-writing-gate.md
+load_timing = before final writing gate
+identity = impl-lead final writing gate v1
+required_sections = [Final writing acceptance gate, Final writing findings and remediation]
+required_scope = [snapshot, handoff, read-only isolation, finding adjudication, bounded remediation, re-gate, closeout data]
+failure = stop-incomplete
+owner = impl-lead parent
+reviewer_authority = report-only
+```
 
 gate の開始前に、親は skill-relative `references/final-writing-gate.md` の全文を読み、identity
 `# impl-lead final writing gate v1`、`Final writing acceptance gate`、`Final writing findings and remediation` の各 section と

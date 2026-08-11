@@ -35,6 +35,7 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex"]
 
+# Why Not: this TOML block is the route-independent Test QA declaration Data introduced by WU-1.
 [contracts.repository-test-qa-baseline-d0061c3c8b96]
 kind = "requires"
 slice = "repository-test-qa-baseline"

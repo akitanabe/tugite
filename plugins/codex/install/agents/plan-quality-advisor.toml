@@ -52,6 +52,10 @@ elaboration ごとに Claim の必要性、重複、`remaining witness`、Minimu
 
 ## 返却 Data
 
+```text
+insight_fields = [id, observation, evidence, impact, question_or_option]
+```
+
 返却は親が裁定する非拘束 Data です。各 insight は `id`、`observation`、`evidence`、`impact`、
 `question_or_option` を持ち、candidate の更新、`adopted` / `rejected` / `unresolved` の確定、後段開始を
 含めません。採否が必要な事項は `question_or_option` として返し、planner が要求と一次情報に照らして裁定できるようにします。

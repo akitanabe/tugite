@@ -28,6 +28,17 @@ user-invocable: false
 
 ## batch-resolve-kernel v1 の parent mapping
 
+```text
+path = ../../references/batch-resolve-kernel.md
+load_timing = once at proposal invocation start
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, Snapshot discipline, Resolution Transaction, Caller boundary]
+failure = stop-incomplete
+owner = proposal parent
+delegate_path_resolution = false
+```
+
 proposal invocation の開始時に、親は生成後の skill directory から skill-relative
 `../../references/batch-resolve-kernel.md` を一度だけ読み、identity `batch-resolve-kernel-v1`、Kernel dependencies
 `none`、この Skill が必要とする適用モデル、snapshot discipline、Resolution Transaction、caller boundary の本文を
@@ -37,6 +48,17 @@ proposal invocation の開始時に、親は生成後の skill directory から 
 検証済み本文だけを、以降の Resolution Transaction の既存の `判定基準` または `必要な周辺 context` に注入する。
 
 ## batch-resolve-kernel v1 の role mapping
+
+```text
+caller = plan-craft
+resolver = proposal planner
+counterpart = plan-quality-advisor
+target_snapshot = origin verified candidate snapshot
+insight = Resolution Point
+same_snapshot_insights = Resolution Batch
+authority = discretionary
+ledger = adoption ledger
+```
 
 この invocation の mapping は caller=`plan-craft`、resolver=planner、counterpart=`plan-quality-advisor`
 (Resolution Transaction 外の one-shot observation)、authority=discretionary であり、ledger は既存の adoption ledger
@@ -60,6 +82,16 @@ verification、残存 risk を含む working candidate を起草する。上記 
 同じ内容を識別できる current verified `candidate snapshot` として保持する。
 
 ## necessity-kernel v1 の parent mapping
+
+```text
+path = ../../references/necessity-kernel.md
+load_timing = before candidate Claim adjudication
+identity = necessity-kernel-v1
+required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = stop-incomplete
+owner = proposal parent
+delegate_path_resolution = false
+```
 
 candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の
 `判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。reference の不足、identity 不一致、

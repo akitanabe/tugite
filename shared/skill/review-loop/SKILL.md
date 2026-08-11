@@ -84,6 +84,16 @@ reviewer には対象 snapshot、要求と判定基準、goal、直前までの�
 ## necessity-kernel v1 の parent mapping
 
 <!-- @anchor review-loop-kernel-reference -->
+```text
+path = ../../references/necessity-kernel.md
+load_timing = before reviewer invocation or parent adjudication
+identity = necessity-kernel-v1
+required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = return-to-parent
+owner = review-loop parent
+delegate_path_resolution = false
+```
+
 reviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または
 <!-- @anchor review-loop-kernel-criteria -->
 `必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。
@@ -111,6 +121,17 @@ parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-
 ## batch-resolve-kernel-v1 の parent mapping
 
 <!-- @anchor review-loop-batch-loader-start -->
+```text
+path = ../../references/batch-resolve-kernel.md
+load_timing = before first Resolution Transaction
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, Snapshot discipline, Resolution Transaction, Caller boundary]
+failure = stop-incomplete or review-not-established
+owner = review-loop parent
+delegate_path_resolution = false
+```
+
 review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から package-root reference へ
 skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
 
@@ -124,6 +145,17 @@ reference の不足、identity または dependencies の不一致、必要本�
 この mapping の role は caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer` とする。
 counterpart は Resolution Transaction 外で non-binding な finding を返し、authority と return boundary は既存の親責務が保持する。
 reviewer の selection、prompt、invocation、result collection は transaction 外で行い、Kernel はこれらを行わない。
+
+```text
+caller = review-loop parent
+resolver = review-loop parent
+counterpart = reviewer
+target_snapshot = origin verified artifact snapshot
+finding = Resolution Point
+same_snapshot_findings = Resolution Batch
+authority = parent-owned
+ledger = finding ledger and hold ledger
+```
 
 ### Normal round の Resolution Transaction
 

@@ -29,9 +29,28 @@ acceptance である。planner は repository、code、test、Issue、仕様、�
 
 ## resolve-kernel v1 の parent mapping
 
+```text
+path = ../../references/resolve-kernel.md
+load_timing = once at proposal-dialogue invocation start
+identity = resolve-kernel-v1
+dependencies = none
+required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
+failure = stop-incomplete
+owner = plan-craft-approval parent
+delegate_path_resolution = false
+```
+
 親は invocation の開始時に一度だけ、生成後の skill directory から skill-relative `../../references/resolve-kernel.md` を読み、identity `resolve-kernel-v1` と Caller boundary と role、Current verified snapshot、working state、frontier、Atomic resolution unit、Exit と停止、Kernel non-dependency の必要本文を検証する。cycle ごとに再読込しない。reference の不足、identity 不一致、読み取り失敗、必要本文不足があれば規範を推測で再現せず、既存の `stop-incomplete` と blocking reason へ返す。Agent または人間へ package path の解決を委ねない。
 
 検証済み本文だけを、以降の resolution cycle の既存の `判定基準` または `必要な周辺 context` に注入する。
+
+```text
+caller = plan-craft-approval
+resolver = planner
+counterpart = human
+authority = binding
+ledger = decision ledger
+```
 
 role は caller=`plan-craft-approval`、resolver=planner、counterpart=人間、authority=binding、ledger=既存の decision ledger へ mapping する。人間の binding decision を planner が覆さない。
 `resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。
@@ -77,6 +96,16 @@ current verified snapshot へ増分追加せず、親へ全体再策定を返す
 この節構成を強制しない。
 
 ## necessity-kernel v1 の parent mapping
+
+```text
+path = ../../references/necessity-kernel.md
+load_timing = before candidate Claim adjudication
+identity = necessity-kernel-v1
+required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = stop-incomplete
+owner = proposal-dialogue parent
+delegate_path_resolution = false
+```
 
 candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の
 `判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡す。reference の不足、identity 不一致、
