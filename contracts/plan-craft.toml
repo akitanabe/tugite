@@ -406,28 +406,14 @@ slice = "review-loop-batch-resolve-kernel-parent-mapping"
 pattern = "verify と semantic progress の両方が成功した後だけ current verified snapshot を更新"
 applies_to = ["claude", "codex"]
 
-[contracts.review-loop-batch-applicability-2dabc502347a]
+[contracts.review-loop-batch-failure-discipline-db174b09a3b2]
 kind = "requires"
 slice = "review-loop-batch-resolve-kernel-parent-mapping"
-pattern = "applicability check"
-applies_to = ["claude", "codex"]
-
-[contracts.review-loop-batch-isolate-dc41e99f04bb]
-kind = "requires"
-slice = "review-loop-batch-resolve-kernel-parent-mapping"
-pattern = "`isolate`"
-applies_to = ["claude", "codex"]
-
-[contracts.review-loop-batch-corrective-f5405c89f0bc]
-kind = "requires"
-slice = "review-loop-batch-resolve-kernel-parent-mapping"
-pattern = "corrective adjudication"
-applies_to = ["claude", "codex"]
-
-[contracts.review-loop-batch-no-frontier-288cf3c22f67]
-kind = "requires"
-slice = "review-loop-batch-resolve-kernel-parent-mapping"
-pattern = "新しい point や frontier を追加しない"
+pattern = '''mutation 前に Batch 全体の裁定を完了し、未裁定または両立不能な point を selected set に残さない。working state は検証前に
+current verified snapshot へ昇格させず、partition ごとに閉じて未検証状態の上へ次の partition を積まない。複数 partition が必要な
+場合は applicability check を行い、verify failure は同じ isolation baseline から `isolate` して局所化する。transaction 内で新しい
+execution evidence が得られた場合だけ元 Batch の point へ corrective adjudication を行い、新しい point や frontier を追加しない。
+成功済み partition は rollback せず、安全に継続できない結果は既存の親 boundary へ返す。'''
 applies_to = ["claude", "codex"]
 
 [contracts.review-loop-batch-fixed-membership-no-recalc-3ecf21580c7e]

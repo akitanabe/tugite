@@ -97,6 +97,14 @@ verification boundary、verify failure 後の isolate を主な分割理由と�
 `verify + semantic progress + promote` しても意味的に成立する independently promotable boundary でなければならない。'''
 applies_to = ["claude", "codex"]
 
+[contracts.batch-resolve-kernel-requires-94dd2f416ad4]
+kind = "requires"
+slice = "batch-resolve-kernel-v1"
+pattern = '''apply の入力は個々の point ではなく selected partition とし、partition 全体を満たす coherent revision として working
+state へ反映する。point ごとの patch 順次適用を標準モデルにせず、coherent revision を理由に新しい scope、
+specification、obligation を追加しない。'''
+applies_to = ["claude", "codex"]
+
 [contracts.batch-resolve-kernel-requires-fee37e0a8fd9]
 kind = "requires"
 slice = "batch-resolve-kernel-v1"
@@ -190,56 +198,6 @@ kind = "requires"
 slice = "batch-resolve-kernel-v1"
 pattern = '''この Kernel は単独で適用でき、別 Kernel の存在、identity、本文、適用順、結果を成立条件にしない。複数 Kernel を併用
 する場合も caller が独立して load、mapping、authority、return boundary を所有し、Kernel 間の結線を本文へ追加しない。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-e073cceaaceb]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''一つの review round では artifact snapshot に対する reviewer observation を transaction 外で完了し、finding を Resolution
-Point、同じ snapshot の finding 集合を Resolution Batch へ mapping する。親は一つの Resolution Transaction で全 finding
-を裁定し、selected set を原則一つの coherent revision として apply、verify、semantic progress、promote する。次 round
-decision は review-loop-owned であり、更新済み snapshot を観測する次 round は新しい Transaction とする。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-9663a9d10c19]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から
-skill-relative `../../references/batch-resolve-kernel.md` を読み、identity、Kernel dependencies、適用モデル、snapshot
-discipline、Resolution Transaction、caller boundary の必要本文を確認する。不足、identity 不一致、必要本文の欠落、
-読み取り失敗では推測せず既存の caller-owned incomplete boundary へ返す。reviewer は package 相対 path を解決しない。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-e8096e3272e0]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''caller と resolver は review-loop parent、counterpart は transaction 外で non-binding finding を返す reviewer、authority と
-return boundary は親の既存責務へ mapping する。複数 reviewer の invocation と result collection はすべて transaction 外で
-完了させ、親が finding を Resolution Point に正規化する。Kernel は reviewer の選択、prompt、起動、結果収集を行わない。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-9a365a18dee3]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''同じ round、同じ origin verified snapshot、同じ artifact に対する複数 reviewer の finding は、原則一つの Resolution
-Batch に統合する。reviewer provenance を保持し、多数決や reviewer ごとの優先順位を導入しない。異なる snapshot の
-finding は混ぜず、reviewer identity ではなく observation snapshot を Batch boundary とする。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-7dd5251e3c62]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''finding ledger、hold ledger、round、termination、induced-loop は review-loop parent-owned とし、Kernel は ledger を直接
-更新せず、point や ledger を round 間で持ち越さない。Kernel の execution result と evidence は、親が既存の裁定結果語彙と
-ledger を更新するための Data として返す。'''
-applies_to = ["claude", "codex"]
-
-[contracts.batch-resolve-kernel-requires-3b1cc057ac7e]
-kind = "requires"
-slice = "batch-resolve-kernel-v1"
-pattern = '''final trim の各回も独立した Resolution Transaction へ mapping できる。reviewer、goal、回数は review-loop-owned で、各回は
-その時点の verified snapshot を origin とする。一つの trim transaction の promotion 後に次の trim を行うなら、新しい
-snapshot を観測する別 Transaction とする。Kernel は trim、over-engineering、count semantics を所有しない。'''
 applies_to = ["claude", "codex"]
 
 [contracts.batch-resolve-kernel-forbids-84b8683e1d88]

@@ -1008,20 +1008,8 @@
       "sha256": "9ce34e26db5c7cb68a23588e4d17a3c19ca14870a249a9084617965c917f8389"
     },
     {
-      "id": "review-loop-batch-applicability-2dabc502347a",
-      "sha256": "34e5cf89b6ed633e84a894d85eb9040c46152a90d1728c8f3808ba3ac816256d"
-    },
-    {
-      "id": "review-loop-batch-isolate-dc41e99f04bb",
-      "sha256": "0d1ae40c4a77c50487805f7721990a4830232c0ce1f444106cc52a61134765b2"
-    },
-    {
-      "id": "review-loop-batch-corrective-f5405c89f0bc",
-      "sha256": "e34423331b348b3056f4d9759df3526f78176d0db74c55d68ce6f7adb465a511"
-    },
-    {
-      "id": "review-loop-batch-no-frontier-288cf3c22f67",
-      "sha256": "e295a9ddbe92e443ddbc66f4b9cfa242d2829aa01eb4f21d4d708e052cfa8d66"
+      "id": "review-loop-batch-failure-discipline-db174b09a3b2",
+      "sha256": "3804d099370c2a28af8cc13819775a86b627e6e0fea8c42a19d0510af5eaeb3e"
     },
     {
       "id": "review-loop-batch-fixed-membership-no-recalc-3ecf21580c7e",
@@ -2260,6 +2248,10 @@
       "sha256": "7fbd1943f87e4fa49f304790740671c39cd86f1d0cf5b4b25dc7f95fb5834679"
     },
     {
+      "id": "batch-resolve-kernel-requires-94dd2f416ad4",
+      "sha256": "cbfc5d012fc32de74731dc70d9d7f421f113a2010c05fcfd7d2a9663624a6b02"
+    },
+    {
       "id": "batch-resolve-kernel-requires-fee37e0a8fd9",
       "sha256": "fba3df8d15960ef765ec14557a504396a5f43c7a38b055fad0e35667b5834db8"
     },
@@ -2302,30 +2294,6 @@
     {
       "id": "batch-resolve-kernel-requires-131f273c1ca4",
       "sha256": "1c784cac3a8cccc37d36c5db81b62ca090772b6e731ab5d4222772e66caa47a1"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-e073cceaaceb",
-      "sha256": "f5f47573d5e67cc9108e95f5493cce7fe5ac8e0859df790fb24c2b120f45adeb"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-9663a9d10c19",
-      "sha256": "e851df02b1d79c2554aa8981763859b06713054ec4ef3bd761810526891dede1"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-e8096e3272e0",
-      "sha256": "116912b1eddece364ba2418b9cf9df7b5f5248f98b4b7dd15a0461bcdc306ade"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-9a365a18dee3",
-      "sha256": "73c4f224fa4118f7430dff423fe6375dadff04a9a1948f5a0f299a6b6cf11195"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-7dd5251e3c62",
-      "sha256": "ac81cfcdad297737f6b11d07a2b7644a0eff385ad6222108b5e4acf1174b1836"
-    },
-    {
-      "id": "batch-resolve-kernel-requires-3b1cc057ac7e",
-      "sha256": "52e443f1feeef361a05f712b635a7a05b3f65f97b79f2ec21ea357894305318e"
     },
     {
       "id": "batch-resolve-kernel-forbids-84b8683e1d88",
