@@ -744,6 +744,30 @@
       "sha256": "a15c0461e490843f21d12e871cbe370e6b34814778f3b17ba1da53967c2d1bb0"
     },
     {
+      "id": "impl-risk-loader-data-fd768fbaec06",
+      "sha256": "a27b5e177e11159baf27c05c5daa525d18189621558112451664553e7bfad3f2"
+    },
+    {
+      "id": "impl-risk-role-mapping-data-1b8c9a3708b3",
+      "sha256": "80fbd0b601665fc93e24a890527e0cec38e61b6b72defdb5dbfa14dd9de17beb"
+    },
+    {
+      "id": "impl-risk-transaction-data-cd5090af3548",
+      "sha256": "424801d44d64d905e6e8a707173d7a23071549e58807c58e5f751289d7a8c19c"
+    },
+    {
+      "id": "impl-risk-loader-before-transaction",
+      "sha256": "59ca3469b4e63b3a37c86e11d482ca1199491ab18a7d3a7a06cfb4534e58cc3e"
+    },
+    {
+      "id": "impl-risk-selection-before-loader",
+      "sha256": "132183893433a36864563a5c8d1b59ea23d43335761c94e8a52d1ac3db0acf06"
+    },
+    {
+      "id": "impl-risk-loader-before-findings",
+      "sha256": "69983c7840419174776c7666493e6184357ed7a8bd7112fa05f7526ae3fdd891"
+    },
+    {
       "id": "proposal-kernel-exact-requires-f73e6ba6939d",
       "sha256": "648b8b78f45252758bcd9e2191d43aad4f83a7ad620fc285c47b436118273973"
     },
@@ -2221,7 +2245,7 @@
     },
     {
       "id": "batch-resolve-kernel-mention-allowlist",
-      "sha256": "a960a2faec790c4a4e85cc6bd6d62d1907333bbbf37e2387f3e457dca13aae8e"
+      "sha256": "ae3b50177cf3acff88cd8f682ecb0b6555b6551c6a69af62e8f88ac756e04e77"
     },
     {
       "id": "batch-resolve-kernel-requires-c151425c26b4",
@@ -2667,6 +2691,31 @@
     {
       "kind": "anchor",
       "id": "impl-route-execution-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-risk-selection-handoff-end",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-directed-batch-resolve-kernel-parent-mapping",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-risk-directed-batch-loader-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-risk-directed-resolution-transaction-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-review-findings-start",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {

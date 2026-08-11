@@ -207,3 +207,57 @@ kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
 applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-loader-data-fd768fbaec06]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = '''path = ../../references/batch-resolve-kernel.md
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, snapshot discipline, Resolution Transaction, caller boundary]
+failure = stop-incomplete
+owner = impl-lead parent'''
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-role-mapping-data-1b8c9a3708b3]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = '''caller = impl-lead parent
+resolver = impl-lead parent
+counterpart = risk-directed reviewer
+target_snapshot = origin verified snapshot
+finding = Resolution Point
+same_snapshot_findings = Resolution Batch
+dispositions = [adopted, rejected, unresolved]'''
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-transaction-data-cd5090af3548]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = '''reviewer_observation = outside Resolution Transaction
+result_collection = outside Resolution Transaction
+batch_freeze = before mutation
+zero_findings = no Resolution Transaction
+adopted_findings = coherent remediation
+updated_snapshot_re_review = new Resolution Transaction
+transaction_closure = not Work Unit acceptance, not run acceptance
+final_writing_gate = outside mapping'''
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-loader-before-transaction]
+kind = "order"
+before = "impl-risk-directed-batch-loader-start"
+after = "impl-risk-directed-resolution-transaction-start"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-selection-before-loader]
+kind = "order"
+before = "impl-risk-selection-handoff-end"
+after = "impl-risk-directed-batch-loader-start"
+applies_to = ["claude", "codex"]
+
+[contracts.impl-risk-loader-before-findings]
+kind = "order"
+before = "impl-risk-directed-resolution-transaction-start"
+after = "impl-review-findings-start"
+applies_to = ["claude", "codex"]

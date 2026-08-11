@@ -168,6 +168,71 @@ commit range、変更 file、完全な diff text、必要な test 結果と周�
 だけで diff text を代替しない。plan reviewer には plan 全文と AC / constraints を渡す。diff artifact の存在は必須にせず、
 inline か reviewer が全文を読み込める artifact のいずれかを使う。
 
+
+## batch-resolve-kernel v1 の risk-directed review mapping
+
+risk-directed review で最初の Resolution Transaction を開始する前に、親は生成後の skill directory から package-root reference へ
+skill-relative reference を一度だけ読み、次の Loader Data と必要本文を検証する。
+
+```text
+path = ../../references/batch-resolve-kernel.md
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, snapshot discipline, Resolution Transaction, caller boundary]
+failure = stop-incomplete
+owner = impl-lead parent
+```
+
+reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず
+`stop-incomplete` へ返す。親が生成後の相対 path を解決して読み込み、reviewer に path 解決、reference の探索、読み込みを委ねない。
+この loader は finding が0件の review、final writing gate だけの処理のためには起動しない。
+
+```text
+caller = impl-lead parent
+resolver = impl-lead parent
+counterpart = risk-directed reviewer
+target_snapshot = origin verified snapshot
+finding = Resolution Point
+same_snapshot_findings = Resolution Batch
+dispositions = [adopted, rejected, unresolved]
+```
+
+counterpart の finding は transaction 外の non-binding Data であり、authority、return boundary、Work Unit / run acceptance は親が保持する。
+
+### risk-directed review の Resolution Transaction
+
+```text
+reviewer_observation = outside Resolution Transaction
+result_collection = outside Resolution Transaction
+batch_freeze = before mutation
+zero_findings = no Resolution Transaction
+adopted_findings = coherent remediation
+updated_snapshot_re_review = new Resolution Transaction
+transaction_closure = not Work Unit acceptance, not run acceptance
+final_writing_gate = outside mapping
+```
+
+`target_snapshot` は artifact-neutral な caller-owned candidate とし、必要な事前 verification を通過した immutable candidate を
+`origin verified snapshot` として固定する。mapping は既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
+
+reviewer の selection、invocation、observation、result collection、normalize、evidence確認は transaction 外で行う。親は review set を
+counterpart invocation 前に固定し、必要な全 observation と result を回収し、finding を normalize して evidence を確認してから transaction を
+開始する。必要な observation または result が一部でも欠けている場合は、暗黙に縮退して transaction を開始せず、既存の caller boundary または
+`stop-incomplete` へ返す。1件以上の finding は、各 finding を `Resolution Point` へ mapping し、同じ `origin verified snapshot` の全 findings を一つの
+`Resolution Batch` として固定する。finding が0件なら空の Resolution Transaction を開始せず、risk-directed review の結果を既存の親経路へ返す。
+
+親は既存の `adopted` / `rejected` / `unresolved` を維持し、mutation 前に全 point を裁定する。全 point の裁定が終わるまで
+mutation を開始せず、`adopted` は原則として一つの coherent remediation として扱う。`unresolved` と `adopted` が不可分なら mutation を行わず、
+既存の caller-owned stop boundary へ返す。
+
+verify と caller-owned semantic progress の後だけ promote し、updated snapshot の re-review は新しい Resolution Transaction とする。
+promotion 後の snapshot を risk-directed reviewer が再観測する場合は、新しい review set、Resolution Batch とする。Transaction
+の closure は Work Unit や run の acceptance と別であり、closureだけで親のacceptを意味しない。
+
+final writing gate はこの mapping の対象外であり、Kernel の partition、isolate、corrective adjudication を重複定義しない。mandatory final writing gate の
+固有 loader、finding、remediation、verification は
+既存の final writing reference と親責務に従う。
+
 ## Review findings and continuation
 
 親は reviewer の固有出力を execution data に正規化する。各 finding は `source_reviewer`、`target_snapshot`、reviewer の

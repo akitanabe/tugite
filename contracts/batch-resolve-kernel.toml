@@ -17,9 +17,11 @@ exclude_paths = [
   "plugins/claude/skills/proposal/SKILL.md",
   "plugins/claude/skills/plan-craft/SKILL.md",
   "plugins/claude/skills/review-loop/SKILL.md",
+  "plugins/claude/skills/impl-lead/SKILL.md",
   "plugins/codex/skills/proposal/SKILL.md",
   "plugins/codex/skills/plan-craft/SKILL.md",
   "plugins/codex/skills/review-loop/SKILL.md",
+  "plugins/codex/skills/impl-lead/SKILL.md",
 ]
 applies_to = ["claude", "codex", "claude-marketplace", "codex-marketplace"]
 
