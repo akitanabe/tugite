@@ -74,9 +74,84 @@ reference の不足、identity 不一致、読み取り失敗があれば推測�
 reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
 場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
 Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の
-`採用` / `却下` / `範囲外` / `判断保留` / `人間確認` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
+`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
 `stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または
 termination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。
+
+parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-of-scope`, `deferred`, and `human-confirmation`。
+
+- `adopted`: 成果物を修正して verification する。
+- `rejected`: 既存仕様または evidence に基づき修正しない。
+- `out-of-scope`: 成立性は否定しないが対象外として残存事項へ渡す。
+- `deferred`: 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
+- `human-confirmation`: 実装・公開・互換性など、親だけでは決められない確認を要求する。
+
+## batch-resolve-kernel-v1 の parent mapping
+
+review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から package-root reference へ
+skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
+
+- identity は `batch-resolve-kernel-v1` である。
+- Kernel dependencies は `none` である。
+- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
+
+reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず、既存の
+`stop-incomplete` またはレビュー不成立の boundary へ返す。reviewer に path 解決、reference の探索、読み込みを委ねない。
+
+この mapping の role は caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer` とする。
+counterpart は Resolution Transaction 外で non-binding な finding を返し、authority と return boundary は既存の親責務が保持する。
+reviewer の selection、prompt、invocation、result collection は transaction 外で行い、Kernel はこれらを行わない。
+
+### Normal round の Resolution Transaction
+
+通常の review round は、同じ artifact の origin verified snapshot を固定し、transaction 外で完了した reviewer observation
+を finding から Resolution Point へ mapping して、Resolution Batch を transaction 開始時までに固定する。1 normal review round は
+原則として1つの Resolution Transaction であり、その内部を次の順序で実行する。
+
+```text
+origin verified snapshot + caller-supplied evidence + Resolution Batch
+→ 全 finding を裁定し conflict / dependency を解消
+→ 親が既存の裁定区分を確定
+→ selected set を原則 single partition の coherent revision として apply
+→ verify
+→ caller-owned semantic progress を確認
+→ current verified snapshot を promote
+```
+
+mutation 前に Batch 全体の裁定を完了し、未裁定または両立不能な point を selected set に残さない。working state は検証前に
+current verified snapshot へ昇格させず、partition ごとに閉じて未検証状態の上へ次の partition を積まない。複数 partition が必要な
+場合は applicability check を行い、verify failure は同じ isolation baseline から `isolate` して局所化する。transaction 内で新しい
+execution evidence が得られた場合だけ元 Batch の point へ corrective adjudication を行い、新しい point や frontier を追加しない。
+成功済み partition は rollback せず、安全に継続できない結果は既存の親 boundary へ返す。
+
+transaction 中に Batch membership を増やさず、snapshot 更新後に frontier を再計算しない。既存 review-loop の round、termination、
+adversarial review count、induced-loop、final trim count の意味と境界は維持し、Kernel mapping から変更しない。
+
+verify と semantic progress の両方が成功した後だけ current verified snapshot を更新する。次 round の decision は review-loop-owned
+であり、更新済み snapshot を観測する次 round は新しい Resolution Transaction とする。
+
+### Multiple reviewer の Batch 境界
+
+同じ round、同じ artifact、同じ origin verified snapshot に対する複数 reviewer の finding は原則1つの Resolution Batch に束ねる。
+各 finding の reviewer provenance は保持するが、reviewer ごとの多数決や priority は導入しない。異なる snapshot の finding は混ぜず、
+reviewer identity ではなく observation snapshot を Batch boundary とする。snapshot が混在している場合は推測で統合せず、未検証の
+mutation を行わずに既存の caller boundary へ返す。
+
+### Parent-owned ledger
+
+Kernel の execution result と evidence を使い、review-loop parent が既存の `finding_ledger` と `hold_ledger` を更新する。Kernel は
+ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない。既存の5値（`adopted`、`rejected`、`out-of-scope`、
+`deferred`、`human-confirmation`）の語彙と意味は変更せず、reviewer の非拘束 finding を親が既存の裁定境界へ写像する。
+
+### final trim の Resolution Transaction
+
+final trim の各回は独立した Resolution Transaction とする。reviewer、goal、trim 回数は review-loop-owned とし、その時点の current
+verified snapshot を各回の origin に固定する。trim finding を Resolution Batch に束ねて transaction を閉じ、promotion 後に次の
+trim を行う場合は新しい snapshot を origin とする新しい transaction を開始する。Kernel は trim、over-engineering、count semantics
+を所有せず、trim を通常 round や誘発判定の窓へ加算しない。
+
+necessity-kernel v1 の mapping はこの batch mapping から独立して不変であり、相互の本文、identity、読み込み順、結果を成立条件に
+しない。
 
 ## round と実行 Data
 
@@ -91,26 +166,26 @@ trim の finding も同じ指摘台帳へ記録し、発行元 reviewer で区�
 finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced` と
 `induced_by`（因果対応する採用修正と verification、非誘発時は null。通常 reviewer の判定対象だけ）を記録する。
 全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
-未確定、採用修正の未反映、または `人間確認` とする。`判断保留` は凍結済みの完了した裁定なので未解決に
+未確定、`adopted` 修正の未反映、または `human-confirmation` とする。`deferred` は凍結済みの完了した裁定なので未解決に
 含めない。
 
 ## 親の裁定
 
-親は各 finding を次の5区分の一つへ裁定し、evidence と理由を記録する。
+親は各 finding を次の5値の一つへ裁定し、evidence と理由を記録する。
 
-1. **採用** — 成果物を修正して verification する。
-2. **却下** — 既存仕様または evidence に基づき修正しない。
-3. **範囲外** — 成立性は否定しないが対象外として残存事項へ渡す。
-4. **判断保留** — 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
-5. **人間確認** — 実装・公開・互換性など、親だけでは決められない確認を要求する。
+1. **`adopted`** — 成果物を修正して verification する。
+2. **`rejected`** — 既存仕様または evidence に基づき修正しない。
+3. **`out-of-scope`** — 成立性は否定しないが対象外として残存事項へ渡す。
+4. **`deferred`** — 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する。
+5. **`human-confirmation`** — 実装・公開・互換性など、親だけでは決められない確認を要求する。
 
 裁定区分と別に、通常の `plan-adversarial-reviewer` finding の影響度を `軽微`、`修正推奨`、`修正必須`
 のいずれかへ親が確定する。final trim の finding には影響度を要求しない。reviewer の severity や Pass を
 親の `accept` へ直結しない。
 
-### 判断保留の凍結
+### `deferred` の凍結
 
-判断保留は loop 中に次の規則で凍結する。
+`deferred` は loop 中に次の規則で凍結する。
 
 1. `hold_ledger` へ記録する。
 2. 次 round の入力へ台帳を渡す。
@@ -151,8 +226,8 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 accept-candidate（`converged` または `induced-loop`）で未解決 finding が空の場合だけ、適用対象のプラン系
 成果物へ final trim を行う。非適用成果物は trim を省略した事実と理由を出力する。trim は通常 loop へ戻らず、
 各回を新しい snapshot へ順に適用する。削減後の verification が失敗した場合は、新しい設計を足さず、該当
-削減 finding の裁定を原則 `採用` から `却下` へ戻す。`人間確認` が必要な trim finding は `範囲外` として渡す。
-trim の finding もその場で5区分へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
+削減 finding の裁定を原則 `adopted` から `rejected` へ戻す。`human-confirmation` が必要な trim finding は `out-of-scope` として渡す。
+trim の finding もその場で5値へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
 残存する過剰の順を推奨観点とし、回数を上書きした場合の観点は親が決める。
 
 回数は次で決める。

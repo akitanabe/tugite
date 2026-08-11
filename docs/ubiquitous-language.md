@@ -27,6 +27,26 @@ pattern では正式名だけを使います。
 
 - 正本: `shared/skill/work-unit-design/SKILL.md`、`shared/skill/impl-lead/SKILL.md`
 
+## Resolution Point
+
+caller が Resolution Transaction で裁定対象として供給する個々の論点です。
+
+- 正本: `shared/batch-resolve-kernel.md` の `## Resolution の語彙`
+
+## Resolution Batch
+
+一つの origin verified snapshot に束縛され、Resolution Transaction 開始時までに観測済みである Resolution Point の
+固定集合です。
+
+- 正本: `shared/batch-resolve-kernel.md` の `## Resolution の語彙`
+
+## Resolution Transaction
+
+一つの Resolution Batch を adjudication から verified snapshot promotion または caller boundary への返却まで扱う規範上の
+実行単位です。
+
+- 正本: `shared/batch-resolve-kernel.md` の `## Resolution の語彙`
+
 ## 3 者の関係
 
 `Task Specification` は、Work Unit が何を達成すべきかを意味的に定める側面を指します。LLM が解釈する対象です。
