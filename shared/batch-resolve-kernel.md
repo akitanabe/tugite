@@ -131,13 +131,19 @@ applicability check が生成した evidence だけを corrective adjudication �
 
 ## Caller boundary、authority、exit
 
-caller は invocation boundary、resolver と counterpart の mapping、authority、execution bound、verification criteria、
-既存の verdict、ledger、return vocabulary、workflow completion を所有する。Kernel は caller 名を列挙せず、invocation
-前に role、authority、snapshot、return boundary が既存責務へ mapping されていなければ推測しない。
+次の Data block が ownership boundary の列挙値の唯一の正本である。
+
+```text
+caller_owns = ["invocation boundary", "resolver/counterpart mapping", "authority", "execution bound", "verification criteria", "existing verdict/ledger/return vocabulary", "workflow completion"]
+kernel_does_not_own = ["caller-specific point/ledger schema", "workflow status/public parameter/retry/round orchestration"]
+```
+
+caller は `caller_owns` の各 field を既存責務へ mapping し、Kernel は caller 名を列挙しない。invocation 前に role、
+authority、snapshot、return boundary が既存責務へ mapping されていなければ推測しない。
 
 authority が不足する point を selected set に入れず、その point から独立して安全に処理できる他 point は自動停止
 させない。authority 未確定 point と selected point が意味的に不可分なら caller boundary へ返す。Kernel は
-workflow-level status、ledger schema、public parameter、retry count、fixed round、round orchestration を導入しない。
+`kernel_does_not_own` の surface を導入しない。
 Transaction の close、空 Batch、空 selected set はいずれも workflow completion を意味しない。
 
 ## Counterpart observation と transaction boundary

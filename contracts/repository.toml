@@ -36,13 +36,13 @@ pattern = "necessity_result"
 applies_to = ["claude", "codex"]
 
 # Why Not: this TOML block is the route-independent Test QA declaration Data introduced by WU-1.
-[contracts.repository-test-qa-baseline-d0061c3c8b96]
+[contracts.repository-test-qa-baseline-a0b98d2f7393]
 kind = "requires"
 slice = "repository-test-qa-baseline"
 pattern = '''policy_id = "test-qa-baseline-v1"
 test_artifacts = ["automated test", "Gunte predicate/contract", "fixture/oracle", "EVAL"]
 qa_inputs = ["Task Spec", "base", "acceptance criteria", "diff", "evidence", "surrounding context"]
-common_evidence = ["evidence identity", "parent oracle"]
+common_evidence = ["evidence identity is fixed within each input variant", "parent oracle is common across input variants"]
 owner = "parent QA"
 routes = ["impl-lead", "non-impl-lead"]
 baseline_self_qa = "required on every route"

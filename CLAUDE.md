@@ -103,14 +103,14 @@ untracked artifact は保持します。
 
 この section は、実装の入口や reviewer の有無に依存しない親 QA の共通下限を定義します。次の stable Data がこの
 section の判断基準であり、Gunte の URL は provenance の参照だけに使います。
-`test_artifacts` は適用対象、`qa_inputs` は全 route/reviewer variant で固定する判断 packet、`common_evidence` はその
-packet を評価する同一 evidence identity と parent oracle を表します。
+`test_artifacts` は適用対象、`qa_inputs` は全 route/reviewer variant で固定する判断 packet、`common_evidence` は input
+variant 内で固定する evidence identity と、全 input variant に共通する parent oracle を表します。
 
 ```toml
 policy_id = "test-qa-baseline-v1"
 test_artifacts = ["automated test", "Gunte predicate/contract", "fixture/oracle", "EVAL"]
 qa_inputs = ["Task Spec", "base", "acceptance criteria", "diff", "evidence", "surrounding context"]
-common_evidence = ["evidence identity", "parent oracle"]
+common_evidence = ["evidence identity is fixed within each input variant", "parent oracle is common across input variants"]
 owner = "parent QA"
 routes = ["impl-lead", "non-impl-lead"]
 baseline_self_qa = "required on every route"
@@ -135,7 +135,7 @@ accept_prohibition = [
 ```
 
 全 route で親が `qa_inputs` の `Task Spec`、`base`、`acceptance criteria`、`diff`、`evidence`、`surrounding context` と
-`common_evidence` の identity/oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
+`common_evidence` の input-variant identity / common parent oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
 `test_artifacts` は automated test、Gunte predicate/contract、fixture/oracle、EVAL であり、qa input と混同しません。
 reviewer を使う場合も baseline と起動理由を既存の確認観点・周辺
 context と一緒に渡し、reviewer は追加観測だけを返します。`obligation`、`oracle`、`validation plane` の責任と最終

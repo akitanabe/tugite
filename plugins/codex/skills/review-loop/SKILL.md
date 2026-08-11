@@ -67,6 +67,8 @@ reviewer には対象 snapshot、要求と判定基準、goal、直前までの�
 
 ## necessity-kernel v1 の parent mapping
 
+次の Loader Data が列挙値の唯一の正本である。
+
 ```text
 path = ../../references/necessity-kernel.md
 load_timing = before reviewer invocation or parent adjudication
@@ -77,9 +79,9 @@ owner = review-loop parent
 delegate_path_resolution = false
 ```
 
-reviewer 起動または parent 裁定の前に、親は生成後の skill directory から package-root reference へ skill-relative `../../references/necessity-kernel.md` を読み、identity と必要な本文を既存の `判定基準` または
+reviewer 起動または parent 裁定の前に、親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。検証済み本文を既存の `判定基準` または
 `必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。
-reference の不足、identity 不一致、読み取り失敗があれば推測せず親へ返し、reviewer は plugin 相対 path を解決しない。
+owner / delegate_path_resolution の境界を維持する。
 
 reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
 場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
@@ -98,6 +100,8 @@ parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-
 
 ## batch-resolve-kernel-v1 の parent mapping
 
+次の Loader Data が列挙値の唯一の正本である。
+
 ```text
 path = ../../references/batch-resolve-kernel.md
 load_timing = before first Resolution Transaction
@@ -109,19 +113,10 @@ owner = review-loop parent
 delegate_path_resolution = false
 ```
 
-review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から package-root reference へ
-skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
+親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
+owner / delegate_path_resolution の境界を維持する。
 
-- identity は `batch-resolve-kernel-v1` である。
-- Kernel dependencies は `none` である。
-- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
-
-reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず、既存の
-`stop-incomplete` またはレビュー不成立の boundary へ返す。reviewer に path 解決、reference の探索、読み込みを委ねない。
-
-この mapping の role は caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer` とする。
-counterpart は Resolution Transaction 外で non-binding な finding を返し、authority と return boundary は既存の親責務が保持する。
-reviewer の selection、prompt、invocation、result collection は transaction 外で行い、Kernel はこれらを行わない。
+次の role Data が列挙値の唯一の正本である。
 
 ```text
 caller = review-loop parent
@@ -133,6 +128,9 @@ same_snapshot_findings = Resolution Batch
 authority = parent-owned
 ledger = finding ledger and hold ledger
 ```
+
+親は上記 role field を使って既存責務へ mapping する。counterpart observation と reviewer の selection、prompt、
+invocation、result collection の Action は transaction 外で行う。
 
 ### Normal round の Resolution Transaction
 
