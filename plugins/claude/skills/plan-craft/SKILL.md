@@ -135,14 +135,10 @@ gate を通過した candidate snapshot だけを、必要な review goal とと
 - 判断済みの前提と未確定の問いを分け、blocking な不足を勝手に補完しない。
 - 選んだ方針と採用理由、代替案を採らない理由、残存 risk、確認が必要な決定を記録する。
 
-ユーザーが実装単位の候補を求める場合、または成果物に候補を含める場合だけ、親は同じ context の内部工程として
-`work-unit-design` の手順を任意に参照できる。返された `work_units`、分割／統合 signal、`blocking_gaps` は自由形式成果物の
-候補部分であり、親が要求、AC、scope、依存、制約、既存調査を再検査して採用する。候補の `acceptance_criteria` は accept の
-確定ではなく、base_snapshot を含む base、route、order、実行結果、review 等の execution data、委譲、実装、worker、
-isolation、後続 Skill の起動権限、accept の確定、保存を成果物へ含めない。
-
-Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を候補設計の工程として直接参照する。成果物の
-自由形式、採用・確定・保存の責務、実装を開始しない境界は変わらない。
+ユーザーが実装単位の案を求める場合は自由形式成果物の一部として自然文で記述してよいが、正式な Work Unit Data または
+Work Unit normalization とは扱わない。正式な normalization は implementation-time の `impl-lead` が current repository state を
+再観測して行う。base_snapshot を含む base、route、order、実行結果、review 等の execution data、委譲、実装、worker、isolation、
+後続 Skill の起動権限、accept の確定、保存を成果物へ含めない。
 
 実装を要求と同時に渡されても、成果物の起草で停止し、実装開始を責務外として明示する。成果物を固定の
 実装 schema、委譲契約、確定済み実行指示へ変形しない。後続 skill の起動権限や acceptance は出力に含めない。

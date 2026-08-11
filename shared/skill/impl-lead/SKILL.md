@@ -26,9 +26,22 @@ context から暗黙に起動しない。起動後も、親が受け入れ判断
 
 ## Intake and Work Unit normalization
 
-親は実装を始める前に要求、対象 repository、現在の dirty state、基準状態を観測する。Issue または doc と対象
-file、その周辺、呼び出し元・先、関連 test を読み、run の目的を一つ以上の Work Unit に正規化する。複数であること
-だけを停止理由にしない。各単位は次の Work Unit Data を持つ。
+親は実装を始める前の初期 Intake で、要求全体、対象 repository、現在の dirty state、基準状態を観測する。Issue、doc、
+plan section、ユーザーの箇条書き、freeze 済み設計などの source boundary を Work Unit boundary とみなさず、対象 file と
+その周辺、呼び出し元・先、関連 test を読んでから、意味上区別できる到達結果を recall 寄りに成果候補として一度観測する。
+1 source から複数、複数 source から一つ、1 source から一つの成果と Work Unit をいずれも許容し、対応数を固定しない。
+
+成果候補は semantic end-state についての transient observation である。統合できそうという理由で早期に候補を落とさない一方、
+file 編集、generator、version 更新、verification command などの実装手段・工程は、それ自体が要求成果でない限り候補にしない。
+新しい Data model、schema、必須 ID、Work Unit Data field、固定 input field、provenance field、永続 artifact を導入しない。
+
+親は coverage を二段階で確認する。成果候補の抽出時には要求全体から意味上の到達結果を取りこぼしていないか確認し、
+Work Unit 確定時には全要求が最終集合へ反映されているか確認する。成果要求は原則としてちょうど一つの Work Unit を primary
+owner とし、横断 constraint / invariant は複数単位へ適用でき、non-goal / 今回除外は owner を持たず理由または境界判断を明示する。
+未割当要求を残したまま dispatch しない。
+
+親は成果候補と coverage から run の目的を一つ以上の Work Unit に正規化する。複数であることだけを停止理由にしない。
+各単位は次の Work Unit Data を持つ。
 
 - `id`: run 内で一意な識別子。
 - `purpose`: 単一の目的。
@@ -42,7 +55,12 @@ file、その周辺、呼び出し元・先、関連 test を読み、run の目
 Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept/revert できる
 変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界をすべて満たすものとする。同じ
 test でしか Green にならない過分割、片方だけでは invariant が成立しない分割、layer 横割りは統合する。価値の
-ない共通依存は最初に価値を生む単位が所有する。
+ない共通依存は最初に価値を生む単位が所有する。foundation は独立 capability または contract、単独 AC、単独
+verification、accept boundary を持つ場合だけ独立 Work Unit にする。
+
+単一 Work Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
+boundary、foundation / application の別成果が残っていないか親が自己再検査する。分割しない理由の専用 field、固定 ledger、
+常時の外部説明は要求しない。
 
 不足、矛盾、または scope を閉じられない状態が品質に影響する場合、推測で補わず必要な情報を親へ戻すか、理由・
 未完了範囲・evidence・残存 risk を含む `stop-incomplete` とする。要求と repository の状態を観測せずに worker を
@@ -55,13 +73,24 @@ execution data として扱う。
 
 ### Optional work-unit design step
 
-Intake または再正規化で分割、統合、責任境界、依存の設計が非自明な場合だけ、親は同じ context の内部工程として
-`work-unit-design` の手順を任意に参照できる。返された `work_units`、分割／統合 signal、`blocking_gaps` は候補であり、
-親が要求、AC、scope、既存 Work Unit、repository 状態を再検査してから採用する。候補の `acceptance_criteria` は accept の
-確定ではなく、worker、base、isolation、route、実行、後続 Skill の起動権限、保存を候補工程へ含めない。
+初期 Intake で明らかな境界は親が Work Unit 化する。分割、統合、semantic dependency が非自明な場合だけ、相互に境界判断が
+影響する関連成果候補群をまとめ、同じ context の内部工程として `work-unit-design` の手順を参照できる。成果候補ごとに個別起動せず、
+raw request から成果候補を再抽出させない。返された `work_units`、分割／統合 signal、`blocking_gaps` は候補であり、親は境界分析を
+同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
+`blocking_gaps` がないこと、Work Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
+
+候補の `acceptance_criteria` は accept の確定ではなく、worker、base、isolation、route、order、実行、後続 Skill の起動権限、
+保存を候補工程へ含めない。成果候補消失、未割当要求、unresolved `blocking_gaps`、説明不能な境界を残したまま dispatch しない。
 
 Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
+
+実行中の再正規化では新しい成果候補抽出 phase を追加しない。既存の統合、追加分割、部分成果の独立再構成、semantic dependency
+edge の再接続を維持し、必要なら `work-unit-design` を使えるが、初期 Intake の成果候補 discipline を execution-time 全体へ広げない。
+
+semantic dependency は `depends_on`、writer / generated-output conflict は order / isolation、後続実行時の基準は latest accepted
+baseline として execution data へ分ける。同じ file、generated output、writer、generator、contract registry、Gunte gate、verification
+surface の共有だけを semantic dependency または Work Unit 統合の根拠にしない。
 
 ## Dependencies, snapshots, and isolation
 
