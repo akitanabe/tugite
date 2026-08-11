@@ -208,78 +208,40 @@ slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
 applies_to = ["claude", "codex"]
 
-[contracts.impl-risk-batch-loader-full-958687828fc2]
+[contracts.impl-risk-loader-data-fd768fbaec06]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''risk-directed review で最初の Resolution Transaction を開始する前に、親は生成後の skill directory から package-root reference へ
-skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
-
-- identity は `batch-resolve-kernel-v1` である。
-- Kernel dependencies は `none` である。
-- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
-
-reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず
-`stop-incomplete` へ返す。親が生成後の相対 path を解決して読み込み、reviewer に path 解決、reference の探索、読み込みを委ねない。
-この loader は finding が0件の review、final writing gate だけの処理のためには起動しない。'''
+pattern = '''path = ../../references/batch-resolve-kernel.md
+identity = batch-resolve-kernel-v1
+dependencies = none
+required_sections = [適用モデル, snapshot discipline, Resolution Transaction, caller boundary]
+failure = stop-incomplete
+owner = impl-lead parent'''
 applies_to = ["claude", "codex"]
 
-[contracts.impl-risk-role-scope-e31d25c34f41]
+[contracts.impl-risk-role-mapping-data-1b8c9a3708b3]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''この mapping の role は caller/resolver=`impl-lead parent`、counterpart=`risk-directed reviewer` とする。counterpart の finding は
-transaction 外の non-binding Data であり、authority、既存の `adopted` / `rejected` / `unresolved`、return boundary、Work Unit / run
-acceptance は親が保持する。'''
+pattern = '''caller = impl-lead parent
+resolver = impl-lead parent
+counterpart = risk-directed reviewer
+target_snapshot = origin verified snapshot
+finding = Resolution Point
+same_snapshot_findings = Resolution Batch
+dispositions = [adopted, rejected, unresolved]'''
 applies_to = ["claude", "codex"]
 
-[contracts.impl-risk-snapshot-scope-8e5d9b548ceb]
+[contracts.impl-risk-transaction-data-cd5090af3548]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''`target_snapshot` は artifact-neutral な caller-owned candidate とし、必要な事前 verification を通過した immutable candidate を
-`origin verified snapshot` として固定する。mapping は既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。'''
-applies_to = ["claude", "codex"]
-
-[contracts.impl-risk-review-batch-621b177002ca]
-kind = "requires"
-slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''reviewer の selection、invocation、observation、result collection、normalize、evidence確認は transaction 外で行う。親は review set を
-counterpart invocation 前に固定し、必要な全 observation と result を回収し、finding を normalize して evidence を確認してから transaction を
-開始する。必要な observation または result が一部でも欠けている場合は、暗黙に縮退して transaction を開始せず、既存の caller boundary または
-`stop-incomplete` へ返す。1件以上の finding は、各 finding を `Resolution Point` へ mapping し、同じ `origin verified snapshot` の全 findings を一つの
-`Resolution Batch` として固定する。finding が0件なら空の Resolution Transaction を開始せず、risk-directed review の結果を既存の親経路へ返す。'''
-applies_to = ["claude", "codex"]
-
-[contracts.impl-risk-adjudication-coherent-7123b7479517]
-kind = "requires"
-slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''親は既存の `adopted` / `rejected` / `unresolved` を維持し、mutation 前に全 point を裁定する。全 point の裁定が終わるまで
-mutation を開始せず、`adopted` は原則として一つの coherent remediation として扱う。`unresolved` と `adopted` が不可分なら mutation を行わず、
-既存の caller-owned stop boundary へ返す。'''
-applies_to = ["claude", "codex"]
-
-[contracts.impl-risk-promotion-boundary-73f5e962a2a1]
-kind = "requires"
-slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''verify と caller-owned semantic progress の後だけ promote し、updated snapshot の re-review は新しい Resolution Transaction とする。promotion
-後の snapshot を risk-directed reviewer が再観測する場合は、新しい review set、Resolution Batch とする。Transaction
-の closure は Work Unit や run の acceptance と別であり、closureだけで親のacceptを意味しない。'''
-applies_to = ["claude", "codex"]
-
-[contracts.impl-risk-final-writing-exclusion-c779a78c360d]
-kind = "requires"
-slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''final writing gate はこの mapping の対象外であり、Kernel の partition、isolate、corrective adjudication を重複定義しない。mandatory final writing gate の
-固有 loader、finding、remediation、verification は
-既存の final writing reference と親責務に従う。'''
-applies_to = ["claude", "codex"]
-
-[contracts.impl-risk-final-writing-exclusion-occurrences]
-kind = "occurrences"
-pattern = "final writing gate はこの mapping の対象外であり、Kernel の partition、isolate、corrective adjudication を重複定義しない。"
-count = 1
-paths = [
-  "plugins/claude/skills/impl-lead/SKILL.md",
-  "plugins/codex/skills/impl-lead/SKILL.md",
-]
+pattern = '''reviewer_observation = outside Resolution Transaction
+result_collection = outside Resolution Transaction
+batch_freeze = before mutation
+zero_findings = no Resolution Transaction
+adopted_findings = coherent remediation
+updated_snapshot_re_review = new Resolution Transaction
+transaction_closure = not Work Unit acceptance, not run acceptance
+final_writing_gate = outside mapping'''
 applies_to = ["claude", "codex"]
 
 [contracts.impl-risk-loader-before-transaction]

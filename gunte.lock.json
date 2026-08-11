@@ -744,36 +744,16 @@
       "sha256": "a15c0461e490843f21d12e871cbe370e6b34814778f3b17ba1da53967c2d1bb0"
     },
     {
-      "id": "impl-risk-batch-loader-full-958687828fc2",
-      "sha256": "78e1b848755fb93d32741f847cf8a73aa020452b9d77d2ad60d5d1e32d309192"
+      "id": "impl-risk-loader-data-fd768fbaec06",
+      "sha256": "a27b5e177e11159baf27c05c5daa525d18189621558112451664553e7bfad3f2"
     },
     {
-      "id": "impl-risk-role-scope-e31d25c34f41",
-      "sha256": "c6a917f9fa5e18197262fe05b0f4116e77c07bbd938fcd137e0326c9f46250c0"
+      "id": "impl-risk-role-mapping-data-1b8c9a3708b3",
+      "sha256": "80fbd0b601665fc93e24a890527e0cec38e61b6b72defdb5dbfa14dd9de17beb"
     },
     {
-      "id": "impl-risk-snapshot-scope-8e5d9b548ceb",
-      "sha256": "9838c869a784ca393617ee7180c09c628d58efc97346444e75e428aecaa8b2ae"
-    },
-    {
-      "id": "impl-risk-review-batch-621b177002ca",
-      "sha256": "8a77234fd0fbef1f59c0ea84c971000105d4e3dbfec4872189e448a5090b3d3d"
-    },
-    {
-      "id": "impl-risk-adjudication-coherent-7123b7479517",
-      "sha256": "8622f75006836c1faee45a65adf8f49278bac329cb572a47c8fcd817b93ff05f"
-    },
-    {
-      "id": "impl-risk-promotion-boundary-73f5e962a2a1",
-      "sha256": "058e39012344d25206a8e8624a08e007edcbc68ae4e40085c9e24435e09832fc"
-    },
-    {
-      "id": "impl-risk-final-writing-exclusion-c779a78c360d",
-      "sha256": "d0ec629639ac86ef7d6b75c9644f58aae080e22a839b2c589cb14021ff27faa0"
-    },
-    {
-      "id": "impl-risk-final-writing-exclusion-occurrences",
-      "sha256": "02f3bac039a9b9a8c1d9d57e3fbd836b7bf880b58cdf362b8abcc801332d9d45"
+      "id": "impl-risk-transaction-data-cd5090af3548",
+      "sha256": "424801d44d64d905e6e8a707173d7a23071549e58807c58e5f751289d7a8c19c"
     },
     {
       "id": "impl-risk-loader-before-transaction",
