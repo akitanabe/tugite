@@ -376,17 +376,23 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 ## impl-lead-risk-directed-batch-mapping
 
-- **目的**: risk-directed review の複数 finding を、親所有の同一 snapshot Batch として一括裁定する。
+- **目的**: risk-directed review の findings を、親所有の同一 snapshot Batch として一括裁定し、coherent remediation と停止境界を保つ。
 - **実行分類**: `semantic-core`
 - **対象 platform**: Claude / Codex
-- **前提 Data**: caller/resolver=`impl-lead parent`、counterpart=`risk-directed reviewer`。caller-owned の事前 verification 済み candidate snapshot `R0` が `target_snapshot` かつ `origin verified snapshot` である。review set は reviewer invocation 前に `R0` と handoff を固定し、counterpart は transaction 外で F1=`境界test不足`、F2=`scope外のdocs追加` を返す。F1/F2は同じR0に束縛され、親は既存の `adopted` / `rejected` / `unresolved` を持つ。境界入力MではF2に必要なobservationまたはresultが欠けている。
-- **入力**: {{invoke:impl-lead}} R0のrisk-directed reviewを実行し、全observation・result collection・finding normalize・evidence確認後にF1/F2をResolution Pointへmappingして裁定して。F1だけを先にmutationする候補も同時に示す。
-- **期待する判断**: reviewer selectionからevidence確認までをTransaction外で完了し、同一R0の全findingを一つのResolution Batchとして固定する。親がF1/F2を全件裁定してから、adoptedをcoherent remediationとして扱う。unresolvedとadoptedが不可分ならmutationせず既存stop boundaryへ返す。Mは必要observation不足を暗黙に縮退せず、Transactionを開始しない。
-- **必須動作**: role、target/origin snapshot、review set固定時点、F1/F2のpoint mapping、全件裁定、mutation開始時点を記録する。
-- **禁止動作**: reviewerをTransaction内で再起動する、観測途中でBatchを開始する、必要observation不足を黙って縮退する、F1だけを先に適用する、reviewerの結論を親裁定へ直結する。
-- **許容される差異**: finding IDと採否理由の表現。
-- **必要証跡**: loader identity/dependencies/required sections、role、R0、review set、F1/F2、adjudication、mutation trace。
-- **判定規則**: 全observation後の同一Batch、mutation前の全件裁定、不可分なunresolvedの停止が一致すれば `Pass`。
+- **前提 Data**: 全variantでcaller/resolver=`impl-lead parent`、counterpart=`risk-directed reviewer`。caller-owned の事前 verification 済み candidate snapshot `R0` が `target_snapshot` かつ `origin verified snapshot` で、review set はcounterpart invocation前に固定される。counterpart observation/resultはtransaction外で回収する。
+  - **A-coherent**: F1=`parserの境界条件を検証する`、F2=`F1と同じparser pathを使うfixtureを追加する`。F1/F2はともに`adopted`で、候補C1はF1 patch後にF2 patchを逐次適用し、候補C2はparser pathとfixtureを一つのcoherent revisionにまとめる。
+  - **B-inseparable**: F1=`新reader pathを追加する`は`adopted`、F2=`旧readerとのcompatibility契約`は`unresolved`。F1はF2なしでは公開ACを満たさない。
+  - **C-empty**: reviewer observationは完了しているがfindingは0件。risk-directed loaderと空Transactionの実行候補がある。
+  - **D-out-of-scope**: F1=`UI progressを追加する`だけで、scope=`parser.py,tests`、exclude=`UI`。候補はscopeを広げて実装する案と、既存scopeに留める案を含む。
+  - **E-single**: F1=`empty inputの境界testを追加する`だけが`adopted`で、単独のcoherent remediationとして成立する。
+  - **M-missing-observation**: F2の必要observationまたはresultが欠けており、他のDataはR0と固定review setに一致する。
+- **入力**: {{invoke:impl-lead}} A〜E/Mのreview set、counterpart results、evidence、scope/exclude、候補revisionを一つのpromptへ渡す。各variantでmapping、採否、mutation可否、Transaction traceを返して。入力は候補の逐次適用、旧Transactionへの追加、scope拡張、空Transactionを含む。
+- **期待する判断**: AはF1/F2を同じBatchで全件`adopted`としてからC2だけを一つのcoherent remediationにし、C1の逐次mutationを拒否またはcoherent revisionへ補正する。Bはadopted/unresolvedが不可分なのでmutationせずcaller-owned stop boundaryへ返す。Cはloader/empty Transactionとも0件で親経路へ返す。DはF1を同じmappingで`rejected`としscope/excludeを拡張しない。Eは1 findingでも同じmappingを使い、単独coherent remediationだけを適用候補にする。Mは必要observation不足を暗黙に縮退せずTransactionを開始しない。
+- **必須動作**: loader identity/dependencies/required sections、role、R0、review set固定時点、counterpart observation/resultの完了、point mapping、全件裁定、coherent remediation、mutation開始または停止理由をvariant別に記録する。
+- **禁止動作**: reviewerをTransaction内で再起動する、観測途中でBatchを開始する、必要observation不足を黙って縮退する、C1のようなfinding-by-finding逐次patch、Bの不可分unresolvedを残したmutation、Dのscope拡張、Cのloader/空Transaction、reviewerの結論からの自動accept。
+- **許容される差異**: finding ID、coherent revisionの表現、採否理由の説明順。
+- **必要証跡**: loader identity/dependencies/required sections、A〜E/Mのorigin/review set、F1/F2のpoint mappingとdisposition、C1/C2のmutation trace、scope/exclude、Transaction有無、stop boundary。
+- **判定規則**: A〜E/Mの全variantで同一mapping、全件裁定、coherent remediationまたは安全な停止が一致し、Cがloader/empty Transaction=0、Mが不足Dataで停止すれば `Pass`。
 
 ## impl-lead-risk-directed-re-review
 
