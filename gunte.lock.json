@@ -968,6 +968,10 @@
       "sha256": "5e7521a85c9168fdfef3b1d454349c9a158e5e7f251a1e52821b3d92fafcb0c5"
     },
     {
+      "id": "review-loop-batch-loader-full-348e9ed087c7",
+      "sha256": "3d2b6c180be8fbd47c7ca09e66be2a68ee92afabbdd31c3521f372f3d4141184"
+    },
+    {
       "id": "review-loop-batch-role-caller-b98b2f801776",
       "sha256": "fb6c2b1602a8d93d3f8c11f9e2ef728cd08aba7061f11797f06d62f03e7ca7dd"
     },

@@ -334,6 +334,24 @@ slice = "review-loop-batch-resolve-kernel-parent-mapping"
 pattern = "path 解決、reference の探索、読み込みを委ねない"
 applies_to = ["claude", "codex"]
 
+[contracts.review-loop-batch-loader-full-348e9ed087c7]
+kind = "requires"
+slice = "review-loop-batch-resolve-kernel-parent-mapping"
+pattern = '''review-loop parent は invocation 内で最初の Resolution Transaction を開始する前に、生成後の skill directory から package-root reference へ
+skill-relative `../../references/batch-resolve-kernel.md` を一度だけ読み、次の必要本文を検証する。
+
+- identity は `batch-resolve-kernel-v1` である。
+- Kernel dependencies は `none` である。
+- `適用モデル`、`snapshot discipline`、`Resolution Transaction`、`caller boundary` の必要本文が揃っている。
+
+reference の不足、identity または dependencies の不一致、必要本文の不足、読み取り失敗は推測で補わず、既存の
+`stop-incomplete` またはレビュー不成立の boundary へ返す。reviewer に path 解決、reference の探索、読み込みを委ねない。
+
+この mapping の role は caller=`review-loop parent`、resolver=`review-loop parent`、counterpart=`reviewer` とする。
+counterpart は Resolution Transaction 外で non-binding な finding を返し、authority と return boundary は既存の親責務が保持する。
+reviewer の selection、prompt、invocation、result collection は transaction 外で行い、Kernel はこれらを行わない。'''
+applies_to = ["claude", "codex"]
+
 [contracts.review-loop-batch-role-caller-b98b2f801776]
 kind = "requires"
 slice = "review-loop-batch-resolve-kernel-parent-mapping"

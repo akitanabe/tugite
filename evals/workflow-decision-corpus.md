@@ -604,11 +604,14 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
   - **A**: 通常roundのreviewer R1/R2が同じartifact・同じorigin `P0`からfinding F1/F2を返し、親が全件を裁定して単一coherent revision `P1`をapply、verify、semantic progress確認する。
   - **B**: AのR1/R2のfindingにreviewer provenanceを保持し、R1/R2の結果を同じBatchへ束ねるが、多数決・priorityを使わない。
   - **C**: R2のfindingだけが更新後snapshot `P1`を観測している、またはR1のfindingが`P0`でR2が`P1`である。
-  - **D**: AのBatchに未裁定F2を残したままF1だけをapplyする、verify前にworking stateをcurrent verified snapshotへpromoteする、またはverify failure後に未検証state上へ次partitionを積む。
+  - **D**:
+    - **D-1**: AのBatchに未裁定F2を残したままF1だけをapplyする。
+    - **D-2**: verify前にworking stateをcurrent verified snapshotへpromoteする。
+    - **D-3**: verify failure後に未検証state上へ次partitionを積む。
   - **E**: loader referenceが不足、identityが`resolve-kernel-v1`、dependenciesが`necessity-kernel-v1`、または必要本文が欠落している。
   - **F**: accept-candidate後のtrimを二回行う。trim #1は`P1`をoriginとしてpromotionし、trim #2は`P2`をoriginとして独立transactionでverifyする。
 - **入力**: `{{invoke:review-loop}}` にA〜Fの全Dataを渡し、batch loader、role mapping、Resolution Batch境界、transaction順序、ledger更新、trim transactionを判定して返して。
-- **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。Dはapplyを開始せず、未裁定point、working state、失敗partitionを親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。
+- **期待する判断**: Aは1 normal review round=1 Resolution Transactionで、全finding裁定後にsingle partitionのcoherent apply→verify→semantic progress→`P1` promotionを行う。Bは1 Batchのままprovenanceを保持し、reviewer identityによる多数決/priorityを持たない。Cは異なるorigin snapshotを同じBatchへ混ぜず、未検証mutationなしでcaller boundaryへ返す。D-1は未裁定pointを残したapplyを開始せず親へ返す。D-2はpromotionせず、直前のcurrent verified snapshotを維持する。D-3は失敗直前のverified snapshotを維持し、未検証state上へ次partitionを積まず親へ返す。Eはreview不成立または既存`stop-incomplete` boundaryへ返し、reviewerにpath解決を委ねない。Fはtrim #1/#2を別transactionとして扱い、trimを通常round count/induced窓へ加算しない。
 - **必須動作**: 最初のResolution Transaction前にskill-relative `../../references/batch-resolve-kernel.md`を一度だけloadし、identity=`batch-resolve-kernel-v1`、dependencies=`none`、適用モデル/snapshot discipline/Resolution Transaction/caller boundaryの本文を検証する。execution result/evidenceからparentが既存ledgerを更新し、Kernelはledger/round/termination/induced-loop/countを所有しない。
 - **禁止動作**: reviewer selection/prompt/invocation/result collectionをtransaction内で行う、異なるsnapshotを混ぜる、Batch membershipをtransaction中に追加する、adjudicate前にmutationする、verify/semantic progress前にpromotionする、failureしたpartitionをtransaction-wide rollbackする、新しいpoint/frontierをcorrective adjudicationで追加する、5区分の日本語tokenを変更する。
 - **必要証跡**: loader identity/dependencies/本文検証と失敗経路、role mapping、origin snapshotとBatch membership、全件adjudication、partition/apply/verify/progress/promotion順、mixed-snapshot未実行、ledger ownership、trimごとのsnapshot列とcount。
