@@ -49,7 +49,25 @@ Claude Code では `/tugite:impl-lead`、`/tugite:plan-craft`、`/tugite:plan-cr
 
 ### Cursor local plugin
 
-Cursor では `plugins/cursor` を `~/.cursor/plugins/local/tugite` へ copy または symlink して登録し、Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。既存の local plugin がある場合は内容を確認してから置き換えてください。
+Cursor では Git の main 先端にある `plugins/cursor` を user scope の `~/.cursor/plugins/local/tugite` へ copy して導入します。symlink は使いません。既存の local plugin がある場合は内容を確認してから `--force` / `-Force` で置き換えてください。導入後は Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。
+
+Linux / macOS / WSL / Git Bash:
+
+```text
+plugins/cursor/install/install-plugin.sh --user
+plugins/cursor/install/install-plugin.sh --check --user
+plugins/cursor/install/install-plugin.sh --force --user
+```
+
+Windows PowerShell:
+
+```text
+plugins/cursor/install/install-plugin.ps1 -User
+plugins/cursor/install/install-plugin.ps1 -Check -User
+plugins/cursor/install/install-plugin.ps1 -Force -User
+```
+
+一度導入したあとは、新しい Cursor session で `/install-plugin` を使い、状態確認と更新を依頼できます。更新後は Cursor を再起動するか `Developer: Reload Window` を実行してください。
 
 repository checkout を直接検証する場合は、repository root で次を実行します。
 
@@ -64,9 +82,10 @@ public skill は明示して起動します。
 /plan-craft <plan task>
 /plan-craft-approval <human-directed plan task>
 /review-loop <artifact review task>
+/install-plugin
 ```
 
-Cursor 用 installer と Marketplace 配布はこの version の対象外です。
+Cursor 用 Marketplace 配布はこの version の対象外です。
 
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
 

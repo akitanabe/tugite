@@ -72,6 +72,7 @@ managed_roots = [
 ]
 allow_files = [
   "tests/install-agents-test.sh",
+  "tests/install-cursor-plugin-test.sh",
   ".claude-plugin/marketplace.json",
   ".agents/plugins/marketplace.json",
 ]
@@ -249,7 +250,13 @@ value_from = "project:version"
 
 [targets.cursor]
 output_root = "plugins/cursor"
-managed_roots = ["agents", "skills", "references", ".cursor-plugin"]
+managed_roots = ["install", "agents", "skills", "references", ".cursor-plugin"]
+allow_files = [
+  "install/install-plugin.sh",
+  "install/install-plugin.ps1",
+]
+allow_dirs = ["skills/install-plugin"]
+
 
 [[targets.cursor.rules]]
 match = "shared/batch-resolve-kernel.md"
