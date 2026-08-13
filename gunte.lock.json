@@ -194,8 +194,20 @@
       "sha256": "32dc37d65821a391a610f31b57e5638d7d96f5416213271754d94e8ed3a43490"
     },
     {
-      "id": "cursor-readme-local-requires-92982da3085a",
-      "sha256": "caef2795d03ce05f78c4b74203948c153ab78e2b7d4537fd301fd4118efd07f2"
+      "id": "cursor-readme-local-requires-aae0052f5b5a",
+      "sha256": "78e32aac64da5d6441dfd95067ca63ae1d79e943f9035f5a711cce40d7a287d6"
+    },
+    {
+      "id": "cursor-readme-ps1-requires-821e06580953",
+      "sha256": "fdba4029029fda5eec42e3ea44d4541b4ed27d31fba4cad6856f2a6369344c47"
+    },
+    {
+      "id": "cursor-readme-main-requires-7260a52ca5b8",
+      "sha256": "1e80d5822fe43037b0806333f8a1583b9c4718c6428d9412303bc07ca090a1fd"
+    },
+    {
+      "id": "cursor-readme-no-symlink-requires-8d7e64656bf0",
+      "sha256": "c2622b7431cbc772072ccb0c40e3cc8d6e6a1cee70464426a84ac0fe94217dcb"
     },
     {
       "id": "cursor-readme-reload-requires-b627f39fae48",
@@ -210,8 +222,8 @@
       "sha256": "7ad15731a11886e827705ac68504be331c869668801d41950007bf2c25a47de5"
     },
     {
-      "id": "cursor-readme-unsupported-requires-9fd5f6cc6628",
-      "sha256": "cb7c18e0e319737a6488f42e2070546c78f9d07bec73db8a64f71073fdde0ac6"
+      "id": "cursor-readme-unsupported-requires-d94e0540f495",
+      "sha256": "1dae7919620f1510f84461ea45bf1ccb5b6154acfc3f90cc64e2b3e39346bb34"
     },
     {
       "id": "codex-openai-enabled-policy",
