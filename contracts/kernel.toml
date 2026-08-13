@@ -20,6 +20,17 @@ paths = [
 count = 1
 applies_to = ["codex"]
 
+[contracts.kernel-dependencies-none-cursor]
+kind = "occurrences"
+pattern = "Kernel dependencies: `none`."
+paths = [
+  "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/necessity-kernel.md",
+  "plugins/cursor/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["cursor"]
+
 [contracts.kernel-dependencies-key-claude]
 kind = "occurrences"
 pattern = "Kernel dependencies:"
@@ -42,6 +53,17 @@ paths = [
 count = 1
 applies_to = ["codex"]
 
+[contracts.kernel-dependencies-key-cursor]
+kind = "occurrences"
+pattern = "Kernel dependencies:"
+paths = [
+  "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/necessity-kernel.md",
+  "plugins/cursor/references/resolve-kernel.md",
+]
+count = 1
+applies_to = ["cursor"]
+
 [contracts.kernel-positive-dependency-verb]
 kind = "forbids"
 pattern = "に依存する。"
@@ -52,8 +74,11 @@ paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/necessity-kernel.md",
+  "plugins/cursor/references/resolve-kernel.md",
 ]
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.kernel-positive-dependency-condition]
 kind = "forbids"
@@ -65,5 +90,8 @@ paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/necessity-kernel.md",
+  "plugins/cursor/references/resolve-kernel.md",
 ]
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]

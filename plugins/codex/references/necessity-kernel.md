@@ -6,7 +6,7 @@ Kernel identity: `necessity-kernel-v1`.
 Kernel dependencies: `none`.
 
 この共有規範は、reviewer または advisor が返す observation / evidence から導かれた候補を、現在の
-Task Specification に対する必要性で裁定するための最小規範である。正本はこのファイルであり、Claude / Codex
+Task Specification に対する必要性で裁定するための最小規範である。正本はこのファイルであり、各 platform
 の配布物では `references/necessity-kernel.md` として生成される。各 role は全文を複製せず、この規範との
 自分の既存返却形式への mapping だけを持つ。parent は package reference を読み、role には既存の
 判定基準または必要な周辺 context の一部として identity / 必要な本文を渡す。

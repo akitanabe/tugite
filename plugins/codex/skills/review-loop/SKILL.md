@@ -25,8 +25,7 @@ proposal-family public workflow の親が candidate producer 後段の review �
 - v4 skill の実行中、`impl-lead` の実行中、またはレビューを求めない相談では起動しない。
 - 発火条件を満たさない自然言語の作業内容や context から、起動を推測しない。
 - 明示された public workflow parent がない context へ自動 switch しない。proposal-family の workflow 間も自動で切り替えない。
-- Claude の frontmatter は暗黙起動を無効にしない。ただし上記の description と本文の条件を守る。
-- Codex の metadata は `allow_implicit_invocation: true` とし、暗黙起動を許す範囲を上記の条件に限る。
+- 各 platform の invocation metadata は上記の発火契約を表し、その範囲を拡張しない。
 
 ## 入力
 

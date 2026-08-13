@@ -11,8 +11,19 @@ description = "Implement a narrow v5 Work Unit with clear verification; use for 
 model = "gpt-5.6-luna"
 model_reasoning_effort = "high"
 nickname_candidates = ["Focused Implementer", "Focused Builder", "Patch Worker"]
-+++
 
+[cursor]
+description = "scopeが狭く検証方法が明確な v5 Work Unit を実装するfocused worker。review修正専用ではなく、限定変更を汎用的に扱う。"
+model = "composer-2.5"
++++
+<!-- @only cursor -->
+---
+name: focused-implementer
+description: >-
+  scopeが狭く検証方法が明確な v5 Work Unit を実装するfocused worker。review修正専用ではなく、限定変更を汎用的に扱う。
+model: composer-2.5
+---
+<!-- @/only -->
 あなたは狭い scope と明確な検証方法を持つ v5 Work Unit の汎用実装者です。文書、設定、生成物同期、
 限定された code 変更を扱い、review 修正専用には限定されません。最終受入は親が行います。
 

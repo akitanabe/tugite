@@ -1,5 +1,11 @@
+[contracts.proposal-dialogue-internal-guard-requires-527b65ea8ec8]
+kind = "requires"
+slice = "proposal-dialogue-boundary"
+pattern = "この Skill は `plan-craft-approval` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。"
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: loader fields form one relation; existing order anchors protect load-before-use and load-before-cycle.
-[contracts.dialogue-resolve-loader-data-b5dfcfee165c]
+[contracts.dialogue-resolve-loader-data-08b6250f7db8]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = '''path = ../../references/resolve-kernel.md
@@ -10,9 +16,9 @@ required_sections = [Caller boundary と role, Current verified snapshot、worki
 failure = stop-incomplete
 owner = plan-craft-approval parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: caller, resolver, counterpart, authority, and ledger are one role mapping.
-[contracts.dialogue-resolve-role-data-a6de7955e7a3]
+[contracts.dialogue-resolve-role-data-bea6357c3e02]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = '''caller = plan-craft-approval
@@ -20,9 +26,9 @@ resolver = planner
 counterpart = human
 authority = binding
 ledger = decision ledger'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields form one relation; semantic Claim handling belongs to EVAL.
-[contracts.dialogue-necessity-loader-data-60972c4af8eb]
+[contracts.dialogue-necessity-loader-data-8a54f7f248fd]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = '''path = ../../references/necessity-kernel.md
@@ -32,412 +38,412 @@ required_sections = [適用範囲, Task Specification, Claim と evidence, Delet
 failure = stop-incomplete
 owner = proposal-dialogue parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-parent-requires-0655da896300]
+[contracts.proposal-dialogue-parent-requires-9a457d7aeabb]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`plan-craft-approval` の同じ親 context 内だけ"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-producer-boundary-requires-8cdd3a9238b2]
+[contracts.proposal-dialogue-producer-boundary-requires-027d49e878de]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`proposal` と同じ candidate producer として、後段工程を選択・起動せず caller-owned parent へ返す。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-decisions-requires-7b475f84ef04]
+[contracts.proposal-dialogue-decisions-requires-29075712c83d]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`採用` / `却下` / `保留` / `修正して採用`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-recommendation-requires-fc587313eaf3]
+[contracts.proposal-dialogue-recommendation-requires-232b7a42fa45]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "親の推奨を人間の回答として扱わない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-no-answer-requires-b79c50a00736]
+[contracts.proposal-dialogue-no-answer-requires-db1b231ef0d9]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "無回答・曖昧な反応を承認として扱わず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-sequential-snapshot-requires-2efa118654bd]
+[contracts.proposal-dialogue-sequential-snapshot-requires-34ff6cfee124]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "採用分だけを working state へ一件ずつ apply して verification し、複数の判断を一括反映しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-freeze-requires-41ed8038cc5f]
+[contracts.proposal-dialogue-freeze-requires-78d5d6d98731]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "direction freeze 候補は、採用提案が反映・verification 済み、主要判断が明示裁定済み、保留事項が scope 外へ分離済み、\nblocking な人間判断がなく、ユーザーが現在の方向を確認済みの場合だけ成立する。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-raw-ledger-requires-64c6d23487b1]
+[contracts.proposal-dialogue-raw-ledger-requires-dad818b0c234]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "反映 snapshot、verification を decision ledger として会話内 Data に保持するが、YAML、内部 schema、raw ledger は\nユーザーへ提示しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-stop-requires-5d6871257e15]
+[contracts.proposal-dialogue-stop-requires-e3222e8966b6]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-ledgers-requires-d68cd2f350af]
+[contracts.proposal-dialogue-ledgers-requires-046318fd942c]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "decision ledger と adoption ledger は分離する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-insight-question-requires-fef19f44e2e5]
+[contracts.proposal-dialogue-insight-question-requires-c9bbd13bb126]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "insight から質問を自動生成しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-advisor-phase-requires-171ecf2fc3d6]
+[contracts.proposal-dialogue-advisor-phase-requires-0ccbe0768ee5]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "advisor を固定 phase にせず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-empty-insight-requires-30f4ef1af0eb]
+[contracts.proposal-dialogue-empty-insight-requires-8501a8e9c88b]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`insights: []` を"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-independent-requires-484291f7db7c]
+[contracts.resolve-independent-requires-d3b5ca64fb38]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-no-queue-requires-e5ae886d1385]
+[contracts.resolve-no-queue-requires-136dc690ed7c]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "判断 queue を事前に固定しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-verify-failure-requires-5a14b9300042]
+[contracts.resolve-verify-failure-requires-aecf02039212]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "verify failure では working state を verified snapshot にせず current point を reopen し、その上へ次の判断を積まない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-rejection-requires-2c04e195eb39]
+[contracts.resolve-rejection-requires-871b6dcd9a96]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "却下または保留は apply せず、暗黙に resolved として frontier から消さない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-frontier-empty-requires-61a8afc55fdb]
+[contracts.resolve-frontier-empty-requires-d68bc882f9e1]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "frontier が空なら既存の direction freeze 判定へ進むだけであり、workflow completion または candidate acceptance ではない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-stop-requires-10b3db26f454]
+[contracts.resolve-stop-requires-b173b7a88b87]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "no-progress のまま material な frontier が残る場合、または安全上限へ到達して frontier が残る場合は、残る判断点を消さず、blocking reason とともに既存の `stop-incomplete` へ mapping する。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-baseline-forbids-ea5775f199d5]
+[contracts.proposal-dialogue-baseline-forbids-ae76193a6133]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "baseline_round"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-saturation-forbids-538fcd94205d]
+[contracts.proposal-dialogue-saturation-forbids-af594a636433]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "飽和窓"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-review-loop-forbids-635c70de2304]
+[contracts.proposal-dialogue-review-loop-forbids-75dc433d89c1]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-responsibility-requires-b01d31f5587e]
+[contracts.proposal-dialogue-responsibility-requires-006ba6bdd918]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "人間は結果責任を、planner は evidence に基づく経過責任を担う。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-no-research-delegation-requires-04a1ef6f157c]
+[contracts.proposal-dialogue-no-research-delegation-requires-50e13fb238e8]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "Agent で解消可能な曖昧さを人間へ返さない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-density-requires-b06fdf3ef4bc]
+[contracts.proposal-dialogue-density-requires-173fc3141b81]
 kind = "requires"
 slice = "proposal-dialogue-boundary"
 pattern = "`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-mode-state-forbids-1edf5c5386d1]
+[contracts.proposal-dialogue-mode-state-forbids-78de2d87e2f5]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "`dialogue_mode`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-advisor-direct-forbids-cb8dcd75e095]
+[contracts.proposal-dialogue-advisor-direct-forbids-ed6d51b7f121]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "advisor insight をそのまま人間へ提示する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-fixed-density-variant-forbids-e85e310aa2a9]
+[contracts.proposal-dialogue-fixed-density-variant-forbids-69f7392b063f]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "`A` / `B` / `C` は会話全体で固定 state"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-advisor-direct-variant-forbids-a51e10cfcfa2]
+[contracts.proposal-dialogue-advisor-direct-variant-forbids-16029412c8ec]
 kind = "forbids"
 slice = "proposal-dialogue-boundary"
 pattern = "advisor の raw insight を planner を介さず直接人間へ送る"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-order-requires-f8347c3031bb]
+[contracts.plan-craft-approval-order-requires-c7d6633c2c9e]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "proposal-dialogue → structural-health-gate → review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.dialogue-boundary-owner-requires-1ce28efa5224]
+[contracts.dialogue-boundary-owner-requires-a6f1cab1e590]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "`plan-craft-approval` は `proposal-dialogue` の invocation boundary、人間判断の binding authority、resolution execution bound を所有する。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.dialogue-bound-default-requires-3de3ba853cdb]
+[contracts.dialogue-bound-default-requires-50472fb9b0ea]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "ユーザーが安全上限を指定しない場合は、親が dialogue loop の開始時に internal responsibility として固定する。固定値、新しい public parameter または schema、`resolve_rounds` は追加しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.dialogue-budget-separate-requires-9b55d2149bcd]
+[contracts.dialogue-budget-separate-requires-594931fe6da5]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "resolution execution bound を structural-health-gate の `rounds` または review の回数制約へ加算・混同しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-applicability-first-requires-606808497aff]
+[contracts.plan-craft-approval-applicability-first-requires-61d3b00cab8a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "review 省略の明示より reviewer 適用可否の判定を先に行う"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-not-applicable-requires-8b1a6a39d863]
+[contracts.plan-craft-approval-not-applicable-requires-957326ca3f3a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-fixed-review-requires-b01feb2f4c96]
+[contracts.plan-craft-approval-fixed-review-requires-cf392563aa5f]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "reviewer 適用可能な成果物は、ユーザーによる review の明示要求がなくても固定工程として `review-loop` へ渡す。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-explicit-skip-requires-7127b7a6cb00]
+[contracts.plan-craft-approval-explicit-skip-requires-f34a1e8c0063]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "ユーザーが review 省略を明示した場合は、確定候補とせず、review 未実施の起草物と残存 risk を添えて未完了として返す。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-converged-requires-d4d4954b86aa]
+[contracts.plan-craft-approval-converged-requires-568f0b08d13a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "`converged`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-induced-clean-requires-f1d8351c69e7]
+[contracts.plan-craft-approval-induced-clean-requires-57549e1a01b8]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "未解決 finding のない `induced-loop`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-failure-requires-bb625372fddd]
+[contracts.plan-craft-approval-review-failure-requires-9b72ab4ea29e]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "レビュー不成立"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-round-limit-requires-b1875bbb3a81]
+[contracts.plan-craft-approval-round-limit-requires-e01366632041]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "`round-limit`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-stop-requires-bf0cad0ca037]
+[contracts.plan-craft-approval-stop-requires-4bbc67baa0ab]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-induced-unresolved-requires-a7a6f2b6823d]
+[contracts.plan-craft-approval-induced-unresolved-requires-d172530f123b]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "未解決 finding を伴う `induced-loop`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-no-alternative-requires-3a022e0ae565]
+[contracts.plan-craft-approval-no-alternative-requires-0f31049e7a4a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "代替 evidence で完了扱いにしない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-no-reverse-requires-02e2dbbac64d]
+[contracts.plan-craft-approval-no-reverse-requires-e8d11b39dddf]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "自動逆遷移しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-human-confirmation-requires-28d1af738b7c]
+[contracts.plan-craft-approval-human-confirmation-requires-3cd10294de86]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "decision ledger で人間が裁定済みの方向性を変更・撤回する finding は、局所修正で閉じる場合も親だけで採用せず\n`人間確認` へ裁定する。人間の再判断後だけ成果物へ反映し、既存の裁定区分を増やさない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-same-content-requires-b51fa9321183]
+[contracts.plan-craft-approval-same-content-requires-7b7535bc8d88]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "同一内容へ"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-caller-context-requires-8953f4a646ab]
+[contracts.plan-craft-approval-caller-context-requires-bcf97400c66e]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "generic `caller_context` Data"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-goal-requires-e41dd8f5e108]
+[contracts.plan-craft-approval-review-goal-requires-a63ea137e2eb]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "`review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-goal-requires-37f40fb81264]
+[contracts.plan-craft-approval-review-goal-requires-4966dff9d50f]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-goal-requires-acf2d1b26e75]
+[contracts.plan-craft-approval-review-goal-requires-2c76ead9f65a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-goal-forbids-bc111c83c13c]
+[contracts.plan-craft-approval-review-goal-forbids-725acaae079f]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "追加 risk がなければ `review_goal` を設定しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-fallback-forbids-c8fe8122f54a]
+[contracts.plan-craft-approval-fallback-forbids-4c9929081ee1]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "ただし goal に対応する別 reviewer があれば `review-loop` へ渡す"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-final-acceptance-requires-fc69834046e6]
+[contracts.plan-craft-approval-final-acceptance-requires-85acc5627ad9]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を\n省略できるが、final report は省略しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-review-change-boundary-requires-6ace3cd5bf9a]
+[contracts.plan-craft-approval-review-change-boundary-requires-c8f4ef268682]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の\n変更が必要なら、改善案を採用せず `人間確認` へ止める。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-freeze-as-final-forbids-29d8e8a66ff5]
+[contracts.plan-craft-approval-freeze-as-final-forbids-4002b75d89a7]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "direction freeze を final acceptance とみなす"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-optional-final-forbids-aec3ccb2d647]
+[contracts.plan-craft-approval-optional-final-forbids-a31ba6ac5ce3]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "final acceptance は任意"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-freeze-as-final-variant-forbids-e273ecba654c]
+[contracts.plan-craft-approval-freeze-as-final-variant-forbids-48564f79637a]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "direction freeze を最終承認として扱う"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-optional-final-variant-forbids-7c26c3fdd1e2]
+[contracts.plan-craft-approval-optional-final-variant-forbids-9fe4aa2d50f0]
 kind = "forbids"
 slice = "plan-craft-approval-handoff"
 pattern = "final acceptance は省略可能"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-dialogue-kernel-reference-before-criteria]
 kind = "order"
 before = "proposal-dialogue-kernel-reference"
 after = "proposal-dialogue-kernel-criteria"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-dialogue-resolve-loader-before-cycle]
 kind = "order"
 before = "proposal-dialogue-resolve-kernel-load"
 after = "proposal-dialogue-resolution-cycle-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-resolve-loader-before-dialogue]
 kind = "order"
 before = "plan-craft-approval-resolve-kernel-load"
 after = "plan-craft-approval-proposal-dialogue-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-mapping-before-resolve-loader]
 kind = "order"
 before = "plan-craft-approval-dialogue-mapping"
 after = "plan-craft-approval-resolve-kernel-load"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-dialogue-resolve-loader-before-injection]
 kind = "order"
 before = "proposal-dialogue-resolve-kernel-load"
 after = "proposal-dialogue-resolve-kernel-use"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-dialogue-resolve-injection-before-cycle]
 kind = "order"
 before = "proposal-dialogue-resolve-kernel-use"
 after = "proposal-dialogue-resolution-cycle-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-dialogue-mapping-before-start]
 kind = "order"
 before = "plan-craft-approval-dialogue-mapping"
 after = "plan-craft-approval-proposal-dialogue-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-dialogue-before-gate]
 kind = "order"
 before = "plan-craft-approval-proposal-dialogue-start"
 after = "plan-craft-approval-structural-health-gate-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-gate-before-review]
 kind = "order"
 before = "plan-craft-approval-structural-health-gate-start"
 after = "plan-craft-approval-review-loop-handoff"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]

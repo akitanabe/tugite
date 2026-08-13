@@ -1,5 +1,18 @@
+[contracts.proposal-internal-guard-requires-8658469ca5a6]
+kind = "requires"
+slice = "proposal-internal-guard"
+pattern = "この Skill は `plan-craft` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.structural-health-gate-internal-guard-requires-61b7ebeb1a4b]
+kind = "requires"
+slice = "structural-health-gate-kernel-exclusion-intro"
+pattern = '''明示起動された proposal-family public workflow parent の同じ context 内だけで使い、単独起動、ユーザーからの直接起動、
+proposal-family 外の workflow からの流用はしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: loader fields must remain one relation; order anchors separately protect meaningful timing.
-[contracts.proposal-batch-loader-data-cd320b7fe421]
+[contracts.proposal-batch-loader-data-5d9f4589020a]
 kind = "requires"
 slice = "proposal-batch-resolve-kernel-loader"
 pattern = '''path = ../../references/batch-resolve-kernel.md
@@ -10,9 +23,9 @@ required_sections = [適用モデル, Snapshot discipline, Resolution Transactio
 failure = stop-incomplete
 owner = proposal parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: role, snapshot, point mapping, authority, and ledger are one caller mapping.
-[contracts.proposal-batch-role-data-2f134afdfbdb]
+[contracts.proposal-batch-role-data-5632d9363179]
 kind = "requires"
 slice = "proposal-batch-resolution-role-mapping"
 pattern = '''caller = plan-craft
@@ -23,9 +36,9 @@ insight = Resolution Point
 same_snapshot_insights = Resolution Batch
 authority = discretionary
 ledger = adoption ledger'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields must remain one relation; semantic Claim adjudication belongs to EVAL.
-[contracts.proposal-necessity-loader-data-de8918340f2a]
+[contracts.proposal-necessity-loader-data-1493ccb9eaa4]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = '''path = ../../references/necessity-kernel.md
@@ -35,9 +48,9 @@ required_sections = [適用範囲, Task Specification, Claim と evidence, Delet
 failure = stop-incomplete
 owner = proposal parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields must remain one relation; semantic reviewer behavior belongs to EVAL.
-[contracts.review-necessity-loader-data-f10c80a441cc]
+[contracts.review-necessity-loader-data-4d4489c07ff8]
 kind = "requires"
 slice = "review-loop-kernel-parent-mapping"
 pattern = '''path = ../../references/necessity-kernel.md
@@ -47,9 +60,9 @@ required_sections = [適用範囲, Task Specification, Claim と evidence, Delet
 failure = return-to-parent
 owner = review-loop parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields must remain one relation; the order anchor protects meaningful timing.
-[contracts.review-batch-loader-data-c7351cff6bb2]
+[contracts.review-batch-loader-data-dc0b8ee5c915]
 kind = "requires"
 slice = "review-loop-batch-resolve-kernel-parent-mapping"
 pattern = '''path = ../../references/batch-resolve-kernel.md
@@ -60,9 +73,9 @@ required_sections = [適用モデル, Snapshot discipline, Resolution Transactio
 failure = stop-incomplete or review-not-established
 owner = review-loop parent
 delegate_path_resolution = false'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: role, snapshot, finding mapping, authority, and ledger are one caller mapping.
-[contracts.review-batch-role-data-7ea204e7cfbc]
+[contracts.review-batch-role-data-5bffc3d747c6]
 kind = "requires"
 slice = "review-loop-batch-resolve-kernel-parent-mapping"
 pattern = '''caller = review-loop parent
@@ -73,1152 +86,1152 @@ finding = Resolution Point
 same_snapshot_findings = Resolution Batch
 authority = parent-owned
 ledger = finding ledger and hold ledger'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-local-plan-craft-requires-c9bee624aaf3]
+[contracts.proposal-local-plan-craft-requires-eb2f902e63fe]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "plan-craft"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-local-review-loop-forbids-1c0ab6cf5239]
+[contracts.proposal-local-review-loop-forbids-f186113084c7]
 kind = "forbids"
 slice = "candidate-producer-boundary"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-resolution-ownership-requires-ae86a9ab644f]
+[contracts.plan-craft-resolution-ownership-requires-0802ef808acb]
 kind = "requires"
 slice = "plan-craft-proposal-resolution-ownership"
 pattern = "proposal の invocation boundary、discretionary authority、resolution execution bound は `plan-craft` が所有する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-resolve-loader-before-use]
 kind = "order"
 before = "proposal-batch-resolve-kernel-loader-start"
 after = "proposal-batch-resolve-kernel-use"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-resolve-loader-before-cycle]
 kind = "order"
 before = "proposal-batch-resolve-kernel-loader-start"
 after = "proposal-batch-resolution-transaction-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-resolve-loader-before-verified-baseline]
 kind = "order"
 before = "proposal-batch-resolve-kernel-loader-start"
 after = "proposal-verified-baseline-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-resolution-before-bounded-return]
 kind = "order"
 before = "proposal-batch-resolution-transaction-start"
 after = "proposal-bounded-return-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-caller-verified-snapshot-requires-08d539e62aad]
+[contracts.proposal-caller-verified-snapshot-requires-146d5f3b3c47]
 kind = "requires"
 slice = "proposal-verified-snapshot-baseline"
 pattern = "既存 candidate を受け取る場合は current verified candidate snapshot"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-initial-verified-snapshot-requires-989b53be6aaa]
+[contracts.proposal-initial-verified-snapshot-requires-dcc63b171f19]
 kind = "requires"
 slice = "proposal-verified-snapshot-baseline"
 pattern = "verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-improvement-working-state-requires-9c251797357c]
+[contracts.proposal-improvement-working-state-requires-1975cf4f0dab]
 kind = "requires"
 slice = "proposal-verified-snapshot-baseline"
 pattern = "各改善は working state へ apply"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-working-state-promotion-requires-bfd4c3f09770]
+[contracts.proposal-working-state-promotion-requires-140429b159fa]
 kind = "requires"
 slice = "proposal-verified-snapshot-baseline"
 pattern = "verify と semantic progress が成功した後にだけ current verified snapshot を更新する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-resolution-mapping-before-proposal]
 kind = "order"
 before = "plan-craft-proposal-resolution-caller-mapping"
 after = "proposal-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-origin-2211b63fb388]
+[contracts.proposal-batch-origin-c7fc82f10c7c]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "同じ origin verified candidate snapshot に束縛され transaction 開始時までに固定された Resolution"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-fixed-membership-4db7340b6326]
+[contracts.proposal-batch-fixed-membership-ead4c4351ef8]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "transaction 中に Batch membership を追加せず、snapshot 更新後に frontier を\n再計算しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-adjudicate-all-6ee7f1a9850f]
+[contracts.proposal-batch-adjudicate-all-bf10f63cda36]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "mutation 前に Batch 全体を裁定し、conflict / dependency を解消する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-coherent-apply-335e392d8c41]
+[contracts.proposal-batch-coherent-apply-93e1b79c11c6]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "selected set を原則 single partition の coherent revision として apply"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-promotion-ad1147d54281]
+[contracts.proposal-batch-promotion-fade9fdd1915]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "verify と caller-owned semantic progress が成功するまで current verified snapshot に promote しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-isolate-6649b7d9e6ca]
+[contracts.proposal-batch-isolate-3c50ec25e253]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "同じ isolation baseline から `isolate` して安全に処理できる subset"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-corrective-a4c3c2f5459c]
+[contracts.proposal-batch-corrective-fdd5e84703ad]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "元 Batch の point への corrective\nadjudication"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-boundary-e6f71215223a]
+[contracts.proposal-batch-boundary-64a85a5aa5ae]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "authority または evidence が\n不足する point は推測で selected set に含めず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: this transition block is structured execution Data; line order carries the two-pass sequence.
-[contracts.proposal-two-pass-flow-417135ee9357]
+[contracts.proposal-two-pass-flow-a871fc451ca9]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "candidate S0\n→ fresh-context advisor #1\n→ Resolution Batch #1\n→ Resolution Transaction #1"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: this transition block is structured execution Data; line order carries the second-pass sequence.
-[contracts.proposal-two-pass-second-b31d71cc88b6]
+[contracts.proposal-two-pass-second-9bc9c4c3294d]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "verified candidate S1\n→ fresh-context advisor #2\n→ Resolution Batch #2\n→ Resolution Transaction #2"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-exactly-11b22b42e064]
+[contracts.proposal-two-pass-exactly-dab45e6d2153]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "exactly 2 pass"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-empty-ea59c6b44031]
+[contracts.proposal-two-pass-empty-1af152a480c0]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "Batch または selected set が空でも第2 passを必ず起動"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-no-third-3c3e54864736]
+[contracts.proposal-two-pass-no-third-4d89d7ff0368]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "第3 passを起動しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-scope-53bfec344c16]
+[contracts.proposal-two-pass-scope-df422079961b]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "fulfillment check"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-induced-ac3f1a24ac4c]
+[contracts.proposal-two-pass-induced-373d48bf9ee4]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "revision-induced issue"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-contest-a20fa1fd2f95]
+[contracts.proposal-two-pass-contest-659ce9e521ac]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "rejected contest"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-unresolved-389ba27cc67b]
+[contracts.proposal-two-pass-unresolved-27b958c59d63]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "unresolved revisit"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-data-5702c7aba455]
+[contracts.proposal-two-pass-data-62da73c1cbb9]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "planner の `fully satisfied` 結論や fulfillment check に不要な adopted 理由を渡さず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-no-output-17c82ed2be2e]
+[contracts.proposal-two-pass-no-output-5f44ba0115f2]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "第2 pass 専用の output schema は新設せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-two-pass-empty-batch-e88f6e888446]
+[contracts.proposal-two-pass-empty-batch-4701d5a4e383]
 kind = "requires"
 slice = "proposal-two-advisor-passes"
 pattern = "該当しなければ空 Batch として第2 Transaction を閉じる"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-resolution-bound-fixed-requires-d63d8ece7480]
+[contracts.plan-craft-resolution-bound-fixed-requires-797326c3cdaa]
 kind = "requires"
 slice = "plan-craft-proposal-resolution-ownership"
 pattern = "proposal loop の開始時に resolution execution bound を internal responsibility"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-no-resolution-surface-requires-e31502a5491e]
+[contracts.plan-craft-no-resolution-surface-requires-38157a9c65db]
 kind = "requires"
 slice = "plan-craft-proposal-resolution-ownership"
 pattern = "固定数、新しい public parameter / schema、`resolve_rounds` は追加しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-resolution-budget-separation-requires-38f1a14015d5]
+[contracts.plan-craft-resolution-budget-separation-requires-94449e629621]
 kind = "requires"
 slice = "plan-craft-proposal-resolution-ownership"
 pattern = "structural gate budget および review-loop budget と別 Data"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-batch-stop-boundary-b1cb9ce1fe0c]
+[contracts.proposal-batch-stop-boundary-42bcddedc992]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "独立して処理できる point を止めずに caller-owned boundary へ返す"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-loop-batch-loader-before-transaction]
 kind = "order"
 before = "review-loop-batch-loader-start"
 after = "review-loop-resolution-transaction-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-kernel-intro-forbids-c13074ce5cc4]
+[contracts.shg-kernel-intro-forbids-910ca2f74f89]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-intro"
 pattern = "necessity-kernel"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-forbids-2f95ad7e796d]
+[contracts.structural-health-gate-caller-context-forbids-901b6b82f7ce]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "necessity-kernel"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-forbids-da6049f6cc6b]
+[contracts.structural-health-gate-boundary-forbids-1e6e10a9e138]
 kind = "forbids"
 slice = "structural-health-gate-boundary"
 pattern = "necessity-kernel"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-kernel-output-forbids-28e181598d29]
+[contracts.shg-kernel-output-forbids-8380a4be1c8d]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-output"
 pattern = "necessity-kernel"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-intro-plan-craft-forbids-a0609736cda9]
+[contracts.shg-intro-plan-craft-forbids-b11a8c168118]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-intro"
 pattern = "plan-craft"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-intro-review-loop-forbids-9f9bbeaf1a0d]
+[contracts.shg-intro-review-loop-forbids-905179f4fbf0]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-intro"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-caller-plan-craft-forbids-c6f8230e75a1]
+[contracts.shg-caller-plan-craft-forbids-0f63857f7a36]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "plan-craft"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-caller-review-loop-forbids-b9b53c0eb8f1]
+[contracts.shg-caller-review-loop-forbids-045d737290db]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-boundary-plan-craft-forbids-af23e2bbc688]
+[contracts.shg-boundary-plan-craft-forbids-66ad2186c6d0]
 kind = "forbids"
 slice = "structural-health-gate-boundary"
 pattern = "plan-craft"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-boundary-review-loop-forbids-48581db6be41]
+[contracts.shg-boundary-review-loop-forbids-6a82d99f436d]
 kind = "forbids"
 slice = "structural-health-gate-boundary"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-output-plan-craft-forbids-219c41c26fdd]
+[contracts.shg-output-plan-craft-forbids-ab4353413abe]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-output"
 pattern = "plan-craft"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shg-output-review-loop-forbids-e372df03feb2]
+[contracts.shg-output-review-loop-forbids-cece964d17b6]
 kind = "forbids"
 slice = "structural-health-gate-kernel-exclusion-output"
 pattern = "review-loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-kernel-reference-before-criteria]
 kind = "order"
 before = "proposal-kernel-reference"
 after = "proposal-kernel-criteria"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-loop-kernel-reference-before-criteria]
 kind = "order"
 before = "review-loop-kernel-reference"
 after = "review-loop-kernel-criteria"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-0376fb4b4a65]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-25bd2625ea13]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "parent-owned adjudication/result values are exactly `adopted`, `rejected`, `out-of-scope`, `deferred`, and `human-confirmation`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-41ae4a64df0c]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-2496b9643277]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`adopted`: 成果物を修正して verification する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-6a44d5e6d7ae]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-bfe3fbefc53a]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`rejected`: 既存仕様または evidence に基づき修正しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-8fed98ad10ec]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-937a5660ef7d]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`out-of-scope`: 成立性は否定しないが対象外として残存事項へ渡す"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-f230f34e06bf]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-782a7d8f8afb]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`deferred`: 仕様未決、記載漏れ、誤認、対象外、情報不足のいずれかを確定できないため凍結する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-requires-ecfb19f4cfec]
+[contracts.review-loop-parent-adjudication-vocabulary-requires-08bf20e3f992]
 kind = "requires"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`human-confirmation`: 実装・公開・互換性など、親だけでは決められない確認を要求する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-a1b3ba4a8657]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-69acf8bc02b2]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`採用`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-9d200f892181]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-4a74abf3d068]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`却下`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-76d00c5f9b09]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-452aebfab7ff]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`範囲外`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-65e549c90b05]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-0b7969f865a8]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`判断保留`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-a5aa446e561d]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-aaa53eec5ec9]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "`人間確認`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-parent-adjudication-vocabulary-forbids-c7d8d9c05883]
+[contracts.review-loop-parent-adjudication-vocabulary-forbids-cda422a7e473]
 kind = "forbids"
 slice = "review-loop-parent-adjudication-vocabulary"
 pattern = "adjudication=accepted"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-5ebf70e139de]
+[contracts.candidate-producer-boundary-requires-00d2b5fa97bf]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "candidate snapshot"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-2c4a61d7290f]
+[contracts.candidate-producer-boundary-requires-970238747749]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "stop-incomplete"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-320af5cd851f]
+[contracts.candidate-producer-boundary-requires-d94b9dfcc3e4]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "adopted"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-4be2a5a0d910]
+[contracts.candidate-producer-boundary-requires-510ffcd38eb2]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "rejected"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-417b00053bbb]
+[contracts.candidate-producer-boundary-requires-782a3cd459ab]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "unresolved"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-0a1a3eb621ed]
+[contracts.candidate-producer-boundary-requires-35cfac692d99]
 kind = "requires"
 slice = "proposal-bounded-return"
 pattern = "caller-owned parent"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-f14b1e0eaf7f]
+[contracts.candidate-producer-boundary-requires-a7801c0165ea]
 kind = "requires"
 slice = "proposal-bounded-return"
 pattern = "後段工程を選択・起動せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-1c2ada838856]
+[contracts.candidate-producer-boundary-requires-7104fc6ef7f0]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "advisor insight を自動採用せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-9b856ae3d442]
+[contracts.candidate-producer-boundary-requires-bd3960ba6cda]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-163ccc844c0a]
+[contracts.candidate-producer-boundary-requires-03dd5f0d6b3f]
 kind = "requires"
 slice = "proposal-bounded-return"
 pattern = "具体的な品質向上が残る間だけ bounded"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-4f817cdb98c4]
+[contracts.candidate-producer-boundary-requires-9461807627b5]
 kind = "requires"
 slice = "proposal-bounded-return"
 pattern = "安全な candidate を推奨できない場合"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-return-after-two-pass-08378821d3bf]
+[contracts.proposal-return-after-two-pass-90340349b262]
 kind = "requires"
 slice = "proposal-bounded-return"
 pattern = "固定2 passの Resolution Transaction を完了し"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.candidate-producer-boundary-requires-0dd78f082cd5]
+[contracts.candidate-producer-boundary-requires-71c110088df1]
 kind = "requires"
 slice = "candidate-producer-boundary"
 pattern = "`structural-health-gate` の意味は この mapping の対象外である"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-4fa54cb5929e]
+[contracts.plan-quality-advisor-boundary-requires-cad74d5c8b39]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "read-only advisor"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-fe6d1a3e5632]
+[contracts.plan-quality-advisor-boundary-requires-5cb8d973e9fb]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "candidate を直接修正せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-1b5bb7314d5b]
+[contracts.plan-quality-advisor-boundary-requires-6ce252832167]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "第二の planner にならない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-e80a183af1e1]
+[contracts.plan-quality-advisor-boundary-requires-eeecc60d1487]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "後段を起動せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-0e06b37be3b3]
+[contracts.plan-quality-advisor-boundary-requires-866a7bae958a]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "採否を決めず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-boundary-requires-93e07a19f4e7]
+[contracts.plan-quality-advisor-boundary-requires-3a3dfce765ab]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "最終受入を行いません"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-no-human-route-requires-5d3fa4f02ba1]
+[contracts.plan-quality-advisor-no-human-route-requires-d063f8b1487a]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "人間への質問、選択肢、承認要求、仲裁経路を作りません。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-planner-input-requires-963d03bbc412]
+[contracts.plan-quality-advisor-planner-input-requires-ca61b8d840c1]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = "`question_or_option` は planner 専用の裁定入力"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-proposal-handoff-requires-7840027c4f6e]
+[contracts.plan-craft-proposal-handoff-requires-0a4f3cf659aa]
 kind = "requires"
 slice = "plan-craft-proposal-handoff"
 pattern = "candidate snapshot"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-proposal-handoff-requires-209b502f0512]
+[contracts.plan-craft-proposal-handoff-requires-0f1e918a7167]
 kind = "requires"
 slice = "plan-craft-proposal-handoff"
 pattern = "stop-incomplete"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-proposal-handoff-requires-4209a9dc22ea]
+[contracts.plan-craft-proposal-handoff-requires-ccee3f4e15ce]
 kind = "requires"
 slice = "plan-craft-proposal-handoff"
 pattern = "caller-owned parent"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-proposal-before-review-loop]
 kind = "order"
 before = "proposal-start"
 after = "review-loop-handoff"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-proposal-before-stop-boundary]
 kind = "order"
 before = "proposal-start"
 after = "proposal-stop-boundary"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-58e624438570]
+[contracts.structural-health-gate-boundary-requires-a1d910d24911]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "duplicated source of truth"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-bb98393de6e4]
+[contracts.structural-health-gate-caller-context-requires-8d62d9386d3e]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "`caller_context` Data"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-9a77570ae2e3]
+[contracts.structural-health-gate-caller-context-requires-03e25276e6f1]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "`workflow_family`: `proposal-family`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-3297534c8fa1]
+[contracts.structural-health-gate-caller-context-requires-8724c05250c8]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "`invocation`: `explicit-public-parent`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-dffcc6b41f13]
+[contracts.structural-health-gate-caller-context-requires-e7dbd70e7e92]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "context 不成立"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-f4230a70b495]
+[contracts.structural-health-gate-caller-context-requires-1b5ebae10399]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "assessment を開始せず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-requires-c5e2e9592a6e]
+[contracts.structural-health-gate-caller-context-requires-620dfbff0cb9]
 kind = "requires"
 slice = "structural-health-gate-caller-context"
 pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-forbids-46655fa8ccce]
+[contracts.structural-health-gate-caller-context-forbids-0067e3d70daf]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "`producer_context`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-forbids-d7cc045c9fc9]
+[contracts.structural-health-gate-caller-context-forbids-1e9c62107d8d]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "`return target`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-forbids-280807b1a1b1]
+[contracts.structural-health-gate-caller-context-forbids-d1adb9637f59]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "`next skill`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-caller-context-forbids-df17921cbcb9]
+[contracts.structural-health-gate-caller-context-forbids-bf899db2ca07]
 kind = "forbids"
 slice = "structural-health-gate-caller-context"
 pattern = "`origin`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-992640bd0b7b]
+[contracts.structural-health-gate-boundary-requires-3b8bb200f1ab]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "明示起動された proposal-family public workflow parent"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-df734a399c23]
+[contracts.structural-health-gate-boundary-requires-15d0e8d8bbd1]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "`location`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-28ccb25b45ec]
+[contracts.structural-health-gate-boundary-requires-8e53ba15aa04]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "`non_local_reason`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-8d6770581952]
+[contracts.structural-health-gate-boundary-requires-151a3e65ea4d]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "`predicted_amplification`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-cacb78d72f24]
+[contracts.structural-health-gate-boundary-requires-7c2e0122fbd5]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "`predicted_churn`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-ec03a9681176]
+[contracts.structural-health-gate-boundary-requires-730ad200ba29]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "public workflow parent が最終的な `pass` / `return` / `stop-incomplete` を決める"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-eee2bffd06dc]
+[contracts.structural-health-gate-boundary-requires-c0dfb8011b7d]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "成果物を再設計・直接編集しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-ed9fa7982ef1]
+[contracts.structural-health-gate-boundary-requires-33c91c95d9df]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "長さ、複雑さ、finding 数だけを理由に `return` しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-387b3a4371b8]
+[contracts.structural-health-gate-boundary-requires-f3fe4560d93b]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "`insufficient-evidence`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-8c5dd0a279b2]
+[contracts.structural-health-gate-boundary-requires-f3bc6f27cedf]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "assessment Data"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-d4c31dcda0dc]
+[contracts.structural-health-gate-boundary-requires-7219f9a397db]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "未解決の方向性または責務が、新しい設計判断を後段へ要求していないか"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-6ae4735dc4ee]
+[contracts.structural-health-gate-boundary-requires-cdeee4c6f1ae]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "requirements、design、Acceptance Criteria、verification の対応漏れまたは矛盾"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-31af0a771f44]
+[contracts.structural-health-gate-boundary-requires-abb74d2469d2]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "用語、state、priority、responsibility の定義または遷移の不整合"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-e9c78fa2e006]
+[contracts.structural-health-gate-boundary-requires-8db83613e288]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "局所修正が他の要件、責務、成果物全体へ広く波及する ripple"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-fad22b574d40]
+[contracts.structural-health-gate-boundary-requires-bc1848ab57d3]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "複数 finding に見える問題が、一つの structural defect から派生していないか"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-d047d81b3c32]
+[contracts.structural-health-gate-boundary-requires-a7aaad293999]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "例外、停止条件、stop contract の追加が増殖し、共通責務の欠落を覆っていないか"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-e18cac503e7f]
+[contracts.structural-health-gate-boundary-requires-65aeab3fcd1c]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "局所修正で閉じる密度、詳細不足、文章上の重複は 通常の review で扱えるため、構造欠陥の evidence と混同しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-requires-b5faf1d44b43]
+[contracts.structural-health-gate-boundary-requires-96417dda489a]
 kind = "requires"
 slice = "structural-health-gate-boundary"
 pattern = "reviewer または advisor を使う場合、その出力は evidence のみであり、candidate の採否、修正、再起草、工程の終了を決めさせない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-forbids-002e80af9940]
+[contracts.structural-health-gate-boundary-forbids-30802345d071]
 kind = "forbids"
 slice = "structural-health-gate-boundary"
 pattern = "gate が最終判断する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.structural-health-gate-boundary-forbids-0f265827de38]
+[contracts.structural-health-gate-boundary-forbids-bf56e19cfba7]
 kind = "forbids"
 slice = "structural-health-gate-boundary"
 pattern = "gate が成果物を直接編集する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-ab6f4460c9ac]
+[contracts.plan-craft-structural-health-handoff-requires-dd4e30dbbf4d]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`structural-health-gate`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-0df8bb188436]
+[contracts.plan-craft-structural-health-handoff-requires-d0206096a1bb]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "proposal を再実行"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-b18936c13ca9]
+[contracts.plan-craft-structural-health-handoff-requires-cad1d2dae294]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "再 proposal 後"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-5928e1eb7c0a]
+[contracts.plan-craft-structural-health-handoff-requires-511d26399edf]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-850b80a56a28]
+[contracts.plan-craft-structural-health-handoff-requires-44836df6c67c]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "gate assessment 1回を1 `round` と数える"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-0f24eefbbdd0]
+[contracts.plan-craft-structural-health-handoff-requires-21955c188bb0]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-4d3a959424bf]
+[contracts.plan-craft-structural-health-handoff-requires-74738863714d]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`pass` は上限未消化でも直ちに `review-loop` へ進む"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-71ac40ab516a]
+[contracts.plan-craft-structural-health-handoff-requires-a557482c6527]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`return` は gate evidence だけを入力に proposal を再実行し、別 identity の candidate を再評価する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-fb0ff5b7c51e]
+[contracts.plan-craft-structural-health-handoff-requires-d798d46b697b]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`rounds.limit` 到達 round の `return` は `stop-incomplete` とする"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-d3c9f5263d51]
+[contracts.plan-craft-structural-health-handoff-requires-f1336a698893]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`insufficient-evidence` は proposal を再実行せず `stop-incomplete` とする"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-f67f78116a37]
+[contracts.plan-craft-structural-health-handoff-requires-0a2d7686d06e]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "structural gate budget と review-loop budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-b7f49c6610b2]
+[contracts.plan-craft-structural-health-handoff-requires-a6555a06e072]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`rounds.limit=1` の round 1 `return` は proposal を再実行せず `stop-incomplete` とする"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-39ad08844f86]
+[contracts.plan-craft-structural-health-handoff-requires-4d18078f0eef]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-structural-health-handoff-requires-8b395cc6787e]
+[contracts.plan-craft-structural-health-handoff-requires-701d86c9cd50]
 kind = "requires"
 slice = "plan-craft-structural-health-handoff"
 pattern = "`rounds.limit` が1未満の入力では gate assessment、proposal の再実行、`review-loop` を起動しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-structural-boundary-requires-5b563cd0b70c]
+[contracts.review-loop-structural-boundary-requires-8097d7454bed]
 kind = "requires"
 slice = "review-loop-structural-boundary"
 pattern = "局所的な構造欠陥を事前解消"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-structural-boundary-requires-70399f0e19f3]
+[contracts.review-loop-structural-boundary-requires-568e6a5750a3]
 kind = "requires"
 slice = "review-loop-structural-boundary"
 pattern = "自動で `structural-health-gate` または candidate producer へ逆走しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-structural-boundary-requires-72b1ac664505]
+[contracts.review-loop-structural-boundary-requires-24dbed97794e]
 kind = "requires"
 slice = "review-loop-structural-boundary"
 pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-1cc6ad63cae3]
+[contracts.review-loop-induced-brake-requires-0fba70583020]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "直前までに親が採用して verification を完了した修正によって finding が新たに成立した"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-4af2a30bbbfa]
+[contracts.review-loop-induced-brake-requires-db4aadb372fb]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "対象文の新旧、snapshot 差分、同じ指摘の再出現だけでは"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-91cbc7c8d801]
+[contracts.review-loop-induced-brake-requires-2d6da47fe79b]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "各通常 round で、親確定の `修正推奨` 以上"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-9e84ca89a181]
+[contracts.review-loop-induced-brake-requires-79304ffc814a]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "通常 round 2 回で連続して"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-55e0bc37f2ce]
+[contracts.review-loop-induced-brake-requires-a4579c32ab38]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "両 round とも非誘発の `修正必須` が 0"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-requires-48fb9d4bea54]
+[contracts.review-loop-induced-brake-requires-a68e5a4a8a2a]
 kind = "requires"
 slice = "review-loop-induced-brake"
 pattern = "`induced-loop` は自己誘発 churn に対する補助ブレーキ"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-induced-brake-forbids-e36bcb66f0e9]
+[contracts.review-loop-induced-brake-forbids-a311c68d42ca]
 kind = "forbids"
 slice = "review-loop-induced-brake"
 pattern = "`baseline_round`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-proposal-before-structural-health-gate]
 kind = "order"
 before = "proposal-start"
 after = "structural-health-gate-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-799b33badbff]
+[contracts.plan-craft-review-routing-requires-ef84b7afd778]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを判定する。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-b742eb46d34e]
+[contracts.plan-craft-review-routing-requires-d9d4be36d7ba]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-4e9a834e505c]
+[contracts.plan-craft-review-routing-requires-fd0ff5e13e02]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "`review` の明示要求がなくても `review-loop` を既定で起動する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-35210ae75235]
+[contracts.plan-craft-review-routing-requires-aa56787d9a15]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "ユーザーが review 省略を明示した場合は、`review-loop` を実行せず通常の起草確定へ進む"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-5b013a4ddf74]
+[contracts.plan-craft-review-routing-requires-b3b2d00b84a6]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "`artifact_kind` の適用可否を review 省略の判定より先に行う"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-fb8f89e59cbb]
+[contracts.plan-craft-review-routing-requires-f83c0b1d2342]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "ユーザー明示なしの既定 review は、具体的な risk を理由に親が自発選択した review と同じ非 accept 分岐を適用する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-goal-requires-cc2a54966b25]
+[contracts.plan-craft-review-goal-requires-e7403e6adb28]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "`review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-goal-requires-6aad8209e3e0]
+[contracts.plan-craft-review-goal-requires-e1649285467f]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-goal-requires-6aacfaa2cb24]
+[contracts.plan-craft-review-goal-requires-df3d7fc132b7]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-goal-forbids-a17c2d4b80b1]
+[contracts.plan-craft-review-goal-forbids-d1b15db81a1a]
 kind = "forbids"
 slice = "plan-craft-review-routing"
 pattern = "追加 risk がなければ `review_goal` を設定しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-0aa3fea88450]
+[contracts.plan-craft-review-routing-requires-72a78051f135]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "review-loop の結果を `adopted` / `rejected` / `out-of-scope` /\n`deferred` / `human-confirmation` のいずれかへ evidence・理由とともに裁定して保持する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-requires-cde081b14efc]
+[contracts.plan-craft-review-routing-requires-5849648887f9]
 kind = "requires"
 slice = "plan-craft-review-routing"
 pattern = "`deferred` は既存の hold ledger を\n通じて次回入力へ渡し、loop 中は凍結する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-review-routing-forbids-5e933511001d]
+[contracts.plan-craft-review-routing-forbids-ec73077f60b6]
 kind = "forbids"
 slice = "plan-craft-review-routing"
 pattern = "review-loop の5区分（採用、却下、範囲外、判断保留、\n人間確認）"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-review-applicability-before-opt-out]
 kind = "order"
 before = "review-applicability"
 after = "review-opt-out"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-structural-health-gate-before-review-loop]
 kind = "order"
 before = "structural-health-gate-start"
 after = "review-loop-handoff"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.public-workflow-routing-requires-a7fb5bfcd515]
+[contracts.public-workflow-routing-requires-26a8ef96a8ed]
 kind = "requires"
 slice = "public-workflow-routing"
 pattern = "`return target` は public workflow parent が所有する"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.public-workflow-routing-requires-d7b069c39d0f]
+[contracts.public-workflow-routing-requires-c0c771074dde]
 kind = "requires"
 slice = "public-workflow-routing"
 pattern = "明示されていない別 workflow へ自動 switch しない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-proposal-family-caller-requires-ae943c6fceb9]
+[contracts.review-loop-proposal-family-caller-requires-525f88e2fc1e]
 kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "proposal-family public workflow"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-proposal-family-caller-requires-59ef721e86fa]
+[contracts.review-loop-proposal-family-caller-requires-04d5985042bc]
 kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "public workflow parent"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-proposal-family-caller-requires-b605ef405d4e]
+[contracts.review-loop-proposal-family-caller-requires-94aa60c6387f]
 kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "ユーザー明示の単独 review"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-loop-proposal-family-caller-requires-f2b463634ada]
+[contracts.review-loop-proposal-family-caller-requires-79acce05abbb]
 kind = "requires"
 slice = "review-loop-proposal-family-caller"
 pattern = "workflow 間も自動で切り替えない"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-30338d673080]
+[contracts.plan-craft-autonomy-requires-732887de6aa6]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "通常の `plan-craft` は、Human が途中経過を追わず Agent に任せる「おまかせ」workflow"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-2a41b87ada45]
+[contracts.plan-craft-autonomy-requires-1635fbc8e54f]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "recommendation-first"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-0db4ccbf49fe]
+[contracts.plan-craft-autonomy-requires-999a33986bda]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "要求原文・repository evidence・scope・constraints・verification・risk"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-462a6e61c232]
+[contracts.plan-craft-autonomy-requires-37192d5b1db3]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "不可約な意味衝突だけであり"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-b810cd7afce4]
+[contracts.plan-craft-autonomy-requires-72073f66ad94]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "要求は解釈するが"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-c3c75dcc81c8]
+[contracts.plan-craft-autonomy-requires-c89a8bc6524b]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "authority/freeze とせず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-50b8d17c1828]
+[contracts.plan-craft-autonomy-requires-325eb1c2a142]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "ユーザー要求、明示制約、観測事実は覆さず"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-0432df07d13f]
+[contracts.plan-craft-autonomy-requires-032f0b5b380d]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "人間確認` は reviewer が観測した signal に留まり"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-cc79045467b3]
+[contracts.plan-craft-autonomy-requires-7b6dcecfd5ab]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "現 candidate を推奨不能な状態"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-bcfefc1e686b]
+[contracts.plan-craft-autonomy-requires-79f1924ab6de]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "単なる複数案、別案、軽い不確実性だけでは"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-478e759521a5]
+[contracts.plan-craft-autonomy-requires-586bf806315a]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "別軸である"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-884dbf0e26fb]
+[contracts.plan-craft-autonomy-requires-fd248d32a54c]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "blocking finding、未反映修正必須、要求意味変更、"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-e4475a1423d7]
+[contracts.plan-craft-autonomy-requires-637c4cfe9cf7]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "read-only `plan-quality-advisor` を起動できる"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-cfeabb11af85]
+[contracts.plan-craft-autonomy-requires-b86cd9704243]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "追加 round の期待利益"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-77006c8b6ddf]
+[contracts.plan-craft-autonomy-requires-af3c6a4d6573]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "Result / Semantic Delta / Verification Delta / Human Attention / Artifact"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-578aa0114bce]
+[contracts.plan-craft-autonomy-requires-acfb4af7f738]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "最初に `structural-health-gate` へ投入した proposal candidate"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-1be3686d1ef2]
+[contracts.plan-craft-autonomy-requires-ef0282f6df24]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "Verification Delta は境界、failure path、fragile behavior、禁止副作用、責務境界を優先し"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-e5cf93f077a2]
+[contracts.plan-craft-autonomy-requires-1bea96daad0b]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "final summary は明示 opt-out できる"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-ca0442aab9a1]
+[contracts.plan-craft-autonomy-requires-b9f106bb3301]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "direction freeze / final acceptance は"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-12433b9bd3d7]
+[contracts.plan-craft-autonomy-requires-20f8214cba5a]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-e18e0a8f5efc]
+[contracts.plan-craft-autonomy-requires-c3256471ff43]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "summary opt-out は Artifact だけを返す"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-0e89d72aaa3d]
+[contracts.plan-craft-autonomy-requires-719577f8acfa]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "Blocking Reason、Residual Risk を必ず返し"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-05a9eab2b845]
+[contracts.plan-craft-autonomy-requires-0f14b78fd783]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "advisor には request、repository_observation、review_goal、current snapshot、finding ledger、直近差分、verification、residual risk を Data として渡す。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-bf682381eb60]
+[contracts.plan-craft-autonomy-requires-45ca8f6bbeda]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "途中の decision / review 全履歴を Human に"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-012eb1c06460]
+[contracts.plan-craft-autonomy-requires-561e27726bf2]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "candidate status は次の Calculation で一度だけ決める。"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]

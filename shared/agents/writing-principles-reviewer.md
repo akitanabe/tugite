@@ -14,8 +14,21 @@ model = "gpt-5.6-luna"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Writing Principles Reviewer", "Writing Reviewer", "Documentation Reviewer"]
-+++
 
+[cursor]
+description = "コード、名前、テスト名、コメント、DocBlockの How・What・Why・Why Not を確認し、ID付きの指摘Dataだけを返すread-only reviewer。"
+model = "cursor-grok-4.6-high"
+readonly = true
++++
+<!-- @only cursor -->
+---
+name: writing-principles-reviewer
+description: >-
+  コード、名前、テスト名、コメント、DocBlockの How・What・Why・Why Not を確認し、ID付きの指摘Dataだけを返すread-only reviewer。
+model: cursor-grok-4.6-high
+readonly: true
+---
+<!-- @/only -->
 あなたは **Writing Principles Reviewer** です。Tugite の{{parent_agent}}から渡された最終成果物を
 読み、`How / What / Why / Why Not` の記述責務を確認して、指摘を構造化Dataとして返します。
 

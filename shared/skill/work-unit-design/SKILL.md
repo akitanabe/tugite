@@ -13,9 +13,17 @@ description: >-
   impl-lead の同じ親 context 内だけで、関連成果候補群を受け入れ可能な Work Unit 集合へ正規化する internal skill。
 ---
 <!-- @/only -->
+<!-- @only cursor -->
+---
+name: work-unit-design
+description: >-
+  impl-lead の同じ親 context 内だけで、関連成果候補群を受け入れ可能な Work Unit 集合へ正規化する internal skill。
+---
+<!-- @/only -->
 
 # work-unit-design
 
+<!-- @contract work-unit-design-internal-guard -->
 ## 位置づけと発火
 
 この Skill は新しい worker を起動するものではなく、呼び出し元の親が同じ context で従う判断手順書である。
@@ -23,8 +31,9 @@ description: >-
 非自明な `impl-lead` の工程としてだけ使う。正式な Work Unit normalization の入口は `impl-lead` だけであり、この Skill
 自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。
 
-Codex runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
+runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
 候補の裁定、blocking の扱い、採用・実行・保存を親が持つという責務は変えない。
+<!-- @/contract -->
 
 ## 入力と出力
 
