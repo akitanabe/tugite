@@ -4,9 +4,10 @@ pattern = "# Batch Resolve Kernel v1"
 paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
   "plugins/codex/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/batch-resolve-kernel.md",
 ]
 count = 1
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.batch-resolve-kernel-mention-allowlist]
 kind = "forbids"
@@ -22,32 +23,37 @@ exclude_paths = [
   "plugins/codex/skills/plan-craft/SKILL.md",
   "plugins/codex/skills/review-loop/SKILL.md",
   "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/skills/proposal/SKILL.md",
+  "plugins/cursor/skills/plan-craft/SKILL.md",
+  "plugins/cursor/skills/review-loop/SKILL.md",
+  "plugins/cursor/skills/impl-lead/SKILL.md",
 ]
-applies_to = ["claude", "codex", "claude-marketplace", "codex-marketplace"]
+applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
 
-[contracts.batch-resolve-kernel-requires-c151425c26b4]
+[contracts.batch-resolve-kernel-requires-a0fc1aa6b7f0]
 kind = "requires"
 slice = "batch-resolve-kernel-v1"
 pattern = '''Kernel identity: `batch-resolve-kernel-v1`.
 Kernel dependencies: `none`.'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: caller and Kernel ownership fields are one declaration boundary; splitting them would allow cross-section false greens.
-[contracts.batch-resolve-ownership-data-fc45b9ecc23c]
+[contracts.batch-resolve-ownership-data-5d8386a60f6a]
 kind = "requires"
 slice = "batch-resolve-kernel-v1"
 pattern = '''caller_owns = ["invocation boundary", "resolver/counterpart mapping", "authority", "execution bound", "verification criteria", "existing verdict/ledger/return vocabulary", "workflow completion"]
 kernel_does_not_own = ["caller-specific point/ledger schema", "workflow status/public parameter/retry/round orchestration"]'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.batch-resolve-kernel-forbids-84b8683e1d88]
+[contracts.batch-resolve-kernel-forbids-8162a47b3009]
 kind = "forbids"
 slice = "batch-resolve-kernel-v1"
 pattern = "`resolve-kernel-v1`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.batch-resolve-kernel-forbids-b86f12c3c035]
+[contracts.batch-resolve-kernel-forbids-e3aa9dca8451]
 kind = "forbids"
 slice = "batch-resolve-kernel-v1"
 pattern = "`necessity-kernel-v1`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]

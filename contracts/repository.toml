@@ -3,37 +3,37 @@
 [contracts.no-retired-task-contract-wording]
 kind = "forbids"
 pattern = "Task\u0020Contract"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-handoff-field]
 kind = "forbids"
 pattern = "_handoff"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-verdict-field]
 kind = "forbids"
 pattern = "necessity_verdict"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-status-field]
 kind = "forbids"
 pattern = "necessity_status"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-decision-field]
 kind = "forbids"
 pattern = "necessity_decision"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-field-field]
 kind = "forbids"
 pattern = "necessity_field"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.no-kernel-result-field]
 kind = "forbids"
 pattern = "necessity_result"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep ownership, evidence, and acceptance prohibitions in one coherent declaration; splitting them could permit cross-section false greens.
 [contracts.repository-test-qa-baseline-a0b98d2f7393]
@@ -65,6 +65,488 @@ accept_prohibition = [
   "missing evidence prohibits accept",
 ]'''
 applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.cursor-agent-declaration-presence]
+kind = "structure"
+subject = "source_frontmatter"
+paths = ["shared/agents/*.md"]
+
+[[contracts.cursor-agent-declaration-presence.assertions]]
+path = "cursor"
+op = "exists"
+
+[contracts.cursor-plugin-manifest-shape]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/.cursor-plugin/plugin.json"]
+format = "json"
+applies_to = ["cursor"]
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = ""
+op = "exact_keys"
+value = ["name", "displayName", "version", "description", "author", "repository", "license", "keywords", "skills", "agents"]
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "name"
+op = "equals"
+value = "tugite"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "displayName"
+op = "equals"
+value = "Tugite"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "version"
+op = "equals"
+value = "5.14.0"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "author"
+op = "exact_keys"
+value = ["name"]
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "author.name"
+op = "equals"
+value = "akitanabe"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "repository"
+op = "equals"
+value = "https://github.com/akitanabe/tugite"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "license"
+op = "equals"
+value = "MIT"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "keywords"
+op = "list_order"
+value = ["multi-agent", "software-development", "planning", "delegation", "code-review", "tdd"]
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "skills"
+op = "equals"
+value = "./skills/"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "agents"
+op = "equals"
+value = "./agents/"
+
+[contracts.cursor-worker-agent-shape]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/cursor/agents/expert-implementer.md",
+  "plugins/cursor/agents/focused-implementer.md",
+  "plugins/cursor/agents/implementer.md",
+  "plugins/cursor/agents/senior-implementer.md",
+]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-worker-agent-shape.assertions]]
+path = ""
+op = "exact_keys"
+value = ["name", "description", "model"]
+
+[contracts.cursor-read-only-agent-shape]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/cursor/agents/over-engineering-reviewer.md",
+  "plugins/cursor/agents/plan-adversarial-reviewer.md",
+  "plugins/cursor/agents/plan-quality-advisor.md",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-read-only-agent-shape.assertions]]
+path = ""
+op = "exact_keys"
+value = ["name", "description", "model", "readonly"]
+
+[[contracts.cursor-read-only-agent-shape.assertions]]
+path = "readonly"
+op = "equals"
+value = true
+
+[contracts.cursor-focused-implementer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/focused-implementer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-focused-implementer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "focused-implementer"
+
+[[contracts.cursor-focused-implementer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "composer-2.5"
+
+[contracts.cursor-implementer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/implementer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-implementer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "implementer"
+
+[[contracts.cursor-implementer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "composer-2.5"
+
+[contracts.cursor-senior-implementer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/senior-implementer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-senior-implementer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "senior-implementer"
+
+[[contracts.cursor-senior-implementer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-medium"
+
+[contracts.cursor-expert-implementer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/expert-implementer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-expert-implementer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "expert-implementer"
+
+[[contracts.cursor-expert-implementer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-xhigh"
+
+[contracts.cursor-over-engineering-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/over-engineering-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-over-engineering-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "over-engineering-reviewer"
+
+[[contracts.cursor-over-engineering-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-plan-adversarial-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/plan-adversarial-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-plan-adversarial-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "plan-adversarial-reviewer"
+
+[[contracts.cursor-plan-adversarial-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-plan-quality-advisor-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/plan-quality-advisor.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-plan-quality-advisor-agent.assertions]]
+path = "name"
+op = "equals"
+value = "plan-quality-advisor"
+
+[[contracts.cursor-plan-quality-advisor-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-responsibility-boundary-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/responsibility-boundary-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-responsibility-boundary-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "responsibility-boundary-reviewer"
+
+[[contracts.cursor-responsibility-boundary-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-security-side-effect-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/security-side-effect-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-security-side-effect-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "security-side-effect-reviewer"
+
+[[contracts.cursor-security-side-effect-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-xhigh"
+
+[contracts.cursor-test-quality-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/test-quality-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-test-quality-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "test-quality-reviewer"
+
+[[contracts.cursor-test-quality-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-writing-principles-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/writing-principles-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-writing-principles-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "writing-principles-reviewer"
+
+[[contracts.cursor-writing-principles-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
+
+[contracts.cursor-explicit-skill-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/cursor/skills/impl-lead/SKILL.md",
+  "plugins/cursor/skills/plan-craft/SKILL.md",
+  "plugins/cursor/skills/plan-craft-approval/SKILL.md",
+]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-explicit-skill-policy.assertions]]
+path = ""
+op = "exact_keys"
+value = ["name", "description", "disable-model-invocation"]
+
+[[contracts.cursor-explicit-skill-policy.assertions]]
+path = "disable-model-invocation"
+op = "equals"
+value = true
+
+[contracts.cursor-non-explicit-metadata-skill-policy]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/cursor/skills/proposal/SKILL.md",
+  "plugins/cursor/skills/proposal-dialogue/SKILL.md",
+  "plugins/cursor/skills/review-loop/SKILL.md",
+  "plugins/cursor/skills/structural-health-gate/SKILL.md",
+  "plugins/cursor/skills/work-unit-design/SKILL.md",
+]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-non-explicit-metadata-skill-policy.assertions]]
+path = ""
+op = "exact_keys"
+value = ["name", "description"]
+
+[contracts.cursor-impl-lead-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/impl-lead/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-impl-lead-skill.assertions]]
+path = "name"
+op = "equals"
+value = "impl-lead"
+
+[contracts.cursor-plan-craft-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/plan-craft/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-plan-craft-skill.assertions]]
+path = "name"
+op = "equals"
+value = "plan-craft"
+
+[contracts.cursor-plan-craft-approval-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/plan-craft-approval/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-plan-craft-approval-skill.assertions]]
+path = "name"
+op = "equals"
+value = "plan-craft-approval"
+
+[contracts.cursor-proposal-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/proposal/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-proposal-skill.assertions]]
+path = "name"
+op = "equals"
+value = "proposal"
+
+[contracts.cursor-proposal-dialogue-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/proposal-dialogue/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-proposal-dialogue-skill.assertions]]
+path = "name"
+op = "equals"
+value = "proposal-dialogue"
+
+[contracts.cursor-review-loop-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/review-loop/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-review-loop-skill.assertions]]
+path = "name"
+op = "equals"
+value = "review-loop"
+
+[contracts.cursor-structural-health-gate-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/structural-health-gate/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-structural-health-gate-skill.assertions]]
+path = "name"
+op = "equals"
+value = "structural-health-gate"
+
+[contracts.cursor-work-unit-design-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/work-unit-design/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-work-unit-design-skill.assertions]]
+path = "name"
+op = "equals"
+value = "work-unit-design"
+
+[contracts.cursor-readme-version-requires-23c23e87f20b]
+kind = "requires"
+slice = "cursor-readme-version"
+pattern = "# Tugite v5.14.0"
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-generation-requires-efb6bbfae34a]
+kind = "requires"
+slice = "cursor-readme-generation"
+pattern = '''gunte emit
+gunte lock
+gunte check'''
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-local-requires-92982da3085a]
+kind = "requires"
+slice = "cursor-readme-boundary"
+pattern = "`plugins/cursor` を `~/.cursor/plugins/local/tugite` へ copy または symlink"
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-reload-requires-b627f39fae48]
+kind = "requires"
+slice = "cursor-readme-boundary"
+pattern = "`Developer: Reload Window`"
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-cli-requires-bf11ad3e2e12]
+kind = "requires"
+slice = "cursor-readme-boundary"
+pattern = "agent --plugin-dir plugins/cursor"
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-public-skills-requires-9ba7d288a427]
+kind = "requires"
+slice = "cursor-readme-boundary"
+pattern = '''/impl-lead <実装タスク>
+/plan-craft <plan task>
+/plan-craft-approval <human-directed plan task>
+/review-loop <artifact review task>'''
+applies_to = ["cursor"]
+
+[contracts.cursor-readme-unsupported-requires-9fd5f6cc6628]
+kind = "requires"
+slice = "cursor-readme-boundary"
+pattern = "Cursor 用 installer と Marketplace 配布はこの version の対象外です。"
+applies_to = ["cursor"]
 
 [contracts.codex-openai-enabled-policy]
 kind = "structure"

@@ -15,6 +15,14 @@ description: >-
   candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
 ---
 <!-- @/only -->
+<!-- @only cursor -->
+---
+name: proposal-dialogue
+description: >-
+  plan-craft-approval の同じ親 context 内だけで、人間と方向性を逐次裁定して direction freeze 候補を作り、
+  candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
+---
+<!-- @/only -->
 
 # proposal-dialogue
 

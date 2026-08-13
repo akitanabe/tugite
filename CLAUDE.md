@@ -2,28 +2,29 @@
 
 ## プロジェクト構成
 
-Tugite は Claude Code と Codex 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
+Tugite は Claude Code、Codex、Cursor 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
 `shared/skill/`、agent は `shared/agents/` に置きます。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
-`contracts/*.toml`、platform manifest と Codex skill metadata の宣言は `declarations/` が正本です。配布物は
+`contracts/*.toml`、platform manifest と platform 固有 metadata の宣言は `declarations/` が正本です。配布物は
 `plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。`Contract`、
 `Task Specification`、`Work Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
 ## ビルド・テスト・開発コマンド
 
 - `gunte emit`: `gunte.toml` の `sources.files` から Gunte 管理対象を生成します。
+- `gunte lock`: 全 source、contract、declaration の検証後に lock を更新します。
 - `gunte check`: Gunte 管理対象の byte drift と契約違反を確認します。
 - `bash tests/install-agents-test.sh`: Codex custom-agent installer と agent inventory を検証します。
 - `git diff --check`: 提出前に空白エラーを検出します。
 
 Gunte には Go 1.26.5 以上が必要です。公開版は `go install github.com/akitanabe/gunte/cmd/gunte@latest` で
-導入します。生成物を伴う変更では、repository root で `gunte emit`、`gunte check`、installer、diff check の順に実行します。
+導入します。生成物を伴う変更では、repository root で `gunte emit`、`gunte lock`、target/full `gunte check`、installer、diff check の順に実行します。
 
 ## Gunte の運用
 
 `gunte.toml` は project、source、target、出力 rule、platform terms と managed inventory を定義し、`contracts/*.toml` は
 text/structure contract を定義します。Gunte は `sources.files` に列挙した agent、manifest、version、workflow skill、
-Codex metadata を管理します。Codex の6 workflow skill metadata は `declarations/codex/skills/` に置きます。platform 差分は
-正本内の `@only claude` / `@only codex` marker で表現し、`plugins/` 以下の生成物を直接編集しません。
+platform 固有 metadata を管理します。Codex skill metadata は `declarations/codex/skills/` に置きます。platform 差分は
+正本内の `@only claude` / `@only codex` / `@only cursor` marker で表現し、`plugins/` 以下の生成物を直接編集しません。
 
 契約は生成物または source frontmatter から決定論的に観測できる不変条件に限定します。未登録 source、unknown/stale
 declaration、必須 path、retired path、metadata policy は `gunte check` で保護します。Gunte の生成、projection、
@@ -63,7 +64,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 現行の workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-craft`（実装を開始しない計画成果物）、
 `plan-craft-approval`（人間参加型の計画成果物）、`proposal-dialogue`（親 context 内の方向性対話）、
 `review-loop`（不変 snapshot に対する bounded review）、`work-unit-design`（親 context 内の内部 Work Unit 設計）の6つです。
-agent の正本は `shared/agents/`、Claude/Codex runtime の exact inventory は repository contract と installer test で確認します。
+agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## コーディングスタイルと命名
 

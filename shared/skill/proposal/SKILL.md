@@ -15,14 +15,24 @@ description: >-
   read-only advisor の非拘束な insight を裁定して candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
 ---
 <!-- @/only -->
+<!-- @only cursor -->
+---
+name: proposal
+description: >-
+  plan-craft の同じ親 context 内だけで、要求と repository の観測から計画 candidate を起草し、
+  read-only advisor の非拘束な insight を裁定して candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
+---
+<!-- @/only -->
 
 # proposal
 
+<!-- @contract proposal-internal-guard -->
 ## 位置づけと発火
 
 この Skill は `plan-craft` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。
 要求、repository、既存仕様を観測して計画 candidate を作る producer を担う。
 自身は実装、委譲、worktree 操作、保存、最終受入を行わず、caller-owned parent へ判断材料を返す。
+<!-- @/contract -->
 
 ## 入力と観測
 

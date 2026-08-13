@@ -65,9 +65,8 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human De
 
 ## 発火制御と責務
 
-- ユーザーが `$plan-craft` または同等の明示要求をした場合だけ起動する。自然言語の作業内容や context から暗黙に起動しない。
-- Claude frontmatter の `disable-model-invocation: true` と Codex metadata の
-  `policy.allow_implicit_invocation: false` はこの explicit-only 契約を表す。
+- ユーザーが `plan-craft` の起動または同等の明示要求をした場合だけ起動する。自然言語の作業内容や context から暗黙に起動しない。
+- 各 platform の invocation metadata は上記の explicit-only 契約を表し、その範囲を拡張しない。
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
 - `review` の実行、`final-candidate` / `incomplete` と圧縮出力の内部裁定までを担う。最終成果物の採用と保存・後続 Action の許可は Human が判断する。
 
@@ -174,7 +173,7 @@ reviewer・回数制約、必要なら継続台帳である。ユーザーが回
 渡さず、親が loop 開始時に上限と打ち切りを決める。成果物の内容は review-loop の入力 resource へ書き戻さず、
 採用修正を反映した会話内 execution data として受け取る。
 
-Codex runtime が skill 間起動を提供しない場合も、親は同じ `review-loop` 本文を工程として直接参照できる。
+runtime が skill 間起動を提供しない場合も、親は同じ `review-loop` 本文を工程として直接参照できる。
 この代替は発火条件、入力 Data、裁定、termination、受け入れの責務を変更しない。
 
 ## review 結果の受領

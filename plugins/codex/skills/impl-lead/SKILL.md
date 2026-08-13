@@ -8,7 +8,7 @@ description: >-
 
 # Active v5 main
 
-この skill はユーザーが `$impl-lead` を明示した場合だけ起動する。自然言語の作業内容、規模、現在の
+この skill はユーザーが明示的に起動した場合だけ開始する。自然言語の作業内容、規模、現在の
 context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
 一名 worker という既存経路は保ちつつ、同じ run で複数単位を安全に処理できる。
 `risk-directed review` は固定 phase や全作業の必須手順ではなく、親が具体的な risk と判断への影響を説明できる場合だけ実行する。
@@ -72,7 +72,7 @@ raw request から成果候補を再抽出させない。返された `work_unit
 候補の `acceptance_criteria` は accept の確定ではなく、worker、base、isolation、route、order、実行、後続 Skill の起動権限、
 保存を候補工程へ含めない。成果候補消失、未割当要求、unresolved `blocking_gaps`、説明不能な境界を残したまま dispatch しない。
 
-Codex runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
+runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
 実行中の再正規化では新しい成果候補抽出 phase を追加しない。既存の統合、追加分割、部分成果の独立再構成、semantic dependency

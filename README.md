@@ -1,6 +1,8 @@
-# Tugite v5.4.0
+<!-- @contract cursor-readme-version -->
+# Tugite v5.14.0
+<!-- @/contract -->
 
-Tugite は Claude Code と Codex のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
+Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
 ## 現行の構成
 
@@ -27,24 +29,51 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 
 ## 正本と生成
 
-skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、Codex/Claude の宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
+skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
 
+<!-- @contract cursor-readme-generation -->
 変更後はリポジトリのルートで次を実行します。
 
 ```text
 gunte emit
+gunte lock
 gunte check
 ```
+<!-- @/contract -->
 
 ## 導入と起動
 
-- [Claude Code plugin](plugins/claude/README.md)
-- [Codex plugin](plugins/codex/README.md)
+- [Claude Code plugin](https://github.com/akitanabe/tugite/blob/main/plugins/claude/README.md)
+- [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
+- [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
 Claude Code では `/tugite:impl-lead`、`/tugite:plan-craft`、`/tugite:plan-craft-approval`、`/tugite:review-loop` を明示して起動します。Codex では `$impl-lead`、`$plan-craft`、`$plan-craft-approval`、`$review-loop` を明示して起動します。内部 skill は、これらの公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
+
+<!-- @contract cursor-readme-boundary -->
+### Cursor local plugin
+
+Cursor では `plugins/cursor` を `~/.cursor/plugins/local/tugite` へ copy または symlink して登録し、Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。既存の local plugin がある場合は内容を確認してから置き換えてください。
+
+repository checkout を直接検証する場合は、repository root で次を実行します。
+
+```text
+agent --plugin-dir plugins/cursor
+```
+
+public skill は明示して起動します。
+
+```text
+/impl-lead <実装タスク>
+/plan-craft <plan task>
+/plan-craft-approval <human-directed plan task>
+/review-loop <artifact review task>
+```
+
+Cursor 用 installer と Marketplace 配布はこの version の対象外です。
+<!-- @/contract -->
 
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+MIT License. See [LICENSE](https://github.com/akitanabe/tugite/blob/main/LICENSE).

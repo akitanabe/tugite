@@ -15,6 +15,16 @@ description: >-
   確定候補または未完了結果を返す public workflow。
 ---
 <!-- @/only -->
+<!-- @only cursor -->
+---
+name: plan-craft-approval
+description: >-
+  ユーザーが明示した場合だけ、人間と方向性を逐次裁定して自由形式の計画・設計成果物を作る。
+  direction freeze 後に structural gate と固定 review を通し、最終結果を人間へ返す。
+  実装・委譲・次工程の自動前進は行わない。
+disable-model-invocation: true
+---
+<!-- @/only -->
 
 # plan-craft-approval
 
@@ -23,9 +33,8 @@ description: >-
 
 ## 発火制御と責務
 
-- `$plan-craft-approval` または同等の明示要求がある場合だけ起動し、context から暗黙起動しない。
-- Claude の `disable-model-invocation: true` と Codex metadata の `policy.allow_implicit_invocation: false` が
-  explicit-only 契約を表す。
+- `plan-craft-approval` の起動または同等の明示要求がある場合だけ起動し、context から暗黙起動しない。
+- 各 platform の invocation metadata は上記の explicit-only 契約を表し、その範囲を拡張しない。
 - 実装、委譲、Worker 起動、worktree 操作、後続の実装開始を行わず、workflow は成果物を自律的に保存しない。
 - 起草、対話、gate、review、final acceptance 候補または未完了の返却までを担う。人間は方向性と最終結果の責任を持ち、
   public workflow parent は planner として、調査、具体化、整合性、verification、工程の経過責任を持つ。後続 Action は

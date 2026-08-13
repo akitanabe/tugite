@@ -15,7 +15,7 @@ user-invocable: false
 非自明な `impl-lead` の工程としてだけ使う。正式な Work Unit normalization の入口は `impl-lead` だけであり、この Skill
 自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。
 
-Codex runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
+runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
 候補の裁定、blocking の扱い、採用・実行・保存を親が持つという責務は変えない。
 
 ## 入力と出力

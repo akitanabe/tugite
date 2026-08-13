@@ -17,6 +17,15 @@ description: >-
   assessment と最終判断を public workflow parent へ残す。
 ---
 <!-- @/only -->
+<!-- @only cursor -->
+---
+name: structural-health-gate
+description: >-
+  明示起動された proposal-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する
+  internal gate。成果物を再設計・直接編集せず、
+  assessment と最終判断を public workflow parent へ残す。
+---
+<!-- @/only -->
 
 <!-- @contract structural-health-gate-kernel-exclusion-intro -->
 # structural-health-gate

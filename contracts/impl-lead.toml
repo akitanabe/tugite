@@ -1,5 +1,12 @@
+[contracts.work-unit-design-internal-guard-requires-8bf50de960dc]
+kind = "requires"
+slice = "work-unit-design-internal-guard"
+pattern = '''ユーザーの直接要求、通常会話、`plan-craft` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
+非自明な `impl-lead` の工程としてだけ使う。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: loader fields form one relation; independent substrings would permit cross-paragraph false-green matches.
-[contracts.impl-run-owned-loader-data-81ec1c69764c]
+[contracts.impl-run-owned-loader-data-34b2ba9c1127]
 kind = "requires"
 slice = "impl-run-owned-lifecycle-loader"
 pattern = '''path = references/run-owned-lifecycle.md
@@ -9,9 +16,9 @@ required_sections = [Creation, Closeout]
 required_scope = [creation, integration, cleanup]
 failure = stop-incomplete
 owner = impl-lead parent'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields form one relation and reviewer authority is part of that boundary.
-[contracts.impl-final-writing-loader-data-e8d7bb958440]
+[contracts.impl-final-writing-loader-data-f4addd0364af]
 kind = "requires"
 slice = "impl-final-writing-loader"
 pattern = '''path = references/final-writing-gate.md
@@ -22,13 +29,13 @@ required_scope = [snapshot, handoff, read-only isolation, finding adjudication, 
 failure = stop-incomplete
 owner = impl-lead parent
 reviewer_authority = report-only'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-run-owned-default-requires-24af2bb38936]
+[contracts.impl-run-owned-default-requires-fb069ed51164]
 kind = "requires"
 slice = "impl-run-owned-default"
 pattern = "### Default run-owned checkout"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-run-owned-default-occurrences]
 kind = "occurrences"
@@ -37,14 +44,15 @@ count = 1
 paths = [
   "plugins/claude/skills/impl-lead/references/run-owned-lifecycle.md",
   "plugins/codex/skills/impl-lead/references/run-owned-lifecycle.md",
+  "plugins/cursor/skills/impl-lead/references/run-owned-lifecycle.md",
 ]
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-run-owned-default-before-route]
 kind = "order"
 before = "impl-run-owned-default-start"
 after = "impl-route-execution-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-run-owned-lifecycle-reference-identity]
 kind = "occurrences"
@@ -53,8 +61,9 @@ count = 1
 paths = [
   "plugins/claude/skills/impl-lead/references/run-owned-lifecycle.md",
   "plugins/codex/skills/impl-lead/references/run-owned-lifecycle.md",
+  "plugins/cursor/skills/impl-lead/references/run-owned-lifecycle.md",
 ]
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-final-writing-reference-identity]
 kind = "occurrences"
@@ -63,161 +72,162 @@ count = 1
 paths = [
   "plugins/claude/skills/impl-lead/references/final-writing-gate.md",
   "plugins/codex/skills/impl-lead/references/final-writing-gate.md",
+  "plugins/cursor/skills/impl-lead/references/final-writing-gate.md",
 ]
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-dfe4f75786cc]
+[contracts.final-writing-remediation-requires-eee06c10959c]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "final writing gate"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-71697deb87bc]
+[contracts.final-writing-remediation-requires-e42ce67df1c7]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "finding Data"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-f8cc133d2c1b]
+[contracts.final-writing-remediation-requires-16386b8d002a]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "final remediation Work Unit"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-ac9dff940f63]
+[contracts.final-writing-remediation-requires-1427c6e2d8d0]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`id`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-aa7bc91d6a8b]
+[contracts.final-writing-remediation-requires-fdc2dd910a99]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`purpose`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-eb0936c15816]
+[contracts.final-writing-remediation-requires-e0b8f3da1280]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`acceptance_criteria`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-726f62ee839f]
+[contracts.final-writing-remediation-requires-eb9427a0c278]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`scope`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-7cd8ffcceff8]
+[contracts.final-writing-remediation-requires-713bc1652d77]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`change`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-e1b93aad133e]
+[contracts.final-writing-remediation-requires-e112f857aa61]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`exclude`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-aac4a2eb09bc]
+[contracts.final-writing-remediation-requires-707fd72d5867]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`implementation_freedom`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-abee221073c9]
+[contracts.final-writing-remediation-requires-85cc6603429c]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`constraints`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-562450be2674]
+[contracts.final-writing-remediation-requires-f8570def23d1]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`depends_on`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-ee1e8ef3af7c]
+[contracts.final-writing-remediation-requires-98a83b1e165b]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "`verification`"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-ae4be56e2479]
+[contracts.final-writing-remediation-requires-4f4b7a77910f]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "commit message"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-fc399aa1677a]
+[contracts.final-writing-remediation-requires-7cc444dea86e]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "commit range"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-3d02034ce816]
+[contracts.final-writing-remediation-requires-37a3b059148e]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "before/after identity"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-0ffe47a66ac3]
+[contracts.final-writing-remediation-requires-03a22cd679b4]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "same-run accept exception"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-b93e9dbdec97]
+[contracts.final-writing-remediation-requires-d7038ec015d3]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "fresh Implementer context"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-4e3a0feb7633]
+[contracts.final-writing-remediation-requires-9c82051804e2]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "single writer"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-7be6362fa4f0]
+[contracts.final-writing-remediation-requires-d2810238d0cf]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "mechanically restart"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-5fd5573f6598]
+[contracts.final-writing-remediation-requires-ebe4ad93229d]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "mandatory final writing review"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-ac5476bde199]
+[contracts.final-writing-remediation-requires-8d306ac884e2]
 kind = "requires"
 slice = "final-writing-remediation"
 pattern = "closeout"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-forbids-a3252e730491]
+[contracts.final-writing-remediation-forbids-64058e423131]
 kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "review-patch-refactorer"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-forbids-dfc45d5af397]
+[contracts.final-writing-remediation-forbids-74690c20b98c]
 kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "fixed patch agent"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-forbids-5e94eb370949]
+[contracts.final-writing-remediation-forbids-c10af2a80131]
 kind = "forbids"
 slice = "final-writing-remediation"
 pattern = "全 finding の固定 loop"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields are coherent declaration Data and must not match independently across unrelated prose.
-[contracts.impl-risk-loader-data-fd768fbaec06]
+[contracts.impl-risk-loader-data-2d889f0bd611]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
 pattern = '''path = ../../references/batch-resolve-kernel.md
@@ -226,10 +236,10 @@ dependencies = none
 required_sections = [適用モデル, snapshot discipline, Resolution Transaction, caller boundary]
 failure = stop-incomplete
 owner = impl-lead parent'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: role and snapshot fields are one caller mapping Data block.
-[contracts.impl-risk-role-mapping-data-1b8c9a3708b3]
+[contracts.impl-risk-role-mapping-data-60ec1585a906]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
 pattern = '''caller = impl-lead parent
@@ -239,10 +249,10 @@ target_snapshot = origin verified snapshot
 finding = Resolution Point
 same_snapshot_findings = Resolution Batch
 dispositions = [adopted, rejected, unresolved]'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: transaction-boundary fields are one declaration Data block; their relationship is the invariant.
-[contracts.impl-risk-transaction-data-cd5090af3548]
+[contracts.impl-risk-transaction-data-ad2e22f2780f]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
 pattern = '''reviewer_observation = outside Resolution Transaction
@@ -253,22 +263,22 @@ adopted_findings = coherent remediation
 updated_snapshot_re_review = new Resolution Transaction
 transaction_closure = not Work Unit acceptance, not run acceptance
 final_writing_gate = outside mapping'''
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-risk-loader-before-transaction]
 kind = "order"
 before = "impl-risk-directed-batch-loader-start"
 after = "impl-risk-directed-resolution-transaction-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-risk-selection-before-loader]
 kind = "order"
 before = "impl-risk-selection-handoff-end"
 after = "impl-risk-directed-batch-loader-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-risk-loader-before-findings]
 kind = "order"
 before = "impl-risk-directed-resolution-transaction-start"
 after = "impl-review-findings-start"
-applies_to = ["claude", "codex"]
+applies_to = ["claude", "codex", "cursor"]
