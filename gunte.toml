@@ -255,6 +255,8 @@ allow_files = [
   "install/install-plugin.sh",
   "install/install-plugin.ps1",
 ]
+allow_dirs = ["skills/install-plugin"]
+
 
 [[targets.cursor.rules]]
 match = "shared/batch-resolve-kernel.md"

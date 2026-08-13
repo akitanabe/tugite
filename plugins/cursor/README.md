@@ -67,6 +67,8 @@ plugins/cursor/install/install-plugin.ps1 -Check -User
 plugins/cursor/install/install-plugin.ps1 -Force -User
 ```
 
+一度導入したあとは、新しい Cursor session で `/install-plugin` を使い、状態確認と更新を依頼できます。更新後は Cursor を再起動するか `Developer: Reload Window` を実行してください。
+
 repository checkout を直接検証する場合は、repository root で次を実行します。
 
 ```text
@@ -80,6 +82,7 @@ public skill は明示して起動します。
 /plan-craft <plan task>
 /plan-craft-approval <human-directed plan task>
 /review-loop <artifact review task>
+/install-plugin
 ```
 
 Cursor 用 Marketplace 配布はこの version の対象外です。

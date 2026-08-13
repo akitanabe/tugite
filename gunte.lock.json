@@ -218,8 +218,12 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-9ba7d288a427",
-      "sha256": "7ad15731a11886e827705ac68504be331c869668801d41950007bf2c25a47de5"
+      "id": "cursor-readme-public-skills-requires-bcf084c3fa1a",
+      "sha256": "10020761dd4f5e4c334af18cbdc0041ab481ba6018e7524b4a0282cde5df4647"
+    },
+    {
+      "id": "cursor-readme-install-skill-requires-e9e87fe619cf",
+      "sha256": "ed47d479db1846abc98e046960dd135dd8b40455aa043b5c4560f28babfdf3b3"
     },
     {
       "id": "cursor-readme-unsupported-requires-d94e0540f495",

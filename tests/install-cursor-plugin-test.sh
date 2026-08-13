@@ -18,6 +18,8 @@ assert_same() {
 [[ "$plugin_version" == "$expected_version" ]] || fail "plugin and shared versions differ: $plugin_version vs $expected_version"
 [[ -f "$installer" ]] || fail "missing installer: $installer"
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
+[[ -f "$repo_root/plugins/cursor/skills/install-plugin/SKILL.md" ]] || fail "missing install-plugin skill"
+grep -q '^name: install-plugin$' "$repo_root/plugins/cursor/skills/install-plugin/SKILL.md" || fail "install-plugin skill name mismatch"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
