@@ -100,7 +100,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "5.14.0"
+value = "5.15.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
@@ -501,10 +501,10 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-23c23e87f20b]
+[contracts.cursor-readme-version-requires-ba3eb708d5ae]
 kind = "requires"
 slice = "cursor-readme-version"
-pattern = "# Tugite v5.14.0"
+pattern = "# Tugite v5.15.0"
 applies_to = ["cursor"]
 
 [contracts.cursor-readme-generation-requires-efb6bbfae34a]

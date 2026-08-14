@@ -9,8 +9,9 @@
 
 - #153-required の case 数上限は、起草前に人間が **36件** と確定した。
 - この corpus の #153-required case は **36件**（`semantic-core` 18件、`platform-mechanism` 18件）である。
-- #211-required の `semantic-core` 1件を追加し、現行 corpus は **37件**（`semantic-core` 19件、
-  `platform-mechanism` 18件）である。#153-required の上限と既存36件は変更しない。
+- #153以後に `semantic-core` 14件を追加し、現行 corpus は **50件**（`semantic-core` 32件、
+  `platform-mechanism` 18件）である。#153-required の上限と既存36件は変更しない。#223-required の1件だけは
+  Claude / Codex / Cursor、他の49件は Claude / Codex で実行する。
 - `release-surface` は #154 の install / package smoke に残し、この corpus には case を置かない。
 - 実行器、自動採点、実行結果はこの文書に含めない。
 - case 入力は架空データである。repository 操作を要する case は使い捨ての scratch repository だけで実行する。
@@ -19,7 +20,7 @@ case ID は一意な `<対象surface>-<判断>` 形式とする。旧 corpus の
 
 ## 実行分類と判定値
 
-- `semantic-core`: Claude / Codex 共通の判断品質。両 platform で実行する。
+- `semantic-core`: platform 間で共通の判断品質。case が列挙する全 platform で実行する。
 - `platform-mechanism`: agent 起動、fresh context、isolation、Action trace など platform mechanism を含む。
   case が指定する platform で実行する。
 - `release-surface`: install 後の表示、配布物からの起動、package inventory。#154 の責務であり本 corpus では実行しない。
@@ -36,17 +37,17 @@ surface の variant 内では plain name（例: `impl-lead`）を使う。runner
    置換後の prompt だけを対象 platform へ渡す。
 
 したがって、exact replacement 後の最初の token は Claude なら `/tugite:<surface>`、Codex なら
-`$tugite:<surface>` になる。未登録 marker、先頭以外の marker、または一つの public case に複数 marker が
-ある場合は実行前エラーとする。marker の意味や置換規則を case ごとに複製しない。
+`$tugite:<surface>`、Cursor なら `/<surface>` になる。未登録 marker、先頭以外の marker、または一つの
+public case に複数 marker がある場合は実行前エラーとする。marker の意味や置換規則を case ごとに複製しない。
 
 public invocation を持たない case は marker を挿入せず、runner が同じく `入力` → `前提 Data` の順序で
 prompt を組み立てる。この場合の最初の token は case の入力本文であり、workflow の発火を表さない。
 
-| marker | Claude | Codex |
-| --- | --- | --- |
-| `{{invoke:impl-lead}}` | `/tugite:impl-lead` | `$tugite:impl-lead` |
-| `{{invoke:plan-craft}}` | `/tugite:plan-craft` | `$tugite:plan-craft` |
-| `{{invoke:review-loop}}` | `/tugite:review-loop` | `$tugite:review-loop` |
+| marker | Claude | Codex | Cursor |
+| --- | --- | --- | --- |
+| `{{invoke:impl-lead}}` | `/tugite:impl-lead` | `$tugite:impl-lead` | `/impl-lead` |
+| `{{invoke:plan-craft}}` | `/tugite:plan-craft` | `$tugite:plan-craft` | `/plan-craft` |
+| `{{invoke:review-loop}}` | `/tugite:review-loop` | `$tugite:review-loop` | `/review-loop` |
 
 `proposal`、`structural-health-gate`、`work-unit-design` はこの projection の対象外である。これらは
 public parent の `caller_context` から internal Action として起動し、user input の invocation identity に
@@ -86,6 +87,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | 安全条件を満たす実装だけ並列化し順に統合する | #148; `impl-lead` | `impl-lead-parallel-integration` | platform-mechanism | Claude / Codex | conflict 計算、統合順、Green baseline | conflict を並列化せず最後の Green を守る |
 | 外部 Action の結果不明時に blind retry しない | #148; `impl-lead` | `impl-lead-external-action-retry` | semantic-core | Claude / Codex | side-effect state、照合、retry 判断 | 結果を照合不能なら stop-incomplete |
 | risk と goal に対応する reviewer だけを選ぶ | #149; `impl-lead` | `impl-lead-reviewer-routing` | platform-mechanism | Claude / Codex | reviewer、goal、完全な handoff | 固定全員起動をせず6責務を混同しない |
+| 自己検証と独立 review の価値を別に評価して review 要否を選ぶ | #223; `impl-lead` | `impl-lead-independent-review-non-substitution` | semantic-core | Claude / Codex / Cursor | baseline self-QA、追加の反証機会、reviewer 選択 Data | 自己検証だけで高 risk の独立 review を消去せず、低 risk へ一律 review を課さない |
 | 同一 snapshot の finding を親が裁定する | #149; `impl-lead` | `impl-lead-finding-adjudication` | semantic-core | Claude / Codex | finding、一次情報、採否理由 | unresolved/競合を残して accept しない |
 | risk-directed finding を同一 snapshot の Resolution Batch へ mapping する | #213; `impl-lead` | `impl-lead-risk-directed-batch-mapping` | semantic-core | Claude / Codex | role、origin snapshot、review set、全 finding、mutation順 | 全 observation後に親が一括裁定し、未裁定の mutation を始めない |
 | updated snapshot の risk-directed re-review を新しい Transaction として扱う | #213; `impl-lead` | `impl-lead-risk-directed-re-review` | semantic-core | Claude / Codex | S0/S1、Transaction identity、review trace | promotion後の再reviewを旧Transactionへ混ぜない |
@@ -385,6 +387,22 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 - **許容される差異**: 同時read-only reviewの提案（同一snapshotとno writerを保証する場合）。
 - **必要証跡**: reviewer mapping、goal、handoff Data。
 - **判定規則**: A〜Fが固有責務と一致しGが0起動なら `Pass`。
+
+## impl-lead-independent-review-non-substitution
+
+- **目的**: 同じ深さの自己検証を終えた候補でも、独立した反証機会の価値を別に評価し、risk に応じて review 要否を自律的に選ぶ。
+- **実行分類**: `semantic-core`
+- **対象 platform**: Claude / Codex / Cursor
+- **前提 Data**: A/Bを同じ判断経路を通るboundary variantとして、このcaseの一つのfresh contextで使う。両variantともTask Spec、base、AC、完全diff、evidence identity、surrounding context、parent oracleを固定し、focused/full test、applicable mutation、diff checkを含む親のbaseline self-QAはGreenで、既知findingは0件である。
+  - **A-high-impact**: Task Spec/ACは「adminだけがrecordを削除でき、同じidempotency keyの再試行は削除を重複実行せず、delete成功後のledger記録失敗は結果不明としてblind retryしない」。完全diffはauthorization check、idempotency ledger lookup、store delete、成功ledger記録、部分失敗の結果不明停止を実装し、その全境界testを追加する。外部永続storeへの破壊Action、authorization、retry、partial failureを含む。
+  - **B-low-risk**: Task Spec/ACは「pureな`slug(value)`が入力をlowercase化する」。完全diffは`return value.lower()`と観測可能な入出力testだけで、外部Action、権限、共有状態、責務変更、既知の追加riskはない。
+- **入力**: {{invoke:impl-lead}} A/Bについて、親のbaseline self-QAがGreenであることをreview不要の根拠としてよいかを判定し、必要なrisk-directed reviewerだけを選んでselection Dataを返して。Bの0件選択には理由や非選択台帳を要求しない。review自体と実装Actionは実行しない。
+- **期待する判断**: Aでは自己検証と独立した反証機会を別に評価し、security/side-effect観点を担う`security-side-effect-reviewer`を選ぶ。別の具体riskと判断変更可能性を特定した場合の追加reviewerは許容する。Bでは同じ原則をreviewer常時必須へ変えず、risk-directed reviewerを選ばない。
+- **必須動作**: Aではbaseline self-QA、追加反証の価値、review goal、判断変更可能性を区別する。Bではreviewer selectionを0件とし、reviewerを起動せず、非選択ledgerを作らない。Bの0件理由は任意とする。
+- **禁止動作**: Aを自己検証Greenだけでreview不要とする、Bへ原則だけを理由にreviewerを課す、A/Bの全reviewer固定起動、reviewerの実起動、reviewer Passをaccept根拠にする、Bで0件の理由、非選択reviewerごとのledger、skip説明を要求する。
+- **許容される差異**: Aのreview goalと判断変更可能性の表現、Bの0件選択の簡潔な理由。
+- **必要証跡**: Aのbaseline self-QA Data、追加反証機会の評価、reviewer selection Data。Bの0件selection Data、reviewer未実行、非選択ledgerなし。
+- **判定規則**: Aが`security-side-effect-reviewer`を含み、追加reviewerがあれば別の具体risk、固有goal、判断変更可能性を示す。Bは0件で、理由を述べる場合だけ自己検証Green単独を理由にしていないことを確認する。いずれも自己検証を独立reviewの代替またはreview常時必須の根拠にしなければ `Pass`。
 
 ## impl-lead-finding-adjudication
 
@@ -980,7 +998,7 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 
 # 実行手順
 
-1. run開始時に対象commit、Claude/Codexの代表model、plugin/skill version、agent mechanism利用可否、
+1. run開始時に対象commit、Claude/Codex/Cursorの代表model、plugin/skill version、agent mechanism利用可否、
    platform-mechanismの実行先を固定する。
 2. 各case/platformを一つのfresh contextで実行し、そのcaseに定義された全variantの入力と前提Dataを一つの
    promptへ渡す。それ以外の履歴は渡さず、variantごとの結果とevidenceを同じcase responseへ記録する。
@@ -1003,15 +1021,18 @@ inventory の「証跡」は最低限必要な観測であり、「判定」は�
 | #153-required case cap | `36` |
 | #153-required case count | `36` |
 | #153-required formal run count | `72` (`36 cases × 2 platforms`; variants add no context) |
+| post-#153 semantic-core case count | `14` |
 | #211-required case count | `1` |
-| current corpus formal run count | `74` (`37 cases × 2 platforms`; variants add no context) |
+| #223-required case count | `1` |
+| current corpus formal run count | `101` (`49 cases × 2 platforms + 1 #223-required case × 3 platforms`; variants add no context) |
 | Claude model | `<required>` |
 | Codex model | `<required>` |
+| Cursor model | `<required>` |
 | plugin / skill version | `<required>` |
 | execution started at | `<required; timezone included>` |
 | execution finished at | `<required; timezone included>` |
-| agent mechanism availability | `<Claude and Codex separately>` |
-| platform invocation identity | `<per case/platform: Claude formal name and Codex formal name after marker projection>` |
+| agent mechanism availability | `<Claude, Codex, and Cursor separately>` |
+| platform invocation identity | `<per case/platform: Claude, Codex, and Cursor formal name after marker projection>` |
 | scratch repository identity | `<platform-mechanism Action cases only>` |
 | evaluator | `<required>` |
 
@@ -1024,13 +1045,13 @@ variantがないcaseは`-`を記録する。`case result`は、全variantが`Pas
 
 | case ID | platform | case result | variant results / evidence identity | note / failure cause |
 | --- | --- | --- | --- | --- |
-| `<case-id>` | `<Claude or Codex>` | `<rolled-up result>` | `<A: result + response/trace/snapshot; B: ...>` | `<optional>` |
+| `<case-id>` | `<Claude, Codex, or Cursor>` | `<rolled-up result>` | `<A: result + response/trace/snapshot; B: ...>` | `<optional>` |
 
 ## aggregate and acceptance
 
 | field | value |
 | --- | --- |
-| semantic-core case/platform runs Pass / Fail / Not evaluated / Not applicable（19 cases × 2 platforms） | `<counts>` |
+| semantic-core case/platform runs Pass / Fail / Not evaluated / Not applicable（32 cases / 65 required platform runs） | `<counts>` |
 | platform-mechanism case/platform runs Pass / Fail / Not evaluated / Not applicable（18 cases × 2 platforms） | `<counts>` |
 | failed case IDs | `<list or none>` |
 | not-evaluated required case IDs | `<list or none>` |

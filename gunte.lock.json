@@ -91,7 +91,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "9e9f5e61947c21e327ae070f65451bfe7be105c2dab5973f21c04017fa865b10"
+      "sha256": "aaaba46eb419f1664e0ee52cdf91e62327617a862dcb979a7fec37110689614e"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -186,8 +186,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-23c23e87f20b",
-      "sha256": "877fddf7adda9bc71b9f8b4b347097dc3cc5a98b1cb435c9aaa6996516961ff5"
+      "id": "cursor-readme-version-requires-ba3eb708d5ae",
+      "sha256": "b57b040c60cf1a2b35779afdf6e54e94d0f52d4a83919a4ef0e15a1960e775e6"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -712,6 +712,18 @@
     {
       "id": "final-writing-remediation-forbids-c10af2a80131",
       "sha256": "70f619564392f95a8d4172f38422bc8f758bfe8cf9583ecbf5fd189ac0772388"
+    },
+    {
+      "id": "impl-review-principle-ceabaf730e06",
+      "sha256": "f951edd9d8f94a41656186348949785bcb5d2b8dfad9e61efd9d2a8ec353eacc"
+    },
+    {
+      "id": "impl-review-principle-occurrences",
+      "sha256": "18feaa18abedeba924a965b66d3e19ad5712723e13d7fdd8e2e0603811c8bbd3"
+    },
+    {
+      "id": "impl-review-principle-before-risk-selection",
+      "sha256": "b87bbac01dc3162b1dbdab677c8f2092df9733bfe35979c922c68876dee08c69"
     },
     {
       "id": "impl-risk-loader-data-2d889f0bd611",
@@ -2229,6 +2241,21 @@
     {
       "kind": "anchor",
       "id": "impl-route-execution-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-review-principle-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-review-principle",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-risk-selection-start",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {

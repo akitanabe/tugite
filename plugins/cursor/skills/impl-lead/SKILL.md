@@ -183,6 +183,15 @@ baseline の diff、AC、scope、precondition、dirty state、side effect、nati
 accept せず最後の Green へ rollback して再検証する。戻せなければ dispatch を停止し、再正規化または `stop-incomplete`
 とする。隠れた依存を無理に merge しない。
 
+## Review principle
+
+自己検証は不確実性を減らすが、独立レビューの代替にはならない。
+
+親は、自己検証の結果だけを理由に独立 review の価値を消去せず、独立した観点による追加の反証機会の価値を
+自己検証とは別に評価する。reviewer を選ばない判断も、自己検証が Green であること自体ではなく、追加の反証機会が
+親の判断を変えうるかの評価に基づける。その後、既存の risk-directed review に従い、review の要否、対象、重点を
+自律的に判断する。
+
 ## Risk-directed review selection and handoff
 
 reviewer はユーザーが明示した review goal、または親が AC、diff、test、外部副作用、責務境界その他から特定した具体的な
