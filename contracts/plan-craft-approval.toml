@@ -220,21 +220,62 @@ slice = "plan-craft-approval-handoff"
 pattern = "proposal-dialogue → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-refinement-selection-requires-4d285fcb57a1]
+[contracts.refinement-selection-requires-f58555dece96]
 kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = '''selection = same-turn recommendation + reason + Yes / No
-No = skip proposal and integrity check -> structural-health-gate
+slice = "plan-craft-approval-refinement-selection"
+pattern = '''selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
+No = skip proposal and freeze-integrity check -> structural-health-gate
 Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-freeze-integrity-requires-842c4f66006c]
+[contracts.refinement-selection-no-run-forbids-caac5c26e0c3]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-selection"
+pattern = "No = run proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-yes-skip-forbids-56a421c2bf64]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-selection"
+pattern = "Yes = skip proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-requires-d625986ecb2d]
+kind = "requires"
+slice = "plan-craft-approval-refinement-stop"
+pattern = '''proposal stop-incomplete
+authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
+otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-fallback-forbids-adc7b41012e4]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-stop"
+pattern = "otherwise = pre-refinement snapshot fallback -> structural-health-gate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-recovery-requires-b6417f02348e]
+kind = "requires"
+slice = "plan-craft-approval-check1-recovery"
+pattern = '''check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
+structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-direct-gate-forbids-9910a731417f]
+kind = "forbids"
+slice = "plan-craft-approval-check1-recovery"
+pattern = "check #1 violated | indeterminate -> structural-health-gate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-invocations-requires-78e0d7f8cbbc]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
 pattern = '''verdict = intact | violated | indeterminate
 evidence = authority constraint, refined candidate location, semantic delta or indeterminate cause
 binding = parent cannot override
-comparison = all authority_constraints independently'''
+comparison = all authority_constraints independently
+normal_output = insight_fields only; non-binding; exclude freeze-integrity verdict/evidence
+freeze_integrity_output = verdict/evidence only; binding; exclude normal insight'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-freeze-raw-source-requires-ad816f364b11]
@@ -255,10 +296,14 @@ slice = "plan-craft-approval-handoff"
 pattern = "successful refinement 後は semantic change がなくても"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-recovery-scope-requires-81c4f18144b1]
+[contracts.plan-craft-approval-recovery-scope-requires-dbaa291ad2e8]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
-pattern = "immutable `request.scope`、その他の obligation を `request.exclude` に固定"
+pattern = '''affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
+request.scope = affected obligations
+request.exclude = all other candidate obligations
+scope_outside = rejected | out-of-scope; never apply
+scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.authority-recovery-fresh-proposal-requires-6cec3c2a2840]
@@ -295,6 +340,12 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "前 cycle の opt-in や governing value を継承しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.final-reselection-requires-a9c816d8d0ef]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-latest-freeze-delta-requires-7e00b730e5a8]

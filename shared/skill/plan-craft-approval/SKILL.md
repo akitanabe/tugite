@@ -82,18 +82,7 @@ meaning の一意性、Human / raw statement と verified candidate 上の解決
 
 親は freeze 要約と同じターンに、planner 裁量の proposal refinement 実行推奨または省略推奨、短い理由、`Yes / No` を一度提示する。
 score、件数 threshold、新しい public knob は作らず、selection は decision ledger ではなく workflow process Data とする。
-
-```text
-selection = same-turn recommendation + reason + Yes / No
-No = skip proposal and integrity check -> structural-health-gate
-Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check
-```
-
-`No` は正常な `skipped` であり、proposal と freeze-integrity check を起動せず gate へ進む。`Yes` は verified direction-freeze
-candidate を S0 とし、`authority = constrained` と immutable な全 `authority_constraints` を注入して、既存 proposal の fixed 2 pass を実行する。
-proposal の `stop-incomplete` は refinement 前 snapshot へ暗黙 fallback せず outward `incomplete` とする。ただし `authority_conflict`
-packet と verified result がある場合だけ、その snapshot を current verified baseline として局所 Human Decision recovery に使う。
-absent または authority conflict 以外の停止では自動 reopen しない。
+実行分岐と proposal 停止時の後段制御は、後述の専用 normative Data を唯一の正本とする。
 authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass と
 fresh-context check #1 へ必ず進み、新しい optional selection を挟まず governing `executed` を維持する。この recovery は integrity check count を消費しない。
 
@@ -101,12 +90,19 @@ successful refinement 後は semantic change がなくても、親が別 fresh c
 invocation で起動する。verifier は全 constraints を独立照合し、`intact | violated | indeterminate` と追跡可能な evidence を返す。
 verdict は binding であり、親は覆さない。`intact` だけが gate へ進む。
 
-check #1 が `violated` または `indeterminate` なら、一度に得た全 evidence を Data として保持し、Human に問題・影響・推奨対応だけを
-圧縮報告し、影響する判断点だけを `proposal-dialogue` で一件ずつ reopen する。Human 再判断の反映・verification 後、最新 verified
-candidate で recovery freeze を作り、check evidence の constraint ID / candidate location から decision / adoption ledger の直接・間接依存を
+check #1 非 intact 時の停止・reopen 関係は、後述の専用 normative Data を唯一の正本とする。Human 再判断の反映・verification 後、最新 verified
+candidate で recovery freeze を作り、保持した check evidence の constraint ID / candidate location から decision / adoption ledger の直接・間接依存を
 閉じた affected obligations を Calculation する。それを immutable `request.scope`、その他の obligation を `request.exclude` に固定し、
 同じ bounded request を advisor #1 / #2、両 Transaction、verification へ渡す。scope 外 point は apply せず `rejected` または `out-of-scope` とする。
 locator、dependency closure、scope / exclude の排他性を安全に確定できなければ開始前 `stop-incomplete` とする。
+
+```text
+affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
+request.scope = affected obligations
+request.exclude = all other candidate obligations
+scope_outside = rejected | out-of-scope; never apply
+scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal
+```
 
 最新 verified snapshot を S0 とする fresh proposal fixed 2 pass と、別 fresh context の check #2 を mandatory continuation として実行し、
 新しい optional selection を挟まない。check #2 が非 `intact` なら Trust failure の `stop-incomplete` とし、再 reopen しない。Human へは
@@ -186,6 +182,33 @@ executed -> gate return -> skipped = skipped
 skipped -> gate return -> executed = executed
 executed -> Trust recovery -> intact = executed
 executed -> final acceptance correction -> skipped = skipped
+```
+<!-- @/contract -->
+
+## optional proposal refinement の normative relations
+
+以下の3 Data blockは、分岐、proposal 停止、check #1 recovery の唯一の正本である。
+
+<!-- @contract plan-craft-approval-refinement-selection -->
+```text
+selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
+No = skip proposal and freeze-integrity check -> structural-health-gate
+Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-refinement-stop -->
+```text
+proposal stop-incomplete
+authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
+otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-check1-recovery -->
+```text
+check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
+structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2
 ```
 <!-- @/contract -->
 

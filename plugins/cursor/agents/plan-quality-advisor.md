@@ -41,6 +41,8 @@ verdict = intact | violated | indeterminate
 evidence = authority constraint, refined candidate location, semantic delta or indeterminate cause
 binding = parent cannot override
 comparison = all authority_constraints independently
+normal_output = insight_fields only; non-binding; exclude freeze-integrity verdict/evidence
+freeze_integrity_output = verdict/evidence only; binding; exclude normal insight
 ```
 
 constraint ごとに ID、refined candidate の対応位置、semantic delta または照合不能の原因を追跡可能な evidence として返す。

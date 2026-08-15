@@ -40,24 +40,18 @@ authority_source = injected Data only; never caller identity
 ledger = adoption ledger'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-authority-injection-requires-8d22d93b27a5]
-kind = "requires"
-slice = "proposal-batch-resolution-role-mapping"
-pattern = '''authority = discretionary | constrained
-authority_constraints = immutable invocation Data injected by public parent
-authority_source = injected Data only; never caller identity'''
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.proposal-authority-no-caller-branch-requires-736f971dd91f]
 kind = "requires"
 slice = "proposal-batch-resolution-role-mapping"
 pattern = "caller 名から authority または振る舞いを選ばず"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-constrained-prestart-stop-requires-37b096d6c483]
+[contracts.proposal-constrained-validation-requires-c8d7362b0935]
 kind = "requires"
 slice = "proposal-batch-resolution-role-mapping"
-pattern = "集合が空、欠落、不正、重複、余分、または曖昧な場合は開始前\n`stop-incomplete`"
+pattern = '''constrained_validation_timing = before working state / advisor / Resolution Transaction
+constraint_failure_cases = [missing, invalid, ambiguous, duplicate, extra, identity regeneration, meaning-evidence mismatch]
+constraint_failure = stop-incomplete before refinement'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-constraints-immutable-requires-c566a62afe64]
@@ -340,16 +334,22 @@ slice = "proposal-batch-resolution-transaction"
 pattern = "独立して処理できる point を止めずに caller-owned boundary へ返す"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-partial-verified-return-requires-62ce7e3c29fd]
+[contracts.proposal-verified-present-return-requires-2b65c6e6db10]
 kind = "requires"
 slice = "proposal-bounded-return"
-pattern = "verified result がある場合だけ、`candidate_snapshot` identity、constraint-compliant として promote 済みの completed partition"
+pattern = "verified_present_return = candidate snapshot identity + constraint-compliant completed partitions + verification evidence"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-absent-snapshot-requires-4d20950d07d2]
+[contracts.proposal-absent-return-requires-df692b963aaf]
 kind = "requires"
 slice = "proposal-bounded-return"
-pattern = "`candidate_snapshot: absent`、completed partition は空"
+pattern = "absent_return = candidate_snapshot absent + empty completed partitions + no fabricated identity"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-restart-baseline-requires-d9dc0a223143]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "restart_baseline = verified promoted state only; exclude unverified or non-promoted working state"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-authority-conflict-requires-f68ff001a6ff]

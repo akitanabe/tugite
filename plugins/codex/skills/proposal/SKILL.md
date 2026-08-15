@@ -78,6 +78,12 @@ working state、advisor、Resolution Transaction を開始せず `stop-incomplet
 `stop-incomplete` とする。検証済み constraints は item identity、意味、source evidence を含む invocation Data 全体を
 immutable とし、proposal 内で再生成・追加・削除・置換しない。
 
+```text
+constrained_validation_timing = before working state / advisor / Resolution Transaction
+constraint_failure_cases = [missing, invalid, ambiguous, duplicate, extra, identity regeneration, meaning-evidence mismatch]
+constraint_failure = stop-incomplete before refinement
+```
+
 ## current verified candidate の caller mapping
 
 `caller_context` で既存 candidate を受け取る場合は current verified candidate snapshot を S0 とし、一から再起草せず、未検証の working state を
@@ -193,6 +199,12 @@ candidate を作れない返却では `status: stop-incomplete` と未完了範�
 verified result がある場合だけ、`candidate_snapshot` identity、constraint-compliant として promote 済みの completed partition、
 その verification evidence を返す。verified snapshot がない場合は `candidate_snapshot: absent`、completed partition は空とし、
 fake identity を作らない。未検証または非昇格の working state は再開 baseline から除外する。
+
+```text
+verified_present_return = candidate snapshot identity + constraint-compliant completed partitions + verification evidence
+absent_return = candidate_snapshot absent + empty completed partitions + no fabricated identity
+restart_baseline = verified promoted state only; exclude unverified or non-promoted working state
+```
 
 constraint の変更が必要な場合は、必要な Human Decision、衝突した constraint ID、evidence、影響範囲を `authority_conflict`
 packet として付ける。Human Decision と独立な partition は verify と promote を続けてもよいが、未解決 point に依存する partition を
