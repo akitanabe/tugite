@@ -5,7 +5,7 @@
 Tugite は Claude Code、Codex、Cursor 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
 `shared/skill/`、agent は `shared/agents/` に置きます。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
 `contracts/*.toml`、platform manifest と platform 固有 metadata の宣言は `declarations/` が正本です。配布物は
-`plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/`、手動評価シナリオは `evals/` にあります。`Contract`、
+`plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/` にあります。`Contract`、
 `Task Specification`、`Work Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
 
 ## ビルド・テスト・開発コマンド
@@ -28,7 +28,8 @@ platform 固有 metadata を管理します。Codex skill metadata は `declarat
 
 契約は生成物または source frontmatter から決定論的に観測できる不変条件に限定します。未登録 source、unknown/stale
 declaration、必須 path、retired path、metadata policy は `gunte check` で保護します。Gunte の生成、projection、
-serialization、byte drift は `gunte check` に任せ、LLM の判断品質や読みやすさは EVAL または editorial review で扱います。
+serialization、byte drift は `gunte check` に任せます。LLM の判断品質や読みやすさは、計画および実装の既定
+verification にせず、残存 risk または editorial review として扱います。
 
 `slice` を持つ契約の ID は `<意味を表す prefix>-<12桁 hash>` とします。hash は `kind`、`slice`、`pattern`、
 宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
@@ -78,6 +79,12 @@ Red、Green、Refactor の順で進めます。Python test を追加する場合
 CLI の振る舞いを記述します。repository の inventory、frontmatter、declaration scalar、retired path は Gunte contract で確認し、
 生成、projection、serialization、byte drift を別のテストで再実装しません。関連する振る舞いと失敗経路を保護し、
 数値による coverage 基準は設けません。
+
+<!-- @contract repository-plan-verification-default -->
+計画成果物の既定 verification は、この repository で実行できる native 手段に限り、EVAL を含めない。
+Gunte が保証しない点は残存 risk / 未検証とし、受け入れを EVAL 実行に依存させない。
+EVAL は Human が明示したとき、または既存 EVAL 成果物の変更自体が要求対象のときだけ使う。
+<!-- @/contract -->
 
 ## Version 更新指針
 
@@ -139,6 +146,7 @@ accept_prohibition = [
 全 route で親が `qa_inputs` の `Task Spec`、`base`、`acceptance criteria`、`diff`、`evidence`、`surrounding context` と
 `common_evidence` の input-variant identity / common parent oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
 `test_artifacts` は automated test、Gunte predicate/contract、fixture/oracle、EVAL であり、qa input と混同しません。
+EVAL を test_artifact に含むことは、計画へ EVAL corpus を追加する既定義務ではありません。
 reviewer を使う場合も baseline と起動理由を既存の確認観点・周辺
 context と一緒に渡し、reviewer は追加観測だけを返します。`obligation`、`oracle`、`validation plane` の責任と最終
 adjudication は親に残し、`test-quality-reviewer` は既存 scope 内の changed mutation、structural test、EVAL case の

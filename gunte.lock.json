@@ -88,6 +88,18 @@
       "sha256": "5d73d6575cbe5487348615f4d95ed095b4697bce13a84de22e69e798cf6816e4"
     },
     {
+      "id": "repository-plan-verification-default-1cd0b7e4ffb5",
+      "sha256": "e7c3aa85226b862f164c466fdfc8b6afeb7cede80bb0b16615dbfbcf1af04b65"
+    },
+    {
+      "id": "no-eval-as-default-llm-quality",
+      "sha256": "e64fae6cbd8254590e2ca172990cfb81138cce95b6fad7a2776643e75e5c78a8"
+    },
+    {
+      "id": "no-evals-dir-as-inventory",
+      "sha256": "e7eb960939ebf45b0aa5bece1b44f174bcd0b8a47decd6b13028b9f42caa6ba4"
+    },
+    {
       "id": "cursor-agent-declaration-presence",
       "sha256": "c763c47276a1ca48f6e7431360be1cd0b093a7352dad6bb0d764f93ecae791d0"
     },
@@ -2809,6 +2821,11 @@
       "kind": "span",
       "id": "work-unit-design-internal-guard",
       "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-plan-verification-default",
+      "path": "shared/repository-guidelines.md"
     },
     {
       "kind": "span",
