@@ -49,15 +49,17 @@ authority/freeze とせず、現在の evidence で再評価する。例外は�
 その場合だけ Human escalation として必要な一点を返す。`plan-craft-approval` の direction freeze / final acceptance は
 この通常 workflow へ持ち込まず、その public workflow の境界を変更しない。
 
-reviewer の `人間確認` は reviewer が観測した signal に留まり、採否・停止・推奨を決めない。public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、Human が最終成果物を採用して後続 Action を許可する。
+reviewer の `人間確認` は reviewer が観測した signal に留まり、採否・停止・推奨を決めない。public workflow parent が内部工程として `final-candidate` / `incomplete` と圧縮出力を裁定し、Human が最終成果物の採用と後続 Action を許可する。
 
-### candidate status Calculation
+### semantic completion eligibility Calculation
 
-candidate status は次の Calculation で一度だけ決める。
-`incomplete` は、不可約な意味衝突、blocking evidence 不足、structural budget 等で安全継続不可、workflow/context 不成立、
-現 candidate を推奨不能な状態、blocking finding、未反映修正必須、要求意味変更、または evidence不足のいずれかがある場合である。
-`final-candidate` は上記の理由が一つもなく、現在の candidate を推奨できる場合である。単なる複数案、別案、軽い不確実性だけでは
+artifact 保存前の semantic completion eligibility は、不可約な意味衝突、blocking evidence 不足、structural budget 等で
+安全継続不可、workflow/context 不成立、現 candidate を推奨不能な状態、blocking finding、未反映修正必須、要求意味変更、
+または evidence 不足のいずれもなく、現在の candidate を推奨できる場合だけ成立する。単なる複数案、別案、軽い不確実性だけでは
 `stop-incomplete` にせず、Agent が比較して一案を推奨し、残る不確実性を risk または Human Attention へ記録する。
+
+outward candidate status は次の Calculation で一度だけ決める。semantic completion eligibility と後述の保存結果を入力とし、
+両方が成功した場合だけ `final-candidate`、それ以外は `incomplete` とする。semantic 判定と保存後で status を二度確定しない。
 
 ## おまかせ workflow の review と推奨判定
 
@@ -69,20 +71,17 @@ review を続ける価値の判断が難しい場合だけ、read-only `plan-qua
 残存 finding、churn/限界効用、不足 evidence を非拘束 insight として返す。advisor は candidate を修正せず、parent が
 continue / stop-and-finalize / stop-incomplete を裁定する。
 
-上記 Calculation で `final-candidate` となった場合、bounded stop 後の残存 finding は Accepted risk / Out of scope /
-Human Attention のうち最終判断に影響するものだけを残す。解消済み、却下済み、軽微な文言、churn の履歴は Human 向け出力へ
-残さない。
+semantic completion eligibility が成立した場合、bounded stop 後の残存 finding が成果物自体の residual risk または scope 外事項に
+実質的な影響を持つときだけ、成果物本文の内容として反映する。Human の最終判断が必要な事項は stdout の Human Attention に絞る。
+解消済み、却下済み、軽微な文言、disposition、churn の履歴は成果物または stdout へ残さない。
 
 ## おまかせ workflow の圧縮出力
 
-`final-candidate` の既定出力は Result / Semantic Delta / Verification Delta / Human Attention / Artifact である。
-Semantic Delta の baseline は最初に `structural-health-gate` へ投入した proposal candidate とし、その後の修正だけを示す。
-Verification Delta は境界、failure path、fragile behavior、禁止副作用、責務境界を優先し、差分がなければ短縮する。
-
+`final-candidate` の既定出力は Result / 短い Summary / 必要な場合だけの Human Attention / Artifact local path とする。
 final summary は明示 opt-out できる。review skip と final summary skip は独立であり、一方を指定しても他方を暗黙に変更しない。
 `final-candidate` の summary opt-out は Artifact だけを返す。ただし `incomplete` の summary opt-out では `Result: incomplete`、
-Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human Decision Needed を示す。途中の decision / review 全履歴を Human に
-要求しない。Artifact は通常会話内 Data とし、最終採用と保存・後続 Action の許可は Human が判断する。
+Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human Attention を示す。途中の decision / review 全履歴を Human に
+要求しない。詳細な artifact と stdout の境界は後述の completion contract に従う。
 <!-- @/contract -->
 
 <!-- @contract public-workflow-routing -->
@@ -95,7 +94,7 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human De
 - ユーザーが `plan-craft` の起動または同等の明示要求をした場合だけ起動する。自然言語の作業内容や context から暗黙に起動しない。
 - 各 platform の invocation metadata は上記の explicit-only 契約を表し、その範囲を拡張しない。
 - 起動しても実装、テスト作成、委譲、Worker 起動、worktree 操作、実装開始、次工程の自動前進を行わない。
-- `review` の実行、`final-candidate` / `incomplete` と圧縮出力の内部裁定までを担う。最終成果物の採用と保存・後続 Action の許可は Human が判断する。
+- `review` の実行、local artifact の安全な保存、`final-candidate` / `incomplete` と圧縮出力の内部裁定までを担う。最終成果物の採用と後続 Action の許可は Human が判断する。
 
 <!-- @contract plan-craft-proposal-resolution-ownership -->
 <!-- @anchor plan-craft-proposal-resolution-caller-mapping -->
@@ -230,21 +229,100 @@ review-loop の出力契約に従い、ここで再計算しない。
 
 ## 確定
 
-status は上記 `candidate status Calculation` を唯一の判定として参照し、ここで条件を再定義しない。review を実行した場合も
+status は上記 `outward candidate status Calculation` を唯一の判定として参照し、ここで条件を再定義しない。review を実行した場合も
 `termination` と計画の `final-candidate` / `incomplete` を別々に親へ返す。`round-limit`、批判の出尽くし、または残存 finding は
 process Data として保持し、status Calculationの入力へ渡す。レビュー不成立や review-loop が `stop-incomplete` を返した場合は、
 その process failure を隠さず、status Calculationの結果を返す。
-`final-candidate` では残存事項を Accepted risk / Out of scope / Human Attention に絞り、Human 向けに必要なものだけを返す。
+`final-candidate` では、成果物内容に属する residual risk と scope 外事項は本文に統合し、Human の最終判断に必要なものだけを Human Attention へ渡す。
 <!-- @/contract -->
 
 review を実行しない場合は、要求の不足、scope、制約、残存 risk を親が確認できる通常の起草確定へ進める。どちらの場合も
-成果物の最終採用、保存、issue や file への書き戻し、実装・委譲の開始は Human の許可を受けて親が実行する。
+成果物の最終採用、issue や既存 resource への書き戻し、実装・委譲の開始は Human の許可を受けて親が実行する。
 
-## persistence と出力境界
+<!-- @contract plan-craft-artifact-completion -->
+## local artifact completion
 
-会話内 execution data を既定とし、成果物を保存しない。ユーザーが保存を要求した場合、後日再開・handoff・外部 review
-のために必要な場合だけ、親が指定した resource へ書き出す。保存する場合も、対象 path、snapshot、書き戻し権限、更新結果を
-親が記録し、入力 resource を無断更新しない。
+<!-- @anchor plan-craft-artifact-eligibility -->
+semantic completion eligibility が成立した場合だけ、成果物本文の byte snapshot を凍結し、保存先選択と保存 Action を開始する。
+成立しない場合は path 選択も write も行わず `incomplete` とする。明示保存先を最優先し、directory 指定なら自動 filename をその配下に置き、
+file path 指定なら basename を尊重する。指定先の path type、containment、symlink / junction 非追従、no-clobber publish を安全に確認できなければ、
+無言で別の保存先へ fallback せず `incomplete` とする。
 
-通常の既定出力には成果物本文と、review を実行したか、確定候補か、未完了か、親へ返した問い・残存 risk を含め、`summary opt-out` 指定時は先行する「おまかせ workflow の圧縮出力」の例外契約に従う。実装を開始した、
-委譲した、次工程へ進んだと誤解される status や invocation を返さない。
+保存先が未指定なら、既存 directory であり、project の documentation、configuration、ignore comment、または既存の同種 artifact から
+temporary / local-only 用途を直接観測できる project-local 候補だけを評価する。directory 名や ignored であることだけは用途 evidence とせず、
+cache、build、vendor 等の decoy を除外する。repository root から final path と staging path までの各 component を symlink / junction 非追従で確認し、
+canonical containment が成立し、その exact final path が ignored かつ index 未登録と確認できる場合だけ候補にする。同種 artifact の convention として
+最も直接的な evidence を持つ候補を一意に選べる場合だけ project-local を使う。候補なし、同順位、non-Git project、または用途・Git 管理外・containment を
+確認できない場合は OS temporary directory へ fallback する。OS temp は platform が提供する temp root の identity、canonical path、symlink / junction 非追従を、
+run-owned directory の作成前に検証する。temp root または予定する final / staging の canonical path が repository 内に入る場合は OS temp という名称を根拠にせず、
+project-local と同じ用途・ignored・index 未登録・containment の資格を作成前に適用する。資格が成立した場合だけ temp root 直下に secure / exclusive な
+run-owned directory を新規作成し、作成時の directory object identity を記録する。final と staging の canonical containment と各 component の非追従を再確認する。
+temp root、run-owned directory、containment、非追従、repository との関係を確認できなければ write 前に `incomplete` とする。未指定時に project-local directory や ignore rule を新設しない。
+
+自動 filename は成果物の内容由来の短く可読な単一 component とし、空文字、`.`、`..`、absolute path、path separator を採用しない。
+既存 final path は bytes が同一でも上書きせず collision とし、数値 suffix 付きの次 candidate を評価する。再試行上限は invocation 開始時に有限値として固定し、
+collision の場合だけ suffix を変える。各 exact path の資格は publish 直前に再確認し、未指定の project-local が資格を失った場合はそこへ書かず、
+OS temporary directory から選択をやり直す。
+
+```text
+workflow = plan-craft
+artifact_eligibility = semantic completion eligibility and verified save success
+artifact_body = frozen final candidate body only
+artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate result, review result, decision ledger, finding ledger, process history]
+incomplete_artifact = none
+explicit_destination = highest priority; unsafe or unusable means incomplete without fallback
+unspecified_project_local = existing temporary or local-only purpose is directly evidenced; exact final path is ignored and index-unregistered
+os_temp_fallback = no candidate, tied candidates, non-Git project, or unconfirmed qualification
+project_mutation = do not create a project-local directory or ignore rule
+filename = content-derived safe single component
+collision = never overwrite an existing file; finite numeric suffix retry only on collision
+save = same-filesystem run-owned staging write -> close -> byte-identical readback -> complete-only no-clobber publish
+save_failure = incomplete; clean exact staging residue or report it as residual risk
+stdout = Result, short Summary, optional Human Attention, Artifact local path
+stdout_excludes = full artifact body, Semantic Delta, Verification Delta, gate or review result, decision or finding ledger, process history
+summary_opt_out = Artifact only
+authority = not Git management, durable persistence, final acceptance, or downstream Action permission
+```
+
+```text
+staging_creation = atomic exclusive non-follow new object beneath verified destination identity
+staging_identity = same object identity through write, readback, and cleanup
+qualification_recheck = immediately before staging creation and immediately before publish
+destination_reselection = owned staging identity must match and cleanup must succeed first
+cleanup_excludes = pre-existing or identity-mismatched object
+unsafe_primitive = stop before write or return safe incomplete
+os_temp = validated platform temp root -> secure exclusive run-owned directory
+os_temp_paths = canonical containment and non-follow for final and staging
+os_temp_repo_overlap = project-local qualification applies when canonical path is inside repository
+os_temp_unconfirmed = stop before write as incomplete
+run_owned_directory_identity = record at creation
+run_owned_directory_cleanup = before publish commit on incomplete or destination reselection; after owned staging handling; same identity and empty; non-recursive non-follow remove only
+run_owned_directory_residue = identity mismatch, non-empty, or removal failure means leave and report exact residue
+run_owned_directory_commit = preserve directory containing published final artifact
+```
+
+<!-- @anchor plan-craft-artifact-stage -->
+選択した destination の資格と object identity を staging 作成の直前に再確認する。検証済み destination identity の下で、同じ filesystem 上の
+run-owned staging path を atomic / exclusive / non-follow で新規作成する。作成した object identity を記録し、その同一 object を write、close 後の readback、
+cleanup まで保持して byte 一致を確認する。既存 object の排他取得に失敗したら書き込まず、run-owned staging として扱わない。
+安全で確定的な staging / publish primitive または identity 確認が利用できなければ、本文を write する前に停止するか、すでに所有済みの staging を同一 identity で安全に cleanup できる場合だけ `incomplete` とする。
+
+<!-- @anchor plan-craft-artifact-publish -->
+readback 成功後、destination の資格と identity、staging の所有 identity を publish の直前に再確認する。未完成 final path を露出せず既存 final path を
+上書きしない確定的 no-clobber operation で publish し、その成功を保存の commit point とする。destination の資格喪失等で別 destination を選び直す場合は、
+記録した staging identity と現 object の identity が一致し、その run-owned staging の cleanup が成功したことを確認してから再選択する。identity 不一致、所有確認不能、
+または cleanup failure では他者 object を削除せず `incomplete` とする。
+その destination のために OS-temp run-owned directory を作成済みなら、staging の処理後に記録済み directory identity と現在の identity が一致し、directory が空であることを
+確認し、non-recursive / non-follow operation でその directory だけを削除する。この cleanup の成功後だけ destination を再選択する。identity 不一致、非空、
+または削除失敗では directory を変更せず、exact residue を報告して `incomplete` とする。recursive delete は行わない。
+publish 直前の collision は資格確認から有限再試行し、それ以外の write、readback、publish failure または上限到達は final path が成果物として生成されていないことを確認して
+`incomplete` とする。記録済み identity と一致する run-owned staging だけを cleanup し、所有を確認できない residue は削除せず未完成の residual risk として返す。
+publish commit 前に `incomplete` となる OS-temp run-owned directory にも、owned staging 処理後の同じ identity / empty / non-recursive / non-follow cleanup を適用する。
+identity 不一致、非空、または削除失敗はそのまま残し exact residue として報告する。publish 成功済み final artifact を含む run-owned directory は削除せず保持する。
+
+<!-- @anchor plan-craft-artifact-output -->
+publish 結果を semantic completion eligibility とともに outward candidate status Calculation へ渡す。artifact には凍結した成果物本文の bytes だけを入れ、
+要約、Human Attention、gate / review 結果、decision / finding ledger その他の process Data を追記しない。`final-candidate` の stdout は成果物全文を出さず、
+`Result: final-candidate`、成果物内容だけの短い `Summary`、必要な場合だけ `Human Attention`、実際に保存・確認した `Artifact: <local path>` に限る。
+clickable decoration は local path 自体に代えない。保存した artifact は Git 管理、永続保存、最終採用、または後続 Action の許可を意味しない。
+<!-- @/contract -->
