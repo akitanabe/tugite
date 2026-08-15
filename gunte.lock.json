@@ -444,12 +444,28 @@
       "sha256": "e047f1e7a537ce8de3b8c787b8329a41085c7a7206288aaf87c0ad5fda0584a8"
     },
     {
-      "id": "clarify-it-philosophy-reference-distribution-11024eb1d090",
-      "sha256": "6b2aa051da4eba7de9da56676365a49621e321564de265afc9123afb37a65003"
-    },
-    {
       "id": "clarify-it-philosophy-reference-positioning-80455b6ff638",
       "sha256": "a7e870fdd20d10e6ee0c78f1b1cf0ebefad3aafd9472aaa7f34b31625ac098d5"
+    },
+    {
+      "id": "clarify-it-philosophy-nonnormative-1fa5875363b5",
+      "sha256": "0fff2735193c13ec65cecdd12f4e6f4e18f90bf3fe4ae6baa13f61bdea49984b"
+    },
+    {
+      "id": "clarify-it-philosophy-hierarchy-4c5d3878b030",
+      "sha256": "7234449e1184c68371809930aa44fee4de31cea5bb4624a64c5de33555c91d6d"
+    },
+    {
+      "id": "clarify-it-philosophy-recovery-a2b1f65aaea8",
+      "sha256": "f0355849614bffd1f6f8a7eb2f671b508b652c7b98e9cabf8406d9f9df425252"
+    },
+    {
+      "id": "clarify-it-philosophy-local-reference-83242365d70c",
+      "sha256": "276841c02c5eb6bf9f7281191544bd79f223b7794509186ceba362f84a169239"
+    },
+    {
+      "id": "clarify-it-philosophy-caller-return-b46453fa8947",
+      "sha256": "7ccf7a89cfde39beef911c8ead780e95102007fa309f1d09d7db147841589231"
     },
     {
       "id": "clarify-it-hdp-candidate-multiple-177b746ed8ed",
@@ -2897,6 +2913,11 @@
       "kind": "span",
       "id": "clarify-it-casebook",
       "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-philosophy-positioning",
+      "path": "shared/skill/clarify-it/references/philosophy.md"
     },
     {
       "kind": "span",

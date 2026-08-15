@@ -227,21 +227,42 @@ pattern = '''開始時に、目的、今回のスコープ、すでに確定し�
 確定できない不足だけを Human へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-it-philosophy-reference-distribution-11024eb1d090]
-kind = "occurrences"
-pattern = "# clarify-it — Philosophy"
-count = 1
-paths = [
-  "plugins/claude/skills/clarify-it/references/philosophy.md",
-  "plugins/codex/skills/clarify-it/references/philosophy.md",
-  "plugins/cursor/skills/clarify-it/references/philosophy.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.clarify-it-philosophy-reference-positioning-80455b6ff638]
 kind = "requires"
 slice = "clarify-it-philosophy-reference"
 pattern = "Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-nonnormative-1fa5875363b5]
+kind = "requires"
+slice = "clarify-it-philosophy-positioning"
+pattern = "本書は非規範であり、新しい obligation を作らない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-hierarchy-4c5d3878b030]
+kind = "requires"
+slice = "clarify-it-philosophy-positioning"
+pattern = "`SKILL.md` の Specification / Method / Casebook が優先する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-recovery-a2b1f65aaea8]
+kind = "requires"
+slice = "clarify-it-philosophy-positioning"
+pattern = "通常実行には必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-local-reference-83242365d70c]
+kind = "requires"
+slice = "clarify-it-philosophy-positioning"
+pattern = '''本書は、Specification / Method / Casebook の矛盾、解釈衝突、
+想定外ケースで設計意図を深く確認するための local reference である。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-caller-return-b46453fa8947]
+kind = "requires"
+slice = "clarify-it-philosophy-positioning"
+pattern = '''元の Philosophy にある「成果物へ反映」は、Tugite では
+成果物を直接編集することではなく、現在の意思決定モデルを caller / Human へ返すこととして読む。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.clarify-it-hdp-candidate-multiple-177b746ed8ed]

@@ -2,10 +2,12 @@
 
 この文書は Issue #237 の Philosophy snapshot を基にした Tugite 移植版であり、`clarify-it` がなぜこの構造を採用するのかを示す。
 
-本書は非規範であり、新しい obligation を作らない。`SKILL.md` の Specification / Method / Casebook が優先し、通常実行に必須ではない。
-`SKILL.md` 内の自己完結した recovery data だけでも skill は動作できる。本書は、Specification / Method / Casebook の矛盾、解釈衝突、
+<!-- @contract clarify-it-philosophy-positioning -->
+本書は非規範であり、新しい obligation を作らない。`SKILL.md` の Specification / Method / Casebook が優先する。
+通常実行には必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。本書は、Specification / Method / Casebook の矛盾、解釈衝突、
 想定外ケースで設計意図を深く確認するための local reference である。元の Philosophy にある「成果物へ反映」は、Tugite では
 成果物を直接編集することではなく、現在の意思決定モデルを caller / Human へ返すこととして読む。
+<!-- @/contract -->
 
 ## 1. 中核命題
 
