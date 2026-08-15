@@ -419,11 +419,12 @@ AC、scope、責任境界、依存が不変で同じ単位の実装上の不足�
 `stop-incomplete` へ戻す。品質下限等を満たせない場合は、未完了範囲、満たせない条件、判断点、evidence、残存 risk、未検証事項を明記して
 `stop-incomplete` とする。固定状態機械や常時必須の永続化された実行成果を新設しない。
 
-最終報告には変更 file、baseline からの diff summary、各 Work Unit の `id`、context、base_snapshot、isolation、依存、
-route、result、verification、final run baseline、実行した command と結果、AC 対応、選択理由、前提、判断点、残存 risk、
-未検証事項、`git status --short` を含める。review を実施した場合は review goal / result、finding の adopted / rejected /
-unresolved と理由、残存 risk を含め、persistence resource がある場合だけ identity / ownership / lifecycle も含める。v4 の
-identifier/path/mode、固定 worktree、必須の追加報告形式を持ち込まず、explicit-only、暫定名、v4/v5 共存を維持する。v4
-mode、Branch Plan、固定 4 phase、over-engineering reviewer の mandatory phase、固定修正経路、永続 artifact の通常必須化を
-持ち込まない。固定 review phase、必須 QA report、必須 diff artifact、判断点台帳を v5 契約へ持ち込まない。親は run を accept したか
-`stop-incomplete` で停止したかを明示し、未承認の追加作業を残さない。
+### Final report quality signals
+
+最終報告は run の結論を `accept` または `stop-incomplete` と明示する。各 Work Unit は短く、`id` と要約、実装主体（親の direct 実装または worker 名）、その Work Unit を scope に含めた optional risk-directed reviewer（選択なしは `none`）と観点、verification の結果状態（`passed`、`failed`、`not run`、`unverified` など判別可能な表現）を示す。
+
+run-wide mandatory `final writing gate` は optional risk-directed review と区別し、実施事実と scope を示す。gate 前に `stop-incomplete` となった場合は未実施を明記し、実施済みと扱わない。notable decision / unresolved concern は存在する場合だけ短く示し、網羅台帳や固定 decision table を導入しない。
+
+詳細な command、全 finding の裁定、base / isolation / dependency は既定で Push せず、同じ run ですでに観測・記録した conversation execution data からだけ Pull できるものとして扱う。過去状態を再取得・再構成できるとは主張しない。
+
+この要約形式は route、worker / reviewer 選択、review 責務、accept / stop-incomplete、persistence の責務・判断条件を変更しない。

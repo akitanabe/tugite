@@ -346,3 +346,24 @@ kind = "order"
 before = "impl-risk-directed-resolution-transaction-start"
 after = "impl-review-findings-start"
 applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: the quality-signal fields are one relation; splitting them would allow a compact report to omit a required signal while matching unrelated prose.
+[contracts.impl-final-report-quality-signals-9952b1e2d91b]
+kind = "requires"
+slice = "impl-final-report-quality-signals"
+pattern = '''### Final report quality signals
+
+最終報告は run の結論を `accept` または `stop-incomplete` と明示する。各 Work Unit は短く、`id` と要約、実装主体（親の direct 実装または worker 名）、その Work Unit を scope に含めた optional risk-directed reviewer（選択なしは `none`）と観点、verification の結果状態（`passed`、`failed`、`not run`、`unverified` など判別可能な表現）を示す。
+
+run-wide mandatory `final writing gate` は optional risk-directed review と区別し、実施事実と scope を示す。gate 前に `stop-incomplete` となった場合は未実施を明記し、実施済みと扱わない。notable decision / unresolved concern は存在する場合だけ短く示し、網羅台帳や固定 decision table を導入しない。
+
+詳細な command、全 finding の裁定、base / isolation / dependency は既定で Push せず、同じ run ですでに観測・記録した conversation execution data からだけ Pull できるものとして扱う。過去状態を再取得・再構成できるとは主張しない。
+
+この要約形式は route、worker / reviewer 選択、review 責務、accept / stop-incomplete、persistence の責務・判断条件を変更しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-final-report-quality-signals-forbids-old-list-6f87b7c6823c]
+kind = "forbids"
+slice = "impl-final-report-quality-signals"
+pattern = "最終報告には変更 file、baseline からの diff summary、各 Work Unit の `id`、context、base_snapshot、isolation、依存、"
+applies_to = ["claude", "codex", "cursor"]
