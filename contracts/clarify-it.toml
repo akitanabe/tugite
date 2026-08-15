@@ -390,10 +390,11 @@ pattern = '''大規模な巻き戻しで意味の異なる複数の再構成が�
 適用範囲・道筋を示し、その後の影響分析と再統合を Agent が担う。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-it-stop-anytime-3d234a086ded]
+[contracts.clarify-it-stop-anytime-445a44a0ee9d]
 kind = "requires"
-slice = "clarify-it-method"
-pattern = "Human はいつでも対話を停止できる。"
+slice = "clarify-it-completion"
+pattern = '''Human はいつでも
+対話を停止できる。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.clarify-it-low-information-signal-bbd6800aebab]
@@ -403,8 +404,8 @@ pattern = '''`ok` など低情報量の承認が続くことは過剰詳細化�
 再構成条件にはしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-it-completed-cleanup-7d1684c3fe27]
+[contracts.clarify-it-completed-cleanup-46bf0861c511]
 kind = "requires"
-slice = "clarify-it-method"
-pattern = "`Completed` では、現在の前提で成立しない古い判断を残さず、包含・重複した下位判断を必要に応じて整理する。"
+slice = "clarify-it-completion"
+pattern = "現在の前提で成立しない古い判断を無批判に残さず、包含・重複した下位判断を必要に応じて整理する。"
 applies_to = ["claude", "codex", "cursor"]
