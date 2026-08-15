@@ -359,3 +359,137 @@ conversation_pull = "same-run observed and recorded conversation execution data 
 historical_reconstruction = "do not claim retrieval or reconstruction of past state"
 responsibility_invariance = "route, worker/reviewer selection, review responsibility, accept/stop-incomplete, persistence responsibility and conditions unchanged"'''
 applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: invocation identity and tracked working state are the closeout baseline; untracked and ignored noise has no baseline identity.
+[contracts.impl-run-owned-start-identity-data-a3287389ca32]
+kind = "requires"
+slice = "impl-run-owned-start-identity"
+pattern = '''start_data = invocation identity + tracked working state
+invocation_identity = repository + worktree + canonical path + exact full branch ref + invocation_start_head
+tracked_state = tracked index/worktree state identity
+noise_baseline = none for untracked / ignored'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-start-identity-noise-6ed52e97bd1a]
+kind = "requires"
+slice = "impl-run-owned-start-identity"
+pattern = "untracked / ignored entry は identity baseline として保存しない"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: closeout policy is one relation so the tracked baseline, collision-free condition, operation order, and cleanup boundary cannot drift independently.
+[contracts.impl-run-owned-closeout-policy-data-df5b55afe6ed]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = '''closeout_scope = tracked identity + collision_free
+collision_free = no current task-path collision
+protected_identity = repository + worktree + canonical path + exact full branch ref + invocation_start_head + tracked working state
+head_drift = blocker
+tracked_drift = blocker
+tracked_dirty = blocker
+exact_ref_target_drift = blocker
+task_changed_paths = invocation_start_head..task-owned tip tree path set
+collision = current untracked / ignored entry same or component ancestor/descendant of task changed path
+noise_baseline = none
+noise_report = none unless collision
+integration = preflight Calculation then --ff-only Action
+cleanup = separate Calculation after integration result
+git_failure = not collision evidence'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-preflight-data-70bf834261d5]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "invocation repository identity、worktree identity/canonical path、exact full branch"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-task-paths-6cc50a54fd8f]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "task changed paths は `invocation_start_head..task-owned tip` の tree 上の追加・変更・削除 path 集合とする。rename は source / destination、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-collision-c8aaac33e944]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "current untracked / ignored entry と task changed paths の同一または component 単位の ancestor / descendant だけを integration collision とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-path-decoy-74e7af387475]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "`foo/bar` と `foo/barista` のような文字列 prefix を ancestor / descendant とはみなさない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-noise-0b38f4f73c96]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "noncollision untracked / ignored の追加・削除・内容変更は blocker と通常 result Data の入力にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-git-failure-04bb877747b0]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "Git operation failure を collision detector として扱わない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-cleanup-29bafbf18fbe]
+kind = "requires"
+slice = "impl-run-owned-closeout-safety"
+pattern = "cleanup は integration と分離して Calculation する。integration blocker 後も成果と evidence が worktree 外に固定され、安全条件を満たす"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-preflight-before-collision]
+kind = "order"
+before = "impl-run-owned-closeout-preflight"
+after = "impl-run-owned-closeout-collision-calculation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-collision-before-integration]
+kind = "order"
+before = "impl-run-owned-closeout-collision-calculation"
+after = "impl-run-owned-closeout-integration-action"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-integration-before-post]
+kind = "order"
+before = "impl-run-owned-closeout-integration-action"
+after = "impl-run-owned-closeout-post-observation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-forbid-state-d216f2d56733]
+kind = "forbids"
+slice = "impl-run-owned-closeout-safety"
+pattern = "protected state"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-forbid-dirty-b3c676707c86]
+kind = "forbids"
+slice = "impl-run-owned-closeout-safety"
+pattern = "protected dirty/untracked"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-work-unit-dirty-scope-89a8a06b1016]
+kind = "requires"
+slice = "impl-work-unit-protected-dirty-scope"
+pattern = "`protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-closeout-summary-policy-8d3b45fdd25f]
+kind = "requires"
+slice = "impl-run-owned-closeout-summary"
+pattern = '''run_owned_closeout = tracked clean + tracked state + collision_free
+collision_free = no current task-path collision
+noise = noncollision untracked / ignored is not a blocker or ordinary result'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-closeout-summary-forbid-state-7875d130babf]
+kind = "forbids"
+slice = "impl-run-owned-closeout-summary"
+pattern = "protected state"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-closeout-summary-forbid-dirty-d565762f5057]
+kind = "forbids"
+slice = "impl-run-owned-closeout-summary"
+pattern = "protected dirty/untracked"
+applies_to = ["claude", "codex", "cursor"]

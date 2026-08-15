@@ -105,7 +105,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "5d6ce86d25f6b2f88f12e95cb66af5809ac22f5c05479426fb245392b6da5452"
+      "sha256": "3bdde025d6d8081a9a73b4cd5eaf0a4b40dce143d9bb937e6205ce49e1174b38"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -200,8 +200,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-4e22dd4ed850",
-      "sha256": "89063e69f915f826e0e2be0e5e821bc32b5c8e02cb2734c05439f5ee37528c19"
+      "id": "cursor-readme-version-requires-5fc9a037183f",
+      "sha256": "a526a2753b638c97243161f9d447d31f1cacd7d9de4a3a4b1c174ca087cf0436"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -798,6 +798,82 @@
     {
       "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
       "sha256": "80cc8ec288cd1193c6402801a43b6a87824ef5e43fce691377836c33ac4a7932"
+    },
+    {
+      "id": "impl-run-owned-start-identity-data-a3287389ca32",
+      "sha256": "36276f8770c73b1923b821739e22ecd387e939d4f8927ee494e0efb77f91f438"
+    },
+    {
+      "id": "impl-run-owned-start-identity-noise-6ed52e97bd1a",
+      "sha256": "a1f34c2362701599580b04a74d0117aa5c88dad4273bab73d42262da2175892f"
+    },
+    {
+      "id": "impl-run-owned-closeout-policy-data-df5b55afe6ed",
+      "sha256": "6b9688ef3006fdbc9bebc9ab979dbc656d7b783457309becbd7229c44d304238"
+    },
+    {
+      "id": "impl-run-owned-closeout-preflight-data-70bf834261d5",
+      "sha256": "f2a60cbb00ede3d9e2a65865d94a9199ea36b2f35b2ef183aca9a650568004df"
+    },
+    {
+      "id": "impl-run-owned-closeout-task-paths-6cc50a54fd8f",
+      "sha256": "344428092069675eeea57381a3ac92679db290bf5a598afe2283248d90c79ac7"
+    },
+    {
+      "id": "impl-run-owned-closeout-collision-c8aaac33e944",
+      "sha256": "c164f6c846ad983fa64a7a950c7b11e8b373c9637584c5b7b538120c6258992a"
+    },
+    {
+      "id": "impl-run-owned-closeout-path-decoy-74e7af387475",
+      "sha256": "2ca910536733ec5f50aecb62276f3dd38aadea45443247e786f4f11e6923c89c"
+    },
+    {
+      "id": "impl-run-owned-closeout-noise-0b38f4f73c96",
+      "sha256": "ac4ad4e86948fdcdbdbe38b4aefc06dec51ea2e430c1171edee3da6e4cdb74b6"
+    },
+    {
+      "id": "impl-run-owned-closeout-git-failure-04bb877747b0",
+      "sha256": "6750d68a91a1707a258f0800cf0c8d18305ac1c56efbbe9f12c928cca5791f04"
+    },
+    {
+      "id": "impl-run-owned-closeout-cleanup-29bafbf18fbe",
+      "sha256": "cb8f92b35c931839ff83a1e3e23b90d89c833dfced31ccc1237ebf3d05f41295"
+    },
+    {
+      "id": "impl-run-owned-closeout-preflight-before-collision",
+      "sha256": "1307146323b584599651be762f054cdf2fab33f69019eed6b565408be4836be9"
+    },
+    {
+      "id": "impl-run-owned-closeout-collision-before-integration",
+      "sha256": "ee0011e44ab3c6803f1889143da1032d0ce086dc72f6a3c9ad0f4a3bc4290dfc"
+    },
+    {
+      "id": "impl-run-owned-closeout-integration-before-post",
+      "sha256": "dbc0b7c69632ef8e00d4c8b1e62950a5da550f8dc020e19a4efe6c5d4a96d536"
+    },
+    {
+      "id": "impl-run-owned-closeout-forbid-state-d216f2d56733",
+      "sha256": "43024904671bfde55b7b09ae17c4fab2fa970fa02c338c880135d9484176c7c0"
+    },
+    {
+      "id": "impl-run-owned-closeout-forbid-dirty-b3c676707c86",
+      "sha256": "a78948f94ee37a506f302125e7ca34276b84981b3dfb5830f969ff4a3a12655b"
+    },
+    {
+      "id": "impl-work-unit-dirty-scope-89a8a06b1016",
+      "sha256": "3a62ecd322a9ce9d66e1e0fbc068621978702f852499c42bc9bf64b7d41190e2"
+    },
+    {
+      "id": "impl-closeout-summary-policy-8d3b45fdd25f",
+      "sha256": "af125d868a77b01ec4399a25c3eeaedc1a0d8d221b8178b5c2a2d35316afbfb1"
+    },
+    {
+      "id": "impl-closeout-summary-forbid-state-7875d130babf",
+      "sha256": "ee8507ad300b433a1c24817fd203efb96d4471cce81ddd946526b45cb1391bb1"
+    },
+    {
+      "id": "impl-closeout-summary-forbid-dirty-d565762f5057",
+      "sha256": "9ad75e9ae12ffceb26f6d867b4e1a08962914de10a5b159927dc9a9d73258ee3"
     },
     {
       "id": "proposal-internal-guard-requires-8658469ca5a6",
@@ -2408,6 +2484,11 @@
       "path": "shared/writable-scope-kernel.md"
     },
     {
+      "kind": "span",
+      "id": "impl-work-unit-protected-dirty-scope",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
       "kind": "anchor",
       "id": "impl-run-owned-default-start",
       "path": "shared/skill/impl-lead/SKILL.md"
@@ -2484,6 +2565,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-run-owned-closeout-summary",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-final-report-quality-signal-policy-data",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -2495,6 +2581,36 @@
     {
       "kind": "span",
       "id": "impl-run-owned-default",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-run-owned-start-identity",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-run-owned-closeout-safety",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-run-owned-closeout-preflight",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-run-owned-closeout-collision-calculation",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-run-owned-closeout-integration-action",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-run-owned-closeout-post-observation",
       "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {
