@@ -420,10 +420,21 @@ AC、scope、責任境界、依存が不変で同じ単位の実装上の不足�
 
 ### Final report quality signals
 
-最終報告は run の結論を `accept` または `stop-incomplete` と明示する。各 Work Unit は短く、`id` と要約、実装主体（親の direct 実装または worker 名）、その Work Unit を scope に含めた optional risk-directed reviewer（選択なしは `none`）と観点、verification の結果状態（`passed`、`failed`、`not run`、`unverified` など判別可能な表現）を示す。
+最終報告は run の品質シグナルを短く示す。以下の policy Data は要約の意味を固定する正本であり、report output schema、固定 format、新しい Data model、永続 artifact を導入するものではない。
 
-run-wide mandatory `final writing gate` は optional risk-directed review と区別し、実施事実と scope を示す。gate 前に `stop-incomplete` となった場合は未実施を明記し、実施済みと扱わない。notable decision / unresolved concern は存在する場合だけ短く示し、網羅台帳や固定 decision table を導入しない。
+```text
+signal_policy = "bounded final-report quality signals"
+run_verdict = "accept | stop-incomplete"
+work_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
+reviewer_absence = "none is explicit"
+verification_result = "passed | failed | not run | unverified"
+final_writing_gate = "mandatory run-wide; separate from optional risk-directed review; report execution fact and scope"
+pre_gate_stop = "stop-incomplete before gate => gate not run"
+conditional_concern = "notable decision / unresolved concern only when present; short; no ledger or fixed decision table"
+default_push = "commands, finding adjudication, base, isolation, dependency are not pushed"
+conversation_pull = "same-run observed and recorded conversation execution data only"
+historical_reconstruction = "do not claim retrieval or reconstruction of past state"
+responsibility_invariance = "route, worker/reviewer selection, review responsibility, accept/stop-incomplete, persistence responsibility and conditions unchanged"
+```
 
-詳細な command、全 finding の裁定、base / isolation / dependency は既定で Push せず、同じ run ですでに観測・記録した conversation execution data からだけ Pull できるものとして扱う。過去状態を再取得・再構成できるとは主張しない。
-
-この要約形式は route、worker / reviewer 選択、review 責務、accept / stop-incomplete、persistence の責務・判断条件を変更しない。
+この policy Data を満たす範囲で、説明の文言、並び、表示方法は柔軟にできる。Data にない詳細な command、全 finding の裁定、base / isolation / dependency は必要時だけ同じ run の既存 conversation execution data から Pull し、過去状態を再取得・再構成できるとは主張しない。Data の意味に反する decoy や責務の逸脱は、親の semantic QA で裁定する。route、worker / reviewer 選択、review 責務、accept / stop-incomplete、persistence の責務・判断条件は変更しない。

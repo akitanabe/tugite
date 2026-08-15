@@ -788,12 +788,8 @@
       "sha256": "2daa0c9016428f663ecef3d454d1e3404c9489367c750c12fc4a31551f403105"
     },
     {
-      "id": "impl-final-report-quality-signals-9952b1e2d91b",
-      "sha256": "0c8f1fe50ba3a2eb81ff73df7099a2ba0814552957e477e03d2607c397e318a6"
-    },
-    {
-      "id": "impl-final-report-quality-signals-forbids-old-list-6f87b7c6823c",
-      "sha256": "7e18db2d028e4f2ef81032141d2a6f9786ad88d158f01857a5bdf89051a45f9d"
+      "id": "impl-final-report-quality-signal-policy-data-43f0f4e27d4a",
+      "sha256": "ba37bad8a46e5bb90deed57f92568d7000f478992e1cd4d22d65db697189f85a"
     },
     {
       "id": "proposal-internal-guard-requires-8658469ca5a6",
@@ -2444,7 +2440,7 @@
     },
     {
       "kind": "span",
-      "id": "impl-final-report-quality-signals",
+      "id": "impl-final-report-quality-signal-policy-data",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
