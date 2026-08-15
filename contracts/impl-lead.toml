@@ -54,8 +54,8 @@ before = "impl-run-owned-default-start"
 after = "impl-route-execution-start"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: loader fields and assignment fields form one parent-owned execution boundary; independent checks could accept an invalid handoff.
-[contracts.impl-writable-scope-loader-data-0ebccdb99251]
+# Why Not: loader fields and assignment fields form one parent-owned execution boundary, so one predicate protects their complete relation.
+[contracts.impl-writable-scope-loader-data-745d20959539]
 kind = "requires"
 slice = "impl-writable-scope-loader"
 pattern = '''path = ../../references/writable-scope-kernel.md
@@ -64,13 +64,8 @@ identity = writable-scope-kernel-v1
 dependencies = none
 required_sections = [Scope assignment model, Parent loader and assignment, Worker write boundary, Scope changes and non-goals]
 failure = stop-incomplete
-owner = impl-lead parent'''
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-writable-scope-assignment-data-77717bd5f6f7]
-kind = "requires"
-slice = "impl-writable-scope-loader"
-pattern = '''assignment_source = parent execution data
+owner = impl-lead parent
+assignment_source = parent execution data
 assigned_writable_scopes = explicit filesystem region set
 repository_root_outside = allowed for explicitly assigned run-owned worktree
 worker_path_resolution = parent
@@ -348,14 +343,14 @@ after = "impl-review-findings-start"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: this canonical policy relation keeps the semantic obligation stable while leaving explanatory prose and report presentation flexible.
-[contracts.impl-final-report-quality-signal-policy-data-43f0f4e27d4a]
+[contracts.impl-final-report-quality-signal-policy-data-262fe75b0817]
 kind = "requires"
 slice = "impl-final-report-quality-signal-policy-data"
 pattern = '''signal_policy = "bounded final-report quality signals"
 run_verdict = "accept | stop-incomplete"
 work_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
 reviewer_absence = "none is explicit"
-verification_result = "passed | failed | not run | unverified"
+verification_result = "a result Human can distinguish as passed, failed, not run, or unverified"
 final_writing_gate = "mandatory run-wide; separate from optional risk-directed review; report execution fact and scope"
 pre_gate_stop = "stop-incomplete before gate => gate not run"
 conditional_concern = "notable decision / unresolved concern only when present; short; no ledger or fixed decision table"

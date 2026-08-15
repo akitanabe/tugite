@@ -624,12 +624,8 @@
       "sha256": "acc9cee8191a8f6d5aa6074e49efa959788e1eb91f5e643af33032db0eade9f6"
     },
     {
-      "id": "impl-writable-scope-loader-data-0ebccdb99251",
-      "sha256": "eb151b655ad68c4f13f1c2e14f4e014c03b8a6d3b7964057d03d0a390f9f38e4"
-    },
-    {
-      "id": "impl-writable-scope-assignment-data-77717bd5f6f7",
-      "sha256": "044cf69729591a87cba316b5f0bc1a86f5dde520e76c458e4bdef5e4659f1e9e"
+      "id": "impl-writable-scope-loader-data-745d20959539",
+      "sha256": "80e4c61d4f28496f0b8989a42a88dca9b0cac7c524002bce1123dda01c0f78e2"
     },
     {
       "id": "impl-writable-scope-no-work-unit-field-bfb65969926d",
@@ -788,8 +784,8 @@
       "sha256": "2daa0c9016428f663ecef3d454d1e3404c9489367c750c12fc4a31551f403105"
     },
     {
-      "id": "impl-final-report-quality-signal-policy-data-43f0f4e27d4a",
-      "sha256": "ba37bad8a46e5bb90deed57f92568d7000f478992e1cd4d22d65db697189f85a"
+      "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
+      "sha256": "80cc8ec288cd1193c6402801a43b6a87824ef5e43fce691377836c33ac4a7932"
     },
     {
       "id": "proposal-internal-guard-requires-8658469ca5a6",

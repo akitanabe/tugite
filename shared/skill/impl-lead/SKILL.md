@@ -191,9 +191,6 @@ dependencies = none
 required_sections = [Scope assignment model, Parent loader and assignment, Worker write boundary, Scope changes and non-goals]
 failure = stop-incomplete
 owner = impl-lead parent
-```
-
-```text
 assignment_source = parent execution data
 assigned_writable_scopes = explicit filesystem region set
 repository_root_outside = allowed for explicitly assigned run-owned worktree
@@ -477,7 +474,7 @@ signal_policy = "bounded final-report quality signals"
 run_verdict = "accept | stop-incomplete"
 work_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
 reviewer_absence = "none is explicit"
-verification_result = "passed | failed | not run | unverified"
+verification_result = "a result Human can distinguish as passed, failed, not run, or unverified"
 final_writing_gate = "mandatory run-wide; separate from optional risk-directed review; report execution fact and scope"
 pre_gate_stop = "stop-incomplete before gate => gate not run"
 conditional_concern = "notable decision / unresolved concern only when present; short; no ledger or fixed decision table"
