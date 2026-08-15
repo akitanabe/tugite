@@ -73,7 +73,7 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human At
 
 proposal の invocation boundary、discretionary authority、resolution execution bound は `plan-craft` が所有する。
 internal `proposal` の開始時に、caller=`plan-craft`、resolver=planner、counterpart=`plan-quality-advisor`（Resolution
-Transaction 外の one-shot observation）、authority=discretionary として mapping し、proposal が規定する
+Transaction 外の one-shot observation）を mapping し、`authority = discretionary`、`authority_constraints = []` を注入して、proposal が規定する
 batch-resolve-kernel loader を親 Action として一度だけ実行する。advisor は非拘束 Data を返し、planner が一次情報を
 基準に既存 adoption ledger へ裁定する。proposal の advisor invocation は candidate S0→advisor #1→Resolution
 Transaction #1→verified S1→fresh-context advisor #2→Resolution Transaction #2→verified S2→return の exactly 2 pass

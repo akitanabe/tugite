@@ -1,7 +1,7 @@
-[contracts.proposal-internal-guard-requires-8658469ca5a6]
+[contracts.proposal-internal-guard-requires-380eb652243f]
 kind = "requires"
 slice = "proposal-internal-guard"
-pattern = "この Skill は `plan-craft` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。"
+pattern = "この Skill は proposal-family public workflow parent の同じ context 内だけで使う internal skill であり、ユーザーから直接起動しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.structural-health-gate-internal-guard-requires-61b7ebeb1a4b]
@@ -25,17 +25,39 @@ owner = proposal parent
 delegate_path_resolution = false'''
 applies_to = ["claude", "codex", "cursor"]
 # Why Not: role, snapshot, point mapping, authority, and ledger are one caller mapping.
-[contracts.proposal-batch-role-data-5632d9363179]
+[contracts.proposal-batch-role-data-532d9a645704]
 kind = "requires"
 slice = "proposal-batch-resolution-role-mapping"
-pattern = '''caller = plan-craft
+pattern = '''caller = proposal-family public workflow parent
 resolver = proposal planner
 counterpart = plan-quality-advisor
 target_snapshot = origin verified candidate snapshot
 insight = Resolution Point
 same_snapshot_insights = Resolution Batch
-authority = discretionary
+authority = discretionary | constrained
+authority_constraints = immutable invocation Data injected by public parent
+authority_source = injected Data only; never caller identity
 ledger = adoption ledger'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-authority-no-caller-branch-requires-736f971dd91f]
+kind = "requires"
+slice = "proposal-batch-resolution-role-mapping"
+pattern = "caller 名から authority または振る舞いを選ばず"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-constrained-validation-requires-c8d7362b0935]
+kind = "requires"
+slice = "proposal-batch-resolution-role-mapping"
+pattern = '''constrained_validation_timing = before working state / advisor / Resolution Transaction
+constraint_failure_cases = [missing, invalid, ambiguous, duplicate, extra, identity regeneration, meaning-evidence mismatch]
+constraint_failure = stop-incomplete before refinement'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-constraints-immutable-requires-c566a62afe64]
+kind = "requires"
+slice = "proposal-batch-resolution-role-mapping"
+pattern = "immutable とし、proposal 内で再生成・追加・削除・置換しない"
 applies_to = ["claude", "codex", "cursor"]
 # Why Not: loader fields must remain one relation; semantic Claim adjudication belongs to EVAL.
 [contracts.proposal-necessity-loader-data-1493ccb9eaa4]
@@ -88,10 +110,10 @@ authority = parent-owned
 ledger = finding ledger and hold ledger'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-local-plan-craft-requires-eb2f902e63fe]
+[contracts.proposal-local-planner-requires-5349f90017f1]
 kind = "requires"
 slice = "candidate-producer-boundary"
-pattern = "plan-craft"
+pattern = "proposal planner"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-local-review-loop-forbids-f186113084c7]
@@ -134,6 +156,12 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "proposal-verified-snapshot-baseline"
 pattern = "既存 candidate を受け取る場合は current verified candidate snapshot"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-existing-s0-no-redraft-requires-c4b6f64b134b]
+kind = "requires"
+slice = "proposal-verified-snapshot-baseline"
+pattern = "current verified candidate snapshot を S0 とし、一から再起草せず"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.proposal-initial-verified-snapshot-requires-dcc63b171f19]
@@ -304,6 +332,30 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "proposal-batch-resolution-transaction"
 pattern = "独立して処理できる point を止めずに caller-owned boundary へ返す"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-verified-present-return-requires-2b65c6e6db10]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "verified_present_return = candidate snapshot identity + constraint-compliant completed partitions + verification evidence"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-absent-return-requires-df692b963aaf]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "absent_return = candidate_snapshot absent + empty completed partitions + no fabricated identity"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-restart-baseline-requires-d9dc0a223143]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "restart_baseline = verified promoted state only; exclude unverified or non-promoted working state"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.proposal-authority-conflict-requires-f68ff001a6ff]
+kind = "requires"
+slice = "proposal-bounded-return"
+pattern = "`authority_conflict`\npacket"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-loop-batch-loader-before-transaction]

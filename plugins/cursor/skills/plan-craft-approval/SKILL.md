@@ -49,6 +49,44 @@ direction freeze は成果物全文の固定ではなく、人間が確定した
 大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。
 過去 decision は自動継承せず、candidate prior decisions と再利用知見として現在の要求と evidence で再検証する。
 
+## direction freeze Data と optional proposal refinement
+
+direction freeze 成立時、親は要求原文、verified decision ledger、freeze candidate から、Human-confirmed な価値、重要な
+scope / exclude、責務、意図的な非採用、判断点にならなかった raw specification を含む全意味単位を `freeze_source_snapshot`
+として固定する。親の Calculation は非空で一意な workflow-local opaque `id` を一度だけ付与し、各 source item から同じ ID の
+`{id, frozen_meaning, source_evidence}` を exactly one 投影する。source ID 集合と constraint ID 集合、1対1、未投影・重複・余分の不在、
+meaning の一意性、Human / raw statement と verified candidate 上の解決可能な evidence を開始前に全数照合する。
+不完全、空、identity 再生成、または曖昧な投影は proposal 開始前 `stop-incomplete` とする。
+
+親は freeze 要約と同じターンに、planner 裁量の proposal refinement 実行推奨または省略推奨、短い理由、`Yes / No` を一度提示する。
+score、件数 threshold、新しい public knob は作らず、selection は decision ledger ではなく workflow process Data とする。
+実行分岐と proposal 停止時の後段制御は、後述の専用 normative Data を唯一の正本とする。
+authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass と
+fresh-context check #1 へ必ず進み、新しい optional selection を挟まず governing `executed` を維持する。この recovery は integrity check count を消費しない。
+
+successful refinement 後は semantic change がなくても、親が別 fresh context の `plan-quality-advisor` を `freeze-integrity`
+invocation で起動する。verifier は全 constraints を独立照合し、`intact | violated | indeterminate` と追跡可能な evidence を返す。
+verdict は binding であり、親は覆さない。`intact` だけが gate へ進む。
+
+check #1 非 intact 時の停止・reopen 関係は、後述の専用 normative Data を唯一の正本とする。Human 再判断の反映・verification 後、最新 verified
+candidate で recovery freeze を作り、保持した check evidence の constraint ID / candidate location から decision / adoption ledger の直接・間接依存を
+閉じた affected obligations を Calculation する。それを immutable `request.scope`、その他の obligation を `request.exclude` に固定し、
+同じ bounded request を advisor #1 / #2、両 Transaction、verification へ渡す。scope 外 point は apply せず `rejected` または `out-of-scope` とする。
+locator、dependency closure、scope / exclude の排他性を安全に確定できなければ開始前 `stop-incomplete` とする。
+
+```text
+affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
+request.scope = affected obligations
+request.exclude = all other candidate obligations
+scope_outside = rejected | out-of-scope; never apply
+scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal
+```
+
+最新 verified snapshot を S0 とする fresh proposal fixed 2 pass と、別 fresh context の check #2 を mandatory continuation として実行し、
+新しい optional selection を挟まない。check #2 が非 `intact` なら Trust failure の `stop-incomplete` とし、再 reopen しない。Human へは
+2回目も `intact` でなかったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。
+Human Decision と独立な partition は verify / promote できるが、未解決 Human Decision が残る candidate は gate へ渡さない。
+
 ## structural-health-gate
 
 direction freeze 候補を受け取った場合は、提案が全件却下された場合も同じ親 context の internal
@@ -59,15 +97,16 @@ direction freeze 候補を受け取った場合は、提案が全件却下され
 ceiling とし、ユーザー指定を優先する。未指定なら親が loop 開始時に固定し、1未満は補正せず `stop-incomplete` とする。
 1未満では assessment、producer の再実行、後段を起動しない。gate 予算と review 予算は別 Data とする。
 
-`pass` は直ちに後段へ進む。`return` は現在の round が limit 未満の場合だけ、gate evidence を人間へ自然文の新しい
-判断点として提示できる入力にして `proposal-dialogue` を新しい対話 loop として再実行し、別内容の candidate を再評価する。
+`pass` は直ちに後段へ進む。`return` は現在の round が limit 未満の場合だけ、gate の問題・影響・推奨対応を Human へ圧縮し、
+新しい判断点として提示できる入力にして `proposal-dialogue` を新しい対話 loop として再実行し、別内容の candidate を再評価する。
+成立した新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前 cycle の opt-in や governing value を継承しない。
 limit 到達 round の `return` と `insufficient-evidence` は
 `stop-incomplete` とする。人間が構造 finding への対応を全件却下し candidate 内容が変わらない場合、同一内容へ
 別 identity を付けて再投入せず、構造欠陥未解消として `stop-incomplete` とする。
 
 ## review の適用と固定順序
 
-工程順序は `proposal-dialogue → structural-health-gate → review-loop` であり、gate が `pass` した snapshot だけを
+工程順序は `proposal-dialogue → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop` であり、gate が `pass` した snapshot だけを
 次の判定へ渡す。まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から reviewer 適用可否を判定する。既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。review 省略の明示より reviewer 適用可否の判定を先に行う。
 
 reviewer 適用可能な成果物は、ユーザーによる review の明示要求がなくても固定工程として `review-loop` へ渡す。
@@ -100,12 +139,47 @@ review 実行経路では `converged` または未解決 finding のない `indu
 人間へ対話の再開、未完了終了、scope 外への分離を提示する。未完了返却後の受け入れと再投入は人間が明示的に判断し、未完了結果を artifact として保存しない。
 
 final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を
-省略できるが、final report は省略しない。承認 Action の入力には、成果物内容の短い要約、方向変更の有無、追加・変更した検証とその結果、
+省略できるが、final report は省略しない。承認 Action の `Semantic Delta` baseline は final candidate に対応する最新 direction freeze とする。
+入力には、成果物内容の短い要約、方向変更の有無、追加・変更した検証とその結果、
 残存 risk、必要な人間判断を含める。承認完了または明示 opt-out までは、direction freeze、gate 通過、review 済み candidate のいずれも artifact として保存しない。
 
 final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけを新しい `proposal-dialogue` loop で
-局所 reopen し、decision ledger 全体をリセットしない。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ
+局所 reopen し、decision ledger 全体をリセットしない。新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず、
+`selection → optional proposal / integrity → structural gate → review → final acceptance` を再実行する。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ
 探索を広げない。大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。
+
+final report の provenance は final candidate を gate へ送った governing phase-selection point で上書きし、
+`proposal refinement: executed | skipped` だけを表示する。authority conflict / integrity recovery は executed cycle の mandatory continuation なので
+`executed` を維持する。gate return または final acceptance correction の新 selection は古い governing value を捨てる。
+過去 cycle、正常な integrity success、fixed 2 pass、advisor evidence は final report に追加しない。
+
+```text
+executed -> gate return -> skipped = skipped
+skipped -> gate return -> executed = executed
+executed -> Trust recovery -> intact = executed
+executed -> final acceptance correction -> skipped = skipped
+```
+
+## optional proposal refinement の normative relations
+
+以下の3 Data blockは、分岐、proposal 停止、check #1 recovery の唯一の正本である。
+
+```text
+selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
+No = skip proposal and freeze-integrity check -> structural-health-gate
+Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check
+```
+
+```text
+proposal stop-incomplete
+authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
+otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate
+```
+
+```text
+check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
+structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2
+```
 
 ## final acceptance 後の local artifact completion
 

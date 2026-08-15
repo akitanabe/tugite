@@ -105,7 +105,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "3bdde025d6d8081a9a73b4cd5eaf0a4b40dce143d9bb937e6205ce49e1174b38"
+      "sha256": "0a060ed28d8affa849021634c9d2c324497dec550db4c6194b63b48ccd22825f"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -200,8 +200,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-5fc9a037183f",
-      "sha256": "a526a2753b638c97243161f9d447d31f1cacd7d9de4a3a4b1c174ca087cf0436"
+      "id": "cursor-readme-version-requires-3a818e319e54",
+      "sha256": "d03196e3e6d7e1fc2f2dbbf630c26872928fdd92e3b2b8bd46e7488d5266958d"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -876,8 +876,8 @@
       "sha256": "9ad75e9ae12ffceb26f6d867b4e1a08962914de10a5b159927dc9a9d73258ee3"
     },
     {
-      "id": "proposal-internal-guard-requires-8658469ca5a6",
-      "sha256": "0a93f7dfa14771a3601ee9af87ab0272be2205832d02f03cdca34d9a62f3dd76"
+      "id": "proposal-internal-guard-requires-380eb652243f",
+      "sha256": "78b49eb37130fb187174d3d0228d2e738bb8aae78f1cbcd4f37cc0d6a3d6625f"
     },
     {
       "id": "structural-health-gate-internal-guard-requires-61b7ebeb1a4b",
@@ -888,8 +888,20 @@
       "sha256": "db519654718408301c2a36d61299ca126ef16a343194e3f7ef1a9f83cd5c0089"
     },
     {
-      "id": "proposal-batch-role-data-5632d9363179",
-      "sha256": "8184f8ee1ca2e3dd8914f0ce4f904ca1eee04aaaf3cd67740b88067766321b87"
+      "id": "proposal-batch-role-data-532d9a645704",
+      "sha256": "f3d8b1af619a285c15f507c3551d4dfaa6ba5e15c7969b7f247c6c61bbb4a477"
+    },
+    {
+      "id": "proposal-authority-no-caller-branch-requires-736f971dd91f",
+      "sha256": "f41ef1fc31eefbab66fa90dea3c7ece907416c70bc6d98d32f91a9a25afd3bef"
+    },
+    {
+      "id": "proposal-constrained-validation-requires-c8d7362b0935",
+      "sha256": "a02ba078b323f94217b92c41dc440cc49699fb38e717a6270c1de81a79e61969"
+    },
+    {
+      "id": "proposal-constraints-immutable-requires-c566a62afe64",
+      "sha256": "bb3525c9358d14b980f2daf65c45abd4774ae31dcb3dc0d308ee1bf28402447e"
     },
     {
       "id": "proposal-necessity-loader-data-1493ccb9eaa4",
@@ -908,8 +920,8 @@
       "sha256": "696975da6b52ccaa7efa3ae49f09382048fe7889125b21657978dea663fd3b98"
     },
     {
-      "id": "proposal-local-plan-craft-requires-eb2f902e63fe",
-      "sha256": "215029d6eec34ff92b4bdd9a6b8fabb181e6257f927cfabc3e8a8e24a33ba2ef"
+      "id": "proposal-local-planner-requires-5349f90017f1",
+      "sha256": "37b3953de6ef0f9763d4f9bbb3d2e0e53acef8219ddda7abdf2fc72bd278256b"
     },
     {
       "id": "proposal-local-review-loop-forbids-f186113084c7",
@@ -938,6 +950,10 @@
     {
       "id": "proposal-caller-verified-snapshot-requires-146d5f3b3c47",
       "sha256": "1c11c4dfde0dfda258b9317850958c7837ff12a550fa8a303c59437765328af0"
+    },
+    {
+      "id": "proposal-existing-s0-no-redraft-requires-c4b6f64b134b",
+      "sha256": "ee1d6c515f3337b93c4849f12b790fde91fbcd78efaa54ca38b8af086594f56f"
     },
     {
       "id": "proposal-initial-verified-snapshot-requires-dcc63b171f19",
@@ -1050,6 +1066,22 @@
     {
       "id": "proposal-batch-stop-boundary-42bcddedc992",
       "sha256": "6f9ee4e492f22608ada94b05b16fde9994ccc893ca194463f5287c205df635e1"
+    },
+    {
+      "id": "proposal-verified-present-return-requires-2b65c6e6db10",
+      "sha256": "6b8bf9c4dab4f921b74d758db6389e636cdcd7e4578969e465f2f474964e8edf"
+    },
+    {
+      "id": "proposal-absent-return-requires-df692b963aaf",
+      "sha256": "73570edb4883654bf94acc7cf74a736d39bed2808a32721c39466f9b869efb42"
+    },
+    {
+      "id": "proposal-restart-baseline-requires-d9dc0a223143",
+      "sha256": "508ac78d8c24a6ac7582f3d7572d28513f0f900b35bc1739ab57dd23035ffcca"
+    },
+    {
+      "id": "proposal-authority-conflict-requires-f68ff001a6ff",
+      "sha256": "b24b881f7a76eea0ef29e437e14aaa9f8efccc1826ed01465416580397947102"
     },
     {
       "id": "review-loop-batch-loader-before-transaction",
@@ -1816,8 +1848,96 @@
       "sha256": "4a8841eac5a6ddc4845ecc93cb2586586a432e3f6b91f545b831bdc2fdb7d16f"
     },
     {
-      "id": "plan-craft-approval-order-requires-c7d6633c2c9e",
-      "sha256": "d013dcebc14434f2a5e6236b737c66d043cfe34c392ba4739216ed732747f2d2"
+      "id": "plan-craft-approval-order-requires-ba54d370ccf2",
+      "sha256": "0475ac9989ff1c51e052e56acd48f3f796a79ab895293a653fb404529a30b936"
+    },
+    {
+      "id": "refinement-selection-requires-f58555dece96",
+      "sha256": "499f8f7a042f84fe43321fe1cbbbddf751788b6dc722b083f870d43c94826d11"
+    },
+    {
+      "id": "refinement-selection-no-run-forbids-caac5c26e0c3",
+      "sha256": "bfe9345bbac033d83eca5e0f59bdb3f869568f1788bb88f015cebcd9e649ba4d"
+    },
+    {
+      "id": "refinement-selection-yes-skip-forbids-56a421c2bf64",
+      "sha256": "ccca504cfaeec5621c11f6160b6dbf081b0a8e826f07eeabf2d94e18dfed6ad7"
+    },
+    {
+      "id": "refinement-stop-requires-d625986ecb2d",
+      "sha256": "1f8d2cca2c115b9cd5c4e705044093c1fede50fcaf8b27c4f1fd890aafc5de1a"
+    },
+    {
+      "id": "refinement-stop-fallback-forbids-adc7b41012e4",
+      "sha256": "d9808ab487965ff2392a856d5dbb4bf8b9b8f6cc2bad8e3582b62a80af94fe08"
+    },
+    {
+      "id": "check1-recovery-requires-b6417f02348e",
+      "sha256": "93306729187727449cee3a94af7e669889a332c6b555569c89ccc870b2725472"
+    },
+    {
+      "id": "check1-direct-gate-forbids-9910a731417f",
+      "sha256": "2773db40c13277dbfed66657e743ebad6bcc4502f9a550d291b70a86cf322753"
+    },
+    {
+      "id": "plan-quality-advisor-invocations-requires-78e0d7f8cbbc",
+      "sha256": "366d53df139f96c9056902ba055581051899dd14f72ad5d58c6c2eaecbb603fe"
+    },
+    {
+      "id": "plan-craft-approval-freeze-raw-source-requires-ad816f364b11",
+      "sha256": "93584dcd43400574ebab2e7be3082cfb4a51024c90b0670dfe048eaecad5e28f"
+    },
+    {
+      "id": "plan-craft-approval-freeze-bijection-requires-8efeae5ee655",
+      "sha256": "67d469afd9f54d53e8bf4a5bfe762417cb5aa9e15ae199c9d410e47e2d286bdd"
+    },
+    {
+      "id": "plan-craft-approval-always-check-requires-023b48cfd11f",
+      "sha256": "ee2db995165337fba9dcb03dcc0b6806f7a035ccf00dfc7441601d4ebc005e4e"
+    },
+    {
+      "id": "plan-craft-approval-recovery-scope-requires-dbaa291ad2e8",
+      "sha256": "99fd2af56bf80de80802864465904274a0249e663908a39a9babccf37ddee0ae"
+    },
+    {
+      "id": "authority-recovery-fresh-proposal-requires-6cec3c2a2840",
+      "sha256": "222d58cdec6ae0e192ef7375bdb15f42d7902831e57a82bf8f31c354402d2cd2"
+    },
+    {
+      "id": "plan-craft-approval-trust-stop-requires-dd122fdda6e1",
+      "sha256": "6ecc60f926632344c1f51b9b10dc5e9ef61809b9d31dd2f38d65827f7963e1e7"
+    },
+    {
+      "id": "plan-craft-approval-trust-report-requires-936768e839eb",
+      "sha256": "ea226319a647901cc147da4c28d2905c6e2b37c028b4fd832afb35cb946090ff"
+    },
+    {
+      "id": "plan-craft-approval-unresolved-no-gate-requires-b50718e54183",
+      "sha256": "484ce879bb67392c25cc7f1d9797d6575ff5c89d45d619479406acf0407da2e1"
+    },
+    {
+      "id": "gate-return-compression-requires-1f31f39a5a94",
+      "sha256": "b586bab2e47bd93df2610bf3b26dd0eb26a102ef3f846641b5f9ba70afbeb6eb"
+    },
+    {
+      "id": "plan-craft-approval-no-optin-inheritance-requires-17049cc2c14a",
+      "sha256": "beca1b9ef18f33c7035c5b30929d739519c69ae658cd7e6a5779743feb894119"
+    },
+    {
+      "id": "final-reselection-requires-a9c816d8d0ef",
+      "sha256": "f395d2d96502dfbe56b64ad147ee5d5bc08760a3fd782f461272d04f1a1b95c0"
+    },
+    {
+      "id": "plan-craft-approval-latest-freeze-delta-requires-7e00b730e5a8",
+      "sha256": "2ab4db145a7454013a577c49eb7a16a1f0dc399ad92bcfe68d63ffb4c97e1715"
+    },
+    {
+      "id": "plan-craft-approval-refinement-provenance-requires-838303e99fe8",
+      "sha256": "bf169e9021f907ef85d4c04e7fce0882179d2671f44952423d59a78f8f626c08"
+    },
+    {
+      "id": "refinement-provenance-sequences-requires-4557709b92e6",
+      "sha256": "f95dd28543f7495e25971da33be1adc1a682a3815073118d4b8b533ba9d93c48"
     },
     {
       "id": "dialogue-boundary-owner-requires-a6f1cab1e590",
@@ -2731,6 +2851,21 @@
     {
       "kind": "anchor",
       "id": "plan-craft-approval-review-loop-handoff",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-refinement-selection",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-refinement-stop",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-check1-recovery",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
     {

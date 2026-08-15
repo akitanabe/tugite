@@ -214,10 +214,159 @@ slice = "proposal-dialogue-boundary"
 pattern = "advisor の raw insight を planner を介さず直接人間へ送る"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-approval-order-requires-c7d6633c2c9e]
+[contracts.plan-craft-approval-order-requires-ba54d370ccf2]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
-pattern = "proposal-dialogue → structural-health-gate → review-loop"
+pattern = "proposal-dialogue → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-requires-f58555dece96]
+kind = "requires"
+slice = "plan-craft-approval-refinement-selection"
+pattern = '''selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
+No = skip proposal and freeze-integrity check -> structural-health-gate
+Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-no-run-forbids-caac5c26e0c3]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-selection"
+pattern = "No = run proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-yes-skip-forbids-56a421c2bf64]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-selection"
+pattern = "Yes = skip proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-requires-d625986ecb2d]
+kind = "requires"
+slice = "plan-craft-approval-refinement-stop"
+pattern = '''proposal stop-incomplete
+authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
+otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-fallback-forbids-adc7b41012e4]
+kind = "forbids"
+slice = "plan-craft-approval-refinement-stop"
+pattern = "otherwise = pre-refinement snapshot fallback -> structural-health-gate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-recovery-requires-b6417f02348e]
+kind = "requires"
+slice = "plan-craft-approval-check1-recovery"
+pattern = '''check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
+structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-direct-gate-forbids-9910a731417f]
+kind = "forbids"
+slice = "plan-craft-approval-check1-recovery"
+pattern = "check #1 violated | indeterminate -> structural-health-gate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-invocations-requires-78e0d7f8cbbc]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = '''verdict = intact | violated | indeterminate
+evidence = authority constraint, refined candidate location, semantic delta or indeterminate cause
+binding = parent cannot override
+comparison = all authority_constraints independently
+normal_output = insight_fields only; non-binding; exclude freeze-integrity verdict/evidence
+freeze_integrity_output = verdict/evidence only; binding; exclude normal insight'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-freeze-raw-source-requires-ad816f364b11]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "判断点にならなかった raw specification を含む全意味単位"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-freeze-bijection-requires-8efeae5ee655]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "source ID 集合と constraint ID 集合、1対1、未投影・重複・余分の不在"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-always-check-requires-023b48cfd11f]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "successful refinement 後は semantic change がなくても"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-recovery-scope-requires-dbaa291ad2e8]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = '''affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
+request.scope = affected obligations
+request.exclude = all other candidate obligations
+scope_outside = rejected | out-of-scope; never apply
+scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.authority-recovery-fresh-proposal-requires-6cec3c2a2840]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-trust-stop-requires-dd122fdda6e1]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "check #2 が非 `intact` なら Trust failure の `stop-incomplete` とし、再 reopen しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-trust-report-requires-936768e839eb]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "2回目も `intact` でなかったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-unresolved-no-gate-requires-b50718e54183]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "未解決 Human Decision が残る candidate は gate へ渡さない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.gate-return-compression-requires-1f31f39a5a94]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "gate の問題・影響・推奨対応を Human へ圧縮"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-no-optin-inheritance-requires-17049cc2c14a]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "前 cycle の opt-in や governing value を継承しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.final-reselection-requires-a9c816d8d0ef]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-latest-freeze-delta-requires-7e00b730e5a8]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "`Semantic Delta` baseline は final candidate に対応する最新 direction freeze"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-refinement-provenance-requires-838303e99fe8]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = "`proposal refinement: executed | skipped` だけを表示する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-provenance-sequences-requires-4557709b92e6]
+kind = "requires"
+slice = "plan-craft-approval-handoff"
+pattern = '''executed -> gate return -> skipped = skipped
+skipped -> gate return -> executed = executed
+executed -> Trust recovery -> intact = executed
+executed -> final acceptance correction -> skipped = skipped'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.dialogue-boundary-owner-requires-a6f1cab1e590]
