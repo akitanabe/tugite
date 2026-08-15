@@ -1,6 +1,6 @@
 # Tugite for Codex
 
-Tugite v5.16.0 は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+Tugite v5.17.0 は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
 ## Skill surface
 

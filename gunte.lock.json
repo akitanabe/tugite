@@ -93,7 +93,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "d9bf331656ad9312625828aa1c696ada1d5ea50fdf197281d2ff3fe6970c73e4"
+      "sha256": "384ba52254fc4e9864bc612be6ce3318d01bc0a0d5e7e7c3748c263929194a8b"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -188,8 +188,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-158363f9dd03",
-      "sha256": "d861e3d37ba7c87d6fc01999447722661dbd29578c148dcf7b19ef4bb09d0086"
+      "id": "cursor-readme-version-requires-b04cc4b14f11",
+      "sha256": "6ec1a63ec2da2d09c31b10ad3a1a395e40dfba89d0af42b1cf33a5eb56245521"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -624,12 +624,8 @@
       "sha256": "acc9cee8191a8f6d5aa6074e49efa959788e1eb91f5e643af33032db0eade9f6"
     },
     {
-      "id": "impl-writable-scope-loader-data-0ebccdb99251",
-      "sha256": "eb151b655ad68c4f13f1c2e14f4e014c03b8a6d3b7964057d03d0a390f9f38e4"
-    },
-    {
-      "id": "impl-writable-scope-assignment-data-77717bd5f6f7",
-      "sha256": "044cf69729591a87cba316b5f0bc1a86f5dde520e76c458e4bdef5e4659f1e9e"
+      "id": "impl-writable-scope-loader-data-745d20959539",
+      "sha256": "80e4c61d4f28496f0b8989a42a88dca9b0cac7c524002bce1123dda01c0f78e2"
     },
     {
       "id": "impl-writable-scope-no-work-unit-field-bfb65969926d",
@@ -786,6 +782,10 @@
     {
       "id": "impl-risk-loader-before-findings",
       "sha256": "2daa0c9016428f663ecef3d454d1e3404c9489367c750c12fc4a31551f403105"
+    },
+    {
+      "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
+      "sha256": "80cc8ec288cd1193c6402801a43b6a87824ef5e43fce691377836c33ac4a7932"
     },
     {
       "id": "proposal-internal-guard-requires-8658469ca5a6",
@@ -2432,6 +2432,11 @@
     {
       "kind": "span",
       "id": "impl-final-writing-loader",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-final-report-quality-signal-policy-data",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {

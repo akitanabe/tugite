@@ -191,9 +191,6 @@ dependencies = none
 required_sections = [Scope assignment model, Parent loader and assignment, Worker write boundary, Scope changes and non-goals]
 failure = stop-incomplete
 owner = impl-lead parent
-```
-
-```text
 assignment_source = parent execution data
 assigned_writable_scopes = explicit filesystem region set
 repository_root_outside = allowed for explicitly assigned run-owned worktree
@@ -467,11 +464,25 @@ AC、scope、責任境界、依存が不変で同じ単位の実装上の不足�
 `stop-incomplete` へ戻す。品質下限等を満たせない場合は、未完了範囲、満たせない条件、判断点、evidence、残存 risk、未検証事項を明記して
 `stop-incomplete` とする。固定状態機械や常時必須の永続化された実行成果を新設しない。
 
-最終報告には変更 file、baseline からの diff summary、各 Work Unit の `id`、context、base_snapshot、isolation、依存、
-route、result、verification、final run baseline、実行した command と結果、AC 対応、選択理由、前提、判断点、残存 risk、
-未検証事項、`git status --short` を含める。review を実施した場合は review goal / result、finding の adopted / rejected /
-unresolved と理由、残存 risk を含め、persistence resource がある場合だけ identity / ownership / lifecycle も含める。v4 の
-identifier/path/mode、固定 worktree、必須の追加報告形式を持ち込まず、explicit-only、暫定名、v4/v5 共存を維持する。v4
-mode、Branch Plan、固定 4 phase、over-engineering reviewer の mandatory phase、固定修正経路、永続 artifact の通常必須化を
-持ち込まない。固定 review phase、必須 QA report、必須 diff artifact、判断点台帳を v5 契約へ持ち込まない。親は run を accept したか
-`stop-incomplete` で停止したかを明示し、未承認の追加作業を残さない。
+<!-- @contract impl-final-report-quality-signal-policy-data -->
+### Final report quality signals
+
+最終報告は run の品質シグナルを短く示す。以下の policy Data は要約の意味を固定する正本であり、report output schema、固定 format、新しい Data model、永続 artifact を導入するものではない。
+
+```text
+signal_policy = "bounded final-report quality signals"
+run_verdict = "accept | stop-incomplete"
+work_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
+reviewer_absence = "none is explicit"
+verification_result = "a result Human can distinguish as passed, failed, not run, or unverified"
+final_writing_gate = "mandatory run-wide; separate from optional risk-directed review; report execution fact and scope"
+pre_gate_stop = "stop-incomplete before gate => gate not run"
+conditional_concern = "notable decision / unresolved concern only when present; short; no ledger or fixed decision table"
+default_push = "commands, finding adjudication, base, isolation, dependency are not pushed"
+conversation_pull = "same-run observed and recorded conversation execution data only"
+historical_reconstruction = "do not claim retrieval or reconstruction of past state"
+responsibility_invariance = "route, worker/reviewer selection, review responsibility, accept/stop-incomplete, persistence responsibility and conditions unchanged"
+```
+
+この policy Data を満たす範囲で、説明の文言、並び、表示方法は柔軟にできる。Data にない詳細な command、全 finding の裁定、base / isolation / dependency は必要時だけ同じ run の既存 conversation execution data から Pull し、過去状態を再取得・再構成できるとは主張しない。Data の意味に反する decoy や責務の逸脱は、親の semantic QA で裁定する。route、worker / reviewer 選択、review 責務、accept / stop-incomplete、persistence の責務・判断条件は変更しない。
+<!-- @/contract -->
