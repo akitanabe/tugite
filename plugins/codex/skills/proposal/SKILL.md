@@ -1,7 +1,7 @@
 ---
 name: proposal
 description: >-
-  plan-craft の同じ親 context 内だけで、要求と repository の観測から計画 candidate を起草し、
+  proposal-family public workflow parent の同じ context 内だけで、要求と repository の観測から計画 candidate を起草または洗練し、
   read-only advisor の非拘束な insight を裁定して candidate snapshot または stop-incomplete を caller-owned parent へ返す internal skill。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
@@ -10,8 +10,8 @@ description: >-
 
 ## 位置づけと発火
 
-この Skill は `plan-craft` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。
-要求、repository、既存仕様を観測して計画 candidate を作る producer を担う。
+この Skill は proposal-family public workflow parent の同じ context 内だけで使う internal skill であり、ユーザーから直接起動しない。
+要求、repository、既存仕様を観測して計画 candidate を起草または洗練する producer を担う。
 自身は実装、委譲、worktree 操作、保存、最終受入を行わず、caller-owned parent へ判断材料を返す。
 
 ## 入力と観測
@@ -20,7 +20,9 @@ description: >-
 
 - `request`: 要求原文、目的、成功条件、scope、exclude、制約、既知の依存。
 - `repository_observation`: current state、既存仕様、関連成果物、検証可能な境界。
-- `caller_context`: `plan-craft` が同じ context で保持する判断と、必要なら既存の current verified candidate snapshot。
+- `caller_context`: public workflow parent が同じ context で保持する判断と、必要なら既存の current verified candidate snapshot。
+- `authority`: `discretionary | constrained`。
+- `authority_constraints`: constrained invocation で保護する `id`、`frozen_meaning`、`source_evidence` の全件。discretionary では空とする。
 
 要求、対象、成功条件、scope、exclude、依存、制約の不足または矛盾が品質を変える場合は推測せず、
 `stop-incomplete` として必要な判断を返す。軽微な不足は根拠付き `assumptions` として分離する。
@@ -49,13 +51,15 @@ Resolution Transaction ごとには再読込せず、owner / delegate_path_resol
 次の role Data が列挙値の唯一の正本である。
 
 ```text
-caller = plan-craft
+caller = proposal-family public workflow parent
 resolver = proposal planner
 counterpart = plan-quality-advisor
 target_snapshot = origin verified candidate snapshot
 insight = Resolution Point
 same_snapshot_insights = Resolution Batch
-authority = discretionary
+authority = discretionary | constrained
+authority_constraints = immutable invocation Data injected by public parent
+authority_source = injected Data only; never caller identity
 ledger = adoption ledger
 ```
 
@@ -65,9 +69,18 @@ one-shotとし、resolver が要求、一次情報、current verified snapshot �
 この batch-resolve-kernel mapping と後述の necessity-kernel mapping は別 section の独立した規範である。互いの本文を
 前提にせず、相互の読み込み順に依存させない。
 
+### authority の開始前 validation
+
+proposal は caller 名から authority または振る舞いを選ばず、親が注入した Data だけに従う。`authority` が列挙外なら
+working state、advisor、Resolution Transaction を開始せず `stop-incomplete` とする。`constrained` では開始前に
+全 `authority_constraints` の shape、非空で一意な `id`、一意に解釈できる `frozen_meaning`、解決可能な
+`source_evidence`、全件の traceability を検証する。集合が空、欠落、不正、重複、余分、または曖昧な場合は開始前
+`stop-incomplete` とする。検証済み constraints は item identity、意味、source evidence を含む invocation Data 全体を
+immutable とし、proposal 内で再生成・追加・削除・置換しない。
+
 ## current verified candidate の caller mapping
 
-`caller_context` で既存 candidate を受け取る場合は current verified candidate snapshot とし、未検証の working state を
+`caller_context` で既存 candidate を受け取る場合は current verified candidate snapshot を S0 とし、一から再起草せず、未検証の working state を
 baseline にしない。初回は要求、一次情報、観測可能な条件から working candidate を起草し、それらに対する verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot として確立する。
 各改善は working state へ apply し、verify と semantic progress が成功した後にだけ current verified snapshot を更新する。
 失敗時の snapshot 維持と selected partition の扱いは後述の Resolution Transaction に従い、working state を昇格させない。
@@ -102,7 +115,7 @@ Claim は finding / insight 本文ではなく、candidate に追加・維持・
 更新された snapshot で再判定し、互いを witness とする同時削除を認めない。必要性分類は既存語彙へ写像し、新verdict fieldではない。round budget / termination へ直結させない。`structural-health-gate` の意味は
 この mapping の対象外である。
 
-必要な場合だけ `plan-craft` 内の proposal planner は read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
+必要な場合だけ proposal planner は normal invocation の read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
 advisor の返す insight は非拘束の Data であり、planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する。
 
 - `adopted`: 根拠があり、candidate の具体的な品質向上になるため採用した insight。
@@ -177,4 +190,10 @@ current verified candidate の caller mapping に従う。固定2 passの Resolu
 改善を終えた通常の返却は、`candidate_snapshot`、`adoption_ledger`（`adopted` / `rejected` /
 `unresolved`）、`assumptions`、`blocking_gaps`、`residual_risks`、`status` を持つ Data である。安全な
 candidate を作れない返却では `status: stop-incomplete` と未完了範囲、必要な判断、evidence、未検証事項を返す。
-いずれも後段工程を選択・起動せず、受け入れを主張せず、caller-owned parent へ返して終了する。
+verified result がある場合だけ、`candidate_snapshot` identity、constraint-compliant として promote 済みの completed partition、
+その verification evidence を返す。verified snapshot がない場合は `candidate_snapshot: absent`、completed partition は空とし、
+fake identity を作らない。未検証または非昇格の working state は再開 baseline から除外する。
+
+constraint の変更が必要な場合は、必要な Human Decision、衝突した constraint ID、evidence、影響範囲を `authority_conflict`
+packet として付ける。Human Decision と独立な partition は verify と promote を続けてもよいが、未解決 point に依存する partition を
+その上へ積まない。いずれも後段工程を選択・起動せず、受け入れを主張せず、caller-owned parent へ返して終了する。
