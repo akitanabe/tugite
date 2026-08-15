@@ -1,0 +1,78 @@
+[contracts.writable-scope-kernel-distribution]
+kind = "occurrences"
+pattern = "# Writable Scope Kernel v1"
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-identity-requires-d45cd28078e8]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = '''Kernel identity: `writable-scope-kernel-v1`.
+Kernel dependencies: `none`.'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-scope-assignment-requires-e1cdd630c6d8]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = "## Scope assignment model"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-parent-loader-requires-f23e44c53885]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = "## Parent loader and assignment"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-worker-boundary-requires-1d7c221193b5]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = "## Worker write boundary"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-scope-changes-requires-9ce25a66adfa]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = "## Scope changes and non-goals"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-enforcement-boundary-requires-c1a01ee7350b]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = "enforcement mechanism、path layout、platform 設定を定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: assignment, membership, ownership, and scope-change fields form one canonical relation; separate prose predicates could accept a partial mapping.
+[contracts.writable-scope-relation-requires-71f2e6df91f9]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = '''assigned_writable_scopes = explicit filesystem region set
+write_eligibility = target belongs to one assigned region
+assignment_owner = parent execution data
+scope_change_owner = parent via explicit handoff update
+unassigned_user_owned_resource = write-ineligible'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-no-hook-forbids]
+kind = "forbids"
+pattern = "hook"
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-kernel-no-audit-log-forbids]
+kind = "forbids"
+pattern = "audit log"
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+applies_to = ["claude", "codex", "cursor"]

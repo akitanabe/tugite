@@ -43,4 +43,16 @@ model: cursor-grok-4.6-xhigh
 最終受入と追加調査の判断を親に残します。
 <!-- @/contract -->
 
+<!-- @contract writable-scope-expert-worker-mapping -->
+## Writable scope handoff
+
+write-capable input は、親から検証済み `writable-scope-kernel-v1` の identity / 必要本文と、明示された
+`assigned_writable_scopes`（filesystem 領域集合）を受けた場合だけ成立します。repository root 外の run-owned worktree も、
+親が明示 assignment に含めた場合は対象にできます。assignment は Work Unit Data ではなく execution data です。
+
+assignment が missing、invalid、unknown の場合は no-write のまま親へ返します。target の path 解決、scope の推測、暗黙の拡張は
+行わず、assignment 外や明示 assignment のない user-owned resource は編集しません。追加領域が必要なら親へ返し、親の execution
+data と明示的な handoff update を受けるまで write Action を開始しません。
+<!-- @/contract -->
+
 副作用は可能な限り Action と Calculation に分け、順序、重複、再試行、部分失敗、冪等性の設計を返してください。
