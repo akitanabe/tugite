@@ -1,6 +1,6 @@
 {
   "name": "tugite",
-  "version": "5.18.0",
+  "version": "5.19.0",
   "description": "Use v5 impl-lead, plan-craft, plan-craft-approval, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
   "author": {
     "name": "akitanabe"

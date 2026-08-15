@@ -88,12 +88,24 @@
       "sha256": "5d73d6575cbe5487348615f4d95ed095b4697bce13a84de22e69e798cf6816e4"
     },
     {
+      "id": "repository-plan-verification-default-1cd0b7e4ffb5",
+      "sha256": "e7c3aa85226b862f164c466fdfc8b6afeb7cede80bb0b16615dbfbcf1af04b65"
+    },
+    {
+      "id": "no-eval-as-default-llm-quality",
+      "sha256": "e64fae6cbd8254590e2ca172990cfb81138cce95b6fad7a2776643e75e5c78a8"
+    },
+    {
+      "id": "no-evals-dir-as-inventory",
+      "sha256": "e7eb960939ebf45b0aa5bece1b44f174bcd0b8a47decd6b13028b9f42caa6ba4"
+    },
+    {
       "id": "cursor-agent-declaration-presence",
       "sha256": "c763c47276a1ca48f6e7431360be1cd0b093a7352dad6bb0d764f93ecae791d0"
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "5d6ce86d25f6b2f88f12e95cb66af5809ac22f5c05479426fb245392b6da5452"
+      "sha256": "3bdde025d6d8081a9a73b4cd5eaf0a4b40dce143d9bb937e6205ce49e1174b38"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -188,8 +200,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-4e22dd4ed850",
-      "sha256": "89063e69f915f826e0e2be0e5e821bc32b5c8e02cb2734c05439f5ee37528c19"
+      "id": "cursor-readme-version-requires-5fc9a037183f",
+      "sha256": "a526a2753b638c97243161f9d447d31f1cacd7d9de4a3a4b1c174ca087cf0436"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -2809,6 +2821,11 @@
       "kind": "span",
       "id": "work-unit-design-internal-guard",
       "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-plan-verification-default",
+      "path": "shared/repository-guidelines.md"
     },
     {
       "kind": "span",

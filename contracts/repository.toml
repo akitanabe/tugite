@@ -66,6 +66,25 @@ accept_prohibition = [
 ]'''
 applies_to = ["agents-guidance", "claude-guidance"]
 
+# Why Not: keep the plan-verification default as one coherent Data; splitting could permit EVAL corpus as a planning obligation while native verification remains present.
+[contracts.repository-plan-verification-default-1cd0b7e4ffb5]
+kind = "requires"
+slice = "repository-plan-verification-default"
+pattern = '''計画成果物の既定 verification は、この repository で実行できる native 手段に限り、EVAL を含めない。
+Gunte が保証しない点は残存 risk / 未検証とし、受け入れを EVAL 実行に依存させない。
+EVAL は Human が明示したとき、または既存 EVAL 成果物の変更自体が要求対象のときだけ使う。'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.no-eval-as-default-llm-quality]
+kind = "forbids"
+pattern = "LLM の判断品質や読みやすさは EVAL または editorial review で扱います"
+applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.no-evals-dir-as-inventory]
+kind = "forbids"
+pattern = "手動評価シナリオは `evals/` にあります"
+applies_to = ["agents-guidance", "claude-guidance"]
+
 [contracts.cursor-agent-declaration-presence]
 kind = "structure"
 subject = "source_frontmatter"
@@ -100,7 +119,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "5.18.0"
+value = "5.19.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
@@ -501,10 +520,10 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-4e22dd4ed850]
+[contracts.cursor-readme-version-requires-5fc9a037183f]
 kind = "requires"
 slice = "cursor-readme-version"
-pattern = "# Tugite v5.18.0"
+pattern = "# Tugite v5.19.0"
 applies_to = ["cursor"]
 
 [contracts.cursor-readme-generation-requires-efb6bbfae34a]
