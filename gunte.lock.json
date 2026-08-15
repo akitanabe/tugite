@@ -93,7 +93,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "384ba52254fc4e9864bc612be6ce3318d01bc0a0d5e7e7c3748c263929194a8b"
+      "sha256": "5d6ce86d25f6b2f88f12e95cb66af5809ac22f5c05479426fb245392b6da5452"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -188,8 +188,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-b04cc4b14f11",
-      "sha256": "6ec1a63ec2da2d09c31b10ad3a1a395e40dfba89d0af42b1cf33a5eb56245521"
+      "id": "cursor-readme-version-requires-4e22dd4ed850",
+      "sha256": "89063e69f915f826e0e2be0e5e821bc32b5c8e02cb2734c05439f5ee37528c19"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -1540,18 +1540,6 @@
       "sha256": "6aa64015d159986de2a1d41e4c79962e54cfb46bc9f9dc5b3fca228337e138a7"
     },
     {
-      "id": "plan-craft-autonomy-requires-af3c6a4d6573",
-      "sha256": "4b187c9d078db1df00302b0b2d50335a7e63ca4277072ea9478a8d4de4718ea3"
-    },
-    {
-      "id": "plan-craft-autonomy-requires-acfb4af7f738",
-      "sha256": "ff0d652e87b6a21fab8b8a18a5300b64395dca6e941c4efc2846e4648c67e301"
-    },
-    {
-      "id": "plan-craft-autonomy-requires-ef0282f6df24",
-      "sha256": "b94d8191f094904dec6fb48f9eabd1c183491f4f2b937bcac1b260f27b36cf22"
-    },
-    {
       "id": "plan-craft-autonomy-requires-1bea96daad0b",
       "sha256": "97a07aa4bb357088fdcf4754e02e44687c69277871ea6bbe6a5d420ef02c3eb1"
     },
@@ -1582,6 +1570,30 @@
     {
       "id": "plan-craft-autonomy-requires-561e27726bf2",
       "sha256": "d08b55d24626a61f9e5a7a8b8a660fa5a9a06c2c23e8cb1c8d7aa89c0d1c50d1"
+    },
+    {
+      "id": "plan-craft-artifact-completion-data-7c40ec22e9f7",
+      "sha256": "f8c0d563386e4b3a6abc43bbf5c6a93e5e24775c44dda8e65ae8b1e1641fdcb0"
+    },
+    {
+      "id": "plan-craft-artifact-security-data-2d42ca3f7a0c",
+      "sha256": "858cf668fd18f67b9ba325a4cef1de446113adf47e1555169e072b7ae47df23a"
+    },
+    {
+      "id": "plan-craft-no-retired-human-save-authority",
+      "sha256": "4c53c8289378131336dfe42b246420e241b9ae76a7e7042d1611364f994d74f1"
+    },
+    {
+      "id": "plan-craft-artifact-eligibility-before-save",
+      "sha256": "3f6f12474cdce17af11281e57016a21eb1b691c4d14b018d93b9a7dd72c9dbc9"
+    },
+    {
+      "id": "plan-craft-artifact-stage-before-publish",
+      "sha256": "d12c706730e1eacb4cd5a3231cd16d7dd63f2353c67a92a59dad7a3609319f68"
+    },
+    {
+      "id": "plan-craft-artifact-publish-before-output",
+      "sha256": "7981e450a5454bc51c289368dcdd17e80bc6909646ab7600a731be1487a88784"
     },
     {
       "id": "proposal-dialogue-internal-guard-requires-527b65ea8ec8",
@@ -1870,6 +1882,30 @@
     {
       "id": "plan-craft-approval-gate-before-review",
       "sha256": "9466fdaf156eb35070c1c17d9d38db8347a4da6e00b0729bf2b2333b570decda"
+    },
+    {
+      "id": "plan-craft-approval-artifact-completion-data-97cdd8bcad6a",
+      "sha256": "a261664cee3e008c6ed5f3f28dba75013e48106eef0eb87ff8b77a59ac8cc706"
+    },
+    {
+      "id": "plan-craft-approval-artifact-security-data-f612737da7b6",
+      "sha256": "9a9c91488c2c05cc37394bf1c18f119e2664474046e0f9cb26678d2ec14d4e22"
+    },
+    {
+      "id": "plan-craft-approval-no-retired-autosave",
+      "sha256": "13ccada6e17043d304ac51981d97b04620b0d06a998b6bf2aa875027a2f0ec68"
+    },
+    {
+      "id": "plan-craft-approval-acceptance-before-stage",
+      "sha256": "31f6cb49526517737849c24df5fa32b87800f796b996d1a0aad224b351a2b282"
+    },
+    {
+      "id": "plan-craft-approval-stage-before-publish",
+      "sha256": "dd4af7ec21cb50caaf123c1a736ae1ad73187f90ba36ee4e3f74d6e1574392b6"
+    },
+    {
+      "id": "plan-craft-approval-publish-before-output",
+      "sha256": "fa94e8b6da50e3f1b57491e2472b602a53cf6b27ab1e8fada58d65c4f1d9a4ce"
     },
     {
       "id": "kernel-dependencies-none-claude",
@@ -2516,6 +2552,31 @@
     },
     {
       "kind": "span",
+      "id": "plan-craft-artifact-completion",
+      "path": "shared/skill/plan-craft/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-artifact-eligibility",
+      "path": "shared/skill/plan-craft/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-artifact-stage",
+      "path": "shared/skill/plan-craft/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-artifact-publish",
+      "path": "shared/skill/plan-craft/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-artifact-output",
+      "path": "shared/skill/plan-craft/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-craft-approval-handoff",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
@@ -2542,6 +2603,31 @@
     {
       "kind": "anchor",
       "id": "plan-craft-approval-review-loop-handoff",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-artifact-completion",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-final-acceptance-complete",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-artifact-stage",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-artifact-publish",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-artifact-output",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
     {

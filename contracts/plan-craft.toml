@@ -1170,24 +1170,6 @@ slice = "plan-craft-autonomy"
 pattern = "追加 round の期待利益"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-craft-autonomy-requires-af3c6a4d6573]
-kind = "requires"
-slice = "plan-craft-autonomy"
-pattern = "Result / Semantic Delta / Verification Delta / Human Attention / Artifact"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-autonomy-requires-acfb4af7f738]
-kind = "requires"
-slice = "plan-craft-autonomy"
-pattern = "最初に `structural-health-gate` へ投入した proposal candidate"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-autonomy-requires-ef0282f6df24]
-kind = "requires"
-slice = "plan-craft-autonomy"
-pattern = "Verification Delta は境界、failure path、fragile behavior、禁止副作用、責務境界を優先し"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.plan-craft-autonomy-requires-1bea96daad0b]
 kind = "requires"
 slice = "plan-craft-autonomy"
@@ -1234,4 +1216,70 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "plan-craft-autonomy"
 pattern = "candidate status は次の Calculation で一度だけ決める。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: completion eligibility, artifact purity, path qualification, save commit, output, and authority form one relation.
+[contracts.plan-craft-artifact-completion-data-7c40ec22e9f7]
+kind = "requires"
+slice = "plan-craft-artifact-completion"
+pattern = '''workflow = plan-craft
+artifact_eligibility = semantic completion eligibility and verified save success
+artifact_body = frozen final candidate body only
+artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate result, review result, decision ledger, finding ledger, process history]
+incomplete_artifact = none
+explicit_destination = highest priority; unsafe or unusable means incomplete without fallback
+unspecified_project_local = existing temporary or local-only purpose is directly evidenced; exact final path is ignored and index-unregistered
+os_temp_fallback = no candidate, tied candidates, non-Git project, or unconfirmed qualification
+project_mutation = do not create a project-local directory or ignore rule
+filename = content-derived safe single component
+collision = never overwrite an existing file; finite numeric suffix retry only on collision
+save = same-filesystem run-owned staging write -> close -> byte-identical readback -> complete-only no-clobber publish
+save_failure = incomplete; clean exact staging residue or report it as residual risk
+stdout = Result, short Summary, optional Human Attention, Artifact local path
+stdout_excludes = full artifact body, Semantic Delta, Verification Delta, gate or review result, decision or finding ledger, process history
+summary_opt_out = Artifact only
+authority = not Git management, durable persistence, final acceptance, or downstream Action permission'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: staging ownership and OS-temp qualification must stay one security relation across the whole save lifecycle.
+[contracts.plan-craft-artifact-security-data-2d42ca3f7a0c]
+kind = "requires"
+slice = "plan-craft-artifact-completion"
+pattern = '''staging_creation = atomic exclusive non-follow new object beneath verified destination identity
+staging_identity = same object identity through write, readback, and cleanup
+qualification_recheck = immediately before staging creation and immediately before publish
+destination_reselection = owned staging identity must match and cleanup must succeed first
+cleanup_excludes = pre-existing or identity-mismatched object
+unsafe_primitive = stop before write or return safe incomplete
+os_temp = validated platform temp root -> secure exclusive run-owned directory
+os_temp_paths = canonical containment and non-follow for final and staging
+os_temp_repo_overlap = project-local qualification applies when canonical path is inside repository
+os_temp_unconfirmed = stop before write as incomplete
+run_owned_directory_identity = record at creation
+run_owned_directory_cleanup = before publish commit on incomplete or destination reselection; after owned staging handling; same identity and empty; non-recursive non-follow remove only
+run_owned_directory_residue = identity mismatch, non-empty, or removal failure means leave and report exact residue
+run_owned_directory_commit = preserve directory containing published final artifact'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-no-retired-human-save-authority]
+kind = "forbids"
+pattern = "最終成果物の採用と保存・後続 Action の許可は Human が判断する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-artifact-eligibility-before-save]
+kind = "order"
+before = "plan-craft-artifact-eligibility"
+after = "plan-craft-artifact-stage"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-artifact-stage-before-publish]
+kind = "order"
+before = "plan-craft-artifact-stage"
+after = "plan-craft-artifact-publish"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-artifact-publish-before-output]
+kind = "order"
+before = "plan-craft-artifact-publish"
+after = "plan-craft-artifact-output"
 applies_to = ["claude", "codex", "cursor"]
