@@ -153,6 +153,37 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
 を親が確認し、Green で再現可能な accepted baseline だけを後続単位の base にする。
 
+## Writable scope Kernel loader and worker handoff
+
+
+最初の write-capable Worker handoff より前に、親は writable scope Kernel を load して identity と必要 section を検証する。
+次の Loader Data がこの load の唯一の正本である。
+
+```text
+path = ../../references/writable-scope-kernel.md
+load_timing = before first write-capable Worker handoff
+identity = writable-scope-kernel-v1
+dependencies = none
+required_sections = [Scope assignment model, Parent loader and assignment, Worker write boundary, Scope changes and non-goals]
+failure = stop-incomplete
+owner = impl-lead parent
+```
+
+```text
+assignment_source = parent execution data
+assigned_writable_scopes = explicit filesystem region set
+repository_root_outside = allowed for explicitly assigned run-owned worktree
+worker_path_resolution = parent
+scope_change = explicit handoff update
+```
+
+親は検証済み Kernel 本文と、選択済み isolation および明示された追加領域から確定した
+`assigned_writable_scopes` を既存の execution constraint / 周辺 context に注入する。assignment は親の execution data であり、
+Work Unit Data の field ではない。repository root 外の run-owned worktree も、親が明示した assignment に含められる。
+親は Worker に path 解決や assignment の確定を委ねず、load、identity、必要 section、assignment のいずれかが不足・不正・不明な
+場合は write-capable handoff を作らず `stop-incomplete` とする。
+<!-- @/anchor -->
+
 ## Fresh context and continuation
 
 委譲する新しい ID の Work Unit は、Work Unit Data、依存、`base_snapshot`、選択 worker と route、execution constraint、

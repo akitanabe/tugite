@@ -54,6 +54,47 @@ before = "impl-run-owned-default-start"
 after = "impl-route-execution-start"
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: loader fields and assignment fields form one parent-owned execution boundary; independent checks could accept an invalid handoff.
+[contracts.impl-writable-scope-loader-data-0ebccdb99251]
+kind = "requires"
+slice = "impl-writable-scope-loader"
+pattern = '''path = ../../references/writable-scope-kernel.md
+load_timing = before first write-capable Worker handoff
+identity = writable-scope-kernel-v1
+dependencies = none
+required_sections = [Scope assignment model, Parent loader and assignment, Worker write boundary, Scope changes and non-goals]
+failure = stop-incomplete
+owner = impl-lead parent'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-writable-scope-assignment-data-77717bd5f6f7]
+kind = "requires"
+slice = "impl-writable-scope-loader"
+pattern = '''assignment_source = parent execution data
+assigned_writable_scopes = explicit filesystem region set
+repository_root_outside = allowed for explicitly assigned run-owned worktree
+worker_path_resolution = parent
+scope_change = explicit handoff update'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-writable-scope-no-work-unit-field-bfb65969926d]
+kind = "requires"
+slice = "impl-writable-scope-loader"
+pattern = "Work Unit Data の field ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-before-writable-scope-loader]
+kind = "order"
+before = "impl-route-execution-start"
+after = "impl-writable-scope-loader-start"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-writable-scope-loader-before-worker-handoff]
+kind = "order"
+before = "impl-writable-scope-loader-start"
+after = "impl-worker-handoff-start"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-run-owned-lifecycle-reference-identity]
 kind = "occurrences"
 pattern = "# impl-lead run-owned lifecycle v1"

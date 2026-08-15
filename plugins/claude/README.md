@@ -1,6 +1,6 @@
 # Tugite for Claude Code
 
-Tugite v5.15.0 は、親 Claude エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+Tugite v5.16.0 は、親 Claude エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
 ## Skill surface
 

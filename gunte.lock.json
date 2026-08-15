@@ -11,6 +11,7 @@
     "contracts/batch-resolve-kernel.toml",
     "contracts/necessity-kernel.toml",
     "contracts/resolve-kernel.toml",
+    "contracts/writable-scope-kernel.toml",
     "shared/VERSION",
     "shared/agents/focused-implementer.md",
     "shared/agents/expert-implementer.md",
@@ -26,6 +27,7 @@
     "shared/batch-resolve-kernel.md",
     "shared/necessity-kernel.md",
     "shared/resolve-kernel.md",
+    "shared/writable-scope-kernel.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -91,7 +93,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "aaaba46eb419f1664e0ee52cdf91e62327617a862dcb979a7fec37110689614e"
+      "sha256": "d9bf331656ad9312625828aa1c696ada1d5ea50fdf197281d2ff3fe6970c73e4"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -186,8 +188,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-ba3eb708d5ae",
-      "sha256": "b57b040c60cf1a2b35779afdf6e54e94d0f52d4a83919a4ef0e15a1960e775e6"
+      "id": "cursor-readme-version-requires-158363f9dd03",
+      "sha256": "d861e3d37ba7c87d6fc01999447722661dbd29578c148dcf7b19ef4bb09d0086"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -582,6 +584,22 @@
       "sha256": "cfd6ad009ce496c17ee8d43f4777e9d6f327adcd7668cba4fa4ec53c7e2fef1c"
     },
     {
+      "id": "writable-scope-focused-worker-mapping-requires-b460f9474f0a",
+      "sha256": "cc5e7a83e6a230f5176ded6a1a94c38b6e995ff1f2a4b78cd64bf3a220c10d72"
+    },
+    {
+      "id": "writable-scope-implementer-mapping-requires-264046b8175d",
+      "sha256": "5275d6b4fdab42b57713f94fe4f10b78019d97e78e0560e8c530312cbc130683"
+    },
+    {
+      "id": "writable-scope-senior-worker-mapping-requires-ef04795659fd",
+      "sha256": "9f8a5bce34c8575d4a33ffb8d39b5a19b4fb955b1292ca4b75f9b0aa5b858f1b"
+    },
+    {
+      "id": "writable-scope-expert-worker-mapping-requires-08538cb50d7c",
+      "sha256": "8b01558fb6c00e66cf6add0d4d47bac4880472a4ccd72bace1ef38a88083408f"
+    },
+    {
       "id": "work-unit-design-internal-guard-requires-8bf50de960dc",
       "sha256": "52155c918b68c36a1d60f7648d94b5035779fa2fd7cc9d2c047c6c9a97f41c9b"
     },
@@ -604,6 +622,26 @@
     {
       "id": "impl-run-owned-default-before-route",
       "sha256": "acc9cee8191a8f6d5aa6074e49efa959788e1eb91f5e643af33032db0eade9f6"
+    },
+    {
+      "id": "impl-writable-scope-loader-data-0ebccdb99251",
+      "sha256": "eb151b655ad68c4f13f1c2e14f4e014c03b8a6d3b7964057d03d0a390f9f38e4"
+    },
+    {
+      "id": "impl-writable-scope-assignment-data-77717bd5f6f7",
+      "sha256": "044cf69729591a87cba316b5f0bc1a86f5dde520e76c458e4bdef5e4659f1e9e"
+    },
+    {
+      "id": "impl-writable-scope-no-work-unit-field-bfb65969926d",
+      "sha256": "d6471bad127c61bee37c57cb3bc13a40a3dce421b4af29a5dbf19f48336b412e"
+    },
+    {
+      "id": "impl-route-before-writable-scope-loader",
+      "sha256": "289e7765ca56a757eab9f5a4f75c623950007e3b78c2f50a8ab53b4ff640889a"
+    },
+    {
+      "id": "impl-writable-scope-loader-before-worker-handoff",
+      "sha256": "70a60d514b3b079d790e1c5977d9085b4ae77622ed59c7fc425c804286074f3e"
     },
     {
       "id": "impl-run-owned-lifecycle-reference-identity",
@@ -1835,35 +1873,35 @@
     },
     {
       "id": "kernel-dependencies-none-claude",
-      "sha256": "703960ab5b312e90102dbe31db15b9e3f3782e22dab8898a14524092ad87ee6d"
+      "sha256": "90b54b59f26063ef386e4f1e50a926460c18d997d40cc846f41fcc3ebfea3f45"
     },
     {
       "id": "kernel-dependencies-none-codex",
-      "sha256": "b73d3fd04cf63c5c294dcf58b71be923d7a24fdfb3091d69afa439c5e0677626"
+      "sha256": "3f4c034541e7e6a8cacbdb84d1c9a7a1a7ac8bde943e907fe9e3487cfe645e45"
     },
     {
       "id": "kernel-dependencies-none-cursor",
-      "sha256": "5051217217eaab682f6b1106bdc2f651ec543cb821b1ad661b494b6d10b0eb1a"
+      "sha256": "93c22c6399fdf626d5e63ed5910914d20ab98d0885154a0e84d4901c73f7dda6"
     },
     {
       "id": "kernel-dependencies-key-claude",
-      "sha256": "a05db7a92fa9f8185ccc42e556e2bc3bd1a43313bc238ba0db09fb5e7c264f75"
+      "sha256": "2970b94c2328e4cd087607f6ef7ba61b55c1847022bf48a269b10bb1e9ae55d7"
     },
     {
       "id": "kernel-dependencies-key-codex",
-      "sha256": "7857735bfa76b0da9b313071478355bc69a81621257b3d7de6dee33ff569fe27"
+      "sha256": "0b1f3a7b46d7393997866d43303de7c5425f6fca3fbecb46b7729c1810ca4e78"
     },
     {
       "id": "kernel-dependencies-key-cursor",
-      "sha256": "5d337169d9a9a12a575cb39da091c4801a3abf172d4ee69963c7be1b8eb508b5"
+      "sha256": "af2e448112b30fe1e621e718a74ced5b8b0f4210cd1031cb01415801e4dc8cdb"
     },
     {
       "id": "kernel-positive-dependency-verb",
-      "sha256": "90922475387b15d74987a58b5ff30fd4e06891c54cad1949b332d62fba10366f"
+      "sha256": "889b5dffb194a6981cad46f5d545c7bb93e3bc4242563cd8598c4b316182bd96"
     },
     {
       "id": "kernel-positive-dependency-condition",
-      "sha256": "ffc9c9ec635d8ca38cc47205c0f724008b3cf1e07f64cdde6f93b2742a48f82b"
+      "sha256": "77482d528598204bdbfb8a0fccbc018fffac664f6fcb0eec9795469388f6ff0c"
     },
     {
       "id": "batch-resolve-kernel-distribution",
@@ -2160,6 +2198,74 @@
     {
       "id": "resolve-kernel-no-new-public-ac24a1c14906",
       "sha256": "1bc1a954212a0bcec117fcf805f67d596910d329b4ba96e001eeb228928af2e6"
+    },
+    {
+      "id": "writable-scope-kernel-distribution",
+      "sha256": "431f0858c4c65e16e04c1388cb714eebe0ec3f65a887f5a173a1bec7cf502a55"
+    },
+    {
+      "id": "writable-scope-kernel-identity-requires-d45cd28078e8",
+      "sha256": "7de5d753ab4769bbe19cb39872a8f240d6f0aba2e6b22aef0d8cc515542c89a9"
+    },
+    {
+      "id": "writable-scope-kernel-scope-assignment-requires-e1cdd630c6d8",
+      "sha256": "2fde52001cf5f497cbe4d55827de548748e3315d518e76a3c6e904e0869c5ccd"
+    },
+    {
+      "id": "writable-scope-kernel-parent-loader-requires-f23e44c53885",
+      "sha256": "8d58c810a6c66fc905e87948953e5a4620bf41137f5c096c490ce23d74b8744c"
+    },
+    {
+      "id": "writable-scope-kernel-worker-boundary-requires-1d7c221193b5",
+      "sha256": "6ed4ea80541b55653c4e08467e64e8234a7a7018bf137da055ab6954e12cfc6f"
+    },
+    {
+      "id": "writable-scope-kernel-scope-changes-requires-9ce25a66adfa",
+      "sha256": "69851c80298239cec1494e544697a718ab01f6600527faee5de1c80ac24db72f"
+    },
+    {
+      "id": "writable-scope-kernel-enforcement-boundary-requires-c1a01ee7350b",
+      "sha256": "2f9467727285f4988c79ab63a7ad983bd454ddeaeae44ed55c6576eadf634c6a"
+    },
+    {
+      "id": "writable-scope-relation-requires-71f2e6df91f9",
+      "sha256": "12c28b2dfcefe069ac22aa87e94a0647ba03afb79ba68cfdd12f0ecdf88096f4"
+    },
+    {
+      "id": "writable-scope-assigned-scopes-cardinality",
+      "sha256": "9253d10e64456e2439ff4c287bca1f12bc7cff93ecae396a41fd035c208b44b5"
+    },
+    {
+      "id": "writable-scope-write-eligibility-cardinality",
+      "sha256": "44df48902d780cdfed56fef2030a7e00178124ce1b45884e61ac2a54888c25a7"
+    },
+    {
+      "id": "writable-scope-assignment-owner-cardinality",
+      "sha256": "654e196f33016b5287de6afee5176f39b4f874657ed12186b83ef59e5dd4e74a"
+    },
+    {
+      "id": "writable-scope-change-owner-cardinality",
+      "sha256": "16d5d96cd890f6a306dc74b19f85fd72077145d4ee2bc6c2da5c68de78c6b739"
+    },
+    {
+      "id": "writable-scope-unassigned-resource-cardinality",
+      "sha256": "a72d54b9af33627ccd44cc6fdf3dfb91d33311a9afaf8e2aa30b7e1878d6f1ba"
+    },
+    {
+      "id": "writable-scope-enforcement-requires-b9be84669e40",
+      "sha256": "07a679ed6a13added9a0f9ca5edd3fe2846bc6bb6b6023210aeb94e1424ebbd7"
+    },
+    {
+      "id": "writable-scope-enforcement-implementation-owner-cardinality",
+      "sha256": "36bad738ab4d961147f90c2c20d966391672297c078ad0b0253d43d31e51ce63"
+    },
+    {
+      "id": "writable-scope-workflow-extension-cardinality",
+      "sha256": "b8cc5e17c67068ebf02d9d06e935fbcb02d8a6b00e0588bda0f76f3010edac31"
+    },
+    {
+      "id": "writable-scope-mandatory-record-cardinality",
+      "sha256": "7d336fe5fb2f3bda4070ba9045b74578a636360d119b9ee243c434b63f2b53d7"
     }
   ],
   "declarations": [
@@ -2170,12 +2276,27 @@
     },
     {
       "kind": "span",
+      "id": "writable-scope-focused-worker-mapping",
+      "path": "shared/agents/focused-implementer.md"
+    },
+    {
+      "kind": "span",
       "id": "expert-worker-boundary",
       "path": "shared/agents/expert-implementer.md"
     },
     {
       "kind": "span",
+      "id": "writable-scope-expert-worker-mapping",
+      "path": "shared/agents/expert-implementer.md"
+    },
+    {
+      "kind": "span",
       "id": "implementer-boundary",
+      "path": "shared/agents/implementer.md"
+    },
+    {
+      "kind": "span",
+      "id": "writable-scope-implementer-mapping",
       "path": "shared/agents/implementer.md"
     },
     {
@@ -2210,6 +2331,11 @@
     },
     {
       "kind": "span",
+      "id": "writable-scope-senior-worker-mapping",
+      "path": "shared/agents/senior-implementer.md"
+    },
+    {
+      "kind": "span",
       "id": "test-quality-general-scope",
       "path": "shared/agents/test-quality-reviewer.md"
     },
@@ -2229,6 +2355,11 @@
       "path": "shared/resolve-kernel.md"
     },
     {
+      "kind": "span",
+      "id": "writable-scope-kernel-v1",
+      "path": "shared/writable-scope-kernel.md"
+    },
+    {
       "kind": "anchor",
       "id": "impl-run-owned-default-start",
       "path": "shared/skill/impl-lead/SKILL.md"
@@ -2241,6 +2372,21 @@
     {
       "kind": "anchor",
       "id": "impl-route-execution-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-writable-scope-loader-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-writable-scope-loader",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-worker-handoff-start",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {

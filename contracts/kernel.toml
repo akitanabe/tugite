@@ -5,6 +5,7 @@ paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
+  "plugins/claude/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["claude"]
@@ -16,6 +17,7 @@ paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["codex"]
@@ -27,6 +29,7 @@ paths = [
   "plugins/cursor/references/batch-resolve-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["cursor"]
@@ -38,6 +41,7 @@ paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
+  "plugins/claude/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["claude"]
@@ -49,6 +53,7 @@ paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["codex"]
@@ -60,6 +65,7 @@ paths = [
   "plugins/cursor/references/batch-resolve-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
 ]
 count = 1
 applies_to = ["cursor"]
@@ -71,12 +77,15 @@ paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
+  "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/batch-resolve-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -87,11 +96,14 @@ paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
+  "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/batch-resolve-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/batch-resolve-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
 ]
 applies_to = ["claude", "codex", "cursor"]

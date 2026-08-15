@@ -21,4 +21,14 @@ effort: medium
 返却 Data には変更内容、Acceptance Criteria との対応、Red 証跡、検証 command と結果、選択した設計と理由、
 棄却した代替案、前提、残存リスク、未検証事項を含めます。最終受入とより広い変更への切り替えは親に残します。
 
+## Writable scope handoff
+
+write-capable input は、親から検証済み `writable-scope-kernel-v1` の identity / 必要本文と、明示された
+`assigned_writable_scopes`（filesystem 領域集合）を受けた場合だけ成立します。repository root 外の run-owned worktree も、
+親が明示 assignment に含めた場合は対象にできます。assignment は Work Unit Data ではなく execution data です。
+
+assignment が missing、invalid、unknown の場合は no-write のまま親へ返します。target の path 解決、scope の推測、暗黙の拡張は
+行わず、assignment 外や明示 assignment のない user-owned resource は編集しません。追加領域が必要なら親へ返し、親の execution
+data と明示的な handoff update を受けるまで write Action を開始しません。
+
 副作用が必要な場合は境界へ閉じ、順序、重複、再試行、部分失敗、冪等性を親が評価できる形で返してください。
