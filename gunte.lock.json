@@ -2232,12 +2232,40 @@
       "sha256": "12c28b2dfcefe069ac22aa87e94a0647ba03afb79ba68cfdd12f0ecdf88096f4"
     },
     {
-      "id": "writable-scope-kernel-no-hook-forbids",
-      "sha256": "e4bd9f6580ea0c1d2a256cfa59912aa8e5f3633e902be562593a77e6e573eafb"
+      "id": "writable-scope-assigned-scopes-cardinality",
+      "sha256": "9253d10e64456e2439ff4c287bca1f12bc7cff93ecae396a41fd035c208b44b5"
     },
     {
-      "id": "writable-scope-kernel-no-audit-log-forbids",
-      "sha256": "aea5e8bc24dfd87361b6a7f1eb9c35fbb4526b24a7829a1eb72428f42b353b12"
+      "id": "writable-scope-write-eligibility-cardinality",
+      "sha256": "44df48902d780cdfed56fef2030a7e00178124ce1b45884e61ac2a54888c25a7"
+    },
+    {
+      "id": "writable-scope-assignment-owner-cardinality",
+      "sha256": "654e196f33016b5287de6afee5176f39b4f874657ed12186b83ef59e5dd4e74a"
+    },
+    {
+      "id": "writable-scope-change-owner-cardinality",
+      "sha256": "16d5d96cd890f6a306dc74b19f85fd72077145d4ee2bc6c2da5c68de78c6b739"
+    },
+    {
+      "id": "writable-scope-unassigned-resource-cardinality",
+      "sha256": "a72d54b9af33627ccd44cc6fdf3dfb91d33311a9afaf8e2aa30b7e1878d6f1ba"
+    },
+    {
+      "id": "writable-scope-enforcement-requires-b9be84669e40",
+      "sha256": "07a679ed6a13added9a0f9ca5edd3fe2846bc6bb6b6023210aeb94e1424ebbd7"
+    },
+    {
+      "id": "writable-scope-enforcement-implementation-owner-cardinality",
+      "sha256": "36bad738ab4d961147f90c2c20d966391672297c078ad0b0253d43d31e51ce63"
+    },
+    {
+      "id": "writable-scope-workflow-extension-cardinality",
+      "sha256": "b8cc5e17c67068ebf02d9d06e935fbcb02d8a6b00e0588bda0f76f3010edac31"
+    },
+    {
+      "id": "writable-scope-mandatory-record-cardinality",
+      "sha256": "7d336fe5fb2f3bda4070ba9045b74578a636360d119b9ee243c434b63f2b53d7"
     }
   ],
   "declarations": [

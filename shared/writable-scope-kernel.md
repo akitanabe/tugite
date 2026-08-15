@@ -43,6 +43,12 @@ assignment 内の target に対する通常の変更だけを実行し、assignm
 
 ## Scope changes and non-goals
 
+```text
+enforcement_implementation_owner = platform or harness or local environment
+workflow_enforcement_extension = none
+mandatory_write_record = none
+```
+
 scope change は Worker の判断ではなく、親の execution data と明示的な handoff update で扱う。Work Unit Data に writable scope を
 追加しない。この Kernel は enforcement mechanism、path layout、platform 設定を定義しない。また、一般的な監査記録を強制機構として
 導入せず、親の assignment と handoff を canonical boundary とする。

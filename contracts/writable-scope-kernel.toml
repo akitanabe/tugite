@@ -57,22 +57,100 @@ scope_change_owner = parent via explicit handoff update
 unassigned_user_owned_resource = write-ineligible'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.writable-scope-kernel-no-hook-forbids]
-kind = "forbids"
-pattern = "hook"
+# Why Not: each relation key is canonical Data and must occur once per distributed Kernel; cardinality protects duplicate or competing key mutations without parsing prose.
+[contracts.writable-scope-assigned-scopes-cardinality]
+kind = "occurrences"
+pattern = "assigned_writable_scopes ="
 paths = [
   "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",
 ]
+count = 1
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.writable-scope-kernel-no-audit-log-forbids]
-kind = "forbids"
-pattern = "audit log"
+[contracts.writable-scope-write-eligibility-cardinality]
+kind = "occurrences"
+pattern = "write_eligibility ="
 paths = [
   "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",
 ]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-assignment-owner-cardinality]
+kind = "occurrences"
+pattern = "assignment_owner ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-change-owner-cardinality]
+kind = "occurrences"
+pattern = "scope_change_owner ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-unassigned-resource-cardinality]
+kind = "occurrences"
+pattern = "unassigned_user_owned_resource ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: enforcement ownership and non-introduction of workflow machinery form one canonical declaration; independent prose predicates could accept a partial boundary.
+[contracts.writable-scope-enforcement-requires-b9be84669e40]
+kind = "requires"
+slice = "writable-scope-kernel-v1"
+pattern = '''enforcement_implementation_owner = platform or harness or local environment
+workflow_enforcement_extension = none
+mandatory_write_record = none'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-enforcement-implementation-owner-cardinality]
+kind = "occurrences"
+pattern = "enforcement_implementation_owner ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-workflow-extension-cardinality]
+kind = "occurrences"
+pattern = "workflow_enforcement_extension ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-mandatory-record-cardinality]
+kind = "occurrences"
+pattern = "mandatory_write_record ="
+paths = [
+  "plugins/claude/references/writable-scope-kernel.md",
+  "plugins/codex/references/writable-scope-kernel.md",
+  "plugins/cursor/references/writable-scope-kernel.md",
+]
+count = 1
 applies_to = ["claude", "codex", "cursor"]
