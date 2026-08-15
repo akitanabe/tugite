@@ -95,8 +95,9 @@ checkout の ref・履歴を書き換えず、対象・所有権・旧 snapshot 
 `stop-incomplete` のいずれかにする。観測不能時は確認・再正規化・`stop-incomplete` とし、推測で Action を実行しない。
 
 各 Work Unit の dispatch 直前に、親は repository、protected dirty/untracked、依存、現在の run baseline を再観測し、
-`protected_dirty_record` を更新する。統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を
-止めて再正規化・確認・`stop-incomplete` を選ぶ。
+`protected_dirty_record` を更新する。これは Work Unit の dispatch、candidate integration、QA / review snapshot protection に限定する。
+Work Unit の統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を止めて再正規化・確認・`stop-incomplete` を選ぶ。
+`protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。
 
 `base_snapshot` は編集前内容を後から比較・再現できる不変の識別を持つ（commit に限定しない）。保護対象の dirty
 state は `protected_dirty_record` として別管理し、uncommitted の変更を暗黙に commit、移送、破棄しない。snapshot
@@ -406,8 +407,14 @@ test、repository-native verification を再実行し、変更が同じ Work Uni
 
 run-owned worktree を作成した run は、先に読み込んだ `run-owned lifecycle` reference の `Closeout` に従う。親 QA、選択した
 risk-directed review、final writing gate、final verification、必要な外部副作用の照合後に、親が観測 Data から integration と cleanup の
-可否を計算し、最後の Action と事後照合を行う。成果の永続化、resource identity、protected state、writer/reviewer の終了を確認できない
+可否を計算し、最後の Action と事後照合を行う。成果の永続化、resource identity、tracked working state、no current task-path collision、writer/reviewer の終了を確認できない
 場合は削除せず `stop-incomplete` とし、user-owned resource や別 run resource を変更しない。
+
+```text
+run_owned_closeout = tracked clean + tracked state + collision_free
+collision_free = no current task-path collision
+noise = noncollision untracked / ignored is not a blocker or ordinary result
+```
 
 AC、scope、責任境界、依存が不変で同じ単位の実装上の不足だけなら、親は同じ ID と context で `continue` して限定修正を
 返す。それ以外は限定修正を続けず、fresh context の新しい ID として再正規化する。親が品質下限を満たし、全要求単位を accepted とし、
