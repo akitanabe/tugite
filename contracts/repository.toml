@@ -458,6 +458,17 @@ path = "name"
 op = "equals"
 value = "clarify-it"
 
+[contracts.clarify-it-philosophy-reference-shape]
+kind = "occurrences"
+paths = [
+  "plugins/claude/skills/clarify-it/references/philosophy.md",
+  "plugins/codex/skills/clarify-it/references/philosophy.md",
+  "plugins/cursor/skills/clarify-it/references/philosophy.md",
+]
+pattern = "# clarify-it — Philosophy"
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.cursor-plan-craft-skill]
 kind = "structure"
 subject = "artifact"

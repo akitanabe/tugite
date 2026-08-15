@@ -30,6 +30,7 @@
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
     "shared/skill/clarify-it/SKILL.md",
+    "shared/skill/clarify-it/references/philosophy.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -177,6 +178,10 @@
     {
       "id": "clarify-it-generated-name",
       "sha256": "aeca9ef27e7cd65f7f156850bcc4735565380675dfc53ebc4aacd2c0736d86a2"
+    },
+    {
+      "id": "clarify-it-philosophy-reference-shape",
+      "sha256": "fcb33047f6c49138da76d80654efa829e72c47c401aaff9336c13579b06c3b24"
     },
     {
       "id": "cursor-plan-craft-skill",
@@ -433,6 +438,110 @@
     {
       "id": "clarify-it-no-followup",
       "sha256": "a6b7a1b6cf170facd4515a5640c7ba271d1d27aefd02cff4b4345a4e753a5ffc"
+    },
+    {
+      "id": "clarify-it-start-boundary-review-0c3e4265a099",
+      "sha256": "e047f1e7a537ce8de3b8c787b8329a41085c7a7206288aaf87c0ad5fda0584a8"
+    },
+    {
+      "id": "clarify-it-philosophy-reference-distribution-11024eb1d090",
+      "sha256": "6b2aa051da4eba7de9da56676365a49621e321564de265afc9123afb37a65003"
+    },
+    {
+      "id": "clarify-it-philosophy-reference-positioning-80455b6ff638",
+      "sha256": "a7e870fdd20d10e6ee0c78f1b1cf0ebefad3aafd9472aaa7f34b31625ac098d5"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-multiple-177b746ed8ed",
+      "sha256": "8eef4c353d3054d4db3841316dfa30159b86d2cfa97c0053d64ff0f56d3f9b43"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-responsibility-1ef09a709ac0",
+      "sha256": "be3279bb3dc98ac5bc5efecbd1d158746114c27994d7247180dab93b34625f60"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-public-69e1d1562d0c",
+      "sha256": "4dee459c7ac6cdd45c12d8ad4a2697a9cdd020f7cb0b53698a3a0dfb2db1e386"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-cost-305495562600",
+      "sha256": "2618c2e993e594ff37edebddf3f67877ee28cb306aad36c58784746878df6292"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-prior-99d7a30024fe",
+      "sha256": "9e433fee229d05c4cda55c56f6b6d27c4212e1e2333bdb00f6ffb205f5b4111a"
+    },
+    {
+      "id": "clarify-it-hdp-candidate-intent-e51eee9a3c1d",
+      "sha256": "3f2c2495051ea2e0fac2a4689a1086ba0540e1e6e0e645ac0b045448bd848372"
+    },
+    {
+      "id": "clarify-it-hdp-sufficient-6394b8a2b660",
+      "sha256": "9eee24767414540dc8ec5e5a2078d993cf5da9e722addeb4fc6c2157547def2e"
+    },
+    {
+      "id": "clarify-it-hdp-derivable-6d677292929a",
+      "sha256": "dcb6fb0a2c6f43783f24d23e9316c3c99a4fde1315d1df807fce4fc6e52ef15b"
+    },
+    {
+      "id": "clarify-it-presentation-axis-1218ecf92178",
+      "sha256": "763d706ffb20651fe6b21371fb842e55171bf69e173e02530fbbbee429c907db"
+    },
+    {
+      "id": "clarify-it-presentation-order-d6c1cfa2f040",
+      "sha256": "9791e89f22a9d1f8a304162243acd6916084625eab6c7f1bf9ea83faa703666f"
+    },
+    {
+      "id": "clarify-it-presentation-recommendation-order-c66136a6f146",
+      "sha256": "1468065b5c26c027c31e2c11b30877d8f5fcbf38a71d4f8e51d75efe346fc8fc"
+    },
+    {
+      "id": "clarify-it-presentation-multiturn-5afe86bb34c6",
+      "sha256": "23e90b4584813f4226a31f0c396c29e086d991048c02140786d2c5a8617c3e3e"
+    },
+    {
+      "id": "clarify-it-presentation-neutral-cb5372ea8544",
+      "sha256": "a174441b5c5ec3011c4351666eb964b79b96d5a22698d2a73b17788594f74898"
+    },
+    {
+      "id": "clarify-it-selection-no-score-d9f7fc56beea",
+      "sha256": "2c171a46dd609a0c562249512a1a4b66ae25b194e94570f59c9343be322d9b10"
+    },
+    {
+      "id": "clarify-it-selection-priority-26ff2760ed32",
+      "sha256": "ef7f4020da2edd1c55565b8904d0439947f7d68df018b6286518e21dcd87779f"
+    },
+    {
+      "id": "clarify-it-evidence-identity-5aa41944906c",
+      "sha256": "05376fb5af49a7244ae6a022947947aafd24d7812526abac63c9a9a7aa0ba63f"
+    },
+    {
+      "id": "clarify-it-consistency-diff-a6afd30da9de",
+      "sha256": "5fe47be8db2ff3c2119783d8516dd7b487c5fec8c7d06d5cca6510478abaac0f"
+    },
+    {
+      "id": "clarify-it-consistency-confirm-e1e954dc959b",
+      "sha256": "048914f1ca13fb1f5618a78b7cfc37791b38df10a540fc23de3b857823be4880"
+    },
+    {
+      "id": "clarify-it-change-no-justification-d0ecc7983f62",
+      "sha256": "ef698c056ccfd6f2363b435de7657974588f1c0c99d01fff532218ddf233d886"
+    },
+    {
+      "id": "clarify-it-reconstruction-direction-514b510a8063",
+      "sha256": "893389fe3318623b7aee0ed31741e455472107b88c0813166fa44640ba098ffe"
+    },
+    {
+      "id": "clarify-it-stop-anytime-3d234a086ded",
+      "sha256": "d285179fb87e4bdae9946fa9b9171cd49186ac635338aa34672feee7715aae2f"
+    },
+    {
+      "id": "clarify-it-low-information-signal-bbd6800aebab",
+      "sha256": "a1371398a5d04839ba89327bb5177c1c3a940b56cec172a21dfcdf283520ee93"
+    },
+    {
+      "id": "clarify-it-completed-cleanup-7d1684c3fe27",
+      "sha256": "71d91e670fd15f07f053b0a58af1a0212247b5cea1a1acad7073ca2e001096b4"
     },
     {
       "id": "plan-return-fields-data-cfbf599dd035",
@@ -2741,7 +2850,17 @@
     },
     {
       "kind": "span",
+      "id": "clarify-it-start-boundary",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "clarify-it-normative-hierarchy",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-philosophy-reference",
       "path": "shared/skill/clarify-it/SKILL.md"
     },
     {

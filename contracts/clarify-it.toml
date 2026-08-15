@@ -218,3 +218,172 @@ paths = [
   "plugins/cursor/skills/clarify-it/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-start-boundary-review-0c3e4265a099]
+kind = "requires"
+slice = "clarify-it-start-boundary"
+pattern = '''開始時に、目的、今回のスコープ、すでに確定している制約・判断、Agent が調査・分析・導出できる領域、Human の価値判断が必要に
+なり得る領域を、Agent 内部の意思決定モデルへ整理する。これを前提確認リストとして Human に再承認させず、意思決定の境界そのものを
+確定できない不足だけを Human へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-reference-distribution-11024eb1d090]
+kind = "occurrences"
+pattern = "# clarify-it — Philosophy"
+count = 1
+paths = [
+  "plugins/claude/skills/clarify-it/references/philosophy.md",
+  "plugins/codex/skills/clarify-it/references/philosophy.md",
+  "plugins/cursor/skills/clarify-it/references/philosophy.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-reference-positioning-80455b6ff638]
+kind = "requires"
+slice = "clarify-it-philosophy-reference"
+pattern = "Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-multiple-177b746ed8ed]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "候補として、複数の妥当な選択肢で価値判断が必要な場合、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-responsibility-1ef09a709ac0]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "responsibility boundary、domain model・abstraction・design philosophy、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-public-69e1d1562d0c]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "public contract・externally observable behavior、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-cost-305495562600]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "irreversible または変更コストの高い選択、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-prior-99d7a30024fe]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "既存の Human 判断から優劣を導けない場合、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-candidate-intent-e51eee9a3c1d]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "Human の意図によって正解が変わる場合を評価する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-sufficient-6394b8a2b660]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "これらへの該当は質問を発生させる十分条件ではなく、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-derivable-6d677292929a]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "既存判断、調査、分析、技術的優劣から結論を導出できるなら Agent が処理する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-axis-1218ecf92178]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = "選択肢は同じ判断対象、判断軸、同程度の抽象度で比較可能にし、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-order-d6c1cfa2f040]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = "「選択肢・主要差分 → 判断材料 → 推奨と理由 → 採否」とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-recommendation-order-c66136a6f146]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = "推奨を選択肢より先に置かず、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-multiturn-5afe86bb34c6]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = '''同じ context が複数 turn にまたがる場合は
+確定済みの説明を繰り返さず、その時点で必要な差分を中心に示す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-neutral-cb5372ea8544]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = '''根拠ある優劣を導ける場合だけ推奨と理由を示し、導けない場合は中立を保ち、
+判断を分ける価値軸を示す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-selection-no-score-d9f7fc56beea]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "固定スコアリングなしに、"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-selection-priority-26ff2760ed32]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = '''より上位の判断、後続判断を
+   多く消去・拘束できるもの、判断空間を安定させるもの、重要な不整合を解消するものを原則として優先し、'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-evidence-identity-5aa41944906c]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "当初の根拠、前提、観測事実、比較内容、主要な反証材料を正確に展開し、後から別の rationale を生成して当初の根拠とすり替えない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-consistency-diff-a6afd30da9de]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "過去判断との差は直ちに矛盾とみなさず、対象、スコープ、前提、時点、評価軸の違いで合理的に説明できるかを先に評価する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-consistency-confirm-e1e954dc959b]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = '''複数の
+整合的な解釈が残り、その違いが結果へ影響する場合だけ、Human の意図を補完せず、整合性回復に必要な差分を確認する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-change-no-justification-d0ecc7983f62]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "判断変更そのものの正当性を証明する責任を負わない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-reconstruction-direction-514b510a8063]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = '''大規模な巻き戻しで意味の異なる複数の再構成が可能な場合は、Human が方向・
+適用範囲・道筋を示し、その後の影響分析と再統合を Agent が担う。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-stop-anytime-3d234a086ded]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "Human はいつでも対話を停止できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-low-information-signal-bbd6800aebab]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = '''`ok` など低情報量の承認が続くことは過剰詳細化のシグナルになり得るが、それだけを機械的な
+再構成条件にはしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-completed-cleanup-7d1684c3fe27]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "`Completed` では、現在の前提で成立しない古い判断を残さず、包含・重複した下位判断を必要に応じて整理する。"
+applies_to = ["claude", "codex", "cursor"]
