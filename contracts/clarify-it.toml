@@ -1,0 +1,220 @@
+[contracts.clarify-it-invocation-c7163984dcae]
+kind = "requires"
+slice = "clarify-it-invocation"
+pattern = '''`clarify-it` の明示指定、または「詰めていきたい」「対話しながら設計・方針・判断を固めたい」のように、段階的な
+明確化を求める意図が明確な依頼で開始する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-self-contained-28b109cc1d05]
+kind = "requires"
+slice = "clarify-it-invocation"
+pattern = "この Skill はそれ単独で動作し、外部の文書、path、URL を runtime dependency として要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-normative-904a6c87629b]
+kind = "requires"
+slice = "clarify-it-normative-hierarchy"
+pattern = "規範の優先順位は `Specification > Method > Casebook` とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-2f631c16d445]
+kind = "requires"
+slice = "clarify-it-normative-hierarchy"
+pattern = '''Philosophy は通常の規範でも新しい要件源でもない。3層の矛盾、解釈衝突、または想定外ケースで、既存規則の保護目的を
+回復する場合だけ参照する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-recovery-data-fb93399a9ab2]
+kind = "requires"
+slice = "clarify-it-normative-hierarchy"
+pattern = '''- Human の有限な認知資源を、本当に Human が決める必要のある価値判断へ集中させる。
+- 判断空間を圧縮しても、Human の判断権限は圧縮しない。
+- 対話を固定質問列ではなく、更新される意思決定モデルとして扱う。
+- Agent は対話の継続性、依存関係、整合性を担う。
+- 過去の結論ではなく、現在の根拠に従う。
+- 局所質問の正しさより、対話全体の適切さを優先する。
+- 強く固定するのは責任と成果の境界であり、内部の思考経路ではない。
+
+この Data から通常時の新しい obligation を導出しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-responsibility-4391bbcaec44]
+kind = "requires"
+slice = "clarify-it-responsibility"
+pattern = '''Human は目的に照らした価値判断と結果責任を持つ。
+Agent は調査、分析、技術的な導出、判断空間の圧縮、依存関係と整合性の維持、および現在モデルへの再統合に経過責任を持つ。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-66e36dff1273]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = "Human Decision Point は、調査と導出の後にも Human の価値判断が本当に残る場合だけ提示する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-hdp-limit-6eb0486cc0b7]
+kind = "requires"
+slice = "clarify-it-human-decision-point"
+pattern = '''Agent が答えを知らない、
+技術的調査が不足している、または複数の実装案があるというだけでは Human Decision Point にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-context-286948bb648b]
+kind = "requires"
+slice = "clarify-it-decision-context"
+pattern = "一度に提示するのは一つの独立した decision context とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-method-30e035a9d38a]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "`Frame → Resolve → Select & Present → Integrate → Reevaluate` を標準操作として使う。これは固定 state machine ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-reconstruct-091f68f0c29c]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "まだ信頼できる地点まで戻り、意思決定モデルを再構成する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-ok-recommendation-316568e034cb]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "短い `ok` は、応答対象の context が一意な場合だけその判断として統合する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-recommendation-update-ee35c5d54e6c]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "過去の推奨を維持せず、推奨と理由を更新する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-recompress-9b39600268fa]
+kind = "requires"
+slice = "clarify-it-method"
+pattern = "一段上の抽象度から再圧縮する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-completion-status-d7f44cbc7d9b]
+kind = "requires"
+slice = "clarify-it-completion"
+pattern = "`Completed` とする。完了条件を満たさず途中終了する場合は `Stopped` とし、停止理由と残る判断を返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-natural-output-f905023a5a23]
+kind = "requires"
+slice = "clarify-it-completion"
+pattern = '''現在の一貫した意思決定モデルを、対象に自然な形式で caller / Human へ
+返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-action-boundary-45d96d55a63a]
+kind = "requires"
+slice = "clarify-it-action-boundary"
+pattern = '''成果物や Issue の編集、実装、委譲、コマンド実行、外部サービスへの書き込み、
+後続 Action の開始は行わない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-casebook-18220e74abcb]
+kind = "requires"
+slice = "clarify-it-casebook"
+pattern = '''- 複数案がある: 技術的根拠で優劣を導けるなら Agent が推奨を導き、案の数だけで Human に聞かない。
+- Agent が知らない: 調査可能な不足を価値判断へ変換せず、まず調べる。
+- 判断が強く結合する: 別々に答えると矛盾する判断は一つの decision context にまとめる。
+- 上位概念が変わる: 新しい目的で古い分解が無効になれば、古い queue を捨てて再構成する。
+- 根拠が変わる: 新しい evidence で優劣が変われば推奨を更新する。
+- 過去判断と現在が衝突する: 過去判断を自動継承せず、現在の根拠で再評価する。
+- 大規模な再構成: 意味ある全体像を作る前に早期圧縮せず、依存を捉えてから Human Decision Point を選ぶ。
+- 正しいが細かすぎる質問: 局所的に正しくても対話全体を過剰詳細化するなら、一段上から再圧縮する。
+- 短い `ok`: 対象 context が一意なら統合し、一意でなければ確認する。
+- 最終結果: 対話履歴の列ではなく、現在の一貫した意思決定モデルを返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-external-loader]
+kind = "forbids"
+pattern = "外部文書を読み込む。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-fixed-schema]
+kind = "forbids"
+pattern = "固定 schema で返す。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-ledger]
+kind = "forbids"
+pattern = "各判断を decision ledger に保存する。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-freeze]
+kind = "forbids"
+pattern = "direction freeze を作る。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-kernel]
+kind = "forbids"
+pattern = "kernel を読み込む。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-artifact-action]
+kind = "forbids"
+pattern = "成果物を編集する。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-issue-action]
+kind = "forbids"
+pattern = "Issue を更新する。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-implementation]
+kind = "forbids"
+pattern = "実装を開始する。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-no-followup]
+kind = "forbids"
+pattern = "後続 Action を開始する。"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]

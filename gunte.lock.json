@@ -3,6 +3,7 @@
   "semantic_inputs": [
     "gunte.toml",
     "contracts/repository.toml",
+    "contracts/clarify-it.toml",
     "contracts/workers.toml",
     "contracts/impl-lead.toml",
     "contracts/plan-craft.toml",
@@ -28,6 +29,7 @@
     "shared/necessity-kernel.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
+    "shared/skill/clarify-it/SKILL.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -43,6 +45,7 @@
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
+    "declarations/codex/skills/clarify-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-craft/openai.yaml",
     "declarations/codex/skills/plan-craft-approval/openai.yaml",
@@ -105,7 +108,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "0a060ed28d8affa849021634c9d2c324497dec550db4c6194b63b48ccd22825f"
+      "sha256": "88b0e3b8984861fc979706d40971ef8ebd585952d8cd6a664112e02af99d4618"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -165,11 +168,15 @@
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "d637e452ee35566dd0ea203b2cd7ec1bc96b36e58c5694c8ceb4174a990ff6cc"
+      "sha256": "ea9ca7b288afad093b53c7fda42285c294c625c69293cf385fb88478736d784a"
     },
     {
       "id": "cursor-impl-lead-skill",
       "sha256": "1d38c98538108927e419127d942392df49bc990808edb58cbf1e52a0e7445e9e"
+    },
+    {
+      "id": "clarify-it-generated-name",
+      "sha256": "aeca9ef27e7cd65f7f156850bcc4735565380675dfc53ebc4aacd2c0736d86a2"
     },
     {
       "id": "cursor-plan-craft-skill",
@@ -200,12 +207,16 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-3a818e319e54",
-      "sha256": "d03196e3e6d7e1fc2f2dbbf630c26872928fdd92e3b2b8bd46e7488d5266958d"
+      "id": "cursor-readme-version-requires-b0470de1862c",
+      "sha256": "60945dc6b1da00fbb3ca91378aa6ce8f596a78fde2c21309fd41be008825e6e5"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
       "sha256": "32dc37d65821a391a610f31b57e5638d7d96f5416213271754d94e8ed3a43490"
+    },
+    {
+      "id": "cursor-readme-clarify-it-implicit-requires-03ea1b0e334b",
+      "sha256": "f7d33a1438f1ed68be5d6971281714a3e2c9ee4bf3e073e164028993fdc569a4"
     },
     {
       "id": "cursor-readme-local-requires-aae0052f5b5a",
@@ -232,8 +243,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-bcf084c3fa1a",
-      "sha256": "10020761dd4f5e4c334af18cbdc0041ab481ba6018e7524b4a0282cde5df4647"
+      "id": "cursor-readme-public-skills-requires-55ee9f440996",
+      "sha256": "f205563bccd7574aea92b215792191954938f2ceef43ba2dc1593ea4244789f5"
     },
     {
       "id": "cursor-readme-install-skill-requires-e9e87fe619cf",
@@ -245,7 +256,7 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "be74374cb7be0a92a0901931aa9d309fcf30bdf3a898ac283494f0e74121c8e0"
+      "sha256": "0f64f2928f24fef326ebded81fcb904daae6476cf40a542138dbd8d6aab70bdf"
     },
     {
       "id": "codex-openai-disabled-policy",
@@ -262,6 +273,18 @@
     {
       "id": "claude-review-loop-policy",
       "sha256": "9a392a61fe18c154463e228e42784dcd97eeb62c1d11580a7ae872fa5ed78a68"
+    },
+    {
+      "id": "claude-clarify-it-policy",
+      "sha256": "8c5d855d811b1ee1517d3166df8248c780b8adde5578b8c1da81ca608bd52b93"
+    },
+    {
+      "id": "clarify-it-generated-description",
+      "sha256": "ad62d8599a1cdccc0d9e1c1c214f7816060f68d50ca8d85406227dc0be384ff3"
+    },
+    {
+      "id": "clarify-it-codex-prompt",
+      "sha256": "c9942c324610145c0f822081b929e8d387daa8b7098f9e3eb32b049e19058010"
     },
     {
       "id": "claude-structural-health-gate-kernel-exclusion",
@@ -289,7 +312,7 @@
     },
     {
       "id": "claude-marketplace-shape",
-      "sha256": "f8d5cd86d69cc44e9af8bbea321de65a63c70934dae4c91ce43fbcab453c25b9"
+      "sha256": "ee60dc7fee41bf4adc4d0370ce0fe3d877df9e555abcc91511d9b2363a4949b1"
     },
     {
       "id": "codex-marketplace-shape",
@@ -297,11 +320,119 @@
     },
     {
       "id": "claude-plugin-manifest-shape",
-      "sha256": "1bf0d21a9e9d883ce781f1a87c078c95f64b038f039309d5561e3ab7a8ae3db4"
+      "sha256": "2efdf005694b8580a1e862156c2479cd3cd390135d16f03fdc873d402f1baf25"
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "4f23fcdc9499c0c94730f8eb0cfeae139819aef2ac42c80dd7cec5777653cc5f"
+      "sha256": "37ce5573feef22f60aa5c388b719fea8bc770e954c27a77833a432042402649a"
+    },
+    {
+      "id": "clarify-it-invocation-c7163984dcae",
+      "sha256": "eddcd1332fd1063ed541390097d7e6e7d51c396be9e88fd60a00f2607b9eb8fd"
+    },
+    {
+      "id": "clarify-it-self-contained-28b109cc1d05",
+      "sha256": "1d07adbe0188fa1265659c9033496d8321ccb4ed774ee81151994248be08b1d7"
+    },
+    {
+      "id": "clarify-it-normative-904a6c87629b",
+      "sha256": "572b6414232c2612503466abf5be6fd736b7f6d081e6892c3276e458f175a8a1"
+    },
+    {
+      "id": "clarify-it-philosophy-2f631c16d445",
+      "sha256": "747f5d77b35035adf4114a8df6375105ef9bd53101d6b8b448019244dab4221c"
+    },
+    {
+      "id": "clarify-it-recovery-data-fb93399a9ab2",
+      "sha256": "20fe4c8f8c4ae12c8876b3925396852a032683bd7231458c4c1c116b758af33c"
+    },
+    {
+      "id": "clarify-it-responsibility-4391bbcaec44",
+      "sha256": "c78494f790f3de483ec2f206951922eeb046a6aea1593b7360c9700c7d43f413"
+    },
+    {
+      "id": "clarify-it-hdp-66e36dff1273",
+      "sha256": "210e4cf769a2c870cff1c3697d5054f5fdf523546f12efd91a190304bf30cddd"
+    },
+    {
+      "id": "clarify-it-hdp-limit-6eb0486cc0b7",
+      "sha256": "b7ee4a780b65eba7bfa388b86d53aed493fa6f774d45f07cc3d00f0a30b0fe8d"
+    },
+    {
+      "id": "clarify-it-context-286948bb648b",
+      "sha256": "0f6fbf258bb305c1f20e08b52ce9f7d8248df0f17be532c65ecd0e0cf0d9dd9b"
+    },
+    {
+      "id": "clarify-it-method-30e035a9d38a",
+      "sha256": "9b6a663aad39a0073115a08681ff1e6566562150defba384b7a48adfedef1c5a"
+    },
+    {
+      "id": "clarify-it-reconstruct-091f68f0c29c",
+      "sha256": "56515cf9a2be245893171aeeac4ad8a255d64ca89631c53ea04a8c09da5fcf82"
+    },
+    {
+      "id": "clarify-it-ok-recommendation-316568e034cb",
+      "sha256": "9d6bb47f8b11450d903548dfb31808c3f98975d6174e04c3420efc598a160df2"
+    },
+    {
+      "id": "clarify-it-recommendation-update-ee35c5d54e6c",
+      "sha256": "fe7fa32293feef027ebc4c2dad58a3932bc2d6214f7074e38245b1abe4c8a613"
+    },
+    {
+      "id": "clarify-it-recompress-9b39600268fa",
+      "sha256": "94290de74892063f0945ce8205ca9dfa8c93d9fa141a999676887f3df3e42cc2"
+    },
+    {
+      "id": "clarify-it-completion-status-d7f44cbc7d9b",
+      "sha256": "eab342328d83e8c2ba718772dfec6f85a30d74fb78bc43cd2f0ab721a811ae34"
+    },
+    {
+      "id": "clarify-it-natural-output-f905023a5a23",
+      "sha256": "101123dbf08c7369c07a4993d1e4f28c3130cdeff892499920fc6229e0d0b28e"
+    },
+    {
+      "id": "clarify-it-action-boundary-45d96d55a63a",
+      "sha256": "03fb3f686d57781af91416fcceb9f2a570c99eef52d27b300fb4e494d39c9be2"
+    },
+    {
+      "id": "clarify-it-casebook-18220e74abcb",
+      "sha256": "16d3c09e78dcaf152f50d6abd27aded2f21ee266d7837ff99377e6ad303d65cd"
+    },
+    {
+      "id": "clarify-it-no-external-loader",
+      "sha256": "c0c79540bf8b0670abefd493bf1b20fb121ba5951243ea2053540363c5e2f507"
+    },
+    {
+      "id": "clarify-it-no-fixed-schema",
+      "sha256": "e385769224cd62bb4dd8b3f8b6dde9e4e735155caee61c9219b14f3f2900f47e"
+    },
+    {
+      "id": "clarify-it-no-ledger",
+      "sha256": "18c0ce3b0d016d5383aeb6d5e452bc589d8485e8a573a1542400d02586d487a0"
+    },
+    {
+      "id": "clarify-it-no-freeze",
+      "sha256": "93905fe190fd0298a630583c7acaae00d61cf7d8f8e3cf575d494f0e0944a064"
+    },
+    {
+      "id": "clarify-it-no-kernel",
+      "sha256": "1251e985fe3ba3ecba4f72d914f61fe6970ad076d8eaec590c835154ac87fb6f"
+    },
+    {
+      "id": "clarify-it-no-artifact-action",
+      "sha256": "dde4a0f44bab5dc1e59dcc0781c0019068b1dc93a3fe009798278fb9d8dc0bd9"
+    },
+    {
+      "id": "clarify-it-no-issue-action",
+      "sha256": "f212ddcb2cb18dffef07f7b2d6a22740bb8c6747e927d048d15366f9a79e9cbd"
+    },
+    {
+      "id": "clarify-it-no-implementation",
+      "sha256": "2349c76b31df59cc927c8e074bdfe74934942111784bc2d460035274268bb991"
+    },
+    {
+      "id": "clarify-it-no-followup",
+      "sha256": "a6b7a1b6cf170facd4515a5640c7ba271d1d27aefd02cff4b4345a4e753a5ffc"
     },
     {
       "id": "plan-return-fields-data-cfbf599dd035",
@@ -2605,6 +2736,51 @@
     },
     {
       "kind": "span",
+      "id": "clarify-it-invocation",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-normative-hierarchy",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-responsibility",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-human-decision-point",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-decision-context",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-method",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-completion",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-action-boundary",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-casebook",
+      "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-work-unit-protected-dirty-scope",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3091,6 +3267,11 @@
     {
       "kind": "span",
       "id": "cursor-readme-generation",
+      "path": "README.md"
+    },
+    {
+      "kind": "span",
+      "id": "cursor-readme-clarify-it-implicit",
       "path": "README.md"
     },
     {

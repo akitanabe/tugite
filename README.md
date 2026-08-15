@@ -1,5 +1,5 @@
 <!-- @contract cursor-readme-version -->
-# Tugite v5.20.0
+# Tugite v5.21.0
 <!-- @/contract -->
 
 Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
@@ -12,6 +12,7 @@ Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロー
 - `plan-craft`: 要求とリポジトリの観測から実装 plan の候補を作り、回数を制限したレビューと親の裁定へ渡します。
 - `plan-craft-approval`: 人間と方向性を確定した候補を構造 gate と固定レビューへ渡す、人間参加型の計画ワークフローです。
 - `review-loop`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
+- `clarify-it`: 明示指定、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な依頼で、Human の価値判断を一度に一つへ圧縮し、現在の意思決定モデルへ再統合して返します。成果物や Issue の編集、実装、後続 Action は実行しません。
 
 `plan-craft` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-craft-approval` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-loop` を bypass して通常の起草確定へ進みます。
 
@@ -47,7 +48,13 @@ gunte check
 - [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:impl-lead`、`/tugite:plan-craft`、`/tugite:plan-craft-approval`、`/tugite:review-loop` を明示して起動します。Codex では `$impl-lead`、`$plan-craft`、`$plan-craft-approval`、`$review-loop` を明示して起動します。内部 skill は、これらの公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
+Claude Code では `/tugite:impl-lead`、`/tugite:plan-craft`、`/tugite:plan-craft-approval`、`/tugite:review-loop`、`/tugite:clarify-it`、Codex では `$impl-lead`、`$plan-craft`、`$plan-craft-approval`、`$review-loop`、`$clarify-it` を明示して起動できます。
+
+<!-- @contract cursor-readme-clarify-it-implicit -->
+`clarify-it` は明示指定がなくても、対話しながら段階的に明確化する意図が明確な依頼に適用できます。
+<!-- @/contract -->
+
+内部 skill は、公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
 
 <!-- @contract cursor-readme-boundary -->
 ### Cursor local plugin
@@ -78,13 +85,14 @@ repository checkout を直接検証する場合は、repository root で次を�
 agent --plugin-dir plugins/cursor
 ```
 
-public skill は明示して起動します。
+public skill は次のコマンドで明示起動できます。
 
 ```text
 /impl-lead <実装タスク>
 /plan-craft <plan task>
 /plan-craft-approval <human-directed plan task>
 /review-loop <artifact review task>
+/clarify-it <clarification task>
 /install-plugin
 ```
 

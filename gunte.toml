@@ -7,6 +7,7 @@ version_from = "shared/VERSION"
 [contracts]
 files = [
   "contracts/repository.toml",
+  "contracts/clarify-it.toml",
   "contracts/workers.toml",
   "contracts/impl-lead.toml",
   "contracts/plan-craft.toml",
@@ -35,6 +36,7 @@ files = [
   "shared/necessity-kernel.md",
   "shared/resolve-kernel.md",
   "shared/writable-scope-kernel.md",
+  "shared/skill/clarify-it/SKILL.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/impl-lead/references/final-writing-gate.md",
   "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -50,6 +52,7 @@ files = [
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
   "declarations/codex/marketplace.json",
+  "declarations/codex/skills/clarify-it/openai.yaml",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-craft/openai.yaml",
   "declarations/codex/skills/plan-craft-approval/openai.yaml",
