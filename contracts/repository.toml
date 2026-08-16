@@ -122,6 +122,11 @@ op = "equals"
 value = "5.23.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
+path = "description"
+op = "equals"
+value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
+
+[[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
 op = "exact_keys"
 value = ["name"]
@@ -428,8 +433,8 @@ value = true
 kind = "structure"
 subject = "artifact"
 paths = [
+  "plugins/cursor/skills/clarify-it/SKILL.md",
   "plugins/cursor/skills/proposal/SKILL.md",
-  "plugins/cursor/skills/proposal-dialogue/SKILL.md",
   "plugins/cursor/skills/review-loop/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/work-unit-design/SKILL.md",
@@ -453,6 +458,33 @@ applies_to = ["cursor"]
 path = "name"
 op = "equals"
 value = "impl-lead"
+
+[contracts.clarify-it-generated-name]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+format = "yaml"
+applies_to = ["claude", "codex", "cursor"]
+
+[[contracts.clarify-it-generated-name.assertions]]
+path = "name"
+op = "equals"
+value = "clarify-it"
+
+[contracts.clarify-it-philosophy-reference-shape]
+kind = "occurrences"
+paths = [
+  "plugins/claude/skills/clarify-it/references/philosophy.md",
+  "plugins/codex/skills/clarify-it/references/philosophy.md",
+  "plugins/cursor/skills/clarify-it/references/philosophy.md",
+]
+pattern = "# clarify-it — Philosophy"
+count = 1
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.cursor-plan-craft-skill]
 kind = "structure"
@@ -489,18 +521,6 @@ applies_to = ["cursor"]
 path = "name"
 op = "equals"
 value = "proposal"
-
-[contracts.cursor-proposal-dialogue-skill]
-kind = "structure"
-subject = "artifact"
-paths = ["plugins/cursor/skills/proposal-dialogue/SKILL.md"]
-format = "yaml"
-applies_to = ["cursor"]
-
-[[contracts.cursor-proposal-dialogue-skill.assertions]]
-path = "name"
-op = "equals"
-value = "proposal-dialogue"
 
 [contracts.cursor-review-loop-skill]
 kind = "structure"
@@ -558,6 +578,12 @@ gunte lock
 gunte check'''
 applies_to = ["cursor"]
 
+[contracts.cursor-readme-clarify-it-implicit-requires-03ea1b0e334b]
+kind = "requires"
+slice = "cursor-readme-clarify-it-implicit"
+pattern = "`clarify-it` は明示指定がなくても、対話しながら段階的に明確化する意図が明確な依頼に適用できます。"
+applies_to = ["cursor"]
+
 [contracts.cursor-readme-local-requires-aae0052f5b5a]
 kind = "requires"
 slice = "cursor-readme-boundary"
@@ -594,13 +620,14 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-bcf084c3fa1a]
+[contracts.cursor-readme-public-skills-requires-55ee9f440996]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/impl-lead <実装タスク>
 /plan-craft <plan task>
 /plan-craft-approval <human-directed plan task>
 /review-loop <artifact review task>
+/clarify-it <clarification task>
 /install-plugin'''
 applies_to = ["cursor"]
 
@@ -621,8 +648,8 @@ applies_to = ["cursor"]
 kind = "structure"
 subject = "artifact"
 paths = [
+  "plugins/codex/skills/clarify-it/agents/openai.yaml",
   "plugins/codex/skills/proposal/agents/openai.yaml",
-  "plugins/codex/skills/proposal-dialogue/agents/openai.yaml",
   "plugins/codex/skills/review-loop/agents/openai.yaml",
   "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
   "plugins/codex/skills/work-unit-design/agents/openai.yaml",
@@ -706,7 +733,6 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/claude/skills/proposal/SKILL.md",
-  "plugins/claude/skills/proposal-dialogue/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/work-unit-design/SKILL.md",
 ]
@@ -736,6 +762,49 @@ op = "absent"
 [[contracts.claude-review-loop-policy.assertions]]
 path = "user-invocable"
 op = "absent"
+
+[contracts.claude-clarify-it-policy]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/clarify-it/SKILL.md"]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-clarify-it-policy.assertions]]
+path = "disable-model-invocation"
+op = "absent"
+
+[[contracts.claude-clarify-it-policy.assertions]]
+path = "user-invocable"
+op = "absent"
+
+[contracts.clarify-it-generated-description]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+]
+format = "yaml"
+applies_to = ["claude", "codex", "cursor"]
+
+[[contracts.clarify-it-generated-description.assertions]]
+path = "description"
+op = "equals"
+value = "ユーザーが `clarify-it` を明示した場合、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な場合に使う。 Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。 成果物や Issue の編集、実装、後続 Action は実行しない。"
+
+[contracts.clarify-it-codex-prompt]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/clarify-it/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.clarify-it-codex-prompt.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $clarify-it when explicitly requested or when the user clearly wants to clarify a design, direction, or decision step by step; resolve agent-owned uncertainty, present one human decision context at a time, and return the reintegrated current model without editing artifacts, implementing, or starting follow-up actions."
 
 [contracts.claude-structural-health-gate-kernel-exclusion]
 kind = "structure"
@@ -888,7 +957,7 @@ value = "./plugins/claude"
 [[contracts.claude-marketplace-shape.assertions]]
 path = "plugins.*.description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-marketplace-shape]
 kind = "structure"
@@ -957,7 +1026,7 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.claude-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-plugin-manifest-shape]
 kind = "structure"
@@ -984,17 +1053,18 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use v5 impl-lead, plan-craft, plan-craft-approval, and review-loop with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use v5 impl-lead, plan-craft, plan-craft-approval, review-loop, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the v5 public workflows impl-lead, plan-craft, plan-craft-approval, and review-loop, their internal skills, Work Unit workers, reviewers, and advisors. The parent Codex agent chooses explicit routes, performs parent QA, and keeps final quality responsibility."
+value = "Codex skills for the v5 public workflows impl-lead, plan-craft, plan-craft-approval, review-loop, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
 op = "list_order"
 value = [
+  "Use $clarify-it when explicitly requested or when the user clearly wants step-by-step clarification; return the reintegrated current decision model without editing artifacts, implementing, or starting follow-up actions.",
   "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
   "Use $plan-craft-approval to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
   "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
