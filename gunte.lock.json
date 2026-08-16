@@ -2256,6 +2256,50 @@
       "sha256": "e403f2d9b574b63b652e4288b6b252f1cf7dcc2f0a501ef15b4fc19668243922"
     },
     {
+      "id": "plan-candidate-producer-two-pass-inputs-92fe04e6635a",
+      "sha256": "789187efcd739e417f7f9ce8c974cf287be7987b1b2475197a5b883915be99b0"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-parent-roundtrip-466bae8affbf",
+      "sha256": "5e45e7fac089c9c40c5b50a45d6a2f1f38224afc2f245a389787df794abeb4f2"
+    },
+    {
+      "id": "producer-two-pass-no-result-input-33cc50432e68",
+      "sha256": "6a713fa2f24902be56d29ba0116aee42395914d8d3e3773e5c6f716ba9403c4b"
+    },
+    {
+      "id": "producer-batch-loader-pointer-e48ae4dde797",
+      "sha256": "20a25a9af9b50db0a20b07615d89e4725b006eeedf26123cac68c2f28a0ea326"
+    },
+    {
+      "id": "producer-batch-loader-no-procedure-4d983aec799b",
+      "sha256": "2a4ae67e47d68a2942e849795ab03d1331ad94496cf9e124a3a9f82df855a438"
+    },
+    {
+      "id": "producer-necessity-loader-pointer-72439dca3f27",
+      "sha256": "ef42f6eafa97440c8ca778de64fbf8bacd4cda5528d08fb86baccc6adc198dcb"
+    },
+    {
+      "id": "producer-necessity-loader-no-procedure-a90d171cfe09",
+      "sha256": "fa8c726f942acb15fcca544d25ff2e418269467ea7ec544cf23b8fb7343e361c"
+    },
+    {
+      "id": "plan-agent-producer-preflight-invocation-boundary-c9ec3270212b",
+      "sha256": "953e55ad0b0bafeebc8a0cbcd9f091aadc5fb1937e582ab9fc2905156185641e"
+    },
+    {
+      "id": "plan-agent-producer-loader-action-forbidden-cc23ade40119",
+      "sha256": "ed0a0fb37d8ac9865b61b3f0de76d8ae9aa33a6934bcbefad46dff7596e22646"
+    },
+    {
+      "id": "plan-agent-gate-routing-current-round-input-8ca4e7778de9",
+      "sha256": "6e8e06f518d71c36ac7f962841af5ed742c3653cadab01dc83b22463c373c810"
+    },
+    {
+      "id": "plan-agent-gate-routing-reversed-limit-forbidden-9cc788d7e7bd",
+      "sha256": "c1ebcd679978c295ce8759c0cfa700ec0db55a064a86b5f24432b504bdffb434"
+    },
+    {
       "id": "plan-agent-gate-routing-flow-1776c6dd3167",
       "sha256": "a610939a6215f5e8e2e6c677c7f6f8340e2c7152dea3f9ac6093ef086a672ef3"
     },

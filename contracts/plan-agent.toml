@@ -1249,6 +1249,72 @@ pattern = '''candidate S0
 → complete'''
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-candidate-producer-two-pass-inputs-92fe04e6635a]
+kind = "requires"
+slice = "advisor-two-pass-orchestration"
+pattern = "Inputs: 親確定の verified candidate S0、fresh-context advisor #1 / #2 の invocation Data、検証済み kernel / role / Resolution Transaction Data、親が loop 開始時に選択・固定した resolution execution bound。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-parent-roundtrip-466bae8affbf]
+kind = "requires"
+slice = "advisor-two-pass-orchestration"
+pattern = "各 advisor output は得た時点で Agentic な親へ返す。親は insight の採否、Resolution Batch の確定、Resolution Transaction の裁定と closure、verify、semantic progress を既存の唯一の正本に従って行い、その結果 Data を次の固定 step へ再投入する。Flow は insight の採否、Transaction 内部、verify または semantic progress の値を決めず、これらの intermediate result を initial Inputs として要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-two-pass-no-result-input-33cc50432e68]
+kind = "forbids"
+slice = "advisor-two-pass-orchestration"
+pattern = "Inputs: 親確定の candidate snapshot、read-only advisor の各 insight、Resolution Batch / Transaction の既存 Data、verify と semantic progress の結果。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-batch-loader-pointer-e48ae4dde797]
+kind = "requires"
+slice = "plan-candidate-producer-batch-resolve-kernel-loader"
+pattern = "`producer-invocation-preflight` がこの Loader Data を消費する唯一の loader procedure である。この section は列挙 Data の mapping だけを提供し、load / identity / required section / failure routing を再定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-batch-loader-no-procedure-4d983aec799b]
+kind = "forbids"
+slice = "plan-candidate-producer-batch-resolve-kernel-loader"
+pattern = "親は上記 Loader Data の field を使って load と必要本文の検証を行い"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-necessity-loader-pointer-72439dca3f27]
+kind = "requires"
+slice = "candidate-producer-boundary"
+pattern = "necessity-kernel の loader procedure は `producer-invocation-preflight` だけが所有する。この mapping は Loader Data と検証済み本文の injection boundary だけを提供し、load / identity / required section / failure routing を再定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-necessity-loader-no-procedure-a90d171cfe09]
+kind = "forbids"
+slice = "candidate-producer-boundary"
+pattern = "candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は上記 Loader Data の field を使って load と必要本文の検証を行い"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-producer-preflight-invocation-boundary-c9ec3270212b]
+kind = "requires"
+slice = "plan-agent-proposal-resolution-ownership"
+pattern = "plan-agent は caller mapping、authority injection、resolution execution bound、`producer-invocation-preflight` の invocation boundary だけを所有する。loader の load / identity / required section / failure routing は owner である plan-candidate-producer に委ね、この Skill では再定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-producer-loader-action-forbidden-cc23ade40119]
+kind = "forbids"
+slice = "plan-agent-proposal-resolution-ownership"
+pattern = "batch-resolve-kernel loader を親 Action として一度だけ実行する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-current-round-input-8ca4e7778de9]
+kind = "requires"
+slice = "candidate-structural-gate-routing"
+pattern = "Inputs: producer status、verified candidate snapshot、gate assessment、`rounds.limit`、親確定の `current round`、gate evidence、producer と gate の親確定 context。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-reversed-limit-forbidden-9cc788d7e7bd]
+kind = "forbids"
+slice = "candidate-structural-gate-routing"
+pattern = "current round が parent-fixed limit 以上でも、gate evidence を入力に producer retry する"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-gate-routing-flow-1776c6dd3167]
 kind = "requires"
 slice = "candidate-structural-gate-routing"

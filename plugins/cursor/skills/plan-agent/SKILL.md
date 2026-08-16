@@ -74,8 +74,8 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human At
 
 plan-candidate-producer の invocation boundary、discretionary authority、resolution execution bound は `plan-agent` が所有する。
 internal `plan-candidate-producer` の開始時に、caller=`plan-agent`、resolver=planner、counterpart=`plan-quality-advisor`（Resolution
-Transaction 外の one-shot observation）を mapping し、`authority = discretionary`、`authority_constraints = []` を注入して、plan-candidate-producer が規定する
-batch-resolve-kernel loader を親 Action として一度だけ実行する。advisor は非拘束 Data を返し、planner が一次情報を
+Transaction 外の one-shot observation）を mapping し、`authority = discretionary`、`authority_constraints = []` を注入する。
+plan-agent は caller mapping、authority injection、resolution execution bound、`producer-invocation-preflight` の invocation boundary だけを所有する。loader の load / identity / required section / failure routing は owner である plan-candidate-producer に委ね、この Skill では再定義しない。advisor は非拘束 Data を返し、planner が一次情報を
 基準に既存 adoption ledger へ裁定する。advisor invocation point は `advisor-two-pass-orchestration` Flow に委譲し、この Skill は
 invocation point だけを保持する。
 
@@ -91,7 +91,7 @@ Flow の procedure、条件、outcome は固定であり、Agent は override、
 ### candidate-structural-gate-routing
 
 Trigger: 親が producer status / candidate snapshot、gate assessment、独立した structural gate budget を確定したとき。
-Inputs: producer status、verified candidate snapshot、gate assessment、`rounds.limit`、gate evidence、producer と gate の親確定 context。
+Inputs: producer status、verified candidate snapshot、gate assessment、`rounds.limit`、親確定の `current round`、gate evidence、producer と gate の親確定 context。
 Procedure: producer `stop-incomplete`、context-not-established、insufficient-evidence、invalid budget は `stop-incomplete` とする。gate pass は downstream へ進める。gate return は current round が parent-fixed limit 未満の場合だけ、gate evidence を入力に producer retry する。limit 到達の gate return は `stop-incomplete` とする。
 Outcomes: downstream dispatch、producer retry、または `stop-incomplete`。Flow は producer `stop-incomplete` / insufficient-evidence を plain `incomplete` へ変換せず、round limit の選択・固定、gate assessment の意味、candidate の修正と採否は Flow 外の親へ返す。
 

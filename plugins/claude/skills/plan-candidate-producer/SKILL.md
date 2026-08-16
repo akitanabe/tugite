@@ -43,7 +43,7 @@ Outcomes: 検証済み preflight Data、または `stop-incomplete`。loader / a
 ### advisor-two-pass-orchestration
 
 Trigger: 親が検証済み candidate S0 と advisor invocation の固定実行を確定したとき。
-Inputs: 親確定の candidate snapshot、read-only advisor の各 insight、Resolution Batch / Transaction の既存 Data、verify と semantic progress の結果。
+Inputs: 親確定の verified candidate S0、fresh-context advisor #1 / #2 の invocation Data、検証済み kernel / role / Resolution Transaction Data、親が loop 開始時に選択・固定した resolution execution bound。
 Procedure: 次の唯一の順序を実行する。
 candidate S0
 → fresh-context advisor #1
@@ -55,6 +55,7 @@ candidate S0
 → Resolution Transaction #2 closure
 → verified candidate S2
 → complete
+各 advisor output は得た時点で Agentic な親へ返す。親は insight の採否、Resolution Batch の確定、Resolution Transaction の裁定と closure、verify、semantic progress を既存の唯一の正本に従って行い、その結果 Data を次の固定 step へ再投入する。Flow は insight の採否、Transaction 内部、verify または semantic progress の値を決めず、これらの intermediate result を initial Inputs として要求しない。
 Batch または selected set が空でも第2 passを必ず起動し、該当しなければ空 Batch として第2 Transaction を閉じる。第2 pass後に第3 passを起動しない。第2 pass の insight は既存の non-binding output から Resolution Point へ mapping する。advisor invocation は exactly 2 pass とする。
 Outcomes: verified candidate S2 と `complete`、または `stop-incomplete`。第2 passの insight採否、Transaction内部、semantic progress は Flow 外で親が判断する。
 
@@ -73,8 +74,7 @@ owner = plan-candidate-producer parent
 delegate_path_resolution = false
 ```
 
-親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
-Resolution Transaction ごとには再読込せず、owner / delegate_path_resolution の境界を維持する。
+`producer-invocation-preflight` がこの Loader Data を消費する唯一の loader procedure である。この section は列挙 Data の mapping だけを提供し、load / identity / required section / failure routing を再定義しない。
 検証済み本文だけを、以降の Resolution Transaction の既存の `判定基準` または `必要な周辺 context` に注入する。
 
 ## batch-resolve-kernel v1 の role mapping
@@ -142,7 +142,7 @@ owner = plan-candidate-producer parent
 delegate_path_resolution = false
 ```
 
-candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。検証済み本文を既存の
+necessity-kernel の loader procedure は `producer-invocation-preflight` だけが所有する。この mapping は Loader Data と検証済み本文の injection boundary だけを提供し、load / identity / required section / failure routing を再定義しない。検証済み本文を既存の
 `判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡し、owner / delegate_path_resolution の境界を維持する。
 
 候補 Claim の必要性は既存の判定基準に含めた Task Specification と Deletion Test で観察する。
