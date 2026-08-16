@@ -566,16 +566,38 @@ slice = "plan-interactive-programmatic-flows"
 pattern = "Trigger: final acceptance が完了した、または Human が final acceptance を明示 opt-out し、親が exact `publication_target` を確定したとき。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-local-artifact-flow-4f5758a033e6]
+[contracts.plan-interactive-local-artifact-flow-inputs-6c1ae8a5f89d]
 kind = "requires"
 slice = "plan-interactive-programmatic-flows"
-pattern = "Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity"
+pattern = "Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、および親確定の `publication_target` Data。`publication_target` は existing destination の observed destination object identity、または OS-temp の verified temp-root identity / exact run-owned directory path / exclusive creation intent の排他的 Data を持ち、作成前の directory object identity を要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-no-future-2d484c4113eb]
+kind = "forbids"
+slice = "plan-interactive-programmatic-flows"
+pattern = "Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity、および必要な OS-temp identity / creation intent。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-local-artifact-flow-e497e4417625]
 kind = "requires"
 slice = "plan-interactive-programmatic-flows"
 pattern = "Outcomes: published result と `final-candidate` の outward status / stdout projection、`destination-reselection-required`、または `incomplete`。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: file-global field counts can be satisfied by a decoy after the real Flow loses its Procedure.
+[contracts.plan-interactive-local-artifact-flow-77d4ccc06e5e]
+kind = "requires"
+slice = "plan-interactive-programmatic-flows"
+pattern = '''Trigger: final acceptance が完了した、または Human が final acceptance を明示 opt-out し、親が exact `publication_target` を確定したとき。
+Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、および親確定の `publication_target` Data。`publication_target` は existing destination の observed destination object identity、または OS-temp の verified temp-root identity / exact run-owned directory path / exclusive creation intent の排他的 Data を持ち、作成前の directory object identity を要求しない。
+Procedure: skill-relative `../../references/plan-artifact-publication.md` を publication invocation 前に一度だけ load し、identity `plan-artifact-publication-v1` と必要本文を検証する。検証済み reference の `programmatic-publication` Flow に、親確定の `publication_target` をそのまま渡す。Flow の published result から outward status と stdout の Result、Summary、必要な Human Attention、Artifact path だけを projection する。consumer は target selection、candidate ranking、filename、retry bound、publication procedure を再実行・複製しない。
+```text
+publication_reference = ../../references/plan-artifact-publication.md
+publication_load_timing = once before programmatic-publication use
+publication_identity = plan-artifact-publication-v1
+publication_use = parent-confirmed publication_target -> programmatic-publication -> outward status/stdout projection
+```
+Outcomes: published result と `final-candidate` の outward status / stdout projection、`destination-reselection-required`、または `incomplete`。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-local-artifact-flow-order]

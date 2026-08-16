@@ -53,7 +53,14 @@ pattern = '''publication_target = {
   exact_filename,
   finite_retry_bound,
   qualification_evidence,
-  destination_object_identity
+  destination_state = one of {
+    existing_destination_object_identity,
+    os_temp_creation = {
+      verified_temp_root_identity,
+      exact_run_owned_directory_path,
+      exclusive_creation_intent
+    }
+  }
 }'''
 count = 1
 paths = [
@@ -142,8 +149,29 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-reference-temp-identity]
 kind = "occurrences"
-pattern = "pre-creation に verified temp-root identity と exclusive creation intent を記録し"
+pattern = "pre-creation に verified temp-root identity、exact run-owned directory path、exclusive creation intent を記録する"
 count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-agentic-target-data]
+kind = "occurrences"
+pattern = "Agentic / mixed side は candidate 比較、verified temp-root identity、exact run-owned directory path、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-no-agentic-directory-creation]
+kind = "forbids"
+pattern = "exclusive な run-owned directory creation intent を実行する"
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
   "plugins/codex/references/plan-artifact-publication.md",
@@ -187,16 +215,16 @@ slice = "plan-artifact-publication-flow"
 pattern = "Trigger: Agentic / mixed side が semantic eligibility と exact `publication_target` を確定し、親が publication を要求したとき。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-artifact-publication-flow-d3254fca2274]
+[contracts.plan-artifact-publication-flow-7c63a4fcca8b]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
-pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity"
+pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、既存 destination では観測済み destination object identity、OS-temp では verified temp-root identity / exact run-owned directory path / exclusive creation intent。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-artifact-publication-flow-19bd91dfadab]
+[contracts.plan-artifact-publication-flow-c4d5af1fb2a1]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
-pattern = "Procedure: 資格と destination object identity を再確認する。verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+pattern = "Procedure: 既存 destination では資格と観測済み destination object identity を再確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-flow-6cb53be5209f]
@@ -221,6 +249,20 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "publication-flow-procedure"
 after = "publication-flow-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: target selection and Flow creation are separate witnesses; combining them would allow the Action owner to disappear from one side unnoticed.
+[contracts.plan-artifact-publication-flow-temp-ac18976f5e2e]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "OS-temp では verified temp-root identity と exact run-owned directory path を再確認し、その root 直下に same-filesystem の secure / exclusive run-owned directory を symlink / junction 非追従で作成して、作成した directory object identity を記録する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: isolated write/readback/publish labels can pass after the ordered failure boundary is removed or moved outside this Flow.
+[contracts.plan-artifact-publication-flow-write-readback-cd9b8e50ead3]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "staging を write して close し、同一 object の byte-identical readback を確認する。readback failure は `incomplete` として publish を行わず、complete のときだけ no-clobber publish を行い"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.

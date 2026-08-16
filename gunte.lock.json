@@ -93,7 +93,7 @@
     },
     {
       "id": "plan-artifact-publication-reference-data",
-      "sha256": "b974b8005625b917d07e99edd82e1de8467d27304f781a6244823059f3444354"
+      "sha256": "7115793dd7740fa11a9de013e67107419983add3dd02c828208801bc85546363"
     },
     {
       "id": "plan-artifact-publication-reference-procedure",
@@ -125,7 +125,15 @@
     },
     {
       "id": "plan-artifact-publication-reference-temp-identity",
-      "sha256": "0111b4795be7c4329a67e0a9ac3d3839909a2e9530f2bf528e471fc3392d7055"
+      "sha256": "56867badc8106d3c7e61c07d251cb5ce2a17dbf89b2f4f501a0cc2f8a06bcc97"
+    },
+    {
+      "id": "plan-artifact-publication-agentic-target-data",
+      "sha256": "d0a9d5558ce9c27e8741099356b49187f7576a6e10c4a3edc0f467eda990d131"
+    },
+    {
+      "id": "plan-artifact-publication-no-agentic-directory-creation",
+      "sha256": "d2303335dd6c185281b3ab7c8c10baecad45af17ca730ab28a679124840b1047"
     },
     {
       "id": "plan-artifact-publication-single-procedure-witness",
@@ -144,12 +152,12 @@
       "sha256": "3c46a2683c8523c5c814b43fc1d8df6b4a584a5f688bd71326523978bf4d2cbb"
     },
     {
-      "id": "plan-artifact-publication-flow-d3254fca2274",
-      "sha256": "e2bfe4c58b75dd712c8f0dbeaa24456ef3d7c77177ce168d873c33547cf30f67"
+      "id": "plan-artifact-publication-flow-7c63a4fcca8b",
+      "sha256": "2fd055b87ef99602ef5758ca07bd3ac63638c9a76faa8b35e78221966acddbf6"
     },
     {
-      "id": "plan-artifact-publication-flow-19bd91dfadab",
-      "sha256": "5350679eaf19dbd8c4ad7a0e84f327f0ed11832366e3e5717eb8d54b52254444"
+      "id": "plan-artifact-publication-flow-c4d5af1fb2a1",
+      "sha256": "7b852929f14c4aee9ba4b6859ccea6ba1aaf4c9b73ba211d6748adcf898f5e1d"
     },
     {
       "id": "plan-artifact-publication-flow-6cb53be5209f",
@@ -166,6 +174,14 @@
     {
       "id": "plan-artifact-publication-flow-procedure-before-outcomes",
       "sha256": "65ad4bcdfee59b10be2c5edd7fae3349c62ecd8d4bfbd2ddd5dd3e1f75457085"
+    },
+    {
+      "id": "plan-artifact-publication-flow-temp-ac18976f5e2e",
+      "sha256": "0664867b0c0ca89313549563224718d6907b0f0cb4e572086af347d89d0ff40d"
+    },
+    {
+      "id": "plan-artifact-publication-flow-write-readback-cd9b8e50ead3",
+      "sha256": "5cf96797ae918d622070593c2769de840766cd2638498d4c3f0c310816e853a9"
     },
     {
       "id": "repository-programmability-boundary-be45bf583027",
@@ -2396,12 +2412,20 @@
       "sha256": "e714ff73a4234448796343b09038c7eaa7db2de1677a9ea9c17d9c52aafcf73e"
     },
     {
-      "id": "plan-agent-local-artifact-flow-dc1b3568ac39",
-      "sha256": "1b5db92980e8072bf2a72e794e18d3284eb4085f0e9920a333aa5fd7471c0aad"
+      "id": "plan-agent-local-artifact-flow-inputs-8f2819c0ef09",
+      "sha256": "600095f61cb72fada55fbf0a04c12c61f253b153d87210148b473ddfc90aa524"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-no-future-7af6a4e020e1",
+      "sha256": "0e29bbfc92586efc8ec57c2418eefcad2e0840ddbc1cc23ab8ace6e30b41a2aa"
     },
     {
       "id": "plan-agent-local-artifact-flow-ff9ec467a47f",
       "sha256": "7402e3387934b1c18f49d19ed5504004967da2ae57916fc3cd3972fad78e814f"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-c3032098e959",
+      "sha256": "e2d790b93e3b6f61bde7a7cad20fcb0ace41f40a408c374d787cfe15cd8fbf21"
     },
     {
       "id": "plan-agent-local-artifact-flow-order",
@@ -2884,12 +2908,20 @@
       "sha256": "24e91cf574f6d9af22b3c7dbf531c7840bed8d826e394dfdd1777e1472bcc518"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-4f5758a033e6",
-      "sha256": "d58a9b6d74ae66ea6ea33a3377b092013c817840f615c7d424587596acaa596e"
+      "id": "plan-interactive-local-artifact-flow-inputs-6c1ae8a5f89d",
+      "sha256": "f616203eb16fa30a2bbbc13e8af8bddc1669cfb2887314c5e113f364dd74453e"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-no-future-2d484c4113eb",
+      "sha256": "7eacbaf7a3072b5cdafa674948735c8575977c94f2d5e0dc2fc029327c6a83e7"
     },
     {
       "id": "plan-interactive-local-artifact-flow-e497e4417625",
       "sha256": "6dbccfd1035b68ba0fd897df194f56c7a1514122027dbd6d8edaeb927d2c32d3"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-77d4ccc06e5e",
+      "sha256": "f7edc0a2aabd9aa7b01c67c4f4e36eb7a9625764664404fbdb0cbf1bf6eaad59"
     },
     {
       "id": "plan-interactive-local-artifact-flow-order",
