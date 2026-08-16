@@ -14,6 +14,12 @@ caller_projection = preserve internal vocabulary in caller/projection Data; appl
 public_extension = none'''
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.clarify-caller-no-verbatim-override-df8f0e5f3c8d]
+kind = "forbids"
+slice = "plan-interactive-clarify-caller"
+pattern = "caller_override = always expose Human Decision Point verbatim in Human-facing utterances"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.kernel-loader-data-b0d341da5646]
 kind = "requires"
 slice = "plan-interactive-kernel-mapping"

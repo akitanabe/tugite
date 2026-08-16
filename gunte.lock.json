@@ -688,6 +688,10 @@
       "sha256": "1af4d3b66b48c4534abeb375297f7d3ffa79780476a9a310683a5882206b1be6"
     },
     {
+      "id": "clarify-it-presentation-fixed-dictionary-985dd6017722",
+      "sha256": "8589141396a367ebc8fd39b0508d77451933e8ef4ac34e40952e7ba49c86a9cd"
+    },
+    {
       "id": "clarify-it-selection-no-score-d9f7fc56beea",
       "sha256": "2c171a46dd609a0c562249512a1a4b66ae25b194e94570f59c9343be322d9b10"
     },
@@ -2370,6 +2374,10 @@
     {
       "id": "clarify-caller-data-21af968c33e1",
       "sha256": "02845c1588e2ac0c1efb544e42c65d7f4f794620c1b3d9dad358fc13362a84a5"
+    },
+    {
+      "id": "clarify-caller-no-verbatim-override-df8f0e5f3c8d",
+      "sha256": "7c9cceb96755257c4a1683ddfca5b5a1c4a0b38009eea9e111147efcf1471f5f"
     },
     {
       "id": "kernel-loader-data-b0d341da5646",
