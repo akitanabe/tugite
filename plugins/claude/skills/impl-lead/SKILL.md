@@ -48,6 +48,10 @@ Work Unit Data は上記 canonical field だけを表す。
 Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept / revert できる
 変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界を持つ。
 
+単一 Work Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
+boundary、foundation / application の別成果が残っていないか親が自己再検査する。分割しない理由の専用 field、固定 ledger、
+常時の外部説明は要求しない。
+
 不足、矛盾、または scope を閉じられない状態が品質に影響する場合、推測で補わず必要な情報を親へ戻すか、理由・
 未完了範囲・evidence・残存 risk を含む `stop-incomplete` とする。要求と repository の状態を観測せずに worker を
 起動しない。既存の dirty/untracked は scope に含めず、勝手に変更・削除しない。
