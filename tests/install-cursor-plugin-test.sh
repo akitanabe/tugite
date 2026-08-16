@@ -51,6 +51,8 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
 assert_same "$source_repo/plugins/cursor/skills/impl-lead/SKILL.md" "$dest_dir/skills/impl-lead/SKILL.md"
+assert_same "$source_repo/plugins/cursor/skills/clarify-it/SKILL.md" "$dest_dir/skills/clarify-it/SKILL.md"
+assert_same "$source_repo/plugins/cursor/skills/clarify-it/references/philosophy.md" "$dest_dir/skills/clarify-it/references/philosophy.md"
 [[ "$install_output" == *"$dest_dir"* ]] || fail "install output did not mention destination"
 
 same_output="$(install_with_home --check)"

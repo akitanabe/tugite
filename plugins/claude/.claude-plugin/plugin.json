@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "tugite",
   "displayName": "Tugite",
-  "description": "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
-  "version": "5.20.0",
+  "description": "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
+  "version": "5.21.0",
   "author": {
     "name": "akitanabe"
   },
