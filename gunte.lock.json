@@ -448,6 +448,26 @@
       "sha256": "a7e870fdd20d10e6ee0c78f1b1cf0ebefad3aafd9472aaa7f34b31625ac098d5"
     },
     {
+      "id": "clarify-it-philosophy-reference-path-2bddda131e99",
+      "sha256": "c8dddc7025dee1225414ee26376c356e47a944a8fffc2bdece0c95cc1ee0165a"
+    },
+    {
+      "id": "clarify-it-philosophy-introduction-1b6a8ec2578f",
+      "sha256": "44995cf67972060fef0da27f48fdfc534e6fb9c30888bf585a0c2daa9cf6405e"
+    },
+    {
+      "id": "clarify-it-philosophy-introduction-forbids-fe0e3c21f787",
+      "sha256": "5f8d5db560d8a2ae191347df468e46fb0a5a43f756bf97eb98e16d3eca2d92da"
+    },
+    {
+      "id": "clarify-it-philosophy-introduction-forbids-be60225a7306",
+      "sha256": "d5fa13043beea70ac389447d7230b62197ab93c3f1cf7e9f534ea71e464035a5"
+    },
+    {
+      "id": "clarify-it-philosophy-introduction-forbids-642721425d2b",
+      "sha256": "30507bda2a140ccd95451765ba77ac41519ed95e1aa60fd0b4adf37df25e2506"
+    },
+    {
       "id": "clarify-it-philosophy-nonnormative-1fa5875363b5",
       "sha256": "0fff2735193c13ec65cecdd12f4e6f4e18f90bf3fe4ae6baa13f61bdea49984b"
     },
@@ -2913,6 +2933,11 @@
       "kind": "span",
       "id": "clarify-it-casebook",
       "path": "shared/skill/clarify-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "clarify-it-philosophy-introduction",
+      "path": "shared/skill/clarify-it/references/philosophy.md"
     },
     {
       "kind": "span",

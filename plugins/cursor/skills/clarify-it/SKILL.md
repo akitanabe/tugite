@@ -36,6 +36,7 @@ Philosophy は通常の規範でも新しい要件源でもない。3層の矛�
 この Data から通常時の新しい obligation を導出しない。
 
 Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。
+矛盾、解釈衝突、または想定外ケースで詳細な設計意図を確認する場合は `references/philosophy.md` を参照する。
 
 Human の決定、観測事実、一時前提、Agent の導出を意味上区別する。Human は目的に照らした価値判断と結果責任を持つ。
 Agent は調査、分析、技術的な導出、判断空間の圧縮、依存関係と整合性の維持、および現在モデルへの再統合に経過責任を持つ。

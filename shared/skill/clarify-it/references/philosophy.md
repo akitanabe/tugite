@@ -1,6 +1,8 @@
 # clarify-it — Philosophy
 
-この文書は Issue #237 の Philosophy snapshot を基にした Tugite 移植版であり、`clarify-it` がなぜこの構造を採用するのかを示す。
+<!-- @contract clarify-it-philosophy-introduction -->
+`clarify-it` がなぜこの構造を採用するのか、その長期的な設計意図を示す。
+<!-- @/contract -->
 
 <!-- @contract clarify-it-philosophy-positioning -->
 本書は非規範であり、新しい obligation を作らない。`SKILL.md` の Specification / Method / Casebook が優先する。

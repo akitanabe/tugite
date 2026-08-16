@@ -62,6 +62,7 @@ Philosophy は通常の規範でも新しい要件源でもない。3層の矛�
 
 <!-- @contract clarify-it-philosophy-reference -->
 Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。
+矛盾、解釈衝突、または想定外ケースで詳細な設計意図を確認する場合は `references/philosophy.md` を参照する。
 <!-- @/contract -->
 
 <!-- @contract clarify-it-responsibility -->

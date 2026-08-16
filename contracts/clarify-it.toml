@@ -233,6 +233,36 @@ slice = "clarify-it-philosophy-reference"
 pattern = "Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.clarify-it-philosophy-reference-path-2bddda131e99]
+kind = "requires"
+slice = "clarify-it-philosophy-reference"
+pattern = "矛盾、解釈衝突、または想定外ケースで詳細な設計意図を確認する場合は `references/philosophy.md` を参照する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-introduction-1b6a8ec2578f]
+kind = "requires"
+slice = "clarify-it-philosophy-introduction"
+pattern = "`clarify-it` がなぜこの構造を採用するのか、その長期的な設計意図を示す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-introduction-forbids-fe0e3c21f787]
+kind = "forbids"
+slice = "clarify-it-philosophy-introduction"
+pattern = "Issue #237"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-introduction-forbids-be60225a7306]
+kind = "forbids"
+slice = "clarify-it-philosophy-introduction"
+pattern = "snapshot"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-philosophy-introduction-forbids-642721425d2b]
+kind = "forbids"
+slice = "clarify-it-philosophy-introduction"
+pattern = "Tugite 移植版"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.clarify-it-philosophy-nonnormative-1fa5875363b5]
 kind = "requires"
 slice = "clarify-it-philosophy-positioning"
