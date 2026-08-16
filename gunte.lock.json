@@ -967,6 +967,166 @@
       "sha256": "40394ea1333b3deab024d6f4eea884d577c8747a4ea1ae1883c8a18de8b2e897"
     },
     {
+      "id": "impl-programmatic-flow-boundary-4b885c8d6556",
+      "sha256": "c8e3581467dbd8c3e829bbf2bc5fe4311f9a33701e1eec0abb99c11f58c5ff0c"
+    },
+    {
+      "id": "impl-dependency-dispatch-flow-137dd3030b98",
+      "sha256": "c9970e0a94777df72f249094dfd9dc2e41ed954b2585f8ef3800349a631b23fa"
+    },
+    {
+      "id": "impl-run-owned-creation-flow-202829da54ed",
+      "sha256": "610a7a22fb884578a755b0a5e87a04ec094a04e0e7c52e904c598cc57ce4fafc"
+    },
+    {
+      "id": "impl-explicit-route-flow-c055902470a0",
+      "sha256": "41fab0f7d2eabb8111b1e42b47d1644206f98cbcbc9604f88e06aff9495c286b"
+    },
+    {
+      "id": "impl-writable-scope-handoff-flow-3e2117670176",
+      "sha256": "455a0e2273923c6aebdb81f3abe77f7cc4786fa218c836c2856597825f4ffcaf"
+    },
+    {
+      "id": "impl-work-unit-continuation-flow-cf64513488d1",
+      "sha256": "b5027abcfddcd2d5ec7866eb4ac822521b696584fb519d1c67ff8f0a1bbaeb4f"
+    },
+    {
+      "id": "impl-parallel-integration-flow-9799ff405418",
+      "sha256": "7eac00750b03d8d42905cc6db231a60455ae19b8e9cd4339ce138c0140ff2518"
+    },
+    {
+      "id": "impl-final-writing-invocation-flow-4950dc750094",
+      "sha256": "27f9f7fd79493a697480dd911e9baedbddb7d27c8251d41c78f9ee514fbd0ec1"
+    },
+    {
+      "id": "impl-final-writing-result-flow-bf37b395ce03",
+      "sha256": "38861ad0c9fc97884c96e099030390fd05e6d338ba22cf7f28d68ff142e509ab"
+    },
+    {
+      "id": "impl-external-retry-flow-b643496ce5e4",
+      "sha256": "05f69aa62e8f254ce217777d4e96f13c38998df4c2c62c4a0d79631670b0ca12"
+    },
+    {
+      "id": "impl-run-owned-closeout-flow-f8f729cca70c",
+      "sha256": "84433bd0e0ba23177ef50d66d1514f69a7b3fba8af170fdc8acd7d58371b4050"
+    },
+    {
+      "id": "impl-run-owned-creation-flow-no-duplicate-4ca72e6a6feb",
+      "sha256": "ab1230264c90aa1a520f19abf1dfcf1aa9156afe7c506ba832b370ed66a1e411"
+    },
+    {
+      "id": "impl-writable-scope-flow-no-duplicate-91012fd5acde",
+      "sha256": "67a3f2474ee8d59b64f61a3a2847eb134746479fc949448c958b8eb1f675fad1"
+    },
+    {
+      "id": "impl-final-writing-invocation-flow-no-duplicate-07073b3b7c9f",
+      "sha256": "fee9a4b8aa25948a1a18cb7a21cfdd5ce9aa17ba8678892451ce0ee097eea1de"
+    },
+    {
+      "id": "impl-final-writing-result-flow-no-duplicate-d9ca32ea28c6",
+      "sha256": "c79acf4becb88336d4fb2ddc5fb434e8a5936104e9a5af11d41058ca6fc8421c"
+    },
+    {
+      "id": "impl-run-owned-closeout-flow-no-duplicate-3ea960e093f8",
+      "sha256": "78e2a66c7e49d65201c50f190796ab1058c66c0cf8bc1bd9c8757d51a9d4bbf3"
+    },
+    {
+      "id": "impl-programmatic-flows-section-occurrences",
+      "sha256": "5024cf612f5e7b61886846de120c5e5378638f4b9c49b95ab91138358aa6ed6d"
+    },
+    {
+      "id": "impl-programmatic-flow-trigger-occurrences",
+      "sha256": "223f357cd949fd59690847afc2b237a7c16d6be77e797b5c2f2ed29042a8f6c3"
+    },
+    {
+      "id": "impl-programmatic-flow-inputs-occurrences",
+      "sha256": "36c5ada11ed9b6ae02c941765903a017eff8f9fe96395ed99e81d951d11c38b1"
+    },
+    {
+      "id": "impl-programmatic-flow-procedure-occurrences",
+      "sha256": "17464c59e2b8b1089ccbbdc4acd093751fd303ad7b4259c9115937e74cf626be"
+    },
+    {
+      "id": "impl-programmatic-flow-outcomes-occurrences",
+      "sha256": "cf2c306a7fca7c8bc94092f02b850637b2be416fec8b769226cb396151802656"
+    },
+    {
+      "id": "impl-dependency-dispatch-flow-occurrences",
+      "sha256": "9c621b00463a5ccfa8a9110f3247e2744226d9b358505fa78484733582e29fd2"
+    },
+    {
+      "id": "impl-run-owned-creation-flow-occurrences",
+      "sha256": "07e7b2a2f5b8129bee134ce990de26395c1769e1662229b31497a63422a011f0"
+    },
+    {
+      "id": "impl-explicit-route-flow-occurrences",
+      "sha256": "8aaf3f2307278b61cfdd65677d54692b22f2f702b5128dc2498d126fc33aed41"
+    },
+    {
+      "id": "impl-writable-scope-handoff-flow-occurrences",
+      "sha256": "f3c4b30ac1af8a225bcb4c038367992aba5a8dfeabf2bf982427de34786ff3de"
+    },
+    {
+      "id": "impl-work-unit-continuation-flow-occurrences",
+      "sha256": "aa845051778dfc22a980c3d6dbc737a94667ca79bb2ca279ec5ba393e5f57461"
+    },
+    {
+      "id": "impl-parallel-integration-flow-occurrences",
+      "sha256": "7cdca5c36f2845d2a3f5a220f0964636cba94ab832f08114413a902119a9f4fa"
+    },
+    {
+      "id": "impl-final-writing-invocation-flow-occurrences",
+      "sha256": "46568f287a713f3bf43cd53035949222408934621f40f8364d68b3b986c94c28"
+    },
+    {
+      "id": "impl-final-writing-result-flow-occurrences",
+      "sha256": "c8277cf52b43704b754a209deae49bbe194049926bce0ba330fb9fcd38fe029a"
+    },
+    {
+      "id": "impl-external-retry-flow-occurrences",
+      "sha256": "cb72e6736f3ac3a8261366daafcd1090d48510a59030a9f2ca8c1a007d715ffc"
+    },
+    {
+      "id": "impl-run-owned-closeout-flow-occurrences",
+      "sha256": "42215798be77b28254531d4335d9ba4b39e1146939656db33117b1b7ac62dc86"
+    },
+    {
+      "id": "impl-programmatic-flow-order-dependency-before-creation",
+      "sha256": "c472ea9c15d978e2187cbc0c53242db0403fe54361d81b5ff68316f38b3a6f9b"
+    },
+    {
+      "id": "impl-programmatic-flow-order-creation-before-route",
+      "sha256": "9cca7b4aff772135acdd1fd2153064bc05d1d926f036ce0398633e7285bd16dc"
+    },
+    {
+      "id": "impl-programmatic-flow-order-route-before-scope",
+      "sha256": "839ff8ff09c72aafee9c4e603b45c55b9e3e631a32d6f281c5df4e4c8669454e"
+    },
+    {
+      "id": "impl-programmatic-flow-order-scope-before-continuation",
+      "sha256": "9b2b331d2615101ae62fd3bbe4107c45e4ad262476c3b0d1363199c36a876b2b"
+    },
+    {
+      "id": "impl-programmatic-flow-order-continuation-before-parallel",
+      "sha256": "5bd3ed44ccfca0b221dfb43324323425c6fda48bd7251e07fee5062d43894996"
+    },
+    {
+      "id": "impl-programmatic-flow-order-parallel-before-final-invocation",
+      "sha256": "7b68c5939b956171fa7dfa5661262618a342355c8022a946eace44cd39700b0b"
+    },
+    {
+      "id": "impl-programmatic-flow-order-final-invocation-before-result",
+      "sha256": "f3a38accf676e38ec3a4fb4fe75297cd25cc4e437190edffb2b217b6632337ba"
+    },
+    {
+      "id": "impl-programmatic-flow-order-final-result-before-retry",
+      "sha256": "bb8b639f7e573cc738cf50acbed1a4e27de6cad429ef92fdc123e90fc32d493a"
+    },
+    {
+      "id": "impl-programmatic-flow-order-retry-before-closeout",
+      "sha256": "7471844d8de46e05a1da56ebb91b8724b2576fe4d5273c51b02bf0798e3463f1"
+    },
+    {
       "id": "impl-run-owned-loader-data-34b2ba9c1127",
       "sha256": "5172b4a9a736c7498d42c3faa3e6124c84270e547c8bef917519e2f9ce1935d4"
     },
@@ -1211,8 +1371,8 @@
       "sha256": "a78948f94ee37a506f302125e7ca34276b84981b3dfb5830f969ff4a3a12655b"
     },
     {
-      "id": "impl-work-unit-dirty-scope-89a8a06b1016",
-      "sha256": "3a62ecd322a9ce9d66e1e0fbc068621978702f852499c42bc9bf64b7d41190e2"
+      "id": "impl-work-unit-dirty-scope-3b5429409356",
+      "sha256": "0fa56c91d1172de477f25422fd1178ca6cb0b8d9a4d6d6168f5c11a777bdead5"
     },
     {
       "id": "impl-closeout-summary-policy-8d3b45fdd25f",
@@ -2950,6 +3110,61 @@
       "kind": "span",
       "id": "clarify-it-philosophy-positioning",
       "path": "shared/skill/clarify-it/references/philosophy.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flows",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-dependency-dispatch-guard",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-run-owned-checkout-creation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-explicit-route-constraint",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-writable-scope-handoff",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-work-unit-continuation-routing",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-parallel-candidate-integration",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-final-writing-gate-invocation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-final-writing-result-routing",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-external-side-effect-retry",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-run-owned-closeout",
+      "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
