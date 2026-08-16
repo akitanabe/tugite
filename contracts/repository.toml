@@ -434,7 +434,7 @@ value = "5.23.0"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
@@ -868,10 +868,10 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-27b5ccd1e24a]
+[contracts.cursor-readme-title-requires-89fd30c4f6cb]
 kind = "requires"
-slice = "cursor-readme-version"
-pattern = "# Tugite v5.23.0"
+slice = "cursor-readme-title"
+pattern = "# Tugite"
 applies_to = ["cursor"]
 
 [contracts.readme-risk-directed-static-performance-reviewer-b83942372d45]
@@ -1335,7 +1335,7 @@ value = "./plugins/claude"
 [[contracts.claude-marketplace-shape.assertions]]
 path = "plugins.*.description"
 op = "equals"
-value = "v5 の impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-marketplace-shape]
 kind = "structure"
@@ -1404,7 +1404,7 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.claude-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-plugin-manifest-shape]
 kind = "structure"
@@ -1431,12 +1431,12 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use v5 impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the v5 public workflows impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility."
+value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"

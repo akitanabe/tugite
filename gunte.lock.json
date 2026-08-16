@@ -233,7 +233,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "27d07a6257f7bf0749285d23ced0da559261dacddcc88f494519d18ca88838f8"
+      "sha256": "1cbce4e4dd7a1244e0846ca8dda87427e5b095dc0f0b48a23e55979f87f826bc"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -336,8 +336,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-27b5ccd1e24a",
-      "sha256": "4dd85d19f874c6a454eb7732cde71fccae94fb388bdd0634d19e98566b0ebd93"
+      "id": "cursor-readme-title-requires-89fd30c4f6cb",
+      "sha256": "d8ca6742cd5bd850b509a14b223e623f8045cbb384f713458b3681e154aec84f"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
@@ -461,7 +461,7 @@
     },
     {
       "id": "claude-marketplace-shape",
-      "sha256": "11651e276b633c5f8544264efaf7b58e2953c520919c686cd4a5471cceb47721"
+      "sha256": "7528a18c785315dbb7d8b137a7c9d5e92b8ccb999679e5c6ffb73c688dbda520"
     },
     {
       "id": "codex-marketplace-shape",
@@ -469,11 +469,11 @@
     },
     {
       "id": "claude-plugin-manifest-shape",
-      "sha256": "ea034d6808e3f62ff26554d464a3f41b27f7ca9a93ccbe750d069640c4efd8d0"
+      "sha256": "2a4396d65429e8f19173da063d4af35d2cc5e4b08e3ac031cd14f180df2a05a9"
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "94a3b5b1880a1832057485a6f8e29811fa02473a7c601a00e033234d216e9d33"
+      "sha256": "3cbb3357f0e91ff356b320817a56c6af4617e571864de62322e431512ccb16d1"
     },
     {
       "id": "clarify-it-invocation-c7163984dcae",
@@ -4027,7 +4027,7 @@
     },
     {
       "kind": "span",
-      "id": "cursor-readme-version",
+      "id": "cursor-readme-title",
       "path": "README.md"
     },
     {

@@ -2,12 +2,12 @@
 name: impl-lead
 description: >-
   明示起動時だけ、親が一つ以上の Work Unit を正規化し、direct または各単位の worker を選び、
-  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる v5 実装 loop。
+  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる実装 loop。
 disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Active v5 main
+# Active main
 
 この skill はユーザーが明示的に起動した場合だけ開始する。自然言語の作業内容、規模、現在の
 context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
@@ -208,7 +208,7 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 実行コストを相対比較して選び、単なる変更量や file 数だけで上位の worker を選ばない。選択理由を execution data に
 記録する。
 
-委譲時は v5 の4候補から、仕様が明確で既存 pattern を適用できる通常の `implementer` を原則とする。scope が特に狭く
+委譲時は4候補から、仕様が明確で既存 pattern を適用できる通常の `implementer` を原則とする。scope が特に狭く
 検証が明確なら `focused-implementer`、残存判断や手戻りが大きいなら `senior-implementer`、親相当の推論を必要とする
 具体的な理由があり品質を左右する場合だけ `expert-implementer` を選ぶ。単なる変更量や file 数で上位へ昇格せず、迷えば
 `implementer` とする。選択した worker、理由、`base_snapshot`、execution constraint を execution data に記録する。

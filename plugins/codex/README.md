@@ -1,6 +1,6 @@
 # Tugite for Codex
 
-Tugite v5.22.0 は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+Tugite は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
 ## Skill surface
 
@@ -62,7 +62,7 @@ plugins/codex/install/install-agents.sh --check --repo <repo>
 
 ## Source of truth
 
-共通原稿は `shared/`（version は `shared/VERSION`）、platform 宣言は `declarations/`、契約は `contracts/*.toml`、Gunte 設定は `gunte.toml` が正本です。`gunte.toml` が管理する v5 workflow skill と `install/agents/*.toml` は生成物なので直接編集せず、正本変更後に repository root で次を実行します。
+共通原稿は `shared/`（version は `shared/VERSION`）、platform 宣言は `declarations/`、契約は `contracts/*.toml`、Gunte 設定は `gunte.toml` が正本です。`gunte.toml` が管理する workflow skill と `install/agents/*.toml` は生成物なので直接編集せず、正本変更後に repository root で次を実行します。
 
 ```text
 gunte emit

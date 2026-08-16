@@ -1,8 +1,8 @@
 <!-- Generated from README.md. Do not edit directly. -->
 
-# Tugite v5.23.0
+# Tugite
 
-Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
+Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
 ## 現行の構成
 

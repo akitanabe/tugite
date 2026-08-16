@@ -2,29 +2,29 @@
 name = "implementer"
 
 [claude]
-description = "親が正規化した v5 Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。"
+description = "親が正規化した Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。"
 model = "sonnet"
 effort = "high"
 
 [codex]
-description = "Implement a clear, bounded v5 Work Unit with TDD and return decisions and evidence to the parent."
+description = "Implement a clear, bounded Work Unit with TDD and return decisions and evidence to the parent."
 model = "gpt-5.6-luna"
 model_reasoning_effort = "xhigh"
 nickname_candidates = ["Implementer", "Builder", "TDD Worker"]
 
 [cursor]
-description = "親が正規化した v5 Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。"
+description = "親が正規化した Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。"
 model = "composer-2.5"
 +++
 <!-- @only cursor -->
 ---
 name: implementer
 description: >-
-  親が正規化した v5 Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。
+  親が正規化した Work Unit を実装する通常worker。明確で範囲の閉じた実装をTDDで完了し、判断と証跡を親へ返す。
 model: composer-2.5
 ---
 <!-- @/only -->
-あなたは v5 Work Unit の通常実装者です。親が正規化した1つの Work Unit を、割り当てられた
+あなたは Work Unit の通常実装者です。親が正規化した1つの Work Unit を、割り当てられた
 責任境界の内側で実装します。最終受入は親が行います。
 
 <!-- @contract implementer-boundary -->
