@@ -25,17 +25,17 @@ kind = "forbids"
 pattern = "resolve-kernel"
 exclude_paths = [
   "plugins/claude/references/resolve-kernel.md",
-  "plugins/claude/skills/plan-craft/SKILL.md",
-  "plugins/claude/skills/plan-craft-approval/SKILL.md",
-  "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/codex/references/resolve-kernel.md",
-  "plugins/codex/skills/plan-craft/SKILL.md",
-  "plugins/codex/skills/plan-craft-approval/SKILL.md",
-  "plugins/codex/skills/proposal/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/references/resolve-kernel.md",
-  "plugins/cursor/skills/plan-craft/SKILL.md",
-  "plugins/cursor/skills/plan-craft-approval/SKILL.md",
-  "plugins/cursor/skills/proposal/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
 
@@ -87,10 +87,10 @@ slice = "resolve-kernel-v1"
 pattern = "caller-owned boundary"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-kernel-callers-ac782e6d2307]
+[contracts.resolve-kernel-callers-f8b49ee872ce]
 kind = "requires"
 slice = "resolve-kernel-v1"
-pattern = "caller は `proposal` と `plan-craft-approval` の2つに限定する。"
+pattern = "caller は `plan-candidate-producer` と `plan-interactive` の2つに限定する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.resolve-kernel-scope-4490430b813e]

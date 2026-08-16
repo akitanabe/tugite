@@ -6,8 +6,8 @@
     "contracts/clarify-it.toml",
     "contracts/workers.toml",
     "contracts/impl-lead.toml",
-    "contracts/plan-craft.toml",
-    "contracts/plan-craft-approval.toml",
+    "contracts/plan-agent.toml",
+    "contracts/plan-interactive.toml",
     "contracts/kernel.toml",
     "contracts/batch-resolve-kernel.toml",
     "contracts/necessity-kernel.toml",
@@ -35,10 +35,10 @@
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
-    "shared/skill/plan-craft/SKILL.md",
-    "shared/skill/plan-craft-approval/SKILL.md",
-    "shared/skill/proposal/SKILL.md",
-    "shared/skill/review-loop/SKILL.md",
+    "shared/skill/plan-agent/SKILL.md",
+    "shared/skill/plan-interactive/SKILL.md",
+    "shared/skill/plan-candidate-producer/SKILL.md",
+    "shared/skill/review-refine/SKILL.md",
     "shared/skill/structural-health-gate/SKILL.md",
     "shared/skill/work-unit-design/SKILL.md",
     "shared/repository-guidelines.md",
@@ -48,10 +48,10 @@
     "declarations/codex/marketplace.json",
     "declarations/codex/skills/clarify-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
-    "declarations/codex/skills/plan-craft/openai.yaml",
-    "declarations/codex/skills/plan-craft-approval/openai.yaml",
-    "declarations/codex/skills/proposal/openai.yaml",
-    "declarations/codex/skills/review-loop/openai.yaml",
+    "declarations/codex/skills/plan-agent/openai.yaml",
+    "declarations/codex/skills/plan-interactive/openai.yaml",
+    "declarations/codex/skills/plan-candidate-producer/openai.yaml",
+    "declarations/codex/skills/review-refine/openai.yaml",
     "declarations/codex/skills/structural-health-gate/openai.yaml",
     "declarations/codex/skills/work-unit-design/openai.yaml",
     "declarations/cursor/plugin.json",
@@ -112,7 +112,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "0442bcec0a4c513e5832fe35ea21f43d17fa8cf3db76266689d34e6d80a0297e"
+      "sha256": "27d07a6257f7bf0749285d23ced0da559261dacddcc88f494519d18ca88838f8"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -172,11 +172,11 @@
     },
     {
       "id": "cursor-explicit-skill-policy",
-      "sha256": "b9c71206b30879bbf4aa9a7f61a609d4b9fe319662ae734d5fef2f2991ef6d9a"
+      "sha256": "8cd2bdcf370fb925178050dbfd309b3cbe6146e9fb75648be2b2a39dcff00a34"
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "16a6af469a4e99b86a5441f8cb67ac5d6ecac04fc6c5612afadb411783709141"
+      "sha256": "9ef6c3687ddfc88766856517702fa1f5d5ff49dd4680515b8adc17c5d87b85d5"
     },
     {
       "id": "cursor-impl-lead-skill",
@@ -191,20 +191,20 @@
       "sha256": "fcb33047f6c49138da76d80654efa829e72c47c401aaff9336c13579b06c3b24"
     },
     {
-      "id": "cursor-plan-craft-skill",
-      "sha256": "e05e3410db31164663e6d49c8e069dc8642cf7ae9fe0c8cbfc6e4ca349b7792a"
+      "id": "cursor-plan-agent-skill",
+      "sha256": "4a58c3fe84ea4897299c337d9e8d5ab8e88ff8d96e963d9c2d65a4c3a98ae23a"
     },
     {
-      "id": "cursor-plan-craft-approval-skill",
-      "sha256": "40c83a3d21b78dac71f30a8598b8620046180713ad795327f67e6c72eaa56ecd"
+      "id": "cursor-plan-interactive-skill",
+      "sha256": "d08dc05bf6617df681cbaca7b78ea5bc8542149869549e7c81bc9b12c7ef4c30"
     },
     {
-      "id": "cursor-proposal-skill",
-      "sha256": "19a44307c0bacf81f994e17f46e97e3882fd95b3910789412a0c3baa5609f86c"
+      "id": "cursor-plan-candidate-producer-skill",
+      "sha256": "455d3525710d0fec1babe53f80c7e3a2eced08bfc7f8b57403092375bf7924d2"
     },
     {
-      "id": "cursor-review-loop-skill",
-      "sha256": "1095129291133ca6f40465e5159552ee9bae4e00e88f95a94191a8c6179ae756"
+      "id": "cursor-review-refine-skill",
+      "sha256": "a8e88d24f3d62519110cf5823f6abc5e75e808c43c52fbaf6ec946e1228e0ae4"
     },
     {
       "id": "cursor-structural-health-gate-skill",
@@ -255,8 +255,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-55ee9f440996",
-      "sha256": "f205563bccd7574aea92b215792191954938f2ceef43ba2dc1593ea4244789f5"
+      "id": "cursor-readme-public-skills-requires-c7d9fd88c572",
+      "sha256": "ab0d0f1655500cb62d1d57f2d7d4aa2e2a6a4c20dbe81a867bc2d7cae196d8f6"
     },
     {
       "id": "cursor-readme-install-skill-requires-e9e87fe619cf",
@@ -268,23 +268,23 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "35ec366c4bc0c474f99cc8a4d4356867d51e0e26c2b86db89166d26bfffcbce8"
+      "sha256": "42480ddab7146e391ddccd2f6931d8dec9d8bcb30357ce86de510f5ff029382a"
     },
     {
       "id": "codex-openai-disabled-policy",
-      "sha256": "4b73301f71a56887fe63580a6bdd6daf873afa8c8dad92bcd5fe8a5be1fdfa3b"
+      "sha256": "3a3d074f4ba5f423a4122319611dcbde68188d026cfa6feae2be7a846242a216"
     },
     {
       "id": "claude-explicit-skill-policy",
-      "sha256": "0f3077053256a713edb22e1305f9495cbea434684a9bb592b433e2278024ee04"
+      "sha256": "c3dd16cd810b6662c1a5e642cde0d51d85d5d8ea95f92c2637c1d72035986d42"
     },
     {
       "id": "claude-internal-skill-policy",
-      "sha256": "7f491311cf3f7c1916652ffb5bdffc7b135fce92e49201ae71e8bc896619b349"
+      "sha256": "1e143361efa6015128300e0170579555bd05fb8ebd422d8ec4cfb17a9efc81fa"
     },
     {
-      "id": "claude-review-loop-policy",
-      "sha256": "9a392a61fe18c154463e228e42784dcd97eeb62c1d11580a7ae872fa5ed78a68"
+      "id": "claude-review-refine-policy",
+      "sha256": "09c72b6abc2cb75a78e5e61d39d42561257a90825f873740b922ee1388c3c584"
     },
     {
       "id": "claude-clarify-it-policy",
@@ -300,7 +300,7 @@
     },
     {
       "id": "claude-structural-health-gate-kernel-exclusion",
-      "sha256": "99ca54b14b431c8f5c361c3fb570e96c661a20fcfad5d4c3ecea41db47d7d057"
+      "sha256": "7c7a57eb6db8a337d312827da3c0f1650fd02b160bb809bd9d705f545ab16cb0"
     },
     {
       "id": "worker-agent-policy",
@@ -324,7 +324,7 @@
     },
     {
       "id": "claude-marketplace-shape",
-      "sha256": "ee60dc7fee41bf4adc4d0370ce0fe3d877df9e555abcc91511d9b2363a4949b1"
+      "sha256": "11651e276b633c5f8544264efaf7b58e2953c520919c686cd4a5471cceb47721"
     },
     {
       "id": "codex-marketplace-shape",
@@ -332,11 +332,11 @@
     },
     {
       "id": "claude-plugin-manifest-shape",
-      "sha256": "2efdf005694b8580a1e862156c2479cd3cd390135d16f03fdc873d402f1baf25"
+      "sha256": "ea034d6808e3f62ff26554d464a3f41b27f7ca9a93ccbe750d069640c4efd8d0"
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "37ce5573feef22f60aa5c388b719fea8bc770e954c27a77833a432042402649a"
+      "sha256": "94a3b5b1880a1832057485a6f8e29811fa02473a7c601a00e033234d216e9d33"
     },
     {
       "id": "clarify-it-invocation-c7163984dcae",
@@ -875,8 +875,8 @@
       "sha256": "5f3ca58115407cf1cc908d00a6f600e3489cba14d752a1aeda6a982bd4479cdd"
     },
     {
-      "id": "no-plan-craft-v5-skill",
-      "sha256": "cfd6ad009ce496c17ee8d43f4777e9d6f327adcd7668cba4fa4ec53c7e2fef1c"
+      "id": "no-plan-agent-v5-skill",
+      "sha256": "dedc5d423ba6c04b23e8d93019bd3488c3525387c57d68bc787a7d404d602be5"
     },
     {
       "id": "static-performance-context-37d640da09f3",
@@ -931,8 +931,8 @@
       "sha256": "8b01558fb6c00e66cf6add0d4d47bac4880472a4ccd72bace1ef38a88083408f"
     },
     {
-      "id": "work-unit-design-internal-guard-requires-8bf50de960dc",
-      "sha256": "52155c918b68c36a1d60f7648d94b5035779fa2fd7cc9d2c047c6c9a97f41c9b"
+      "id": "work-unit-design-internal-guard-requires-67dbee9ac922",
+      "sha256": "40394ea1333b3deab024d6f4eea884d577c8747a4ea1ae1883c8a18de8b2e897"
     },
     {
       "id": "impl-run-owned-loader-data-34b2ba9c1127",
@@ -1195,216 +1195,216 @@
       "sha256": "9ad75e9ae12ffceb26f6d867b4e1a08962914de10a5b159927dc9a9d73258ee3"
     },
     {
-      "id": "proposal-internal-guard-requires-380eb652243f",
-      "sha256": "78b49eb37130fb187174d3d0228d2e738bb8aae78f1cbcd4f37cc0d6a3d6625f"
+      "id": "plan-candidate-producer-internal-guard-requires-86104357309e",
+      "sha256": "d714dde0d6da96d884685cd21ed2f8ef82b417a799023c8076346b9dbc73f35e"
     },
     {
-      "id": "structural-health-gate-internal-guard-requires-61b7ebeb1a4b",
-      "sha256": "ea3ab0f979dbc10b932182a1fb1af4201e06f82365ae0728ff100069f59d026b"
+      "id": "structural-health-gate-internal-guard-requires-091dfa1ae647",
+      "sha256": "4a837fecce45d50f9d7791d0fa2fca6c3c9b0378b254c92f39231ae6ec7e74ce"
     },
     {
-      "id": "proposal-batch-loader-data-5d9f4589020a",
-      "sha256": "db519654718408301c2a36d61299ca126ef16a343194e3f7ef1a9f83cd5c0089"
+      "id": "plan-candidate-producer-batch-loader-data-afb23bdae9ec",
+      "sha256": "fb4f1e1bb779eda5cd0c0b498a978e7eddbd982d6d1ec9063bc9553ffe775df3"
     },
     {
-      "id": "proposal-batch-role-data-532d9a645704",
-      "sha256": "f3d8b1af619a285c15f507c3551d4dfaa6ba5e15c7969b7f247c6c61bbb4a477"
+      "id": "plan-candidate-producer-batch-role-data-6003cbec86d3",
+      "sha256": "04d1e5ce4a6cbf6caa239ad70165fcdb5276622774518ca41bdd3454aec8c48b"
     },
     {
-      "id": "proposal-authority-no-caller-branch-requires-736f971dd91f",
-      "sha256": "f41ef1fc31eefbab66fa90dea3c7ece907416c70bc6d98d32f91a9a25afd3bef"
+      "id": "pcp-authority-no-caller-branch-requires-8385e9af73ff",
+      "sha256": "57af67208dccdce95b00d840b80f8e21e62b7e369566f921a2298448715a9472"
     },
     {
-      "id": "proposal-constrained-validation-requires-c8d7362b0935",
-      "sha256": "a02ba078b323f94217b92c41dc440cc49699fb38e717a6270c1de81a79e61969"
+      "id": "pcp-constrained-validation-requires-e72d7c1b7ef3",
+      "sha256": "93a2831d07b56af3ed89a89d489d3be03e16286eefa333e6cbf391af6b5fef3b"
     },
     {
-      "id": "proposal-constraints-immutable-requires-c566a62afe64",
-      "sha256": "bb3525c9358d14b980f2daf65c45abd4774ae31dcb3dc0d308ee1bf28402447e"
+      "id": "pcp-constraints-immutable-requires-fa14d78bcbee",
+      "sha256": "2625ffda7f00e2f352c4be87af8d190c1dce0c6e5a6a4ee54c1f6113f33e4f28"
     },
     {
-      "id": "proposal-necessity-loader-data-1493ccb9eaa4",
-      "sha256": "081df46c1fc4b0015772eb18f66115d93f70a44fb35e8ef151f14451e21cffa6"
+      "id": "plan-candidate-producer-necessity-loader-data-4c92eb3a7096",
+      "sha256": "e76bdf6173e5a70a03094da101f42529167335c8b2e08d37ebf8c827a1de1bf8"
     },
     {
-      "id": "review-necessity-loader-data-4d4489c07ff8",
-      "sha256": "8e7fcb0cde8d1ade80a35331592865b9397471a245a12b5c0e7f95a65eb9c970"
+      "id": "review-necessity-loader-data-e2bcbd43ae0c",
+      "sha256": "cebc7acbf7cbd6af9b80e9ac109804a820430700ff1b6dbd11394491d9e3d6ae"
     },
     {
-      "id": "review-batch-loader-data-dc0b8ee5c915",
-      "sha256": "085324833656654026d61fb6d284f60161b62b038a0fff85b3acb529cda8c183"
+      "id": "review-batch-loader-data-bab77a47fc0f",
+      "sha256": "d545f5f376df2f4f45e65329db63b587cc096de517f276aac7515916592d4914"
     },
     {
-      "id": "review-batch-role-data-5bffc3d747c6",
-      "sha256": "696975da6b52ccaa7efa3ae49f09382048fe7889125b21657978dea663fd3b98"
+      "id": "review-batch-role-data-2a7c9404400d",
+      "sha256": "ddd39d8b3e525c9565e8c243c381aed7a73670a98d705881db5c5cd5f8314438"
     },
     {
-      "id": "proposal-local-planner-requires-5349f90017f1",
-      "sha256": "37b3953de6ef0f9763d4f9bbb3d2e0e53acef8219ddda7abdf2fc72bd278256b"
+      "id": "plan-candidate-producer-local-planner-requires-f4ae8dc4567f",
+      "sha256": "39a502caaab3cf844ff4e88360230fef09d3598b11b8de375449ac500c297be9"
     },
     {
-      "id": "proposal-local-review-loop-forbids-f186113084c7",
-      "sha256": "904fe65b2b149d78918d0afe6263a65ae7602f605feca69ca3a543ef4a3abe36"
+      "id": "plan-candidate-producer-local-review-refine-forbids-da0a88391a40",
+      "sha256": "2a7c34806217e225014546aa2887dc694e3ca2fc4f2cf1543b65ce80c45555a1"
     },
     {
-      "id": "plan-craft-resolution-ownership-requires-0802ef808acb",
-      "sha256": "db4fd5b3971e698bb261d32e6e436486aa7c1ecee08b0ee60a2a86b21774294f"
+      "id": "plan-agent-resolution-ownership-requires-16f105f55c04",
+      "sha256": "b33a3bde93b4881b4b2098bd24d667433b06955ae939e5a58bfac7cb8c74f4e0"
     },
     {
-      "id": "proposal-resolve-loader-before-use",
-      "sha256": "e6f357841a4c88b0022c4790b20bd3cbe215cf25eae975f6bdfaa3c3b8f70995"
+      "id": "plan-candidate-producer-resolve-loader-before-use",
+      "sha256": "1e2208d124d11ff8f0ef678de22c93d5583f160885e0f66a8bd16250ffbb0c17"
     },
     {
-      "id": "proposal-resolve-loader-before-cycle",
-      "sha256": "8e7aaa460df9d10d4550d6f2c5babb0627fc39b929751587ac8364b19bc2f0d8"
+      "id": "plan-candidate-producer-resolve-loader-before-cycle",
+      "sha256": "ddc663c3169441e1cffa19716ba34e43164e51fb526a24f238250d05c14b3a0b"
     },
     {
-      "id": "proposal-resolve-loader-before-verified-baseline",
-      "sha256": "bb4aad2f61bd7097c85ca4e7d7703a010f1cdda3ffe8a9d1eccada8460e04128"
+      "id": "plan-candidate-producer-resolve-loader-before-verified-baseline",
+      "sha256": "2a86b6f509d7f32b335599708a640b2df02da61632fa1c1417961adeaacf5625"
     },
     {
-      "id": "proposal-resolution-before-bounded-return",
-      "sha256": "88f2f8027c6221d13780e422a58b433a55574d1745be56c5dd67b2345a283447"
+      "id": "plan-candidate-producer-resolution-before-bounded-return",
+      "sha256": "15aeb71713e078e267b74caa0410860ef117ffeb7e5c20683abecab2398386ef"
     },
     {
-      "id": "proposal-caller-verified-snapshot-requires-146d5f3b3c47",
-      "sha256": "1c11c4dfde0dfda258b9317850958c7837ff12a550fa8a303c59437765328af0"
+      "id": "pcp-caller-verified-snapshot-requires-59817ba4e57e",
+      "sha256": "472061c8c1b005b233e2567fa5bf6363fb7b2d02f08651988bb11ea2ae7364df"
     },
     {
-      "id": "proposal-existing-s0-no-redraft-requires-c4b6f64b134b",
-      "sha256": "ee1d6c515f3337b93c4849f12b790fde91fbcd78efaa54ca38b8af086594f56f"
+      "id": "pcp-existing-s0-no-redraft-requires-395e7bfe8d6a",
+      "sha256": "77d12d0d49ec28e359062d94562a2e9c22c6934a5494243887234189a2106d51"
     },
     {
-      "id": "proposal-initial-verified-snapshot-requires-dcc63b171f19",
-      "sha256": "a678331896165b96f2da8854641f76bf690edde26447453425e3e5ec38badf05"
+      "id": "pcp-initial-verified-snapshot-requires-dd6895e9b3e9",
+      "sha256": "b7fc5f19d2ce84c676c6634f350ed8e8a6e41feae38adfa39118099421e939b3"
     },
     {
-      "id": "proposal-improvement-working-state-requires-1975cf4f0dab",
-      "sha256": "7fdbecb54de86c299223a1a1111a3c6a494279a41a615fa80aa0f73039fbcc33"
+      "id": "pcp-improvement-working-state-requires-665ef82ed9f3",
+      "sha256": "8efd81645200958bf5a73b70256f2dd4b6b373edf2707abbdc8cf58c974e2bc8"
     },
     {
-      "id": "proposal-working-state-promotion-requires-140429b159fa",
-      "sha256": "2461fcdc727d4be6d5a26131bbce1721979b72d4fb1f004b16f00f3ce9623cd1"
+      "id": "pcp-working-state-promotion-requires-e9e050aa7d46",
+      "sha256": "10526ad11e214f7c3fbd55536b4405e1be6a9c513fd4dc923f0ea6f89c7d4921"
     },
     {
-      "id": "plan-craft-resolution-mapping-before-proposal",
-      "sha256": "f7cea81bf183622aa7f6005729fa4aa685475eae582e8e1e7b2ac1c4cac4e88e"
+      "id": "plan-agent-resolution-mapping-before-plan-candidate-producer",
+      "sha256": "1c366caa820de7489dedc7d068865f075f14f3867e57fbcc5e96480d5f028a7e"
     },
     {
-      "id": "proposal-batch-origin-c7fc82f10c7c",
-      "sha256": "c4f614bbac3dd1c3772f45e9c239ef4958abaddc64c7e804253925564ef428a8"
+      "id": "plan-candidate-producer-batch-origin-9ece84d83a60",
+      "sha256": "d32cd4703d74c559457e5fcc42120879a8bba9ea2913f75980ab9dbbfe142f2c"
     },
     {
-      "id": "proposal-batch-fixed-membership-ead4c4351ef8",
-      "sha256": "8767d65f18bedfd79eec6ef31ac4bfa8c129b146b5b730f2becbe881aa34adbf"
+      "id": "plan-candidate-producer-batch-fixed-membership-4dde1592b0d1",
+      "sha256": "3830e682bb5d735eadf77b7ab220bb835d97efb40310e29bcec5b7979921bb2c"
     },
     {
-      "id": "proposal-batch-adjudicate-all-bf10f63cda36",
-      "sha256": "ea732f65f6862269b346793014507097223f1e6116ae0c9d68ffb348e6b638fb"
+      "id": "plan-candidate-producer-batch-adjudicate-all-7666a0af4b44",
+      "sha256": "db74a81948b94e746d66cf57a71cca7bb5f34e16417395d16e7d7731d7d6233b"
     },
     {
-      "id": "proposal-batch-coherent-apply-93e1b79c11c6",
-      "sha256": "e42735a983c5bbc6fdcefb4539916bb08d197b9417688af45f518491e404950a"
+      "id": "plan-candidate-producer-batch-coherent-apply-e2506bf9a897",
+      "sha256": "fd24c13d3b06096d76890f0882a6739cd1192b132e8ced58aaf9d78d5392d4c6"
     },
     {
-      "id": "proposal-batch-promotion-fade9fdd1915",
-      "sha256": "ac1043cd6ac83dc537c38dd207d847642d6bfcb7165b20ad410366a34514ca5b"
+      "id": "plan-candidate-producer-batch-promotion-6e35ba6ce11f",
+      "sha256": "b1095968e3056d69ecfaf0ca8626c3993109f6832fcf18dfed86776003385885"
     },
     {
-      "id": "proposal-batch-isolate-3c50ec25e253",
-      "sha256": "01a368a6df6a20583436011685cc7d8d4a583da4cc769c877e5ae4535e63b29c"
+      "id": "plan-candidate-producer-batch-isolate-60dc167f5514",
+      "sha256": "d9dcf1abdd5f9b552315370b41b718fe046d8f81489a2da1a79dab5b725f68b2"
     },
     {
-      "id": "proposal-batch-corrective-fdd5e84703ad",
-      "sha256": "59b1c782ff4740707d7fa749bd91656830223bdaf5893ad98ea28ae8e06f0cfa"
+      "id": "plan-candidate-producer-batch-corrective-ef4a3c0ee6b1",
+      "sha256": "156de4c8a301aec711486be531c704dd5a2e2488f48a16d6491689c3d8b4ebee"
     },
     {
-      "id": "proposal-batch-boundary-64a85a5aa5ae",
-      "sha256": "d6555fe55c653b8c5c1e3bbf63d86f8db5eae265901ca05be3da9c1956da6bae"
+      "id": "plan-candidate-producer-batch-boundary-fd61f48dfb27",
+      "sha256": "9183632f353e7a8acc4c6b32bf350814691441fff072931a79ca97a11eac84aa"
     },
     {
-      "id": "proposal-two-pass-flow-a871fc451ca9",
-      "sha256": "76b631c327f339ff9ff9ff89a4d2cbb36805ba25ee77351a72601b8d981823b4"
+      "id": "plan-candidate-producer-two-pass-flow-cd59fe35e0b9",
+      "sha256": "72e4b126c9dd62382cc652edcee662050c83a70737c5c4ee812ec6ff72d94249"
     },
     {
-      "id": "proposal-two-pass-second-9bc9c4c3294d",
-      "sha256": "39d104ed36fd67dce716e0346698f40ed5ad38b0ccc7dedd42455585210a579a"
+      "id": "plan-candidate-producer-two-pass-second-aefda762d727",
+      "sha256": "b9a4adfbf1999120e8bdba73ef8e9caf12e6110c8e579eb1493250f42e9ede72"
     },
     {
-      "id": "proposal-two-pass-exactly-dab45e6d2153",
-      "sha256": "7edcb528f76a69bbff817be0b499d03f0032da90f7f01aa0399c94ef99a496a5"
+      "id": "plan-candidate-producer-two-pass-exactly-ea2285f96346",
+      "sha256": "d45062baf6a8aca98a78805bd8114eb8dab3e4a93d5c073d0360996909ccb596"
     },
     {
-      "id": "proposal-two-pass-empty-1af152a480c0",
-      "sha256": "433f2c086b9db082e694a641d8b4ac55bb50cd6a30a2fa61f4808895cfbdc798"
+      "id": "plan-candidate-producer-two-pass-empty-3fd3b00f8f7e",
+      "sha256": "deb9a991f6f4822136178e2f9f30e9b066aff5a7e90ac9083e31a9cbbf0a3b49"
     },
     {
-      "id": "proposal-two-pass-no-third-4d89d7ff0368",
-      "sha256": "a7e9943a9c328bb62c4c0428d5420589290f9870663f04b916c9b17f8ce7b2dc"
+      "id": "plan-candidate-producer-two-pass-no-third-9d913c8a97fa",
+      "sha256": "85ae57a1afaf691d7330d0ba396165a09e67b31709687c4d8e101ff00365190f"
     },
     {
-      "id": "proposal-two-pass-scope-df422079961b",
-      "sha256": "353d791b60bd1986e6c68b90e66639a237f300f6b47b267ce0fcc95114561449"
+      "id": "plan-candidate-producer-two-pass-scope-34d7e176a74d",
+      "sha256": "d51608c8587bcf2e2ce84fe7d021b2da3158cdcb74de34f0017a967a17abdf54"
     },
     {
-      "id": "proposal-two-pass-induced-373d48bf9ee4",
-      "sha256": "f33fe2b9ba276262f598fc825ec5bf8412568a18293847e74df7226790915611"
+      "id": "plan-candidate-producer-two-pass-induced-ed1c12ebb08d",
+      "sha256": "13c30b11799215631027bec8c3e4b6a3eac6866dd5e0562a7974597e423b900c"
     },
     {
-      "id": "proposal-two-pass-contest-659ce9e521ac",
-      "sha256": "c4d580b23a0348abed5603e72009163524e9c3c89a6d9a8ef1e744dcc9565ace"
+      "id": "plan-candidate-producer-two-pass-contest-570bf86d67fe",
+      "sha256": "cd160c4505954c8d30dac82bd796e50aeca35afdabb660a0a2119f27228b39d4"
     },
     {
-      "id": "proposal-two-pass-unresolved-27b958c59d63",
-      "sha256": "bff2f6557dfbd8f9db0cf112bc5c120515347fcc60f41a24c1afa2fee8e5dfa3"
+      "id": "plan-candidate-producer-two-pass-unresolved-86343deaa9d1",
+      "sha256": "175826b1402aae1c219b82bdc2bb8f28061559b20136211a8daf4ae98b44c10a"
     },
     {
-      "id": "proposal-two-pass-data-62da73c1cbb9",
-      "sha256": "73058ca06b53ff5ff37af009b6e65bb7dc3a10b7ac3f779b74e198e1427886a7"
+      "id": "plan-candidate-producer-two-pass-data-d0068cb56a54",
+      "sha256": "803b422e61e59b76eae6b699c34d248ac46a7ace6addf4d2120e95eaf2c1a036"
     },
     {
-      "id": "proposal-two-pass-no-output-5f44ba0115f2",
-      "sha256": "fa302dc6e1cedff2dbb0ebfd87dea1555dd2eba8b20e56e09fec061527392ec9"
+      "id": "plan-candidate-producer-two-pass-no-output-1f81f4b994a8",
+      "sha256": "29d5405e613eea52a49a5c78eb126203b5ff9d942773145331fb495bbe4b8963"
     },
     {
-      "id": "proposal-two-pass-empty-batch-4701d5a4e383",
-      "sha256": "af9beb77169f92309490a3bb6dce6e9f7e1be4f3313101ef5604349a7aa54b22"
+      "id": "plan-candidate-producer-two-pass-empty-batch-ac8765826ca9",
+      "sha256": "604cb5221b69f60a4724077fd0784ea5f5380b93498cb2f1d01b2f7ceea0b6e4"
     },
     {
-      "id": "plan-craft-resolution-bound-fixed-requires-797326c3cdaa",
-      "sha256": "f996aaff729374bad40612b9815219549793d49d8b26c13e41adb4f7c2521b84"
+      "id": "plan-agent-resolution-bound-fixed-requires-ea344b270245",
+      "sha256": "b0023844bc26f13dab2a3487b2fbe8a9d2dba68f2d4d6987fc3e9b23f749f159"
     },
     {
-      "id": "plan-craft-no-resolution-surface-requires-38157a9c65db",
-      "sha256": "271e9ea8c9b10c6ce9824fb516c4f9e2e8c0a907fd0d003e051983d7677a46bd"
+      "id": "plan-agent-no-resolution-surface-requires-900b81bf5714",
+      "sha256": "6080426028da0dfab69f7c81900c64866ef1118f76d3e47b5d041faa93a29eb8"
     },
     {
-      "id": "plan-craft-resolution-budget-separation-requires-94449e629621",
-      "sha256": "4c179dae4a3e794a681ae18a58f6b0b99a32014d8f81823685199106d885aec6"
+      "id": "plan-agent-resolution-budget-separation-requires-1b20120c8c86",
+      "sha256": "0d3ec6f9869a2262b8e2b528864072e945bb8c3d0fe940b4360ec4c0d1404fa8"
     },
     {
-      "id": "proposal-batch-stop-boundary-42bcddedc992",
-      "sha256": "6f9ee4e492f22608ada94b05b16fde9994ccc893ca194463f5287c205df635e1"
+      "id": "plan-candidate-producer-batch-stop-boundary-7ed850142249",
+      "sha256": "c4b84ba5e7f238e68781f04f06c254a6b37538bff97713a7a434b692310667b4"
     },
     {
-      "id": "proposal-verified-present-return-requires-2b65c6e6db10",
-      "sha256": "6b8bf9c4dab4f921b74d758db6389e636cdcd7e4578969e465f2f474964e8edf"
+      "id": "pcp-verified-present-return-requires-10983b3123f1",
+      "sha256": "082158d89136816b9bee60f424892ddb0daed3143ed442d9d55dbfa51f09ed9b"
     },
     {
-      "id": "proposal-absent-return-requires-df692b963aaf",
-      "sha256": "73570edb4883654bf94acc7cf74a736d39bed2808a32721c39466f9b869efb42"
+      "id": "plan-candidate-producer-absent-return-requires-40985d991870",
+      "sha256": "0e57757526830d4c89dfc28d01dcf2e8d57394e507918ed5ace669aaaedca42a"
     },
     {
-      "id": "proposal-restart-baseline-requires-d9dc0a223143",
-      "sha256": "508ac78d8c24a6ac7582f3d7572d28513f0f900b35bc1739ab57dd23035ffcca"
+      "id": "plan-candidate-producer-restart-baseline-requires-ec9da4a535e1",
+      "sha256": "8f6799088389fa4d9a64b20ed3406999f9e7650ea4fbfef080c6388cde919e47"
     },
     {
-      "id": "proposal-authority-conflict-requires-f68ff001a6ff",
-      "sha256": "b24b881f7a76eea0ef29e437e14aaa9f8efccc1826ed01465416580397947102"
+      "id": "plan-candidate-producer-authority-conflict-requires-9f245a63b67e",
+      "sha256": "f041984cc3fb76e544bd58bcddf0d94fc9aa8a841cbff91956aa27021a169fcf"
     },
     {
-      "id": "review-loop-batch-loader-before-transaction",
-      "sha256": "9ac6ed2efee1f0f930f4d60d6aadbf52c7e54f118118d07bc78dd5a3b837ab89"
+      "id": "review-refine-batch-loader-before-transaction",
+      "sha256": "5c3ffe5b903e05908f1694e2bed9420241b2f71d40bddcdb9a16cbe250bf3310"
     },
     {
       "id": "shg-kernel-intro-forbids-910ca2f74f89",
@@ -1423,92 +1423,92 @@
       "sha256": "a88e187054a69ca7e294991b58250a52e2c47e6b9a6a26458930a808bc866c72"
     },
     {
-      "id": "shg-intro-plan-craft-forbids-b11a8c168118",
-      "sha256": "3e82f5f7b942b7c5cf082ae905c32bc145920139a6bf48c63e695af7df577298"
+      "id": "shg-intro-plan-agent-forbids-201436250f20",
+      "sha256": "00c6aee71fa28e441d70047457c5721bc9cfe28d8bede581c707fa57060a3ee2"
     },
     {
-      "id": "shg-intro-review-loop-forbids-905179f4fbf0",
-      "sha256": "296d5bc02b9a0fb1a457cbec8b3a9beba87f148eb0ab82a0719a90329d412603"
+      "id": "shg-intro-review-refine-forbids-ca025245b59a",
+      "sha256": "9409bfcea257a50c26e7332b322d2ec9e02ca535e564d8281c0944a73f42d0e3"
     },
     {
-      "id": "shg-caller-plan-craft-forbids-0f63857f7a36",
-      "sha256": "a837a9919880d3e165eaa614438044791dfaf5eb7c068460933ca8af232b9eee"
+      "id": "shg-caller-plan-agent-forbids-30e0e582e3d3",
+      "sha256": "ad54e1ce33a23ddb7635b3c70db83417a081e1144a89c4e2b6edc387744644c7"
     },
     {
-      "id": "shg-caller-review-loop-forbids-045d737290db",
-      "sha256": "4251378922630dce1cdab37a4b2c96dc9661b5d83599388e246cd5bfac29f564"
+      "id": "shg-caller-review-refine-forbids-d8b5847dc570",
+      "sha256": "60e481dd458a8eceda6ab75a20d592f1c0506803e149be08a8ab426d1bb52e9a"
     },
     {
-      "id": "shg-boundary-plan-craft-forbids-66ad2186c6d0",
-      "sha256": "1a5c9dc691d7c0a56dabca6991be2d234f612e89d1e644524d55245a1c198ffc"
+      "id": "shg-boundary-plan-agent-forbids-ed7645ce1832",
+      "sha256": "31a33628107308de607e4526081167c2b6f8d2eb8f82ff300fbd8ed75d641a75"
     },
     {
-      "id": "shg-boundary-review-loop-forbids-6a82d99f436d",
-      "sha256": "1424529c015a987dab4fe0c24aff28545a047a7c6e9b2a50703957f4cd3260ba"
+      "id": "shg-boundary-review-refine-forbids-2723bcd5fcce",
+      "sha256": "f1eaf0671476ff8387de964877aabc5e86bb711ccb92b5dfea7deacd0c27a55b"
     },
     {
-      "id": "shg-output-plan-craft-forbids-ab4353413abe",
-      "sha256": "1776f8127ced5c92f26864aac7e2fd0dc432790f0de5f595e8c6f2da5008b6a9"
+      "id": "shg-output-plan-agent-forbids-6aa1b23472d3",
+      "sha256": "b6dc2c8cac5bdefe6ae1859edcc01739998a292771690c047f484cba01062b45"
     },
     {
-      "id": "shg-output-review-loop-forbids-cece964d17b6",
-      "sha256": "91e19efd73714a6f7e69c6de3413c021c408912170add29aeba0bfd3701272f2"
+      "id": "shg-output-review-refine-forbids-499097e33edd",
+      "sha256": "0644c79f834e653bed8a7718b91a2554d05c460346bc1b4ec9950679b4174de0"
     },
     {
-      "id": "proposal-kernel-reference-before-criteria",
-      "sha256": "8f493ee995708c8e6582198498df99e017f739db8be0fd3ccef18aafed725206"
+      "id": "plan-candidate-producer-kernel-reference-before-criteria",
+      "sha256": "e8feed4202d657f7b129501ceb13913f1641b42e64356f2303e206f723bb164e"
     },
     {
-      "id": "review-loop-kernel-reference-before-criteria",
-      "sha256": "6f9600713c424a4e728ab1debebef9e602d2ba9aa2addf3cfa0c8b018e4ade77"
+      "id": "review-refine-kernel-reference-before-criteria",
+      "sha256": "c1dcd7695d7c9d3f294382221782e81f4716bfa21c815576db6b7d8df63ed05b"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-25bd2625ea13",
-      "sha256": "cfc4d06ee6d5e7842e22f3ed4ec0111fac9d973adcb6e9684f073a79ba75a00f"
+      "id": "review-refine-adjudication-requires-6121b42635ea",
+      "sha256": "c326ed0cd88e6544c0490cbc20a7885c6343715e4ea00fd29522e2cc85e086d0"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-2496b9643277",
-      "sha256": "77fa0cb630c450405cc97c6d94175604ac6b2830767178752ee81bf9059e086b"
+      "id": "review-refine-adjudication-requires-571e577a9083",
+      "sha256": "4b45158b47cb7a8124fc0858d2721e870cb712282bd49c6138db37af7217ced6"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-bfe3fbefc53a",
-      "sha256": "011f102ba0e46a1f32f4ade8affc2f0d5a1f790b1ef484ad4bfc829cb79f5842"
+      "id": "review-refine-adjudication-requires-ae56858f26ac",
+      "sha256": "3d7479e6bf756596826dc422879ca30f66c5499d9c2e19f4eda6571d5f104b12"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-937a5660ef7d",
-      "sha256": "b69c9542ebc1ac7cf9b0eb1d1187bc4478a66cab631e1b96d6ac9c64817b1177"
+      "id": "review-refine-adjudication-requires-24431cd54040",
+      "sha256": "9907dc00c95f863cbb3725a5586967b6a9cafdfb40aa1d344c49ed96f27b65df"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-782a7d8f8afb",
-      "sha256": "769ce5be0563946d524196fbf9e981c22510dcad4e841ec778e6f7d3eb978340"
+      "id": "review-refine-adjudication-requires-053f70479137",
+      "sha256": "ab9075c83e29fcf5cfa6f1db230a745ecbbb9f915e6adb152868a977a851b389"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-requires-08bf20e3f992",
-      "sha256": "e3bec13a4a0cf16769f7b80d22819765852078eaee1b34365f7b07b2b40c70ef"
+      "id": "review-refine-adjudication-requires-e1b2aa6a14f0",
+      "sha256": "cc98d816881905634c730f254650e8a0fd2cd1d30d76a0d1c6180e67391f08f0"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-69acf8bc02b2",
-      "sha256": "a8c4ecbb5283a0a08da6eafa573f82f87e47051ca2a7b916ba2d714948e483ee"
+      "id": "review-refine-adjudication-forbids-1ee250fa2e7d",
+      "sha256": "d22bb535b49ee157a807199fbb4e8df879973aba7bf967463204299c947ddc0b"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-4a74abf3d068",
-      "sha256": "8da14fbe4b4b52417b30b37e46d168dd43a53e52d8748ece08f13e2e12f58758"
+      "id": "review-refine-adjudication-forbids-4d1d79112b12",
+      "sha256": "572bb5baae57cf2fba18b656d0af3becb226a6cad13f61a6d60975fe382a462b"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-452aebfab7ff",
-      "sha256": "b61e6075f0a30e730b0bc2da1a3aa9ab31e8ba6de611a9bcc0b8b3457fc030a8"
+      "id": "review-refine-adjudication-forbids-84e3ec9cc1f4",
+      "sha256": "6f2959d28241b14db528e3449b7a90422faee9863edb44db6b83b234072eac31"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-0b7969f865a8",
-      "sha256": "80f54d7db012db6fc702ad04bcdadea49ecc5eff4d5885412150c2e5808fdff9"
+      "id": "review-refine-adjudication-forbids-ae92875b4e92",
+      "sha256": "e453632e4cd76858b24d21499ce6321b08d1f7ef91669fa4654a83d6e5d7a9c2"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-aaa53eec5ec9",
-      "sha256": "b198b09a2dfd035a99bb40f4a0c2fdf4a6199bf03df3bfedd4bb19417a223ff7"
+      "id": "review-refine-adjudication-forbids-d361763b89a3",
+      "sha256": "e29cead37cb586800c486cb0991f4c5b34547e5063008fbb8d7aa5902287e02a"
     },
     {
-      "id": "review-loop-parent-adjudication-vocabulary-forbids-cda422a7e473",
-      "sha256": "77c34cbbb93f2eaa9d62280a8f2bb8325979280e85603077b2a540f9e0a52f49"
+      "id": "review-refine-adjudication-forbids-e1f760aed3c0",
+      "sha256": "b903482cc10235a26bfe9be0c0e2ca816b8efa03fd7e52c5f680b77e2ffa912f"
     },
     {
       "id": "candidate-producer-boundary-requires-00d2b5fa97bf",
@@ -1531,12 +1531,12 @@
       "sha256": "4a7c1594ef6e055c8262d261afaa7ad8d00b9dacb5b5ed1e329769106477e61a"
     },
     {
-      "id": "candidate-producer-boundary-requires-35cfac692d99",
-      "sha256": "b7060f2d5616a4f7f5b884208cf44824066e2858f9f0f68c37cd1592148ba273"
+      "id": "candidate-producer-boundary-requires-c3d19dfdd3b4",
+      "sha256": "e9ee0d4dcf437cc66977ee7dd40ae5502b74777828512043041c959b43e18db5"
     },
     {
-      "id": "candidate-producer-boundary-requires-a7801c0165ea",
-      "sha256": "cbcfbcec0875319937fc49f6b7c2142085b1fd3593b9784770ab7e0781273357"
+      "id": "candidate-producer-boundary-requires-fa737d884a52",
+      "sha256": "c7980362a8cf3e415cd8d1e26ca45a13bd93ee94f0114843293e077f74b35de4"
     },
     {
       "id": "candidate-producer-boundary-requires-7104fc6ef7f0",
@@ -1547,16 +1547,16 @@
       "sha256": "a2d6139b8611e5fe87d5311eb61c7894f8303db1d9315b4205b058d516b3ed69"
     },
     {
-      "id": "candidate-producer-boundary-requires-03dd5f0d6b3f",
-      "sha256": "6440ad385f1a0b7b4b0c150d48d22d3c27e6e1b12a4b664c1f676fc9a2359c38"
+      "id": "candidate-producer-boundary-requires-06fd6dd36446",
+      "sha256": "299e18286f8859c68d11ed366783bb26ee9fe71c8eed0e838d0e952dc3efcff4"
     },
     {
-      "id": "candidate-producer-boundary-requires-9461807627b5",
-      "sha256": "cbc6fd3f51399ebc9fe89f33d4790b872ac4f557e3209a92f8b9f99d01812b83"
+      "id": "candidate-producer-boundary-requires-2453dc7e6ef4",
+      "sha256": "153f2dd4b0874278883f131a018d48b9b3b18f54366ff8d741b429ac32098e88"
     },
     {
-      "id": "proposal-return-after-two-pass-90340349b262",
-      "sha256": "a842361666a075b77c84a385a7275882890637513355ec62b01eb5dc6b20f832"
+      "id": "plan-candidate-producer-return-after-two-pass-373c1cdd74a2",
+      "sha256": "de157882ee5da91ad44ad00757d0351b87d2ff574dbc664a0dc7d91951cd5af3"
     },
     {
       "id": "candidate-producer-boundary-requires-71c110088df1",
@@ -1595,24 +1595,24 @@
       "sha256": "3845f254bceb108b2fc08dde62bc46143a7a430e6df420bc388262e5772162eb"
     },
     {
-      "id": "plan-craft-proposal-handoff-requires-0a4f3cf659aa",
-      "sha256": "9d7ab53bb5a219cf819ec74326cf477ed3f65b929ea7308446c11867af21258c"
+      "id": "plan-agent-plan-candidate-producer-handoff-requires-6440cedf2954",
+      "sha256": "c2b2bf468a5b0dbdeb3437478f2c6f9fa690c8454ee7fce2f97ca661ab6726fc"
     },
     {
-      "id": "plan-craft-proposal-handoff-requires-0f1e918a7167",
-      "sha256": "0b21950edd3b3f29b47bb60fc7743fb642be5924b2bedea125e1e7159e126ed7"
+      "id": "plan-agent-plan-candidate-producer-handoff-requires-c2e7ac715ad2",
+      "sha256": "a651b7bed050b5e6d5c72bb108e9e4d24877505b3d2e18995d085bb9488ef4b9"
     },
     {
-      "id": "plan-craft-proposal-handoff-requires-ccee3f4e15ce",
-      "sha256": "4f790ef710d5f293b56d52c4df9549e05cafaaa483f2197b530507b08e2994d4"
+      "id": "plan-agent-plan-candidate-producer-handoff-requires-cf935772edbf",
+      "sha256": "3c06dd66fc814906d86a2212d4d086ff7048a0c06a333981d4a890bcf973dff4"
     },
     {
-      "id": "plan-craft-proposal-before-review-loop",
-      "sha256": "da5babab2226af3cd4ac5e0aade88ad532662b8272862611a6eec21ef46545cc"
+      "id": "plan-agent-plan-candidate-producer-before-review-refine",
+      "sha256": "b1fdbb3d3cfa8bcc384d606ed8d2c52fcfc6c897f9a9f3ba7a05255d04722b43"
     },
     {
-      "id": "plan-craft-proposal-before-stop-boundary",
-      "sha256": "3206d585d4092e0d3ae99b5f1ffdb951cb9f6652e2e77bd084ae9c6a351e7f32"
+      "id": "plan-agent-plan-candidate-producer-before-stop-boundary",
+      "sha256": "2b693c8b4cd5aea9ca41e3ba6824b9ad0543fd48b4c794e79160fa4bb843cc5e"
     },
     {
       "id": "structural-health-gate-boundary-requires-a1d910d24911",
@@ -1623,8 +1623,8 @@
       "sha256": "2b8757116aeb1538d422f903946a061c8477b1962c5f04d261fa68d21356400d"
     },
     {
-      "id": "structural-health-gate-caller-context-requires-03e25276e6f1",
-      "sha256": "cedae8ee3a09a950717e30d6840d3f73d8994c79500a07dab957413110ca34bb"
+      "id": "structural-health-gate-caller-context-requires-da0a25ead2cb",
+      "sha256": "eb33035268962b35ef4ea0dfa10aaf4c2d5e71351098b2572e9b5f436f49cd3f"
     },
     {
       "id": "structural-health-gate-caller-context-requires-8724c05250c8",
@@ -1659,8 +1659,8 @@
       "sha256": "282218cde14729e9b42f8a215f54ff1fd6ad2237f37b61d005709f89a79e3cf3"
     },
     {
-      "id": "structural-health-gate-boundary-requires-3b8bb200f1ab",
-      "sha256": "a3f285a528ca9f25e66781904705375626e13a9e615954cf288193ff60532a5a"
+      "id": "structural-health-gate-boundary-requires-b344367737df",
+      "sha256": "d2a2fa2e00ffd2c9f106a5c19f85fa202879fcceb47c5564c07d05753f27fa33"
     },
     {
       "id": "structural-health-gate-boundary-requires-15d0e8d8bbd1",
@@ -1739,164 +1739,164 @@
       "sha256": "72a5158ec8d93777487d8272eebdf870f35f00a0f4fd2e8e5a6cedb5f19f058f"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-dd4e30dbbf4d",
-      "sha256": "7d8a8366081a356f6fcc2bb5170e1db0687e6c9ec1e2a59069ffdcd18c29fec7"
+      "id": "plan-agent-structural-health-handoff-requires-b2931e80ed6a",
+      "sha256": "31a8c7860298d7dc19d8110c3e2f36c9d5a635e414a3a6b140cf4bb83d49fb29"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-d0206096a1bb",
-      "sha256": "34ba6a91df19d2d0f81cdd3bdd4cb8d7b32e5deb8c93fac470ce23f669e6d8ca"
+      "id": "plan-agent-structural-health-handoff-requires-b857aa2c4473",
+      "sha256": "0ecac0ed3b44c48d90f9e93ec2d2aed6feb718ec7137d0bb2e193b9bf5f12275"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-cad1d2dae294",
-      "sha256": "3e4ce7497011316da95d78106fa25f4f5b8c6f79611c1012b4bc6bab5ddd07b4"
+      "id": "plan-agent-structural-health-handoff-requires-de50dc9e1341",
+      "sha256": "1b1b3a2e99ff8c2242e03d50ad92728d694f6b5d62ca2a9c5c620bf9f55437ee"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-511d26399edf",
-      "sha256": "60ac774ce0c2750c6804523afd7db65e149807eddeeb46f0eeab5b46b329184b"
+      "id": "plan-agent-structural-health-handoff-requires-9508f55911e5",
+      "sha256": "f8f556f24620e11cc5c76593ceaaee5879589cd065247f45314ee0d9eaf198c0"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-44836df6c67c",
-      "sha256": "5086da8c257fd0bf3e29157d3519f6e6ff68f88f93ba4b549bf50e7cc85ee19e"
+      "id": "plan-agent-structural-health-handoff-requires-41d691f4468b",
+      "sha256": "77588c04dc7cb78560d7fca2fe7f1c022c8e6103c84926b2ac45ead1c1cc4947"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-21955c188bb0",
-      "sha256": "f653e1c74311d8f3f4a35beb561d2b29a5f5936e3fe2066bbcec9e640aece479"
+      "id": "plan-agent-structural-health-handoff-requires-3e45b696eb23",
+      "sha256": "d4ff0b55da3846b11cbf499482393ee42c10bc93dc64581b1ee2f73a7a858a8c"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-74738863714d",
-      "sha256": "4ba98edfccdde2d6fcedf634ba23889e2e00b110d1ccc91a1f5f8f3469171ba4"
+      "id": "plan-agent-structural-health-handoff-requires-eb0aa9b703e5",
+      "sha256": "fb834a48dab89c1caadfe5ca74e4007caebd79d7b570fd8f2243deea93620b26"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-a557482c6527",
-      "sha256": "d6944b9594d15c7f87093e416d9461a881450fe11c7bf60e09dc470ab990f7a0"
+      "id": "plan-agent-structural-health-handoff-requires-d229ef6c64be",
+      "sha256": "352c3989e01f510f306b1991256f619abecac2575da444bb1a89898541057a42"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-d798d46b697b",
-      "sha256": "64b5758e4d8d4db1325b8ab11674203de951f14a96ff61c31ce49454aa554e06"
+      "id": "plan-agent-structural-health-handoff-requires-6c13bfc2344a",
+      "sha256": "e9f64c5f52b30632b46e5a40738abfcebaa8eb629daf7444e42ffdf7ed9dc44e"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-f1336a698893",
-      "sha256": "02f0e9386e02f247f14dc3847f26a203162e3edd9de0a00bc37141fe0dcd2c9e"
+      "id": "plan-agent-structural-health-handoff-requires-d6eb9c024b9c",
+      "sha256": "8b27923c5b428a799a8be8a4baff2eb5768eb6b6672209dee9826819574942dd"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-0a2d7686d06e",
-      "sha256": "205cf3ae061fe75198f41d03a6fa6f4bbed8a48451b686544889aea80147073a"
+      "id": "plan-agent-structural-health-handoff-requires-1fc5c70a8cac",
+      "sha256": "de147f1e568350ad4d7a43bbd62962601cb6afb855ca3fc46634051be4b763b7"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-a6555a06e072",
-      "sha256": "3003635cb0fd734ddda20c18e54080909813d40f143bd5e7acd792b075d553fc"
+      "id": "plan-agent-structural-health-handoff-requires-cd1bb57f5700",
+      "sha256": "bb7634b3dcb7f5a881de379bda56dfb7fff2c2f14acf21121423a2531c13e090"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-4d18078f0eef",
-      "sha256": "68db34df4db8e1b1a5167e273b63e12237f0c989a261731dbbfc9f0b713d4e29"
+      "id": "plan-agent-structural-health-handoff-requires-9a2da8008dde",
+      "sha256": "3ce36d6eb52607dc131b5b3266645078f4425d1df8e7d614634bbba833a03785"
     },
     {
-      "id": "plan-craft-structural-health-handoff-requires-701d86c9cd50",
-      "sha256": "31b47e78edb1ba0fedadf84ab09765334bbe95823b9bbc3d9485eb4cb9cacffe"
+      "id": "plan-agent-structural-health-handoff-requires-3389f48382fd",
+      "sha256": "8c34d3c237f9cb25847f18605b9874b0774d731be91c18200a630f7beb7f8fcb"
     },
     {
-      "id": "review-loop-structural-boundary-requires-8097d7454bed",
-      "sha256": "ac9b978f11a2aeece2ae4463c726c3bdf1d0a2f02602b2d2e38fa2bfc8a841f0"
+      "id": "review-refine-structural-boundary-requires-e59ac3fcd3cf",
+      "sha256": "2e83ab953f2b38e624f86e9165b8577c3daec4a0441967b9f725ded659c006a9"
     },
     {
-      "id": "review-loop-structural-boundary-requires-568e6a5750a3",
-      "sha256": "b32f300519fb3dea332c535a1aa6b4c92319d11662f3f3471b98ac88bda1cb5b"
+      "id": "review-refine-structural-boundary-requires-d4cb267dcd67",
+      "sha256": "4daa4992ef1afc76e7d0f310e387630f292c4d871fbfca62570cf2bf592501ac"
     },
     {
-      "id": "review-loop-structural-boundary-requires-24dbed97794e",
-      "sha256": "a3f594362f071e45d95965667b219eb952f408f35614988b7b0c3978a35e9293"
+      "id": "review-refine-structural-boundary-requires-9a09b477dcd4",
+      "sha256": "e178b96410a9b55a2d0ef9bfe9e828cda6119385e59afa99475767a3f916414e"
     },
     {
-      "id": "review-loop-induced-brake-requires-0fba70583020",
-      "sha256": "5e3aa90879417e38fc50730ffb5d211d14bc78002bf0c2c3b889794f0be89844"
+      "id": "review-refine-induced-brake-requires-7bf1a9955bf6",
+      "sha256": "88305c283199b38583d4cf15a6c6406fe18e01b934a6ee379f7132124ec20e78"
     },
     {
-      "id": "review-loop-induced-brake-requires-db4aadb372fb",
-      "sha256": "20b3b2a46b2bf9ac57bf2b2daf539e86f767b630469c6aaedc2d940b3696eb13"
+      "id": "review-refine-induced-brake-requires-3bd37375df36",
+      "sha256": "60cf6505ee65a7acdc75b214f2f3ab0792d95c4975e4bf6fff3c9a0ab5698cc0"
     },
     {
-      "id": "review-loop-induced-brake-requires-2d6da47fe79b",
-      "sha256": "76b4f7096f3903b3783fa74b824ef2be42676ddf338a25637a0176b483920c96"
+      "id": "review-refine-induced-brake-requires-e5f14ad38e07",
+      "sha256": "947d4df09ea928275332b69b9959906b8ab818e5a4c1b1d9741b997f44dae30c"
     },
     {
-      "id": "review-loop-induced-brake-requires-79304ffc814a",
-      "sha256": "11b64ef332e21871276117d14b4dc8416875e67141896e3f8663fdcd1841f45a"
+      "id": "review-refine-induced-brake-requires-1c57f79b6316",
+      "sha256": "6cec1f13020c4bb11ee91ca9ae7c39e8e344ea82e47661ea35f27b06dd8f5222"
     },
     {
-      "id": "review-loop-induced-brake-requires-a4579c32ab38",
-      "sha256": "4448bf10f26b21e95f4ad93808007bd5944ce080cbac754fcfc9a0c05c21b811"
+      "id": "review-refine-induced-brake-requires-a715ae3d4a85",
+      "sha256": "561c1c725348b69cb2ef3d474f2b2b20203db15527ee0cabea55a0949662da17"
     },
     {
-      "id": "review-loop-induced-brake-requires-a68e5a4a8a2a",
-      "sha256": "3a83fe729d62f8dcbe5f879b933c18917189d17b188a0cca6039e77552e8fdd6"
+      "id": "review-refine-induced-brake-requires-8b5582848464",
+      "sha256": "acb30cc2e883f22a7dbb6e48f058c857c33d93e72a57d167826fcd93edb56850"
     },
     {
-      "id": "review-loop-induced-brake-forbids-a311c68d42ca",
-      "sha256": "afdc539cc8eabea061c633fa59cace35248d2aa2eef8494e59ada813e40f8db0"
+      "id": "review-refine-induced-brake-forbids-6db5d7a6cc67",
+      "sha256": "b8c41bd79ea5c0fe38299fddf3aabe24b0be05014e325331605b532c505f0fb4"
     },
     {
-      "id": "plan-craft-proposal-before-structural-health-gate",
-      "sha256": "f635d17cd4d47d5f1514043a72ecea120e128f3f3ea6ddb2c88611972a7a5e54"
+      "id": "plan-agent-plan-candidate-producer-before-structural-health-gate",
+      "sha256": "4ea8fe94165782ca8f944350a5c25e39d999d139c3ba1bcfeb484f5f32dc2faf"
     },
     {
-      "id": "plan-craft-review-routing-requires-ef84b7afd778",
-      "sha256": "7273a8247a7e38cb3659b756b8a0669145b7de6933faffd8a005d4dafff30bb4"
+      "id": "plan-agent-review-routing-requires-62433696fa0f",
+      "sha256": "07f72c3f8f987a28d7d6c084676f89e0f6709fda4eba351a8581e8cc9e3f807d"
     },
     {
-      "id": "plan-craft-review-routing-requires-d9d4be36d7ba",
-      "sha256": "277c099bbe9f87877a5663f1f7be82037f1b3a20f9e57044260a5fa3627309ec"
+      "id": "plan-agent-review-routing-requires-1e4e7e9ec253",
+      "sha256": "505900a0cf35e60253993e34c4a7c5b1cd670fcf32b5dbc49ae2516016bbcb15"
     },
     {
-      "id": "plan-craft-review-routing-requires-fd0ff5e13e02",
-      "sha256": "979cb114193c965593991b8f58c621e80d62da97ebe0e445ea447b55783b100d"
+      "id": "plan-agent-review-routing-requires-627a4d0db58b",
+      "sha256": "e21eac278fcdbfc8a850bea87e4c2be85742ca90f8979801dc6245661537f427"
     },
     {
-      "id": "plan-craft-review-routing-requires-aa56787d9a15",
-      "sha256": "03f9b5be4be04e2bda58f45038cac7a342a12a8d3e3023b7a2c6d46d46c84d67"
+      "id": "plan-agent-review-routing-requires-55f1f38469e2",
+      "sha256": "9bd77fe0725d71c800cd9285adcd579dd3d0c90cfb5b66e89f9d1001663ce4e8"
     },
     {
-      "id": "plan-craft-review-routing-requires-b3b2d00b84a6",
-      "sha256": "54fe8841892f8bc019cff643ce940aa07862b9be46f5d18b84fba80cb0b3615b"
+      "id": "plan-agent-review-routing-requires-4bb631170809",
+      "sha256": "373cb950ed4554a97f8f24b3305cd47fa87eec8aeadd84577301d10a416729ab"
     },
     {
-      "id": "plan-craft-review-routing-requires-f83c0b1d2342",
-      "sha256": "841420ba5c3f6d4df069866aff71b5ddbd13efd1d28b1cfa84562d83e86b8dd9"
+      "id": "plan-agent-review-routing-requires-f1b6672b1dba",
+      "sha256": "d22265defb0129282ce87845c4bfbcc6a43e82cd7256e49f149e572329e55d90"
     },
     {
-      "id": "plan-craft-review-goal-requires-e7403e6adb28",
-      "sha256": "55eaf360eabbd2c88c51b381caa412fda5152475450b87ae7469aacd9945db71"
+      "id": "plan-agent-review-goal-requires-4f5185a699b2",
+      "sha256": "b8162dc47cb96a26cb918cc9fdbd482027a7cfd18a470336db1ff51438e4c659"
     },
     {
-      "id": "plan-craft-review-goal-requires-e1649285467f",
-      "sha256": "f68d08292353040dfbabd4e7af5400d5b3958c983c0e58d0fdb2e4ce0f6dd6dc"
+      "id": "plan-agent-review-goal-requires-fe2353d05d2c",
+      "sha256": "d63d14ff74f18b46ac566f8c33a7e53d94ddb6d613e1d8f32b9b15cf8e81e530"
     },
     {
-      "id": "plan-craft-review-goal-requires-df3d7fc132b7",
-      "sha256": "00060fc6ad3148649d032aa0952eece077cf3a4860f17170d99890625a083583"
+      "id": "plan-agent-review-goal-requires-28a2f6d032b1",
+      "sha256": "21622c9976d55402f42ba3f6347ce6140eddef7bd3b3f431cee204c1c6e65e45"
     },
     {
-      "id": "plan-craft-review-goal-forbids-d1b15db81a1a",
-      "sha256": "443b7e18ef79d39a265d73b4a3b258ecf6d62ff5505f738dea84aa762919f988"
+      "id": "plan-agent-review-goal-forbids-8b0463b5cd07",
+      "sha256": "a445b736da7fd2b4a2e63dc2bc0cd55cc84e50e42cfdef2018163875575ad212"
     },
     {
-      "id": "plan-craft-review-routing-requires-72a78051f135",
-      "sha256": "ae19d6bfa3cb5031384e2762468574025215f0d2cfd86f78ecba0b7cb6d57e7f"
+      "id": "plan-agent-review-routing-requires-943449028bc2",
+      "sha256": "7fcd243e96494e79cf34d6d3ea7e271a9cd6e6854d2b750a046ec4ad55711c9a"
     },
     {
-      "id": "plan-craft-review-routing-requires-5849648887f9",
-      "sha256": "b1f00605a79467e68f9d88cc4ed9581389591b8a747a5855ac0dc2f4d2724aea"
+      "id": "plan-agent-review-routing-requires-70f414885590",
+      "sha256": "cdd40fb7523ac983908e80dbd53241a52c77be7493919e836d716edc38c84d65"
     },
     {
-      "id": "plan-craft-review-routing-forbids-ec73077f60b6",
-      "sha256": "2c36d20335a5ef73a949a3c8cafbbc67afc7829eab2d188162662cf52d6e04de"
+      "id": "plan-agent-review-routing-forbids-88dde65c9c5b",
+      "sha256": "fd2d1f4585db3aef256b97c88292143e9363f712fb93f4f9bd28958007f9a0b1"
     },
     {
-      "id": "plan-craft-review-applicability-before-opt-out",
-      "sha256": "b4a0f91496809c43d318eefada5f88216be28210e9590ac903078bf9829ee078"
+      "id": "plan-agent-review-applicability-before-opt-out",
+      "sha256": "d7f662f5ec81b9e1f54a14be8f18d5f1b87d50c7084e6f2c3bb48e62c8d4fd65"
     },
     {
-      "id": "plan-craft-structural-health-gate-before-review-loop",
-      "sha256": "df407c19a6b2aa911dc740be1d887b4d92250dcc6cd085f69ab2f63565fa2ae6"
+      "id": "plan-agent-structural-health-gate-before-review-refine",
+      "sha256": "af7046e2c614e0fa93ad5d44be987cc45493ea115a056f91ceea5e62f92bf6ba"
     },
     {
       "id": "public-workflow-routing-requires-26a8ef96a8ed",
@@ -1907,428 +1907,428 @@
       "sha256": "061b0ec9652ac4de344ed2de0a6f72b398b9af62700735b187bd85e4242661f1"
     },
     {
-      "id": "review-loop-proposal-family-caller-requires-525f88e2fc1e",
-      "sha256": "64af3f7f16a0f853ea0c461f5f4b726e83a9d91f721be092366f225fb871eb59"
+      "id": "review-refine-plan-family-caller-requires-2b9e86d38e53",
+      "sha256": "94d1846d615036668cc9cb603d8b99ddf89df9dfd8bd486333112b13ce52d1bc"
     },
     {
-      "id": "review-loop-proposal-family-caller-requires-04d5985042bc",
-      "sha256": "67944e39c65f6319e4955a88761a676226fa2b59afe3db9fff7d92d7d3dba9f9"
+      "id": "review-refine-plan-family-caller-requires-19b6ab0da4c9",
+      "sha256": "00fb5fb14dd16304bcf1cad2cc8c6e8749b8b37aaf9db75d61e9648219bc4c90"
     },
     {
-      "id": "review-loop-proposal-family-caller-requires-94aa60c6387f",
-      "sha256": "f476c8ac48537a5dd23adbfc8efce9afbd6d24b3c1c83e94aec02552979ea5c4"
+      "id": "review-refine-plan-family-caller-requires-b9d2bfc2d2e2",
+      "sha256": "16b55002e4ac9ef1f8320625139dcf7bbf49da3d3b1bf4413417a5426cade06e"
     },
     {
-      "id": "review-loop-proposal-family-caller-requires-79acce05abbb",
-      "sha256": "42ef38f1b06a06ba2bdf6be5b9034ec69b71ef0059469210950c71eed11475b0"
+      "id": "review-refine-plan-family-caller-requires-1ce9400e180e",
+      "sha256": "7ef75a0b63376a076d4eb3f5df31627aee25ee32e05b1234d2d9491241795faa"
     },
     {
-      "id": "plan-craft-autonomy-requires-732887de6aa6",
-      "sha256": "e481435a2a88de3ffd9460732d0384b696021c6ee87ee9560a71661a09202673"
+      "id": "plan-agent-autonomy-requires-6092e7a56241",
+      "sha256": "49e5773a387b262d35395854eb9a33ca77d43dac1cdeb565c243e299cf4dd0dd"
     },
     {
-      "id": "plan-craft-autonomy-requires-1635fbc8e54f",
-      "sha256": "d7b0c89d0ad0d15fbb84c421706ef0aee0fde7325da8c6dddf241a99109b5651"
+      "id": "plan-agent-autonomy-requires-07b1483cbe17",
+      "sha256": "5ebfdb8e44d579852f8c1463b2a69611bf9c5a98ddfebf7b8ba4c2e7c079cb84"
     },
     {
-      "id": "plan-craft-autonomy-requires-999a33986bda",
-      "sha256": "190759f96d42752475749ad74a0d6ceabd71f7fae3c491ce37c9d872aa5bd1f6"
+      "id": "plan-agent-autonomy-requires-62551ec33763",
+      "sha256": "7bf4984d5388be072bf13b66f31c9d188e18b09928d508963950f0e0495e1327"
     },
     {
-      "id": "plan-craft-autonomy-requires-37192d5b1db3",
-      "sha256": "7488aeb79b7ae5346f1a793a733297151ad98bc3b361ead9b637b3b4ce79522e"
+      "id": "plan-agent-autonomy-requires-d19bb2bc09bd",
+      "sha256": "b0ec749cddd1ef7b2a30a722295d25048fe563da7af21120da1a185f3ab9c9f1"
     },
     {
-      "id": "plan-craft-autonomy-requires-72073f66ad94",
-      "sha256": "c988935341ad82a7b60414d1b4f2d7a62fa9c8b527e112f0445ba9446f2f54f5"
+      "id": "plan-agent-autonomy-requires-33c2a98e4e16",
+      "sha256": "f78589e54b0400baed8896ff2960afc983883734aa98584d259a1a555be4f1d3"
     },
     {
-      "id": "plan-craft-autonomy-requires-c89a8bc6524b",
-      "sha256": "78264e21fb6cb164b16bbcff9f4e32d50a2dce3ddcc8deca3ee7fd3064b42e21"
+      "id": "plan-agent-autonomy-requires-3542b13b9eed",
+      "sha256": "a01460ea03ff1c4db470a48420e06ae1b072888855b4074401121e0204201fc4"
     },
     {
-      "id": "plan-craft-autonomy-requires-325eb1c2a142",
-      "sha256": "4cb76e1cb714cb8c00f7c01e9f6a55a16724f62137c6150dc5272e8580abb85e"
+      "id": "plan-agent-autonomy-requires-a8559f23fef1",
+      "sha256": "38b435e4b4956f42ebf0907865516397fbd40fc8818af0e750a95d65e27c6417"
     },
     {
-      "id": "plan-craft-autonomy-requires-032f0b5b380d",
-      "sha256": "dddd0c29c75328e3c991645d877c417485bbea4af562a707ea11d8113da34e95"
+      "id": "plan-agent-autonomy-requires-c733f67769b9",
+      "sha256": "24442211f25e96c5a8d1e423ed4047a49d4546f248093c21c0ab3b0c93967d74"
     },
     {
-      "id": "plan-craft-autonomy-requires-7b6dcecfd5ab",
-      "sha256": "c661e7cff9165df6b664e859ad2298505a336433cc18fe82518ea7b492674028"
+      "id": "plan-agent-autonomy-requires-26a903a59a9c",
+      "sha256": "73af9ddac1fcfb7807a1755e28f4f833c437295f42bcd9c5e225bfc484e04f34"
     },
     {
-      "id": "plan-craft-autonomy-requires-79f1924ab6de",
-      "sha256": "f5224d418e5abd39c9132d49ec6a1b7b5866660f291cc3eb76dc43d2a7412901"
+      "id": "plan-agent-autonomy-requires-8ddcc3e61d7c",
+      "sha256": "0dbe15f99eb413c7eb05f61839ba78d75e72bc341e72b8eda5eb067bde0677d9"
     },
     {
-      "id": "plan-craft-autonomy-requires-586bf806315a",
-      "sha256": "36b0ebb47e5f90252adf42b87b399e2dd31939324075dc4fee7e334a41487c64"
+      "id": "plan-agent-autonomy-requires-00fdc0103c88",
+      "sha256": "3b442764d62d7eaef0e52fde0e20db3fe664b2c32a4f8b43c7ced27fd358cffb"
     },
     {
-      "id": "plan-craft-autonomy-requires-fd248d32a54c",
-      "sha256": "8677724313523e0571f62bba31f4dc54c8a8e882bf1b2698920ee07455f264ff"
+      "id": "plan-agent-autonomy-requires-2f5711453ee1",
+      "sha256": "b40b453110573920b3225a6877c30fdfe7baefe985246228d30212f96c581271"
     },
     {
-      "id": "plan-craft-autonomy-requires-637c4cfe9cf7",
-      "sha256": "6cc1c55fac7115712d057a2bf11745dc5f03ae63007d2569336b001dbef7c2cf"
+      "id": "plan-agent-autonomy-requires-077ffe21f4a1",
+      "sha256": "280b81d9b1764416e4b0dc6b5eb356a6047481dc6235df459d808dea25f83ed3"
     },
     {
-      "id": "plan-craft-autonomy-requires-b86cd9704243",
-      "sha256": "6aa64015d159986de2a1d41e4c79962e54cfb46bc9f9dc5b3fca228337e138a7"
+      "id": "plan-agent-autonomy-requires-1294aebbdce3",
+      "sha256": "3821e3ccc46a03a987b7bb73af77dc037cf48761753951eb1d000ad11a5c5bc4"
     },
     {
-      "id": "plan-craft-autonomy-requires-1bea96daad0b",
-      "sha256": "97a07aa4bb357088fdcf4754e02e44687c69277871ea6bbe6a5d420ef02c3eb1"
+      "id": "plan-agent-autonomy-requires-49d40ad34ade",
+      "sha256": "880b0518838808b91e79df4365fe115810f051f2c566ec51413b546b1cf7ed16"
     },
     {
-      "id": "plan-craft-autonomy-requires-b9f106bb3301",
-      "sha256": "d400587aff0def55503d03a9e9b2d1ab3b6280f93fb4325ea61de57f23ff5543"
+      "id": "plan-agent-autonomy-requires-be461baa1867",
+      "sha256": "a2aac44696ea7088aee06f1cd4158479abd228440c17c2dd124369a561f7fe98"
     },
     {
-      "id": "plan-craft-autonomy-requires-20f8214cba5a",
-      "sha256": "1b21d814349a90f921aac9392e6cfd8350b9e4ab03605654226f6129597a6015"
+      "id": "plan-agent-autonomy-requires-cf5725b49a56",
+      "sha256": "626794abdce2c6bf05841c33d6ac093ab3629f0c918035d39f59cefd2ad22ab0"
     },
     {
-      "id": "plan-craft-autonomy-requires-c3256471ff43",
-      "sha256": "230d2a8e7858662b04bbfdf3f581de3797c4c6438dce3e0f9e4d7f9be8817935"
+      "id": "plan-agent-autonomy-requires-0400ab3b2013",
+      "sha256": "c7c390e790b31a9e3090dbb06da57d5f2f585d3930c4dc14d0d44f7b2f95f66f"
     },
     {
-      "id": "plan-craft-autonomy-requires-719577f8acfa",
-      "sha256": "a1ec6f5844331e5ea719cb6aab61ebb3b3cb6919f3b501e6fa40bd568671b65b"
+      "id": "plan-agent-autonomy-requires-d7b1948b189e",
+      "sha256": "71e07e9fd5251604f9add60266d3cc486e7fe68d8b1c7534970f5476a5f29d3a"
     },
     {
-      "id": "plan-craft-autonomy-requires-0f14b78fd783",
-      "sha256": "ab55f7b13e84efaddccfbd40927177f9e78ce7e071a5f44e506ece27a1064ecb"
+      "id": "plan-agent-autonomy-requires-42d54df67c54",
+      "sha256": "a92882c53214d6fd57f9952df1b921d5c61fe12d1a1bfa126adde36decc6d801"
     },
     {
-      "id": "plan-craft-autonomy-requires-45ca8f6bbeda",
-      "sha256": "d26846ce71ddb874cf88ac041d860fd7575f967c1145a669528eca2b63764677"
+      "id": "plan-agent-autonomy-requires-3712bf2e2707",
+      "sha256": "983f081cb6644e5990386c0834c24070e08c1992cd8baf4d2a105906664bcbd2"
     },
     {
-      "id": "plan-craft-autonomy-requires-561e27726bf2",
-      "sha256": "d08b55d24626a61f9e5a7a8b8a660fa5a9a06c2c23e8cb1c8d7aa89c0d1c50d1"
+      "id": "plan-agent-autonomy-requires-5761e53e42d3",
+      "sha256": "90509660543512c4ad05db2ae3663e0376dda06974997be96875a7f59046dcaa"
     },
     {
-      "id": "plan-craft-artifact-completion-data-7c40ec22e9f7",
-      "sha256": "f8c0d563386e4b3a6abc43bbf5c6a93e5e24775c44dda8e65ae8b1e1641fdcb0"
+      "id": "plan-agent-artifact-completion-data-07f3ef654787",
+      "sha256": "65684f4668dee7c5a1846af0eb00e75af632682d037f1feaa419d2cecd1e105d"
     },
     {
-      "id": "plan-craft-artifact-security-data-2d42ca3f7a0c",
-      "sha256": "858cf668fd18f67b9ba325a4cef1de446113adf47e1555169e072b7ae47df23a"
+      "id": "plan-agent-artifact-security-data-2b1bd8ecac29",
+      "sha256": "3c48250d24f1158be28aff6cf3d801b7ce17f5ac8e544200ae0900edbb149fe4"
     },
     {
-      "id": "plan-craft-no-retired-human-save-authority",
-      "sha256": "4c53c8289378131336dfe42b246420e241b9ae76a7e7042d1611364f994d74f1"
+      "id": "plan-agent-no-retired-human-save-authority",
+      "sha256": "2cffaf9e2879e26b9561727427976a9b77e71ed44843499f92c1db0e4285601a"
     },
     {
-      "id": "plan-craft-artifact-eligibility-before-save",
-      "sha256": "3f6f12474cdce17af11281e57016a21eb1b691c4d14b018d93b9a7dd72c9dbc9"
+      "id": "plan-agent-artifact-eligibility-before-save",
+      "sha256": "5373b2f4a25e0c08f9b1801103c734666d422d441f37af38c218ad4577269600"
     },
     {
-      "id": "plan-craft-artifact-stage-before-publish",
-      "sha256": "d12c706730e1eacb4cd5a3231cd16d7dd63f2353c67a92a59dad7a3609319f68"
+      "id": "plan-agent-artifact-stage-before-publish",
+      "sha256": "ddc584ec88d4280924f6e1f0da209936a191273d0c36fa785451045b76d0fc22"
     },
     {
-      "id": "plan-craft-artifact-publish-before-output",
-      "sha256": "7981e450a5454bc51c289368dcdd17e80bc6909646ab7600a731be1487a88784"
+      "id": "plan-agent-artifact-publish-before-output",
+      "sha256": "e87e02850db53222c25d5ad6dc3806c891adba41fca5bf43a1e4e2fbc7140029"
     },
     {
-      "id": "clarify-caller-data-fab7a72d8afa",
-      "sha256": "efcb780508aefff02ce8454a0ef7f97efd024b8065720e767edac391e92f64e2"
+      "id": "clarify-caller-data-d368442b31ae",
+      "sha256": "9af54aab9f01486e2a894f8c476536d0a29ef5aa43175b7134b9f12f9307ce9b"
     },
     {
-      "id": "execution-bound-data-8e7bc9625afb",
-      "sha256": "396f7c776c51c53fc69a52638ba8b1199ea264a8a0fef6ad5b8be5a259430f29"
+      "id": "execution-bound-data-ceec32085fdf",
+      "sha256": "ff27b20c19cd501a027721b58cf7ba253af8a47713440fb62b351e14d96e2979"
     },
     {
-      "id": "kernel-loader-data-81050f00412b",
-      "sha256": "6720e0f947e56c756d1a2cc428701748f7e7aa65f16effba2eeea487f868b704"
+      "id": "kernel-loader-data-f1980cdcfb55",
+      "sha256": "5607f0ac49bd7f5e89812848fd52640e1193903cbe7d67bbd42931e135266267"
     },
     {
-      "id": "kernel-role-data-cf15e934ff45",
-      "sha256": "efb5898bad617a24127289530e6c22cbe3aede5739edf4ecaa72637ed15a0340"
+      "id": "kernel-role-data-9e606fc1f1f0",
+      "sha256": "f82e35869c2e87f2e8fc419e510e55199228d2e6aca80921f8ae150faefa108f"
     },
     {
-      "id": "observation-reapply-data-1b1a9e358271",
-      "sha256": "12abb0318d883ac2bf3362564fa8247e53683761a523ef1f7c3c20df6e051f3d"
+      "id": "observation-reapply-data-c280b2e36dbe",
+      "sha256": "322e40cf0d138e93eb830baa359ec5bf89122fb037b100b7d3e0b1beeb8d24f8"
     },
     {
-      "id": "observation-action-permission-76976ad013b2",
-      "sha256": "fe03ebb4a5599c389e0028208d062e270edca134bc4bc25aee51a616855b865c"
+      "id": "observation-action-permission-7f681f25d365",
+      "sha256": "2ef5c57a6d4e9a9226d3e4128b6d9e89545f580baf20a31cee45a47b8bbbc8d2"
     },
     {
-      "id": "clarify-projection-data-781df0c3a3a7",
-      "sha256": "0e94fc4693377351c552bd9c734753cdcd6171f834622146db3b5b580932388a"
+      "id": "clarify-projection-data-ef81114d7da7",
+      "sha256": "1727a5328694aeffdc8564480cbb468d16641028f18e7efc755be9260df1829f"
     },
     {
-      "id": "projection-reconfirmation-450555d2c5d6",
-      "sha256": "02a0c3145328456ea166f54a6fbebd472febef3d97ae90e4271d1d51dd23df0b"
+      "id": "projection-reconfirmation-199338b92e1f",
+      "sha256": "1f6913759d849037e24d68ad1cccd02ea30521548f347092cfb22bbedb978e17"
     },
     {
-      "id": "reopen-routing-data-117e934a0f70",
-      "sha256": "99bda6db13d5eec2e109c63e684c8c8726a1912041d644fe80fb16af230b4d63"
+      "id": "reopen-routing-data-fb424071e071",
+      "sha256": "e72dfecf766d846c5c91064b183cace6d3b257fe10fb7718adcc96a5d0f222ac"
     },
     {
-      "id": "necessity-parent-data-9ede9b1cd4e8",
-      "sha256": "5a332bace1d1ba4601142edd23b05fb54da6f406518b2a786ff16060801f1b13"
+      "id": "necessity-parent-data-2936e9b0e6a6",
+      "sha256": "2901cb7eca88d20c4e99b829eb02434768240b6f2151ec5a854246f37d2467ff"
     },
     {
-      "id": "advisor-human-boundary-6e4a30872e5e",
-      "sha256": "7a7b2790e7377ce2aab7e0467254b3b5f31977b9e0384f9d6efaaeda96a6e1bf"
+      "id": "advisor-human-boundary-0fcbb37630a6",
+      "sha256": "7a362619e019306ca1b65c6197d5f2e3a7dbddfe1fc79fac39809bf1d0cce98a"
     },
     {
-      "id": "check1-recovery-data-220cf5108857",
-      "sha256": "1bc79c36bfb638f936bc6ea7efcb56498882b61284b42b1eb6101613886132d2"
+      "id": "check1-recovery-data-9d60e7f98bbd",
+      "sha256": "0fb8c1f6e0b8d801edb1f7dc656567c5f03c761728afd644d5d06422974a602d"
     },
     {
-      "id": "check1-direct-gate-2e994d259a00",
-      "sha256": "69de8df39b02ce66ab48593ea4db46a6f6c2d5ff6c9e1673f7a1a7bd8185bfac"
+      "id": "check1-direct-gate-5e1f04f8f481",
+      "sha256": "a56b207b0cdf9ec04bc3daf312ba16852f0a429a89cc7e22f22f561fe57c02ae"
     },
     {
-      "id": "check1-legacy-route-6ea33edd1a47",
-      "sha256": "d67d3574b65a9f67915d4ec8e57e7272572cbec0582a181ecf8f6728345398ff"
+      "id": "check1-legacy-route-e20e37123e75",
+      "sha256": "4f603864bd0bc7e27826f104f545fb2cb6edf572e16c3853557a5319698be73b"
     },
     {
-      "id": "plan-craft-approval-kernel-before-clarify",
-      "sha256": "f1197c6526191c4451e1ec76a570d0b8d03eed58497e65deda47dc20e6d5a09d"
+      "id": "plan-interactive-kernel-before-clarify",
+      "sha256": "7205f67e6faf8f2e986138ce35c928a913f9072dfbce1eb0662afa1133801325"
     },
     {
-      "id": "plan-craft-approval-clarify-before-gate",
-      "sha256": "94cb0d362c17501e17a57cca68ec17e5c0dd2193418eabd9533cd92acfe62669"
+      "id": "plan-interactive-clarify-before-gate",
+      "sha256": "7576c138589243746f15cb5e8bd49e0c491021e000d05bee9c06a7b5de261edf"
     },
     {
-      "id": "refinement-selection-requires-f58555dece96",
-      "sha256": "499f8f7a042f84fe43321fe1cbbbddf751788b6dc722b083f870d43c94826d11"
+      "id": "refinement-selection-requires-748ab66a0b68",
+      "sha256": "fa3e7110e59a63a37d7a8716fcf12e51d8c84d68616b89ffd38ec47475d0a4f1"
     },
     {
-      "id": "refinement-selection-no-run-forbids-caac5c26e0c3",
-      "sha256": "bfe9345bbac033d83eca5e0f59bdb3f869568f1788bb88f015cebcd9e649ba4d"
+      "id": "refinement-selection-no-run-forbids-22f6ad726057",
+      "sha256": "c310906e7006753c94ed1fa5205f0cb152e823b9b825e848e64bf6a1cff2d5e1"
     },
     {
-      "id": "refinement-selection-yes-skip-forbids-56a421c2bf64",
-      "sha256": "ccca504cfaeec5621c11f6160b6dbf081b0a8e826f07eeabf2d94e18dfed6ad7"
+      "id": "refinement-selection-yes-skip-forbids-94296a3bf73f",
+      "sha256": "51c68f8acf1effc5341603607bb70b840e8ecba12bbacfea2387689beb473f56"
     },
     {
-      "id": "refinement-stop-requires-d625986ecb2d",
-      "sha256": "1f8d2cca2c115b9cd5c4e705044093c1fede50fcaf8b27c4f1fd890aafc5de1a"
+      "id": "refinement-stop-requires-1f1f5c09495d",
+      "sha256": "67169956bdfe289aa2934103f959e87b97b8ac87a2943b07a0d8cfba4bc3279c"
     },
     {
-      "id": "refinement-stop-fallback-forbids-adc7b41012e4",
-      "sha256": "d9808ab487965ff2392a856d5dbb4bf8b9b8f6cc2bad8e3582b62a80af94fe08"
+      "id": "refinement-stop-fallback-forbids-77c4a1b2540a",
+      "sha256": "50ef5dfc36e69d6c52506228b2fb2b70255944306ff62fc5f08adc73c803b5f1"
     },
     {
       "id": "plan-quality-advisor-invocations-requires-78e0d7f8cbbc",
       "sha256": "366d53df139f96c9056902ba055581051899dd14f72ad5d58c6c2eaecbb603fe"
     },
     {
-      "id": "plan-craft-approval-freeze-raw-source-requires-ad816f364b11",
-      "sha256": "93584dcd43400574ebab2e7be3082cfb4a51024c90b0670dfe048eaecad5e28f"
+      "id": "plan-interactive-freeze-raw-source-requires-ed253d3057fa",
+      "sha256": "c04be2d20eb37f64591f9a94f96371349ca9eded3d474dd63f2be4203f7e8f3e"
     },
     {
-      "id": "plan-craft-approval-freeze-bijection-requires-8efeae5ee655",
-      "sha256": "67d469afd9f54d53e8bf4a5bfe762417cb5aa9e15ae199c9d410e47e2d286bdd"
+      "id": "plan-interactive-freeze-bijection-requires-9009aa007126",
+      "sha256": "2761d79b1c15a25ce6edb91cd54be98dca462d4badd2855081e55365feae403b"
     },
     {
-      "id": "plan-craft-approval-always-check-requires-023b48cfd11f",
-      "sha256": "ee2db995165337fba9dcb03dcc0b6806f7a035ccf00dfc7441601d4ebc005e4e"
+      "id": "plan-interactive-always-check-requires-50fab15b556c",
+      "sha256": "ae8019ecd216f5ca6a7fb120f2d8c9a4baa11a335802bf50d0875fa23abbba13"
     },
     {
-      "id": "plan-craft-approval-recovery-scope-requires-dbaa291ad2e8",
-      "sha256": "99fd2af56bf80de80802864465904274a0249e663908a39a9babccf37ddee0ae"
+      "id": "plan-interactive-recovery-scope-requires-9dd1dedf2e15",
+      "sha256": "782586654364d51d7dbf8df68fcfa1fc082656c351ac8f42cd9d286c9e15e93c"
     },
     {
-      "id": "authority-recovery-fresh-proposal-requires-6cec3c2a2840",
-      "sha256": "222d58cdec6ae0e192ef7375bdb15f42d7902831e57a82bf8f31c354402d2cd2"
+      "id": "authority-recovery-fresh-proposal-requires-feb3c3f22048",
+      "sha256": "0aff5fb9685ee051958f79f3c349c2c278935ce6a21076774240e11d4b3ba139"
     },
     {
-      "id": "plan-craft-approval-trust-stop-requires-dd122fdda6e1",
-      "sha256": "6ecc60f926632344c1f51b9b10dc5e9ef61809b9d31dd2f38d65827f7963e1e7"
+      "id": "plan-interactive-trust-stop-requires-c4920906757f",
+      "sha256": "8c29a3e56c2ca88ec47f2bf0d03a0508e0c5c930494fa423fb819b36b7af11cd"
     },
     {
-      "id": "plan-craft-approval-trust-report-requires-936768e839eb",
-      "sha256": "ea226319a647901cc147da4c28d2905c6e2b37c028b4fd832afb35cb946090ff"
+      "id": "plan-interactive-trust-report-requires-648b04a2f0bd",
+      "sha256": "da30bfd3127d989d8a6ea77b51e8cd366e3cf37274e36ffa76894d3c7da31c26"
     },
     {
-      "id": "plan-craft-approval-unresolved-no-gate-requires-b50718e54183",
-      "sha256": "484ce879bb67392c25cc7f1d9797d6575ff5c89d45d619479406acf0407da2e1"
+      "id": "plan-interactive-unresolved-no-gate-requires-084677349a10",
+      "sha256": "21a45b7ad3c8dcd252feb3367975897dca0af079c0587cb4cf258afaed4a05f6"
     },
     {
-      "id": "gate-return-compression-requires-1f31f39a5a94",
-      "sha256": "b586bab2e47bd93df2610bf3b26dd0eb26a102ef3f846641b5f9ba70afbeb6eb"
+      "id": "gate-return-compression-requires-337ce323b9eb",
+      "sha256": "ab57177c941d4e2e5d3169be9a4898fc00880d07dc8be5c32ac5ef6413f13337"
     },
     {
-      "id": "plan-craft-approval-no-optin-inheritance-requires-17049cc2c14a",
-      "sha256": "beca1b9ef18f33c7035c5b30929d739519c69ae658cd7e6a5779743feb894119"
+      "id": "plan-interactive-no-optin-inheritance-requires-06517f5a0d78",
+      "sha256": "04f2c08359e4877d751d2a50da41f289c39db136ecf0c84b3018d8bd55291d3a"
     },
     {
-      "id": "final-reselection-requires-a9c816d8d0ef",
-      "sha256": "f395d2d96502dfbe56b64ad147ee5d5bc08760a3fd782f461272d04f1a1b95c0"
+      "id": "final-reselection-requires-73a530e2088e",
+      "sha256": "7ecf1f20e5d7790d326cb48badbf28e359f9363cd737c8d829227913942aa920"
     },
     {
-      "id": "plan-craft-approval-latest-freeze-delta-requires-7e00b730e5a8",
-      "sha256": "2ab4db145a7454013a577c49eb7a16a1f0dc399ad92bcfe68d63ffb4c97e1715"
+      "id": "plan-interactive-latest-freeze-delta-requires-9600b7b92553",
+      "sha256": "cde0a02e71db07b16afdada0c29f4d67fe0ba4f97510a5c5d0d5631f44b9de63"
     },
     {
-      "id": "plan-craft-approval-refinement-provenance-requires-838303e99fe8",
-      "sha256": "bf169e9021f907ef85d4c04e7fce0882179d2671f44952423d59a78f8f626c08"
+      "id": "plan-interactive-refinement-provenance-requires-614c3d523488",
+      "sha256": "9556af2925583b06391438dea63884d1d269246e744a86b1a1cabd1dce8b2a1c"
     },
     {
-      "id": "refinement-provenance-sequences-requires-4557709b92e6",
-      "sha256": "f95dd28543f7495e25971da33be1adc1a682a3815073118d4b8b533ba9d93c48"
+      "id": "refinement-provenance-sequences-requires-872830584434",
+      "sha256": "a851177de80160ec1262fb7d6f748e59f177313fcbbad569513bff22ab51ee0d"
     },
     {
-      "id": "plan-craft-approval-applicability-first-requires-61d3b00cab8a",
-      "sha256": "9599950e3bcb786366af852aaf081817b52da346a47f3a948bc7c9bea7ae2e78"
+      "id": "plan-interactive-applicability-first-requires-083c06ac5f83",
+      "sha256": "94eb98c88a764504f275a93b5c372e24771bd6f38e53a12356691f66f5585d1d"
     },
     {
-      "id": "plan-craft-approval-not-applicable-requires-957326ca3f3a",
-      "sha256": "5afbd3b54d7e99b615bf2b669198b36efa763d45cba8c5ef3e42c9fa29b7e501"
+      "id": "plan-interactive-not-applicable-requires-9dfffc58eb51",
+      "sha256": "ab4182aded91a8b0053c1e8bad1b3cced51d0af748a765ee177184b0c13d3ddd"
     },
     {
-      "id": "plan-craft-approval-fixed-review-requires-cf392563aa5f",
-      "sha256": "ade1521b500366de6aa572cb410162559ab211f420952fa320bf93111859e0b1"
+      "id": "plan-interactive-fixed-review-requires-d5d6abba7205",
+      "sha256": "ca47fe54d15a1d394e112ffcbc9f95aea50e5c7cee2c97393a8b9bd9bfbba153"
     },
     {
-      "id": "plan-craft-approval-explicit-skip-requires-f34a1e8c0063",
-      "sha256": "e7a79d5b4b53b61ed2e5b8421820d8e8dc2646bee8d940dbac35beb7dc868932"
+      "id": "plan-interactive-explicit-skip-requires-e272f8002939",
+      "sha256": "b66bd1138e8e60e998e0cedf1c4f205fe9a69c69c3385a1d075d32d3a6f5cea6"
     },
     {
-      "id": "plan-craft-approval-converged-requires-568f0b08d13a",
-      "sha256": "35542222420d1e987518838bb87458a2f31137e9fcd1e0ec474fd8139d3d5de6"
+      "id": "plan-interactive-converged-requires-aa510d9e3ff3",
+      "sha256": "917e08179620464570be4e9d3c16453362deac6a9bcf2932a4a830a457b6f6ef"
     },
     {
-      "id": "plan-craft-approval-induced-clean-requires-57549e1a01b8",
-      "sha256": "c880f98b3e8b4250de31417340b304894cba7ecc4240b23806b7394efbd45db8"
+      "id": "plan-interactive-induced-clean-requires-ff9f3017e2de",
+      "sha256": "3aa8abebe3b84b4386f8b788721858456ee242a9f9d908ce8e8e7c49510d4995"
     },
     {
-      "id": "plan-craft-approval-review-failure-requires-9b72ab4ea29e",
-      "sha256": "56ad693d7cb81eba3cc55960fb412426359fa926e5853bec9fbcc5db5551327b"
+      "id": "plan-interactive-review-failure-requires-53b7813ba4a9",
+      "sha256": "be3df54bb04d871b98481bbf6bf739c757b15d4a3b289473207fec847bb4df6c"
     },
     {
-      "id": "plan-craft-approval-round-limit-requires-e01366632041",
-      "sha256": "af1fbf20d79ada3fa76ee7ba9c8bdc526387bdbb7915cac2e47dd3aefb012cbd"
+      "id": "plan-interactive-round-limit-requires-5fce4ac0959b",
+      "sha256": "90210136e5a1b0cb3b91aa8d6031e1831fd4b0e3b98bee9a97fb93dcbd2e7d22"
     },
     {
-      "id": "plan-craft-approval-stop-requires-4bbc67baa0ab",
-      "sha256": "e9c7f7e02851f88b549f6f4ca3e1819946df9e22eef68885229894ad57d80fcb"
+      "id": "plan-interactive-stop-requires-d9472e03faa0",
+      "sha256": "46510cbf27bc27effd470cd0a7b8137254b545c4370af849508b88f591a5d776"
     },
     {
-      "id": "plan-craft-approval-induced-unresolved-requires-d172530f123b",
-      "sha256": "d5bf6152ac4dbe5ddea210cea3a75038f1ef062976510a3f02db4362102d7084"
+      "id": "plan-interactive-induced-unresolved-requires-1d9f69d9661e",
+      "sha256": "57afc4db785bbe3fec8f2ce185b1ebb75d56aaa2b686588f3dbbf8369001c832"
     },
     {
-      "id": "plan-craft-approval-no-alternative-requires-0f31049e7a4a",
-      "sha256": "357ba9199355621b6a08ce96cf174ef1092a00b0f0490ad7a1674afcf15f1070"
+      "id": "plan-interactive-no-alternative-requires-842d2610d0b3",
+      "sha256": "8105d41335c943f5d1eff3b1c60391bef3054dcf84f1ac7594466afc76c422fe"
     },
     {
-      "id": "plan-craft-approval-no-reverse-requires-e8d11b39dddf",
-      "sha256": "a855fcb811fdd65c3ee780baf134b7c5d6cd53bc01ca988b35f95b2c068e3578"
+      "id": "plan-interactive-no-reverse-requires-d84914ffb472",
+      "sha256": "622fa3bfd312d67b63b0ad260f97f7dfd1957aeb68a234ae047df3920dbaef8a"
     },
     {
-      "id": "plan-craft-approval-same-content-requires-7b7535bc8d88",
-      "sha256": "09fab450658d2f539b28d137d515f80f5a749a34dcfc6bf281f7a0e04aebed38"
+      "id": "plan-interactive-same-content-requires-f1aa810d8b07",
+      "sha256": "1783980691beb561a645015050e7125dc3cfc6b944ba9211075a8492deaf0806"
     },
     {
-      "id": "plan-craft-approval-caller-context-requires-bcf97400c66e",
-      "sha256": "bf5d7ce441e4f2caf96009ff262662915ea7701668382a19d2c0b42caf621514"
+      "id": "plan-interactive-caller-context-requires-4ed9a6b1b165",
+      "sha256": "27bb547d9f1f4915ef3a93b2a293715572bdba567e90b1f1c9ed88ba0a6ac4ac"
     },
     {
-      "id": "plan-craft-approval-review-goal-requires-a63ea137e2eb",
-      "sha256": "98fcba736e78b4821ea435658a79a7047c269dde20ef6658f007efbbbfe43403"
+      "id": "plan-interactive-review-goal-requires-e317cdac5f5f",
+      "sha256": "8e355443a309d73e8a712a6bf4c13d75c750941e24986d35d1cf4ef9f1ef2079"
     },
     {
-      "id": "plan-craft-approval-review-goal-requires-4966dff9d50f",
-      "sha256": "c752139b06b744baeb778a6ae43d17e01f5226d14c3a5f5de35e3480527694af"
+      "id": "plan-interactive-review-goal-requires-84c3a0db656b",
+      "sha256": "d80236befbb64d63c662c16b77c46ed6af263ab6d0cc02f0c8a9eb17b5f51b25"
     },
     {
-      "id": "plan-craft-approval-review-goal-requires-2c76ead9f65a",
-      "sha256": "4b90f4b18b81944c4677af86d8b3dbafbf930892b933e92e817b0bc1809e03af"
+      "id": "plan-interactive-review-goal-requires-5931402b4335",
+      "sha256": "b9f1509acab5563a300095b4c2480bd1674812dcc5d4acadd6cb0cbe2e03ac88"
     },
     {
-      "id": "plan-craft-approval-review-goal-forbids-725acaae079f",
-      "sha256": "4cc11ebb28683a25125469625c7e0048a75d658363fb2e72e106c985ac4d36dc"
+      "id": "plan-interactive-review-goal-forbids-cc2af17c3ef2",
+      "sha256": "2fb81aef1e9d0e8978f12503def0aac51b7e3a6cb2321fb57a0b8baaf691dbbe"
     },
     {
-      "id": "plan-craft-approval-fallback-forbids-4c9929081ee1",
-      "sha256": "a6c1a6663b2c9f4ae03e16d8591effa59af21900fb062e61a68dfbac1b45ce19"
+      "id": "plan-interactive-fallback-forbids-5e98273e0804",
+      "sha256": "3ec5b279fd7f577a63436e2438d29ad98565a1467a20605223885fee0f9c8d39"
     },
     {
-      "id": "plan-craft-approval-final-acceptance-requires-85acc5627ad9",
-      "sha256": "b562cab4354c2b3b6cfee843e05556ba5972dc2140c49c4b894285bbe1b6da71"
+      "id": "plan-interactive-final-acceptance-requires-39d6b25aec6e",
+      "sha256": "e4c0f53003c1a2b0e93327cfaabc822af207b1d46d8b2ee39b469c47b9d569e3"
     },
     {
-      "id": "plan-craft-approval-review-change-boundary-requires-c8f4ef268682",
-      "sha256": "c8c56bfe028d1f751c921864923d6c540d5411321e0d192b7df740e32dc8de79"
+      "id": "plan-interactive-review-change-boundary-requires-938104d24771",
+      "sha256": "e2de3559224ba44e678255efd21072dc6f6854bda8dd532640ea7027db999564"
     },
     {
-      "id": "plan-craft-approval-freeze-as-final-forbids-4002b75d89a7",
-      "sha256": "a6ebd82f2f6191f07730ef882937d2a4c65839c5ef9f4066a60ab37f6223791a"
+      "id": "plan-interactive-freeze-as-final-forbids-4d11a5fe6e08",
+      "sha256": "a5d4ce2613a08fe9fed1cc590bd25597b8e13cbb5cac176461f8b2f9be215e8b"
     },
     {
-      "id": "plan-craft-approval-optional-final-forbids-a31ba6ac5ce3",
-      "sha256": "56c097b10f3591462d4905ea4e4aa24b9f45c8395ff64370ad1a10bc311e46fe"
+      "id": "plan-interactive-optional-final-forbids-12bd9dbf663e",
+      "sha256": "311e24a1977c1fd6859bc2469db8e90fc4b39f7f75d24ea38f1513c436c4f06b"
     },
     {
-      "id": "plan-craft-approval-freeze-as-final-variant-forbids-48564f79637a",
-      "sha256": "df70842cbca15b69e18d6e92872057f537d3939e3a686bca2d155fbd3a595515"
+      "id": "plan-interactive-freeze-as-final-variant-forbids-4a24600ac825",
+      "sha256": "d1aa5182ebe8063ff8cfd5a20660f6c50d219bba55eb1092cbff049928033b02"
     },
     {
-      "id": "plan-craft-approval-optional-final-variant-forbids-9fe4aa2d50f0",
-      "sha256": "87e3039d9cfef553fa777df9f118d93b3c7db6853ffdd0e750ab44c47b150205"
+      "id": "plan-interactive-optional-final-variant-forbids-2ceedb556ba3",
+      "sha256": "0d44a99cb5fc9af6a913fd75ce6228ec8b7b3ad31270361a81f72f95b8cd32a7"
     },
     {
-      "id": "plan-craft-approval-gate-before-review",
-      "sha256": "9466fdaf156eb35070c1c17d9d38db8347a4da6e00b0729bf2b2333b570decda"
+      "id": "plan-interactive-gate-before-review",
+      "sha256": "df54c21a21c9473f4d7cd6567b35ba723472ee23971b5e1b179179e700525a28"
     },
     {
-      "id": "plan-craft-approval-artifact-completion-data-97cdd8bcad6a",
-      "sha256": "a261664cee3e008c6ed5f3f28dba75013e48106eef0eb87ff8b77a59ac8cc706"
+      "id": "plan-interactive-artifact-completion-data-d5ae3e0422ea",
+      "sha256": "aed315ec7a1ec5ea886b7b8370ebf27a322f4faea8eace4592b78813c1dca719"
     },
     {
-      "id": "plan-craft-approval-artifact-security-data-f612737da7b6",
-      "sha256": "9a9c91488c2c05cc37394bf1c18f119e2664474046e0f9cb26678d2ec14d4e22"
+      "id": "plan-interactive-artifact-security-data-b382dbb79636",
+      "sha256": "309c45a778b1aeab4f1a424e87221253d8a530a3b35da7404b7d639aba58c033"
     },
     {
-      "id": "plan-craft-approval-no-retired-autosave",
-      "sha256": "13ccada6e17043d304ac51981d97b04620b0d06a998b6bf2aa875027a2f0ec68"
+      "id": "plan-interactive-no-retired-autosave",
+      "sha256": "2c223b74470a2d0340b46df8719c5c39347ec40263cd2318c4612e690b28ca1d"
     },
     {
-      "id": "plan-craft-approval-acceptance-before-stage",
-      "sha256": "31f6cb49526517737849c24df5fa32b87800f796b996d1a0aad224b351a2b282"
+      "id": "plan-interactive-acceptance-before-stage",
+      "sha256": "a9639f872130ecb885b055d8f3abd575d8168a958912f3c73ab1fe4549a28651"
     },
     {
-      "id": "plan-craft-approval-stage-before-publish",
-      "sha256": "dd4af7ec21cb50caaf123c1a736ae1ad73187f90ba36ee4e3f74d6e1574392b6"
+      "id": "plan-interactive-stage-before-publish",
+      "sha256": "070e0bc1db671b62093ecb3bfa54ce0c620862de2c7b2c5dd241cd00a8d9b691"
     },
     {
-      "id": "plan-craft-approval-publish-before-output",
-      "sha256": "fa94e8b6da50e3f1b57491e2472b602a53cf6b27ab1e8fada58d65c4f1d9a4ce"
+      "id": "plan-interactive-publish-before-output",
+      "sha256": "b99ff17ab71fb6e5f6f13c5dcf8cafa6c592f84a7e8602a1efd227e8b47abf75"
     },
     {
-      "id": "advisor-parent-data-bf74eb13d79a",
-      "sha256": "48abe0cf3ed3d37b098f094707942c71e297eadeb49b5e38244e396821bd01b0"
+      "id": "advisor-parent-data-4abebd6b2b0c",
+      "sha256": "b3a6fbc25127fc75784745d0c4bdb1fbf1dcc176afe633dd2bd9be4a2145ba0c"
     },
     {
-      "id": "advisor-auto-adopt-1a9de706db02",
-      "sha256": "29f4db547267b95a051190773118ee7c0af30bb9ddda832b887805a264d981ec"
+      "id": "advisor-auto-adopt-ee71d5d4c850",
+      "sha256": "a79bb8389f11c2da4ed8794d6ff4921b7bda0befc6fd93fbec7262f35e9c8885"
     },
     {
-      "id": "advisor-auto-question-5e256c791978",
-      "sha256": "3605adb82e677af31f3671d130bfc9c134d3ca44736860bffe0b6dded10d5ff2"
+      "id": "advisor-auto-question-82ec8ab8d9f7",
+      "sha256": "c23cfa74a677d20e99f10d309fba9c4cb67d7cfbb73e25a699d991dd66d3c90a"
     },
     {
-      "id": "advisor-fixed-phase-3a74fd9f8de1",
-      "sha256": "9c3c17815dc3163816cb7ea3338443bd08b3a119314d1c42a7dab049189b7a66"
+      "id": "advisor-fixed-phase-017074626a22",
+      "sha256": "38622440236be913db1b559e90e3cf96a273bfb4528a0af980e9397ce719f24e"
     },
     {
-      "id": "advisor-empty-freeze-03948263ae3f",
-      "sha256": "1b65ae388e7c46c394c99c5eb95a7d129a106cd661cb528dbdcc455090eb7d45"
+      "id": "advisor-empty-freeze-e3788c71478c",
+      "sha256": "9cf91e29a8b4a1b4d189de8ac88aab17dde3b25003d51d14c6be39ab79b463d1"
     },
     {
-      "id": "verification-parent-data-8a7b5297264b",
-      "sha256": "284d483c9576f78d459e1c3c42e4ef3ed299d22fdb5bc9c13c15e08ecc2f02fa"
+      "id": "verification-parent-data-cd64ef2a5484",
+      "sha256": "29b13197a315bcdfe69619cca61f788d8bff51001b5b00dbd531602087cc18e6"
     },
     {
       "id": "kernel-dependencies-none-claude",
@@ -2368,7 +2368,7 @@
     },
     {
       "id": "batch-resolve-kernel-mention-allowlist",
-      "sha256": "cf40eb73acbf1560c81e9d83a6217ec0509d5fb8c40619de81c410b43118e590"
+      "sha256": "e23156ca094a1eb655781611bc8c1a87172dfaf0eba672117b913c6bb92186ee"
     },
     {
       "id": "batch-resolve-kernel-requires-a0fc1aa6b7f0",
@@ -2392,23 +2392,23 @@
     },
     {
       "id": "necessity-kernel-mention-allowlist",
-      "sha256": "50e2e8edf3a744d0df7eae7157025715f4ac55be30e7d95814aeafbf2b5ffa0c"
+      "sha256": "80ecbeef0cf3e94f18ba7d1b6a58dcc11d1ceda4ab9058fbefdd3d40ed003c82"
     },
     {
       "id": "necessity-kernel-identity-requires-632e3add6746",
       "sha256": "0b2f6d8a6dbf14ff0d2d209c180a8c9f48186ff0def6b3d760a9a2900b149994"
     },
     {
-      "id": "kernel-scope-proposal-requires-03f3ed689dfd",
-      "sha256": "3141ca9620d9ce5e539fd14f7f029345ec640e239e6455c27325af971e373b58"
+      "id": "kernel-scope-plan-candidate-producer-requires-35fa75424edb",
+      "sha256": "42d6984ce9ae204760f89b24efd2bebbd465c5496b584e35bd15132031e9db75"
     },
     {
-      "id": "kernel-scope-plan-craft-approval-requires-66ca26965708",
-      "sha256": "b86e8ebeefb851eb432fd4b8aef0d3d32f25cec9b7ca93b90dc4c940ba85f14c"
+      "id": "kernel-scope-plan-interactive-requires-0e86b4ea5fbb",
+      "sha256": "1f09646eb23782bb9f0011cfd4bafd5a8052ecd1a05d11eb825f4d4fe3b783b2"
     },
     {
-      "id": "kernel-scope-review-loop-requires-8822e7c17f00",
-      "sha256": "8aa4e6f8f709b0768939da57d81ef57a8059846da2aa41419124694cf492ca6a"
+      "id": "kernel-scope-review-refine-requires-10ce894fd07a",
+      "sha256": "00e775bc08c1c90540220954ffe7a94d7b16f7680c82bd149c1e0ff3ec068e4a"
     },
     {
       "id": "kernel-scope-plan-adversarial-requires-02ca7f2135cb",
@@ -2564,7 +2564,7 @@
     },
     {
       "id": "resolve-kernel-mention-allowlist",
-      "sha256": "eee61d2b19285a4b0fbe40919486856790bca5cb8c4cd358c6aa0bb360230bfb"
+      "sha256": "9c42125f56aa094a1066a50c2b7f826f2c730e5872af3519eabe454a12a6d5f3"
     },
     {
       "id": "resolve-kernel-mapping-forbids-30e9e5d5c1df",
@@ -2599,8 +2599,8 @@
       "sha256": "75a7b88cf967492069a95c39829921c68bf1cb0206a3d8faf20f76863fd97e71"
     },
     {
-      "id": "resolve-kernel-callers-ac782e6d2307",
-      "sha256": "720a493abfcd908f9128b18a73fe8fa9c857605a85d5bb1a73fc204189ee81fe"
+      "id": "resolve-kernel-callers-f8b49ee872ce",
+      "sha256": "86bf768291d3232676d09b58955c62082140d54ade1f874922c1879fbecc7a8c"
     },
     {
       "id": "resolve-kernel-scope-4490430b813e",
@@ -3056,328 +3056,328 @@
     },
     {
       "kind": "span",
-      "id": "plan-craft-autonomy",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-autonomy",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
       "id": "public-workflow-routing",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-proposal-resolution-ownership",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-proposal-resolution-ownership",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-proposal-resolution-caller-mapping",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-proposal-resolution-caller-mapping",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-start",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-candidate-producer-start",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-stop-boundary",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-candidate-producer-stop-boundary",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-proposal-handoff",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-plan-candidate-producer-handoff",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "structural-health-gate-start",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-structural-health-handoff",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-structural-health-handoff",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "review-loop-handoff",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "review-refine-handoff",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-review-routing",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-review-routing",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "review-applicability",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "review-opt-out",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-artifact-completion",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-artifact-completion",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-artifact-eligibility",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-artifact-eligibility",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-artifact-stage",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-artifact-stage",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-artifact-publish",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-artifact-publish",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-artifact-output",
-      "path": "shared/skill/plan-craft/SKILL.md"
+      "id": "plan-agent-artifact-output",
+      "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-clarify-caller",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-clarify-caller",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-execution-bound",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-execution-bound",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-kernel-mapping",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-kernel-mapping",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-kernel-load",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-kernel-load",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-observation-reapply",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-observation-reapply",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-clarify-start",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-clarify-start",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-clarify-projection",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-clarify-projection",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-handoff",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-handoff",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-structural-health-gate-start",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-structural-health-gate-start",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-review-loop-handoff",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-review-refine-handoff",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-reopen-routing",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-reopen-routing",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-necessity-parent",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-necessity-parent",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-advisor-parent",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-advisor-parent",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-verification-derivation",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-verification-derivation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-refinement-selection",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-refinement-selection",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-refinement-stop",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-refinement-stop",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-check1-recovery",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-check1-recovery",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-craft-approval-artifact-completion",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-artifact-completion",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-final-acceptance-complete",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-final-acceptance-complete",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-artifact-stage",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-artifact-stage",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-artifact-publish",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-artifact-publish",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-craft-approval-artifact-output",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
+      "id": "plan-interactive-artifact-output",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-internal-guard",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-internal-guard",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-batch-resolve-kernel-loader",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolve-kernel-loader",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-batch-resolve-kernel-loader-start",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolve-kernel-loader-start",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-batch-resolve-kernel-use",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolve-kernel-use",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-batch-resolution-role-mapping",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolution-role-mapping",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-verified-baseline-start",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-verified-baseline-start",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-verified-snapshot-baseline",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-verified-snapshot-baseline",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
       "id": "candidate-producer-boundary",
-      "path": "shared/skill/proposal/SKILL.md"
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-kernel-reference",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-kernel-reference",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-kernel-criteria",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-kernel-criteria",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-batch-resolution-transaction-start",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolution-transaction-start",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-batch-resolution-transaction",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-batch-resolution-transaction",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-two-advisor-passes",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-two-advisor-passes",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "proposal-bounded-return-start",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-bounded-return-start",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "proposal-bounded-return",
-      "path": "shared/skill/proposal/SKILL.md"
+      "id": "plan-candidate-producer-bounded-return",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-proposal-family-caller",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-plan-family-caller",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-structural-boundary",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-structural-boundary",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-kernel-parent-mapping",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-kernel-parent-mapping",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "review-loop-kernel-reference",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-kernel-reference",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "review-loop-kernel-criteria",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-kernel-criteria",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-parent-adjudication-vocabulary",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-parent-adjudication-vocabulary",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-batch-resolve-kernel-parent-mapping",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-batch-resolve-kernel-parent-mapping",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "review-loop-batch-loader-start",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-batch-loader-start",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "review-loop-resolution-transaction-start",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-resolution-transaction-start",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "review-loop-induced-brake",
-      "path": "shared/skill/review-loop/SKILL.md"
+      "id": "review-refine-induced-brake",
+      "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",

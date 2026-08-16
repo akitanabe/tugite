@@ -1,7 +1,7 @@
-[contracts.work-unit-design-internal-guard-requires-8bf50de960dc]
+[contracts.work-unit-design-internal-guard-requires-67dbee9ac922]
 kind = "requires"
 slice = "work-unit-design-internal-guard"
-pattern = '''ユーザーの直接要求、通常会話、`plan-craft` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
+pattern = '''ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
 非自明な `impl-lead` の工程としてだけ使う。'''
 applies_to = ["claude", "codex", "cursor"]
 

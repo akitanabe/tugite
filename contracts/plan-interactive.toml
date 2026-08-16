@@ -1,0 +1,554 @@
+[contracts.clarify-caller-data-d368442b31ae]
+kind = "requires"
+slice = "plan-interactive-clarify-caller"
+pattern = '''application = public clarify-it in the same plan-interactive parent context
+dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
+caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
+public_extension = none'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.execution-bound-data-ceec32085fdf]
+kind = "requires"
+slice = "plan-interactive-execution-bound"
+pattern = '''fix_timing = at each clarify or resolution loop start
+immutability = unchanged during that loop
+terminal = bound reached or no semantic progress with material decisions remaining -> preserve remaining decisions and reasons -> plan-interactive incomplete -> prohibit downstream
+public_contract = no fixed value, public parameter, schema, or resolve_rounds
+budget_boundary = separate from structural-health-gate rounds and review limits
+clarify_stopped = never fabricate this caller-owned terminal as clarify-it Stopped'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.kernel-loader-data-f1980cdcfb55]
+kind = "requires"
+slice = "plan-interactive-kernel-mapping"
+pattern = '''resolve_path = ../../references/resolve-kernel.md
+resolve_load_timing = once before clarify-it application
+resolve_identity = resolve-kernel-v1
+resolve_dependencies = none
+resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
+necessity_path = ../../references/necessity-kernel.md
+necessity_load_timing = once before candidate Claim adjudication
+necessity_identity = necessity-kernel-v1
+necessity_dependencies = none
+necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = incomplete before clarify-it application
+owner = plan-interactive parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.kernel-role-data-9e606fc1f1f0]
+kind = "requires"
+slice = "plan-interactive-kernel-mapping"
+pattern = '''caller = plan-interactive
+resolver = planner
+counterpart = human
+authority = binding
+ledger = decision ledger'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.observation-reapply-data-c280b2e36dbe]
+kind = "requires"
+slice = "plan-interactive-observation-reapply"
+pattern = '''clarify_action_boundary = inherit clarify-it prohibition without override
+parent_observation = observe request, repository, Issue, existing specification, and required runtime behavior
+observation_data = freeze observation with provenance and evidence while inheriting clarify-it Data distinctions
+technical_evidence_gap = return to parent boundary; never Human Decision Point or clarify-it Stopped
+parent_action = perform only the minimum required observation
+data_update = add the observed Data to the same current decision model
+reapply = apply clarify-it to that same model in the same parent context
+public_extension = no new status, fixed output schema, or separate context
+contradictory_action_permission = prohibited'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.observation-action-permission-7f681f25d365]
+kind = "forbids"
+slice = "plan-interactive-observation-reapply"
+pattern = '''contradictory_action_permission = allowed'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-projection-data-ef81114d7da7]
+kind = "requires"
+slice = "plan-interactive-clarify-projection"
+pattern = '''Completed = verified Data comparison -> unique direction freeze candidate projection
+projection = add no new meaning, condition, or decision
+freeze_only_reconfirmation = prohibited
+Stopped = preserve reason and remaining decisions -> plan-interactive incomplete -> prohibit downstream
+Completed_meaning = not workflow completion or candidate acceptance'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.projection-reconfirmation-199338b92e1f]
+kind = "forbids"
+slice = "plan-interactive-clarify-projection"
+pattern = '''freeze_only_reconfirmation = required'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.reopen-routing-data-fb424071e071]
+kind = "requires"
+slice = "plan-interactive-reopen-routing"
+pattern = '''workflow_order = clarify-it -> direction freeze projection -> optional proposal refinement / freeze-integrity -> structural-health-gate -> review-refine
+gate_return = problem / impact / recommendation -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate
+frozen_review_finding = parent human-confirmation adjudication -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only
+review_stop_incomplete = no automatic clarify-it application; Human explicitly selects resume | incomplete end | out-of-scope split
+final_acceptance_correction = affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only -> final acceptance
+large_purpose_or_scope_change = reformulate the whole public workflow; no local reopen
+closure_failure = incomplete; never guess affected scope'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.necessity-parent-data-2936e9b0e6a6]
+kind = "requires"
+slice = "plan-interactive-necessity-parent"
+pattern = '''criteria_injection = verified Task Specification + Deletion Test
+mapping = necessary -> adopted; unnecessary -> rejected; indeterminate -> unresolved
+mapping_target = existing adoption ledger; no new result field'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-human-boundary-0fcbb37630a6]
+kind = "requires"
+slice = "plan-interactive-advisor-parent"
+pattern = '''automatic_adoption = prohibited
+automatic_question_generation = prohibited
+direct_human_question = prohibited
+human_direction_impact = unresolved -> parent verifies evidence and reconstructs its own recommendation -> clarify-it application
+raw_insight = parent-only unless Human explicitly requests process details'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-recovery-data-9d60e7f98bbd]
+kind = "requires"
+slice = "plan-interactive-check1-recovery"
+pattern = '''check #1 violated | indeterminate = retain all evidence -> affected dependency closure -> local clarify-it application -> verified recovery freeze -> fresh bounded proposal fixed 2 pass -> fresh-context check #2
+direct_structural_health_gate = prohibited
+legacy_dialogue_route = prohibited
+check #2 non-intact = Trust failure incomplete; no reopen'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-direct-gate-5e1f04f8f481]
+kind = "forbids"
+slice = "plan-interactive-check1-recovery"
+pattern = '''direct_structural_health_gate = allowed'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-legacy-route-e20e37123e75]
+kind = "forbids"
+slice = "plan-interactive-check1-recovery"
+pattern = '''legacy_dialogue_route = allowed'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-kernel-before-clarify]
+kind = "order"
+before = "plan-interactive-kernel-load"
+after = "plan-interactive-clarify-start"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-clarify-before-gate]
+kind = "order"
+before = "plan-interactive-clarify-start"
+after = "plan-interactive-structural-health-gate-start"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-requires-748ab66a0b68]
+kind = "requires"
+slice = "plan-interactive-refinement-selection"
+pattern = '''selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
+No = skip proposal and freeze-integrity check -> structural-health-gate
+Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-no-run-forbids-22f6ad726057]
+kind = "forbids"
+slice = "plan-interactive-refinement-selection"
+pattern = "No = run proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-selection-yes-skip-forbids-94296a3bf73f]
+kind = "forbids"
+slice = "plan-interactive-refinement-selection"
+pattern = "Yes = skip proposal or freeze-integrity check"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-requires-1f1f5c09495d]
+kind = "requires"
+slice = "plan-interactive-refinement-stop"
+pattern = '''proposal stop-incomplete
+authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
+otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-stop-fallback-forbids-77c4a1b2540a]
+kind = "forbids"
+slice = "plan-interactive-refinement-stop"
+pattern = "otherwise = pre-refinement snapshot fallback -> structural-health-gate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-invocations-requires-78e0d7f8cbbc]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = '''verdict = intact | violated | indeterminate
+evidence = authority constraint, refined candidate location, semantic delta or indeterminate cause
+binding = parent cannot override
+comparison = all authority_constraints independently
+normal_output = insight_fields only; non-binding; exclude freeze-integrity verdict/evidence
+freeze_integrity_output = verdict/evidence only; binding; exclude normal insight'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-freeze-raw-source-requires-ed253d3057fa]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "判断点にならなかった raw specification を含む全意味単位"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-freeze-bijection-requires-9009aa007126]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "source ID 集合と constraint ID 集合、1対1、未投影・重複・余分の不在"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-always-check-requires-50fab15b556c]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "successful refinement 後は semantic change がなくても"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-recovery-scope-requires-9dd1dedf2e15]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = '''affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
+request.scope = affected obligations
+request.exclude = all other candidate obligations
+scope_outside = rejected | out-of-scope; never apply
+scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.authority-recovery-fresh-proposal-requires-feb3c3f22048]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-trust-stop-requires-c4920906757f]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "check #2 が非 `intact` なら Trust failure の `stop-incomplete` とし、再 reopen しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-trust-report-requires-648b04a2f0bd]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "2回目も `intact` でなかったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-unresolved-no-gate-requires-084677349a10]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "未解決 Human Decision が残る candidate は gate へ渡さない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.gate-return-compression-requires-337ce323b9eb]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "gate の問題・影響・推奨対応を Human へ圧縮"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-no-optin-inheritance-requires-06517f5a0d78]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "前 cycle の opt-in や governing value を継承しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.final-reselection-requires-73a530e2088e]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-latest-freeze-delta-requires-9600b7b92553]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`Semantic Delta` baseline は final candidate に対応する最新 direction freeze"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-refinement-provenance-requires-614c3d523488]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`proposal refinement: executed | skipped` だけを表示する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-provenance-sequences-requires-872830584434]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = '''executed -> gate return -> skipped = skipped
+skipped -> gate return -> executed = executed
+executed -> Trust recovery -> intact = executed
+executed -> final acceptance correction -> skipped = skipped'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-applicability-first-requires-083c06ac5f83]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "review 省略の明示より reviewer 適用可否の判定を先に行う"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-not-applicable-requires-9dfffc58eb51]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-refine` に投入せず、通常の起草確定へ進む。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-fixed-review-requires-d5d6abba7205]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "reviewer 適用可能な成果物は、ユーザーによる review の明示要求がなくても固定工程として `review-refine` へ渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-explicit-skip-requires-e272f8002939]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "ユーザーが review 省略を明示した場合は、確定候補とせず、review 未実施の起草物と残存 risk を添えて未完了として返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-converged-requires-aa510d9e3ff3]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`converged`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-induced-clean-requires-ff9f3017e2de]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "未解決 finding のない `induced-loop`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-failure-requires-53b7813ba4a9]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "レビュー不成立"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-round-limit-requires-5fce4ac0959b]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`round-limit`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-stop-requires-d9472e03faa0]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-induced-unresolved-requires-1d9f69d9661e]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "未解決 finding を伴う `induced-loop`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-no-alternative-requires-842d2610d0b3]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "代替 evidence で完了扱いにしない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-no-reverse-requires-d84914ffb472]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "自動逆遷移しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-same-content-requires-f1aa810d8b07]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "同一内容へ"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-caller-context-requires-4ed9a6b1b165]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "generic `caller_context` Data"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-goal-requires-e317cdac5f5f]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "`review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-goal-requires-84c3a0db656b]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-goal-requires-5931402b4335]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-goal-forbids-cc2af17c3ef2]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "追加 risk がなければ `review_goal` を設定しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-fallback-forbids-5e98273e0804]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "ただし goal に対応する別 reviewer があれば `review-refine` へ渡す"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-final-acceptance-requires-39d6b25aec6e]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を\n省略できるが、final report は省略しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-review-change-boundary-requires-938104d24771]
+kind = "requires"
+slice = "plan-interactive-handoff"
+pattern = "review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の\n変更が必要なら、改善案を採用せず `人間確認` へ止める。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-freeze-as-final-forbids-4d11a5fe6e08]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "direction freeze を final acceptance とみなす"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-optional-final-forbids-12bd9dbf663e]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "final acceptance は任意"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-freeze-as-final-variant-forbids-4a24600ac825]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "direction freeze を最終承認として扱う"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-optional-final-variant-forbids-2ceedb556ba3]
+kind = "forbids"
+slice = "plan-interactive-handoff"
+pattern = "final acceptance は省略可能"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-gate-before-review]
+kind = "order"
+before = "plan-interactive-structural-health-gate-start"
+after = "plan-interactive-review-refine-handoff"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: acceptance timing, artifact purity, path qualification, save commit, output, and authority form one relation.
+[contracts.plan-interactive-artifact-completion-data-d5ae3e0422ea]
+kind = "requires"
+slice = "plan-interactive-artifact-completion"
+pattern = '''workflow = plan-interactive
+artifact_eligibility = final acceptance completed and verified save success
+pre_acceptance_artifact = none at direction freeze, gate, review, or acceptance candidate
+artifact_body = frozen final accepted candidate body only
+artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate result, review result, decision ledger, finding ledger, process history]
+incomplete_artifact = none
+explicit_destination = highest priority; unsafe or unusable means incomplete without fallback
+unspecified_project_local = existing temporary or local-only purpose is directly evidenced; exact final path is ignored and index-unregistered
+os_temp_fallback = no candidate, tied candidates, non-Git project, or unconfirmed qualification
+project_mutation = do not create a project-local directory or ignore rule
+filename = content-derived safe single component
+collision = never overwrite an existing file; finite numeric suffix retry only on collision
+save = same-filesystem run-owned staging write -> close -> byte-identical readback -> complete-only no-clobber publish
+save_failure = incomplete; clean exact staging residue or report it as residual risk
+stdout = Result, short Summary, optional Human Attention, Artifact local path
+stdout_excludes = full artifact body, Semantic Delta, Verification Delta, gate or review result, decision or finding ledger, process history
+summary_opt_out = Artifact only
+authority = not Git management, durable persistence, final acceptance, or downstream Action permission'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: staging ownership and OS-temp qualification must stay one security relation across the whole save lifecycle.
+[contracts.plan-interactive-artifact-security-data-b382dbb79636]
+kind = "requires"
+slice = "plan-interactive-artifact-completion"
+pattern = '''staging_creation = atomic exclusive non-follow new object beneath verified destination identity
+staging_identity = same object identity through write, readback, and cleanup
+qualification_recheck = immediately before staging creation and immediately before publish
+destination_reselection = owned staging identity must match and cleanup must succeed first
+cleanup_excludes = pre-existing or identity-mismatched object
+unsafe_primitive = stop before write or return safe incomplete
+os_temp = validated platform temp root -> secure exclusive run-owned directory
+os_temp_paths = canonical containment and non-follow for final and staging
+os_temp_repo_overlap = project-local qualification applies when canonical path is inside repository
+os_temp_unconfirmed = stop before write as incomplete
+run_owned_directory_identity = record at creation
+run_owned_directory_cleanup = before publish commit on incomplete or destination reselection; after owned staging handling; same identity and empty; non-recursive non-follow remove only
+run_owned_directory_residue = identity mismatch, non-empty, or removal failure means leave and report exact residue
+run_owned_directory_commit = preserve directory containing published final artifact'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-no-retired-autosave]
+kind = "forbids"
+pattern = "workflow は成果物を自律的に保存しない"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-acceptance-before-stage]
+kind = "order"
+before = "plan-interactive-final-acceptance-complete"
+after = "plan-interactive-artifact-stage"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-stage-before-publish]
+kind = "order"
+before = "plan-interactive-artifact-stage"
+after = "plan-interactive-artifact-publish"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-publish-before-output]
+kind = "order"
+before = "plan-interactive-artifact-publish"
+after = "plan-interactive-artifact-output"
+applies_to = ["claude", "codex", "cursor"]
+[contracts.advisor-parent-data-4abebd6b2b0c]
+kind = "requires"
+slice = "plan-interactive-advisor-parent"
+pattern = '''trigger_only = scope or responsibility boundary change | adopted-Claim dependency | decision-completing additional Claim | non-trivial pre-freeze change chain
+advisor = read-only plan-quality-advisor
+input = candidate snapshot + verified criteria Data
+insight = non-binding Data
+adjudicator = plan-interactive parent against primary evidence and request
+mapping = adopted | rejected | unresolved in adoption ledger
+ledger_boundary = decision ledger is separate from adoption ledger
+fixed_phase = prohibited
+empty_insights = not direction freeze evidence'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-auto-adopt-ee71d5d4c850]
+kind = "forbids"
+slice = "plan-interactive-advisor-parent"
+pattern = "insight を自動採用する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-auto-question-82ec8ab8d9f7]
+kind = "forbids"
+slice = "plan-interactive-advisor-parent"
+pattern = "insight から質問を自動生成する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-fixed-phase-017074626a22]
+kind = "forbids"
+slice = "plan-interactive-advisor-parent"
+pattern = "advisor を固定 phase とする"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-empty-freeze-e3788c71478c]
+kind = "forbids"
+slice = "plan-interactive-advisor-parent"
+pattern = "`insights: []` を direction freeze の根拠にする"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.verification-parent-data-cd64ef2a5484]
+kind = "requires"
+slice = "plan-interactive-verification-derivation"
+pattern = '''timing = before direction freeze and after each updated snapshot
+owner = plan-interactive parent Calculation
+input = Task Specification + verified workflow Data
+coverage = normal | boundary | failure path | side effect | prohibition | responsibility boundary | scope exclude
+output = how each obligation will be observed after implementation
+clarify_it = do not add this derivation or its schema to clarify-it
+blocking_gap = incomplete before direction freeze'''
+applies_to = ["claude", "codex", "cursor"]

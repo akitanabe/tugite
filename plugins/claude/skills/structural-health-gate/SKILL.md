@@ -1,7 +1,7 @@
 ---
 name: structural-health-gate
 description: >-
-  明示起動された proposal-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する
+  明示起動された plan-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する
   internal gate。成果物を再設計・直接編集せず、
   assessment と最終判断を public workflow parent へ残す。
 user-invocable: false
@@ -11,8 +11,8 @@ user-invocable: false
 # structural-health-gate
 
 この Skill は、candidate producer が返した candidate snapshot を後段処理へ渡す前に、局所修正で扱える
-構造かを評価する。明示起動された proposal-family public workflow parent の同じ context 内だけで使い、単独起動、ユーザーからの直接起動、
-proposal-family 外の workflow からの流用はしない。internal-only policy は維持し、gate 自身は後段の選択や caller routing を行わない。
+構造かを評価する。明示起動された plan-family public workflow parent の同じ context 内だけで使い、単独起動、ユーザーからの直接起動、
+plan-family 外の workflow からの流用はしない。internal-only policy は維持し、gate 自身は後段の選択や caller routing を行わない。
 
 ## 入力
 
@@ -24,15 +24,15 @@ proposal-family 外の workflow からの流用はしない。internal-only poli
 
 ```text
 {
-  "workflow_family": "proposal-family",
+  "workflow_family": "plan-family",
   "invocation": "explicit-public-parent"
 }
 ```
 
-- `workflow_family`: `proposal-family`
+- `workflow_family`: `plan-family`
 - `invocation`: `explicit-public-parent`
 
-これは明示起動された proposal-family public workflow parent の同じ context であることだけを安定識別する。
+これは明示起動された plan-family public workflow parent の同じ context であることだけを安定識別する。
 producer の判断、成果物の行き先、後段処理を識別する値はこの gate の入力に含めない。
 
 `caller_context` が欠落している、object でない、field/value が一致しない、または上記以外の field を含む場合は
@@ -42,7 +42,7 @@ advisor、producer、その他の後段処理を起動しない。親は別 rout
 
 ## 観測
 
-caller context は明示起動された proposal-family public workflow parent に限る。上記の `caller_context` が成立した場合だけ、
+caller context は明示起動された plan-family public workflow parent に限る。上記の `caller_context` が成立した場合だけ、
 candidate の assessment を開始する。
 
 次を、表現上の指摘ではなく構造上の因果として確認する。

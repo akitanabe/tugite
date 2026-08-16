@@ -438,9 +438,9 @@ kind = "forbids"
 pattern = "impl-lead-v5"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.no-plan-craft-v5-skill]
+[contracts.no-plan-agent-v5-skill]
 kind = "forbids"
-pattern = "plan-craft-v5"
+pattern = "plan-agent-v5"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: these are independent static-reviewer obligations; keeping each bounded makes a missing or weakened rule observable without reimplementing the prose in a parser.
