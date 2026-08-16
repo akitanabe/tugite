@@ -7,33 +7,26 @@ caller_owns = invocation boundary | binding Human authority | verified workflow 
 public_extension = none'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.execution-bound-data-ceec32085fdf]
+[contracts.execution-bound-data-61d8b00b7417]
 kind = "requires"
-slice = "plan-interactive-execution-bound"
-pattern = '''fix_timing = at each clarify or resolution loop start
-immutability = unchanged during that loop
-terminal = bound reached or no semantic progress with material decisions remaining -> preserve remaining decisions and reasons -> plan-interactive incomplete -> prohibit downstream
-public_contract = no fixed value, public parameter, schema, or resolve_rounds
-budget_boundary = separate from structural-health-gate rounds and review limits
-clarify_stopped = never fabricate this caller-owned terminal as clarify-it Stopped'''
+slice = "plan-interactive-clarify-loop-bound-routing"
+pattern = '''Trigger: 各 clarify または resolution loop の開始時に、親が execution bound を固定して routing を要求したとき。
+Inputs: 親が loop 開始時に確定した bound、同一 loop 中の immutable bound、remaining decisions、semantic progress、materiality、clarify-it の result。
+Procedure: bound を各 loop 開始時に固定し、その loop 中は変更しない。bound 到達、または material な decisions が残るのに semantic progress がない場合は、remaining decisions と reasons を保持して plan-interactive `incomplete` とし downstream を禁止する。clarify-it の `Stopped` は reason と remaining decisions を preserve して plan-interactive `incomplete` とし downstream を禁止する。bound は structural-health-gate と review limit から独立させ、親の terminal を clarify-it `Stopped` として捏造しない。
+Outcomes: 固定 bound 内の loop 継続、または preserve された Data 付き `incomplete`。progress と materiality の意味、bound の選択、clarification 内容は親入力であり Flow の expected oracle ではない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.kernel-loader-data-f1980cdcfb55]
+[contracts.kernel-loader-data-b0d341da5646]
 kind = "requires"
 slice = "plan-interactive-kernel-mapping"
 pattern = '''resolve_path = ../../references/resolve-kernel.md
-resolve_load_timing = once before clarify-it application
 resolve_identity = resolve-kernel-v1
 resolve_dependencies = none
 resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
 necessity_path = ../../references/necessity-kernel.md
-necessity_load_timing = once before candidate Claim adjudication
 necessity_identity = necessity-kernel-v1
 necessity_dependencies = none
-necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
-failure = incomplete before clarify-it application
-owner = plan-interactive parent
-delegate_path_resolution = false'''
+necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.kernel-role-data-9e606fc1f1f0]
@@ -46,52 +39,43 @@ authority = binding
 ledger = decision ledger'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.observation-reapply-data-c280b2e36dbe]
+[contracts.observation-reapply-data-d9e8383f70ed]
 kind = "requires"
-slice = "plan-interactive-observation-reapply"
-pattern = '''clarify_action_boundary = inherit clarify-it prohibition without override
-parent_observation = observe request, repository, Issue, existing specification, and required runtime behavior
-observation_data = freeze observation with provenance and evidence while inheriting clarify-it Data distinctions
-technical_evidence_gap = return to parent boundary; never Human Decision Point or clarify-it Stopped
-parent_action = perform only the minimum required observation
-data_update = add the observed Data to the same current decision model
-reapply = apply clarify-it to that same model in the same parent context
-public_extension = no new status, fixed output schema, or separate context
-contradictory_action_permission = prohibited'''
+slice = "plan-interactive-observation-reapply-flow"
+pattern = '''Trigger: 親の最小観測後も同じ decision model に追加の技術 evidence が必要、または既存 evidence と runtime behavior の不一致が観測されたとき。
+Inputs: 同じ current decision model、request / repository / Issue / existing specification / required runtime behavior の observation、provenance 付き action evidence、clarify-it の同じ parent context、最小限の observation Action。
+Procedure: 親は必要最小限の observation Action だけを実行し、固定した action evidence を Data として同じ model に追加して、同じ parent context で clarify-it を再適用する。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。
+Outcomes: 更新済み同一 model への clarify-it 再適用結果、または親へ返す technical evidence gap。Flow は observation の意味評価や Human の clarification 内容を expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.observation-action-permission-7f681f25d365]
+[contracts.observation-action-permission-cf002f05ca3a]
 kind = "forbids"
-slice = "plan-interactive-observation-reapply"
+slice = "plan-interactive-observation-reapply-flow"
 pattern = '''contradictory_action_permission = allowed'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-projection-data-ef81114d7da7]
+[contracts.clarify-projection-data-5de86a74acae]
 kind = "requires"
-slice = "plan-interactive-clarify-projection"
-pattern = '''Completed = verified Data comparison -> unique direction freeze candidate projection
-projection = add no new meaning, condition, or decision
-freeze_only_reconfirmation = prohibited
-Stopped = preserve reason and remaining decisions -> plan-interactive incomplete -> prohibit downstream
-Completed_meaning = not workflow completion or candidate acceptance'''
+slice = "plan-interactive-direction-freeze-projection"
+pattern = '''Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
+Inputs: 要求原文、verified decision ledger、freeze candidate、全意味単位を含む `freeze_source_snapshot`、source evidence、workflow-local opaque ID 候補。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合する。照合済み `{id, frozen_meaning, source_evidence}` だけを projection し、新しい meaning、condition、decision を加えない。不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.projection-reconfirmation-199338b92e1f]
+[contracts.projection-reconfirmation-0cb2b27e41e9]
 kind = "forbids"
-slice = "plan-interactive-clarify-projection"
+slice = "plan-interactive-direction-freeze-projection"
 pattern = '''freeze_only_reconfirmation = required'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.reopen-routing-data-fb424071e071]
+[contracts.reopen-routing-data-49e703bc3f78]
 kind = "requires"
-slice = "plan-interactive-reopen-routing"
-pattern = '''workflow_order = clarify-it -> direction freeze projection -> optional proposal refinement / freeze-integrity -> structural-health-gate -> review-refine
-gate_return = problem / impact / recommendation -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate
-frozen_review_finding = parent human-confirmation adjudication -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only
-review_stop_incomplete = no automatic clarify-it application; Human explicitly selects resume | incomplete end | out-of-scope split
-final_acceptance_correction = affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only -> final acceptance
-large_purpose_or_scope_change = reformulate the whole public workflow; no local reopen
-closure_failure = incomplete; never guess affected scope'''
+slice = "plan-interactive-structural-gate-reopen-routing"
+pattern = '''Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
+Inputs: gate assessment の problem / impact / recommendation、独立した rounds と `rounds.limit`、current round、Human response、affected decision と dependency closure、new direction freeze、new optional selection、changed review scope。
+Procedure: `pass` は downstream review へ送る。`return` は current round が limit 未満のときだけ、gate の問題・影響・推奨対応を Human へ圧縮し、affected closure を clarify-it に局所適用して new freeze と new `Yes / No` selection を経て gate を再実行する。前 cycle の opt-in や governing value を継承せず、新しい direction freeze で proposal refinement の `Yes / No` を再確認する。limit 到達、`insufficient-evidence`、closure failure、または finding 全件却下で内容不変の場合は `stop-incomplete` とし、同一内容の別 identity を作らない。
+Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.necessity-parent-data-2936e9b0e6a6]
@@ -112,24 +96,24 @@ human_direction_impact = unresolved -> parent verifies evidence and reconstructs
 raw_insight = parent-only unless Human explicitly requests process details'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.check1-recovery-data-9d60e7f98bbd]
+[contracts.check1-recovery-data-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-check1-recovery"
-pattern = '''check #1 violated | indeterminate = retain all evidence -> affected dependency closure -> local clarify-it application -> verified recovery freeze -> fresh bounded proposal fixed 2 pass -> fresh-context check #2
-direct_structural_health_gate = prohibited
-legacy_dialogue_route = prohibited
-check #2 non-intact = Trust failure incomplete; no reopen'''
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.check1-direct-gate-5e1f04f8f481]
+[contracts.check1-direct-gate-c166abbc93e8]
 kind = "forbids"
-slice = "plan-interactive-check1-recovery"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
 pattern = '''direct_structural_health_gate = allowed'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.check1-legacy-route-e20e37123e75]
+[contracts.check1-legacy-route-b22f590dd595]
 kind = "forbids"
-slice = "plan-interactive-check1-recovery"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
 pattern = '''legacy_dialogue_route = allowed'''
 applies_to = ["claude", "codex", "cursor"]
 
@@ -145,37 +129,39 @@ before = "plan-interactive-clarify-start"
 after = "plan-interactive-structural-health-gate-start"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-selection-requires-748ab66a0b68]
+[contracts.refinement-selection-requires-f53bf0271a6f]
 kind = "requires"
-slice = "plan-interactive-refinement-selection"
-pattern = '''selection_presentation = direction freeze summary same turn; recommend execute or skip + short reason + Yes / No; exactly once
-No = skip proposal and freeze-integrity check -> structural-health-gate
-Yes = verified direction-freeze candidate S0 -> constrained proposal fixed 2 pass -> fresh-context freeze-integrity check'''
+slice = "plan-interactive-optional-proposal-refinement-routing"
+pattern = '''Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の `Yes / No` として提示するとき。
+Inputs: verified direction-freeze candidate S0、短い recommendation と理由、Human の一度だけの `Yes / No`、constrained proposal の fixed 2 pass result、fresh-context freeze-integrity input。
+Procedure: `No` は proposal と freeze-integrity を実行せず structural-health-gate へ送る。`Yes` は S0 に束縛した constrained proposal fixed 2 pass と fresh-context freeze-integrity check を実行する。proposal の `stop-incomplete` は authority conflict かつ verified result の場合だけ返却された verified candidate を使った local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。
+Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、local Human recovery の入力、または `incomplete`。Yes / No、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-selection-no-run-forbids-22f6ad726057]
+[contracts.refinement-selection-no-run-forbids-f1e7c0d3fbcb]
 kind = "forbids"
-slice = "plan-interactive-refinement-selection"
+slice = "plan-interactive-optional-proposal-refinement-routing"
 pattern = "No = run proposal or freeze-integrity check"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-selection-yes-skip-forbids-94296a3bf73f]
+[contracts.refinement-selection-yes-skip-forbids-66fc44279172]
 kind = "forbids"
-slice = "plan-interactive-refinement-selection"
+slice = "plan-interactive-optional-proposal-refinement-routing"
 pattern = "Yes = skip proposal or freeze-integrity check"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-stop-requires-1f1f5c09495d]
+[contracts.refinement-stop-requires-f53bf0271a6f]
 kind = "requires"
-slice = "plan-interactive-refinement-stop"
-pattern = '''proposal stop-incomplete
-authority_conflict + verified result = use only returned verified candidate for local Human Decision recovery
-otherwise = outward incomplete; no pre-refinement snapshot fallback; no structural-health-gate'''
+slice = "plan-interactive-optional-proposal-refinement-routing"
+pattern = '''Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の `Yes / No` として提示するとき。
+Inputs: verified direction-freeze candidate S0、短い recommendation と理由、Human の一度だけの `Yes / No`、constrained proposal の fixed 2 pass result、fresh-context freeze-integrity input。
+Procedure: `No` は proposal と freeze-integrity を実行せず structural-health-gate へ送る。`Yes` は S0 に束縛した constrained proposal fixed 2 pass と fresh-context freeze-integrity check を実行する。proposal の `stop-incomplete` は authority conflict かつ verified result の場合だけ返却された verified candidate を使った local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。
+Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、local Human recovery の入力、または `incomplete`。Yes / No、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-stop-fallback-forbids-77c4a1b2540a]
+[contracts.refinement-stop-fallback-forbids-98ceae45a2a7]
 kind = "forbids"
-slice = "plan-interactive-refinement-stop"
+slice = "plan-interactive-optional-proposal-refinement-routing"
 pattern = "otherwise = pre-refinement snapshot fallback -> structural-health-gate"
 applies_to = ["claude", "codex", "cursor"]
 
@@ -190,179 +176,256 @@ normal_output = insight_fields only; non-binding; exclude freeze-integrity verdi
 freeze_integrity_output = verdict/evidence only; binding; exclude normal insight'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-freeze-raw-source-requires-ed253d3057fa]
+[contracts.plan-interactive-freeze-raw-source-requires-5de86a74acae]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "判断点にならなかった raw specification を含む全意味単位"
+slice = "plan-interactive-direction-freeze-projection"
+pattern = '''Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
+Inputs: 要求原文、verified decision ledger、freeze candidate、全意味単位を含む `freeze_source_snapshot`、source evidence、workflow-local opaque ID 候補。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合する。照合済み `{id, frozen_meaning, source_evidence}` だけを projection し、新しい meaning、condition、decision を加えない。不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-freeze-bijection-requires-9009aa007126]
+[contracts.plan-interactive-freeze-bijection-requires-5de86a74acae]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "source ID 集合と constraint ID 集合、1対1、未投影・重複・余分の不在"
+slice = "plan-interactive-direction-freeze-projection"
+pattern = '''Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
+Inputs: 要求原文、verified decision ledger、freeze candidate、全意味単位を含む `freeze_source_snapshot`、source evidence、workflow-local opaque ID 候補。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合する。照合済み `{id, frozen_meaning, source_evidence}` だけを projection し、新しい meaning、condition、decision を加えない。不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-always-check-requires-50fab15b556c]
+[contracts.plan-interactive-always-check-requires-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "successful refinement 後は semantic change がなくても"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-recovery-scope-requires-9dd1dedf2e15]
+[contracts.plan-interactive-recovery-scope-requires-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = '''affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations
-request.scope = affected obligations
-request.exclude = all other candidate obligations
-scope_outside = rejected | out-of-scope; never apply
-scope_failure = unresolved locator / closure / exclusivity -> stop-incomplete before proposal'''
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.authority-recovery-fresh-proposal-requires-feb3c3f22048]
+[contracts.authority-recovery-fresh-proposal-requires-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-trust-stop-requires-c4920906757f]
+[contracts.plan-interactive-trust-stop-requires-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "check #2 が非 `intact` なら Trust failure の `stop-incomplete` とし、再 reopen しない"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-trust-report-requires-648b04a2f0bd]
+[contracts.plan-interactive-trust-report-requires-029b9dc8d9c4]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "2回目も `intact` でなかったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-unresolved-no-gate-requires-084677349a10]
+[contracts.plan-interactive-unresolved-no-gate-requires-5de86a74acae]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "未解決 Human Decision が残る candidate は gate へ渡さない"
+slice = "plan-interactive-direction-freeze-projection"
+pattern = '''Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
+Inputs: 要求原文、verified decision ledger、freeze candidate、全意味単位を含む `freeze_source_snapshot`、source evidence、workflow-local opaque ID 候補。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合する。照合済み `{id, frozen_meaning, source_evidence}` だけを projection し、新しい meaning、condition、decision を加えない。不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.gate-return-compression-requires-337ce323b9eb]
+[contracts.gate-return-compression-requires-49e703bc3f78]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "gate の問題・影響・推奨対応を Human へ圧縮"
+slice = "plan-interactive-structural-gate-reopen-routing"
+pattern = '''Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
+Inputs: gate assessment の problem / impact / recommendation、独立した rounds と `rounds.limit`、current round、Human response、affected decision と dependency closure、new direction freeze、new optional selection、changed review scope。
+Procedure: `pass` は downstream review へ送る。`return` は current round が limit 未満のときだけ、gate の問題・影響・推奨対応を Human へ圧縮し、affected closure を clarify-it に局所適用して new freeze と new `Yes / No` selection を経て gate を再実行する。前 cycle の opt-in や governing value を継承せず、新しい direction freeze で proposal refinement の `Yes / No` を再確認する。limit 到達、`insufficient-evidence`、closure failure、または finding 全件却下で内容不変の場合は `stop-incomplete` とし、同一内容の別 identity を作らない。
+Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-no-optin-inheritance-requires-06517f5a0d78]
+[contracts.plan-interactive-no-optin-inheritance-requires-49e703bc3f78]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "前 cycle の opt-in や governing value を継承しない"
+slice = "plan-interactive-structural-gate-reopen-routing"
+pattern = '''Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
+Inputs: gate assessment の problem / impact / recommendation、独立した rounds と `rounds.limit`、current round、Human response、affected decision と dependency closure、new direction freeze、new optional selection、changed review scope。
+Procedure: `pass` は downstream review へ送る。`return` は current round が limit 未満のときだけ、gate の問題・影響・推奨対応を Human へ圧縮し、affected closure を clarify-it に局所適用して new freeze と new `Yes / No` selection を経て gate を再実行する。前 cycle の opt-in や governing value を継承せず、新しい direction freeze で proposal refinement の `Yes / No` を再確認する。limit 到達、`insufficient-evidence`、closure failure、または finding 全件却下で内容不変の場合は `stop-incomplete` とし、同一内容の別 identity を作らない。
+Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-reselection-requires-73a530e2088e]
+[contracts.final-reselection-requires-49e703bc3f78]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず"
+slice = "plan-interactive-structural-gate-reopen-routing"
+pattern = '''Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
+Inputs: gate assessment の problem / impact / recommendation、独立した rounds と `rounds.limit`、current round、Human response、affected decision と dependency closure、new direction freeze、new optional selection、changed review scope。
+Procedure: `pass` は downstream review へ送る。`return` は current round が limit 未満のときだけ、gate の問題・影響・推奨対応を Human へ圧縮し、affected closure を clarify-it に局所適用して new freeze と new `Yes / No` selection を経て gate を再実行する。前 cycle の opt-in や governing value を継承せず、新しい direction freeze で proposal refinement の `Yes / No` を再確認する。limit 到達、`insufficient-evidence`、closure failure、または finding 全件却下で内容不変の場合は `stop-incomplete` とし、同一内容の別 identity を作らない。
+Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-latest-freeze-delta-requires-9600b7b92553]
+[contracts.plan-interactive-latest-freeze-delta-requires-df11ab93411b]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "`Semantic Delta` baseline は final candidate に対応する最新 direction freeze"
+slice = "plan-interactive-final-acceptance-routing"
+pattern = '''Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Inputs: final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、Human Decision、default required / explicit opt-out、親が分類した correction scope。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。親が local correction と分類した場合は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を routing し、large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-refinement-provenance-requires-614c3d523488]
+[contracts.plan-interactive-refinement-provenance-requires-df11ab93411b]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "`proposal refinement: executed | skipped` だけを表示する"
+slice = "plan-interactive-final-acceptance-routing"
+pattern = '''Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Inputs: final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、Human Decision、default required / explicit opt-out、親が分類した correction scope。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。親が local correction と分類した場合は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を routing し、large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-provenance-sequences-requires-872830584434]
+[contracts.refinement-provenance-sequences-requires-df11ab93411b]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = '''executed -> gate return -> skipped = skipped
-skipped -> gate return -> executed = executed
-executed -> Trust recovery -> intact = executed
-executed -> final acceptance correction -> skipped = skipped'''
+slice = "plan-interactive-final-acceptance-routing"
+pattern = '''Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Inputs: final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、Human Decision、default required / explicit opt-out、親が分類した correction scope。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。親が local correction と分類した場合は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を routing し、large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-applicability-first-requires-083c06ac5f83]
+[contracts.plan-interactive-applicability-first-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "review 省略の明示より reviewer 適用可否の判定を先に行う"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-not-applicable-requires-9dfffc58eb51]
+[contracts.plan-interactive-not-applicable-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-refine` に投入せず、通常の起草確定へ進む。"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-fixed-review-requires-d5d6abba7205]
+[contracts.plan-interactive-fixed-review-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "reviewer 適用可能な成果物は、ユーザーによる review の明示要求がなくても固定工程として `review-refine` へ渡す。"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-explicit-skip-requires-e272f8002939]
+[contracts.plan-interactive-explicit-skip-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "ユーザーが review 省略を明示した場合は、確定候補とせず、review 未実施の起草物と残存 risk を添えて未完了として返す。"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-converged-requires-aa510d9e3ff3]
+[contracts.plan-interactive-converged-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "`converged`"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-induced-clean-requires-ff9f3017e2de]
+[contracts.plan-interactive-induced-clean-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "未解決 finding のない `induced-loop`"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-review-failure-requires-53b7813ba4a9]
+[contracts.plan-interactive-review-failure-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "レビュー不成立"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-round-limit-requires-5fce4ac0959b]
+[contracts.plan-interactive-round-limit-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "`round-limit`"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-stop-requires-d9472e03faa0]
+[contracts.plan-interactive-stop-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "`stop-incomplete`"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-induced-unresolved-requires-1d9f69d9661e]
+[contracts.plan-interactive-induced-unresolved-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "未解決 finding を伴う `induced-loop`"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-no-alternative-requires-842d2610d0b3]
+[contracts.plan-interactive-no-alternative-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "代替 evidence で完了扱いにしない"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-no-reverse-requires-d84914ffb472]
+[contracts.plan-interactive-no-reverse-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "自動逆遷移しない"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-same-content-requires-f1aa810d8b07]
+[contracts.plan-interactive-same-content-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "同一内容へ"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-caller-context-requires-4ed9a6b1b165]
+[contracts.plan-interactive-caller-context-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "generic `caller_context` Data"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-review-goal-requires-e317cdac5f5f]
@@ -395,39 +458,45 @@ slice = "plan-interactive-handoff"
 pattern = "ただし goal に対応する別 reviewer があれば `review-refine` へ渡す"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-final-acceptance-requires-39d6b25aec6e]
+[contracts.plan-interactive-final-acceptance-requires-df11ab93411b]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を\n省略できるが、final report は省略しない。"
+slice = "plan-interactive-final-acceptance-routing"
+pattern = '''Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Inputs: final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、Human Decision、default required / explicit opt-out、親が分類した correction scope。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。親が local correction と分類した場合は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を routing し、large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-review-change-boundary-requires-938104d24771]
+[contracts.plan-interactive-review-change-boundary-requires-2971c25f4f9e]
 kind = "requires"
-slice = "plan-interactive-handoff"
-pattern = "review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の\n変更が必要なら、改善案を採用せず `人間確認` へ止める。"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-freeze-as-final-forbids-4d11a5fe6e08]
+[contracts.plan-interactive-freeze-as-final-forbids-b5bdf36ac825]
 kind = "forbids"
-slice = "plan-interactive-handoff"
+slice = "plan-interactive-fixed-review-routing"
 pattern = "direction freeze を final acceptance とみなす"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-optional-final-forbids-12bd9dbf663e]
+[contracts.plan-interactive-optional-final-forbids-829aff6e084e]
 kind = "forbids"
-slice = "plan-interactive-handoff"
+slice = "plan-interactive-fixed-review-routing"
 pattern = "final acceptance は任意"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-freeze-as-final-variant-forbids-4a24600ac825]
+[contracts.plan-interactive-freeze-as-final-variant-forbids-2ec99c6b461b]
 kind = "forbids"
-slice = "plan-interactive-handoff"
+slice = "plan-interactive-fixed-review-routing"
 pattern = "direction freeze を最終承認として扱う"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-optional-final-variant-forbids-2ceedb556ba3]
+[contracts.plan-interactive-optional-final-variant-forbids-e9febdc9af08]
 kind = "forbids"
-slice = "plan-interactive-handoff"
+slice = "plan-interactive-fixed-review-routing"
 pattern = "final acceptance は省略可能"
 applies_to = ["claude", "codex", "cursor"]
 
@@ -575,4 +644,178 @@ coverage = normal | boundary | failure path | side effect | prohibition | respon
 output = how each obligation will be observed after implementation
 clarify_it = do not add this derivation or its schema to clarify-it
 blocking_gap = incomplete before direction freeze'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: each Flow keeps one deterministic routing witness while Human meaning and acceptance remain parent-owned.
+
+[contracts.pi-kernel-preflight-b7e7565d0103]
+kind = "requires"
+slice = "plan-interactive-interactive-kernel-preflight"
+pattern = '''Trigger: 親が最初の clarify-it または candidate Claim adjudication を開始する直前で、kernel preflight を要求したとき。
+Inputs: resolve-kernel と necessity-kernel の skill-relative path、各 identity、必要 section、dependencies、plan-interactive の caller/role mapping、親の判定基準。
+Procedure: resolve は clarify-it 適用前に一度だけ load・identity・必要本文を検証し、necessity は candidate Claim adjudication 前に一度だけ load・identity・必要本文を検証する。resolve の failure は clarify-it 前、necessity の failure は Claim adjudication 前に `incomplete` とし、検証済み本文だけを親の既存判定基準へ注入する。二つの timing を統合せず、path 解決と最終判断は親が所有する。
+Outcomes: 検証済み kernel Data と role mapping、または対応する timing の `incomplete`。Flow は Human の意味判断、Claim の採否、clarify-it の対話結果を expected oracle にせず、loader failure を突破しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-observation-reapply-flow-d9e8383f70ed]
+kind = "requires"
+slice = "plan-interactive-observation-reapply-flow"
+pattern = '''Trigger: 親の最小観測後も同じ decision model に追加の技術 evidence が必要、または既存 evidence と runtime behavior の不一致が観測されたとき。
+Inputs: 同じ current decision model、request / repository / Issue / existing specification / required runtime behavior の observation、provenance 付き action evidence、clarify-it の同じ parent context、最小限の observation Action。
+Procedure: 親は必要最小限の observation Action だけを実行し、固定した action evidence を Data として同じ model に追加して、同じ parent context で clarify-it を再適用する。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。
+Outcomes: 更新済み同一 model への clarify-it 再適用結果、または親へ返す technical evidence gap。Flow は observation の意味評価や Human の clarification 内容を expected oracle にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-loop-bound-61d8b00b7417]
+kind = "requires"
+slice = "plan-interactive-clarify-loop-bound-routing"
+pattern = '''Trigger: 各 clarify または resolution loop の開始時に、親が execution bound を固定して routing を要求したとき。
+Inputs: 親が loop 開始時に確定した bound、同一 loop 中の immutable bound、remaining decisions、semantic progress、materiality、clarify-it の result。
+Procedure: bound を各 loop 開始時に固定し、その loop 中は変更しない。bound 到達、または material な decisions が残るのに semantic progress がない場合は、remaining decisions と reasons を保持して plan-interactive `incomplete` とし downstream を禁止する。clarify-it の `Stopped` は reason と remaining decisions を preserve して plan-interactive `incomplete` とし downstream を禁止する。bound は structural-health-gate と review limit から独立させ、親の terminal を clarify-it `Stopped` として捏造しない。
+Outcomes: 固定 bound 内の loop 継続、または preserve された Data 付き `incomplete`。progress と materiality の意味、bound の選択、clarification 内容は親入力であり Flow の expected oracle ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-direction-freeze-5de86a74acae]
+kind = "requires"
+slice = "plan-interactive-direction-freeze-projection"
+pattern = '''Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
+Inputs: 要求原文、verified decision ledger、freeze candidate、全意味単位を含む `freeze_source_snapshot`、source evidence、workflow-local opaque ID 候補。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合する。照合済み `{id, frozen_meaning, source_evidence}` だけを projection し、新しい meaning、condition、decision を加えない。不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-optional-routing-f53bf0271a6f]
+kind = "requires"
+slice = "plan-interactive-optional-proposal-refinement-routing"
+pattern = '''Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の `Yes / No` として提示するとき。
+Inputs: verified direction-freeze candidate S0、短い recommendation と理由、Human の一度だけの `Yes / No`、constrained proposal の fixed 2 pass result、fresh-context freeze-integrity input。
+Procedure: `No` は proposal と freeze-integrity を実行せず structural-health-gate へ送る。`Yes` は S0 に束縛した constrained proposal fixed 2 pass と fresh-context freeze-integrity check を実行する。proposal の `stop-incomplete` は authority conflict かつ verified result の場合だけ返却された verified candidate を使った local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。
+Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、local Human recovery の入力、または `incomplete`。Yes / No、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-integrity-recovery-029b9dc8d9c4]
+kind = "requires"
+slice = "plan-interactive-freeze-integrity-recovery-routing"
+pattern = '''Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
+Inputs: check #1 の全 evidence、constraint IDs と candidate locations、Human が再判断した decision、最新 verified snapshot S0、affected dependency closure、immutable `request.scope` / `request.exclude`、recovery freeze、fresh bounded proposal、check #2 context。
+Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` の場合は check #1 evidence を保持し、親の Human 再判断を反映・verify して affected obligations を closure として計算した後、local clarify-it、verified recovery freeze、fresh bounded proposal fixed 2 pass、fresh-context check #2 を mandatory に順に実行する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。authority conflict への Human 再判断を反映・verify した後は、最新 verified snapshot と更新済みの完全な constraints で fresh proposal fixed 2 pass を行う。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
+Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-gate-reopen-49e703bc3f78]
+kind = "requires"
+slice = "plan-interactive-structural-gate-reopen-routing"
+pattern = '''Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
+Inputs: gate assessment の problem / impact / recommendation、独立した rounds と `rounds.limit`、current round、Human response、affected decision と dependency closure、new direction freeze、new optional selection、changed review scope。
+Procedure: `pass` は downstream review へ送る。`return` は current round が limit 未満のときだけ、gate の問題・影響・推奨対応を Human へ圧縮し、affected closure を clarify-it に局所適用して new freeze と new `Yes / No` selection を経て gate を再実行する。前 cycle の opt-in や governing value を継承せず、新しい direction freeze で proposal refinement の `Yes / No` を再確認する。limit 到達、`insufficient-evidence`、closure failure、または finding 全件却下で内容不変の場合は `stop-incomplete` とし、同一内容の別 identity を作らない。
+Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-fixed-review-2971c25f4f9e]
+kind = "requires"
+slice = "plan-interactive-fixed-review-routing"
+pattern = '''Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
+Inputs: artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、review result classification。
+Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を実行し、input failure または reviewer failure は review 未成立として `incomplete` にする。review result は `converged` または未解決 finding のない `induced-loop` だけを candidate routing へ渡し、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
+Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-final-acceptance-df11ab93411b]
+kind = "requires"
+slice = "plan-interactive-final-acceptance-routing"
+pattern = '''Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Inputs: final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、Human Decision、default required / explicit opt-out、親が分類した correction scope。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。親が local correction と分類した場合は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を routing し、large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-programmatic-flow-trigger-occurrences]
+kind = "occurrences"
+pattern = '''Trigger:'''
+count = 10
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-programmatic-flow-inputs-occurrences]
+kind = "occurrences"
+pattern = '''Inputs:'''
+count = 10
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-programmatic-flow-procedure-occurrences]
+kind = "occurrences"
+pattern = '''Procedure:'''
+count = 10
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-programmatic-flow-outcomes-occurrences]
+kind = "occurrences"
+pattern = '''Outcomes:'''
+count = 10
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-kernel-preflight-occurrences]
+kind = "occurrences"
+pattern = "### interactive-kernel-preflight"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-observation-reapply-flow-occurrences]
+kind = "occurrences"
+pattern = "### observation-reapply"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-loop-bound-occurrences]
+kind = "occurrences"
+pattern = "### clarify-loop-bound-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-direction-freeze-occurrences]
+kind = "occurrences"
+pattern = "### direction-freeze-projection"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-optional-routing-occurrences]
+kind = "occurrences"
+pattern = "### optional-proposal-refinement-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-integrity-recovery-occurrences]
+kind = "occurrences"
+pattern = "### freeze-integrity-recovery-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-gate-reopen-occurrences]
+kind = "occurrences"
+pattern = "### structural-gate-reopen-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-fixed-review-occurrences]
+kind = "occurrences"
+pattern = "### fixed-review-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-final-acceptance-occurrences]
+kind = "occurrences"
+pattern = "### final-acceptance-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
