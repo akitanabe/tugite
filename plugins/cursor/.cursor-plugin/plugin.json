@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "displayName": "Tugite",
-  "version": "5.23.0",
+  "version": "6.0.0",
   "description": "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。",
   "author": {
     "name": "akitanabe"

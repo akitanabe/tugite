@@ -1,6 +1,6 @@
 {
   "name": "tugite",
-  "version": "5.23.0",
+  "version": "6.0.0",
   "description": "Use impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
   "author": {
     "name": "akitanabe"
