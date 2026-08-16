@@ -194,7 +194,7 @@ Outcomes: 照合済み `実行済み` Data、または `blocked`。unknown resul
 
 Trigger: run-owned checkout を作成した run で、親が final verification と必要な外部副作用照合を完了し closeout 可否判定へ到達したとき。
 Inputs: 検証済み `impl-run-owned-lifecycle-loader` Data と reference 本文、親が観測した成果の永続化、resource identity、tracked state、collision、writer / reviewer 終了 Data。
-Procedure: `references/run-owned-lifecycle.md` の `Closeout` だけを procedure の唯一の正本とし、integration result 後の cleanup を別の Calculation として扱う。unsafe または unknown なら resource を保持する。
+Procedure: `references/run-owned-lifecycle.md` の `Closeout` だけを procedure の唯一の正本とし、integration result 後の cleanup eligibility を Calculation として判定し、実際の cleanup と post-observation / 照合は Action として実行し、その観測結果を Data として返す。unsafe または unknown なら resource を保持する。
 Outcomes: 照合済み integration / cleanup Data、または resource を保持した `blocked`。`blocked` は突破せず `stop-incomplete` と残存 Action の判断を Agentic な親へ返す。
 <!-- @/contract -->
 
