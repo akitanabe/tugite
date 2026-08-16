@@ -37,7 +37,6 @@
     "shared/skill/plan-craft/SKILL.md",
     "shared/skill/plan-craft-approval/SKILL.md",
     "shared/skill/proposal/SKILL.md",
-    "shared/skill/proposal-dialogue/SKILL.md",
     "shared/skill/review-loop/SKILL.md",
     "shared/skill/structural-health-gate/SKILL.md",
     "shared/skill/work-unit-design/SKILL.md",
@@ -51,7 +50,6 @@
     "declarations/codex/skills/plan-craft/openai.yaml",
     "declarations/codex/skills/plan-craft-approval/openai.yaml",
     "declarations/codex/skills/proposal/openai.yaml",
-    "declarations/codex/skills/proposal-dialogue/openai.yaml",
     "declarations/codex/skills/review-loop/openai.yaml",
     "declarations/codex/skills/structural-health-gate/openai.yaml",
     "declarations/codex/skills/work-unit-design/openai.yaml",
@@ -109,7 +107,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "88b0e3b8984861fc979706d40971ef8ebd585952d8cd6a664112e02af99d4618"
+      "sha256": "31abdaff94c42da6d148fc9a7e4b1f06e852163c52234afac7bf754056da199d"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -169,7 +167,7 @@
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "ea9ca7b288afad093b53c7fda42285c294c625c69293cf385fb88478736d784a"
+      "sha256": "16a6af469a4e99b86a5441f8cb67ac5d6ecac04fc6c5612afadb411783709141"
     },
     {
       "id": "cursor-impl-lead-skill",
@@ -196,10 +194,6 @@
       "sha256": "19a44307c0bacf81f994e17f46e97e3882fd95b3910789412a0c3baa5609f86c"
     },
     {
-      "id": "cursor-proposal-dialogue-skill",
-      "sha256": "be9fba8b26c3855a247339d4eca3146b9758aac56bfe20a87b91b2614af59539"
-    },
-    {
       "id": "cursor-review-loop-skill",
       "sha256": "1095129291133ca6f40465e5159552ee9bae4e00e88f95a94191a8c6179ae756"
     },
@@ -212,8 +206,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-b0470de1862c",
-      "sha256": "60945dc6b1da00fbb3ca91378aa6ce8f596a78fde2c21309fd41be008825e6e5"
+      "id": "cursor-readme-version-requires-c56c8172b3eb",
+      "sha256": "b38dca915f6020ee3002d0be18199468e572630db55ee62355f2aa1152148604"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -261,7 +255,7 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "0f64f2928f24fef326ebded81fcb904daae6476cf40a542138dbd8d6aab70bdf"
+      "sha256": "35ec366c4bc0c474f99cc8a4d4356867d51e0e26c2b86db89166d26bfffcbce8"
     },
     {
       "id": "codex-openai-disabled-policy",
@@ -273,7 +267,7 @@
     },
     {
       "id": "claude-internal-skill-policy",
-      "sha256": "afccf59e0a1b0a9ba8835bd3ad7159e952d198adddaa513a20b821a6ccbbdec0"
+      "sha256": "7f491311cf3f7c1916652ffb5bdffc7b135fce92e49201ae71e8bc896619b349"
     },
     {
       "id": "claude-review-loop-policy",
@@ -1992,140 +1986,68 @@
       "sha256": "7981e450a5454bc51c289368dcdd17e80bc6909646ab7600a731be1487a88784"
     },
     {
-      "id": "proposal-dialogue-internal-guard-requires-527b65ea8ec8",
-      "sha256": "8ba0b10be370732163f7d4bdf2ca119e34d754945a013adb5bfd7d0c538f93be"
+      "id": "clarify-caller-data-fab7a72d8afa",
+      "sha256": "efcb780508aefff02ce8454a0ef7f97efd024b8065720e767edac391e92f64e2"
     },
     {
-      "id": "dialogue-resolve-loader-data-08b6250f7db8",
-      "sha256": "6b8acd471a8f6640578e0a739529f6655534ecb9a0fdc54cd110bb4bc0596cbf"
+      "id": "execution-bound-data-8e7bc9625afb",
+      "sha256": "396f7c776c51c53fc69a52638ba8b1199ea264a8a0fef6ad5b8be5a259430f29"
     },
     {
-      "id": "dialogue-resolve-role-data-bea6357c3e02",
-      "sha256": "f3a32193ff2ccfa379f33414f8fa47d1c47dcd59ee32ad19e959885f1112d740"
+      "id": "kernel-loader-data-81050f00412b",
+      "sha256": "6720e0f947e56c756d1a2cc428701748f7e7aa65f16effba2eeea487f868b704"
     },
     {
-      "id": "dialogue-necessity-loader-data-8a54f7f248fd",
-      "sha256": "938357d4d9970bbbe7b439e794e7d91d7e6f58e3a89df2f10ecac6498cc84273"
+      "id": "kernel-role-data-cf15e934ff45",
+      "sha256": "efb5898bad617a24127289530e6c22cbe3aede5739edf4ecaa72637ed15a0340"
     },
     {
-      "id": "proposal-dialogue-parent-requires-9a457d7aeabb",
-      "sha256": "279672c79e2fb7cca89a48f8d4c065a1e0d4d990defdf534c24137a4010cf3bc"
+      "id": "observation-reapply-data-1b1a9e358271",
+      "sha256": "12abb0318d883ac2bf3362564fa8247e53683761a523ef1f7c3c20df6e051f3d"
     },
     {
-      "id": "proposal-dialogue-producer-boundary-requires-027d49e878de",
-      "sha256": "94904b440713230ab8d186f1f7c53ab02cafa60d3b8dd65367905a95f28f75d0"
+      "id": "observation-action-permission-76976ad013b2",
+      "sha256": "fe03ebb4a5599c389e0028208d062e270edca134bc4bc25aee51a616855b865c"
     },
     {
-      "id": "proposal-dialogue-decisions-requires-29075712c83d",
-      "sha256": "6dda5385bce4dc0886e3d6eac11dee6dafc6ce0ab1e5d460fe93b0a5dd1534da"
+      "id": "clarify-projection-data-781df0c3a3a7",
+      "sha256": "0e94fc4693377351c552bd9c734753cdcd6171f834622146db3b5b580932388a"
     },
     {
-      "id": "proposal-dialogue-recommendation-requires-232b7a42fa45",
-      "sha256": "27ebecac38f6cf40c29294a3b01c42a94013c97ba529e5bc1d48a7f6f74647f6"
+      "id": "projection-reconfirmation-450555d2c5d6",
+      "sha256": "02a0c3145328456ea166f54a6fbebd472febef3d97ae90e4271d1d51dd23df0b"
     },
     {
-      "id": "proposal-dialogue-no-answer-requires-db1b231ef0d9",
-      "sha256": "e86cb4c27654994e5e7d9b13bd434501c69e210d3e60af23bc03556a7d3331ae"
+      "id": "reopen-routing-data-117e934a0f70",
+      "sha256": "99bda6db13d5eec2e109c63e684c8c8726a1912041d644fe80fb16af230b4d63"
     },
     {
-      "id": "proposal-dialogue-sequential-snapshot-requires-34ff6cfee124",
-      "sha256": "18519483a82b64b3e564cef19900fbeaa91cbf1a462661ff6c6e62dbf754b6f9"
+      "id": "necessity-parent-data-9ede9b1cd4e8",
+      "sha256": "5a332bace1d1ba4601142edd23b05fb54da6f406518b2a786ff16060801f1b13"
     },
     {
-      "id": "proposal-dialogue-freeze-requires-78d5d6d98731",
-      "sha256": "5385b2e8c886489bb55406360c6ace79fb2cb051d84ba41b07c06255204fc3a5"
+      "id": "advisor-human-boundary-6e4a30872e5e",
+      "sha256": "7a7b2790e7377ce2aab7e0467254b3b5f31977b9e0384f9d6efaaeda96a6e1bf"
     },
     {
-      "id": "proposal-dialogue-raw-ledger-requires-dad818b0c234",
-      "sha256": "9f8beedae52c6eade34ab49dec47ad31994c686fabe742e8d5a9c11383ffde3f"
+      "id": "check1-recovery-data-220cf5108857",
+      "sha256": "1bc79c36bfb638f936bc6ea7efcb56498882b61284b42b1eb6101613886132d2"
     },
     {
-      "id": "proposal-dialogue-stop-requires-e3222e8966b6",
-      "sha256": "ecc23403674d6e0b7e89ca1a4c6e4c5e4277facbb90c4aedfba39e1c62d3a1a2"
+      "id": "check1-direct-gate-2e994d259a00",
+      "sha256": "69de8df39b02ce66ab48593ea4db46a6f6c2d5ff6c9e1673f7a1a7bd8185bfac"
     },
     {
-      "id": "proposal-dialogue-ledgers-requires-046318fd942c",
-      "sha256": "101b43fa12a5c8f8088190cfab3869942de11f811e194ffa66e47d07167bf236"
+      "id": "check1-legacy-route-6ea33edd1a47",
+      "sha256": "d67d3574b65a9f67915d4ec8e57e7272572cbec0582a181ecf8f6728345398ff"
     },
     {
-      "id": "proposal-dialogue-insight-question-requires-c9bbd13bb126",
-      "sha256": "ca314678caae837b759fd80b5b64e63b65bff2ba8db6f1df6e1b03d2785705fa"
+      "id": "plan-craft-approval-kernel-before-clarify",
+      "sha256": "f1197c6526191c4451e1ec76a570d0b8d03eed58497e65deda47dc20e6d5a09d"
     },
     {
-      "id": "proposal-dialogue-advisor-phase-requires-0ccbe0768ee5",
-      "sha256": "44511bf63d499447a189e79287abbf6646f00ebe1d2c06ac4810c54806cb1a10"
-    },
-    {
-      "id": "proposal-dialogue-empty-insight-requires-8501a8e9c88b",
-      "sha256": "18345d0f802290271e6bafb95ab05a36077095e4d947db4811c74a963a29e404"
-    },
-    {
-      "id": "resolve-independent-requires-d3b5ca64fb38",
-      "sha256": "7078635f40365776db4409fa2b8e440ea2e23a5255e3ccf195c7b68b7cef89b8"
-    },
-    {
-      "id": "resolve-no-queue-requires-136dc690ed7c",
-      "sha256": "317f39420bf621eed9a1960c4ce483ec5e1024afb4214917cf34122ae2383046"
-    },
-    {
-      "id": "resolve-verify-failure-requires-aecf02039212",
-      "sha256": "b617237f7ca47ef67ca8118089ff7b730cb9acda5640f3e61f1a3c05ff8989d8"
-    },
-    {
-      "id": "resolve-rejection-requires-871b6dcd9a96",
-      "sha256": "e40cc85017095adbca8f57245e4d0b1bd2090605f436cbf974f3f560fb7461e7"
-    },
-    {
-      "id": "resolve-frontier-empty-requires-d68bc882f9e1",
-      "sha256": "4190e6d1ade70fbdc3d09218af96e362200c69a0218b0ba75ec9463be72c5050"
-    },
-    {
-      "id": "resolve-stop-requires-b173b7a88b87",
-      "sha256": "4830e6640ea7e0233ae6c17dd3b514b510ec33114270547b4b6fbd69e452103e"
-    },
-    {
-      "id": "proposal-dialogue-baseline-forbids-ae76193a6133",
-      "sha256": "f36b390f5e9133af9fa641e2c1ba62dc8b76c4732cbc729dd5e236efbcd161f1"
-    },
-    {
-      "id": "proposal-dialogue-saturation-forbids-af594a636433",
-      "sha256": "01aaae02cd9eee12f72c61c6f8fdb843b24d3b276ff8de08fdf54a994247cc65"
-    },
-    {
-      "id": "proposal-dialogue-review-loop-forbids-75dc433d89c1",
-      "sha256": "7b01bd3c51a177e46c725699abddc2bdb4791bfdfde97f84611c50f0f7ef9c69"
-    },
-    {
-      "id": "proposal-dialogue-responsibility-requires-006ba6bdd918",
-      "sha256": "d9dc527f15d106ef36efd00fd6d84eb4b10c480a828c40071e723e862def3b4f"
-    },
-    {
-      "id": "proposal-dialogue-no-research-delegation-requires-50e13fb238e8",
-      "sha256": "0efe59887a25f6e2c09deebd1f9ff4063c551f27dfed0283a0b6dd2832744ef8"
-    },
-    {
-      "id": "proposal-dialogue-density-requires-173fc3141b81",
-      "sha256": "02651e05af49f086fca49997cf5af4b181111f5e458b6450647311887a9de65a"
-    },
-    {
-      "id": "proposal-dialogue-mode-state-forbids-78de2d87e2f5",
-      "sha256": "321de897ba2ec1540146054c4424d70c43eae2d135020db73b4039dbbd013e64"
-    },
-    {
-      "id": "proposal-dialogue-advisor-direct-forbids-ed6d51b7f121",
-      "sha256": "b2ca2b225ee46abd0da845b14a7d539787df1ebceffbd2e9839af5d916bf9dd4"
-    },
-    {
-      "id": "proposal-dialogue-fixed-density-variant-forbids-69f7392b063f",
-      "sha256": "7f96e579d9c8ff53712ac8a72cf6532a3f063c1cb222f132b06f37116ec6487a"
-    },
-    {
-      "id": "proposal-dialogue-advisor-direct-variant-forbids-16029412c8ec",
-      "sha256": "4a8841eac5a6ddc4845ecc93cb2586586a432e3f6b91f545b831bdc2fdb7d16f"
-    },
-    {
-      "id": "plan-craft-approval-order-requires-ba54d370ccf2",
-      "sha256": "0475ac9989ff1c51e052e56acd48f3f796a79ab895293a653fb404529a30b936"
+      "id": "plan-craft-approval-clarify-before-gate",
+      "sha256": "94cb0d362c17501e17a57cca68ec17e5c0dd2193418eabd9533cd92acfe62669"
     },
     {
       "id": "refinement-selection-requires-f58555dece96",
@@ -2146,14 +2068,6 @@
     {
       "id": "refinement-stop-fallback-forbids-adc7b41012e4",
       "sha256": "d9808ab487965ff2392a856d5dbb4bf8b9b8f6cc2bad8e3582b62a80af94fe08"
-    },
-    {
-      "id": "check1-recovery-requires-b6417f02348e",
-      "sha256": "93306729187727449cee3a94af7e669889a332c6b555569c89ccc870b2725472"
-    },
-    {
-      "id": "check1-direct-gate-forbids-9910a731417f",
-      "sha256": "2773db40c13277dbfed66657e743ebad6bcc4502f9a550d291b70a86cf322753"
     },
     {
       "id": "plan-quality-advisor-invocations-requires-78e0d7f8cbbc",
@@ -2216,18 +2130,6 @@
       "sha256": "f95dd28543f7495e25971da33be1adc1a682a3815073118d4b8b533ba9d93c48"
     },
     {
-      "id": "dialogue-boundary-owner-requires-a6f1cab1e590",
-      "sha256": "507f5f795b758fbbc7bc6005e89e675d2b8b4f9f51017169dba7c5ac5ac829dc"
-    },
-    {
-      "id": "dialogue-bound-default-requires-50472fb9b0ea",
-      "sha256": "225cb24d260279e701e3bc672a7b78bf15ca81e2396e11d36919c2cbff6b836c"
-    },
-    {
-      "id": "dialogue-budget-separate-requires-594931fe6da5",
-      "sha256": "b43e61cfe8e2626cf464de7d095f0f6fcf00736f80dd6c106499518337186d84"
-    },
-    {
       "id": "plan-craft-approval-applicability-first-requires-61d3b00cab8a",
       "sha256": "9599950e3bcb786366af852aaf081817b52da346a47f3a948bc7c9bea7ae2e78"
     },
@@ -2274,10 +2176,6 @@
     {
       "id": "plan-craft-approval-no-reverse-requires-e8d11b39dddf",
       "sha256": "a855fcb811fdd65c3ee780baf134b7c5d6cd53bc01ca988b35f95b2c068e3578"
-    },
-    {
-      "id": "plan-craft-approval-human-confirmation-requires-3cd10294de86",
-      "sha256": "d5f572f48ef37c0592b8b33219756885cd8930b2257870de9eec0651b06430f9"
     },
     {
       "id": "plan-craft-approval-same-content-requires-7b7535bc8d88",
@@ -2332,38 +2230,6 @@
       "sha256": "87e3039d9cfef553fa777df9f118d93b3c7db6853ffdd0e750ab44c47b150205"
     },
     {
-      "id": "proposal-dialogue-kernel-reference-before-criteria",
-      "sha256": "69a0e9e077dd59218a3b239429e7da7a8d5093770d2a056c8469ac31ac3dc9cd"
-    },
-    {
-      "id": "proposal-dialogue-resolve-loader-before-cycle",
-      "sha256": "7aebf109f36b411e959e44471d740b160a05d2f0f15248e285c432c38973a01b"
-    },
-    {
-      "id": "plan-craft-approval-resolve-loader-before-dialogue",
-      "sha256": "bca116fa830a81385b4a5f4c1b4b9324ce14398c26e8860531df6c9d45e8300c"
-    },
-    {
-      "id": "plan-craft-approval-mapping-before-resolve-loader",
-      "sha256": "1f5b0bdd5a4916d5e192d9fe677216b34fd2549fac4c39b8554f3b894e30078d"
-    },
-    {
-      "id": "proposal-dialogue-resolve-loader-before-injection",
-      "sha256": "b5016f9c7f93c84b80420d80b4e43a1b219bdb1fb80b40f6d4f0be9860e3a547"
-    },
-    {
-      "id": "proposal-dialogue-resolve-injection-before-cycle",
-      "sha256": "ceaa5ba7214d51e07a6ea895cca9a044e8f4e3fae1f197721c703cf24c746bcf"
-    },
-    {
-      "id": "plan-craft-approval-dialogue-mapping-before-start",
-      "sha256": "4f2c6d1cb9abf76069ae59569564bbe5750dd625a3ae9d9460bc2bc2a299a7fd"
-    },
-    {
-      "id": "plan-craft-approval-dialogue-before-gate",
-      "sha256": "006a83b65615c697cf02ae6919ea561510b3f4086a9545bea7d81d56b2e18c2a"
-    },
-    {
       "id": "plan-craft-approval-gate-before-review",
       "sha256": "9466fdaf156eb35070c1c17d9d38db8347a4da6e00b0729bf2b2333b570decda"
     },
@@ -2390,6 +2256,30 @@
     {
       "id": "plan-craft-approval-publish-before-output",
       "sha256": "fa94e8b6da50e3f1b57491e2472b602a53cf6b27ab1e8fada58d65c4f1d9a4ce"
+    },
+    {
+      "id": "advisor-parent-data-bf74eb13d79a",
+      "sha256": "48abe0cf3ed3d37b098f094707942c71e297eadeb49b5e38244e396821bd01b0"
+    },
+    {
+      "id": "advisor-auto-adopt-1a9de706db02",
+      "sha256": "29f4db547267b95a051190773118ee7c0af30bb9ddda832b887805a264d981ec"
+    },
+    {
+      "id": "advisor-auto-question-5e256c791978",
+      "sha256": "3605adb82e677af31f3671d130bfc9c134d3ca44736860bffe0b6dded10d5ff2"
+    },
+    {
+      "id": "advisor-fixed-phase-3a74fd9f8de1",
+      "sha256": "9c3c17815dc3163816cb7ea3338443bd08b3a119314d1c42a7dab049189b7a66"
+    },
+    {
+      "id": "advisor-empty-freeze-03948263ae3f",
+      "sha256": "1b65ae388e7c46c394c99c5eb95a7d129a106cd661cb528dbdcc455090eb7d45"
+    },
+    {
+      "id": "verification-parent-data-8a7b5297264b",
+      "sha256": "284d483c9576f78d459e1c3c42e4ef3ed299d22fdb5bc9c13c15e08ecc2f02fa"
     },
     {
       "id": "kernel-dependencies-none-claude",
@@ -2453,7 +2343,7 @@
     },
     {
       "id": "necessity-kernel-mention-allowlist",
-      "sha256": "e6f4af60dffed9c78f42471dd3cc313416a07d8b92dca252105a8cd46b34f2d1"
+      "sha256": "50e2e8edf3a744d0df7eae7157025715f4ac55be30e7d95814aeafbf2b5ffa0c"
     },
     {
       "id": "necessity-kernel-identity-requires-632e3add6746",
@@ -2464,8 +2354,8 @@
       "sha256": "3141ca9620d9ce5e539fd14f7f029345ec640e239e6455c27325af971e373b58"
     },
     {
-      "id": "kernel-scope-proposal-dialogue-requires-8915e0e2f2e7",
-      "sha256": "b3b477399ee47fcf935c602e54a98bd649129475eb144660c4458fe5af2d5608"
+      "id": "kernel-scope-plan-craft-approval-requires-66ca26965708",
+      "sha256": "b86e8ebeefb851eb432fd4b8aef0d3d32f25cec9b7ca93b90dc4c940ba85f14c"
     },
     {
       "id": "kernel-scope-review-loop-requires-8822e7c17f00",
@@ -2625,7 +2515,7 @@
     },
     {
       "id": "resolve-kernel-mention-allowlist",
-      "sha256": "aa63cdc4a6c287c3cac5aec3108dd8a9cd1beefc689b5b68e355bdc99a686c97"
+      "sha256": "eee61d2b19285a4b0fbe40919486856790bca5cb8c4cd358c6aa0bb360230bfb"
     },
     {
       "id": "resolve-kernel-mapping-forbids-30e9e5d5c1df",
@@ -2644,10 +2534,6 @@
       "sha256": "bc33ee35fcb0176fdabf075779c89bdb92ae695704953c6e377dead611196cdf"
     },
     {
-      "id": "resolve-kernel-mapping-identity-forbids-53e3beeba915",
-      "sha256": "330079ee51ff4caa262d1fea03d7d26ae14cb9e24494952bb3cb5e363b16a5a4"
-    },
-    {
       "id": "resolve-kernel-mapping-identity-forbids-a0ae78551ff2",
       "sha256": "9c2360935ba4f9f65c469843e1f1e6dc9211a8d4d143967404870e707562f831"
     },
@@ -2664,8 +2550,8 @@
       "sha256": "75a7b88cf967492069a95c39829921c68bf1cb0206a3d8faf20f76863fd97e71"
     },
     {
-      "id": "resolve-kernel-stable-9d8cf575e5d8",
-      "sha256": "17db5d0641159b92d7923da681286cc769c65a56aed85d4249740b6883718e24"
+      "id": "resolve-kernel-callers-ac782e6d2307",
+      "sha256": "720a493abfcd908f9128b18a73fe8fa9c857605a85d5bb1a73fc204189ee81fe"
     },
     {
       "id": "resolve-kernel-scope-4490430b813e",
@@ -3166,22 +3052,42 @@
     },
     {
       "kind": "span",
+      "id": "plan-craft-approval-clarify-caller",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-execution-bound",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-kernel-mapping",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-kernel-load",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-observation-reapply",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-craft-approval-clarify-start",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-clarify-projection",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-craft-approval-handoff",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-craft-approval-dialogue-mapping",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-craft-approval-resolve-kernel-load",
-      "path": "shared/skill/plan-craft-approval/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-craft-approval-proposal-dialogue-start",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
     {
@@ -3192,6 +3098,26 @@
     {
       "kind": "anchor",
       "id": "plan-craft-approval-review-loop-handoff",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-reopen-routing",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-necessity-parent",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-advisor-parent",
+      "path": "shared/skill/plan-craft-approval/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-craft-approval-verification-derivation",
       "path": "shared/skill/plan-craft-approval/SKILL.md"
     },
     {
@@ -3308,36 +3234,6 @@
       "kind": "span",
       "id": "proposal-bounded-return",
       "path": "shared/skill/proposal/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "proposal-dialogue-boundary",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "proposal-dialogue-resolve-kernel-load",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "proposal-dialogue-resolve-kernel-use",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "proposal-dialogue-resolution-cycle-start",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "proposal-dialogue-kernel-reference",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "proposal-dialogue-kernel-criteria",
-      "path": "shared/skill/proposal-dialogue/SKILL.md"
     },
     {
       "kind": "span",

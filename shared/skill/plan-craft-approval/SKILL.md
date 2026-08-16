@@ -49,23 +49,98 @@ disable-model-invocation: true
 成果物種別を `artifact_kind` Data として保持する。実装前提プラン系か否かは reviewer 適用可否だけに使い、自由形式
 成果物をプラン系へ変える理由にしない。実装前提プラン系は `Acceptance Criteria` と `設計` の節名を持つ。
 
+<!-- @contract plan-craft-approval-clarify-caller -->
+## clarify-it の caller mapping
+
+```text
+application = public clarify-it in the same plan-craft-approval parent context
+dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
+caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
+public_extension = none
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-execution-bound -->
+## clarify / resolution execution bound
+
+```text
+fix_timing = at each clarify or resolution loop start
+immutability = unchanged during that loop
+terminal = bound reached or no semantic progress with material decisions remaining -> preserve remaining decisions and reasons -> plan-craft-approval incomplete -> prohibit downstream
+public_contract = no fixed value, public parameter, schema, or resolve_rounds
+budget_boundary = separate from structural-health-gate rounds and review limits
+clarify_stopped = never fabricate this caller-owned terminal as clarify-it Stopped
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-kernel-mapping -->
+<!-- @anchor plan-craft-approval-kernel-load -->
+clarify loop の開始前に、親 Action は次の Loader Data をそれぞれ一度だけ使って kernel を読み、identity と必須本文を検証する。
+
+<!-- Why Not: Loader Data は load/use relation を一体で保持するため分離しない。 -->
+```text
+resolve_path = ../../references/resolve-kernel.md
+resolve_load_timing = once before clarify-it application
+resolve_identity = resolve-kernel-v1
+resolve_dependencies = none
+resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
+necessity_path = ../../references/necessity-kernel.md
+necessity_load_timing = once before candidate Claim adjudication
+necessity_identity = necessity-kernel-v1
+necessity_dependencies = none
+necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = incomplete before clarify-it application
+owner = plan-craft-approval parent
+delegate_path_resolution = false
+```
+
+次の role Data を唯一の正本として mapping する。
+
+<!-- Why Not: role Data は caller と role mapping の一体性を失うため分離しない。 -->
+```text
+caller = plan-craft-approval
+resolver = planner
+counterpart = human
+authority = binding
+ledger = decision ledger
+```
+
+検証済み本文だけを親が既存の判定基準または必要な周辺 context に注入する。loader、role mapping、advisor、verified snapshot、
+decision / adoption ledger、direction freeze source / constraints は親の workflow Data であり、`clarify-it` の入力または output contract にしない。
+親は後述の necessity adjudication、限定 advisor、verification derivation の normative Data を direction freeze 前に適用する。
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-observation-reapply -->
+<!-- @anchor plan-craft-approval-clarify-start -->
+## 観測 Action と clarify-it 適用
+
+```text
+clarify_action_boundary = inherit clarify-it prohibition without override
+parent_observation = observe request, repository, Issue, existing specification, and required runtime behavior
+observation_data = freeze observation with provenance and evidence while inheriting clarify-it Data distinctions
+technical_evidence_gap = return to parent boundary; never Human Decision Point or clarify-it Stopped
+parent_action = perform only the minimum required observation
+data_update = add the observed Data to the same current decision model
+reapply = apply clarify-it to that same model in the same parent context
+public_extension = no new status, fixed output schema, or separate context
+contradictory_action_permission = prohibited
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-clarify-projection -->
+## clarify-it result の projection
+
+```text
+Completed = verified Data comparison -> unique direction freeze candidate projection
+projection = add no new meaning, condition, or decision
+freeze_only_reconfirmation = prohibited
+Stopped = preserve reason and remaining decisions -> plan-craft-approval incomplete -> prohibit downstream
+Completed_meaning = not workflow completion or candidate acceptance
+```
+
+<!-- @/contract -->
+
 <!-- @contract plan-craft-approval-handoff -->
-<!-- @anchor plan-craft-approval-dialogue-mapping -->
-## proposal-dialogue の caller mapping
-
-`plan-craft-approval` は `proposal-dialogue` の invocation boundary、人間判断の binding authority、resolution execution bound を所有する。
-ユーザーが安全上限を指定しない場合は、親が dialogue loop の開始時に internal responsibility として固定する。固定値、新しい public parameter または schema、`resolve_rounds` は追加しない。
-resolution execution bound を structural-health-gate の `rounds` または review の回数制約へ加算・混同しない。
-
-<!-- @anchor plan-craft-approval-resolve-kernel-load -->
-internal `proposal-dialogue` の開始前に、`proposal-dialogue` が規定する resolve-kernel loader を親 Action として一度だけ実行する。
-
-<!-- @anchor plan-craft-approval-proposal-dialogue-start -->
-## proposal-dialogue の前段
-
-同じ親 context の internal `proposal-dialogue` を開始し、人間の裁定を逐次反映・verification した direction freeze
-候補を受け取る。blocking な人間判断が残る、または `stop-incomplete` の場合はそこで停止し、後段へ進めない。
-
 direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、
 重要な verification を圧縮して人間へ示し、freeze 後の gate と review へ frozen decisions と変更可能な具体化を区別して渡す。
 大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。
@@ -121,8 +196,8 @@ ceiling とし、ユーザー指定を優先する。未指定なら親が loop 
 1未満では assessment、producer の再実行、後段を起動しない。gate 予算と review 予算は別 Data とする。
 
 `pass` は直ちに後段へ進む。`return` は現在の round が limit 未満の場合だけ、gate の問題・影響・推奨対応を Human へ圧縮し、
-新しい判断点として提示できる入力にして `proposal-dialogue` を新しい対話 loop として再実行し、別内容の candidate を再評価する。
-成立した新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前 cycle の opt-in や governing value を継承しない。
+影響する判断と直接・間接依存を closure にして、後述の routing Data に従い局所 reopen する。
+新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず、後段は routing Data に従う。前 cycle の opt-in や governing value を継承しない。
 limit 到達 round の `return` と `insufficient-evidence` は
 `stop-incomplete` とする。人間が構造 finding への対応を全件却下し candidate 内容が変わらない場合、同一内容へ
 別 identity を付けて再投入せず、構造欠陥未解消として `stop-incomplete` とする。
@@ -130,7 +205,7 @@ limit 到達 round の `return` と `insufficient-evidence` は
 <!-- @anchor plan-craft-approval-review-loop-handoff -->
 ## review の適用と固定順序
 
-工程順序は `proposal-dialogue → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop` であり、gate が `pass` した snapshot だけを
+工程順序は `clarify-it → direction freeze projection → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop` であり、gate が `pass` した snapshot だけを
 次の判定へ渡す。まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から reviewer 適用可否を判定する。既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-loop` に投入せず、通常の起草確定へ進む。review 省略の明示より reviewer 適用可否の判定を先に行う。
 
 reviewer 適用可能な成果物は、ユーザーによる review の明示要求がなくても固定工程として `review-loop` へ渡す。
@@ -148,7 +223,9 @@ reviewer 適用可能な成果物は、ユーザーによる review の明示要
 evidence と理由付きで裁定する。判断保留は loop 中凍結し、round、誘発収束、未解決 finding を再計算しない。
 
 decision ledger で人間が裁定済みの方向性を変更・撤回する finding は、局所修正で閉じる場合も親だけで採用せず
-`人間確認` へ裁定する。人間の再判断後だけ成果物へ反映し、既存の裁定区分を増やさない。
+`人間確認` へ裁定する。影響する判断と dependency closure を確定し、後述の routing Data に従い局所 reopen する。
+再 review の scope は変更と波及に限定する。dependency closure を確定できなければ推測せず `incomplete` とする。
+既存の裁定区分は増やさない。
 
 review は frozen decisions を守る限り、実装の具体化、verification の補強、複雑性の削減を行える。frozen decision の
 変更が必要なら、改善案を採用せず `人間確認` へ止める。
@@ -159,18 +236,17 @@ review 実行経路では `converged` または未解決 finding のない `indu
 `round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop` は確定候補とせず、理由、台帳、残存 risk を
 添えて未完了として返す。代替 evidence で完了扱いにしない。
 
-`review-loop` が新しい設計選択を必要として `stop-incomplete` を返しても `proposal-dialogue` へ自動逆遷移しない。
-人間へ対話の再開、未完了終了、scope 外への分離を提示する。未完了返却後の受け入れと再投入は人間が明示的に判断し、未完了結果を artifact として保存しない。
+`review-loop` が新しい設計選択を必要として `stop-incomplete` を返しても `clarify-it` へ自動逆遷移しない。後述の routing Data が定める Human の選択に委ね、
+明示判断まで停止する。未完了返却後の受け入れと再投入は人間が明示的に判断し、未完了結果を artifact として保存しない。
 
 final acceptance は direction freeze と分離し、既定で必須とする。人間が明示的に opt-out した場合だけ承認 Action を
 省略できるが、final report は省略しない。承認 Action の `Semantic Delta` baseline は final candidate に対応する最新 direction freeze とする。
 入力には、成果物内容の短い要約、方向変更の有無、追加・変更した検証とその結果、
 残存 risk、必要な人間判断を含める。承認完了または明示 opt-out までは、direction freeze、gate 通過、review 済み candidate のいずれも artifact として保存しない。
 
-final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけを新しい `proposal-dialogue` loop で
-局所 reopen し、decision ledger 全体をリセットしない。新しい direction freeze で proposal refinement の `Yes / No` を再確認し、前回の opt-in を継承せず、
-`selection → optional proposal / integrity → structural gate → review → final acceptance` を再実行する。再 review は変更箇所と直接・間接の波及へ限定し、無関係な領域へ
-探索を広げない。大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。
+final acceptance での修正要求は正常な結果として扱う。親は変更の影響と依存する判断だけへ `clarify-it` を局所適用し、
+局所 reopen し、decision ledger 全体をリセットしない。後述の routing Data に従い再評価し、再 review は変更箇所と直接・間接の波及に限定する。
+大きな purpose または scope の変更なら局所 reopen を行わず、public workflow 全体を再策定する。
 
 final report の provenance は final candidate を gate へ送った governing phase-selection point で上書きし、
 `proposal refinement: executed | skipped` だけを表示する。authority conflict / integrity recovery は executed cycle の mandatory continuation なので
@@ -183,6 +259,83 @@ skipped -> gate return -> executed = executed
 executed -> Trust recovery -> intact = executed
 executed -> final acceptance correction -> skipped = skipped
 ```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-reopen-routing -->
+## clarify-it 局所再適用の親 routing Data
+
+```text
+workflow_order = clarify-it -> direction freeze projection -> optional proposal refinement / freeze-integrity -> structural-health-gate -> review-loop
+gate_return = problem / impact / recommendation -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate
+frozen_review_finding = parent human-confirmation adjudication -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only
+review_stop_incomplete = no automatic clarify-it application; Human explicitly selects resume | incomplete end | out-of-scope split
+final_acceptance_correction = affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only -> final acceptance
+large_purpose_or_scope_change = reformulate the whole public workflow; no local reopen
+closure_failure = incomplete; never guess affected scope
+```
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-necessity-parent -->
+## necessity adjudication の親 Data
+
+親は検証済み necessity kernel を caller 固有責務へ次の最小 Data だけで mapping する。
+
+```text
+criteria_injection = verified Task Specification + Deletion Test
+mapping = necessary -> adopted; unnecessary -> rejected; indeterminate -> unresolved
+mapping_target = existing adoption ledger; no new result field
+```
+
+Claim、evidence、updated snapshot 再判定、mutual deletion guard、budget / termination 非直結、gate 適用外は検証済み kernel 本文を
+既存の判定基準として継承し、この caller mapping または `clarify-it` に再記述しない。
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-advisor-parent -->
+## freeze 前 advisor の親 Data
+
+親は次の限定条件のいずれかが成立する場合だけ advisor を起動する。
+
+```text
+trigger_only = scope or responsibility boundary change | adopted-Claim dependency | decision-completing additional Claim | non-trivial pre-freeze change chain
+advisor = read-only plan-quality-advisor
+input = candidate snapshot + verified criteria Data
+insight = non-binding Data
+adjudicator = plan-craft-approval parent against primary evidence and request
+mapping = adopted | rejected | unresolved in adoption ledger
+ledger_boundary = decision ledger is separate from adoption ledger
+fixed_phase = prohibited
+empty_insights = not direction freeze evidence
+```
+
+insight の Human 境界は次の Data に固定する。
+
+```text
+automatic_adoption = prohibited
+automatic_question_generation = prohibited
+direct_human_question = prohibited
+human_direction_impact = unresolved -> parent verifies evidence and reconstructs its own recommendation -> clarify-it application
+raw_insight = parent-only unless Human explicitly requests process details
+```
+
+advisor は Human の advisor、仲裁経路、または対話主体ではない。この orchestration と adoption ledger は親責務であり、
+`clarify-it` の input / output contract へ追加しない。
+<!-- @/contract -->
+
+<!-- @contract plan-craft-approval-verification-derivation -->
+## freeze 前 verification derivation の親 Data
+
+```text
+timing = before direction freeze and after each updated snapshot
+owner = plan-craft-approval parent Calculation
+input = Task Specification + verified workflow Data
+coverage = normal | boundary | failure path | side effect | prohibition | responsibility boundary | scope exclude
+output = how each obligation will be observed after implementation
+clarify_it = do not add this derivation or its schema to clarify-it
+blocking_gap = incomplete before direction freeze
+```
+
+親はこの Calculation の結果を direction freeze の verified workflow Data に反映する。Human へは必要な判断材料だけを
+`clarify-it` の既存規範で提示し、verification schema 自体を流入させない。
 <!-- @/contract -->
 
 ## optional proposal refinement の normative relations
@@ -207,8 +360,10 @@ otherwise = outward incomplete; no pre-refinement snapshot fallback; no structur
 
 <!-- @contract plan-craft-approval-check1-recovery -->
 ```text
-check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
-structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2
+check #1 violated | indeterminate = retain all evidence -> affected dependency closure -> local clarify-it application -> verified recovery freeze -> fresh bounded proposal fixed 2 pass -> fresh-context check #2
+direct_structural_health_gate = prohibited
+legacy_dialogue_route = prohibited
+check #2 non-intact = Trust failure incomplete; no reopen
 ```
 <!-- @/contract -->
 

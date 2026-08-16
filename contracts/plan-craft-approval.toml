@@ -1,223 +1,148 @@
-[contracts.proposal-dialogue-internal-guard-requires-527b65ea8ec8]
+[contracts.clarify-caller-data-fab7a72d8afa]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "この Skill は `plan-craft-approval` の同じ親 context 内だけで使う internal skill であり、ユーザーから直接起動しない。"
+slice = "plan-craft-approval-clarify-caller"
+pattern = '''application = public clarify-it in the same plan-craft-approval parent context
+dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
+caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
+public_extension = none'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: loader fields form one relation; existing order anchors protect load-before-use and load-before-cycle.
-[contracts.dialogue-resolve-loader-data-08b6250f7db8]
+[contracts.execution-bound-data-8e7bc9625afb]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = '''path = ../../references/resolve-kernel.md
-load_timing = once at proposal-dialogue invocation start
-identity = resolve-kernel-v1
-dependencies = none
-required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
-failure = stop-incomplete
+slice = "plan-craft-approval-execution-bound"
+pattern = '''fix_timing = at each clarify or resolution loop start
+immutability = unchanged during that loop
+terminal = bound reached or no semantic progress with material decisions remaining -> preserve remaining decisions and reasons -> plan-craft-approval incomplete -> prohibit downstream
+public_contract = no fixed value, public parameter, schema, or resolve_rounds
+budget_boundary = separate from structural-health-gate rounds and review limits
+clarify_stopped = never fabricate this caller-owned terminal as clarify-it Stopped'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.kernel-loader-data-81050f00412b]
+kind = "requires"
+slice = "plan-craft-approval-kernel-mapping"
+pattern = '''resolve_path = ../../references/resolve-kernel.md
+resolve_load_timing = once before clarify-it application
+resolve_identity = resolve-kernel-v1
+resolve_dependencies = none
+resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
+necessity_path = ../../references/necessity-kernel.md
+necessity_load_timing = once before candidate Claim adjudication
+necessity_identity = necessity-kernel-v1
+necessity_dependencies = none
+necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+failure = incomplete before clarify-it application
 owner = plan-craft-approval parent
 delegate_path_resolution = false'''
 applies_to = ["claude", "codex", "cursor"]
-# Why Not: caller, resolver, counterpart, authority, and ledger are one role mapping.
-[contracts.dialogue-resolve-role-data-bea6357c3e02]
+
+[contracts.kernel-role-data-cf15e934ff45]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
+slice = "plan-craft-approval-kernel-mapping"
 pattern = '''caller = plan-craft-approval
 resolver = planner
 counterpart = human
 authority = binding
 ledger = decision ledger'''
 applies_to = ["claude", "codex", "cursor"]
-# Why Not: loader fields form one relation; semantic Claim handling belongs to EVAL.
-[contracts.dialogue-necessity-loader-data-8a54f7f248fd]
+
+[contracts.observation-reapply-data-1b1a9e358271]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = '''path = ../../references/necessity-kernel.md
-load_timing = before candidate Claim adjudication
-identity = necessity-kernel-v1
-required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
-failure = stop-incomplete
-owner = proposal-dialogue parent
-delegate_path_resolution = false'''
+slice = "plan-craft-approval-observation-reapply"
+pattern = '''clarify_action_boundary = inherit clarify-it prohibition without override
+parent_observation = observe request, repository, Issue, existing specification, and required runtime behavior
+observation_data = freeze observation with provenance and evidence while inheriting clarify-it Data distinctions
+technical_evidence_gap = return to parent boundary; never Human Decision Point or clarify-it Stopped
+parent_action = perform only the minimum required observation
+data_update = add the observed Data to the same current decision model
+reapply = apply clarify-it to that same model in the same parent context
+public_extension = no new status, fixed output schema, or separate context
+contradictory_action_permission = prohibited'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-parent-requires-9a457d7aeabb]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`plan-craft-approval` の同じ親 context 内だけ"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-producer-boundary-requires-027d49e878de]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`proposal` と同じ candidate producer として、後段工程を選択・起動せず caller-owned parent へ返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-decisions-requires-29075712c83d]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`採用` / `却下` / `保留` / `修正して採用`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-recommendation-requires-232b7a42fa45]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "親の推奨を人間の回答として扱わない"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-no-answer-requires-db1b231ef0d9]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "無回答・曖昧な反応を承認として扱わず"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-sequential-snapshot-requires-34ff6cfee124]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "採用分だけを working state へ一件ずつ apply して verification し、複数の判断を一括反映しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-freeze-requires-78d5d6d98731]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "direction freeze 候補は、採用提案が反映・verification 済み、主要判断が明示裁定済み、保留事項が scope 外へ分離済み、\nblocking な人間判断がなく、ユーザーが現在の方向を確認済みの場合だけ成立する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-raw-ledger-requires-dad818b0c234]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "反映 snapshot、verification を decision ledger として会話内 Data に保持するが、YAML、内部 schema、raw ledger は\nユーザーへ提示しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-stop-requires-e3222e8966b6]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-ledgers-requires-046318fd942c]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "decision ledger と adoption ledger は分離する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-insight-question-requires-c9bbd13bb126]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "insight から質問を自動生成しない"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-advisor-phase-requires-0ccbe0768ee5]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "advisor を固定 phase にせず"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-empty-insight-requires-8501a8e9c88b]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`insights: []` を"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-independent-requires-d3b5ca64fb38]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`resolve-kernel v1` と `necessity-kernel v1` の parent mapping は独立しており、相互依存または読み込み順の dependency を作らない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-no-queue-requires-136dc690ed7c]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "判断 queue を事前に固定しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-verify-failure-requires-aecf02039212]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "verify failure では working state を verified snapshot にせず current point を reopen し、その上へ次の判断を積まない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-rejection-requires-871b6dcd9a96]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "却下または保留は apply せず、暗黙に resolved として frontier から消さない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-frontier-empty-requires-d68bc882f9e1]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "frontier が空なら既存の direction freeze 判定へ進むだけであり、workflow completion または candidate acceptance ではない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.resolve-stop-requires-b173b7a88b87]
-kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "no-progress のまま material な frontier が残る場合、または安全上限へ到達して frontier が残る場合は、残る判断点を消さず、blocking reason とともに既存の `stop-incomplete` へ mapping する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-baseline-forbids-ae76193a6133]
+[contracts.observation-action-permission-76976ad013b2]
 kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "baseline_round"
+slice = "plan-craft-approval-observation-reapply"
+pattern = '''contradictory_action_permission = allowed'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-saturation-forbids-af594a636433]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "飽和窓"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-review-loop-forbids-75dc433d89c1]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "review-loop"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-responsibility-requires-006ba6bdd918]
+[contracts.clarify-projection-data-781df0c3a3a7]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "人間は結果責任を、planner は evidence に基づく経過責任を担う。"
+slice = "plan-craft-approval-clarify-projection"
+pattern = '''Completed = verified Data comparison -> unique direction freeze candidate projection
+projection = add no new meaning, condition, or decision
+freeze_only_reconfirmation = prohibited
+Stopped = preserve reason and remaining decisions -> plan-craft-approval incomplete -> prohibit downstream
+Completed_meaning = not workflow completion or candidate acceptance'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-no-research-delegation-requires-50e13fb238e8]
+[contracts.projection-reconfirmation-450555d2c5d6]
+kind = "forbids"
+slice = "plan-craft-approval-clarify-projection"
+pattern = '''freeze_only_reconfirmation = required'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.reopen-routing-data-117e934a0f70]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "Agent で解消可能な曖昧さを人間へ返さない。"
+slice = "plan-craft-approval-reopen-routing"
+pattern = '''workflow_order = clarify-it -> direction freeze projection -> optional proposal refinement / freeze-integrity -> structural-health-gate -> review-loop
+gate_return = problem / impact / recommendation -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate
+frozen_review_finding = parent human-confirmation adjudication -> affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only
+review_stop_incomplete = no automatic clarify-it application; Human explicitly selects resume | incomplete end | out-of-scope split
+final_acceptance_correction = affected dependency closure -> clarify-it application -> new freeze -> new selection -> gate -> review changed closure only -> final acceptance
+large_purpose_or_scope_change = reformulate the whole public workflow; no local reopen
+closure_failure = incomplete; never guess affected scope'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-density-requires-173fc3141b81]
+[contracts.necessity-parent-data-9ede9b1cd4e8]
 kind = "requires"
-slice = "proposal-dialogue-boundary"
-pattern = "`A` / `B` / `C` は mode、enum、永続 state ではなく、判断点ごとの対話密度である。"
+slice = "plan-craft-approval-necessity-parent"
+pattern = '''criteria_injection = verified Task Specification + Deletion Test
+mapping = necessary -> adopted; unnecessary -> rejected; indeterminate -> unresolved
+mapping_target = existing adoption ledger; no new result field'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-mode-state-forbids-78de2d87e2f5]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "`dialogue_mode`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-advisor-direct-forbids-ed6d51b7f121]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "advisor insight をそのまま人間へ提示する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-fixed-density-variant-forbids-69f7392b063f]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "`A` / `B` / `C` は会話全体で固定 state"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-advisor-direct-variant-forbids-16029412c8ec]
-kind = "forbids"
-slice = "proposal-dialogue-boundary"
-pattern = "advisor の raw insight を planner を介さず直接人間へ送る"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-order-requires-ba54d370ccf2]
+[contracts.advisor-human-boundary-6e4a30872e5e]
 kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "proposal-dialogue → optional proposal refinement / freeze-integrity → structural-health-gate → review-loop"
+slice = "plan-craft-approval-advisor-parent"
+pattern = '''automatic_adoption = prohibited
+automatic_question_generation = prohibited
+direct_human_question = prohibited
+human_direction_impact = unresolved -> parent verifies evidence and reconstructs its own recommendation -> clarify-it application
+raw_insight = parent-only unless Human explicitly requests process details'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-recovery-data-220cf5108857]
+kind = "requires"
+slice = "plan-craft-approval-check1-recovery"
+pattern = '''check #1 violated | indeterminate = retain all evidence -> affected dependency closure -> local clarify-it application -> verified recovery freeze -> fresh bounded proposal fixed 2 pass -> fresh-context check #2
+direct_structural_health_gate = prohibited
+legacy_dialogue_route = prohibited
+check #2 non-intact = Trust failure incomplete; no reopen'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-direct-gate-2e994d259a00]
+kind = "forbids"
+slice = "plan-craft-approval-check1-recovery"
+pattern = '''direct_structural_health_gate = allowed'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.check1-legacy-route-6ea33edd1a47]
+kind = "forbids"
+slice = "plan-craft-approval-check1-recovery"
+pattern = '''legacy_dialogue_route = allowed'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-kernel-before-clarify]
+kind = "order"
+before = "plan-craft-approval-kernel-load"
+after = "plan-craft-approval-clarify-start"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-craft-approval-clarify-before-gate]
+kind = "order"
+before = "plan-craft-approval-clarify-start"
+after = "plan-craft-approval-structural-health-gate-start"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.refinement-selection-requires-f58555dece96]
@@ -252,19 +177,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 slice = "plan-craft-approval-refinement-stop"
 pattern = "otherwise = pre-refinement snapshot fallback -> structural-health-gate"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.check1-recovery-requires-b6417f02348e]
-kind = "requires"
-slice = "plan-craft-approval-check1-recovery"
-pattern = '''check #1 violated | indeterminate = retain all evidence -> Human compressed problem / impact / recommended response -> local proposal-dialogue reopen
-structural-health-gate = prohibited until Human redecision, verified recovery freeze, fresh bounded proposal fixed 2 pass, and intact check #2'''
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.check1-direct-gate-forbids-9910a731417f]
-kind = "forbids"
-slice = "plan-craft-approval-check1-recovery"
-pattern = "check #1 violated | indeterminate -> structural-health-gate"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-invocations-requires-78e0d7f8cbbc]
@@ -369,24 +281,6 @@ executed -> Trust recovery -> intact = executed
 executed -> final acceptance correction -> skipped = skipped'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.dialogue-boundary-owner-requires-a6f1cab1e590]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "`plan-craft-approval` は `proposal-dialogue` の invocation boundary、人間判断の binding authority、resolution execution bound を所有する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.dialogue-bound-default-requires-50472fb9b0ea]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "ユーザーが安全上限を指定しない場合は、親が dialogue loop の開始時に internal responsibility として固定する。固定値、新しい public parameter または schema、`resolve_rounds` は追加しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.dialogue-budget-separate-requires-594931fe6da5]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "resolution execution bound を structural-health-gate の `rounds` または review の回数制約へ加算・混同しない。"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.plan-craft-approval-applicability-first-requires-61d3b00cab8a]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
@@ -457,12 +351,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "plan-craft-approval-handoff"
 pattern = "自動逆遷移しない"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-human-confirmation-requires-3cd10294de86]
-kind = "requires"
-slice = "plan-craft-approval-handoff"
-pattern = "decision ledger で人間が裁定済みの方向性を変更・撤回する finding は、局所修正で閉じる場合も親だけで採用せず\n`人間確認` へ裁定する。人間の再判断後だけ成果物へ反映し、既存の裁定区分を増やさない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-craft-approval-same-content-requires-7b7535bc8d88]
@@ -543,54 +431,6 @@ slice = "plan-craft-approval-handoff"
 pattern = "final acceptance は省略可能"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.proposal-dialogue-kernel-reference-before-criteria]
-kind = "order"
-before = "proposal-dialogue-kernel-reference"
-after = "proposal-dialogue-kernel-criteria"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-resolve-loader-before-cycle]
-kind = "order"
-before = "proposal-dialogue-resolve-kernel-load"
-after = "proposal-dialogue-resolution-cycle-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-resolve-loader-before-dialogue]
-kind = "order"
-before = "plan-craft-approval-resolve-kernel-load"
-after = "plan-craft-approval-proposal-dialogue-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-mapping-before-resolve-loader]
-kind = "order"
-before = "plan-craft-approval-dialogue-mapping"
-after = "plan-craft-approval-resolve-kernel-load"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-resolve-loader-before-injection]
-kind = "order"
-before = "proposal-dialogue-resolve-kernel-load"
-after = "proposal-dialogue-resolve-kernel-use"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.proposal-dialogue-resolve-injection-before-cycle]
-kind = "order"
-before = "proposal-dialogue-resolve-kernel-use"
-after = "proposal-dialogue-resolution-cycle-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-dialogue-mapping-before-start]
-kind = "order"
-before = "plan-craft-approval-dialogue-mapping"
-after = "plan-craft-approval-proposal-dialogue-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-craft-approval-dialogue-before-gate]
-kind = "order"
-before = "plan-craft-approval-proposal-dialogue-start"
-after = "plan-craft-approval-structural-health-gate-start"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.plan-craft-approval-gate-before-review]
 kind = "order"
 before = "plan-craft-approval-structural-health-gate-start"
@@ -662,4 +502,53 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "plan-craft-approval-artifact-publish"
 after = "plan-craft-approval-artifact-output"
+applies_to = ["claude", "codex", "cursor"]
+[contracts.advisor-parent-data-bf74eb13d79a]
+kind = "requires"
+slice = "plan-craft-approval-advisor-parent"
+pattern = '''trigger_only = scope or responsibility boundary change | adopted-Claim dependency | decision-completing additional Claim | non-trivial pre-freeze change chain
+advisor = read-only plan-quality-advisor
+input = candidate snapshot + verified criteria Data
+insight = non-binding Data
+adjudicator = plan-craft-approval parent against primary evidence and request
+mapping = adopted | rejected | unresolved in adoption ledger
+ledger_boundary = decision ledger is separate from adoption ledger
+fixed_phase = prohibited
+empty_insights = not direction freeze evidence'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-auto-adopt-1a9de706db02]
+kind = "forbids"
+slice = "plan-craft-approval-advisor-parent"
+pattern = "insight を自動採用する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-auto-question-5e256c791978]
+kind = "forbids"
+slice = "plan-craft-approval-advisor-parent"
+pattern = "insight から質問を自動生成する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-fixed-phase-3a74fd9f8de1]
+kind = "forbids"
+slice = "plan-craft-approval-advisor-parent"
+pattern = "advisor を固定 phase とする"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-empty-freeze-03948263ae3f]
+kind = "forbids"
+slice = "plan-craft-approval-advisor-parent"
+pattern = "`insights: []` を direction freeze の根拠にする"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.verification-parent-data-8a7b5297264b]
+kind = "requires"
+slice = "plan-craft-approval-verification-derivation"
+pattern = '''timing = before direction freeze and after each updated snapshot
+owner = plan-craft-approval parent Calculation
+input = Task Specification + verified workflow Data
+coverage = normal | boundary | failure path | side effect | prohibition | responsibility boundary | scope exclude
+output = how each obligation will be observed after implementation
+clarify_it = do not add this derivation or its schema to clarify-it
+blocking_gap = incomplete before direction freeze'''
 applies_to = ["claude", "codex", "cursor"]

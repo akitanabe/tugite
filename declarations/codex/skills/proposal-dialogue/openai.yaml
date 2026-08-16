@@ -1,6 +1,0 @@
-interface:
-  display_name: "Internal Proposal Dialogue"
-  short_description: "Resolve plan direction with a human inside plan-craft-approval"
-  default_prompt: "Use $proposal-dialogue only inside the same plan-craft-approval parent context; return a direction-freeze candidate or stop-incomplete without selecting downstream work."
-policy:
-  allow_implicit_invocation: true

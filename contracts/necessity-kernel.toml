@@ -13,21 +13,21 @@ exclude_paths = [
   "plugins/claude/agents/plan-quality-advisor.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/skills/proposal/SKILL.md",
-  "plugins/claude/skills/proposal-dialogue/SKILL.md",
+  "plugins/claude/skills/plan-craft-approval/SKILL.md",
   "plugins/claude/skills/review-loop/SKILL.md",
   "plugins/codex/install/agents/over-engineering-reviewer.toml",
   "plugins/codex/install/agents/plan-adversarial-reviewer.toml",
   "plugins/codex/install/agents/plan-quality-advisor.toml",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/skills/proposal/SKILL.md",
-  "plugins/codex/skills/proposal-dialogue/SKILL.md",
+  "plugins/codex/skills/plan-craft-approval/SKILL.md",
   "plugins/codex/skills/review-loop/SKILL.md",
   "plugins/cursor/agents/over-engineering-reviewer.md",
   "plugins/cursor/agents/plan-adversarial-reviewer.md",
   "plugins/cursor/agents/plan-quality-advisor.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/skills/proposal/SKILL.md",
-  "plugins/cursor/skills/proposal-dialogue/SKILL.md",
+  "plugins/cursor/skills/plan-craft-approval/SKILL.md",
   "plugins/cursor/skills/review-loop/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
@@ -44,10 +44,10 @@ slice = "necessity-kernel-v1"
 pattern = "proposal"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.kernel-scope-proposal-dialogue-requires-8915e0e2f2e7]
+[contracts.kernel-scope-plan-craft-approval-requires-66ca26965708]
 kind = "requires"
 slice = "necessity-kernel-v1"
-pattern = "proposal-dialogue"
+pattern = "plan-craft-approval"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.kernel-scope-review-loop-requires-8822e7c17f00]
