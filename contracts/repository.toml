@@ -57,7 +57,6 @@ pattern = '''publication_target = {
     existing_destination_object_identity,
     os_temp_creation = {
       verified_temp_root_identity,
-      exact_run_owned_directory_path,
       exclusive_creation_intent
     }
   }
@@ -70,9 +69,30 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-artifact-publication-reference-os-temp-exact-destination]
+kind = "occurrences"
+pattern = "OS-temp では top-level `exact_destination` が作成予定の run-owned directory path であり、verified temp-root 直下への canonical containment を満たす。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-no-nested-destination]
+kind = "forbids"
+pattern = "exact_run_owned_directory_path"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-artifact-publication-reference-procedure]
 kind = "occurrences"
-pattern = "資格と destination object identity を再確認する。verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+pattern = "既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。"
 count = 1
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
@@ -149,7 +169,7 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-reference-temp-identity]
 kind = "occurrences"
-pattern = "pre-creation に verified temp-root identity、exact run-owned directory path、exclusive creation intent を記録する"
+pattern = "pre-creation に記録する branch 固有 Data は verified temp-root identity と exclusive creation intent だけである"
 count = 1
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
@@ -160,7 +180,7 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-agentic-target-data]
 kind = "occurrences"
-pattern = "Agentic / mixed side は candidate 比較、verified temp-root identity、exact run-owned directory path、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
+pattern = "Agentic / mixed side は candidate 比較、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
 count = 1
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
@@ -215,10 +235,10 @@ slice = "plan-artifact-publication-flow"
 pattern = "Trigger: Agentic / mixed side が semantic eligibility と exact `publication_target` を確定し、親が publication を要求したとき。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-artifact-publication-flow-7c63a4fcca8b]
+[contracts.plan-artifact-publication-flow-5fe36058a744]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
-pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、既存 destination では観測済み destination object identity、OS-temp では verified temp-root identity / exact run-owned directory path / exclusive creation intent。"
+pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、既存 destination では観測済み destination object identity、OS-temp では verified temp-root identity / exclusive creation intent。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-flow-c4d5af1fb2a1]
@@ -252,10 +272,10 @@ after = "publication-flow-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: target selection and Flow creation are separate witnesses; combining them would allow the Action owner to disappear from one side unnoticed.
-[contracts.plan-artifact-publication-flow-temp-ac18976f5e2e]
+[contracts.plan-artifact-publication-flow-temp-355e9219dea4]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
-pattern = "OS-temp では verified temp-root identity と exact run-owned directory path を再確認し、その root 直下に same-filesystem の secure / exclusive run-owned directory を symlink / junction 非追従で作成して、作成した directory object identity を記録する。"
+pattern = "OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: isolated write/readback/publish labels can pass after the ordered failure boundary is removed or moved outside this Flow.
