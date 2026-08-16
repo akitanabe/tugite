@@ -275,6 +275,22 @@
       "sha256": "3a3d074f4ba5f423a4122319611dcbde68188d026cfa6feae2be7a846242a216"
     },
     {
+      "id": "codex-plan-agent-openai-identity",
+      "sha256": "832125486b0a8624cdca819b404d8b6a84dab25fb95f6ece8c1015260870a4cb"
+    },
+    {
+      "id": "codex-plan-interactive-openai-identity",
+      "sha256": "aa0072f1a3adef18255cdd10e070e777b2a89dabbfcc091bcf19ac88ce4815e2"
+    },
+    {
+      "id": "codex-plan-candidate-producer-openai-identity",
+      "sha256": "e9c161a6d23e0c9513d0e8b58fda49d2a345b9c350a8ad164686f9d918ab04a0"
+    },
+    {
+      "id": "codex-review-refine-openai-identity",
+      "sha256": "14f90611e7bcf6529f4e4c259719f3e0bc4034af5675bbe6fd054e7c064c6fbb"
+    },
+    {
       "id": "claude-explicit-skill-policy",
       "sha256": "c3dd16cd810b6662c1a5e642cde0d51d85d5d8ea95f92c2637c1d72035986d42"
     },

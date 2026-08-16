@@ -721,6 +721,74 @@ path = "policy.allow_implicit_invocation"
 op = "equals"
 value = false
 
+[contracts.codex-plan-agent-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-agent/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-agent-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Agent"
+
+[[contracts.codex-plan-agent-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-agent to draft or refine a free-form planning artifact without implementing, delegating, or advancing to a next stage."
+
+[contracts.codex-plan-interactive-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-interactive/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-interactive-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Interactive"
+
+[[contracts.codex-plan-interactive-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-interactive only when explicitly requested to draft a human-directed plan, then gate and review it without starting implementation."
+
+[contracts.codex-plan-candidate-producer-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-candidate-producer/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-candidate-producer-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Candidate Producer"
+
+[[contracts.codex-plan-candidate-producer-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-candidate-producer only inside the same context of a plan-family public workflow parent, following injected authority and authority_constraints; return a candidate snapshot or stop-incomplete without selecting downstream work."
+
+[contracts.codex-review-refine-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/review-refine/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-review-refine-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Review Refine"
+
+[[contracts.codex-review-refine-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $review-refine only for an explicit standalone review or an explicitly invoked plan-family public workflow parent; review an immutable artifact snapshot and return findings, termination, and caller-owned acceptance evidence."
+
 [contracts.claude-explicit-skill-policy]
 kind = "structure"
 subject = "artifact"
