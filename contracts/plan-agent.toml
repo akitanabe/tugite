@@ -1186,70 +1186,36 @@ slice = "plan-agent-autonomy"
 pattern = "candidate status は次の Calculation で一度だけ決める。"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: completion eligibility, artifact purity, path qualification, save commit, output, and authority form one relation.
-[contracts.plan-agent-artifact-completion-data-07f3ef654787]
+# Why Not: consumer eligibility, artifact purity, and projection stay with plan-agent while publication is delegated to the shared reference.
+[contracts.plan-agent-artifact-completion-35499369affc]
 kind = "requires"
 slice = "plan-agent-artifact-completion"
 pattern = '''workflow = plan-agent
-artifact_eligibility = semantic completion eligibility and verified save success
+artifact_eligibility = semantic completion eligibility and verified publication_target
 artifact_body = frozen final candidate body only
 artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate result, review result, decision ledger, finding ledger, process history]
-incomplete_artifact = none
-explicit_destination = highest priority; unsafe or unusable means incomplete without fallback
-unspecified_project_local = existing temporary or local-only purpose is directly evidenced; exact final path is ignored and index-unregistered
-os_temp_fallback = no candidate, tied candidates, non-Git project, or unconfirmed qualification
-project_mutation = do not create a project-local directory or ignore rule
-filename = content-derived safe single component
-collision = never overwrite an existing file; finite numeric suffix retry only on collision
-save = same-filesystem run-owned staging write -> close -> byte-identical readback -> complete-only no-clobber publish
-save_failure = incomplete; clean exact staging residue or report it as residual risk
-stdout = Result, short Summary, optional Human Attention, Artifact local path
-stdout_excludes = full artifact body, Semantic Delta, Verification Delta, gate or review result, decision or finding ledger, process history
-summary_opt_out = Artifact only
-authority = not Git management, durable persistence, final acceptance, or downstream Action permission'''
+pre_publication_artifact = none when incomplete
+stdout = Result, short Summary, optional Human Attention, Artifact local path'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: staging ownership and OS-temp qualification must stay one security relation across the whole save lifecycle.
-[contracts.plan-agent-artifact-security-data-2b1bd8ecac29]
+[contracts.plan-agent-publication-loader-978b2066f836]
 kind = "requires"
-slice = "plan-agent-artifact-completion"
-pattern = '''staging_creation = atomic exclusive non-follow new object beneath verified destination identity
-staging_identity = same object identity through write, readback, and cleanup
-qualification_recheck = immediately before staging creation and immediately before publish
-destination_reselection = owned staging identity must match and cleanup must succeed first
-cleanup_excludes = pre-existing or identity-mismatched object
-unsafe_primitive = stop before write or return safe incomplete
-os_temp = validated platform temp root -> secure exclusive run-owned directory
-os_temp_paths = canonical containment and non-follow for final and staging
-os_temp_repo_overlap = project-local qualification applies when canonical path is inside repository
-os_temp_unconfirmed = stop before write as incomplete
-run_owned_directory_identity = record at creation
-run_owned_directory_cleanup = before publish commit on incomplete or destination reselection; after owned staging handling; same identity and empty; non-recursive non-follow remove only
-run_owned_directory_residue = identity mismatch, non-empty, or removal failure means leave and report exact residue
-run_owned_directory_commit = preserve directory containing published final artifact'''
+slice = "plan-agent-local-artifact-completion"
+pattern = '''publication_reference = ../../references/plan-artifact-publication.md
+publication_load_timing = once before programmatic-publication use
+publication_identity = plan-artifact-publication-v1
+publication_use = parent-confirmed publication_target -> programmatic-publication -> outward status/stdout projection'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-publication-before-outcome]
+kind = "order"
+before = "plan-agent-publication-loader"
+after = "plan-agent-publication-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-no-retired-human-save-authority]
 kind = "forbids"
 pattern = "最終成果物の採用と保存・後続 Action の許可は Human が判断する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-artifact-eligibility-before-save]
-kind = "order"
-before = "plan-agent-artifact-eligibility"
-after = "plan-agent-artifact-stage"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-artifact-stage-before-publish]
-kind = "order"
-before = "plan-agent-artifact-stage"
-after = "plan-agent-artifact-publish"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-artifact-publish-before-output]
-kind = "order"
-before = "plan-agent-artifact-publish"
-after = "plan-agent-artifact-output"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: Flow fields and routing order are deterministic execution Data; keep the parent-owned semantic judgment outside the Flow.
@@ -1387,28 +1353,28 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-agent-flow-trigger-occurrences]
 kind = "occurrences"
 pattern = "Trigger:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-flow-inputs-occurrences]
 kind = "occurrences"
 pattern = "Inputs:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-flow-procedure-occurrences]
 kind = "occurrences"
 pattern = "Procedure:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-flow-outcomes-occurrences]
 kind = "occurrences"
 pattern = "Outcomes:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -1440,10 +1406,53 @@ count = 1
 paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-agent-local-artifact-flow-occurrences]
+kind = "occurrences"
+pattern = "### local-artifact-completion"
+count = 1
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-flow-62a763a00b81]
+kind = "requires"
+slice = "plan-agent-local-artifact-completion"
+pattern = "Trigger: 親が semantic completion eligibility と、Agentic / mixed side で確定した exact `publication_target` を渡したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-flow-dc1b3568ac39]
+kind = "requires"
+slice = "plan-agent-local-artifact-completion"
+pattern = "Inputs: semantic completion eligibility、凍結した成果物本文 bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-flow-ff9ec467a47f]
+kind = "requires"
+slice = "plan-agent-local-artifact-completion"
+pattern = "Outcomes: published result と consumer の outward status / stdout projection、`destination-reselection-required`、または `incomplete`。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-flow-order]
+kind = "order"
+before = "plan-agent-artifact-eligibility"
+after = "plan-agent-publication-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-flow-loader-before-outcomes]
+kind = "order"
+before = "plan-agent-publication-loader"
+after = "plan-agent-publication-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-programmatic-boundary-09500f9678d9]
 kind = "requires"
 slice = "plan-agent-programmatic-flows"
 pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome 後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-local-artifact-completion-ed6948b7125b]
+kind = "requires"
+slice = "plan-agent-local-artifact-completion"
+pattern = "### local-artifact-completion"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-candidate-producer-no-third-pass-13eed53ddec1]

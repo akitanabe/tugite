@@ -35,6 +35,7 @@ files = [
   "shared/agents/writing-principles-reviewer.md",
   "shared/batch-resolve-kernel.md",
   "shared/necessity-kernel.md",
+  "shared/plan-artifact-publication.md",
   "shared/resolve-kernel.md",
   "shared/writable-scope-kernel.md",
   "shared/skill/clarify-it/SKILL.md",
@@ -144,6 +145,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/plan-artifact-publication.md"
+path = "references/plan-artifact-publication.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/resolve-kernel.md"
 path = "references/resolve-kernel.md"
 profile = "markdown-v1"
@@ -209,6 +216,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/necessity-kernel.md"
 path = "references/necessity-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/plan-artifact-publication.md"
+path = "references/plan-artifact-publication.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -294,6 +307,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/necessity-kernel.md"
 path = "references/necessity-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/plan-artifact-publication.md"
+path = "references/plan-artifact-publication.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 

@@ -437,48 +437,31 @@ before = "plan-interactive-structural-health-gate-start"
 after = "plan-interactive-review-refine-handoff"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: acceptance timing, artifact purity, path qualification, save commit, output, and authority form one relation.
-[contracts.plan-interactive-artifact-completion-data-d5ae3e0422ea]
+# Why Not: consumer acceptance timing, artifact purity, and projection stay with plan-interactive while publication is delegated to the shared reference.
+[contracts.plan-interactive-artifact-completion-d9413ffc075f]
 kind = "requires"
 slice = "plan-interactive-artifact-completion"
 pattern = '''workflow = plan-interactive
-artifact_eligibility = final acceptance completed and verified save success
+artifact_eligibility = final acceptance completed or explicit opt-out and verified publication_target
 pre_acceptance_artifact = none at direction freeze, gate, review, or acceptance candidate
 artifact_body = frozen final accepted candidate body only
 artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate result, review result, decision ledger, finding ledger, process history]
-incomplete_artifact = none
-explicit_destination = highest priority; unsafe or unusable means incomplete without fallback
-unspecified_project_local = existing temporary or local-only purpose is directly evidenced; exact final path is ignored and index-unregistered
-os_temp_fallback = no candidate, tied candidates, non-Git project, or unconfirmed qualification
-project_mutation = do not create a project-local directory or ignore rule
-filename = content-derived safe single component
-collision = never overwrite an existing file; finite numeric suffix retry only on collision
-save = same-filesystem run-owned staging write -> close -> byte-identical readback -> complete-only no-clobber publish
-save_failure = incomplete; clean exact staging residue or report it as residual risk
-stdout = Result, short Summary, optional Human Attention, Artifact local path
-stdout_excludes = full artifact body, Semantic Delta, Verification Delta, gate or review result, decision or finding ledger, process history
-summary_opt_out = Artifact only
-authority = not Git management, durable persistence, final acceptance, or downstream Action permission'''
+stdout = Result, short Summary, optional Human Attention, Artifact local path'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: staging ownership and OS-temp qualification must stay one security relation across the whole save lifecycle.
-[contracts.plan-interactive-artifact-security-data-b382dbb79636]
+[contracts.plan-interactive-publication-loader-be8062483fc7]
 kind = "requires"
-slice = "plan-interactive-artifact-completion"
-pattern = '''staging_creation = atomic exclusive non-follow new object beneath verified destination identity
-staging_identity = same object identity through write, readback, and cleanup
-qualification_recheck = immediately before staging creation and immediately before publish
-destination_reselection = owned staging identity must match and cleanup must succeed first
-cleanup_excludes = pre-existing or identity-mismatched object
-unsafe_primitive = stop before write or return safe incomplete
-os_temp = validated platform temp root -> secure exclusive run-owned directory
-os_temp_paths = canonical containment and non-follow for final and staging
-os_temp_repo_overlap = project-local qualification applies when canonical path is inside repository
-os_temp_unconfirmed = stop before write as incomplete
-run_owned_directory_identity = record at creation
-run_owned_directory_cleanup = before publish commit on incomplete or destination reselection; after owned staging handling; same identity and empty; non-recursive non-follow remove only
-run_owned_directory_residue = identity mismatch, non-empty, or removal failure means leave and report exact residue
-run_owned_directory_commit = preserve directory containing published final artifact'''
+slice = "plan-interactive-programmatic-flows"
+pattern = '''publication_reference = ../../references/plan-artifact-publication.md
+publication_load_timing = once before programmatic-publication use
+publication_identity = plan-artifact-publication-v1
+publication_use = parent-confirmed publication_target -> programmatic-publication -> outward status/stdout projection'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-publication-before-outcome]
+kind = "order"
+before = "plan-interactive-publication-loader"
+after = "plan-interactive-publication-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-no-retired-autosave]
@@ -486,23 +469,64 @@ kind = "forbids"
 pattern = "workflow は成果物を自律的に保存しない"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-acceptance-before-stage]
+[contracts.plan-interactive-flow-section-occurrences]
+kind = "occurrences"
+pattern = "## Programmatic Flows"
+count = 1
+paths = [
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-occurrences]
+kind = "occurrences"
+pattern = "### local-artifact-completion"
+count = 1
+paths = [
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-c16fa7160788]
+kind = "requires"
+slice = "plan-interactive-programmatic-flows"
+pattern = "Trigger: final acceptance が完了した、または Human が final acceptance を明示 opt-out し、親が exact `publication_target` を確定したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-4f5758a033e6]
+kind = "requires"
+slice = "plan-interactive-programmatic-flows"
+pattern = "Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-e497e4417625]
+kind = "requires"
+slice = "plan-interactive-programmatic-flows"
+pattern = "Outcomes: published result と `final-candidate` の outward status / stdout projection、`destination-reselection-required`、または `incomplete`。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-local-artifact-flow-order]
 kind = "order"
 before = "plan-interactive-final-acceptance-complete"
-after = "plan-interactive-artifact-stage"
+after = "plan-interactive-publication-inputs"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-stage-before-publish]
+[contracts.plan-interactive-local-artifact-flow-loader-before-outcomes]
 kind = "order"
-before = "plan-interactive-artifact-stage"
-after = "plan-interactive-artifact-publish"
+before = "plan-interactive-publication-loader"
+after = "plan-interactive-publication-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-publish-before-output]
-kind = "order"
-before = "plan-interactive-artifact-publish"
-after = "plan-interactive-artifact-output"
+[contracts.plan-interactive-programmatic-flow-10a3d1088c65]
+kind = "requires"
+slice = "plan-interactive-programmatic-flows"
+pattern = "以下は final acceptance または明示 opt-out の後に、親が exact target を確定して渡した publication routing だけを持つ。"
 applies_to = ["claude", "codex", "cursor"]
+
 [contracts.advisor-parent-data-4abebd6b2b0c]
 kind = "requires"
 slice = "plan-interactive-advisor-parent"

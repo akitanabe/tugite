@@ -28,6 +28,7 @@
     "shared/agents/writing-principles-reviewer.md",
     "shared/batch-resolve-kernel.md",
     "shared/necessity-kernel.md",
+    "shared/plan-artifact-publication.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
     "shared/skill/clarify-it/SKILL.md",
@@ -85,6 +86,86 @@
     {
       "id": "no-kernel-result-field",
       "sha256": "10e4ecba43695f9bc4587c48de255d1f6b20bee8a084bd7de5d558147da0d3f2"
+    },
+    {
+      "id": "plan-artifact-publication-reference-identity",
+      "sha256": "361cedd795caa5e0d01562d36495c943aac23aea68878aab49e67b5020005a6f"
+    },
+    {
+      "id": "plan-artifact-publication-reference-data",
+      "sha256": "b974b8005625b917d07e99edd82e1de8467d27304f781a6244823059f3444354"
+    },
+    {
+      "id": "plan-artifact-publication-reference-procedure",
+      "sha256": "e7f6b481a0f556583e6bdcc711456ab86a4d907f6fc2f3c2e2619e1006a13a49"
+    },
+    {
+      "id": "plan-artifact-publication-reference-security",
+      "sha256": "759d2c61cb2412420beb87ec2bf98feaca20087f0221690f0636524b4fd8383a"
+    },
+    {
+      "id": "plan-artifact-publication-reference-no-clobber",
+      "sha256": "572638849b4867ac1c00bcc8ddc58c284639d84404e781c35090f65bc8979d3e"
+    },
+    {
+      "id": "plan-artifact-publication-reference-collision-retry",
+      "sha256": "604b2d2aadd88b1eb864b33b2698c3f53b3abba126afa9f7a6074cf5cff2d59a"
+    },
+    {
+      "id": "plan-artifact-publication-reference-reselection",
+      "sha256": "20baf25d49cc864fa2cbee118b84dea8139fea007164a0d40b8acdbfbe6c3e50"
+    },
+    {
+      "id": "plan-artifact-publication-reference-qualification-reselection",
+      "sha256": "dd71848bc6f0e7809771db69bb7f5bbc291062c317b7fa721ec25d67ba2b204c"
+    },
+    {
+      "id": "plan-artifact-publication-reference-final-retention",
+      "sha256": "77d1baaa866659a6a5305e8996156b21d661846468422ff2f14f84f182e622aa"
+    },
+    {
+      "id": "plan-artifact-publication-reference-temp-identity",
+      "sha256": "0111b4795be7c4329a67e0a9ac3d3839909a2e9530f2bf528e471fc3392d7055"
+    },
+    {
+      "id": "plan-artifact-publication-single-procedure-witness",
+      "sha256": "a319d8c017117f3015155f85c089b2abaf2dad9945d30b5ecb6eef859f72a1bc"
+    },
+    {
+      "id": "plan-artifact-publication-not-consumer-procedure",
+      "sha256": "49b3924b8c3fd328b592b8c604d5e775731cd8b8ad6dbe02ba7f891516ced5a0"
+    },
+    {
+      "id": "plan-artifact-publication-flow-f09a111cfd8b",
+      "sha256": "112764bd3d2f67ebf4ac11f084220d364a8a7c4886c3aef3a225c83586f16abc"
+    },
+    {
+      "id": "plan-artifact-publication-flow-935dc8626104",
+      "sha256": "3c46a2683c8523c5c814b43fc1d8df6b4a584a5f688bd71326523978bf4d2cbb"
+    },
+    {
+      "id": "plan-artifact-publication-flow-d3254fca2274",
+      "sha256": "e2bfe4c58b75dd712c8f0dbeaa24456ef3d7c77177ce168d873c33547cf30f67"
+    },
+    {
+      "id": "plan-artifact-publication-flow-19bd91dfadab",
+      "sha256": "5350679eaf19dbd8c4ad7a0e84f327f0ed11832366e3e5717eb8d54b52254444"
+    },
+    {
+      "id": "plan-artifact-publication-flow-6cb53be5209f",
+      "sha256": "d5a778d26f0cac0693377b5911d8e6987e35e4e84d6235b9b484a7f5ff0b820e"
+    },
+    {
+      "id": "plan-artifact-publication-flow-field-order",
+      "sha256": "ed74d2314ebb8d6230645291db1742719308a12a677fa5d1155bb5188c2cb27a"
+    },
+    {
+      "id": "plan-artifact-publication-flow-inputs-before-procedure",
+      "sha256": "34934c9f8f9c04f04cf1b35e59763b8a304faa28b3d05503cbecc6051b5dd943"
+    },
+    {
+      "id": "plan-artifact-publication-flow-procedure-before-outcomes",
+      "sha256": "65ad4bcdfee59b10be2c5edd7fae3349c62ecd8d4bfbd2ddd5dd3e1f75457085"
     },
     {
       "id": "repository-programmability-boundary-be45bf583027",
@@ -2147,28 +2228,20 @@
       "sha256": "90509660543512c4ad05db2ae3663e0376dda06974997be96875a7f59046dcaa"
     },
     {
-      "id": "plan-agent-artifact-completion-data-07f3ef654787",
-      "sha256": "65684f4668dee7c5a1846af0eb00e75af632682d037f1feaa419d2cecd1e105d"
+      "id": "plan-agent-artifact-completion-35499369affc",
+      "sha256": "55895a7f7ea126a8993700713e0c008ab9dc0935db143e56433f0ab0cfc138d1"
     },
     {
-      "id": "plan-agent-artifact-security-data-2b1bd8ecac29",
-      "sha256": "3c48250d24f1158be28aff6cf3d801b7ce17f5ac8e544200ae0900edbb149fe4"
+      "id": "plan-agent-publication-loader-978b2066f836",
+      "sha256": "14083c52329bb2e9ec232ad0a5aaa6cd665603ab294806ef79ffd0ba11c6c64f"
+    },
+    {
+      "id": "plan-agent-publication-before-outcome",
+      "sha256": "21afd3a98093331fcb53c565af0c8804dde844fabffd32129066851d6bb7b169"
     },
     {
       "id": "plan-agent-no-retired-human-save-authority",
       "sha256": "2cffaf9e2879e26b9561727427976a9b77e71ed44843499f92c1db0e4285601a"
-    },
-    {
-      "id": "plan-agent-artifact-eligibility-before-save",
-      "sha256": "5373b2f4a25e0c08f9b1801103c734666d422d441f37af38c218ad4577269600"
-    },
-    {
-      "id": "plan-agent-artifact-stage-before-publish",
-      "sha256": "ddc584ec88d4280924f6e1f0da209936a191273d0c36fa785451045b76d0fc22"
-    },
-    {
-      "id": "plan-agent-artifact-publish-before-output",
-      "sha256": "e87e02850db53222c25d5ad6dc3806c891adba41fca5bf43a1e4e2fbc7140029"
     },
     {
       "id": "plan-candidate-producer-programmatic-boundary-975e2f84e2df",
@@ -2240,19 +2313,19 @@
     },
     {
       "id": "plan-agent-flow-trigger-occurrences",
-      "sha256": "2b30d8e428901758732415ade1f96852fabe583a13055e4854b0061d220889d4"
+      "sha256": "5e0ddf950cef8f64e48bef2ff7b5fd20fad76341253dff7e5e8be0b6c0aa466c"
     },
     {
       "id": "plan-agent-flow-inputs-occurrences",
-      "sha256": "45bfb5f950e98fe90b822362c460837e9bf37a1b085be9c36911abc42e8131f7"
+      "sha256": "c27af3dbcaa809922ccc07cf050d251c23c78ebe188f48c26acfbcd497972bd9"
     },
     {
       "id": "plan-agent-flow-procedure-occurrences",
-      "sha256": "fdae940d4f51311be81b197ff9cbf58906aff9597bba44e18b5b094322550860"
+      "sha256": "3d2d9b418ef6ec4cec7e88d737a21d275eff9286f88f04faf2f17978e146067f"
     },
     {
       "id": "plan-agent-flow-outcomes-occurrences",
-      "sha256": "d0f256a9410a9293842ecccb860e7dbb09bc2034483bf4f34bdf8fc19ff0a64d"
+      "sha256": "6f02a70ac6b42ed8713d29ceb6e89ecfd06b1b9beea24e2baee60f7f812543cc"
     },
     {
       "id": "plan-candidate-producer-preflight-flow-occurrences",
@@ -2271,8 +2344,36 @@
       "sha256": "afcf46a891a29ba4abef53c4b8d21b129ff250409b9354e1853c6f4e2463da6e"
     },
     {
+      "id": "plan-agent-local-artifact-flow-occurrences",
+      "sha256": "c9a0a89abc4ed9f103dcbb7b66ed5b4d742910d5104a1ff219478ba30db7c073"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-62a763a00b81",
+      "sha256": "e714ff73a4234448796343b09038c7eaa7db2de1677a9ea9c17d9c52aafcf73e"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-dc1b3568ac39",
+      "sha256": "1b5db92980e8072bf2a72e794e18d3284eb4085f0e9920a333aa5fd7471c0aad"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-ff9ec467a47f",
+      "sha256": "7402e3387934b1c18f49d19ed5504004967da2ae57916fc3cd3972fad78e814f"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-order",
+      "sha256": "41e28690d1576eeb1bb1c762a067f43267268654014613cdaf51623bec352820"
+    },
+    {
+      "id": "plan-agent-local-artifact-flow-loader-before-outcomes",
+      "sha256": "41daf9174fd3c3f08e8528034f204807148bfeece43b37da34fe87eacf90e9f2"
+    },
+    {
       "id": "plan-agent-programmatic-boundary-09500f9678d9",
       "sha256": "ff49cf13d73a51114f86efd7e126770c126e98e5b056d47e5d0e5261f835467e"
+    },
+    {
+      "id": "plan-agent-local-artifact-completion-ed6948b7125b",
+      "sha256": "fb6400caf04ca66efd77d92984591c6938b12d21f345027b3ac89015120ec188"
     },
     {
       "id": "plan-candidate-producer-no-third-pass-13eed53ddec1",
@@ -2587,28 +2688,52 @@
       "sha256": "df54c21a21c9473f4d7cd6567b35ba723472ee23971b5e1b179179e700525a28"
     },
     {
-      "id": "plan-interactive-artifact-completion-data-d5ae3e0422ea",
-      "sha256": "aed315ec7a1ec5ea886b7b8370ebf27a322f4faea8eace4592b78813c1dca719"
+      "id": "plan-interactive-artifact-completion-d9413ffc075f",
+      "sha256": "eb83ca318eecef342bfba284cd97ad5ca46f7138feff89eb747544b01e89a7ce"
     },
     {
-      "id": "plan-interactive-artifact-security-data-b382dbb79636",
-      "sha256": "309c45a778b1aeab4f1a424e87221253d8a530a3b35da7404b7d639aba58c033"
+      "id": "plan-interactive-publication-loader-be8062483fc7",
+      "sha256": "4af7525c2f59bf42782ba85c9a1cb335a68225885bfa3b91073f2e27de8759c9"
+    },
+    {
+      "id": "plan-interactive-publication-before-outcome",
+      "sha256": "dcf155e0008293bf30afff5b59441a7afe4bd313759fa3edefbed7cead98a099"
     },
     {
       "id": "plan-interactive-no-retired-autosave",
       "sha256": "2c223b74470a2d0340b46df8719c5c39347ec40263cd2318c4612e690b28ca1d"
     },
     {
-      "id": "plan-interactive-acceptance-before-stage",
-      "sha256": "a9639f872130ecb885b055d8f3abd575d8168a958912f3c73ab1fe4549a28651"
+      "id": "plan-interactive-flow-section-occurrences",
+      "sha256": "d79336e2bb4c7cbe6d2d884795f12e1bc5770888e5a2a61cd486166453e9b0cd"
     },
     {
-      "id": "plan-interactive-stage-before-publish",
-      "sha256": "070e0bc1db671b62093ecb3bfa54ce0c620862de2c7b2c5dd241cd00a8d9b691"
+      "id": "plan-interactive-local-artifact-flow-occurrences",
+      "sha256": "22beb7c240dd655f28921f25c24153fc4b2dd366a39c01fe47dc6d29aa7eb3c7"
     },
     {
-      "id": "plan-interactive-publish-before-output",
-      "sha256": "b99ff17ab71fb6e5f6f13c5dcf8cafa6c592f84a7e8602a1efd227e8b47abf75"
+      "id": "plan-interactive-local-artifact-flow-c16fa7160788",
+      "sha256": "24e91cf574f6d9af22b3c7dbf531c7840bed8d826e394dfdd1777e1472bcc518"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-4f5758a033e6",
+      "sha256": "d58a9b6d74ae66ea6ea33a3377b092013c817840f615c7d424587596acaa596e"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-e497e4417625",
+      "sha256": "6dbccfd1035b68ba0fd897df194f56c7a1514122027dbd6d8edaeb927d2c32d3"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-order",
+      "sha256": "12820a6c616c37f0f1906cece045ca7b49c107e319850c9e499e97aa61a97979"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-loader-before-outcomes",
+      "sha256": "2479c9b37662a97ea266bb27b72fc0f42f0c12be467bd35a8f3d3df160da4ae6"
+    },
+    {
+      "id": "plan-interactive-programmatic-flow-10a3d1088c65",
+      "sha256": "46d34c2d230b33f160426041e354bf7dc4197740dd041a0aa0b63c497b1b08ff"
     },
     {
       "id": "advisor-parent-data-4abebd6b2b0c",
@@ -3150,6 +3275,31 @@
     },
     {
       "kind": "span",
+      "id": "plan-artifact-publication-flow",
+      "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "publication-flow-trigger",
+      "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "publication-flow-inputs",
+      "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "publication-flow-procedure",
+      "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "publication-flow-outcomes",
+      "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "span",
       "id": "resolve-kernel-v1",
       "path": "shared/resolve-kernel.md"
     },
@@ -3489,6 +3639,31 @@
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
+      "kind": "span",
+      "id": "plan-agent-local-artifact-completion",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-artifact-eligibility",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-publication-inputs",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-publication-loader",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-publication-outcomes",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
       "kind": "anchor",
       "id": "plan-candidate-producer-start",
       "path": "shared/skill/plan-agent/SKILL.md"
@@ -3526,26 +3701,6 @@
     {
       "kind": "span",
       "id": "plan-agent-artifact-completion",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-artifact-eligibility",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-artifact-stage",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-artifact-publish",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-artifact-output",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
@@ -3635,7 +3790,7 @@
     },
     {
       "kind": "span",
-      "id": "plan-interactive-artifact-completion",
+      "id": "plan-interactive-programmatic-flows",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
@@ -3645,17 +3800,22 @@
     },
     {
       "kind": "anchor",
-      "id": "plan-interactive-artifact-stage",
+      "id": "plan-interactive-publication-inputs",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-interactive-artifact-publish",
+      "id": "plan-interactive-publication-loader",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "plan-interactive-artifact-output",
+      "id": "plan-interactive-publication-outcomes",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-artifact-completion",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {

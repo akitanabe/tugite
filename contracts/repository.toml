@@ -35,6 +35,194 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-artifact-publication-reference-identity]
+kind = "occurrences"
+pattern = "Publication reference identity: `plan-artifact-publication-v1`."
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-data]
+kind = "occurrences"
+pattern = '''publication_target = {
+  exact_destination,
+  exact_filename,
+  finite_retry_bound,
+  qualification_evidence,
+  destination_object_identity
+}'''
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-procedure]
+kind = "occurrences"
+pattern = "資格と destination object identity を再確認する。verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-security]
+kind = "occurrences"
+pattern = "canonical containment、symlink / junction non-follow、ignored / index qualification、no-clobber、exact ownership identity cleanup"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-no-clobber]
+kind = "occurrences"
+pattern = "complete のときだけ no-clobber publish を行い"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-collision-retry]
+kind = "occurrences"
+pattern = "既存 final との collision だけを finite retry bound の範囲で filename suffix により再試行する"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-reselection]
+kind = "occurrences"
+pattern = "資格喪失または別 target が必要な場合は、記録した staging identity と現 object identity が一致することを確認して所有 staging だけを cleanup し、`destination-reselection-required` を返す"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-qualification-reselection]
+kind = "occurrences"
+pattern = "target 確定後の資格喪失または別 target の必要は `destination-reselection-required` とする。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-final-retention]
+kind = "occurrences"
+pattern = "published final は cleanup 対象にせず保持する"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-temp-identity]
+kind = "occurrences"
+pattern = "pre-creation に verified temp-root identity と exclusive creation intent を記録し"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-single-procedure-witness]
+kind = "occurrences"
+pattern = "### programmatic-publication"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-not-consumer-procedure]
+kind = "forbids"
+pattern = "verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-f09a111cfd8b]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "この Flow は、親が意味判断を完了して確定した `publication_target` に対する fixed deterministic procedure だけを実行する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-935dc8626104]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Trigger: Agentic / mixed side が semantic eligibility と exact `publication_target` を確定し、親が publication を要求したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-d3254fca2274]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、destination object identity"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-19bd91dfadab]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Procedure: 資格と destination object identity を再確認する。verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-6cb53be5209f]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Outcomes: published result、collision retry の後の `published result`、安全に所有 cleanup できる `destination-reselection-required`、または `incomplete`。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-field-order]
+kind = "order"
+before = "publication-flow-trigger"
+after = "publication-flow-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-inputs-before-procedure]
+kind = "order"
+before = "publication-flow-inputs"
+after = "publication-flow-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-procedure-before-outcomes]
+kind = "order"
+before = "publication-flow-procedure"
+after = "publication-flow-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
 [contracts.repository-programmability-boundary-be45bf583027]
 kind = "requires"
