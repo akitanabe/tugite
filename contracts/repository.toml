@@ -119,7 +119,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "5.22.0"
+value = "5.23.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
@@ -187,6 +187,7 @@ paths = [
   "plugins/cursor/agents/plan-quality-advisor.md",
   "plugins/cursor/agents/responsibility-boundary-reviewer.md",
   "plugins/cursor/agents/security-side-effect-reviewer.md",
+  "plugins/cursor/agents/static-performance-reviewer.md",
   "plugins/cursor/agents/test-quality-reviewer.md",
   "plugins/cursor/agents/writing-principles-reviewer.md",
 ]
@@ -355,6 +356,23 @@ value = "security-side-effect-reviewer"
 path = "model"
 op = "equals"
 value = "cursor-grok-4.6-xhigh"
+
+[contracts.cursor-static-performance-reviewer-agent]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/agents/static-performance-reviewer.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-static-performance-reviewer-agent.assertions]]
+path = "name"
+op = "equals"
+value = "static-performance-reviewer"
+
+[[contracts.cursor-static-performance-reviewer-agent.assertions]]
+path = "model"
+op = "equals"
+value = "cursor-grok-4.6-high"
 
 [contracts.cursor-test-quality-reviewer-agent]
 kind = "structure"
@@ -540,10 +558,16 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-c56c8172b3eb]
+[contracts.cursor-readme-version-requires-27b5ccd1e24a]
 kind = "requires"
 slice = "cursor-readme-version"
-pattern = "# Tugite v5.22.0"
+pattern = "# Tugite v5.23.0"
+applies_to = ["cursor"]
+
+[contracts.readme-risk-directed-static-performance-reviewer-b83942372d45]
+kind = "requires"
+slice = "readme-risk-directed-static-performance-reviewer"
+pattern = "リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。"
 applies_to = ["cursor"]
 
 [contracts.cursor-readme-generation-requires-efb6bbfae34a]
@@ -823,6 +847,7 @@ paths = [
   "shared/agents/plan-quality-advisor.md",
   "shared/agents/responsibility-boundary-reviewer.md",
   "shared/agents/security-side-effect-reviewer.md",
+  "shared/agents/static-performance-reviewer.md",
   "shared/agents/test-quality-reviewer.md",
   "shared/agents/writing-principles-reviewer.md",
 ]
@@ -850,6 +875,7 @@ paths = [
   "shared/agents/plan-quality-advisor.md",
   "shared/agents/responsibility-boundary-reviewer.md",
   "shared/agents/security-side-effect-reviewer.md",
+  "shared/agents/static-performance-reviewer.md",
   "shared/agents/test-quality-reviewer.md",
 ]
 

@@ -17,6 +17,7 @@ required_agents=(
   plan-adversarial-reviewer
   plan-quality-advisor
   security-side-effect-reviewer
+  static-performance-reviewer
 )
 
 # Fail the test with a concise diagnostic.
