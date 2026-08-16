@@ -383,10 +383,18 @@ Human への発話では、内部語彙を必要がない限り露出させず�
 この自然化は責務境界と意味を維持したまま行い、固定的な内部語彙→対話語彙 dictionary は定義しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-it-presentation-fixed-dictionary-985dd6017722]
-kind = "forbids"
+[contracts.clarify-it-presentation-hdp-cardinality-967c1cf31ba4]
+kind = "occurrences"
 slice = "clarify-it-decision-context"
-pattern = "Human Decision Point は常に『判断ポイント』へ置換する固定 dictionary を使う。"
+pattern = "Human Decision Point"
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-it-presentation-fixed-cardinality-5a8f31b75f96]
+kind = "occurrences"
+slice = "clarify-it-decision-context"
+pattern = "固定"
+count = 1
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.clarify-it-selection-no-score-d9f7fc56beea]
