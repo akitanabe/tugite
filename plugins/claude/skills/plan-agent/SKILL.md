@@ -105,7 +105,7 @@ Outcomes: nonapplicable、opt-out、review dispatch、または明示的な `rev
 ### local-artifact-completion
 
 Trigger: 親が semantic completion eligibility と、Agentic / mixed side で確定した exact `publication_target` を渡したとき。
-Inputs: semantic completion eligibility、凍結した成果物本文 bytes、および親確定の `publication_target` Data。`publication_target` は existing destination の observed destination object identity、または OS-temp の verified temp-root identity / exact run-owned directory path / exclusive creation intent の排他的 Data を持ち、作成前の directory object identity を要求しない。
+Inputs: semantic completion eligibility、凍結した成果物本文 bytes、および親確定の `publication_target` Data。`publication_target` は existing destination の observed destination object identity、または OS-temp の verified temp-root identity / top-level `exact_destination` / exclusive creation intent の排他的 Data を持ち、作成前の directory object identity を要求しない。
 Procedure: skill-relative `../../references/plan-artifact-publication.md` を publication invocation 前に一度だけ load し、identity `plan-artifact-publication-v1` と必要本文を検証する。検証済み reference の `programmatic-publication` Flow に、親確定の `publication_target` をそのまま渡す。Flow の結果を受け取り、published result から `final-candidate` / `incomplete` と stdout の Result、Summary、必要な Human Attention、Artifact path だけを projection する。consumer は target selection、candidate ranking、filename、retry bound、publication procedure を再実行・複製しない。
 ```text
 publication_reference = ../../references/plan-artifact-publication.md

@@ -31,7 +31,7 @@ pattern では正式名だけを使います。
 
 Agentic workflow 内の局所的な deterministic procedure です。共通の意味と境界は
 `shared/repository-guidelines.md` の `Programmability Boundary contract`、個別の procedure は各 Skill の
-`Programmatic Flows` section を正本とします。
+`Programmatic Flows` sectionを、共有 publication procedure は `shared/plan-artifact-publication.md` を正本とします。
 
 ## Resolution Point
 

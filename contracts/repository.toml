@@ -92,7 +92,7 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-reference-procedure]
 kind = "occurrences"
-pattern = "既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。"
+pattern = "既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。directory 作成後、staging 作成前に、資格と destination object identity を再確認する。"
 count = 1
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
@@ -241,10 +241,10 @@ slice = "plan-artifact-publication-flow"
 pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、既存 destination では観測済み destination object identity、OS-temp では verified temp-root identity / exclusive creation intent。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-artifact-publication-flow-c4d5af1fb2a1]
+[contracts.plan-artifact-publication-flow-b6e65fabfa66]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
-pattern = "Procedure: 既存 destination では資格と観測済み destination object identity を再確認する。"
+pattern = "Procedure: 既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。directory 作成後、staging 作成前に、資格と destination object identity を再確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-flow-6cb53be5209f]

@@ -105,7 +105,7 @@
     },
     {
       "id": "plan-artifact-publication-reference-procedure",
-      "sha256": "8d7163701002269cdeb5b0c7fe92985e6c085d863e3805f9b2bb6efd7eab2c9f"
+      "sha256": "742acf4c0171b8d21255b62ce4a4eeaf3cc00909e6ecb56043010d23c030b48c"
     },
     {
       "id": "plan-artifact-publication-reference-security",
@@ -164,8 +164,8 @@
       "sha256": "d8e9074366838a1e127d420e20f205d244a0159143600f1e6cfc84ccea25329c"
     },
     {
-      "id": "plan-artifact-publication-flow-c4d5af1fb2a1",
-      "sha256": "7b852929f14c4aee9ba4b6859ccea6ba1aaf4c9b73ba211d6748adcf898f5e1d"
+      "id": "plan-artifact-publication-flow-b6e65fabfa66",
+      "sha256": "4b7b45e97790c9b5fba5d2804f4123a00093e3e531e9594216fc123d5c75b20a"
     },
     {
       "id": "plan-artifact-publication-flow-6cb53be5209f",
@@ -2420,8 +2420,8 @@
       "sha256": "e714ff73a4234448796343b09038c7eaa7db2de1677a9ea9c17d9c52aafcf73e"
     },
     {
-      "id": "plan-agent-local-artifact-flow-inputs-8f2819c0ef09",
-      "sha256": "600095f61cb72fada55fbf0a04c12c61f253b153d87210148b473ddfc90aa524"
+      "id": "plan-agent-local-artifact-flow-inputs-d42da346f04c",
+      "sha256": "755a645c37055b1c8a87994c2c4b76b6e698b8f5789b191541f432246741d004"
     },
     {
       "id": "plan-agent-local-artifact-flow-no-future-7af6a4e020e1",
@@ -2432,8 +2432,8 @@
       "sha256": "7402e3387934b1c18f49d19ed5504004967da2ae57916fc3cd3972fad78e814f"
     },
     {
-      "id": "plan-agent-local-artifact-flow-c3032098e959",
-      "sha256": "e2d790b93e3b6f61bde7a7cad20fcb0ace41f40a408c374d787cfe15cd8fbf21"
+      "id": "plan-agent-local-artifact-flow-2c04dd8a5208",
+      "sha256": "50a567a1f3b069364634a5f4a4efd75646b79b2432f0b5a3b83e4c3e5708a62d"
     },
     {
       "id": "plan-agent-local-artifact-flow-order",
@@ -2748,8 +2748,8 @@
       "sha256": "eb83ca318eecef342bfba284cd97ad5ca46f7138feff89eb747544b01e89a7ce"
     },
     {
-      "id": "plan-interactive-publication-loader-be8062483fc7",
-      "sha256": "4af7525c2f59bf42782ba85c9a1cb335a68225885bfa3b91073f2e27de8759c9"
+      "id": "plan-interactive-publication-loader-970692b302a3",
+      "sha256": "0f75026e157f5a12b2d957e1a3fbd04c8b6d997240be46dbc3d4fd6b03774d5f"
     },
     {
       "id": "plan-interactive-no-retired-autosave",
@@ -2764,24 +2764,28 @@
       "sha256": "22beb7c240dd655f28921f25c24153fc4b2dd366a39c01fe47dc6d29aa7eb3c7"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-c16fa7160788",
-      "sha256": "24e91cf574f6d9af22b3c7dbf531c7840bed8d826e394dfdd1777e1472bcc518"
+      "id": "plan-interactive-local-artifact-completion-8c0d65863538",
+      "sha256": "17dd45b6086a51ba026331423ead30a90f6ba530c83893beceba37d58946033d"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-inputs-6c1ae8a5f89d",
-      "sha256": "f616203eb16fa30a2bbbc13e8af8bddc1669cfb2887314c5e113f364dd74453e"
+      "id": "plan-interactive-local-artifact-flow-564c89523b45",
+      "sha256": "2f2bf57214bc7223df00b4e238a92c4dbf0ce81890bd6a3fc4027a567940f3a7"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-no-future-2d484c4113eb",
-      "sha256": "7eacbaf7a3072b5cdafa674948735c8575977c94f2d5e0dc2fc029327c6a83e7"
+      "id": "plan-interactive-local-artifact-flow-f80c5da63d79",
+      "sha256": "e624eb63dda7ef8daac3a4b18fb8b9e264670e9fa31c896f383babcbd4034017"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-e497e4417625",
-      "sha256": "6dbccfd1035b68ba0fd897df194f56c7a1514122027dbd6d8edaeb927d2c32d3"
+      "id": "plan-interactive-local-artifact-flow-no-future-23b1699fa299",
+      "sha256": "ec5bb2861ee717de30daa6eb4a7bf2b35382f57c72a9d2bc036082d38a1d64f3"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-77d4ccc06e5e",
-      "sha256": "f7edc0a2aabd9aa7b01c67c4f4e36eb7a9625764664404fbdb0cbf1bf6eaad59"
+      "id": "plan-interactive-local-artifact-flow-7d9a58cb9310",
+      "sha256": "bf58cdca0fb9ccc8c2f017d000be995a51391fbc5cdbc0da00c6d796659dbbc9"
+    },
+    {
+      "id": "plan-interactive-local-artifact-flow-661be7a32758",
+      "sha256": "61c6d38614b761c6be5f95fd28e59eb70790c3a296c05da625834dd07efd34dd"
     },
     {
       "id": "plan-interactive-local-artifact-flow-order",
@@ -2792,8 +2796,8 @@
       "sha256": "2479c9b37662a97ea266bb27b72fc0f42f0c12be467bd35a8f3d3df160da4ae6"
     },
     {
-      "id": "plan-interactive-programmatic-flow-10a3d1088c65",
-      "sha256": "46d34c2d230b33f160426041e354bf7dc4197740dd041a0aa0b63c497b1b08ff"
+      "id": "plan-interactive-programmatic-flow-cf0d1bbeda96",
+      "sha256": "95f92e420957dd64f7c00de3084f0814c34b80c2249bd62759038d871094fab6"
     },
     {
       "id": "advisor-parent-data-4abebd6b2b0c",
@@ -3904,6 +3908,11 @@
     {
       "kind": "span",
       "id": "plan-interactive-programmatic-flows",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-local-artifact-completion",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
