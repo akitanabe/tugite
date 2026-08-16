@@ -107,6 +107,18 @@
       "sha256": "e7eb960939ebf45b0aa5bece1b44f174bcd0b8a47decd6b13028b9f42caa6ba4"
     },
     {
+      "id": "repository-version-release-entry-85c54d676556",
+      "sha256": "5c2fa2c1c059141c860cbdc369a5127bb0c89ce141e0767ffce327b56520dc7d"
+    },
+    {
+      "id": "repository-version-release-scope-122f55485f8b",
+      "sha256": "6bbd8a019961bb97a24e78dfde1562c3615b0806ee44aef560a9690db4797082"
+    },
+    {
+      "id": "no-change-scoped-version-update",
+      "sha256": "7c525a39a91457137a67a20bb0a7421f50b89b7b723460e0594dc0abe9f6320b"
+    },
+    {
       "id": "cursor-agent-declaration-presence",
       "sha256": "c763c47276a1ca48f6e7431360be1cd0b093a7352dad6bb0d764f93ecae791d0"
     },
@@ -3423,6 +3435,11 @@
     {
       "kind": "span",
       "id": "repository-plan-verification-default",
+      "path": "shared/repository-guidelines.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-version-release-entry",
       "path": "shared/repository-guidelines.md"
     },
     {

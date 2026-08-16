@@ -88,13 +88,19 @@ EVAL は Human が明示したとき、または既存 EVAL 成果物の変更�
 
 ## Version 更新指針
 
-`shared/` の原稿、`gunte.toml`、`contracts/*.toml`、`declarations/`、または配布物が変わる変更では、必要な公開面を
-確認して `shared/VERSION` を更新し、`gunte emit` と `gunte check` で宣言・生成物・version を同期します。README、
-AGENTS、CLAUDE、tests、evals だけの変更では version を更新しません。
+<!-- @contract repository-version-release-entry -->
+v6 以降の version は個々の change ではなく release snapshot の属性です。通常の change、PR、main 統合では
+`shared/VERSION` を更新しません。Human が release を明示した場合だけ、恒久正本の
+`docs/version-release-policy.md` を読み、release Action を開始します。
 
-公開面（skill・agent の名前、起動方法と発火条件、保存して後から渡す artifact の形式、CLI）の呼び出しが通らなくなる
-変更は major、skill・agent・契約の追加や同一 version 内の内部契約変更は minor、契約の意味を変えないモデル/effort
-調整は patch です。旧入力を渡しても再起草などの安全な停止へ進める場合は、呼び出しが壊れていないため major とは扱いません。
+```toml
+policy_id = "version-release-policy-v1"
+applies_from = "v6.0.0"
+ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
+release_trigger = "Human が release を明示した場合だけ release Action を開始する"
+canonical_policy = "docs/version-release-policy.md"
+```
+<!-- @/contract -->
 
 ## Commit・Pull Request 指針
 

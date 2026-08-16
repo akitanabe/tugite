@@ -98,6 +98,29 @@ kind = "forbids"
 pattern = "手動評価シナリオは `evals/` にあります"
 applies_to = ["agents-guidance", "claude-guidance"]
 
+# Why Not: keep the ordinary-change guard, Human trigger, and canonical policy pointer atomic; separate checks could admit a contradictory entry point.
+[contracts.repository-version-release-entry-85c54d676556]
+kind = "requires"
+slice = "repository-version-release-entry"
+pattern = '''policy_id = "version-release-policy-v1"
+applies_from = "v6.0.0"
+ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
+release_trigger = "Human が release を明示した場合だけ release Action を開始する"
+canonical_policy = "docs/version-release-policy.md"'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
+# Why Not: a heading inside this entry slice means its boundary has expanded into another responsibility.
+[contracts.repository-version-release-scope-122f55485f8b]
+kind = "forbids"
+slice = "repository-version-release-entry"
+pattern = "##"
+applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.no-change-scoped-version-update]
+kind = "forbids"
+pattern = "または配布物が変わる変更では、必要な公開面を"
+applies_to = ["agents-guidance", "claude-guidance"]
+
 [contracts.cursor-agent-declaration-presence]
 kind = "structure"
 subject = "source_frontmatter"
