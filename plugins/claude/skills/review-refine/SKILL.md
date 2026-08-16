@@ -3,8 +3,8 @@ name: review-refine
 description: >-
   ユーザーが明示した成果物レビュー、または明示起動された plan-family public workflow が工程として起動する場合だけ、
   不変 snapshot と review goal に対する bounded review round と final trim を実行する。
-  reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。v4 skill と impl-lead の
-  実行中には発火せず、成果物を書き戻したり次工程を開始したりしない。
+  reviewer は事実と懸念を報告し、親が裁定と受け入れを保持する。`impl-lead` の実行中には発火せず、
+  成果物を書き戻したり次工程を開始したりしない。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -22,7 +22,7 @@ plan-family public workflow の親が candidate producer 後段の review とし
 
 - ユーザーがこの Skill によるレビューを明示した場合にだけ単独で起動する（ユーザー明示の単独 review）。
 - plan-family public workflow が candidate producer 後段の review として明示起動する場合は起動できる。
-- v4 skill の実行中、`impl-lead` の実行中、またはレビューを求めない相談では起動しない。
+- `impl-lead` の実行中、またはレビューを求めない相談では起動しない。
 - 発火条件を満たさない自然言語の作業内容や context から、起動を推測しない。
 - 明示された public workflow parent がない context へ自動 switch しない。plan-family の workflow 間も自動で切り替えない。
 - 各 platform の invocation metadata は上記の発火契約を表し、その範囲を拡張しない。
