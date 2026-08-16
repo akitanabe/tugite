@@ -1,5 +1,5 @@
 <!-- @contract cursor-readme-version -->
-# Tugite v5.21.0
+# Tugite v5.22.0
 <!-- @/contract -->
 
 Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
@@ -18,7 +18,7 @@ Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロー
 
 ### 内部 skill
 
-`proposal`、`proposal-dialogue`、`structural-health-gate`、`work-unit-design` は公開ワークフローと同じ親エージェントのコンテキストで使う内部 skill です。直接起動や暗黙のワークフロー切替は行いません。
+`proposal`、`structural-health-gate`、`work-unit-design` は公開ワークフローと同じ親エージェントのコンテキストで使う内部 skill です。直接起動や暗黙のワークフロー切替は行いません。
 
 ### Worker / reviewer / advisor
 

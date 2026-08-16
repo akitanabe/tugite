@@ -119,7 +119,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "5.21.0"
+value = "5.22.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
@@ -417,7 +417,6 @@ subject = "artifact"
 paths = [
   "plugins/cursor/skills/clarify-it/SKILL.md",
   "plugins/cursor/skills/proposal/SKILL.md",
-  "plugins/cursor/skills/proposal-dialogue/SKILL.md",
   "plugins/cursor/skills/review-loop/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/work-unit-design/SKILL.md",
@@ -505,18 +504,6 @@ path = "name"
 op = "equals"
 value = "proposal"
 
-[contracts.cursor-proposal-dialogue-skill]
-kind = "structure"
-subject = "artifact"
-paths = ["plugins/cursor/skills/proposal-dialogue/SKILL.md"]
-format = "yaml"
-applies_to = ["cursor"]
-
-[[contracts.cursor-proposal-dialogue-skill.assertions]]
-path = "name"
-op = "equals"
-value = "proposal-dialogue"
-
 [contracts.cursor-review-loop-skill]
 kind = "structure"
 subject = "artifact"
@@ -553,10 +540,10 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-b0470de1862c]
+[contracts.cursor-readme-version-requires-c56c8172b3eb]
 kind = "requires"
 slice = "cursor-readme-version"
-pattern = "# Tugite v5.21.0"
+pattern = "# Tugite v5.22.0"
 applies_to = ["cursor"]
 
 [contracts.cursor-readme-generation-requires-efb6bbfae34a]
@@ -639,7 +626,6 @@ subject = "artifact"
 paths = [
   "plugins/codex/skills/clarify-it/agents/openai.yaml",
   "plugins/codex/skills/proposal/agents/openai.yaml",
-  "plugins/codex/skills/proposal-dialogue/agents/openai.yaml",
   "plugins/codex/skills/review-loop/agents/openai.yaml",
   "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
   "plugins/codex/skills/work-unit-design/agents/openai.yaml",
@@ -723,7 +709,6 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/claude/skills/proposal/SKILL.md",
-  "plugins/claude/skills/proposal-dialogue/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/work-unit-design/SKILL.md",
 ]

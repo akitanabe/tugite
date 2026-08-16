@@ -1,6 +1,6 @@
 # Tugite for Codex
 
-Tugite v5.21.0 は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+Tugite v5.22.0 は、親 Codex エージェントが plan、Work Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
 
 ## Skill surface
 
@@ -14,7 +14,7 @@ Public skill は次の5つです。
 
 `plan-craft` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-craft-approval` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-loop` を bypass して通常の起草確定へ進みます。
 
-`proposal`、`proposal-dialogue`、`structural-health-gate`、`work-unit-design` は public workflow の同じ親 context だけで使う internal skill です。直接の user invocation は受け付けません。
+`proposal`、`structural-health-gate`、`work-unit-design` は public workflow の同じ親 context だけで使う internal skill です。直接の user invocation は受け付けません。
 
 ## Agent surface
 
