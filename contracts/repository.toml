@@ -35,6 +35,19 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
+[contracts.repository-programmability-boundary-741fb56d8714]
+kind = "requires"
+slice = "repository-programmability-boundary"
+pattern = '''policy_id = "programmability-boundary-v1"
+classifications = ["deterministic-mechanized", "deterministic-contract-only", "autonomous", "derived-duplicate"]
+rule_source = "current workflow source owns meaning; point-in-time audit is evidence only"
+programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte predicate/contract", "natural-language Contract"]
+implementation_policy = "programmable does not imply immediate mechanization"
+autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
+gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
 # Why Not: keep ownership, evidence, and acceptance prohibitions in one coherent declaration; splitting them could permit cross-section false greens.
 [contracts.repository-test-qa-baseline-a0b98d2f7393]
 kind = "requires"

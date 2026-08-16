@@ -87,6 +87,10 @@
       "sha256": "10e4ecba43695f9bc4587c48de255d1f6b20bee8a084bd7de5d558147da0d3f2"
     },
     {
+      "id": "repository-programmability-boundary-741fb56d8714",
+      "sha256": "85544a95a0ddf7c1e68e805015d5eaa7bbd1e434377aeed7f711ae4d82d52371"
+    },
+    {
       "id": "repository-test-qa-baseline-a0b98d2f7393",
       "sha256": "5d73d6575cbe5487348615f4d95ed095b4697bce13a84de22e69e798cf6816e4"
     },
@@ -3403,6 +3407,11 @@
     {
       "kind": "span",
       "id": "repository-plan-verification-default",
+      "path": "shared/repository-guidelines.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-programmability-boundary",
       "path": "shared/repository-guidelines.md"
     },
     {

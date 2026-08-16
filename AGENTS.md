@@ -105,6 +105,29 @@ AGENTS、CLAUDE、tests、evals だけの変更では version を更新しませ
 完了時には変更内容、実行した検証と結果、未検証事項または残存 risk を簡潔に報告します。無関係な dirty state や
 untracked artifact は保持します。
 
+## Programmability Boundary contract
+
+横断的な workflow rule は、明示入力から結果が一意に決まる deterministic side と、複数の受容可能な結果から
+意味や価値を判断する autonomous side に分けます。次の stable Data は分類と保証の選択境界を定めます。
+
+```toml
+policy_id = "programmability-boundary-v1"
+classifications = ["deterministic-mechanized", "deterministic-contract-only", "autonomous", "derived-duplicate"]
+rule_source = "current workflow source owns meaning; point-in-time audit is evidence only"
+programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte predicate/contract", "natural-language Contract"]
+implementation_policy = "programmable does not imply immediate mechanization"
+autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
+gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"
+```
+
+deterministic rule は意味の正本と assurance plane を明確にし、未機械化なら owner Action、必要入力、利用可能な
+interception point、現在の非機械保証理由、延期または不能の理由、自然言語の正本を維持します。programmable で
+あることは即時の機械化義務を意味しません。direct / delegate、worker / reviewer の選択、finding の意味的な採否、
+実装 approach、risk 評価など autonomous side の特定結果を expected-output oracle で唯一の正解に固定しません。
+必要な反復は consumer と、重複を除いた後も obligation を担う remaining witness を追跡し、独立した意味の正本にしません。
+Gunte predicate の成功が保証するのは policy identity、required fields、その coherent relation までです。runtime の意味遵守や
+autonomous outcome oracle の不存在を保証したとは扱いません。
+
 ## Test QA baseline contract
 
 この section は、実装の入口や reviewer の有無に依存しない親 QA の共通下限を定義します。次の stable Data がこの
