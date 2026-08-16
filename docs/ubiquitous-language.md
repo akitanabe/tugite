@@ -25,7 +25,7 @@ pattern では正式名だけを使います。
 
 親エージェントが要求を正規化し、worker へ委譲する実装単位です。単位が持つ情報の構成は正本が定めます。
 
-- 正本: `shared/skill/work-unit-design/SKILL.md`、`shared/skill/impl-lead/SKILL.md`
+- 正本: `shared/skill/impl-lead/SKILL.md` の `Intake and Work Unit normalization`
 
 ## Programmatic Flow
 
