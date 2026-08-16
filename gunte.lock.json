@@ -2440,6 +2440,130 @@
       "sha256": "95d02c5d77c0110755e5e5dc3760f2b13b2a4646e2543fda8321b58230785115"
     },
     {
+      "id": "review-refine-programmatic-boundary-794c4fca3145",
+      "sha256": "d679a5932d378c0fd2fb5406253dc9c1e9aefead0ff6c26afd1a08444f2673a6"
+    },
+    {
+      "id": "review-refine-kernel-preflight-flow-bbbc01a4b407",
+      "sha256": "ca05757f6e71745e13a3238782286ed7ac0996705ae29a9966eae6b1e6b3ce46"
+    },
+    {
+      "id": "review-refine-deferred-freeze-flow-5129b54f4308",
+      "sha256": "47127cb4c5be70a950e932b34ff932ba4f3193ac7969e6f0b2acb68a674f0d06"
+    },
+    {
+      "id": "review-refine-induced-loop-eligibility-flow-bf83dc29d0dd",
+      "sha256": "ebd9d6f43539c5a99a9db7c2428241a2397294943bdc8c372e0b59eb9b941da8"
+    },
+    {
+      "id": "review-refine-round-limit-termination-flow-4163060a87d8",
+      "sha256": "4b109d7737b2913fe67e802ffd2b10b54855a9640120b79effdfd88f55d7b7bb"
+    },
+    {
+      "id": "review-refine-final-trim-count-routing-flow-e6b53d9ad316",
+      "sha256": "5a19e5a8dc53e3d3ff06c3f1ebd37e79e3188da4934e9424c6ab802c5d83ec7c"
+    },
+    {
+      "id": "review-refine-flow-section-occurrences",
+      "sha256": "6daefbfc3462bb52f656cd63ea1d89cd240bce753f8ffd4c629ea1502d11f2d4"
+    },
+    {
+      "id": "review-refine-flow-trigger-occurrences",
+      "sha256": "01d0f85a86868f50c31be39eee4cef1f69c8b779bb29a238e2c04f171d8ab3ef"
+    },
+    {
+      "id": "review-refine-flow-inputs-occurrences",
+      "sha256": "0ab8e1d656b95df855d93824c1b8cd02c7aad53c124a323964f9b8cdc9009b0d"
+    },
+    {
+      "id": "review-refine-flow-procedure-occurrences",
+      "sha256": "e954739fefcb52d31a25a5ed2f86b5b8974acdb3c5d038bb8153caa15befb838"
+    },
+    {
+      "id": "review-refine-flow-outcomes-occurrences",
+      "sha256": "219bc525b4c9e39847f2bbca7ab0b851d61e5019337c94aad5b960f81f7564b9"
+    },
+    {
+      "id": "review-refine-kernel-preflight-flow-occurrences",
+      "sha256": "9a203ea1c851cc68f9c98aafb88dc6d439f9df48fb13692ac688715e90d651da"
+    },
+    {
+      "id": "review-refine-deferred-freeze-flow-occurrences",
+      "sha256": "a2ca42d1ccea82b29c0f0b4276822d2cf3cc6905cafb524651fa07601c82e053"
+    },
+    {
+      "id": "review-refine-induced-loop-flow-occurrences",
+      "sha256": "a3ac707335aa1181eb600a226a59a9a3142ad4e3f73cdfbcbc3df7da1bdde470"
+    },
+    {
+      "id": "review-refine-round-limit-flow-occurrences",
+      "sha256": "ab2e1de0e657ae580a6b3676e253c20e7314c7a33223e4d1533fec3f15adf06e"
+    },
+    {
+      "id": "review-refine-final-trim-flow-occurrences",
+      "sha256": "43488077a97fc91acefef038f036760b026abdf87827a0c7918cf244cfb4fd8f"
+    },
+    {
+      "id": "review-refine-kernel-preflight-field-order",
+      "sha256": "e1384e8a5d2f71220b326d8e3632b332f8ea5498eb142e24b15d5e2ead12d764"
+    },
+    {
+      "id": "review-refine-kernel-preflight-inputs-before-procedure",
+      "sha256": "0c5dd598f6a277ce93f67fffcf8556c31c3946ec296b97614a695a9f80b40c7a"
+    },
+    {
+      "id": "review-refine-kernel-preflight-procedure-before-outcomes",
+      "sha256": "89f6dad2783b3eefe4ae3c004e9c54bf3960399a97513600deebb5ae723d44c4"
+    },
+    {
+      "id": "review-refine-deferred-freeze-field-order",
+      "sha256": "b14c1d7454285df46755e9c0e051ab992acafa9b8683f4aa99270709125741a6"
+    },
+    {
+      "id": "review-refine-deferred-freeze-inputs-before-procedure",
+      "sha256": "fae4c09659c6a72366bc52fb2c563ecece6d8243e477cf24423bbd330e8c85fa"
+    },
+    {
+      "id": "review-refine-deferred-freeze-procedure-before-outcomes",
+      "sha256": "7762aad9ec9567612904f1ed9c4c46b1041891eed613511e4ef23fdfc7f3df15"
+    },
+    {
+      "id": "review-refine-induced-loop-field-order",
+      "sha256": "7ef677c85b6d439154c5d9000aa88332abf78d8cf96a3a73b33b29dbd47e561f"
+    },
+    {
+      "id": "review-refine-induced-loop-inputs-before-procedure",
+      "sha256": "ab7486381fd978c029482105b589e121a72d0762f29db2416cc5fd5eb3a1efc4"
+    },
+    {
+      "id": "review-refine-induced-loop-procedure-before-outcomes",
+      "sha256": "ddbcf6178c56e2da11f8ba7aed71718c97b0b6c6566d016681489a897096b41c"
+    },
+    {
+      "id": "review-refine-round-limit-field-order",
+      "sha256": "87d2387b7f63126ba3a14a2b58de80077ec333d302b5f586e3fb56d974b887ec"
+    },
+    {
+      "id": "review-refine-round-limit-inputs-before-procedure",
+      "sha256": "a2d977fc4b0b5f20b40a42113a691d3dcfd469e3446a35f8fd34334249dccce6"
+    },
+    {
+      "id": "review-refine-round-limit-procedure-before-outcomes",
+      "sha256": "9c12153a05fa990ea240f3e3b680f2ac223edc38fac3a142730fccd0b1d740c6"
+    },
+    {
+      "id": "review-refine-final-trim-field-order",
+      "sha256": "a4d2ba25a68cae0c1f3f09a5008d52bb0e9112784dd4007c3313984f8cb615a8"
+    },
+    {
+      "id": "review-refine-final-trim-inputs-before-procedure",
+      "sha256": "75280c428b93c05a79846664f42e05e0580b9f9db1378fe4f8efce0d9265064d"
+    },
+    {
+      "id": "review-refine-final-trim-procedure-before-outcomes",
+      "sha256": "f175877d083ba0650179b4110b1e3ea57c7c60b976ec5d4c4a8b9c6af843361f"
+    },
+    {
       "id": "clarify-caller-data-d368442b31ae",
       "sha256": "9af54aab9f01486e2a894f8c476536d0a29ef5aa43175b7134b9f12f9307ce9b"
     },
@@ -4054,6 +4178,136 @@
     {
       "kind": "span",
       "id": "review-refine-structural-boundary",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-programmatic-flows",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-kernel-preflight",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-kernel-preflight-trigger",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-kernel-preflight-inputs",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-kernel-preflight-procedure",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-kernel-preflight-outcomes",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "deferred-freeze",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deferred-freeze-trigger",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deferred-freeze-inputs",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deferred-freeze-procedure",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deferred-freeze-outcomes",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "induced-loop-eligibility",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "induced-loop-eligibility-trigger",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "induced-loop-eligibility-inputs",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "induced-loop-eligibility-procedure",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "induced-loop-eligibility-outcomes",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "round-limit-termination",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "round-limit-termination-trigger",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "round-limit-termination-inputs",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "round-limit-termination-procedure",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "round-limit-termination-outcomes",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "final-trim-count-and-routing",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "final-trim-count-and-routing-trigger",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "final-trim-count-and-routing-inputs",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "final-trim-count-and-routing-procedure",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "final-trim-count-and-routing-outcomes",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {

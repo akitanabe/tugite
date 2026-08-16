@@ -89,6 +89,79 @@ plan-family public workflow の親から受け取る candidate は、局所的�
 reviewer には対象 snapshot、要求と判定基準、goal、直前までの台帳、必要な周辺 context を渡す。reviewer の
 出力は事実・evidence・懸念・提案であり、仕様の追加、採用、却下、保留、成果物の書き戻しを含めない。
 
+## Programmatic Flows
+
+<!-- @contract review-refine-programmatic-flows -->
+以下は、親が意味判断を完了して確定 Data を渡した後の局所的な deterministic procedure だけを持つ。Flow の
+procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome 後に複数の妥当な Action が
+残る意味判断は Agentic な親へ返す。
+<!-- @/contract -->
+
+<!-- @contract review-kernel-preflight -->
+### review-kernel-preflight
+
+<!-- @anchor review-kernel-preflight-trigger -->
+Trigger: 親が reviewer invocation、parent adjudication、または最初の Resolution Transaction の各 timing に向けて kernel preflight を要求したとき。
+<!-- @anchor review-kernel-preflight-inputs -->
+Inputs: `necessity-kernel-v1` と `batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
+<!-- @anchor review-kernel-preflight-procedure -->
+Procedure: `necessity-kernel-v1` は reviewer invocation または parent adjudication の直前に、`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に、それぞれ一度だけ load と identity / 必要本文を検証する。necessity の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、necessity failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
+<!-- @anchor review-kernel-preflight-outcomes -->
+Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または necessity failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。
+<!-- @/contract -->
+
+<!-- @contract deferred-freeze -->
+### deferred-freeze
+
+<!-- @anchor deferred-freeze-trigger -->
+Trigger: 親が finding を `deferred` と裁定済みで、その凍結結果を次 round へ反映するよう要求したとき。
+<!-- @anchor deferred-freeze-inputs -->
+Inputs: 親の `deferred` 裁定、finding ID / evidence / 理由、current `finding_ledger`、`hold_ledger`、次 round の input と snapshot、review context。
+<!-- @anchor deferred-freeze-procedure -->
+Procedure: `deferred` finding を `hold_ledger` に記録し、次 round の input へ台帳を渡し、reviewer へ根拠のない再指摘・深掘りを抑制する。新しい根拠のない再指摘は既存保留へ紐付け、保留事項を根拠に追加仕様や例外処理を派生させない。finding の `deferred` 裁定自体はこの Flow で行わない。
+<!-- @anchor deferred-freeze-outcomes -->
+Outcomes: 次 round input と再指摘抑制を含む `deferred-frozen` Data。loop 後の保留事項の扱いと追加 Action は親または人間へ返す。
+<!-- @/contract -->
+
+<!-- @contract induced-loop-eligibility -->
+### induced-loop-eligibility
+
+<!-- @anchor induced-loop-eligibility-trigger -->
+Trigger: 親が通常 round の因果、severity、件数、直近2回の `plan-adversarial-reviewer` round Data を確定し、induced-loop eligibility の固定計算を要求したとき。
+<!-- @anchor induced-loop-eligibility-inputs -->
+Inputs: 全 finding ledger、親確定の `induced` / `induced_by` 因果 Data、`軽微` / `修正推奨` / `修正必須` の severity、親の裁定、各通常 round の induced / non-induced 件数、直近2回の `plan-adversarial-reviewer` round identity、および final trim / 他 reviewer を除外する識別 Data。
+<!-- @anchor induced-loop-eligibility-procedure -->
+Procedure: 親が `修正推奨` 以上と確定した finding だけを母数に induced count と non-induced count を計算し、induced count が non-induced count を上回る round だけを `induced_dominant` とする。母数が空の round、ちょうど半数、final trim、同じ round の他 reviewer は成立させない。直近2回の通常 round がともに `induced_dominant` で、両 round とも非誘発の `修正必須` が 0 のときだけ `eligible`、それ以外は `not-eligible` とする。旧基準状態を窓の開始位置にせず、因果と severity の意味は再判定しない。
+<!-- @anchor induced-loop-eligibility-outcomes -->
+Outcomes: `eligible` または `not-eligible` と計算 evidence。induced / severity の意味、eligible 後の停止選択、親の裁定は Flow 外の親へ返す。
+<!-- @/contract -->
+
+<!-- @contract round-limit-termination -->
+### round-limit-termination
+
+<!-- @anchor round-limit-termination-trigger -->
+Trigger: 親が `adversarial_review_count` と parent-fixed `rounds.limit` の到達を確定し、打ち切り routing を要求したとき。
+<!-- @anchor round-limit-termination-inputs -->
+Inputs: parent-fixed `rounds.limit`、`adversarial_review_count`、current verified snapshot、finding ledger、未解決 finding 集合。
+<!-- @anchor round-limit-termination-procedure -->
+Procedure: `rounds.limit` 到達時だけ未解決 finding 集合を評価し、空なら `converged`、残存があれば `round-limit` とする。limit 前の continue / converged 判断はこの Flow で行わない。
+<!-- @anchor round-limit-termination-outcomes -->
+Outcomes: `converged` または未解決 finding を保持した `round-limit`。round の継続、通常の converged 判断、termination の意味は Flow 外の親へ返す。
+<!-- @/contract -->
+
+<!-- @contract final-trim-count-and-routing -->
+### final-trim-count-and-routing
+
+<!-- @anchor final-trim-count-and-routing-trigger -->
+Trigger: 親が termination、未解決 finding、artifact kind、over-engineering settings を確定し、final trim の routing を要求したとき。
+<!-- @anchor final-trim-count-and-routing-inputs -->
+Inputs: `termination`、未解決 finding 集合、`artifact_kind`、`over_engineering_review` の `threshold` / `base_rounds` / `escalated_rounds`、`adversarial_review_count`、および親確定の trim applicability Data。
+<!-- @anchor final-trim-count-and-routing-procedure -->
+Procedure: 省略時の settings は `threshold: 5`、`base_rounds: 1`、`escalated_rounds: 3` とし、部分上書きを許す。settings を `threshold >= 0`、`base_rounds >= 1`、`escalated_rounds >= base_rounds` で検証し、不正値は `input-error` とする。`termination` が `converged` または `induced-loop`、未解決 finding が空、かつ artifact が適用対象のプラン系である場合だけ eligible とし、回数を `adversarial_review_count > threshold ? escalated_rounds : base_rounds` で計算する。それ以外は `skip` とする。
+<!-- @anchor final-trim-count-and-routing-outcomes -->
+Outcomes: trim count を含む `eligible`、`skip`、または settings validation の `input-error`。trim finding の採否、削減内容、rejected への戻し、後続 Action は Flow 外の親へ返す。
+<!-- @/contract -->
+
 <!-- @contract review-refine-kernel-parent-mapping -->
 ## necessity-kernel v1 の parent mapping
 
@@ -105,10 +178,11 @@ owner = review-refine parent
 delegate_path_resolution = false
 ```
 
-reviewer 起動または parent 裁定の前に、親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。検証済み本文を既存の `判定基準` または
+loader の timing、failure、owner、delegate_path_resolution、および検証済み本文の注入先は
+`review-kernel-preflight` Flow が唯一の手続き正本として扱う。`plan-adversarial-reviewer` または final trim の
+`over-engineering-reviewer` 起動時は、Flow が返した検証済み Data を既存の判定基準へ渡す。
+
 <!-- @anchor review-refine-kernel-criteria -->
-`必要な周辺 context` の一部にする。`plan-adversarial-reviewer` または final trim の `over-engineering-reviewer` 起動時は既取得 Data を既存の判定基準として渡す。
-owner / delegate_path_resolution の境界を維持する。
 
 reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
 場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
@@ -145,8 +219,8 @@ owner = review-refine parent
 delegate_path_resolution = false
 ```
 
-親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
-owner / delegate_path_resolution の境界を維持する。
+上記 Loader Data の timing、failure、owner、delegate_path_resolution、および role mapping への注入は
+`review-kernel-preflight` Flow に委譲する。owner / delegate_path_resolution の境界は親が保持する。
 
 次の role Data が列挙値の唯一の正本である。
 
@@ -249,13 +323,8 @@ finding ごとに `id`、発行元、対象 snapshot、evidence、影響する A
 
 ### `deferred` の凍結
 
-`deferred` は loop 中に次の規則で凍結する。
-
-1. `hold_ledger` へ記録する。
-2. 次 round の入力へ台帳を渡す。
-3. reviewer へ再指摘・深掘りを抑制するよう明示する。新しい根拠なしの再指摘は既存保留へ紐付ける。
-4. 保留事項を根拠に追加仕様や例外処理を派生させない。
-5. loop 後の扱いは親または人間が別途決める。
+親が `deferred` と裁定した finding の凍結反映は `deferred-freeze` Flow が担う。親は裁定、evidence、理由、
+loop 後に残す意味判断を保持し、Flow はその確定 Data の ledger 反映だけを行う。
 
 ## 打ち切りと収束
 
@@ -263,6 +332,9 @@ finding ごとに `id`、発行元、対象 snapshot、evidence、影響する A
 round 上限を宣言し、具体的な未解決 risk と期待する新しい evidence を説明できる間だけ continue する。
 固定 round、0 findings、reviewer の Pass、上限の消化だけを受け入れ根拠にしない。上限到達時は必ず
 `termination` を確定する。
+
+上限到達時の未解決 finding の空 / 残存による `converged` / `round-limit` routing は
+`round-limit-termination` Flow に委譲する。limit 前の continue と通常の converged 判断は親が保持する。
 
 <!-- @contract review-refine-induced-brake -->
 
@@ -275,11 +347,9 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 
 旧基準状態を成立条件や窓の開始位置として保存・参照せず、各通常 round の観測から判定する。
 
-各通常 round で、親確定の `修正推奨` 以上だけを対象に、誘発 finding の数が非誘発 finding の数を上回るかを
-`induced_dominant` として記録する（母数が空の round は成立しない）。同じ判定を直近の `plan-adversarial-reviewer`
-通常 round 2 回で連続して満たし、両 round とも非誘発の `修正必須` が 0 の場合だけ、`induced-loop` を補助的な
-早期打ち切りとして選べる。ちょうど半数は支配的とみなさない。1 round だけの成立では打ち切らない。final trim
-や同じ round の他 reviewer の finding は判定対象に入れない。
+`修正推奨` 以上の母数、直近2回の通常 round、severity、誘発 / 非誘発の件数から eligibility を計算する手順は
+`induced-loop-eligibility` Flow に集約する。親は因果と severity の意味を確定し、Flow の結果を受けて停止選択を行う。
+「各通常 round で、親確定の `修正推奨` 以上」を対象にし、「通常 round 2 回で連続して」判定し、「両 round とも非誘発の `修正必須` が 0」であることは、この Flow へ渡す親確定 Data の境界である。
 
 `induced-loop` は自己誘発 churn に対する補助ブレーキであり、`converged` / `round-limit` の定義や必要な親裁定を
 置き換えない。打ち切り round の採用 finding は反映し、全 finding の裁定と因果 evidence を記録して裁定未記録を
@@ -289,23 +359,13 @@ round 上限を宣言し、具体的な未解決 risk と期待する新しい e
 
 ## final trim
 
-accept-candidate（`converged` または `induced-loop`）で未解決 finding が空の場合だけ、適用対象のプラン系
-成果物へ final trim を行う。非適用成果物は trim を省略した事実と理由を出力する。trim は通常 loop へ戻らず、
+`final-trim-count-and-routing` Flow が `termination`、未解決 finding、artifact kind、settings から eligibility、
+skip、input-error、trim 回数を確定する。eligible のときだけ適用対象のプラン系成果物へ final trim を行い、
+非適用成果物は trim を省略した事実と理由を出力する。trim は通常 loop へ戻らず、
 各回を新しい snapshot へ順に適用する。削減後の verification が失敗した場合は、新しい設計を足さず、該当
 削減 finding の裁定を原則 `adopted` から `rejected` へ戻す。`human-confirmation` が必要な trim finding は `out-of-scope` として渡す。
 trim の finding もその場で5値へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
 残存する過剰の順を推奨観点とし、回数を上書きした場合の観点は親が決める。
-
-回数は次で決める。
-
-```text
-over_engineering_review_count =
-  adversarial_review_count > threshold ? escalated_rounds : base_rounds
-```
-
-既定値は `threshold: 5`、`base_rounds: 1`、`escalated_rounds: 3`（`>` なので 6 round 目から 3 回）。各値は
-部分上書きを許し、validation は `threshold >= 0`、`base_rounds >= 1`、`escalated_rounds >= base_rounds`。
-不正値は補正せず入力エラーとして返す。
 
 ## 出力と終了値
 

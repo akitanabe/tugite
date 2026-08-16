@@ -1550,3 +1550,219 @@ kind = "order"
 before = "review-dispatch-procedure"
 after = "review-dispatch-outcomes"
 applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: review-refine keeps reviewer findings and semantic adjudication with the parent; these blocks only route fixed Data.
+[contracts.review-refine-programmatic-boundary-794c4fca3145]
+kind = "requires"
+slice = "review-refine-programmatic-flows"
+pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-kernel-preflight-flow-bbbc01a4b407]
+kind = "requires"
+slice = "review-kernel-preflight"
+pattern = '''Trigger: 親が reviewer invocation、parent adjudication、または最初の Resolution Transaction の各 timing に向けて kernel preflight を要求したとき。
+Inputs: `necessity-kernel-v1` と `batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
+Procedure: `necessity-kernel-v1` は reviewer invocation または parent adjudication の直前に、`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に、それぞれ一度だけ load と identity / 必要本文を検証する。necessity の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、necessity failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
+Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または necessity failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-deferred-freeze-flow-5129b54f4308]
+kind = "requires"
+slice = "deferred-freeze"
+pattern = '''Trigger: 親が finding を `deferred` と裁定済みで、その凍結結果を次 round へ反映するよう要求したとき。
+Inputs: 親の `deferred` 裁定、finding ID / evidence / 理由、current `finding_ledger`、`hold_ledger`、次 round の input と snapshot、review context。
+Procedure: `deferred` finding を `hold_ledger` に記録し、次 round の input へ台帳を渡し、reviewer へ根拠のない再指摘・深掘りを抑制する。新しい根拠のない再指摘は既存保留へ紐付け、保留事項を根拠に追加仕様や例外処理を派生させない。finding の `deferred` 裁定自体はこの Flow で行わない。
+Outcomes: 次 round input と再指摘抑制を含む `deferred-frozen` Data。loop 後の保留事項の扱いと追加 Action は親または人間へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-induced-loop-eligibility-flow-bf83dc29d0dd]
+kind = "requires"
+slice = "induced-loop-eligibility"
+pattern = '''Trigger: 親が通常 round の因果、severity、件数、直近2回の `plan-adversarial-reviewer` round Data を確定し、induced-loop eligibility の固定計算を要求したとき。
+Inputs: 全 finding ledger、親確定の `induced` / `induced_by` 因果 Data、`軽微` / `修正推奨` / `修正必須` の severity、親の裁定、各通常 round の induced / non-induced 件数、直近2回の `plan-adversarial-reviewer` round identity、および final trim / 他 reviewer を除外する識別 Data。
+Procedure: 親が `修正推奨` 以上と確定した finding だけを母数に induced count と non-induced count を計算し、induced count が non-induced count を上回る round だけを `induced_dominant` とする。母数が空の round、ちょうど半数、final trim、同じ round の他 reviewer は成立させない。直近2回の通常 round がともに `induced_dominant` で、両 round とも非誘発の `修正必須` が 0 のときだけ `eligible`、それ以外は `not-eligible` とする。旧基準状態を窓の開始位置にせず、因果と severity の意味は再判定しない。
+Outcomes: `eligible` または `not-eligible` と計算 evidence。induced / severity の意味、eligible 後の停止選択、親の裁定は Flow 外の親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-round-limit-termination-flow-4163060a87d8]
+kind = "requires"
+slice = "round-limit-termination"
+pattern = '''Trigger: 親が `adversarial_review_count` と parent-fixed `rounds.limit` の到達を確定し、打ち切り routing を要求したとき。
+Inputs: parent-fixed `rounds.limit`、`adversarial_review_count`、current verified snapshot、finding ledger、未解決 finding 集合。
+Procedure: `rounds.limit` 到達時だけ未解決 finding 集合を評価し、空なら `converged`、残存があれば `round-limit` とする。limit 前の continue / converged 判断はこの Flow で行わない。
+Outcomes: `converged` または未解決 finding を保持した `round-limit`。round の継続、通常の converged 判断、termination の意味は Flow 外の親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-count-routing-flow-e6b53d9ad316]
+kind = "requires"
+slice = "final-trim-count-and-routing"
+pattern = '''Trigger: 親が termination、未解決 finding、artifact kind、over-engineering settings を確定し、final trim の routing を要求したとき。
+Inputs: `termination`、未解決 finding 集合、`artifact_kind`、`over_engineering_review` の `threshold` / `base_rounds` / `escalated_rounds`、`adversarial_review_count`、および親確定の trim applicability Data。
+Procedure: 省略時の settings は `threshold: 5`、`base_rounds: 1`、`escalated_rounds: 3` とし、部分上書きを許す。settings を `threshold >= 0`、`base_rounds >= 1`、`escalated_rounds >= base_rounds` で検証し、不正値は `input-error` とする。`termination` が `converged` または `induced-loop`、未解決 finding が空、かつ artifact が適用対象のプラン系である場合だけ eligible とし、回数を `adversarial_review_count > threshold ? escalated_rounds : base_rounds` で計算する。それ以外は `skip` とする。
+Outcomes: trim count を含む `eligible`、`skip`、または settings validation の `input-error`。trim finding の採否、削減内容、rejected への戻し、後続 Action は Flow 外の親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-flow-section-occurrences]
+kind = "occurrences"
+pattern = "## Programmatic Flows"
+count = 1
+paths = [
+  "plugins/claude/skills/review-refine/SKILL.md",
+  "plugins/codex/skills/review-refine/SKILL.md",
+  "plugins/cursor/skills/review-refine/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-flow-trigger-occurrences]
+kind = "occurrences"
+pattern = "Trigger:"
+count = 5
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-flow-inputs-occurrences]
+kind = "occurrences"
+pattern = "Inputs:"
+count = 5
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-flow-procedure-occurrences]
+kind = "occurrences"
+pattern = "Procedure:"
+count = 5
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-flow-outcomes-occurrences]
+kind = "occurrences"
+pattern = "Outcomes:"
+count = 5
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-kernel-preflight-flow-occurrences]
+kind = "occurrences"
+pattern = "### review-kernel-preflight"
+count = 1
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-deferred-freeze-flow-occurrences]
+kind = "occurrences"
+pattern = "### deferred-freeze"
+count = 1
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-induced-loop-flow-occurrences]
+kind = "occurrences"
+pattern = "### induced-loop-eligibility"
+count = 1
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-round-limit-flow-occurrences]
+kind = "occurrences"
+pattern = "### round-limit-termination"
+count = 1
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-flow-occurrences]
+kind = "occurrences"
+pattern = "### final-trim-count-and-routing"
+count = 1
+paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-kernel-preflight-field-order]
+kind = "order"
+before = "review-kernel-preflight-trigger"
+after = "review-kernel-preflight-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-kernel-preflight-inputs-before-procedure]
+kind = "order"
+before = "review-kernel-preflight-inputs"
+after = "review-kernel-preflight-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-kernel-preflight-procedure-before-outcomes]
+kind = "order"
+before = "review-kernel-preflight-procedure"
+after = "review-kernel-preflight-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-deferred-freeze-field-order]
+kind = "order"
+before = "deferred-freeze-trigger"
+after = "deferred-freeze-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-deferred-freeze-inputs-before-procedure]
+kind = "order"
+before = "deferred-freeze-inputs"
+after = "deferred-freeze-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-deferred-freeze-procedure-before-outcomes]
+kind = "order"
+before = "deferred-freeze-procedure"
+after = "deferred-freeze-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-induced-loop-field-order]
+kind = "order"
+before = "induced-loop-eligibility-trigger"
+after = "induced-loop-eligibility-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-induced-loop-inputs-before-procedure]
+kind = "order"
+before = "induced-loop-eligibility-inputs"
+after = "induced-loop-eligibility-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-induced-loop-procedure-before-outcomes]
+kind = "order"
+before = "induced-loop-eligibility-procedure"
+after = "induced-loop-eligibility-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-round-limit-field-order]
+kind = "order"
+before = "round-limit-termination-trigger"
+after = "round-limit-termination-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-round-limit-inputs-before-procedure]
+kind = "order"
+before = "round-limit-termination-inputs"
+after = "round-limit-termination-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-round-limit-procedure-before-outcomes]
+kind = "order"
+before = "round-limit-termination-procedure"
+after = "round-limit-termination-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-field-order]
+kind = "order"
+before = "final-trim-count-and-routing-trigger"
+after = "final-trim-count-and-routing-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-inputs-before-procedure]
+kind = "order"
+before = "final-trim-count-and-routing-inputs"
+after = "final-trim-count-and-routing-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-procedure-before-outcomes]
+kind = "order"
+before = "final-trim-count-and-routing-procedure"
+after = "final-trim-count-and-routing-outcomes"
+applies_to = ["claude", "codex", "cursor"]
