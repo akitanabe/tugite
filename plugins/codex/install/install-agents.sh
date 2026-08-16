@@ -82,6 +82,7 @@ required_agents=(
   plan-adversarial-reviewer.toml
   plan-quality-advisor.toml
   security-side-effect-reviewer.toml
+  static-performance-reviewer.toml
 )
 retired_agents=(
   expert-selection-reviewer.toml
@@ -199,6 +200,7 @@ Installed agents:
   plan-adversarial-reviewer
   plan-quality-advisor
   security-side-effect-reviewer
+  static-performance-reviewer
 
 IMPORTANT:
   Restart the Codex session before using these custom agents.

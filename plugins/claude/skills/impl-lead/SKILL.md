@@ -236,6 +236,7 @@ reviewer、目的、回数その他の制約は守る。指定 reviewer が利�
 - `test-quality-reviewer`: test 設計、欠落 case、Gunte antipattern。
 - `responsibility-boundary-reviewer`: 責務混在、境界、分散した副作用。
 - `security-side-effect-reviewer`: security、破壊的操作、外部副作用。
+- `static-performance-reviewer`: diff が発火または増幅した、静的 evidence で示せる性能・資源効率リスク。
 - `writing-principles-reviewer`: How / What / Why / Why Not の配置。
 - `over-engineering-reviewer`: 除去しても AC と制約を失わない要素。
 

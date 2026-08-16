@@ -29,6 +29,7 @@ files = [
   "shared/agents/responsibility-boundary-reviewer.md",
   "shared/agents/security-side-effect-reviewer.md",
   "shared/agents/senior-implementer.md",
+  "shared/agents/static-performance-reviewer.md",
   "shared/agents/test-quality-reviewer.md",
   "shared/agents/writing-principles-reviewer.md",
   "shared/batch-resolve-kernel.md",

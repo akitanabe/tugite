@@ -443,6 +443,69 @@ kind = "forbids"
 pattern = "plan-craft-v5"
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: these are independent static-reviewer obligations; keeping each bounded makes a missing or weakened rule observable without reimplementing the prose in a parser.
+[contracts.static-performance-context-37d640da09f3]
+kind = "requires"
+slice = "static-performance-context"
+pattern = '''diff を起点に、変更された code と、同じ target snapshot の Repository、ORM mapping、schema、index を関連する静的 context として追跡し、diff が発火または増幅したリスクだけを今回の finding にする。無関係な既存課題は「既存課題」として判定から分離する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-no-runtime-measurement-2d2aa1ea443c]
+kind = "requires"
+slice = "static-performance-no-runtime-measurement"
+pattern = '''benchmark と profiling を行わず、latency、throughput、CPU 使用率、実メモリ使用量、optimizer の選択、最適な batch size や並列数を断定しない。静的に確定できない効果や優劣は残存リスクへ分離する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-pre-verdict-98c5533b5671]
+kind = "requires"
+slice = "static-performance-pre-verdict"
+pattern = '''判定に必要な既存 handoff input が不足する場合は、推測せず、performance risk、finding、受入推奨を生成しない pre-verdict で必要な Data だけを親へ要求する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-verdict-output-52a682e41240]
+kind = "requires"
+slice = "static-performance-verdict-output"
+pattern = '''十分な input 時の completed review は、`Pass`、`Needs attention`、`Blocker` のいずれかで判定し、7 節（判定と指摘件数、性能リスク領域、指摘一覧、必須修正、残るリスクと実測依存事項、推奨対応、既存課題）で出力する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-finding-evidence-3777c6376839]
+kind = "requires"
+slice = "static-performance-finding-evidence"
+pattern = '''finding は、重要度、file:line を含む静的 evidence、リスクと成立条件または処理経路、想定される影響、根拠、最小修正方針を持つ。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-input-policy-678b6aacc342]
+kind = "requires"
+slice = "static-performance-input-policy"
+pattern = "performance 専用の必須 input は追加しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: this bounded block keeps the four performance areas and their evidence gate coherent while allowing one mutation to expose its omission.
+[contracts.static-performance-evidence-scope-92e26122142b]
+kind = "requires"
+slice = "static-performance-evidence-scope"
+pattern = '''次の領域から、入力規模、反復回数、I/O 回数、計算回数、または保持量に結び付く静的 evidence があるものを確認します。
+
+- I/O、データ取得量、反復による増幅（N+1、ループ内取得、不要な全件取得、同じ処理の反復）。
+- 計算量と不要処理（入力規模や反復に対する計算の増加、重複計算、不要な変換・走査）。
+- 資源保持（解放されない、保持期間が処理量や反復に比例して増える、同時に蓄積されるデータ）。
+- query shape、schema、index、ORM mapping の不一致が、静的な取得経路・走査・保持量の増幅を生む場合。
+
+一般的な「遅くなるかもしれない」「index が必要かもしれない」という主張だけでは finding にしません。処理経路、成立条件、増幅関係を file:line の evidence に結び付けられる場合だけ指摘します。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-hot-path-policy-f31f53ab1b45]
+kind = "requires"
+slice = "static-performance-hot-path-policy"
+pattern = "hot path は親が指定した場合だけ特別扱いします。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-risk-directed-static-performance-reviewer-a9845f86a171]
+kind = "requires"
+slice = "impl-risk-directed-static-performance-reviewer"
+pattern = "- `static-performance-reviewer`: diff が発火または増幅した、静的 evidence で示せる性能・資源効率リスク。"
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: worker write capability is one parent-owned mapping; splitting its fields could accept a partial or implicitly widened assignment.
 [contracts.writable-scope-focused-worker-mapping-requires-b460f9474f0a]
 kind = "requires"

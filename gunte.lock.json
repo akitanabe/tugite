@@ -22,6 +22,7 @@
     "shared/agents/responsibility-boundary-reviewer.md",
     "shared/agents/security-side-effect-reviewer.md",
     "shared/agents/senior-implementer.md",
+    "shared/agents/static-performance-reviewer.md",
     "shared/agents/test-quality-reviewer.md",
     "shared/agents/writing-principles-reviewer.md",
     "shared/batch-resolve-kernel.md",
@@ -105,7 +106,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "0a060ed28d8affa849021634c9d2c324497dec550db4c6194b63b48ccd22825f"
+      "sha256": "44f99ecab855b1e6726d2c27e73393946cbcad92a7a837712246321f218b29ff"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -113,7 +114,7 @@
     },
     {
       "id": "cursor-read-only-agent-shape",
-      "sha256": "8043d499c1f787c1f5fc04ef779ba9a7a6e1e12a24e2a822862bf940f57aa202"
+      "sha256": "026abe6443addea9339cd9044d09f10a3043ddca4681549c879c6b5c6692d9ea"
     },
     {
       "id": "cursor-focused-implementer-agent",
@@ -150,6 +151,10 @@
     {
       "id": "cursor-security-side-effect-reviewer-agent",
       "sha256": "2fd3a10dada54a57014a92cef32f73af0ab139c1ac8c1c5426f4bf431914ae23"
+    },
+    {
+      "id": "cursor-static-performance-reviewer-agent",
+      "sha256": "33c118581f21c93a6ede5fe1041dcea2348ae34c9aa1bb4138dd90b4fcd6e791"
     },
     {
       "id": "cursor-test-quality-reviewer-agent",
@@ -200,8 +205,12 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-version-requires-3a818e319e54",
-      "sha256": "d03196e3e6d7e1fc2f2dbbf630c26872928fdd92e3b2b8bd46e7488d5266958d"
+      "id": "cursor-readme-version-requires-b0470de1862c",
+      "sha256": "60945dc6b1da00fbb3ca91378aa6ce8f596a78fde2c21309fd41be008825e6e5"
+    },
+    {
+      "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
+      "sha256": "9eb6ebb4c76765ff57d4f647c571ee6f5f1ca613f3a04f3e40655e7a58342663"
     },
     {
       "id": "cursor-readme-generation-requires-efb6bbfae34a",
@@ -273,11 +282,11 @@
     },
     {
       "id": "read-only-agent-policy",
-      "sha256": "24e96d47297b2ba57c4674673cf95273bdbc270e750bdeb60eb69efbd867fb02"
+      "sha256": "eb4ba00f16362290cf3bcbeabb95da25bb775c393f225e9fd4068bac001b13a0"
     },
     {
       "id": "read-only-agent-with-bash-policy",
-      "sha256": "23b6622153fc4bef413daf32270cde70fc869268aea62d7502eba6404d6ed3ca"
+      "sha256": "84767e1319ddfc139e31cee84ef71d0a9eee385779bc013d696bf04b19a4c6c5"
     },
     {
       "id": "read-only-agent-without-bash-policy",
@@ -594,6 +603,42 @@
     {
       "id": "no-plan-craft-v5-skill",
       "sha256": "cfd6ad009ce496c17ee8d43f4777e9d6f327adcd7668cba4fa4ec53c7e2fef1c"
+    },
+    {
+      "id": "static-performance-context-37d640da09f3",
+      "sha256": "cd872dc2aaa07d59f6b389dcfba907b7d17117f0a5ca1f8b79e7d304e31e7c8f"
+    },
+    {
+      "id": "static-performance-no-runtime-measurement-2d2aa1ea443c",
+      "sha256": "88d4d0065f75d1f72ec838ca6c5eaa6e1a17233959b86165887c4a5f2604a2f3"
+    },
+    {
+      "id": "static-performance-pre-verdict-98c5533b5671",
+      "sha256": "b1338df7e5ceb191f3f00fcc1c64cefd88e99641cc321aa24362069e6d78dddd"
+    },
+    {
+      "id": "static-performance-verdict-output-52a682e41240",
+      "sha256": "e511fde49ee5069b019ee7d79ea6c02bdccf9f807189cc0cb1b9f1551d35f04e"
+    },
+    {
+      "id": "static-performance-finding-evidence-3777c6376839",
+      "sha256": "0f55f1119f9f37989b3c96f763960ede02f16231b6bc24a17f20fe171b2214a6"
+    },
+    {
+      "id": "static-performance-input-policy-678b6aacc342",
+      "sha256": "e1367854a9e47293ad5a00c1c890c934f8ba49727076d152bafb7e42b86cae3b"
+    },
+    {
+      "id": "static-performance-evidence-scope-92e26122142b",
+      "sha256": "59125566fab0512f573886c45f33f5a8df2ca212327beba6d9e983170169c7b7"
+    },
+    {
+      "id": "static-performance-hot-path-policy-f31f53ab1b45",
+      "sha256": "6ec7c6fe111e81729b14e8c341a7091a23655ec511f601e15bb5d15d0ee40d7f"
+    },
+    {
+      "id": "impl-risk-directed-static-performance-reviewer-a9845f86a171",
+      "sha256": "34236b0269cdee2ff0bf382593acade7f55888ee872b1535eb5b75adaa924eff"
     },
     {
       "id": "writable-scope-focused-worker-mapping-requires-b460f9474f0a",
@@ -2580,6 +2625,46 @@
     },
     {
       "kind": "span",
+      "id": "static-performance-input-policy",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-context",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-pre-verdict",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-evidence-scope",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-no-runtime-measurement",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-hot-path-policy",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-verdict-output",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "static-performance-finding-evidence",
+      "path": "shared/agents/static-performance-reviewer.md"
+    },
+    {
+      "kind": "span",
       "id": "test-quality-general-scope",
       "path": "shared/agents/test-quality-reviewer.md"
     },
@@ -2651,6 +2736,11 @@
     {
       "kind": "anchor",
       "id": "impl-risk-selection-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-directed-static-performance-reviewer",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -3086,6 +3176,11 @@
     {
       "kind": "span",
       "id": "cursor-readme-version",
+      "path": "README.md"
+    },
+    {
+      "kind": "span",
+      "id": "readme-risk-directed-static-performance-reviewer",
       "path": "README.md"
     },
     {

@@ -1,6 +1,6 @@
 <!-- Generated from README.md. Do not edit directly. -->
 
-# Tugite v5.20.0
+# Tugite v5.21.0
 
 Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
@@ -23,7 +23,7 @@ Tugite は Claude Code、Codex、Cursor のための v5 実装ワークフロー
 
 Work Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
-リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。
+リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。
 
 Plan の品質について読み取り専用で助言する advisor は `plan-quality-advisor` です。reviewer と advisor は判断材料を返し、最終受け入れは親エージェントが行います。
 
