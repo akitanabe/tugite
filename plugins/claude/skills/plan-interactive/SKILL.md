@@ -36,6 +36,8 @@ disable-model-invocation: true
 application = public clarify-it in the same plan-interactive parent context
 dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
 caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
+presentation_policy = inherit clarify-it-decision-context presentation policy without copying or override
+caller_projection = preserve internal vocabulary in caller/projection Data; apply inherited policy to Human-facing utterances
 public_extension = none
 ```
 
