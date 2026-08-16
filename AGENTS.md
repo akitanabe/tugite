@@ -122,6 +122,14 @@ programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte pr
 implementation_policy = "programmable does not imply immediate mechanization"
 autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
 gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"
+programmatic_flow = "local deterministic procedure inside an Agentic workflow"
+programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
+programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
+programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
+programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
+programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "work-unit-design"]
+sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
 
 deterministic rule は意味の正本と assurance plane を明確にし、未機械化なら owner Action、必要入力、利用可能な

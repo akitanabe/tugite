@@ -36,7 +36,7 @@ pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
-[contracts.repository-programmability-boundary-741fb56d8714]
+[contracts.repository-programmability-boundary-be45bf583027]
 kind = "requires"
 slice = "repository-programmability-boundary"
 pattern = '''policy_id = "programmability-boundary-v1"
@@ -45,8 +45,32 @@ rule_source = "current workflow source owns meaning; point-in-time audit is evid
 programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte predicate/contract", "natural-language Contract"]
 implementation_policy = "programmable does not imply immediate mechanization"
 autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
-gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"'''
+gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"
+programmatic_flow = "local deterministic procedure inside an Agentic workflow"
+programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
+programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
+programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
+programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
+programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "work-unit-design"]
+sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"'''
 applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.programmatic-flow-section-excluded]
+kind = "forbids"
+pattern = "## Programmatic Flows"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/claude/skills/structural-health-gate/SKILL.md",
+  "plugins/claude/skills/work-unit-design/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/structural-health-gate/SKILL.md",
+  "plugins/codex/skills/work-unit-design/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/structural-health-gate/SKILL.md",
+  "plugins/cursor/skills/work-unit-design/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep ownership, evidence, and acceptance prohibitions in one coherent declaration; splitting them could permit cross-section false greens.
 [contracts.repository-test-qa-baseline-a0b98d2f7393]

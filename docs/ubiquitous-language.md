@@ -27,6 +27,12 @@ pattern では正式名だけを使います。
 
 - 正本: `shared/skill/work-unit-design/SKILL.md`、`shared/skill/impl-lead/SKILL.md`
 
+## Programmatic Flow
+
+Agentic workflow 内の局所的な deterministic procedure です。共通の意味と境界は
+`shared/repository-guidelines.md` の `Programmability Boundary contract`、個別の procedure は各 Skill の
+`Programmatic Flows` section を正本とします。
+
 ## Resolution Point
 
 caller が Resolution Transaction で裁定対象として供給する個々の論点です。
