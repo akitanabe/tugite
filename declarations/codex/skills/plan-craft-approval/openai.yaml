@@ -1,6 +1,0 @@
-interface:
-  display_name: "Plan Craft Approval"
-  short_description: "Draft a human-directed plan through gate and fixed review"
-  default_prompt: "Use $plan-craft-approval only when explicitly requested to draft a human-directed plan, then gate and review it without starting implementation."
-policy:
-  allow_implicit_invocation: false

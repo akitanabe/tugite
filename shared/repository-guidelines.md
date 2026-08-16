@@ -62,9 +62,9 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-craft`（実装を開始しない計画成果物）、
-`plan-craft-approval`（人間参加型の計画成果物）、`review-loop`（不変 snapshot に対する bounded review）、`clarify-it`（段階的な
-意思決定の明確化）の5つです。internal skill は `proposal`、`structural-health-gate`、`work-unit-design` の3つです。
+現行の public workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-agent`（実装を開始しない計画成果物）、
+`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`clarify-it`（段階的な
+意思決定の明確化）の5つです。internal skill は `plan-candidate-producer`、`structural-health-gate`、`work-unit-design` の3つです。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## コーディングスタイルと命名
@@ -88,13 +88,19 @@ EVAL は Human が明示したとき、または既存 EVAL 成果物の変更�
 
 ## Version 更新指針
 
-`shared/` の原稿、`gunte.toml`、`contracts/*.toml`、`declarations/`、または配布物が変わる変更では、必要な公開面を
-確認して `shared/VERSION` を更新し、`gunte emit` と `gunte check` で宣言・生成物・version を同期します。README、
-AGENTS、CLAUDE、tests、evals だけの変更では version を更新しません。
+<!-- @contract repository-version-release-entry -->
+v6 以降の version は個々の change ではなく release snapshot の属性です。通常の change、PR、main 統合では
+`shared/VERSION` を更新しません。Human が release を明示した場合だけ、恒久正本の
+`docs/version-release-policy.md` を読み、release Action を開始します。
 
-公開面（skill・agent の名前、起動方法と発火条件、保存して後から渡す artifact の形式、CLI）の呼び出しが通らなくなる
-変更は major、skill・agent・契約の追加や同一 version 内の内部契約変更は minor、契約の意味を変えないモデル/effort
-調整は patch です。旧入力を渡しても再起草などの安全な停止へ進める場合は、呼び出しが壊れていないため major とは扱いません。
+```toml
+policy_id = "version-release-policy-v1"
+applies_from = "v6.0.0"
+ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
+release_trigger = "Human が release を明示した場合だけ release Action を開始する"
+canonical_policy = "docs/version-release-policy.md"
+```
+<!-- @/contract -->
 
 ## Commit・Pull Request 指針
 
@@ -106,6 +112,39 @@ AGENTS、CLAUDE、tests、evals だけの変更では version を更新しませ
 
 完了時には変更内容、実行した検証と結果、未検証事項または残存 risk を簡潔に報告します。無関係な dirty state や
 untracked artifact は保持します。
+
+## Programmability Boundary contract
+
+<!-- @contract repository-programmability-boundary -->
+横断的な workflow rule は、明示入力から結果が一意に決まる deterministic side と、複数の受容可能な結果から
+意味や価値を判断する autonomous side に分けます。次の stable Data は分類と保証の選択境界を定めます。
+
+```toml
+policy_id = "programmability-boundary-v1"
+classifications = ["deterministic-mechanized", "deterministic-contract-only", "autonomous", "derived-duplicate"]
+rule_source = "current workflow source owns meaning; point-in-time audit is evidence only"
+programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte predicate/contract", "natural-language Contract"]
+implementation_policy = "programmable does not imply immediate mechanization"
+autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
+gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"
+programmatic_flow = "local deterministic procedure inside an Agentic workflow"
+programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
+programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
+programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
+programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
+programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "work-unit-design"]
+sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
+```
+
+deterministic rule は意味の正本と assurance plane を明確にし、未機械化なら owner Action、必要入力、利用可能な
+interception point、現在の非機械保証理由、延期または不能の理由、自然言語の正本を維持します。programmable で
+あることは即時の機械化義務を意味しません。direct / delegate、worker / reviewer の選択、finding の意味的な採否、
+実装 approach、risk 評価など autonomous side の特定結果を expected-output oracle で唯一の正解に固定しません。
+必要な反復は consumer と、重複を除いた後も obligation を担う remaining witness を追跡し、独立した意味の正本にしません。
+Gunte predicate の成功が保証するのは policy identity、required fields、その coherent relation までです。runtime の意味遵守や
+autonomous outcome oracle の不存在を保証したとは扱いません。
+<!-- @/contract -->
 
 ## Test QA baseline contract
 

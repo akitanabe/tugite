@@ -7,7 +7,7 @@ Kernel dependencies: `none`.
 
 ## 適用範囲
 
-この v1 の caller は `proposal` と `plan-craft-approval` の2つに限定する。caller 固有 mapping は各 caller Skill が所有し、この Kernel は caller role mapping を複製しない。
+この v1 の caller は `plan-candidate-producer` と `plan-interactive` の2つに限定する。caller 固有 mapping は各 caller Skill が所有し、この Kernel は caller role mapping を複製しない。
 共通 `resolve` Skill の新設と、他 workflow への適用は対象外である。
 
 ## 規範の責務

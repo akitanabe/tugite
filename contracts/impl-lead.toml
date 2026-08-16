@@ -1,8 +1,133 @@
-[contracts.work-unit-design-internal-guard-requires-8bf50de960dc]
+[contracts.work-unit-design-internal-guard-requires-67dbee9ac922]
 kind = "requires"
 slice = "work-unit-design-internal-guard"
-pattern = '''ユーザーの直接要求、通常会話、`plan-craft` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
+pattern = '''ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
 非自明な `impl-lead` の工程としてだけ使う。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-work-unit-data-fields-aca91ed1f266]
+kind = "requires"
+slice = "impl-work-unit-data-canonical"
+pattern = '''Work Unit Data の意味と field の唯一の正本はこの section である。各単位は次の Data を持つ。
+
+- `id`: run 内で一意な識別子。
+- `purpose`: 単一の目的。
+- `acceptance_criteria`: 外部から観測可能で検証可能な Acceptance Criteria。これは候補条件であり、accept の確定ではない。
+- `scope`: `change`（変更を許す範囲）と `exclude`（変更しない範囲）。
+- `implementation_freedom`: worker に任せてよい局所判断。なければ空。
+- `constraints`: ユーザー指定、互換性、依存、実行環境その他の制約。
+- `depends_on`: Work Unit ID 間の semantic dependency と、外部・repository・environment の precondition を分けた記述。同じ file、writer、generated output、generator、contract registry、Gunte gate、verification surface の共有だけでは semantic dependency または Work Unit 統合の根拠にならず、execution conflict として扱う。
+- `verification`: AC ごとの native test、focused test、必要な最終 gate。
+
+Work Unit Data は上記 canonical field だけを表す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-data-consumer-5e12b5ed0407]
+kind = "requires"
+slice = "work-unit-design-work-unit-data-consumer"
+pattern = "各 `work_units` 要素は、`impl-lead` の `Intake and Work Unit normalization` が定める canonical Work Unit Data に適合させる。field の意味や一覧はここで再定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.final-writing-work-unit-consumer-b34e9edbbc2b]
+kind = "requires"
+slice = "final-writing-remediation"
+pattern = "条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化し、`impl-lead` の `Intake and Work Unit normalization` が定める canonical Work Unit Data に適合させる。field の意味や一覧はここで再定義しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-programmatic-flow-boundary-4b885c8d6556]
+kind = "requires"
+slice = "impl-programmatic-flows"
+pattern = '''Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。Flow が blocked を返した場合は突破せず、outcome の後に複数の妥当な Action が残る意味判断は Agentic な親責務へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-dependency-dispatch-flow-137dd3030b98]
+kind = "requires"
+slice = "impl-programmatic-flow-dependency-dispatch-guard"
+pattern = '''Trigger: 親が Work Unit、依存、precondition の意味を確定し、dispatch 可否の固定判定を要求したとき。
+Inputs: run 内 ID の存在と cycle の解消結果、依存先の acceptance、外部・repository・environment precondition の観測値と成立条件・安定性・pin、現在の `base_snapshot`、dispatch 直前に更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data。
+Procedure: dependency、precondition、protected drift の既存 guard 群に新しい意味順序を付けず全件を評価し、全 guard 成立時だけ `dispatch-ready` とする。いずれかの failure、観測不能、または drift は `blocked` とし、Action を実行しない。
+Outcomes: `dispatch-ready`、または `blocked` と failure Data。`blocked` は突破せず、再正規化、確認、`stop-incomplete` の選択を Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-creation-flow-202829da54ed]
+kind = "requires"
+slice = "impl-programmatic-flow-run-owned-checkout-creation"
+pattern = '''Trigger: 親が default run-owned checkout を確定し、その Creation Action の直前に到達したとき。
+Inputs: 親が確定した `base_snapshot` と isolation、検証済み `impl-run-owned-lifecycle-loader` Data、identity と必要 section を検証した reference 本文。
+Procedure: `references/run-owned-lifecycle.md` の `Creation` だけを procedure の唯一の正本として実行・照合する。作成不能時に current checkout へ fallback しない。
+Outcomes: 作成・照合済み run-owned checkout Data、または `blocked`。`blocked` は突破せず、次の妥当な Action の選択は Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-explicit-route-flow-c055902470a0]
+kind = "requires"
+slice = "impl-programmatic-flow-explicit-route-constraint"
+pattern = '''Trigger: 親がユーザー指定の route execution constraint の有無と内容を確定したとき。
+Inputs: direct / 委譲、指定 worker、isolation、order、parallel の禁止または要求、および constraint conflict の確定 Data。
+Procedure: 明示 constraint が一貫していればそのまま route Data に写像し、conflict は `blocked` とする。明示 constraint がなければ route または worker を選択しない。
+Outcomes: 明示指定どおりの route Data、`blocked`、または `agentic-selection-required`。後二者を突破せず、制約確認または自律的 route / worker 選択を Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-writable-scope-handoff-flow-3e2117670176]
+kind = "requires"
+slice = "impl-programmatic-flow-writable-scope-handoff"
+pattern = '''Trigger: 親が write-capable Worker route と isolation を確定し、handoff の直前に到達したとき。
+Inputs: 検証済み `writable-scope-kernel-v1` identity と必要本文、親が path 解決した明示 `assigned_writable_scopes`、Work Unit Data、execution constraint。
+Procedure: writable scope Kernel だけを scope assignment procedure の唯一の正本として、Kernel 本文と assignment を handoff へ注入する。loader、identity、必要 section、assignment の不足・不正・不明では handoff を作らない。
+Outcomes: write boundary を備えた handoff、または no-write の `blocked`。scope 変更や追加領域は Agentic な親の明示 handoff update へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-work-unit-continuation-flow-cf64513488d1]
+kind = "requires"
+slice = "impl-programmatic-flow-work-unit-continuation-routing"
+pattern = '''Trigger: 親が返却結果に追加作業が必要と確定し、変更の意味分類を完了したとき。
+Inputs: 同じ ID の AC・scope・責任境界・依存が不変な限定修正、または意味変更・accepted 単位の変更という親の分類、旧 ID / context、依存 edge。
+Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は新しい ID / fresh context へ送る。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
+Outcomes: `same-context-continuation`、`new-id-fresh-context`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-parallel-integration-flow-9799ff405418]
+kind = "requires"
+slice = "impl-programmatic-flow-parallel-candidate-integration"
+pattern = '''Trigger: 親が parallel eligibility と適用順不変を確定した batch の候補が返却されたとき。
+Inputs: 親が固定した候補順、最後の Green な run baseline、各候補の diff・AC・scope・precondition・dirty state・side effect・native verification Data。
+Procedure: 最後の Green な baseline へ候補を一件ずつ統合・検証し、Green の候補だけを accept する。failure は accept せず最後の Green へ rollback・再検証し、戻せなければ `blocked` とする。最後の候補の統合 verification を `final combined verification` とし、別の combined gate を重ねない。
+Outcomes: accepted 候補を含む latest Green baseline と final combined verification Data、または rollback 済み / rollback 不能の `blocked`。hidden dependency の扱いは Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-final-writing-invocation-flow-4950dc750094]
+kind = "requires"
+slice = "impl-programmatic-flow-final-writing-gate-invocation"
+pattern = '''Trigger: 全 Work Unit が accept 候補で、親 QA が Green、risk-directed finding の処理が完了したと親が確定し、run accept 直前に到達したとき。
+Inputs: 検証済み `impl-final-writing-loader` Data、identity と必要 section を検証した reference 本文、親が固定した target snapshot と self-contained handoff Data。
+Procedure: `references/final-writing-gate.md` の `Final writing acceptance gate` だけを invocation procedure の唯一の正本として、有効な read-only gate を一回実施する。省略、既実施 review での代替、writer との重複をしない。
+Outcomes: snapshot に結び付いた有効な reviewer result Data、または `blocked`。loader / invocation failure は突破せず `stop-incomplete` へ送る。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-final-writing-result-flow-bf37b395ce03]
+kind = "requires"
+slice = "impl-programmatic-flow-final-writing-result-routing"
+pattern = '''Trigger: final writing gate の reviewer result が親へ返却されたとき。
+Inputs: target snapshot と照合済み result、finding Data の有無、検証済み `impl-final-writing-loader` Data と reference 本文。
+Procedure: `references/final-writing-gate.md` の `Final writing findings and remediation` だけを result routing procedure の唯一の正本として、result を no-finding、parent-adjudication-required、invalid / incomplete に振り分ける。finding の意味的な採否を Flow 内で決めない。
+Outcomes: `gate-complete`、`parent-adjudication-required`、または `blocked`。後続 remediation の eligibility、risk、採否は Agentic な親へ返し、invalid / incomplete は `stop-incomplete` へ送る。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-external-retry-flow-b643496ce5e4]
+kind = "requires"
+slice = "impl-programmatic-flow-external-side-effect-retry"
+pattern = '''Trigger: 外部 Action の partial failure または context loss 後に、親が retry 可否の固定判定を要求したとき。
+Inputs: fresh context で再観測した resource / result identity、`未実行` / `実行済み` / `結果不明`、idempotency、照合方法、authorization、compensation / rollback、親が確定した safe-retry eligibility。
+Procedure: `結果不明` または安全な照合不能なら retry せず `blocked` とする。`未実行` かつ safe-retry eligibility 成立時だけ一回再実行して結果を照合し、`実行済み` は再実行しない。
+Outcomes: 照合済み `実行済み` Data、または `blocked`。unknown result を blind retry せず、補償、確認、`stop-incomplete` の意味判断は Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-run-owned-closeout-flow-371a8d5b86e4]
+kind = "requires"
+slice = "impl-programmatic-flow-run-owned-closeout"
+pattern = '''Trigger: run-owned checkout を作成した run で、親が final verification と必要な外部副作用照合を完了し closeout 可否判定へ到達したとき。
+Inputs: 検証済み `impl-run-owned-lifecycle-loader` Data と reference 本文、親が観測した成果の永続化、resource identity、tracked state、collision、writer / reviewer 終了 Data。
+Procedure: `references/run-owned-lifecycle.md` の `Closeout` だけを procedure の唯一の正本とし、integration result 後の cleanup eligibility を Calculation として判定し、実際の cleanup と post-observation / 照合は Action として実行し、その観測結果を Data として返す。unsafe または unknown なら resource を保持する。
+Outcomes: 照合済み integration / cleanup Data、または resource を保持した `blocked`。`blocked` は突破せず `stop-incomplete` と残存 Action の判断を Agentic な親へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields form one relation; independent substrings would permit cross-paragraph false-green matches.
@@ -112,156 +237,6 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.final-writing-remediation-requires-eee06c10959c]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "final writing gate"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-e42ce67df1c7]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "finding Data"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-16386b8d002a]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "final remediation Work Unit"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-1427c6e2d8d0]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`id`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-fdc2dd910a99]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`purpose`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-e0b8f3da1280]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`acceptance_criteria`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-eb9427a0c278]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`scope`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-713bc1652d77]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`change`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-e112f857aa61]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`exclude`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-707fd72d5867]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`implementation_freedom`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-85cc6603429c]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`constraints`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-f8570def23d1]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`depends_on`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-98a83b1e165b]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "`verification`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-4f4b7a77910f]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "commit message"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-7cc444dea86e]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "commit range"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-37a3b059148e]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "before/after identity"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-03a22cd679b4]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "same-run accept exception"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-d7038ec015d3]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "fresh Implementer context"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-9c82051804e2]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "single writer"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-d2810238d0cf]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "mechanically restart"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-ebe4ad93229d]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "mandatory final writing review"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-requires-8d306ac884e2]
-kind = "requires"
-slice = "final-writing-remediation"
-pattern = "closeout"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-forbids-64058e423131]
-kind = "forbids"
-slice = "final-writing-remediation"
-pattern = "review-patch-refactorer"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-forbids-74690c20b98c]
-kind = "forbids"
-slice = "final-writing-remediation"
-pattern = "fixed patch agent"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.final-writing-remediation-forbids-c10af2a80131]
-kind = "forbids"
-slice = "final-writing-remediation"
-pattern = "全 finding の固定 loop"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.impl-review-principle-ceabaf730e06]
 kind = "requires"
 slice = "impl-review-principle"
@@ -324,24 +299,6 @@ transaction_closure = not Work Unit acceptance, not run acceptance
 final_writing_gate = outside mapping'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-risk-loader-before-transaction]
-kind = "order"
-before = "impl-risk-directed-batch-loader-start"
-after = "impl-risk-directed-resolution-transaction-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-risk-selection-before-loader]
-kind = "order"
-before = "impl-risk-selection-handoff-end"
-after = "impl-risk-directed-batch-loader-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-risk-loader-before-findings]
-kind = "order"
-before = "impl-risk-directed-resolution-transaction-start"
-after = "impl-review-findings-start"
-applies_to = ["claude", "codex", "cursor"]
-
 # Why Not: this canonical policy relation keeps the semantic obligation stable while leaving explanatory prose and report presentation flexible.
 [contracts.impl-final-report-quality-signal-policy-data-262fe75b0817]
 kind = "requires"
@@ -370,12 +327,6 @@ tracked_state = tracked index/worktree state identity
 noise_baseline = none for untracked / ignored'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-run-owned-start-identity-noise-6ed52e97bd1a]
-kind = "requires"
-slice = "impl-run-owned-start-identity"
-pattern = "untracked / ignored entry は identity baseline として保存しない"
-applies_to = ["claude", "codex", "cursor"]
-
 # Why Not: closeout policy is one relation so the tracked baseline, collision-free condition, operation order, and cleanup boundary cannot drift independently.
 [contracts.impl-run-owned-closeout-policy-data-df5b55afe6ed]
 kind = "requires"
@@ -396,100 +347,9 @@ cleanup = separate Calculation after integration result
 git_failure = not collision evidence'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-run-owned-closeout-preflight-data-70bf834261d5]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "invocation repository identity、worktree identity/canonical path、exact full branch"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-task-paths-6cc50a54fd8f]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "task changed paths は `invocation_start_head..task-owned tip` の tree 上の追加・変更・削除 path 集合とする。rename は source / destination、"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-collision-c8aaac33e944]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "current untracked / ignored entry と task changed paths の同一または component 単位の ancestor / descendant だけを integration collision とする。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-path-decoy-74e7af387475]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "`foo/bar` と `foo/barista` のような文字列 prefix を ancestor / descendant とはみなさない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-noise-0b38f4f73c96]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "noncollision untracked / ignored の追加・削除・内容変更は blocker と通常 result Data の入力にしない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-git-failure-04bb877747b0]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "Git operation failure を collision detector として扱わない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-cleanup-29bafbf18fbe]
-kind = "requires"
-slice = "impl-run-owned-closeout-safety"
-pattern = "cleanup は integration と分離して Calculation する。integration blocker 後も成果と evidence が worktree 外に固定され、安全条件を満たす"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-preflight-before-collision]
-kind = "order"
-before = "impl-run-owned-closeout-preflight"
-after = "impl-run-owned-closeout-collision-calculation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-collision-before-integration]
-kind = "order"
-before = "impl-run-owned-closeout-collision-calculation"
-after = "impl-run-owned-closeout-integration-action"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-integration-before-post]
-kind = "order"
-before = "impl-run-owned-closeout-integration-action"
-after = "impl-run-owned-closeout-post-observation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-forbid-state-d216f2d56733]
-kind = "forbids"
-slice = "impl-run-owned-closeout-safety"
-pattern = "protected state"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-run-owned-closeout-forbid-dirty-b3c676707c86]
-kind = "forbids"
-slice = "impl-run-owned-closeout-safety"
-pattern = "protected dirty/untracked"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-work-unit-dirty-scope-89a8a06b1016]
+[contracts.impl-work-unit-dirty-scope-3b5429409356]
 kind = "requires"
 slice = "impl-work-unit-protected-dirty-scope"
-pattern = "`protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-closeout-summary-policy-8d3b45fdd25f]
-kind = "requires"
-slice = "impl-run-owned-closeout-summary"
-pattern = '''run_owned_closeout = tracked clean + tracked state + collision_free
-collision_free = no current task-path collision
-noise = noncollision untracked / ignored is not a blocker or ordinary result'''
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-closeout-summary-forbid-state-7875d130babf]
-kind = "forbids"
-slice = "impl-run-owned-closeout-summary"
-pattern = "protected state"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-closeout-summary-forbid-dirty-d565762f5057]
-kind = "forbids"
-slice = "impl-run-owned-closeout-summary"
-pattern = "protected dirty/untracked"
+pattern = '''更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data は `dependency-dispatch-guard` へ渡す。
+`protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。'''
 applies_to = ["claude", "codex", "cursor"]

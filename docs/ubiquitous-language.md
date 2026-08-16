@@ -25,7 +25,13 @@ pattern では正式名だけを使います。
 
 親エージェントが要求を正規化し、worker へ委譲する実装単位です。単位が持つ情報の構成は正本が定めます。
 
-- 正本: `shared/skill/work-unit-design/SKILL.md`、`shared/skill/impl-lead/SKILL.md`
+- 正本: `shared/skill/impl-lead/SKILL.md` の `Intake and Work Unit normalization`
+
+## Programmatic Flow
+
+Agentic workflow 内の局所的な deterministic procedure です。共通の意味と境界は
+`shared/repository-guidelines.md` の `Programmability Boundary contract`、個別の procedure は各 Skill の
+`Programmatic Flows` sectionを、共有 publication procedure は `shared/plan-artifact-publication.md` を正本とします。
 
 ## Resolution Point
 

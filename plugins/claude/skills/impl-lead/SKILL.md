@@ -2,12 +2,12 @@
 name: impl-lead
 description: >-
   明示起動時だけ、親が一つ以上の Work Unit を正規化し、direct または各単位の worker を選び、
-  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる v5 実装 loop。
+  必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる実装 loop。
 disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Active v5 main
+# Active main
 
 この skill はユーザーが明示的に起動した場合だけ開始する。自然言語の作業内容、規模、現在の
 context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
@@ -32,22 +32,21 @@ owner とし、横断 constraint / invariant は複数単位へ適用でき、no
 未割当要求を残したまま dispatch しない。
 
 親は成果候補と coverage から run の目的を一つ以上の Work Unit に正規化する。複数であることだけを停止理由にしない。
-各単位は次の Work Unit Data を持つ。
+Work Unit Data の意味と field の唯一の正本はこの section である。各単位は次の Data を持つ。
 
 - `id`: run 内で一意な識別子。
 - `purpose`: 単一の目的。
-- `acceptance_criteria`: 外部から観測可能で検証可能な Acceptance Criteria。
+- `acceptance_criteria`: 外部から観測可能で検証可能な Acceptance Criteria。これは候補条件であり、accept の確定ではない。
 - `scope`: `change`（変更を許す範囲）と `exclude`（変更しない範囲）。
 - `implementation_freedom`: worker に任せてよい局所判断。なければ空。
 - `constraints`: ユーザー指定、互換性、依存、実行環境その他の制約。
-- `depends_on`: Work Unit ID の依存と、外部・repository・environment の precondition を分けた記述。
+- `depends_on`: Work Unit ID 間の semantic dependency と、外部・repository・environment の precondition を分けた記述。同じ file、writer、generated output、generator、contract registry、Gunte gate、verification surface の共有だけでは semantic dependency または Work Unit 統合の根拠にならず、execution conflict として扱う。
 - `verification`: AC ごとの native test、focused test、必要な最終 gate。
 
-Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept/revert できる
-変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界をすべて満たすものとする。同じ
-test でしか Green にならない過分割、片方だけでは invariant が成立しない分割、layer 横割りは統合する。価値の
-ない共通依存は最初に価値を生む単位が所有する。foundation は独立 capability または contract、単独 AC、単独
-verification、accept boundary を持つ場合だけ独立 Work Unit にする。
+Work Unit Data は上記 canonical field だけを表す。
+
+Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept / revert できる
+変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界を持つ。
 
 単一 Work Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
 boundary、foundation / application の別成果が残っていないか親が自己再検査する。分割しない理由の専用 field、固定 ledger、
@@ -57,8 +56,7 @@ boundary、foundation / application の別成果が残っていないか親が�
 未完了範囲・evidence・残存 risk を含む `stop-incomplete` とする。要求と repository の状態を観測せずに worker を
 起動しない。既存の dirty/untracked は scope に含めず、勝手に変更・削除しない。
 
-Work Unit Data は run 内一意の `id`、目的、AC、scope、implementation_freedom、constraints、depends_on、verification だけを
-表す。worker、base、route、order、isolation、result は実行時の execution data として親が記録し、Work Unit の
+worker、base、route、order、isolation、result は実行時の execution data として親が記録し、Work Unit の
 意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Work Unit の意味ではなく
 execution data として扱う。
 
@@ -70,33 +68,102 @@ raw request から成果候補を再抽出させない。返された `work_unit
 同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
 `blocking_gaps` がないこと、Work Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
 
-候補の `acceptance_criteria` は accept の確定ではなく、worker、base、isolation、route、order、実行、後続 Skill の起動権限、
-保存を候補工程へ含めない。成果候補消失、未割当要求、unresolved `blocking_gaps`、説明不能な境界を残したまま dispatch しない。
-
 runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
 実行中の再正規化では新しい成果候補抽出 phase を追加しない。既存の統合、追加分割、部分成果の独立再構成、semantic dependency
 edge の再接続を維持し、必要なら `work-unit-design` を使えるが、初期 Intake の成果候補 discipline を execution-time 全体へ広げない。
 
-semantic dependency は `depends_on`、writer / generated-output conflict は order / isolation、後続実行時の基準は latest accepted
-baseline として execution data へ分ける。同じ file、generated output、writer、generator、contract registry、Gunte gate、verification
-surface の共有だけを semantic dependency または Work Unit 統合の根拠にしない。
+## Programmatic Flows
+
+以下は、親が意味判断を完了して確定 Data を渡した後の局所的な deterministic procedure だけを持つ。
+Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。Flow が blocked を返した場合は突破せず、outcome の後に複数の妥当な Action が残る意味判断は Agentic な親責務へ返す。
+
+### dependency-dispatch-guard
+
+Trigger: 親が Work Unit、依存、precondition の意味を確定し、dispatch 可否の固定判定を要求したとき。
+Inputs: run 内 ID の存在と cycle の解消結果、依存先の acceptance、外部・repository・environment precondition の観測値と成立条件・安定性・pin、現在の `base_snapshot`、dispatch 直前に更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data。
+Procedure: dependency、precondition、protected drift の既存 guard 群に新しい意味順序を付けず全件を評価し、全 guard 成立時だけ `dispatch-ready` とする。いずれかの failure、観測不能、または drift は `blocked` とし、Action を実行しない。
+Outcomes: `dispatch-ready`、または `blocked` と failure Data。`blocked` は突破せず、再正規化、確認、`stop-incomplete` の選択を Agentic な親へ返す。
+
+### run-owned-checkout-creation
+
+Trigger: 親が default run-owned checkout を確定し、その Creation Action の直前に到達したとき。
+Inputs: 親が確定した `base_snapshot` と isolation、検証済み `impl-run-owned-lifecycle-loader` Data、identity と必要 section を検証した reference 本文。
+Procedure: `references/run-owned-lifecycle.md` の `Creation` だけを procedure の唯一の正本として実行・照合する。作成不能時に current checkout へ fallback しない。
+Outcomes: 作成・照合済み run-owned checkout Data、または `blocked`。`blocked` は突破せず、次の妥当な Action の選択は Agentic な親へ返す。
+
+### explicit-route-constraint
+
+Trigger: 親がユーザー指定の route execution constraint の有無と内容を確定したとき。
+Inputs: direct / 委譲、指定 worker、isolation、order、parallel の禁止または要求、および constraint conflict の確定 Data。
+Procedure: 明示 constraint が一貫していればそのまま route Data に写像し、conflict は `blocked` とする。明示 constraint がなければ route または worker を選択しない。
+Outcomes: 明示指定どおりの route Data、`blocked`、または `agentic-selection-required`。後二者を突破せず、制約確認または自律的 route / worker 選択を Agentic な親へ返す。
+
+### writable-scope-handoff
+
+Trigger: 親が write-capable Worker route と isolation を確定し、handoff の直前に到達したとき。
+Inputs: 検証済み `writable-scope-kernel-v1` identity と必要本文、親が path 解決した明示 `assigned_writable_scopes`、Work Unit Data、execution constraint。
+Procedure: writable scope Kernel だけを scope assignment procedure の唯一の正本として、Kernel 本文と assignment を handoff へ注入する。loader、identity、必要 section、assignment の不足・不正・不明では handoff を作らない。
+Outcomes: write boundary を備えた handoff、または no-write の `blocked`。scope 変更や追加領域は Agentic な親の明示 handoff update へ返す。
+
+### work-unit-continuation-routing
+
+Trigger: 親が返却結果に追加作業が必要と確定し、変更の意味分類を完了したとき。
+Inputs: 同じ ID の AC・scope・責任境界・依存が不変な限定修正、または意味変更・accepted 単位の変更という親の分類、旧 ID / context、依存 edge。
+Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は新しい ID / fresh context へ送る。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
+Outcomes: `same-context-continuation`、`new-id-fresh-context`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。
+
+### parallel-candidate-integration
+
+Trigger: 親が parallel eligibility と適用順不変を確定した batch の候補が返却されたとき。
+Inputs: 親が固定した候補順、最後の Green な run baseline、各候補の diff・AC・scope・precondition・dirty state・side effect・native verification Data。
+Procedure: 最後の Green な baseline へ候補を一件ずつ統合・検証し、Green の候補だけを accept する。failure は accept せず最後の Green へ rollback・再検証し、戻せなければ `blocked` とする。最後の候補の統合 verification を `final combined verification` とし、別の combined gate を重ねない。
+Outcomes: accepted 候補を含む latest Green baseline と final combined verification Data、または rollback 済み / rollback 不能の `blocked`。hidden dependency の扱いは Agentic な親へ返す。
+
+### final-writing-gate-invocation
+
+Trigger: 全 Work Unit が accept 候補で、親 QA が Green、risk-directed finding の処理が完了したと親が確定し、run accept 直前に到達したとき。
+Inputs: 検証済み `impl-final-writing-loader` Data、identity と必要 section を検証した reference 本文、親が固定した target snapshot と self-contained handoff Data。
+Procedure: `references/final-writing-gate.md` の `Final writing acceptance gate` だけを invocation procedure の唯一の正本として、有効な read-only gate を一回実施する。省略、既実施 review での代替、writer との重複をしない。
+Outcomes: snapshot に結び付いた有効な reviewer result Data、または `blocked`。loader / invocation failure は突破せず `stop-incomplete` へ送る。
+
+### final-writing-result-routing
+
+Trigger: final writing gate の reviewer result が親へ返却されたとき。
+Inputs: target snapshot と照合済み result、finding Data の有無、検証済み `impl-final-writing-loader` Data と reference 本文。
+Procedure: `references/final-writing-gate.md` の `Final writing findings and remediation` だけを result routing procedure の唯一の正本として、result を no-finding、parent-adjudication-required、invalid / incomplete に振り分ける。finding の意味的な採否を Flow 内で決めない。
+Outcomes: `gate-complete`、`parent-adjudication-required`、または `blocked`。後続 remediation の eligibility、risk、採否は Agentic な親へ返し、invalid / incomplete は `stop-incomplete` へ送る。
+
+### external-side-effect-retry
+
+Trigger: 外部 Action の partial failure または context loss 後に、親が retry 可否の固定判定を要求したとき。
+Inputs: fresh context で再観測した resource / result identity、`未実行` / `実行済み` / `結果不明`、idempotency、照合方法、authorization、compensation / rollback、親が確定した safe-retry eligibility。
+Procedure: `結果不明` または安全な照合不能なら retry せず `blocked` とする。`未実行` かつ safe-retry eligibility 成立時だけ一回再実行して結果を照合し、`実行済み` は再実行しない。
+Outcomes: 照合済み `実行済み` Data、または `blocked`。unknown result を blind retry せず、補償、確認、`stop-incomplete` の意味判断は Agentic な親へ返す。
+
+### run-owned-closeout
+
+Trigger: run-owned checkout を作成した run で、親が final verification と必要な外部副作用照合を完了し closeout 可否判定へ到達したとき。
+Inputs: 検証済み `impl-run-owned-lifecycle-loader` Data と reference 本文、親が観測した成果の永続化、resource identity、tracked state、collision、writer / reviewer 終了 Data。
+Procedure: `references/run-owned-lifecycle.md` の `Closeout` だけを procedure の唯一の正本とし、integration result 後の cleanup eligibility を Calculation として判定し、実際の cleanup と post-observation / 照合は Action として実行し、その観測結果を Data として返す。unsafe または unknown なら resource を保持する。
+Outcomes: 照合済み integration / cleanup Data、または resource を保持した `blocked`。`blocked` は突破せず `stop-incomplete` と残存 Action の判断を Agentic な親へ返す。
 
 ## Dependencies, snapshots, and isolation
 
-`depends_on` の Work Unit ID は dispatch 前に run 内で存在し、unknown と cycle を解消する。当該 Work Unit の dispatch 直前に
-依存先が accepted であることを確認する。
+親は Work Unit の依存と precondition の意味、観測方法、成立条件、安定性、pin 方法を確定し、dispatch 直前の固定判定を
+`dependency-dispatch-guard` へ渡す。
 外部・repository・environment の precondition には、観測方法、成立条件、安定性、pin 方法を記録する。mutable な
-状態は dispatch 開始直前、外部 Action 直前、accept 直前に再観測する。drift または観測不能なら Action と accept を
-禁止する。pin できる precondition は親が dispatch 前に `base_snapshot` へ固定し、handoff はその識別を参照する。drift 時は
+状態を再観測する時点は dispatch 開始直前、外部 Action 直前、accept 直前とする。pin できる precondition は親が dispatch 前に
+`base_snapshot` へ固定し、handoff はその識別を参照する。drift 時は
 新しい `base_snapshot` を確定し、task-owned isolation に安全に再適用できる場合だけ進む。ユーザー所有 branch や dirty
 checkout の ref・履歴を書き換えず、対象・所有権・旧 snapshot への復旧可能性を確認できなければ、確認・再正規化・
-`stop-incomplete` のいずれかにする。観測不能時は確認・再正規化・`stop-incomplete` とし、推測で Action を実行しない。
+`stop-incomplete` のいずれかを親が選ぶ。
 
 各 Work Unit の dispatch 直前に、親は repository、protected dirty/untracked、依存、現在の run baseline を再観測し、
 `protected_dirty_record` を更新する。これは Work Unit の dispatch、candidate integration、QA / review snapshot protection に限定する。
 Work Unit の統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を止めて再正規化・確認・`stop-incomplete` を選ぶ。
+更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data は `dependency-dispatch-guard` へ渡す。
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。
 
 `base_snapshot` は編集前内容を後から比較・再現できる不変の識別を持つ（commit に限定しない）。保護対象の dirty
@@ -115,8 +182,8 @@ writer、external resource、integration/rollback の必要性から選び、`ba
 ### Default run-owned checkout
 
 ユーザーが既存 checkout、別 isolation/worktree、または worktree を使わない制約を指定していない場合は、最初の書き込み
-Action より前に `base_snapshot` から run-owned worktree を一つ作り、run 全体の既定 checkout とする。ユーザー指定はこの既定より
-優先し、作成不能時に current checkout へ暗黙 fallback しない。
+Action より前に、親は run 全体の既定 checkout として run-owned worktree を選ぶ。ユーザー指定はこの既定より優先する。
+作成 Action と結果照合は `run-owned-checkout-creation` へ渡す。
 
 次の Loader Data が列挙値の唯一の正本である。
 
@@ -135,15 +202,13 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 
 ## Route and execution order
 
-ユーザーの direct または委譲の制約をそのまま execution constraint として扱う。execution constraint には direct/委譲、
-指定 worker、isolation、order、parallel の禁止または要求を含める。direct が指定された単位は親が実装し、
-委譲が指定された単位は一名の worker にだけ割り当てる。指定が同時に存在して解決できない場合、無断で経路を変えず
-`stop-incomplete` とする。経路の指定がない場合、各単位について、親 direct の方が安く安全なら direct、それ以外で
+親はユーザーの direct または委譲の制約を execution constraint として確定し、明示 constraint の適用を
+`explicit-route-constraint` へ渡す。経路の指定がない場合、各単位について、親 direct の方が安く安全なら direct、それ以外で
 安全に委譲できるなら一名の worker を選ぶ。worker の能力は実装自由度、残存判断、推論難度、手戻り、検証可能性、
 実行コストを相対比較して選び、単なる変更量や file 数だけで上位の worker を選ばない。選択理由を execution data に
 記録する。
 
-委譲時は v5 の4候補から、仕様が明確で既存 pattern を適用できる通常の `implementer` を原則とする。scope が特に狭く
+委譲時は4候補から、仕様が明確で既存 pattern を適用できる通常の `implementer` を原則とする。scope が特に狭く
 検証が明確なら `focused-implementer`、残存判断や手戻りが大きいなら `senior-implementer`、親相当の推論を必要とする
 具体的な理由があり品質を左右する場合だけ `expert-implementer` を選ぶ。単なる変更量や file 数で上位へ昇格せず、迷えば
 `implementer` とする。選択した worker、理由、`base_snapshot`、execution constraint を execution data に記録する。
@@ -175,11 +240,10 @@ worker_path_resolution = parent
 scope_change = explicit handoff update
 ```
 
-親は検証済み Kernel 本文と、選択済み isolation および明示された追加領域から確定した
-`assigned_writable_scopes` を既存の execution constraint / 周辺 context に注入する。assignment は親の execution data であり、
+assignment は親の execution data であり、
 Work Unit Data の field ではない。repository root 外の run-owned worktree も、親が明示した assignment に含められる。
-親は Worker に path 解決や assignment の確定を委ねず、load、identity、必要 section、assignment のいずれかが不足・不正・不明な
-場合は write-capable handoff を作らず `stop-incomplete` とする。
+親は Worker に path 解決や assignment の確定を委ねず、Kernel と assignment を使う handoff procedure を
+`writable-scope-handoff` へ渡す。
 <!-- @/anchor -->
 
 ## Fresh context and continuation
@@ -191,10 +255,8 @@ isolation、外部副作用の状態、禁止範囲、verification を含む自�
 委譲する新しい単位は新規の `Agent` 呼び出しで履歴を継承しない新規 `Agent` context に起動する。同じ ID の実装上の
 限定修正だけを`SendMessage`で同じ context に返す。
 
-AC、scope、責任境界、依存の意味が変わる再正規化は新しい ID とし、旧 context を継続しない。置換理由を execution
-data に残し、依存 edge を再接続する。一意に再接続できなければ `stop-incomplete` とし、同じ成果を二重計上しない。accepted 単位
-を書き換える修正・revert も新しい Work Unit とする。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて
-完了した場合だけ accept する。
+親は追加作業を同じ意味の限定修正か、意味変更または accepted 単位の変更かに分類し、route を
+`work-unit-continuation-routing` へ渡す。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて完了した場合だけ accept する。
 
 ## Safe parallel dispatch and integration
 
@@ -205,12 +267,8 @@ parallel を要求していなければ直列化できるが、要求してい�
 判断理由と isolation を execution data に残す。並列中に hidden dependency、scope overlap、base drift が判明した場合は
 新規の並列 dispatch を止め、返却を個別候補として QA し、無理に merge しない。
 
-並列の返却は accept 候補として、最後の Green な run baseline へ一件ずつ統合する。既に accepted な単位を含む現在
-baseline の diff、AC、scope、precondition、dirty state、side effect、native verification を毎回確認してから accept
-し、最後の候補の統合 verification をこの parallel batch の `final combined verification` とする。全候補を accepted
-とした後に別の combined gate は置かない。この扱いは run closeout の repository gate を省略するものではない。候補が失敗したら
-accept せず最後の Green へ rollback して再検証する。戻せなければ dispatch を停止し、再正規化または `stop-incomplete`
-とする。隠れた依存を無理に merge しない。
+親が eligibility と順序不変を確定した並列返却の統合は `parallel-candidate-integration` へ渡す。この Flow の
+`final combined verification` は run closeout の repository gate を省略しない。
 
 ## Review principle
 
@@ -246,7 +304,6 @@ commit range、変更 file、完全な diff text、必要な test 結果と周�
 だけで diff text を代替しない。plan reviewer には plan 全文と AC / constraints を渡す。diff artifact の存在は必須にせず、
 inline か reviewer が全文を読み込める artifact のいずれかを使う。
 
-
 ## batch-resolve-kernel v1 の risk-directed review mapping
 
 次の Loader Data が列挙値の唯一の正本である。
@@ -279,6 +336,10 @@ dispositions = [adopted, rejected, unresolved]
 親は上記 role field と後続の transaction field を使って finding の mapping、return、Work Unit / run acceptance の
 Action を行い、既存の親境界を変更しない。
 
+親は counterpart invocation 前に review set を固定する。必要な全 observation と result を回収し、finding を normalize して
+evidence を確認してから Resolution Transaction を開始する。一部でも欠ける場合は暗黙に縮退せず、既存の caller boundary または
+`stop-incomplete` へ返す。
+
 ### risk-directed review の Resolution Transaction
 
 ```text
@@ -292,26 +353,8 @@ transaction_closure = not Work Unit acceptance, not run acceptance
 final_writing_gate = outside mapping
 ```
 
-`target_snapshot` は artifact-neutral な caller-owned candidate とし、必要な事前 verification を通過した immutable candidate を
-`origin verified snapshot` として固定する。mapping は既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
-
-reviewer の selection、invocation、observation、result collection、normalize、evidence確認は transaction 外で行う。親は review set を
-counterpart invocation 前に固定し、必要な全 observation と result を回収し、finding を normalize して evidence を確認してから transaction を
-開始する。必要な observation または result が一部でも欠けている場合は、暗黙に縮退して transaction を開始せず、既存の caller boundary または
-`stop-incomplete` へ返す。1件以上の finding は、各 finding を `Resolution Point` へ mapping し、同じ `origin verified snapshot` の全 findings を一つの
-`Resolution Batch` として固定する。finding が0件なら空の Resolution Transaction を開始せず、risk-directed review の結果を既存の親経路へ返す。
-
-親は既存の `adopted` / `rejected` / `unresolved` を維持し、mutation 前に全 point を裁定する。全 point の裁定が終わるまで
-mutation を開始せず、`adopted` は原則として一つの coherent remediation として扱う。`unresolved` と `adopted` が不可分なら mutation を行わず、
-既存の caller-owned stop boundary へ返す。
-
-verify と caller-owned semantic progress の後だけ promote し、updated snapshot の re-review は新しい Resolution Transaction とする。
-promotion 後の snapshot を risk-directed reviewer が再観測する場合は、新しい review set、Resolution Batch とする。Transaction
-の closure は Work Unit や run の acceptance と別であり、closureだけで親のacceptを意味しない。
-
-final writing gate はこの mapping の対象外であり、Kernel の partition、isolate、corrective adjudication を重複定義しない。mandatory final writing gate の
-固有 loader、finding、remediation、verification は
-既存の final writing reference と親責務に従う。
+上記 Data は impl-lead 固有の caller mapping だけを定める。generic Transaction procedure は Kernel を唯一の正本とし、
+既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
 
 ## Review findings and continuation
 
@@ -339,10 +382,9 @@ review を `continue` するのは、次に確認する具体的な未解決 ris
 
 ## Final writing acceptance gate
 
-全 Work Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
-accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
-risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
-理由に省略できない。
+親は全 Work Unit、QA、選択した review goal と finding の処理状態を確定し、run accept 直前の必須 invocation を
+`final-writing-gate-invocation` へ渡す。返却 result は `final-writing-result-routing` へ渡す。この gate は risk-directed reviewer の
+選択数・回数の外にある。
 
 次の Loader Data が列挙値の唯一の正本である。
 
@@ -363,9 +405,9 @@ owner / reviewer_authority の境界を維持し、reviewer を writer または
 ## External side effects
 
 外部副作用は worktree と別に execution data で管理する。各 Action に `未実行`、`実行済み`、`結果不明`、resource、
-idempotency、照合方法、補償または rollback を記録する。partial failure または context loss の後は、fresh context で
-再観測し、安全に照合して retry できる場合だけ再実行する。結果不明なら再実行せず `stop-incomplete` とする。共有 resource の順序や
-競合がある場合は並列化しない。未実行の外部 Action について、選択済み review goal の結果が実行可否、対象 / 入力、
+idempotency、照合方法、補償または rollback を記録する。partial failure または context loss 後の retry は、親が状態と
+safe-retry eligibility を確定して `external-side-effect-retry` へ渡す。共有 resource の順序や競合がある場合は並列化しない。
+未実行の外部 Action について、選択済み review goal の結果が実行可否、対象 / 入力、
 authorization、idempotency、compensation / rollback を変えうる場合、その review 完了と関連 finding の解決を当該 Action の
 precondition にする。外部副作用を伴わない code 作成、および外部 Action を含まない local / read-only verification だけは先行できる。
 verification command 内に外部 Action が含まれる場合も、同じ review 完了と関連 finding 解決の precondition を適用する。外部 Action 後に初めて risk が判明した場合は
@@ -407,18 +449,10 @@ test、repository-native verification を再実行し、変更が同じ Work Uni
 ### Run-owned closeout
 
 run-owned worktree を作成した run は、先に読み込んだ `run-owned lifecycle` reference の `Closeout` に従う。親 QA、選択した
-risk-directed review、final writing gate、final verification、必要な外部副作用の照合後に、親が観測 Data から integration と cleanup の
-可否を計算し、最後の Action と事後照合を行う。成果の永続化、resource identity、tracked working state、no current task-path collision、writer/reviewer の終了を確認できない
-場合は削除せず `stop-incomplete` とし、user-owned resource や別 run resource を変更しない。
+risk-directed review、final writing gate、final verification、必要な外部副作用の照合後に、親は観測 Data を
+`run-owned-closeout` へ渡す。
 
-```text
-run_owned_closeout = tracked clean + tracked state + collision_free
-collision_free = no current task-path collision
-noise = noncollision untracked / ignored is not a blocker or ordinary result
-```
-
-AC、scope、責任境界、依存が不変で同じ単位の実装上の不足だけなら、親は同じ ID と context で `continue` して限定修正を
-返す。それ以外は限定修正を続けず、fresh context の新しい ID として再正規化する。親が品質下限を満たし、全要求単位を accepted とし、
+追加作業の continuation route は `work-unit-continuation-routing` に従う。親が品質下限を満たし、全要求単位を accepted とし、
 選択した review goal と finding の処理結果を確認し、AC、scope、制約、evidence、残存 risk を説明できる場合は、run accept 前に closeout の repository gate を含む final closeout verification を
 実施する。その verification が Green なら run を accept する。新しい failure が出た場合は run を accept せず Adapt または
 `stop-incomplete` へ戻す。品質下限等を満たせない場合は、未完了範囲、満たせない条件、判断点、evidence、残存 risk、未検証事項を明記して

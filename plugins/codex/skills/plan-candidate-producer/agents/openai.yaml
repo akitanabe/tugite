@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plan Candidate Producer"
+  short_description: "Draft or refine a plan candidate only inside a plan-family public workflow parent"
+  default_prompt: "Use $plan-candidate-producer only inside the same context of a plan-family public workflow parent, following injected authority and authority_constraints; return a candidate snapshot or stop-incomplete without selecting downstream work."
+policy:
+  allow_implicit_invocation: true

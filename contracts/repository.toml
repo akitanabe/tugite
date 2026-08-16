@@ -35,6 +35,293 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-artifact-publication-reference-identity]
+kind = "occurrences"
+pattern = "Publication reference identity: `plan-artifact-publication-v1`."
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-data]
+kind = "occurrences"
+pattern = '''publication_target = {
+  exact_destination,
+  exact_filename,
+  finite_retry_bound,
+  qualification_evidence,
+  destination_state = one of {
+    existing_destination_object_identity,
+    os_temp_creation = {
+      verified_temp_root_identity,
+      exclusive_creation_intent
+    }
+  }
+}'''
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-os-temp-exact-destination]
+kind = "occurrences"
+pattern = "OS-temp では top-level `exact_destination` が作成予定の run-owned directory path であり、verified temp-root 直下への canonical containment を満たす。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-no-nested-destination]
+kind = "forbids"
+pattern = "exact_run_owned_directory_path"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-procedure]
+kind = "occurrences"
+pattern = "既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。directory 作成後、staging 作成前に、資格と destination object identity を再確認する。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-security]
+kind = "occurrences"
+pattern = "canonical containment、symlink / junction non-follow、ignored / index qualification、no-clobber、exact ownership identity cleanup"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-no-clobber]
+kind = "occurrences"
+pattern = "complete のときだけ no-clobber publish を行い"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-collision-retry]
+kind = "occurrences"
+pattern = "既存 final との collision だけを finite retry bound の範囲で filename suffix により再試行する"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-reselection]
+kind = "occurrences"
+pattern = "資格喪失または別 target が必要な場合は、記録した staging identity と現 object identity が一致することを確認して所有 staging だけを cleanup し、`destination-reselection-required` を返す"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-qualification-reselection]
+kind = "occurrences"
+pattern = "target 確定後の資格喪失または別 target の必要は `destination-reselection-required` とする。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-final-retention]
+kind = "occurrences"
+pattern = "published final は cleanup 対象にせず保持する"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-reference-temp-identity]
+kind = "occurrences"
+pattern = "pre-creation に記録する branch 固有 Data は verified temp-root identity と exclusive creation intent だけである"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-agentic-target-data]
+kind = "occurrences"
+pattern = "Agentic / mixed side は candidate 比較、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-no-agentic-directory-creation]
+kind = "forbids"
+pattern = "exclusive な run-owned directory creation intent を実行する"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-single-procedure-witness]
+kind = "occurrences"
+pattern = "### programmatic-publication"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-not-consumer-procedure]
+kind = "forbids"
+pattern = "verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-f09a111cfd8b]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "この Flow は、親が意味判断を完了して確定した `publication_target` に対する fixed deterministic procedure だけを実行する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-935dc8626104]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Trigger: Agentic / mixed side が semantic eligibility と exact `publication_target` を確定し、親が publication を要求したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-5fe36058a744]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Inputs: 凍結した artifact bytes、exact destination、exact filename、finite retry bound、qualification evidence、既存 destination では観測済み destination object identity、OS-temp では verified temp-root identity / exclusive creation intent。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-b6e65fabfa66]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Procedure: 既存 destination では資格と観測済み destination object identity を再確認する。OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。directory 作成後、staging 作成前に、資格と destination object identity を再確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-6cb53be5209f]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "Outcomes: published result、collision retry の後の `published result`、安全に所有 cleanup できる `destination-reselection-required`、または `incomplete`。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-field-order]
+kind = "order"
+before = "publication-flow-trigger"
+after = "publication-flow-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-inputs-before-procedure]
+kind = "order"
+before = "publication-flow-inputs"
+after = "publication-flow-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-flow-procedure-before-outcomes]
+kind = "order"
+before = "publication-flow-procedure"
+after = "publication-flow-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: target selection and Flow creation are separate witnesses; combining them would allow the Action owner to disappear from one side unnoticed.
+[contracts.plan-artifact-publication-flow-temp-355e9219dea4]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "OS-temp では verified temp-root identity と top-level exact destination の root 直下 containment を再確認し、exact destination の directory を same-filesystem の secure / exclusive / non-follow で作成して、その object identity を記録する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: isolated write/readback/publish labels can pass after the ordered failure boundary is removed or moved outside this Flow.
+[contracts.plan-artifact-publication-flow-write-readback-cd9b8e50ead3]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "staging を write して close し、同一 object の byte-identical readback を確認する。readback failure は `incomplete` として publish を行わず、complete のときだけ no-clobber publish を行い"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
+[contracts.repository-programmability-boundary-be45bf583027]
+kind = "requires"
+slice = "repository-programmability-boundary"
+pattern = '''policy_id = "programmability-boundary-v1"
+classifications = ["deterministic-mechanized", "deterministic-contract-only", "autonomous", "derived-duplicate"]
+rule_source = "current workflow source owns meaning; point-in-time audit is evidence only"
+programmable_assurance_planes = ["runtime mechanism", "ordinary test", "Gunte predicate/contract", "natural-language Contract"]
+implementation_policy = "programmable does not imply immediate mechanization"
+autonomous_oracle_policy = "do not fix one acceptable autonomous outcome as the expected-output oracle"
+gunte_assurance_limit = "policy identity, required fields, and coherent relation only; not runtime semantic compliance or oracle absence"
+programmatic_flow = "local deterministic procedure inside an Agentic workflow"
+programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
+programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
+programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
+programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
+programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "work-unit-design"]
+sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.programmatic-flow-section-excluded]
+kind = "forbids"
+pattern = "## Programmatic Flows"
+paths = [
+  "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/claude/skills/structural-health-gate/SKILL.md",
+  "plugins/claude/skills/work-unit-design/SKILL.md",
+  "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/structural-health-gate/SKILL.md",
+  "plugins/codex/skills/work-unit-design/SKILL.md",
+  "plugins/cursor/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/structural-health-gate/SKILL.md",
+  "plugins/cursor/skills/work-unit-design/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: keep ownership, evidence, and acceptance prohibitions in one coherent declaration; splitting them could permit cross-section false greens.
 [contracts.repository-test-qa-baseline-a0b98d2f7393]
 kind = "requires"
@@ -85,6 +372,29 @@ kind = "forbids"
 pattern = "手動評価シナリオは `evals/` にあります"
 applies_to = ["agents-guidance", "claude-guidance"]
 
+# Why Not: keep the ordinary-change guard, Human trigger, and canonical policy pointer atomic; separate checks could admit a contradictory entry point.
+[contracts.repository-version-release-entry-85c54d676556]
+kind = "requires"
+slice = "repository-version-release-entry"
+pattern = '''policy_id = "version-release-policy-v1"
+applies_from = "v6.0.0"
+ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
+release_trigger = "Human が release を明示した場合だけ release Action を開始する"
+canonical_policy = "docs/version-release-policy.md"'''
+applies_to = ["agents-guidance", "claude-guidance"]
+
+# Why Not: a heading inside this entry slice means its boundary has expanded into another responsibility.
+[contracts.repository-version-release-scope-122f55485f8b]
+kind = "forbids"
+slice = "repository-version-release-entry"
+pattern = "##"
+applies_to = ["agents-guidance", "claude-guidance"]
+
+[contracts.no-change-scoped-version-update]
+kind = "forbids"
+pattern = "または配布物が変わる変更では、必要な公開面を"
+applies_to = ["agents-guidance", "claude-guidance"]
+
 [contracts.cursor-agent-declaration-presence]
 kind = "structure"
 subject = "source_frontmatter"
@@ -119,12 +429,12 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "5.23.0"
+value = "6.0.0"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
@@ -413,8 +723,8 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/cursor/skills/impl-lead/SKILL.md",
-  "plugins/cursor/skills/plan-craft/SKILL.md",
-  "plugins/cursor/skills/plan-craft-approval/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
 ]
 format = "yaml"
 applies_to = ["cursor"]
@@ -434,8 +744,8 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/cursor/skills/clarify-it/SKILL.md",
-  "plugins/cursor/skills/proposal/SKILL.md",
-  "plugins/cursor/skills/review-loop/SKILL.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
+  "plugins/cursor/skills/review-refine/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/work-unit-design/SKILL.md",
 ]
@@ -486,53 +796,53 @@ pattern = "# clarify-it — Philosophy"
 count = 1
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.cursor-plan-craft-skill]
+[contracts.cursor-plan-agent-skill]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/cursor/skills/plan-craft/SKILL.md"]
+paths = ["plugins/cursor/skills/plan-agent/SKILL.md"]
 format = "yaml"
 applies_to = ["cursor"]
 
-[[contracts.cursor-plan-craft-skill.assertions]]
+[[contracts.cursor-plan-agent-skill.assertions]]
 path = "name"
 op = "equals"
-value = "plan-craft"
+value = "plan-agent"
 
-[contracts.cursor-plan-craft-approval-skill]
+[contracts.cursor-plan-interactive-skill]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/cursor/skills/plan-craft-approval/SKILL.md"]
+paths = ["plugins/cursor/skills/plan-interactive/SKILL.md"]
 format = "yaml"
 applies_to = ["cursor"]
 
-[[contracts.cursor-plan-craft-approval-skill.assertions]]
+[[contracts.cursor-plan-interactive-skill.assertions]]
 path = "name"
 op = "equals"
-value = "plan-craft-approval"
+value = "plan-interactive"
 
-[contracts.cursor-proposal-skill]
+[contracts.cursor-plan-candidate-producer-skill]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/cursor/skills/proposal/SKILL.md"]
+paths = ["plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 format = "yaml"
 applies_to = ["cursor"]
 
-[[contracts.cursor-proposal-skill.assertions]]
+[[contracts.cursor-plan-candidate-producer-skill.assertions]]
 path = "name"
 op = "equals"
-value = "proposal"
+value = "plan-candidate-producer"
 
-[contracts.cursor-review-loop-skill]
+[contracts.cursor-review-refine-skill]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/cursor/skills/review-loop/SKILL.md"]
+paths = ["plugins/cursor/skills/review-refine/SKILL.md"]
 format = "yaml"
 applies_to = ["cursor"]
 
-[[contracts.cursor-review-loop-skill.assertions]]
+[[contracts.cursor-review-refine-skill.assertions]]
 path = "name"
 op = "equals"
-value = "review-loop"
+value = "review-refine"
 
 [contracts.cursor-structural-health-gate-skill]
 kind = "structure"
@@ -558,10 +868,10 @@ path = "name"
 op = "equals"
 value = "work-unit-design"
 
-[contracts.cursor-readme-version-requires-27b5ccd1e24a]
+[contracts.cursor-readme-title-requires-0dbaeb1a5db8]
 kind = "requires"
-slice = "cursor-readme-version"
-pattern = "# Tugite v5.23.0"
+slice = "cursor-readme-title"
+pattern = "# Tugite v6.0.0"
 applies_to = ["cursor"]
 
 [contracts.readme-risk-directed-static-performance-reviewer-b83942372d45]
@@ -620,13 +930,13 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-55ee9f440996]
+[contracts.cursor-readme-public-skills-requires-c7d9fd88c572]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/impl-lead <実装タスク>
-/plan-craft <plan task>
-/plan-craft-approval <human-directed plan task>
-/review-loop <artifact review task>
+/plan-agent <plan task>
+/plan-interactive <human-directed plan task>
+/review-refine <artifact review task>
 /clarify-it <clarification task>
 /install-plugin'''
 applies_to = ["cursor"]
@@ -649,8 +959,8 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/codex/skills/clarify-it/agents/openai.yaml",
-  "plugins/codex/skills/proposal/agents/openai.yaml",
-  "plugins/codex/skills/review-loop/agents/openai.yaml",
+  "plugins/codex/skills/plan-candidate-producer/agents/openai.yaml",
+  "plugins/codex/skills/review-refine/agents/openai.yaml",
   "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
   "plugins/codex/skills/work-unit-design/agents/openai.yaml",
 ]
@@ -682,8 +992,8 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/codex/skills/impl-lead/agents/openai.yaml",
-  "plugins/codex/skills/plan-craft/agents/openai.yaml",
-  "plugins/codex/skills/plan-craft-approval/agents/openai.yaml",
+  "plugins/codex/skills/plan-agent/agents/openai.yaml",
+  "plugins/codex/skills/plan-interactive/agents/openai.yaml",
 ]
 format = "yaml"
 applies_to = ["codex"]
@@ -708,13 +1018,81 @@ path = "policy.allow_implicit_invocation"
 op = "equals"
 value = false
 
+[contracts.codex-plan-agent-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-agent/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-agent-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Agent"
+
+[[contracts.codex-plan-agent-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-agent to draft or refine a free-form planning artifact without implementing, delegating, or advancing to a next stage."
+
+[contracts.codex-plan-interactive-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-interactive/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-interactive-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Interactive"
+
+[[contracts.codex-plan-interactive-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-interactive only when explicitly requested to draft a human-directed plan, then gate and review it without starting implementation."
+
+[contracts.codex-plan-candidate-producer-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-candidate-producer/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-plan-candidate-producer-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Plan Candidate Producer"
+
+[[contracts.codex-plan-candidate-producer-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $plan-candidate-producer only inside the same context of a plan-family public workflow parent, following injected authority and authority_constraints; return a candidate snapshot or stop-incomplete without selecting downstream work."
+
+[contracts.codex-review-refine-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/review-refine/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-review-refine-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Review Refine"
+
+[[contracts.codex-review-refine-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $review-refine only for an explicit standalone review or an explicitly invoked plan-family public workflow parent; review an immutable artifact snapshot and return findings, termination, and caller-owned acceptance evidence."
+
 [contracts.claude-explicit-skill-policy]
 kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/claude/skills/impl-lead/SKILL.md",
-  "plugins/claude/skills/plan-craft/SKILL.md",
-  "plugins/claude/skills/plan-craft-approval/SKILL.md",
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
 ]
 format = "yaml"
 applies_to = ["claude"]
@@ -732,7 +1110,7 @@ op = "absent"
 kind = "structure"
 subject = "artifact"
 paths = [
-  "plugins/claude/skills/proposal/SKILL.md",
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/work-unit-design/SKILL.md",
 ]
@@ -748,18 +1126,18 @@ value = false
 path = "disable-model-invocation"
 op = "absent"
 
-[contracts.claude-review-loop-policy]
+[contracts.claude-review-refine-policy]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/claude/skills/review-loop/SKILL.md"]
+paths = ["plugins/claude/skills/review-refine/SKILL.md"]
 format = "yaml"
 applies_to = ["claude"]
 
-[[contracts.claude-review-loop-policy.assertions]]
+[[contracts.claude-review-refine-policy.assertions]]
 path = "disable-model-invocation"
 op = "absent"
 
-[[contracts.claude-review-loop-policy.assertions]]
+[[contracts.claude-review-refine-policy.assertions]]
 path = "user-invocable"
 op = "absent"
 
@@ -816,7 +1194,7 @@ applies_to = ["claude"]
 [[contracts.claude-structural-health-gate-kernel-exclusion.assertions]]
 path = "description"
 op = "equals"
-value = "明示起動された proposal-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する internal gate。成果物を再設計・直接編集せず、 assessment と最終判断を public workflow parent へ残す。"
+value = "明示起動された plan-family public workflow parent の internal context で、candidate の構造的局所性を evidence として評価する internal gate。成果物を再設計・直接編集せず、 assessment と最終判断を public workflow parent へ残す。"
 
 [contracts.worker-agent-policy]
 kind = "structure"
@@ -957,7 +1335,7 @@ value = "./plugins/claude"
 [[contracts.claude-marketplace-shape.assertions]]
 path = "plugins.*.description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-marketplace-shape]
 kind = "structure"
@@ -1026,7 +1404,7 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.claude-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "v5 の impl-lead、plan-craft、plan-craft-approval、review-loop、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-plugin-manifest-shape]
 kind = "structure"
@@ -1053,21 +1431,21 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use v5 impl-lead, plan-craft, plan-craft-approval, review-loop, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the v5 public workflows impl-lead, plan-craft, plan-craft-approval, review-loop, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility."
+value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
 op = "list_order"
 value = [
   "Use $clarify-it when explicitly requested or when the user clearly wants step-by-step clarification; return the reintegrated current decision model without editing artifacts, implementing, or starting follow-up actions.",
-  "Use $plan-craft to draft or refine a free-form planning artifact without starting implementation.",
-  "Use $plan-craft-approval to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
-  "Use $review-loop to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+  "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
+  "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
+  "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
   "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
   "Use $install-custom-agents to check, install, or update the bundled custom agents.",
 ]
