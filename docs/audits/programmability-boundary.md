@@ -15,18 +15,20 @@ All 30 sources were read as Markdown/source documents. Each state is partitioned
 | baseline (`0d47f9730f24b549323136dbaf37ec591ad3eaf7`) | `fdd1ff9601406225c8a84e039fe96a666c1d9bb95cfbf4a45561d1e7f1bc8193` | 30 | 4619 | 1025 | 1517 |
 | final (working-tree source set) | `cf7761126287431ae4ad404885110cc5b040165bc9f0aa3e8e2f39eed59c448b` | 30 | 4644 | 1028 | 1524 |
 
-Union identity is `08c1f981e33cc835626f1c43267b851844c4934de2a2fa08bd29c66568cff303` over 985 stable semantic families. State identities hash ordered path/blob/line-count tuples; the union separately reconciles rule-family identity across baseline and final.
+Union identity is `0f4883d8e72185e041709fbdf6262acf72723463392943fa4241fd976f569aae` over 999 stable semantic families. State identities hash ordered path/blob/line-count tuples; the union separately reconciles rule-family identity across baseline and final.
 
 | state | deterministic-mechanized | deterministic-contract-only | autonomous | derived-duplicate | unclassified |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| baseline | 65 | 589 | 329 | 42 | 0 |
-| final | 66 | 591 | 329 | 42 | 0 |
+| baseline | 65 | 621 | 311 | 28 | 0 |
+| final | 66 | 623 | 311 | 28 | 0 |
 
 ## Classification and assurance
 
-Classification was adjudicated by source responsibility and section semantics, not isolated words. `deterministic-mechanized` is limited to coherent metadata/Contract Data with an existing Gunte predicate or platform loader. `deterministic-contract-only` records its actual source paragraph/block, owner Action, section-specific inputs and interception, candidate separation, and why cross-workflow enforcement is deferred. `autonomous` is limited to sections whose responsibility is semantic/value/quality/risk selection among acceptable outcomes. `derived-duplicate` is limited to identified platform or worker role-local projections; its consumer and remaining canonical witness are explicit.
+Classification was adjudicated by outcome determinacy and source responsibility, not isolated words or section membership. `deterministic-mechanized` is limited to coherent metadata/Contract Data with a named existing Gunte predicate/projector or platform loader; each row distinguishes mechanism owner and assurance limit. `deterministic-contract-only` records its actual Action, necessary Data, pre-Action interception point, concrete candidate Calculation, and occurrence-specific reason the current tree does not intercept it. `autonomous` is limited to semantic/value/quality/risk selection among multiple acceptable outcomes. `derived-duplicate` is limited to platform metadata projections whose consumer and exact same-state, same-family, non-derived canonical occurrence resolve.
 
-Cross-source readback reconciled platform invocation frontmatter and writable-scope worker handoffs as required projections. Similar-sounding parent/worker/reviewer rules remain distinct where owner, input, interception, or outcome responsibility differs; they are not collapsed by text equality. The Boundary predicate verifies policy identity, required fields, and coherent relation only. It does not prove runtime semantics or oracle absence.
+Cross-source readback retained platform invocation frontmatter as projection but returned worker boundary and writable-scope handoff spans to contract-only where a canonical occurrence did not bear every role-local clause. Similar-sounding parent/worker/reviewer rules remain distinct where owner, input, interception, or outcome responsibility differs. The Boundary predicate verifies policy identity, required fields, and coherent relation only. It does not prove runtime semantics or oracle absence.
+
+The contract-only packet identity check found 621 distinct owner/action/input/interception/candidate/defer packets for 621 baseline occurrences and 623 distinct packets for 623 final occurrences; there is no repeated generic packet. Representative installer rows separately model inventory observation, scope resolution, non-writing check, prior-check disposition, authorization, force execution, and restart/reload boundaries. Deterministic re-audit moved fixed numeric default/validation/error handling and the Japanese-output obligation out of `autonomous`.
 
 ## Parent-QA regression examples
 
@@ -36,7 +38,7 @@ Cross-source readback reconciled platform invocation frontmatter and writable-sc
 
 ## Reconciliation and mutation evidence
 
-The one-shot checker rebuilt both inventories, verified exact source-byte hashes, variable-length gap/overlap-free coverage, unique state occurrence IDs, required rule/context fields, contract-only details, derived consumer/witness data, and forward/reverse path reconciliation. Positive control: `PASS`. Deleting an occurrence and shortening a multi-line span each produce `coverage mismatch`. The checker was removed after generating this evidence; no persistent audit parser was added.
+The one-shot checker rebuilt both inventories, verified exact source-byte hashes, variable-length gap/overlap-free coverage, unique state occurrence IDs, required rule/context fields, occurrence-specific contract-only details, and forward/reverse path reconciliation. Every derived witness resolves to a complete non-derived occurrence in the same state and family. Positive control: `PASS`; shortened, nonexistent, and different-family witness mutations each fail. Deleting an occurrence and shortening a multi-line span each produce `coverage mismatch`. The checker was removed after generating this evidence; no persistent audit parser was added.
 
 Boundary predicate evidence remains separate: initial missing span, required-field deletion, policy reversal, and span-external decoy each failed; unchanged Data passed. Gunte success is not used as the semantic classification oracle.
 
