@@ -33,19 +33,10 @@ Work Unit Data field、provenance field、永続 artifact にしない。raw req
 `blocking_gaps` で構成する。`blocking_gaps` は、与えられた関連成果候補群を安全に Work Unit 集合へ正規化できない不足、
 矛盾、閉じていない scope に限定する。成果候補不足、要求解釈、run-wide coverage の問題を観測しても自身で修復せず、
 既存の signal と理由により `impl-lead` へ返す。
-各 `work_units` 要素は、次の fields を自己完結に持つ。
+各 `work_units` 要素は、`impl-lead` の `Intake and Work Unit normalization` が定める canonical Work Unit Data に適合させる。field の意味や一覧はここで再定義しない。
 
-- `id`
-- `purpose`
-- `acceptance_criteria`
-- `scope`: `change` と `exclude`
-- `implementation_freedom`
-- `constraints`
-- `depends_on`: Work Unit ID 依存と、外部・repository・environment の precondition を別々に記録する。
-- `verification`
-
-`acceptance_criteria` は候補単位が満たすべき観測可能な条件であり、accept の確定ではない。`worker`、
-`base_snapshot`、`isolation`、route、order、実行結果、review、保存先、後続 Skill の起動権限を出力へ含めない。
+`worker`、`base_snapshot`、`isolation`、route、order、実行結果、review、保存先、
+後続 Skill の起動権限を出力へ含めない。
 候補の採用、再検査、accept／stop-incomplete、委譲、実行、保存は必ず受け取り側の親が判断する。
 
 ## 判断の進め方
@@ -60,8 +51,7 @@ Work Unit Data field、provenance field、永続 artifact にしない。raw req
    最初に振る舞い価値を生む単位が所有する。
 4. 同じ検証でしか成立しない候補、片方だけでは invariant が成立しない候補、または handoff が内部結合より複雑な候補を
    merge する。再正規化では統合、追加分割、部分成果の独立した再構成、依存 edge の再接続を候補として示す。
-5. 独立 Work Unit 間の意味上の前提だけを `depends_on` として設計する。同じ file、generated output、writer、generator、contract
-   registry、verification surface の共有は execution conflict であり、semantic dependency や merge の根拠にしない。
+5. canonical `depends_on` definition を各候補に適用して semantic dependency を設計し、execution conflict で代替しない。
 6. 返却前に既存 signal を使い、明らかな under-split、単独 Green／accept できない over-split、必要な semantic dependency の
    欠落を自己再検査する。安全に正規化できない理由は `blocking_gaps` にし、実行順、isolation、worker、dispatch で補わない。
 

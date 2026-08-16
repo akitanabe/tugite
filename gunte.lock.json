@@ -1072,6 +1072,18 @@
       "sha256": "40394ea1333b3deab024d6f4eea884d577c8747a4ea1ae1883c8a18de8b2e897"
     },
     {
+      "id": "impl-work-unit-data-fields-aca91ed1f266",
+      "sha256": "cc0fc3d0b6d30f2008500dfdf160bc71930e8123679b9b6b62e959c6776864e9"
+    },
+    {
+      "id": "work-unit-data-consumer-5e12b5ed0407",
+      "sha256": "0bdd7804780fddd4884b686a928d5ecb4e369c0168976c41852680b7b769caf3"
+    },
+    {
+      "id": "final-writing-work-unit-consumer-b34e9edbbc2b",
+      "sha256": "ff40510ac2d4dc1e951783e36bac09a3c6561dfb6e06424f706dab6b115ad5df"
+    },
+    {
       "id": "impl-programmatic-flow-boundary-4b885c8d6556",
       "sha256": "c8e3581467dbd8c3e829bbf2bc5fe4311f9a33701e1eec0abb99c11f58c5ff0c"
     },
@@ -1114,122 +1126,6 @@
     {
       "id": "impl-run-owned-closeout-flow-371a8d5b86e4",
       "sha256": "4c55114590c29478f0216304a4eaf780834417dccc3fad054a42fbb37cf866a0"
-    },
-    {
-      "id": "impl-run-owned-creation-flow-no-duplicate-4ca72e6a6feb",
-      "sha256": "ab1230264c90aa1a520f19abf1dfcf1aa9156afe7c506ba832b370ed66a1e411"
-    },
-    {
-      "id": "impl-writable-scope-flow-no-duplicate-91012fd5acde",
-      "sha256": "67a3f2474ee8d59b64f61a3a2847eb134746479fc949448c958b8eb1f675fad1"
-    },
-    {
-      "id": "impl-final-writing-invocation-flow-no-duplicate-07073b3b7c9f",
-      "sha256": "fee9a4b8aa25948a1a18cb7a21cfdd5ce9aa17ba8678892451ce0ee097eea1de"
-    },
-    {
-      "id": "impl-final-writing-result-flow-no-duplicate-d9ca32ea28c6",
-      "sha256": "c79acf4becb88336d4fb2ddc5fb434e8a5936104e9a5af11d41058ca6fc8421c"
-    },
-    {
-      "id": "impl-run-owned-closeout-flow-no-duplicate-3ea960e093f8",
-      "sha256": "78e2a66c7e49d65201c50f190796ab1058c66c0cf8bc1bd9c8757d51a9d4bbf3"
-    },
-    {
-      "id": "impl-programmatic-flows-section-occurrences",
-      "sha256": "5024cf612f5e7b61886846de120c5e5378638f4b9c49b95ab91138358aa6ed6d"
-    },
-    {
-      "id": "impl-programmatic-flow-trigger-occurrences",
-      "sha256": "223f357cd949fd59690847afc2b237a7c16d6be77e797b5c2f2ed29042a8f6c3"
-    },
-    {
-      "id": "impl-programmatic-flow-inputs-occurrences",
-      "sha256": "36c5ada11ed9b6ae02c941765903a017eff8f9fe96395ed99e81d951d11c38b1"
-    },
-    {
-      "id": "impl-programmatic-flow-procedure-occurrences",
-      "sha256": "17464c59e2b8b1089ccbbdc4acd093751fd303ad7b4259c9115937e74cf626be"
-    },
-    {
-      "id": "impl-programmatic-flow-outcomes-occurrences",
-      "sha256": "cf2c306a7fca7c8bc94092f02b850637b2be416fec8b769226cb396151802656"
-    },
-    {
-      "id": "impl-dependency-dispatch-flow-occurrences",
-      "sha256": "9c621b00463a5ccfa8a9110f3247e2744226d9b358505fa78484733582e29fd2"
-    },
-    {
-      "id": "impl-run-owned-creation-flow-occurrences",
-      "sha256": "07e7b2a2f5b8129bee134ce990de26395c1769e1662229b31497a63422a011f0"
-    },
-    {
-      "id": "impl-explicit-route-flow-occurrences",
-      "sha256": "8aaf3f2307278b61cfdd65677d54692b22f2f702b5128dc2498d126fc33aed41"
-    },
-    {
-      "id": "impl-writable-scope-handoff-flow-occurrences",
-      "sha256": "f3c4b30ac1af8a225bcb4c038367992aba5a8dfeabf2bf982427de34786ff3de"
-    },
-    {
-      "id": "impl-work-unit-continuation-flow-occurrences",
-      "sha256": "aa845051778dfc22a980c3d6dbc737a94667ca79bb2ca279ec5ba393e5f57461"
-    },
-    {
-      "id": "impl-parallel-integration-flow-occurrences",
-      "sha256": "7cdca5c36f2845d2a3f5a220f0964636cba94ab832f08114413a902119a9f4fa"
-    },
-    {
-      "id": "impl-final-writing-invocation-flow-occurrences",
-      "sha256": "46568f287a713f3bf43cd53035949222408934621f40f8364d68b3b986c94c28"
-    },
-    {
-      "id": "impl-final-writing-result-flow-occurrences",
-      "sha256": "c8277cf52b43704b754a209deae49bbe194049926bce0ba330fb9fcd38fe029a"
-    },
-    {
-      "id": "impl-external-retry-flow-occurrences",
-      "sha256": "cb72e6736f3ac3a8261366daafcd1090d48510a59030a9f2ca8c1a007d715ffc"
-    },
-    {
-      "id": "impl-run-owned-closeout-flow-occurrences",
-      "sha256": "42215798be77b28254531d4335d9ba4b39e1146939656db33117b1b7ac62dc86"
-    },
-    {
-      "id": "impl-programmatic-flow-order-dependency-before-creation",
-      "sha256": "c472ea9c15d978e2187cbc0c53242db0403fe54361d81b5ff68316f38b3a6f9b"
-    },
-    {
-      "id": "impl-programmatic-flow-order-creation-before-route",
-      "sha256": "9cca7b4aff772135acdd1fd2153064bc05d1d926f036ce0398633e7285bd16dc"
-    },
-    {
-      "id": "impl-programmatic-flow-order-route-before-scope",
-      "sha256": "839ff8ff09c72aafee9c4e603b45c55b9e3e631a32d6f281c5df4e4c8669454e"
-    },
-    {
-      "id": "impl-programmatic-flow-order-scope-before-continuation",
-      "sha256": "9b2b331d2615101ae62fd3bbe4107c45e4ad262476c3b0d1363199c36a876b2b"
-    },
-    {
-      "id": "impl-programmatic-flow-order-continuation-before-parallel",
-      "sha256": "5bd3ed44ccfca0b221dfb43324323425c6fda48bd7251e07fee5062d43894996"
-    },
-    {
-      "id": "impl-programmatic-flow-order-parallel-before-final-invocation",
-      "sha256": "7b68c5939b956171fa7dfa5661262618a342355c8022a946eace44cd39700b0b"
-    },
-    {
-      "id": "impl-programmatic-flow-order-final-invocation-before-result",
-      "sha256": "f3a38accf676e38ec3a4fb4fe75297cd25cc4e437190edffb2b217b6632337ba"
-    },
-    {
-      "id": "impl-programmatic-flow-order-final-result-before-retry",
-      "sha256": "bb8b639f7e573cc738cf50acbed1a4e27de6cad429ef92fdc123e90fc32d493a"
-    },
-    {
-      "id": "impl-programmatic-flow-order-retry-before-closeout",
-      "sha256": "7471844d8de46e05a1da56ebb91b8724b2576fe4d5273c51b02bf0798e3463f1"
     },
     {
       "id": "impl-run-owned-loader-data-34b2ba9c1127",
@@ -1276,106 +1172,6 @@
       "sha256": "7ef992f442cfcd79e1a2b770c09d3ce27d682abde165b7cba991c16afdc5a6d5"
     },
     {
-      "id": "final-writing-remediation-requires-eee06c10959c",
-      "sha256": "6c73a4d57d4c90f1790711fa207bd116989150c2007b8208f6b24043176d27f5"
-    },
-    {
-      "id": "final-writing-remediation-requires-e42ce67df1c7",
-      "sha256": "56f7e8c93e2abbcd054b146f0ed95b61fa050028ea682d0d07c974d93abc7409"
-    },
-    {
-      "id": "final-writing-remediation-requires-16386b8d002a",
-      "sha256": "8a0eeeaad940b2018440d6ed2dda3663a923dde11b2c7fb7c3bcde14bfea8009"
-    },
-    {
-      "id": "final-writing-remediation-requires-1427c6e2d8d0",
-      "sha256": "25c70073b4c573ab643b554a4e23b18778dc1d1d056fd1b0c257166b9cc13180"
-    },
-    {
-      "id": "final-writing-remediation-requires-fdc2dd910a99",
-      "sha256": "ec745bd88045cc56881e1c7261ae1be73d7f97b0cc667f162eec60358d1dd463"
-    },
-    {
-      "id": "final-writing-remediation-requires-e0b8f3da1280",
-      "sha256": "f2d6c7a5b9abe915c4dc34be0e7c2808aad77aa0cbc368cf894c9e1c09935e6e"
-    },
-    {
-      "id": "final-writing-remediation-requires-eb9427a0c278",
-      "sha256": "af778941347a78228b59beed636f23f935d026a66e9001014ca8cb3776d1b73c"
-    },
-    {
-      "id": "final-writing-remediation-requires-713bc1652d77",
-      "sha256": "48a8e7c9fddbe5b2392a512391fb3fd591a2884cb8e26d1952e677c1939f5001"
-    },
-    {
-      "id": "final-writing-remediation-requires-e112f857aa61",
-      "sha256": "e5252e1ba9415e4488be43338202ef3f92aea16f94f82c1c7858462a08b26aa6"
-    },
-    {
-      "id": "final-writing-remediation-requires-707fd72d5867",
-      "sha256": "ebcb9019833e6875327e755474f4ae4a2f9d8dfd12f2537356b3cabe369aa5d2"
-    },
-    {
-      "id": "final-writing-remediation-requires-85cc6603429c",
-      "sha256": "666b8bfa5a503f14d0c2411d066adb63f72c3524b433516f4aefb9a621043072"
-    },
-    {
-      "id": "final-writing-remediation-requires-f8570def23d1",
-      "sha256": "33a2989f86594ad01e5fc3d775d562424ba891bc49523859656ac81e7e5a30dc"
-    },
-    {
-      "id": "final-writing-remediation-requires-98a83b1e165b",
-      "sha256": "5a044ef1dd6962effe8bcd770b72e889d5a74f5810eed8177a966b8dec0fddb0"
-    },
-    {
-      "id": "final-writing-remediation-requires-4f4b7a77910f",
-      "sha256": "bcbeea88e334df6bb5dda5cbe87e4795ef80257aa96efeda3e160df263144cec"
-    },
-    {
-      "id": "final-writing-remediation-requires-7cc444dea86e",
-      "sha256": "ea87fcacf2f8fb83a5bf5c8bd21bda9e9b0e4f1dca2793e658c12c11960cde82"
-    },
-    {
-      "id": "final-writing-remediation-requires-37a3b059148e",
-      "sha256": "f0b2aa8ed5bd787040288b8aa6774c2a0c30b465af7597bb22ba6a2360154801"
-    },
-    {
-      "id": "final-writing-remediation-requires-03a22cd679b4",
-      "sha256": "4d064f26b339fa80847ea091e8cdaf28ef87f4343ea45126bfeb90d68b8a42b7"
-    },
-    {
-      "id": "final-writing-remediation-requires-d7038ec015d3",
-      "sha256": "7ea44d5cd7e78bc03d282a8b4cbbcc484fcd45bd5cb8aec425bd4e95a210fa52"
-    },
-    {
-      "id": "final-writing-remediation-requires-9c82051804e2",
-      "sha256": "41682997685f9de90e9c22b8cf0e6461222f0be190fdf6aa162fd802690bd469"
-    },
-    {
-      "id": "final-writing-remediation-requires-d2810238d0cf",
-      "sha256": "c50c0880cdf5913abf7441faef7faf72bc23b3602076c3d7d2dff4a7dddcbf7e"
-    },
-    {
-      "id": "final-writing-remediation-requires-ebe4ad93229d",
-      "sha256": "9fa50753bf5e679907f6b1e04559554aebd57db891897abedd545ec0ba160005"
-    },
-    {
-      "id": "final-writing-remediation-requires-8d306ac884e2",
-      "sha256": "101013cb82c7c9103a726753df4101c0d3daf7a6afa0308b5f8dc1bb00c1fdb8"
-    },
-    {
-      "id": "final-writing-remediation-forbids-64058e423131",
-      "sha256": "2e2aaf5ec1174cdf47f0eeb8893079c7a04d5c8512476859c614b53ef96fe59a"
-    },
-    {
-      "id": "final-writing-remediation-forbids-74690c20b98c",
-      "sha256": "2530b21a6877399f411a3159742d6bcc00b7861087edbe0ee7519a8f278c1201"
-    },
-    {
-      "id": "final-writing-remediation-forbids-c10af2a80131",
-      "sha256": "70f619564392f95a8d4172f38422bc8f758bfe8cf9583ecbf5fd189ac0772388"
-    },
-    {
       "id": "impl-review-principle-ceabaf730e06",
       "sha256": "f951edd9d8f94a41656186348949785bcb5d2b8dfad9e61efd9d2a8ec353eacc"
     },
@@ -1400,18 +1196,6 @@
       "sha256": "5f4369d8571e67a9f76ad717d97aae70b3d99f9b458ed826b208224e9dce0bb6"
     },
     {
-      "id": "impl-risk-loader-before-transaction",
-      "sha256": "246deb25c3bb37a63c4447073403e89179c1e0b69804c75ad5288f648589628a"
-    },
-    {
-      "id": "impl-risk-selection-before-loader",
-      "sha256": "8a1bfc443c895fadc1093122e1f45df7a8f84ab9ef449094ca0db3c77fdaadbf"
-    },
-    {
-      "id": "impl-risk-loader-before-findings",
-      "sha256": "2daa0c9016428f663ecef3d454d1e3404c9489367c750c12fc4a31551f403105"
-    },
-    {
       "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
       "sha256": "80cc8ec288cd1193c6402801a43b6a87824ef5e43fce691377836c33ac4a7932"
     },
@@ -1420,76 +1204,12 @@
       "sha256": "36276f8770c73b1923b821739e22ecd387e939d4f8927ee494e0efb77f91f438"
     },
     {
-      "id": "impl-run-owned-start-identity-noise-6ed52e97bd1a",
-      "sha256": "a1f34c2362701599580b04a74d0117aa5c88dad4273bab73d42262da2175892f"
-    },
-    {
       "id": "impl-run-owned-closeout-policy-data-df5b55afe6ed",
       "sha256": "6b9688ef3006fdbc9bebc9ab979dbc656d7b783457309becbd7229c44d304238"
     },
     {
-      "id": "impl-run-owned-closeout-preflight-data-70bf834261d5",
-      "sha256": "f2a60cbb00ede3d9e2a65865d94a9199ea36b2f35b2ef183aca9a650568004df"
-    },
-    {
-      "id": "impl-run-owned-closeout-task-paths-6cc50a54fd8f",
-      "sha256": "344428092069675eeea57381a3ac92679db290bf5a598afe2283248d90c79ac7"
-    },
-    {
-      "id": "impl-run-owned-closeout-collision-c8aaac33e944",
-      "sha256": "c164f6c846ad983fa64a7a950c7b11e8b373c9637584c5b7b538120c6258992a"
-    },
-    {
-      "id": "impl-run-owned-closeout-path-decoy-74e7af387475",
-      "sha256": "2ca910536733ec5f50aecb62276f3dd38aadea45443247e786f4f11e6923c89c"
-    },
-    {
-      "id": "impl-run-owned-closeout-noise-0b38f4f73c96",
-      "sha256": "ac4ad4e86948fdcdbdbe38b4aefc06dec51ea2e430c1171edee3da6e4cdb74b6"
-    },
-    {
-      "id": "impl-run-owned-closeout-git-failure-04bb877747b0",
-      "sha256": "6750d68a91a1707a258f0800cf0c8d18305ac1c56efbbe9f12c928cca5791f04"
-    },
-    {
-      "id": "impl-run-owned-closeout-cleanup-29bafbf18fbe",
-      "sha256": "cb8f92b35c931839ff83a1e3e23b90d89c833dfced31ccc1237ebf3d05f41295"
-    },
-    {
-      "id": "impl-run-owned-closeout-preflight-before-collision",
-      "sha256": "1307146323b584599651be762f054cdf2fab33f69019eed6b565408be4836be9"
-    },
-    {
-      "id": "impl-run-owned-closeout-collision-before-integration",
-      "sha256": "ee0011e44ab3c6803f1889143da1032d0ce086dc72f6a3c9ad0f4a3bc4290dfc"
-    },
-    {
-      "id": "impl-run-owned-closeout-integration-before-post",
-      "sha256": "dbc0b7c69632ef8e00d4c8b1e62950a5da550f8dc020e19a4efe6c5d4a96d536"
-    },
-    {
-      "id": "impl-run-owned-closeout-forbid-state-d216f2d56733",
-      "sha256": "43024904671bfde55b7b09ae17c4fab2fa970fa02c338c880135d9484176c7c0"
-    },
-    {
-      "id": "impl-run-owned-closeout-forbid-dirty-b3c676707c86",
-      "sha256": "a78948f94ee37a506f302125e7ca34276b84981b3dfb5830f969ff4a3a12655b"
-    },
-    {
       "id": "impl-work-unit-dirty-scope-3b5429409356",
       "sha256": "0fa56c91d1172de477f25422fd1178ca6cb0b8d9a4d6d6168f5c11a777bdead5"
-    },
-    {
-      "id": "impl-closeout-summary-policy-8d3b45fdd25f",
-      "sha256": "af125d868a77b01ec4399a25c3eeaedc1a0d8d221b8178b5c2a2d35316afbfb1"
-    },
-    {
-      "id": "impl-closeout-summary-forbid-state-7875d130babf",
-      "sha256": "ee8507ad300b433a1c24817fd203efb96d4471cce81ddd946526b45cb1391bb1"
-    },
-    {
-      "id": "impl-closeout-summary-forbid-dirty-d565762f5057",
-      "sha256": "9ad75e9ae12ffceb26f6d867b4e1a08962914de10a5b159927dc9a9d73258ee3"
     },
     {
       "id": "plan-candidate-producer-internal-guard-requires-86104357309e",
@@ -3527,6 +3247,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-work-unit-data-canonical",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-programmatic-flows",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3636,38 +3361,13 @@
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "impl-risk-selection-handoff-end",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
       "kind": "span",
       "id": "impl-risk-directed-batch-resolve-kernel-parent-mapping",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "impl-risk-directed-batch-loader-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-risk-directed-resolution-transaction-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-review-findings-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
       "kind": "span",
       "id": "impl-final-writing-loader",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-run-owned-closeout-summary",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -3693,26 +3393,6 @@
     {
       "kind": "span",
       "id": "impl-run-owned-closeout-safety",
-      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-run-owned-closeout-preflight",
-      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-run-owned-closeout-collision-calculation",
-      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-run-owned-closeout-integration-action",
-      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-run-owned-closeout-post-observation",
       "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {
@@ -4318,6 +3998,11 @@
     {
       "kind": "span",
       "id": "work-unit-design-internal-guard",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-work-unit-data-consumer",
       "path": "shared/skill/work-unit-design/SKILL.md"
     },
     {

@@ -45,9 +45,7 @@ Data と親の理由を closeout に残す。`unresolved` を残したまま acc
 - `scope.change` / `scope.exclude`、rollback、verification を修正前に閉じられる。
 - 指摘対応以外の変更を含まず、同じ accepted base から前後の target snapshot を比較できる。
 
-条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化する。Work Unit Data は `id`、`purpose`、
-`acceptance_criteria`、`scope`（`change` / `exclude`）、`implementation_freedom`、`constraints`、`depends_on`、`verification` の
-canonical field に統一し、概念名を別 key のように置き換えない。
+条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化し、`impl-lead` の `Intake and Work Unit normalization` が定める canonical Work Unit Data に適合させる。field の意味や一覧はここで再定義しない。
 
 元の Work Unit の意味を変更せず、同じ run の最終 remediation として通常の worker 選択、fresh Implementer context、single writer
 で実装する。`writing-principles-reviewer` は writer、Implementer、Work Unit owner、

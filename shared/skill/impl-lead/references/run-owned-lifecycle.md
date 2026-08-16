@@ -68,7 +68,6 @@ writer/reviewer が終了し、worktree 内だけの未統合成果/evidence が
 (e) user retention がなく、tracked working state の観測が完了している、を判定 Data にする。
 どれかを観測できない、または false なら削除 Action を実行せず、path、branch、commit、理由を付けた `stop-incomplete` を返す。
 
-<!-- @anchor impl-run-owned-closeout-preflight -->
 local integration は別の Action として、integration 直前に invocation repository identity、worktree identity/canonical path、exact full branch
 ref、その ref の target、`invocation_start_head`、HEAD、tracked working state identity、tracked clean status を再照合する。
 invocation branch の HEAD は開始時 `invocation_start_head` から drift していないことを確認し、Work Unit の `base_snapshot` と一致することは
@@ -78,7 +77,6 @@ task changed paths は `invocation_start_head..task-owned tip` の tree 上の�
 copy は destination を含める。path は component 単位で比較し、`foo/bar` と `foo/barista` のような文字列 prefix を ancestor / descendant
 とはみなさない。
 
-<!-- @anchor impl-run-owned-closeout-collision-calculation -->
 current untracked / ignored entry と task changed paths の同一または component 単位の ancestor / descendant だけを integration collision とする。
 noncollision untracked / ignored の追加・削除・内容変更は blocker と通常 result Data の入力にしない。開始時の untracked / ignored baseline は
 作らず、現在の entry を必要な preflight 観測として扱う。same / ancestor / descendant collision、repository / worktree / canonical path /
@@ -87,12 +85,10 @@ Calculation してから、blocker がない場合だけ `--ff-only` integration
 衝突または別の blocker の場合は task-owned branch/commit を保持して未統合理由を Data にする。無条件 checkout/merge、merge commit、rebase、reset、
 stash、force、`branch -D` は使わない。
 
-<!-- @anchor impl-run-owned-closeout-integration-action -->
 `--ff-only` 成功後は同じ exact branch ref の target と HEAD が task commit に一致すること、tracked working state identity が不変であることを
 再観測する。secret の内容は報告せず、path/type/mode/size と安全な content digest などの identity だけで照合する。`--ff-only` の Action status
 だけを terminal outcome にせず、失敗後は exact ref/HEAD と tracked working state を再観測する。
 
-<!-- @anchor impl-run-owned-closeout-post-observation -->
 再観測が (a) `invocation_start_head` のままなら未統合として扱い、他の安全条件が成立するときだけ worktree を削除して `stop-incomplete`、
 (b) task commit なら統合済みとして扱い、tracked working state identity と全 postcondition が成立するときだけ通常 cleanup と `accepted`、
 (c) unexpected または観測不能なら worktree を保持して `stop-incomplete` とする。不一致、照合不能、または Action の結果不明なら branch delete
