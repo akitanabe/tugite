@@ -688,14 +688,6 @@
       "sha256": "1af4d3b66b48c4534abeb375297f7d3ffa79780476a9a310683a5882206b1be6"
     },
     {
-      "id": "clarify-it-presentation-hdp-cardinality-967c1cf31ba4",
-      "sha256": "8081edb5164aded6e256065267d0722e1b2a4e92d3e31c70125333567685f11b"
-    },
-    {
-      "id": "clarify-it-presentation-fixed-cardinality-5a8f31b75f96",
-      "sha256": "710c7f2b23602602b2d1836e17dedafa57a1c7e19b2543ce5eb4d8ea8283a68b"
-    },
-    {
       "id": "clarify-it-selection-no-score-d9f7fc56beea",
       "sha256": "2c171a46dd609a0c562249512a1a4b66ae25b194e94570f59c9343be322d9b10"
     },
@@ -2378,10 +2370,6 @@
     {
       "id": "clarify-caller-data-21af968c33e1",
       "sha256": "02845c1588e2ac0c1efb544e42c65d7f4f794620c1b3d9dad358fc13362a84a5"
-    },
-    {
-      "id": "clarify-caller-presentation-cardinality-207794e00a16",
-      "sha256": "42f8a8abb2e80c9470baeaddb3a9bb951f7df874f2f5773699e9d1e009606dc4"
     },
     {
       "id": "kernel-loader-data-b0d341da5646",

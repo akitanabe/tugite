@@ -14,13 +14,6 @@ caller_projection = preserve internal vocabulary in caller/projection Data; appl
 public_extension = none'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-caller-presentation-cardinality-207794e00a16]
-kind = "occurrences"
-slice = "plan-interactive-clarify-caller"
-pattern = "Human-facing utterances"
-count = 1
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.kernel-loader-data-b0d341da5646]
 kind = "requires"
 slice = "plan-interactive-kernel-mapping"
