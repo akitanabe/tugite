@@ -27,6 +27,36 @@ description: >-
 要求、対象、成功条件、scope、exclude、依存、制約の不足または矛盾が品質を変える場合は推測せず、
 `stop-incomplete` として必要な判断を返す。軽微な不足は根拠付き `assumptions` として分離する。
 
+## Programmatic Flows
+
+以下は、親が意味判断を完了して確定 Data を渡した後の局所的な deterministic procedure だけを持つ。
+Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome の後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。
+
+### producer-invocation-preflight
+
+Trigger: 親が plan-candidate-producer invocation を開始し、固定 preflight の実行を要求したとき。
+Inputs: 親が注入した batch-resolve-kernel v1 と necessity-kernel v1 の Loader Data、authority、authority_constraints、candidate Claim 判定前の一次情報。
+Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。batch の検証後も necessity-kernel loader は独立して、candidate Claim adjudication の前に検証する。両 loader の load timing と mapping は相互の load 順に依存させず、authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
+Outcomes: 検証済み preflight Data、または `stop-incomplete`。loader / authority failure は突破せず、candidate content と Claim の意味判断は Agentic な親へ返す。
+
+### advisor-two-pass-orchestration
+
+Trigger: 親が検証済み candidate S0 と advisor invocation の固定実行を確定したとき。
+Inputs: 親確定の candidate snapshot、read-only advisor の各 insight、Resolution Batch / Transaction の既存 Data、verify と semantic progress の結果。
+Procedure: 次の唯一の順序を実行する。
+candidate S0
+→ fresh-context advisor #1
+→ Resolution Batch #1
+→ Resolution Transaction #1 closure
+→ verified candidate S1
+→ fresh-context advisor #2
+→ Resolution Batch #2
+→ Resolution Transaction #2 closure
+→ verified candidate S2
+→ complete
+Batch または selected set が空でも第2 passを必ず起動し、該当しなければ空 Batch として第2 Transaction を閉じる。第2 pass後に第3 passを起動しない。第2 pass の insight は既存の non-binding output から Resolution Point へ mapping する。advisor invocation は exactly 2 pass とする。
+Outcomes: verified candidate S2 と `complete`、または `stop-incomplete`。第2 passの insight採否、Transaction内部、semantic progress は Flow 外で親が判断する。
+
 ## batch-resolve-kernel v1 の parent mapping
 
 次の Loader Data が列挙値の唯一の正本である。
@@ -149,27 +179,10 @@ apply / verify / isolate / applicability check から得た新しい execution e
 adjudication を許す。新しい point や新しい frontier を追加せず、counterpart を再起動しない。authority または evidence が
 不足する point は推測で selected set に含めず、独立して処理できる point を止めずに caller-owned boundary へ返す。
 
-## plan-quality-advisor の固定2 pass
+## plan-quality-advisor の semantic observation boundaries
 
-advisor invocation は caller-owned であり、plan-candidate-producer は次の exactly 2 pass を実行する。
-
-```text
-candidate S0
-→ fresh-context advisor #1
-→ Resolution Batch #1
-→ Resolution Transaction #1
-→ verify + semantic progress
-→ verified candidate S1
-→ fresh-context advisor #2
-→ Resolution Batch #2
-→ Resolution Transaction #2
-→ verify + semantic progress
-→ verified candidate S2
-→ return
-```
-
-第1 pass の Batch または selected set が空でも第2 passを必ず起動する。第2 pass後に第3 passを起動しない。第2 pass は全面
-再レビューではなく、次の既存 insight 境界だけを観測する。
+advisor invocation は caller-owned であり、orchestration の唯一の witness は上記 `advisor-two-pass-orchestration` Flow である。
+advisor の semantic observation は全面再レビューではなく、次の既存 insight 境界だけを扱う。
 
 - fulfillment check: 第1 passで `adopted` とした obligation、revision の所在 / 内容、verify で確認した観測事実だけを
   context として渡し、S1 で実際に充足しているかを確認する。
@@ -178,16 +191,12 @@ candidate S0
 - rejected contest: 第1 pass時点にはなかった new evidence が rejection reason を直接崩す場合に一度だけ扱う。
 - unresolved revisit: S1 または第1 pass後に確定した事実が、元の evidence gap を実際に補った場合だけ扱う。
 
-第2 pass 専用の output schema は新設せず、既存の non-binding output boundary を維持する。
-第2 pass へ planner の `fully satisfied` 結論や fulfillment check に不要な adopted 理由を渡さず、advisor 自身に S1 と
-obligation を照合させる。第2 pass の insight も既存の non-binding output から通常どおり Resolution Point へ mapping し、
-該当しなければ空 Batch として第2 Transaction を閉じる。第2 Transaction の修正は verify と semantic progress まで閉じ、
-残余 risk は後段 review-refine に返す。
+planner の `fully satisfied` 結論や fulfillment check に不要な adopted 理由を advisor の観測 context に含めず、専用の output schema は新設せず既存の non-binding output boundary を維持する。insight の採否と Resolution Point への mapping、Transaction 内部、verify と semantic progress、残余 risk の扱いは親の意味判断として保持する。
 
 ## bounded な改善と返却
 
 candidate の改善は、要求と一次情報から具体的な品質向上が残る間だけ bounded に行い、snapshot 更新は上記
-current verified candidate の caller mapping に従う。固定2 passの Resolution Transaction を完了し、採否台帳と残存 risk を
+current verified candidate の caller mapping に従い、Resolution Transaction を完了し、採否台帳と残存 risk を
 保った後にだけ return を判定する。判断密度が高まり scope や
 責務が変わる場合、または material な `unresolved` により安全な candidate を推奨できない場合は、勝手に進めず
 判断点・evidence・必要な問いを付けて `stop-incomplete` を返す。軽い不確実性は既存の candidate status Calculation

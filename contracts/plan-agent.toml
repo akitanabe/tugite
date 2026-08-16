@@ -237,34 +237,34 @@ pattern = "authority または evidence が\n不足する point は推測で sel
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: this transition block is structured execution Data; line order carries the two-pass sequence.
-[contracts.plan-candidate-producer-two-pass-flow-cd59fe35e0b9]
+[contracts.plan-candidate-producer-two-pass-flow-216037f1abda]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "candidate S0\n→ fresh-context advisor #1\n→ Resolution Batch #1\n→ Resolution Transaction #1"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: this transition block is structured execution Data; line order carries the second-pass sequence.
-[contracts.plan-candidate-producer-two-pass-second-aefda762d727]
+[contracts.plan-candidate-producer-two-pass-second-6dff8d8b527a]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "verified candidate S1\n→ fresh-context advisor #2\n→ Resolution Batch #2\n→ Resolution Transaction #2"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-exactly-ea2285f96346]
+[contracts.plan-candidate-producer-two-pass-exactly-aa0e66d407b3]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "exactly 2 pass"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-empty-3fd3b00f8f7e]
+[contracts.plan-candidate-producer-two-pass-empty-94c3e1372740]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "Batch または selected set が空でも第2 passを必ず起動"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-no-third-9d913c8a97fa]
+[contracts.plan-candidate-producer-two-pass-no-third-5d4af6f803a7]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "第3 passを起動しない"
 applies_to = ["claude", "codex", "cursor"]
 
@@ -292,21 +292,21 @@ slice = "plan-candidate-producer-two-advisor-passes"
 pattern = "unresolved revisit"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-data-d0068cb56a54]
+[contracts.plan-candidate-producer-two-pass-data-99ff6abc3e74]
 kind = "requires"
 slice = "plan-candidate-producer-two-advisor-passes"
-pattern = "planner の `fully satisfied` 結論や fulfillment check に不要な adopted 理由を渡さず"
+pattern = "planner の `fully satisfied` 結論や fulfillment check に不要な adopted 理由を advisor の観測 context に含めず"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-no-output-1f81f4b994a8]
+[contracts.plan-candidate-producer-two-pass-no-output-943bf721cfdd]
 kind = "requires"
 slice = "plan-candidate-producer-two-advisor-passes"
-pattern = "第2 pass 専用の output schema は新設せず"
+pattern = "専用の output schema は新設せず既存の non-binding output boundary を維持する"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-two-pass-empty-batch-ac8765826ca9]
+[contracts.plan-candidate-producer-two-pass-empty-batch-41351c593a6e]
 kind = "requires"
-slice = "plan-candidate-producer-two-advisor-passes"
+slice = "advisor-two-pass-orchestration"
 pattern = "該当しなければ空 Batch として第2 Transaction を閉じる"
 applies_to = ["claude", "codex", "cursor"]
 
@@ -586,10 +586,10 @@ slice = "plan-candidate-producer-bounded-return"
 pattern = "安全な candidate を推奨できない場合"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-return-after-two-pass-373c1cdd74a2]
+[contracts.plan-candidate-producer-return-after-two-pass-8a51622c6e33]
 kind = "requires"
 slice = "plan-candidate-producer-bounded-return"
-pattern = "固定2 passの Resolution Transaction を完了し"
+pattern = "Resolution Transaction を完了し"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.candidate-producer-boundary-requires-71c110088df1]
@@ -868,82 +868,22 @@ slice = "plan-agent-structural-health-handoff"
 pattern = "`structural-health-gate`"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-structural-health-handoff-requires-b857aa2c4473]
+[contracts.plan-agent-structural-health-handoff-requires-87af65d49afa]
 kind = "requires"
 slice = "plan-agent-structural-health-handoff"
-pattern = "plan-candidate-producer を再実行"
+pattern = "親は candidate snapshot、gate assessment、gate evidence、current round、producer status を確定 Data として `candidate-structural-gate-routing` Flow へ渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-structural-health-handoff-requires-de50dc9e1341]
+[contracts.plan-agent-structural-health-handoff-requires-856a4e49ebf9]
 kind = "requires"
 slice = "plan-agent-structural-health-handoff"
-pattern = "再 plan-candidate-producer 後"
+pattern = "親は structural gate の意味を裁定し、必要な candidate の準備・修正・採否を保持する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-structural-health-handoff-requires-9508f55911e5]
+[contracts.plan-agent-structural-health-handoff-requires-59e5490b4224]
 kind = "requires"
 slice = "plan-agent-structural-health-handoff"
-pattern = "`stop-incomplete`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-41d691f4468b]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "gate assessment 1回を1 `round` と数える"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-3e45b696eb23]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-eb0aa9b703e5]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`pass` は上限未消化でも直ちに `review-refine` へ進む"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-d229ef6c64be]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`return` は gate evidence だけを入力に plan-candidate-producer を再実行し、別 identity の candidate を再評価する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-6c13bfc2344a]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`rounds.limit` 到達 round の `return` は `stop-incomplete` とする"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-d6eb9c024b9c]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`insufficient-evidence` は plan-candidate-producer を再実行せず `stop-incomplete` とする"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-1fc5c70a8cac]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "structural gate budget と review-refine budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-cd1bb57f5700]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`rounds.limit=1` の round 1 `return` は plan-candidate-producer を再実行せず `stop-incomplete` とする"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-9a2da8008dde]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-structural-health-handoff-requires-3389f48382fd]
-kind = "requires"
-slice = "plan-agent-structural-health-handoff"
-pattern = "`rounds.limit` が1未満の入力では gate assessment、plan-candidate-producer の再実行、`review-refine` を起動しない"
+pattern = "未指定時の valid"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-refine-structural-boundary-requires-e59ac3fcd3cf]
@@ -1012,40 +952,10 @@ before = "plan-candidate-producer-start"
 after = "structural-health-gate-start"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-review-routing-requires-62433696fa0f]
+[contracts.plan-agent-review-routing-requires-a2534dc79b9a]
 kind = "requires"
 slice = "plan-agent-review-routing"
-pattern = "まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを判定する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-routing-requires-1e4e7e9ec253]
-kind = "requires"
-slice = "plan-agent-review-routing"
-pattern = "既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-refine` に投入せず、通常の起草確定へ進む。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-routing-requires-627a4d0db58b]
-kind = "requires"
-slice = "plan-agent-review-routing"
-pattern = "`review` の明示要求がなくても `review-refine` を既定で起動する"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-routing-requires-55f1f38469e2]
-kind = "requires"
-slice = "plan-agent-review-routing"
-pattern = "ユーザーが review 省略を明示した場合は、`review-refine` を実行せず通常の起草確定へ進む"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-routing-requires-4bb631170809]
-kind = "requires"
-slice = "plan-agent-review-routing"
-pattern = "`artifact_kind` の適用可否を review 省略の判定より先に行う"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-routing-requires-f1b6672b1dba]
-kind = "requires"
-slice = "plan-agent-review-routing"
-pattern = "ユーザー明示なしの既定 review は、具体的な risk を理由に親が自発選択した review と同じ非 accept 分岐を適用する"
+pattern = "まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを親が判定し、確認済み applicability を Flow に渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-review-goal-requires-4f5185a699b2]
@@ -1072,6 +982,18 @@ slice = "plan-agent-review-routing"
 pattern = "追加 risk がなければ `review_goal` を設定しない"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-agent-review-routing-parent-a4a043497f34]
+kind = "requires"
+slice = "plan-agent-review-routing"
+pattern = "適用対象なら、ユーザーの review 省略指定を親が確認し、確認済み opt-out を applicability とともに Flow に渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-routing-parent-da227491563f]
+kind = "requires"
+slice = "plan-agent-review-routing"
+pattern = "readiness Data として Flow に渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-review-routing-requires-943449028bc2]
 kind = "requires"
 slice = "plan-agent-review-routing"
@@ -1088,12 +1010,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 slice = "plan-agent-review-routing"
 pattern = "review-refine の5区分（採用、却下、範囲外、判断保留、\n人間確認）"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-review-applicability-before-opt-out]
-kind = "order"
-before = "review-applicability"
-after = "review-opt-out"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-structural-health-gate-before-review-refine]
@@ -1334,4 +1250,294 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "plan-agent-artifact-publish"
 after = "plan-agent-artifact-output"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Flow fields and routing order are deterministic execution Data; keep the parent-owned semantic judgment outside the Flow.
+[contracts.plan-candidate-producer-programmatic-boundary-975e2f84e2df]
+kind = "requires"
+slice = "plan-candidate-producer-programmatic-flows"
+pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome の後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-preflight-flow-ed264820436f]
+kind = "requires"
+slice = "producer-invocation-preflight"
+pattern = '''Trigger: 親が plan-candidate-producer invocation を開始し、固定 preflight の実行を要求したとき。
+Inputs: 親が注入した batch-resolve-kernel v1 と necessity-kernel v1 の Loader Data、authority、authority_constraints、candidate Claim 判定前の一次情報。
+Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。batch の検証後も necessity-kernel loader は独立して、candidate Claim adjudication の前に検証する。両 loader の load timing と mapping は相互の load 順に依存させず、authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
+Outcomes: 検証済み preflight Data、または `stop-incomplete`。loader / authority failure は突破せず、candidate content と Claim の意味判断は Agentic な親へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-flow-0136ea811d0c]
+kind = "requires"
+slice = "advisor-two-pass-orchestration"
+pattern = '''candidate S0
+→ fresh-context advisor #1
+→ Resolution Batch #1
+→ Resolution Transaction #1 closure
+→ verified candidate S1
+→ fresh-context advisor #2
+→ Resolution Batch #2
+→ Resolution Transaction #2 closure
+→ verified candidate S2
+→ complete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-flow-1776c6dd3167]
+kind = "requires"
+slice = "candidate-structural-gate-routing"
+pattern = "Trigger: 親が producer status / candidate snapshot、gate assessment、独立した structural gate budget を確定したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-dispatch-flow-e7d458c1fbd1]
+kind = "requires"
+slice = "review-dispatch"
+pattern = "Trigger: 親が artifact snapshot と review readiness を確定し、review routing を要求したとき。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-dispatch-flow-routing-e106310fc46b]
+kind = "requires"
+slice = "review-dispatch"
+pattern = "Procedure: parent-confirmed applicability は opt-out より先に評価する。nonapplicable は normal completion、applicable + opt-out は normal completion、applicable + no opt-out + ready は review dispatch とする。readiness failure または reviewer failure は review-not-established として親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-dispatch-flow-outcomes-90f2453bdf32]
+kind = "requires"
+slice = "review-dispatch"
+pattern = "Outcomes: nonapplicable、opt-out、review dispatch、または明示的な `review-not-established`。Flow は accept を返さず、finding の意味的な採否は親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-dispatch-flow-no-stop-85266337b425]
+kind = "forbids"
+slice = "review-dispatch"
+pattern = "`stop-incomplete`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-two-pass-duplicate-forbidden-413842fb0d7b]
+kind = "forbids"
+slice = "plan-agent-proposal-resolution-ownership"
+pattern = '''candidate S0
+→ fresh-context advisor #1
+→ Resolution Batch #1
+→ Resolution Transaction #1'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-preflight-before-two-pass-26ae94248770]
+kind = "order"
+before = "producer-invocation-preflight"
+after = "advisor-two-pass-orchestration"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-before-review-d05ca81bd2d2]
+kind = "order"
+before = "candidate-structural-gate-routing"
+after = "review-dispatch"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-flow-section-occurrences]
+kind = "occurrences"
+pattern = "## Programmatic Flows"
+count = 1
+paths = [
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
+  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-flow-section-occurrences]
+kind = "occurrences"
+pattern = "## Programmatic Flows"
+count = 1
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-flow-trigger-occurrences]
+kind = "occurrences"
+pattern = "Trigger:"
+count = 2
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-flow-inputs-occurrences]
+kind = "occurrences"
+pattern = "Inputs:"
+count = 2
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-flow-procedure-occurrences]
+kind = "occurrences"
+pattern = "Procedure:"
+count = 2
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-flow-outcomes-occurrences]
+kind = "occurrences"
+pattern = "Outcomes:"
+count = 2
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-flow-trigger-occurrences]
+kind = "occurrences"
+pattern = "Trigger:"
+count = 2
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-flow-inputs-occurrences]
+kind = "occurrences"
+pattern = "Inputs:"
+count = 2
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-flow-procedure-occurrences]
+kind = "occurrences"
+pattern = "Procedure:"
+count = 2
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-flow-outcomes-occurrences]
+kind = "occurrences"
+pattern = "Outcomes:"
+count = 2
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-preflight-flow-occurrences]
+kind = "occurrences"
+pattern = "### producer-invocation-preflight"
+count = 1
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-flow-occurrences]
+kind = "occurrences"
+pattern = "### advisor-two-pass-orchestration"
+count = 1
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-flow-occurrences]
+kind = "occurrences"
+pattern = "### candidate-structural-gate-routing"
+count = 1
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-dispatch-flow-occurrences]
+kind = "occurrences"
+pattern = "### review-dispatch"
+count = 1
+paths = ["plugins/claude/skills/plan-agent/SKILL.md", "plugins/codex/skills/plan-agent/SKILL.md", "plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-programmatic-boundary-09500f9678d9]
+kind = "requires"
+slice = "plan-agent-programmatic-flows"
+pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome 後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-no-third-pass-13eed53ddec1]
+kind = "forbids"
+slice = "advisor-two-pass-orchestration"
+pattern = "第3 passを起動する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-flow-procedure-633919de928a]
+kind = "requires"
+slice = "candidate-structural-gate-routing"
+pattern = "Procedure: producer `stop-incomplete`、context-not-established、insufficient-evidence、invalid budget は `stop-incomplete` とする。gate pass は downstream へ進める。gate return は current round が parent-fixed limit 未満の場合だけ、gate evidence を入力に producer retry する。limit 到達の gate return は `stop-incomplete` とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-routing-flow-outcomes-68c7abf022a2]
+kind = "requires"
+slice = "candidate-structural-gate-routing"
+pattern = "Outcomes: downstream dispatch、producer retry、または `stop-incomplete`。Flow は producer `stop-incomplete` / insufficient-evidence を plain `incomplete` へ変換せず、round limit の選択・固定、gate assessment の意味、candidate の修正と採否は Flow 外の親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-optout-reversal-37ffac39f5a0]
+kind = "forbids"
+slice = "review-dispatch"
+pattern = "opt-out を applicability より先に判定する"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-preflight-field-order]
+kind = "order"
+before = "producer-preflight-trigger"
+after = "producer-preflight-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-preflight-inputs-before-procedure]
+kind = "order"
+before = "producer-preflight-inputs"
+after = "producer-preflight-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-preflight-procedure-before-outcomes]
+kind = "order"
+before = "producer-preflight-procedure"
+after = "producer-preflight-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-field-order]
+kind = "order"
+before = "advisor-two-pass-trigger"
+after = "advisor-two-pass-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-inputs-before-procedure]
+kind = "order"
+before = "advisor-two-pass-inputs"
+after = "advisor-two-pass-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-two-pass-procedure-before-outcomes]
+kind = "order"
+before = "advisor-two-pass-procedure"
+after = "advisor-two-pass-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-field-order]
+kind = "order"
+before = "gate-routing-trigger"
+after = "gate-routing-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-inputs-before-procedure]
+kind = "order"
+before = "gate-routing-inputs"
+after = "gate-routing-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gate-procedure-before-outcomes]
+kind = "order"
+before = "gate-routing-procedure"
+after = "gate-routing-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-field-order]
+kind = "order"
+before = "review-dispatch-trigger"
+after = "review-dispatch-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-inputs-before-procedure]
+kind = "order"
+before = "review-dispatch-inputs"
+after = "review-dispatch-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-review-procedure-before-outcomes]
+kind = "order"
+before = "review-dispatch-procedure"
+after = "review-dispatch-outcomes"
 applies_to = ["claude", "codex", "cursor"]

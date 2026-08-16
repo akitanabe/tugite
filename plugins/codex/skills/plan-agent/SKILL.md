@@ -75,13 +75,31 @@ plan-candidate-producer の invocation boundary、discretionary authority、reso
 internal `plan-candidate-producer` の開始時に、caller=`plan-agent`、resolver=planner、counterpart=`plan-quality-advisor`（Resolution
 Transaction 外の one-shot observation）を mapping し、`authority = discretionary`、`authority_constraints = []` を注入して、plan-candidate-producer が規定する
 batch-resolve-kernel loader を親 Action として一度だけ実行する。advisor は非拘束 Data を返し、planner が一次情報を
-基準に既存 adoption ledger へ裁定する。plan-candidate-producer の advisor invocation は candidate S0→advisor #1→Resolution
-Transaction #1→verified S1→fresh-context advisor #2→Resolution Transaction #2→verified S2→return の exactly 2 pass
-であり、Batch / selected set の空判定にかかわらず第2 passを起動し、第3 passを起動しない。
+基準に既存 adoption ledger へ裁定する。advisor invocation point は `advisor-two-pass-orchestration` Flow に委譲し、この Skill は
+invocation point だけを保持する。
 
 ユーザーが安全上限を指定していない場合、親は plan-candidate-producer loop の開始時に resolution execution bound を internal responsibility
 として決定し、loop 中は固定する。固定数、新しい public parameter / schema、`resolve_rounds` は追加しない。この bound は
 structural gate budget および review-refine budget と別 Data とし、相互に加算・流用しない。
+
+## Programmatic Flows
+
+以下は、親が意味判断を完了して確定 Data を渡した後の局所的な deterministic routing だけを持つ。
+Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome 後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。
+
+### candidate-structural-gate-routing
+
+Trigger: 親が producer status / candidate snapshot、gate assessment、独立した structural gate budget を確定したとき。
+Inputs: producer status、verified candidate snapshot、gate assessment、`rounds.limit`、gate evidence、producer と gate の親確定 context。
+Procedure: producer `stop-incomplete`、context-not-established、insufficient-evidence、invalid budget は `stop-incomplete` とする。gate pass は downstream へ進める。gate return は current round が parent-fixed limit 未満の場合だけ、gate evidence を入力に producer retry する。limit 到達の gate return は `stop-incomplete` とする。
+Outcomes: downstream dispatch、producer retry、または `stop-incomplete`。Flow は producer `stop-incomplete` / insufficient-evidence を plain `incomplete` へ変換せず、round limit の選択・固定、gate assessment の意味、candidate の修正と採否は Flow 外の親へ返す。
+
+### review-dispatch
+
+Trigger: 親が artifact snapshot と review readiness を確定し、review routing を要求したとき。
+Inputs: 親確定の artifact_kind、applicability、user review opt-out、review goal、reviewer data、Acceptance Criteria / 設計 readiness、reviewer availability。
+Procedure: parent-confirmed applicability は opt-out より先に評価する。nonapplicable は normal completion、applicable + opt-out は normal completion、applicable + no opt-out + ready は review dispatch とする。readiness failure または reviewer failure は review-not-established として親へ返す。
+Outcomes: nonapplicable、opt-out、review dispatch、または明示的な `review-not-established`。Flow は accept を返さず、finding の意味的な採否は親へ返す。
 
 ## plan-candidate-producer の前段
 
@@ -96,27 +114,8 @@ structural gate budget および review-refine budget と別 Data とし、相�
 `stop-incomplete` の場合は caller-owned parent がそこで停止し、後段工程を選択しない。それ以外も gate を通過した candidate だけを
 `review-refine` へ渡す。
 
-candidate snapshot を受け取った場合、同じ親 context の internal `structural-health-gate` に渡す。親が `pass` と
-判断した場合だけ後段へ進む。渡す gate input には、明示起動された plan-family public workflow parent を識別する
-generic `caller_context` Data（`workflow_family: plan-family`、`invocation: explicit-public-parent`）を含める。
-gate が `context 不成立` Data を返した場合は assessment を開始せず、親は別 route へ切り替えずに
-`stop-incomplete` とし、candidate/resource の編集や advisor・producer・後段処理の起動を行わない。
-
-親は structural gate の予算を独立した `rounds` Data として管理する。gate assessment 1回を1 `round` と数える。
-`rounds.limit` は下限1の ceiling としてユーザー指定を優先し、未指定時は親が loop 開始時に決定して固定する。
-`rounds.limit` が1未満なら、親は値を補正・既定値置換せず受理せず、理由を添えて `stop-incomplete` とする。`rounds.limit` が1未満の入力では gate assessment、plan-candidate-producer の再実行、`review-refine` を起動しない。
-structural gate budget と review-refine budget は別 Data とし、gate round を `adversarial_review_count` 等へ加算しない。
-
-親は各 gate assessment を次の境界で判断する。
-`pass` は上限未消化でも直ちに `review-refine` へ進む。
-`return` は gate evidence だけを入力に plan-candidate-producer を再実行し、別 identity の candidate を再評価する。
-現在の round が `rounds.limit` 未満の場合だけこの再実行を行う。`rounds.limit` 到達 round の `return` は `stop-incomplete` とする。
-`rounds.limit` を超えて plan-candidate-producer と gate の循環を続けない。
-`rounds.limit=1` の round 1 `return` は plan-candidate-producer を再実行せず `stop-incomplete` とする。
-
-`insufficient-evidence` は plan-candidate-producer を再実行せず `stop-incomplete` とする。再 plan-candidate-producer 後の構造不健全な `return` は
-現在の round が `rounds.limit` 未満なら上記のとおり継続し、limit 到達なら `stop-incomplete` とする。再 plan-candidate-producer 後の
-`insufficient-evidence` は常に `stop-incomplete` とする。
+親は同じ親 context の internal `structural-health-gate` として、未指定時の valid `rounds.limit` を loop 開始時に選択・固定する。親は candidate snapshot、gate assessment、gate evidence、current round、producer status を確定 Data として `candidate-structural-gate-routing` Flow へ渡す。
+親は structural gate の意味を裁定し、必要な candidate の準備・修正・採否を保持する。Flow outcome 後の意味判断は親に残し、Flow はこの手順の唯一の deterministic witness とする。
 
 gate を通過した candidate snapshot だけを、必要な review goal とともに既存の `review-refine` へ渡す。この順序
 （plan-candidate-producer → structural-health-gate → review-refine）を飛ばさず、review-refine の採否・受け入れ・後続 Action は
@@ -152,34 +151,24 @@ Work Unit normalization とは扱わない。正式な normalization は impleme
 
 ## review の判断
 
-まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを判定する。
-既定 reviewer の適用対象外なら、review goal に対応する別 reviewer の有無にかかわらず `review-refine` に投入せず、通常の起草確定へ進む。
-`artifact_kind` の適用可否を review 省略の判定より先に行う。
-適用対象なら、ユーザーが review 省略を明示した場合は、`review-refine` を実行せず通常の起草確定へ進む。
-適用対象で review 省略が明示されていない場合は、`review` の明示要求がなくても `review-refine` を既定で起動する。
+まず `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から、成果物が reviewer 適用対象かを親が判定し、確認済み applicability を Flow に渡す。
+適用対象なら、ユーザーの review 省略指定を親が確認し、確認済み opt-out を applicability とともに Flow に渡す。
 `review_goal` は、ユーザー指定の review goal や追加の具体的な risk がない場合、「実装前プランの具体的な failure path を確認し、確定候補にできるか判断する」とする。
 これは plan review 自体の既定目的であり、毎回 risk を事前発見することを要求しない。ユーザー指定 goal や追加 risk は既存 reviewer の責務内で追加できる。
 review の明示要求は既定起動の前提にせず、具体的な risk を review goal として追加する場合だけ親が記録する。
-ユーザー明示なしの既定 review は、具体的な risk を理由に親が自発選択した review と同じ非 accept 分岐を適用する。
 
 既定 reviewer は `plan-adversarial-reviewer`、final trim は `over-engineering-reviewer`（プラン入力モード）である。
 適用対象の成果物に対する他の reviewer はユーザーが明示した場合、または risk が既存 reviewer の責務に対応する場合だけ親が選ぶ。
-review を予定し既定 reviewer の適用対象となる成果物は、reviewer の入力前提である「Acceptance Criteria」の節名と「設計」の
-節名を持つように起草する。前提不足は review-refine へ渡さず、問いを補って再投入するか、レビュー不成立として返す。
+review を予定し既定 reviewer の適用対象となる成果物は、reviewer の入力前提である「Acceptance Criteria」の節名と「設計」の節名を持つように親が起草・確認し、readiness Data として Flow に渡す。
 
-`review-refine` へ渡す入力は成果物の不変 snapshot、artifact_kind、要求と判定基準、review goal、ユーザー指定の
-reviewer・回数制約、必要なら継続台帳である。ユーザーが回数・打ち切りを指定しなければ、round 制御を固定値で
-渡さず、親が loop 開始時に上限と打ち切りを決める。成果物の内容は review-refine の入力 resource へ書き戻さず、
-採用修正を反映した会話内 execution data として受け取る。
-
-runtime が skill 間起動を提供しない場合も、親は同じ `review-refine` 本文を工程として直接参照できる。
-この代替は発火条件、入力 Data、裁定、termination、受け入れの責務を変更しない。
+`review-refine` へ渡す入力は成果物の不変 snapshot、artifact_kind、要求と判定基準、review goal、ユーザー指定の reviewer・回数制約、必要なら継続台帳である。
+ユーザーが回数・打ち切りを指定しなければ、round 制御を固定値で渡さず、親が loop 開始時に上限と打ち切りを決める。成果物の内容は review-refine の入力 resource へ書き戻さず、採用修正を反映した会話内 execution data として受け取る。
+runtime が skill 間起動を提供しない場合も、親は同じ `review-refine` 本文を工程として直接参照できる。この代替は発火条件、入力 Data、裁定、termination、受け入れの責務を変更しない。
 
 ## review 結果の受領
 
 review-refine の通常出力は、採用 finding を反映した成果物、指摘台帳、判断保留台帳、未解決 finding、final trim
-の有無と理由、`termination`、`adversarial_review_count` である。レビュー不成立（差し戻し、対応 reviewer 不在、
-入力エラー）は通常出力と排他であり、理由をそのまま親へ示す。
+の有無と理由、`termination`、`adversarial_review_count` である。reviewer が返す finding と review evidence は親が受け取り、通常 output として保持する。
 
 reviewer は指摘だけを行い、採否や保留を確定しない。親は review-refine の結果を `adopted` / `rejected` / `out-of-scope` /
 `deferred` / `human-confirmation` のいずれかへ evidence・理由とともに裁定して保持する。`deferred` は既存の hold ledger を
@@ -190,7 +179,7 @@ review-refine の出力契約に従い、ここで再計算しない。
 
 status は上記 `outward candidate status Calculation` を唯一の判定として参照し、ここで条件を再定義しない。review を実行した場合も
 `termination` と計画の `final-candidate` / `incomplete` を別々に親へ返す。`round-limit`、批判の出尽くし、または残存 finding は
-process Data として保持し、status Calculationの入力へ渡す。レビュー不成立や review-refine が `stop-incomplete` を返した場合は、
+process Data として保持し、status Calculationの入力へ渡す。review-refine が `stop-incomplete` を返す process failure は、
 その process failure を隠さず、status Calculationの結果を返す。
 `final-candidate` では、成果物内容に属する residual risk と scope 外事項は本文に統合し、Human の最終判断に必要なものだけを Human Attention へ渡す。
 

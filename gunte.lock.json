@@ -1515,24 +1515,24 @@
       "sha256": "9183632f353e7a8acc4c6b32bf350814691441fff072931a79ca97a11eac84aa"
     },
     {
-      "id": "plan-candidate-producer-two-pass-flow-cd59fe35e0b9",
-      "sha256": "72e4b126c9dd62382cc652edcee662050c83a70737c5c4ee812ec6ff72d94249"
+      "id": "plan-candidate-producer-two-pass-flow-216037f1abda",
+      "sha256": "4806bcd1919796f8585bf1fffba0182acc43dc91293e50cf86d39a8e4e5f3a51"
     },
     {
-      "id": "plan-candidate-producer-two-pass-second-aefda762d727",
-      "sha256": "b9a4adfbf1999120e8bdba73ef8e9caf12e6110c8e579eb1493250f42e9ede72"
+      "id": "plan-candidate-producer-two-pass-second-6dff8d8b527a",
+      "sha256": "b9a94da9a7db4d6a28299010b6039ccc17d3f55940281a8cf6162d676adb7286"
     },
     {
-      "id": "plan-candidate-producer-two-pass-exactly-ea2285f96346",
-      "sha256": "d45062baf6a8aca98a78805bd8114eb8dab3e4a93d5c073d0360996909ccb596"
+      "id": "plan-candidate-producer-two-pass-exactly-aa0e66d407b3",
+      "sha256": "066666cf542d9e48a217cff605094fe3a9970a84bdc18125daac05ad9552e90f"
     },
     {
-      "id": "plan-candidate-producer-two-pass-empty-3fd3b00f8f7e",
-      "sha256": "deb9a991f6f4822136178e2f9f30e9b066aff5a7e90ac9083e31a9cbbf0a3b49"
+      "id": "plan-candidate-producer-two-pass-empty-94c3e1372740",
+      "sha256": "dd366af6ba115d294549d93df93577575c2a62fee25765058e73a9af006389ed"
     },
     {
-      "id": "plan-candidate-producer-two-pass-no-third-9d913c8a97fa",
-      "sha256": "85ae57a1afaf691d7330d0ba396165a09e67b31709687c4d8e101ff00365190f"
+      "id": "plan-candidate-producer-two-pass-no-third-5d4af6f803a7",
+      "sha256": "b07f9faeb08582ffcfd7937fab66d5aa162209c98996e2a9b243bc06b55ed893"
     },
     {
       "id": "plan-candidate-producer-two-pass-scope-34d7e176a74d",
@@ -1551,16 +1551,16 @@
       "sha256": "175826b1402aae1c219b82bdc2bb8f28061559b20136211a8daf4ae98b44c10a"
     },
     {
-      "id": "plan-candidate-producer-two-pass-data-d0068cb56a54",
-      "sha256": "803b422e61e59b76eae6b699c34d248ac46a7ace6addf4d2120e95eaf2c1a036"
+      "id": "plan-candidate-producer-two-pass-data-99ff6abc3e74",
+      "sha256": "e67187de6a5fa024b456c74c0d39a8b49d96a45a5cf35bc88dfab87a5e391efb"
     },
     {
-      "id": "plan-candidate-producer-two-pass-no-output-1f81f4b994a8",
-      "sha256": "29d5405e613eea52a49a5c78eb126203b5ff9d942773145331fb495bbe4b8963"
+      "id": "plan-candidate-producer-two-pass-no-output-943bf721cfdd",
+      "sha256": "defd33aa5a6c641a18e003b9121d6a423eef844cd050f657764d66ea9778ffa2"
     },
     {
-      "id": "plan-candidate-producer-two-pass-empty-batch-ac8765826ca9",
-      "sha256": "604cb5221b69f60a4724077fd0784ea5f5380b93498cb2f1d01b2f7ceea0b6e4"
+      "id": "plan-candidate-producer-two-pass-empty-batch-41351c593a6e",
+      "sha256": "5a92594f33acb46a31e903fb9109c4df948b64b10743d174972d607681875ba9"
     },
     {
       "id": "plan-agent-resolution-bound-fixed-requires-ea344b270245",
@@ -1747,8 +1747,8 @@
       "sha256": "153f2dd4b0874278883f131a018d48b9b3b18f54366ff8d741b429ac32098e88"
     },
     {
-      "id": "plan-candidate-producer-return-after-two-pass-373c1cdd74a2",
-      "sha256": "de157882ee5da91ad44ad00757d0351b87d2ff574dbc664a0dc7d91951cd5af3"
+      "id": "plan-candidate-producer-return-after-two-pass-8a51622c6e33",
+      "sha256": "54f82d4d768563eb09c8ceb2e377c4d69db3f31492e936f853ab2042acbb96d8"
     },
     {
       "id": "candidate-producer-boundary-requires-71c110088df1",
@@ -1935,56 +1935,16 @@
       "sha256": "31a8c7860298d7dc19d8110c3e2f36c9d5a635e414a3a6b140cf4bb83d49fb29"
     },
     {
-      "id": "plan-agent-structural-health-handoff-requires-b857aa2c4473",
-      "sha256": "0ecac0ed3b44c48d90f9e93ec2d2aed6feb718ec7137d0bb2e193b9bf5f12275"
+      "id": "plan-agent-structural-health-handoff-requires-87af65d49afa",
+      "sha256": "14d0a2958d4cce8d2dd549af98369ac21617c662c66671925d7056a3728043cf"
     },
     {
-      "id": "plan-agent-structural-health-handoff-requires-de50dc9e1341",
-      "sha256": "1b1b3a2e99ff8c2242e03d50ad92728d694f6b5d62ca2a9c5c620bf9f55437ee"
+      "id": "plan-agent-structural-health-handoff-requires-856a4e49ebf9",
+      "sha256": "5314e465c52f3aa4b95fceb180cf166dcdbc69be85634cf2930e55981c9f4b2f"
     },
     {
-      "id": "plan-agent-structural-health-handoff-requires-9508f55911e5",
-      "sha256": "f8f556f24620e11cc5c76593ceaaee5879589cd065247f45314ee0d9eaf198c0"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-41d691f4468b",
-      "sha256": "77588c04dc7cb78560d7fca2fe7f1c022c8e6103c84926b2ac45ead1c1cc4947"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-3e45b696eb23",
-      "sha256": "d4ff0b55da3846b11cbf499482393ee42c10bc93dc64581b1ee2f73a7a858a8c"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-eb0aa9b703e5",
-      "sha256": "fb834a48dab89c1caadfe5ca74e4007caebd79d7b570fd8f2243deea93620b26"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-d229ef6c64be",
-      "sha256": "352c3989e01f510f306b1991256f619abecac2575da444bb1a89898541057a42"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-6c13bfc2344a",
-      "sha256": "e9f64c5f52b30632b46e5a40738abfcebaa8eb629daf7444e42ffdf7ed9dc44e"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-d6eb9c024b9c",
-      "sha256": "8b27923c5b428a799a8be8a4baff2eb5768eb6b6672209dee9826819574942dd"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-1fc5c70a8cac",
-      "sha256": "de147f1e568350ad4d7a43bbd62962601cb6afb855ca3fc46634051be4b763b7"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-cd1bb57f5700",
-      "sha256": "bb7634b3dcb7f5a881de379bda56dfb7fff2c2f14acf21121423a2531c13e090"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-9a2da8008dde",
-      "sha256": "3ce36d6eb52607dc131b5b3266645078f4425d1df8e7d614634bbba833a03785"
-    },
-    {
-      "id": "plan-agent-structural-health-handoff-requires-3389f48382fd",
-      "sha256": "8c34d3c237f9cb25847f18605b9874b0774d731be91c18200a630f7beb7f8fcb"
+      "id": "plan-agent-structural-health-handoff-requires-59e5490b4224",
+      "sha256": "ed74fba0901d9efedf5701be9bc52769b7e7edbe2c0e1c17cbff083108d74b9b"
     },
     {
       "id": "review-refine-structural-boundary-requires-e59ac3fcd3cf",
@@ -2031,28 +1991,8 @@
       "sha256": "4ea8fe94165782ca8f944350a5c25e39d999d139c3ba1bcfeb484f5f32dc2faf"
     },
     {
-      "id": "plan-agent-review-routing-requires-62433696fa0f",
-      "sha256": "07f72c3f8f987a28d7d6c084676f89e0f6709fda4eba351a8581e8cc9e3f807d"
-    },
-    {
-      "id": "plan-agent-review-routing-requires-1e4e7e9ec253",
-      "sha256": "505900a0cf35e60253993e34c4a7c5b1cd670fcf32b5dbc49ae2516016bbcb15"
-    },
-    {
-      "id": "plan-agent-review-routing-requires-627a4d0db58b",
-      "sha256": "e21eac278fcdbfc8a850bea87e4c2be85742ca90f8979801dc6245661537f427"
-    },
-    {
-      "id": "plan-agent-review-routing-requires-55f1f38469e2",
-      "sha256": "9bd77fe0725d71c800cd9285adcd579dd3d0c90cfb5b66e89f9d1001663ce4e8"
-    },
-    {
-      "id": "plan-agent-review-routing-requires-4bb631170809",
-      "sha256": "373cb950ed4554a97f8f24b3305cd47fa87eec8aeadd84577301d10a416729ab"
-    },
-    {
-      "id": "plan-agent-review-routing-requires-f1b6672b1dba",
-      "sha256": "d22265defb0129282ce87845c4bfbcc6a43e82cd7256e49f149e572329e55d90"
+      "id": "plan-agent-review-routing-requires-a2534dc79b9a",
+      "sha256": "e4f3f427d07d955da064e2f9ae17765a37d7ce4981c9b2e8b6fb807189b4c9d9"
     },
     {
       "id": "plan-agent-review-goal-requires-4f5185a699b2",
@@ -2071,6 +2011,14 @@
       "sha256": "a445b736da7fd2b4a2e63dc2bc0cd55cc84e50e42cfdef2018163875575ad212"
     },
     {
+      "id": "plan-agent-review-routing-parent-a4a043497f34",
+      "sha256": "86889668b269e7986397a3161890f5cc42594f792416a7bebf641bc4f461b515"
+    },
+    {
+      "id": "plan-agent-review-routing-parent-da227491563f",
+      "sha256": "8d384f3a64a25081d5c0cd966180de487d15785bd9740790f36ea9114407ad54"
+    },
+    {
       "id": "plan-agent-review-routing-requires-943449028bc2",
       "sha256": "7fcd243e96494e79cf34d6d3ea7e271a9cd6e6854d2b750a046ec4ad55711c9a"
     },
@@ -2081,10 +2029,6 @@
     {
       "id": "plan-agent-review-routing-forbids-88dde65c9c5b",
       "sha256": "fd2d1f4585db3aef256b97c88292143e9363f712fb93f4f9bd28958007f9a0b1"
-    },
-    {
-      "id": "plan-agent-review-applicability-before-opt-out",
-      "sha256": "d7f662f5ec81b9e1f54a14be8f18d5f1b87d50c7084e6f2c3bb48e62c8d4fd65"
     },
     {
       "id": "plan-agent-structural-health-gate-before-review-refine",
@@ -2225,6 +2169,174 @@
     {
       "id": "plan-agent-artifact-publish-before-output",
       "sha256": "e87e02850db53222c25d5ad6dc3806c891adba41fca5bf43a1e4e2fbc7140029"
+    },
+    {
+      "id": "plan-candidate-producer-programmatic-boundary-975e2f84e2df",
+      "sha256": "4ef31b33c1f9a1f701450cfb604722a815aeb6724f3b090ebf12c2db05631852"
+    },
+    {
+      "id": "plan-candidate-producer-preflight-flow-ed264820436f",
+      "sha256": "4d13cbacb7ad57c0b3f63a78d2979a7618085173dd5cd75752d6230985ada609"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-flow-0136ea811d0c",
+      "sha256": "e403f2d9b574b63b652e4288b6b252f1cf7dcc2f0a501ef15b4fc19668243922"
+    },
+    {
+      "id": "plan-agent-gate-routing-flow-1776c6dd3167",
+      "sha256": "a610939a6215f5e8e2e6c677c7f6f8340e2c7152dea3f9ac6093ef086a672ef3"
+    },
+    {
+      "id": "plan-agent-review-dispatch-flow-e7d458c1fbd1",
+      "sha256": "306e24853812d217eba14f5ecff6ec68ed6ca08691c4826116d29c17fcc9dfca"
+    },
+    {
+      "id": "plan-agent-review-dispatch-flow-routing-e106310fc46b",
+      "sha256": "309dfb1cfc797b849ce25cb0974766c0c1579ba56c7eb28f4957873b31943ef5"
+    },
+    {
+      "id": "plan-agent-review-dispatch-flow-outcomes-90f2453bdf32",
+      "sha256": "6ec62c7cf30924792e246f480568dce1c9328a0ae0cdcf199b7735c761feb880"
+    },
+    {
+      "id": "plan-agent-review-dispatch-flow-no-stop-85266337b425",
+      "sha256": "7d999b9eb4d5709801eec81ce0b96c591e24496fe054de095d9d8afb53e94d6a"
+    },
+    {
+      "id": "plan-agent-two-pass-duplicate-forbidden-413842fb0d7b",
+      "sha256": "3fd6f2b67123f15378e269dca5528ef8cf69ad75545e59ef6e67e86571236b39"
+    },
+    {
+      "id": "plan-agent-preflight-before-two-pass-26ae94248770",
+      "sha256": "2192035a664cec1b267dc434755a2845ba46920fd114bd2ef661a987bec77b36"
+    },
+    {
+      "id": "plan-agent-gate-before-review-d05ca81bd2d2",
+      "sha256": "fafb0ffd322f62cbf1bb3def8f09e28d6ba693bc73d1bde3f011a8c64e68f956"
+    },
+    {
+      "id": "plan-candidate-producer-flow-section-occurrences",
+      "sha256": "e76567ddbd32d091c3edb2af109a9add25aa3cd13a5aae4aa7d4c9a829372df4"
+    },
+    {
+      "id": "plan-agent-flow-section-occurrences",
+      "sha256": "2e67e9977db6d763547ef57c3bf76f2bd8c660b5f496d11f0248a6680b3cab01"
+    },
+    {
+      "id": "plan-candidate-producer-flow-trigger-occurrences",
+      "sha256": "78777a06521a1c639899a0df7d665ab6aed97905b8b22db2a8eee1ba4955236d"
+    },
+    {
+      "id": "plan-candidate-producer-flow-inputs-occurrences",
+      "sha256": "cbc11da650fa58eee6d68c89a30ce7c5ebfc92085c975e74c4d3cb7f6626673c"
+    },
+    {
+      "id": "plan-candidate-producer-flow-procedure-occurrences",
+      "sha256": "7d852d6c9429a7e0f74ace0c371a49937ee5d5cdf221f5b8e3d321a7e661f7cd"
+    },
+    {
+      "id": "plan-candidate-producer-flow-outcomes-occurrences",
+      "sha256": "f27b08d2a8dd9e542610440743781cbfeb1b9561989bb6b3c77ac2a9dd4644a6"
+    },
+    {
+      "id": "plan-agent-flow-trigger-occurrences",
+      "sha256": "2b30d8e428901758732415ade1f96852fabe583a13055e4854b0061d220889d4"
+    },
+    {
+      "id": "plan-agent-flow-inputs-occurrences",
+      "sha256": "45bfb5f950e98fe90b822362c460837e9bf37a1b085be9c36911abc42e8131f7"
+    },
+    {
+      "id": "plan-agent-flow-procedure-occurrences",
+      "sha256": "fdae940d4f51311be81b197ff9cbf58906aff9597bba44e18b5b094322550860"
+    },
+    {
+      "id": "plan-agent-flow-outcomes-occurrences",
+      "sha256": "d0f256a9410a9293842ecccb860e7dbb09bc2034483bf4f34bdf8fc19ff0a64d"
+    },
+    {
+      "id": "plan-candidate-producer-preflight-flow-occurrences",
+      "sha256": "2da9da131b513ebad9902dc260bf813a93dd7a77c096b1c3452e5fbd40995ea1"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-flow-occurrences",
+      "sha256": "fa8fb23575ba9879108280481c66e556279b18deedefe22b6e1546f5fcd7f904"
+    },
+    {
+      "id": "plan-agent-gate-routing-flow-occurrences",
+      "sha256": "b6fa9d870ad900e87c7cbd5d156eb48676bcceace4288cb38d3213eaead6982a"
+    },
+    {
+      "id": "plan-agent-review-dispatch-flow-occurrences",
+      "sha256": "afcf46a891a29ba4abef53c4b8d21b129ff250409b9354e1853c6f4e2463da6e"
+    },
+    {
+      "id": "plan-agent-programmatic-boundary-09500f9678d9",
+      "sha256": "ff49cf13d73a51114f86efd7e126770c126e98e5b056d47e5d0e5261f835467e"
+    },
+    {
+      "id": "plan-candidate-producer-no-third-pass-13eed53ddec1",
+      "sha256": "a0be4ce45166199ad40ee46d692226074cbfd2a29b93c2ba1861f0ee721dddab"
+    },
+    {
+      "id": "plan-agent-gate-routing-flow-procedure-633919de928a",
+      "sha256": "7889a22924e7d47e0c9b8544c0bcdaa0727eea8e28f47a0dc8116e2c20e7182d"
+    },
+    {
+      "id": "plan-agent-gate-routing-flow-outcomes-68c7abf022a2",
+      "sha256": "62cdd0d77d8a4c47740bd1f78064e9895b27099ae6fb5c92577b2b4c0386a392"
+    },
+    {
+      "id": "plan-agent-review-optout-reversal-37ffac39f5a0",
+      "sha256": "6f87665f0f6dda45d7c8e992395834d572801618dffa7e662b546312078c93c5"
+    },
+    {
+      "id": "plan-candidate-producer-preflight-field-order",
+      "sha256": "b3e36d4e18cb2ff3444ae2a1be5a2179456c539b454b031ed5bdd7cbd08c1816"
+    },
+    {
+      "id": "plan-candidate-producer-preflight-inputs-before-procedure",
+      "sha256": "0d0d9def5c67484e66271e85f6d1096402dc251cb7b07aec6485138f420925c6"
+    },
+    {
+      "id": "plan-candidate-producer-preflight-procedure-before-outcomes",
+      "sha256": "0c098abb831658c31cd2de32cc702eb7a4ccaa2b77ee2cb759f1289a47014428"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-field-order",
+      "sha256": "e37e8774dcc74cedce107d8d874109532c6e01f79d6ff607a4be4d145246ffdc"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-inputs-before-procedure",
+      "sha256": "e7b6e74a568b93620cd02cc6e994255ef29bd002497256d18d7ace46a1f0f115"
+    },
+    {
+      "id": "plan-candidate-producer-two-pass-procedure-before-outcomes",
+      "sha256": "557de8f3263f2f6aafb471d2e221660f5a892c62dd784a93d3096575d0f4cbe9"
+    },
+    {
+      "id": "plan-agent-gate-field-order",
+      "sha256": "9adb86cf6a6784cad8cfcaa3c07029cc07215fc364c1d1e70c981625a959addc"
+    },
+    {
+      "id": "plan-agent-gate-inputs-before-procedure",
+      "sha256": "827716a422ac9da62ad690ced2b6d6d8231442f5137af84859091e166233b4eb"
+    },
+    {
+      "id": "plan-agent-gate-procedure-before-outcomes",
+      "sha256": "b36170faab3b908201a7cb35cbf7370fed869fb5c0b81f10f10f79f031562b35"
+    },
+    {
+      "id": "plan-agent-review-field-order",
+      "sha256": "26d95f6dd9048c46eb16c8405123f8ae79e05bf3f8006929cb51e72cbe50ab94"
+    },
+    {
+      "id": "plan-agent-review-inputs-before-procedure",
+      "sha256": "9eb9ad1eafd5c4f323583d98bd44f1b343be56d3bd654c178948d2211dc75029"
+    },
+    {
+      "id": "plan-agent-review-procedure-before-outcomes",
+      "sha256": "95d02c5d77c0110755e5e5dc3760f2b13b2a4646e2543fda8321b58230785115"
     },
     {
       "id": "clarify-caller-data-d368442b31ae",
@@ -3322,6 +3434,61 @@
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
+      "kind": "span",
+      "id": "plan-agent-programmatic-flows",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "candidate-structural-gate-routing",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "gate-routing-trigger",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "gate-routing-inputs",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "gate-routing-procedure",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "gate-routing-outcomes",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-dispatch",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-dispatch-trigger",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-dispatch-inputs",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-dispatch-procedure",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-dispatch-outcomes",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
       "kind": "anchor",
       "id": "plan-candidate-producer-start",
       "path": "shared/skill/plan-agent/SKILL.md"
@@ -3354,16 +3521,6 @@
     {
       "kind": "span",
       "id": "plan-agent-review-routing",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "review-applicability",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "review-opt-out",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
@@ -3504,6 +3661,61 @@
     {
       "kind": "span",
       "id": "plan-candidate-producer-internal-guard",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-candidate-producer-programmatic-flows",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "producer-invocation-preflight",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "producer-preflight-trigger",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "producer-preflight-inputs",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "producer-preflight-procedure",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "producer-preflight-outcomes",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "advisor-two-pass-orchestration",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "advisor-two-pass-trigger",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "advisor-two-pass-inputs",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "advisor-two-pass-procedure",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "advisor-two-pass-outcomes",
       "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {
