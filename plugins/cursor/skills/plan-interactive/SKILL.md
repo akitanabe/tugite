@@ -25,8 +25,9 @@ disable-model-invocation: true
 ## 入力と成果物
 
 要求原文、目的、対象、成功条件、scope、exclude、依存、制約、current state を先に観測する。blocking な不足を
-推測せず、軽微な不足は根拠付き assumption に分離する。成果物には目的、観測可能な成功条件、設計、scope と exclude、
-依存、制約、選択理由、棄却した代替案、verification、残存 risk、未確定の問いを含める。
+推測せず、軽微な不足は根拠付き assumption に分離する。一般的な artifact content（目的、観測可能な成功条件、設計、scope と exclude、
+依存、制約、verification、残存 risk、未確定の問い）は検証済み `plan-artifact-design` を正本とする。選択理由と棄却した代替案は
+Human-confirmed decision として記録する。
 
 成果物種別を `artifact_kind` Data として保持する。実装前提プラン系か否かは reviewer 適用可否だけに使い、自由形式
 成果物をプラン系へ変える理由にしない。実装前提プラン系は `Acceptance Criteria` と `設計` の節名を持つ。
@@ -102,6 +103,23 @@ freeze-integrity では全 constraints の verifier verdict と evidence、最�
 Human recovery と後続 Action の結果は各 autonomous boundary から戻った後に裁定し、intermediate Data として再投入する。
 affected dependency closure、immutable `request.scope` / `request.exclude`、scope 外の意味分類は親の Calculation / adjudication であり、
 `freeze-integrity-recovery-routing` Flow はそれらを入力として routing する。未解決 Human Decision が残る candidate は gate へ渡さない。
+
+## plan-artifact-design の parent-owned load
+
+`interactive-kernel-preflight` に相乗りしない。clarify-it 中は load しない。最初の artifact 本文起草・再構成の直前に、親は次の
+Loader Data で局所 validation として一度だけ load し、identity と required section を検証する。最初の成功 snapshot を同一
+invocation 内で固定し、proposal refinement と review 反映でも再利用する。失敗時は推測で従来形式の artifact を生成せず、既存の
+`incomplete` へ返す。検証済み本文だけを既存の判定基準へ注入する。
+
+```text
+design_reference = ../../references/plan-artifact-design.md
+design_load_timing = once immediately before first artifact drafting or restructuring in the invocation
+design_identity = plan-artifact-design-v1
+design_required_sections = [適用範囲, Human-facing Summary, Agent-facing Detail, Verification / Completion Criteria の近接配置, Acceptance Criteria / Verification / Completion Criteria の責務分離, Information placement, Reference pointer]
+design_failure = existing incomplete path; no new status
+design_snapshot = first successful verified body is frozen for the invocation
+design_use = inject verified body into existing 判定基準; Loader Data and path are not producer Inputs; no dedicated channel or return field
+```
 
 ## structural-health-gate
 

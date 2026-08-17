@@ -74,7 +74,7 @@ Blocking Reason、Residual Risk を必ず返し、必要な場合だけ Human At
 plan-candidate-producer の invocation boundary、discretionary authority、resolution execution bound は `plan-agent` が所有する。
 internal `plan-candidate-producer` の開始時に、caller=`plan-agent`、resolver=planner、counterpart=`plan-quality-advisor`（Resolution
 Transaction 外の one-shot observation）を mapping し、`authority = discretionary`、`authority_constraints = []` を注入する。
-plan-agent は caller mapping、authority injection、resolution execution bound、`producer-invocation-preflight` の invocation boundary だけを所有する。loader の load / identity / required section / failure routing は owner である plan-candidate-producer に委ね、この Skill では再定義しない。advisor は非拘束 Data を返し、planner が一次情報を
+plan-agent は caller mapping、authority injection、resolution execution bound、`producer-invocation-preflight` の invocation boundary、および `plan-artifact-design` の parent-owned load を所有する。kernel / `producer-invocation-preflight` の load / identity / required section / failure routing は owner である plan-candidate-producer に委ね、この Skill では再定義しない。advisor は非拘束 Data を返し、planner が一次情報を
 基準に既存 adoption ledger へ裁定する。advisor invocation point は `advisor-two-pass-orchestration` Flow に委譲し、この Skill は
 invocation point だけを保持する。
 
@@ -116,6 +116,18 @@ Outcomes: published result と consumer の outward status / stdout projection�
 
 ## plan-candidate-producer の前段
 
+artifact の起草・再構成に入る直前に、親は次の Loader Data で `plan-artifact-design` を一度だけ load し、identity と required section を検証する。最初の成功 snapshot を同一 invocation 内で固定し、gate return による producer retry と review 採用修正でも再利用する。workflow 開始時の調査だけでは load しない。失敗時は推測で従来形式の artifact を生成せず、既存の `stop-incomplete` / `incomplete` へ返す。検証済み本文だけを既存の判定基準へ注入し、Loader Data と path は producer Inputs に載せない。
+
+```text
+design_reference = ../../references/plan-artifact-design.md
+design_load_timing = once immediately before first artifact drafting or restructuring in the invocation
+design_identity = plan-artifact-design-v1
+design_required_sections = [適用範囲, Human-facing Summary, Agent-facing Detail, Verification / Completion Criteria の近接配置, Acceptance Criteria / Verification / Completion Criteria の責務分離, Information placement, Reference pointer]
+design_failure = existing incomplete path; no new status
+design_snapshot = first successful verified body is frozen for the invocation
+design_use = inject verified body into existing 判定基準; Loader Data and path are not producer Inputs; no dedicated channel or return field
+```
+
 起草は、同じ親 context 内の internal `plan-candidate-producer` を前段として開始する。`plan-candidate-producer` は要求、repository、既存仕様を
 調査して candidate を作り、必要なら read-only `plan-quality-advisor` の insight を受け取る。advisor insight は
 非拘束 Data であり、planner は一次情報と要求に照らして `adopted` / `rejected` / `unresolved` を裁定する。
@@ -136,13 +148,9 @@ gate を通過した candidate snapshot だけを、必要な review goal とと
 
 ## 成果物
 
-成果物は依頼に適した自由形式の文書であり、次の最小要素を含める。
+成果物は依頼に適した自由形式の文書である。一般的な artifact content（目的、観測可能な成功条件、scope / exclude / 依存 / 制約、前提と未確定、残存 risk）は検証済み `plan-artifact-design` を正本とする。
 
-- 依頼の目的と対象を、受け取った要求原文に沿って記録する。
-- 観測可能な成功条件（AC 相当）を、決まっているものだけ列挙する。
-- 変更する範囲、変更しない範囲、依存、制約を明示する。
-- 判断済みの前提と未確定の問いを分け、blocking な不足を勝手に補完しない。
-- 選んだ方針と採用理由、代替案を採らない理由、残存 risk、確認が必要な決定を記録する。
+選んだ方針と採用理由、代替案を採らない理由を記録する。
 
 ユーザーが実装単位の案を求める場合は自由形式成果物の一部として自然文で記述してよいが、正式な Work Unit Data または
 Work Unit normalization とは扱わない。正式な normalization は implementation-time の `impl-lead` が current repository state を

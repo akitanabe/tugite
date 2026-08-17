@@ -29,6 +29,7 @@
     "shared/batch-resolve-kernel.md",
     "shared/necessity-kernel.md",
     "shared/plan-artifact-publication.md",
+    "shared/plan-artifact-design.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
     "shared/skill/clarify-it/SKILL.md",
@@ -2096,8 +2097,8 @@
       "sha256": "fa8c726f942acb15fcca544d25ff2e418269467ea7ec544cf23b8fb7343e361c"
     },
     {
-      "id": "plan-agent-producer-preflight-invocation-boundary-c9ec3270212b",
-      "sha256": "953e55ad0b0bafeebc8a0cbcd9f091aadc5fb1937e582ab9fc2905156185641e"
+      "id": "plan-agent-producer-preflight-invocation-boundary-5722d4a9d94b",
+      "sha256": "880d8dbebceb9faf0e7441664da60c63a5d3777957bc7ce15e40898ab74823c6"
     },
     {
       "id": "plan-agent-producer-loader-action-forbidden-cc23ade40119",
