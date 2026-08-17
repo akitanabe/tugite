@@ -299,6 +299,42 @@ transaction_closure = not Work Unit acceptance, not run acceptance
 final_writing_gate = outside mapping'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: selected remediation must be grouped before the first apply without turning zero findings into a mandatory invocation.
+[contracts.impl-risk-remediation-grouping-entry-9e0f78b20331]
+kind = "requires"
+slice = "impl-risk-remediation-grouping-entry"
+pattern = '''同じ origin verified snapshot の Resolution Batch を全件裁定して selected finding set を固定した後、set が非空なら、親は trivial / nontrivial を先に分類せず、mutation / apply の前に関連 remediation candidates を必ず `work-unit-design` へ渡す。zero findings では起動しない。
+入力は各 finding の identity、obligation、AC、mutation oracle、disposition と既存 Work Unit context を保持する。返却される canonical Work Unit candidates について、親が要求 coverage、`blocking_gaps`、Work Unit Data / execution Data 境界、採否、ID を確定する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: caller attention names the evidence to preserve but does not prescribe a split or inherit source boundaries.
+[contracts.impl-risk-remediation-perspectives-ea3be64e5dc8]
+kind = "requires"
+slice = "impl-risk-remediation-perspectives"
+pattern = '''remediation の `partition_perspectives` は、origin verified snapshot、finding dependency / shared invariant、coherent apply / combined verification、authority / external side effect、rollback / failure isolation、independent promotion boundary を照らす。元の Skill 数や Work Unit 数を根拠にせず、固定 remediation mode、件数 threshold、solver、expected-output oracle、ledger を導入しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: regrouping responds only to material grouping evidence and excludes already promoted obligations from re-entry.
+[contracts.impl-risk-remediation-regrouping-92113ee50310]
+kind = "requires"
+slice = "impl-risk-remediation-regrouping"
+pattern = '''apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `work-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: continuation identity belongs to the accepted group boundary, while finding identity remains lossless evidence.
+[contracts.impl-risk-remediation-continuation-8689a159bc6f]
+kind = "requires"
+slice = "impl-risk-remediation-continuation"
+pattern = '''各 remediation group 全体を既存の `work-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Work Unit acceptance encloses Kernel transactions; transaction closure alone cannot coarsen or accept the outer unit.
+[contracts.impl-risk-remediation-outer-inner-497edb57dab8]
+kind = "requires"
+slice = "impl-risk-remediation-outer-inner"
+pattern = '''Work Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Work Unit 内側の apply / verify boundary とする。Kernel は一つの Work Unit を複数 partition へ refine できるが、複数 Work Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Work Unit を accept しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: this canonical policy relation keeps the semantic obligation stable while leaving explanatory prose and report presentation flexible.
 [contracts.impl-final-report-quality-signal-policy-data-262fe75b0817]
 kind = "requires"
@@ -352,4 +388,67 @@ kind = "requires"
 slice = "impl-work-unit-protected-dirty-scope"
 pattern = '''更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data は `dependency-dispatch-guard` へ渡す。
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: initial caller supplies attention perspectives; partition and acceptance remain parent decisions.
+[contracts.impl-work-unit-design-initial-partition-caller-3f58e842bc94]
+kind = "requires"
+slice = "impl-work-unit-design-initial-partition-caller"
+pattern = '''親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: worker capability may reflect implementation difficulty, but must not absorb unresolved Work Unit boundaries.
+[contracts.impl-worker-tier-partition-interception-60f977bda2ff]
+kind = "requires"
+slice = "impl-worker-tier-partition-interception"
+pattern = '''normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `work-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: invocation guidance, merge preservation, remediation binding, and relation casebook form bounded partition Data.
+[contracts.work-unit-design-partition-input-data-7d13abf1ae94]
+kind = "requires"
+slice = "work-unit-design-partition-input-data"
+pattern = '''`partition_perspectives` は invocation ごとの transient execution Data であり、用途名、split / merge の答え、Work Unit Data の field、出力 field、永続 ledger ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-attention-b1671a136d10]
+kind = "requires"
+slice = "work-unit-design-partition-attention"
+pattern = '''`partition_perspectives` は確認順序と attention priority のみを与える。観点外の既存原則、全入力、既存 signal、candidate facts を維持し、観点で無効化または置換せず、固定 mode、threshold、solver、expected-output oracle を作らない。split / merge / absorb の最終判断はこの Skill が行い、partition_perspectives の優先度を答えや branch にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-contrastive-guard-d0684aace227]
+kind = "requires"
+slice = "work-unit-design-partition-contrastive-guard"
+pattern = '''merge / absorb の直前に一度だけ、分離維持では成立しない具体的 evidence を contrastive に確認する。具体的 evidence があり、同じ受入境界でしか Green / accept / revert が成立しない場合だけ lossy merge / absorb を選べる。evidence のない lossy merge は選ばず、正当な merge はこれで禁止しない。独立 purpose、accepted dependency 上の focused Green、単独 accept / revert、Implementer readiness が成立する候補は、shared file / generator / contract / generated surface / full gate / run-wide invariant / worker capability の共有だけでは消さない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-remediation-binding-9c4dbcaccf8b]
+kind = "requires"
+slice = "work-unit-design-partition-remediation-binding"
+pattern = '''remediation candidate は、同じ origin verified snapshot に束縛された親裁定済み selected finding obligation として入力でき、identity、obligation、AC、mutation oracle、disposition、既存 context を保持する。元の Skill 数や Work Unit 数を partition の根拠にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-casebook-e9b3d3d10173]
+kind = "requires"
+slice = "work-unit-design-partition-casebook"
+pattern = '''Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。exact Work Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-overmerge-bb5c82f80820]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-initial-over-merge"
+pattern = '''#249 initial over-merge: input facts は independent outcomes / AC / focused verification / accept-rollback と shared surfaces。forbidden shortcut は shared surfaces / run-wide gate だけで merge すること。preserved relation は independent acceptability と dependency / conflict の分離。valid control は本当に同じ受入境界でしか Green にならない候補の merge を許すこと。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-kernel-caller-545b7e6bd64b]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-kernel-caller"
+pattern = '''#210 kernel / caller: input facts は kernel foundation と proposal/review consumers、shared generator/registry。forbidden shortcut は shared surface だけで統合すること。preserved relation は foundation capability と consumer 別 AC / verification / rollback、および dependency。valid control は foundation が単独 capability / contract を持たなければ最初に価値を生む application が所有できること。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-remediation-oversplit-3922f99e99dd]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-remediation-over-split"
+pattern = '''#249 remediation over-split: input facts は同一 verified snapshot、同じ横断 invariant、親裁定済み findings。forbidden shortcut は元 Skill / Work Unit 境界の機械継承または一括のための identity collapse。preserved relation は coherent apply と finding identity / obligation / AC / mutation oracle / disposition。valid control は authority / external side effect / intermediate snapshot / failure isolation / independent promotion が異なる場合の split。'''
 applies_to = ["claude", "codex", "cursor"]

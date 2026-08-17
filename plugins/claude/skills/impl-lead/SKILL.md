@@ -68,6 +68,23 @@ raw request から成果候補を再抽出させない。返された `work_unit
 同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
 `blocking_gaps` がないこと、Work Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
 
+初期のこの step では、親は候補群と grounding に加えて、invocation 固有の確認順序と attention priority を
+`partition_perspectives` として渡せる。これは答えを先付けするものではなく、次の観点を必要な順序で照らすための
+transient execution Data である。
+親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。
+
+- `semantic outcome / purpose`: 各候補が生む外部から観測可能な outcome と単一 purpose。
+- `independent AC / focused verification`: 候補ごとに独立して Green と検証ができる AC と focused verification。
+- `accept / rollback boundary`: 候補単位で accept または rollback できる境界。
+- `semantic dependency`: 候補間で意味上必要な dependency と、その理由。
+- `execution conflict / order / isolation`: shared file、writer、generated output、generator、contract registry、Gunte gate、
+  verification surface の共有を semantic dependency や merge の根拠にせず、execution conflict として order / isolation とともに扱う。
+- `run-wide final gate`: full / run-wide gate は focused verification の代替ではなく、候補確定後の最終 gate として扱う。
+
+この mapping は候補数、split point、merge 対象を指定せず、固定 mode、threshold、expected-output oracle、ledger も導入しない。
+`work-unit-design` の返却後は、候補の採否、全要求の coverage、未要求成果、`blocking_gaps`、Work Unit Data と execution Data の
+境界を親が再確認し、実装・委譲・accept の判断を引き取る。
+
 runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
@@ -215,6 +232,8 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 ユーザーが指定した worker が品質下限を満たせない場合も無断で変更・続行せず、制約緩和を確認するか、未完了範囲と判断点を
 付けて `stop-incomplete` とする。固定閾値や決定表、暗黙の追加実行環境は持ち込まない。
 
+normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `work-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
+
 既定の実行順は直列である。各 worker の結果は accept 候補に過ぎず、親が run の baseline に適用して確認するまで
 accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
 を親が確認し、Green で再現可能な accepted baseline だけを後続単位の base にする。
@@ -355,6 +374,19 @@ final_writing_gate = outside mapping
 
 上記 Data は impl-lead 固有の caller mapping だけを定める。generic Transaction procedure は Kernel を唯一の正本とし、
 既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
+
+### selected finding remediation の Work Unit normalization
+
+同じ origin verified snapshot の Resolution Batch を全件裁定して selected finding set を固定した後、set が非空なら、親は trivial / nontrivial を先に分類せず、mutation / apply の前に関連 remediation candidates を必ず `work-unit-design` へ渡す。zero findings では起動しない。
+入力は各 finding の identity、obligation、AC、mutation oracle、disposition と既存 Work Unit context を保持する。返却される canonical Work Unit candidates について、親が要求 coverage、`blocking_gaps`、Work Unit Data / execution Data 境界、採否、ID を確定する。
+
+remediation の `partition_perspectives` は、origin verified snapshot、finding dependency / shared invariant、coherent apply / combined verification、authority / external side effect、rollback / failure isolation、independent promotion boundary を照らす。元の Skill 数や Work Unit 数を根拠にせず、固定 remediation mode、件数 threshold、solver、expected-output oracle、ledger を導入しない。
+
+apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `work-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。
+
+各 remediation group 全体を既存の `work-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。
+
+Work Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Work Unit 内側の apply / verify boundary とする。Kernel は一つの Work Unit を複数 partition へ refine できるが、複数 Work Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Work Unit を accept しない。
 
 ## Review findings and continuation
 
