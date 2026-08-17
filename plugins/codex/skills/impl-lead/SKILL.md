@@ -372,6 +372,19 @@ final_writing_gate = outside mapping
 上記 Data は impl-lead 固有の caller mapping だけを定める。generic Transaction procedure は Kernel を唯一の正本とし、
 既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
 
+### selected finding remediation の Work Unit normalization
+
+同じ origin verified snapshot の Resolution Batch を全件裁定して selected finding set を固定した後、set が非空なら、親は trivial / nontrivial を先に分類せず、mutation / apply の前に関連 remediation candidates を必ず `work-unit-design` へ渡す。zero findings では起動しない。
+入力は各 finding の identity、obligation、AC、mutation oracle、disposition と既存 Work Unit context を保持する。返却される canonical Work Unit candidates について、親が要求 coverage、`blocking_gaps`、Work Unit Data / execution Data 境界、採否、ID を確定する。
+
+remediation の `partition_perspectives` は、origin verified snapshot、finding dependency / shared invariant、coherent apply / combined verification、authority / external side effect、rollback / failure isolation、independent promotion boundary を照らす。元の Skill 数や Work Unit 数を根拠にせず、固定 remediation mode、件数 threshold、solver、expected-output oracle、ledger を導入しない。
+
+apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `work-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。
+
+各 remediation group 全体を既存の `work-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。
+
+Work Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Work Unit 内側の apply / verify boundary とする。Kernel は一つの Work Unit を複数 partition へ refine できるが、複数 Work Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Work Unit を accept しない。
+
 ## Review findings and continuation
 
 親は reviewer の固有出力を execution data に正規化する。各 finding は `source_reviewer`、`target_snapshot`、reviewer の
