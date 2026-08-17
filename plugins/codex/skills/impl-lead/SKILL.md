@@ -231,6 +231,8 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 ユーザーが指定した worker が品質下限を満たせない場合も無断で変更・続行せず、制約緩和を確認するか、未完了範囲と判断点を
 付けて `stop-incomplete` とする。固定閾値や決定表、暗黙の追加実行環境は持ち込まない。
 
+normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `work-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
+
 既定の実行順は直列である。各 worker の結果は accept 候補に過ぎず、親が run の baseline に適用して確認するまで
 accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
 を親が確認し、Green で再現可能な accepted baseline だけを後続単位の base にする。

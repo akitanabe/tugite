@@ -1240,6 +1240,10 @@
       "sha256": "cc3fa9fb7365cf9217b59502519286ef02e57fbccdf86143d3b210a72b33713b"
     },
     {
+      "id": "impl-worker-tier-partition-interception-60f977bda2ff",
+      "sha256": "4a5858e8f98919c6e1e1330e6bbf8a4b8f6a3c1394ef6bf1dc650e6019f11b3f"
+    },
+    {
       "id": "work-unit-design-partition-input-data-7d13abf1ae94",
       "sha256": "8777ad875abd310d0659c358d4e951cc02427a9e42bfb5488e2490e8737b28a4"
     },
@@ -3388,6 +3392,11 @@
     {
       "kind": "anchor",
       "id": "impl-route-execution-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-worker-tier-partition-interception",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {

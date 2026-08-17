@@ -397,6 +397,13 @@ slice = "impl-work-unit-design-initial-partition-caller"
 pattern = '''親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: worker capability may reflect implementation difficulty, but must not absorb unresolved Work Unit boundaries.
+[contracts.impl-worker-tier-partition-interception-60f977bda2ff]
+kind = "requires"
+slice = "impl-worker-tier-partition-interception"
+pattern = '''normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `work-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: invocation guidance, merge preservation, remediation binding, and relation casebook form bounded partition Data.
 [contracts.work-unit-design-partition-input-data-7d13abf1ae94]
 kind = "requires"
