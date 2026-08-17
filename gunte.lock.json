@@ -1200,24 +1200,24 @@
       "sha256": "5f4369d8571e67a9f76ad717d97aae70b3d99f9b458ed826b208224e9dce0bb6"
     },
     {
-      "id": "impl-risk-remediation-grouping-entry-597fcb7fa959",
-      "sha256": "ed477800f13d98280ced70a40b0e0cc6ab05439d7472baf17a54f488b3c47653"
+      "id": "impl-risk-remediation-grouping-entry-9e0f78b20331",
+      "sha256": "07858a5427388332723fac86201eb078736e7f100763e9e5eb571198990d3a4c"
     },
     {
-      "id": "impl-risk-remediation-perspectives-14649d633be0",
-      "sha256": "d2dc530e76ec31f1e10364bd303e65c173cd0ffc96e980f0f9d8561639aac822"
+      "id": "impl-risk-remediation-perspectives-ea3be64e5dc8",
+      "sha256": "fed9dc9b223c9edd661169b024d844dd3500afd4af95b48ed133e317a6cd6430"
     },
     {
-      "id": "impl-risk-remediation-regrouping-90657cd03c78",
-      "sha256": "48ff0723b30594ba100446837e163dcf05492474b2eeab9b700c30d596738322"
+      "id": "impl-risk-remediation-regrouping-92113ee50310",
+      "sha256": "27a8208d7a6c2afff875ffa65df82f08134c849c28ca41d2c35203626bcfc696"
     },
     {
-      "id": "impl-risk-remediation-continuation-8a29c9af774e",
-      "sha256": "ef354db7613a02004762eb909ccfc27ceaaec8ec8f969462acf52a4a51ff776e"
+      "id": "impl-risk-remediation-continuation-8689a159bc6f",
+      "sha256": "e0aaaa3c1fcefc2018ff922b334f33582561e9b6d78e3248095310d5396b5ee5"
     },
     {
-      "id": "impl-risk-remediation-outer-inner-5140b7b2551b",
-      "sha256": "ae2489b6a1fabaaaa7df7bca967c875a53c812a41e511cd43143750c77a07a39"
+      "id": "impl-risk-remediation-outer-inner-497edb57dab8",
+      "sha256": "09d4712ca273ac76e0cae29eb56dea17accd008ebc523d09651c2caf9e6ba94c"
     },
     {
       "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
@@ -3441,7 +3441,27 @@
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-partition-caller",
+      "id": "impl-risk-remediation-grouping-entry",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-perspectives",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-regrouping",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-continuation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-outer-inner",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
