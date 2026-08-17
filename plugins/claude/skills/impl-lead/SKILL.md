@@ -271,11 +271,54 @@ Work Unit Data の field ではない。repository root 外の run-owned worktre
 isolation、外部副作用の状態、禁止範囲、verification を含む自己完結 handoff で fresh context へ渡す。direct の単位は
 親 context で実行し、新しい worker を起動しない。
 
-委譲する新しい単位は新規の `Agent` 呼び出しで履歴を継承しない新規 `Agent` context に起動する。同じ ID の実装上の
-限定修正だけを`SendMessage`で同じ context に返す。
+委譲する新しい単位は新規の `Agent` 呼び出しで履歴を継承しない新規 `Agent` context に起動する。追加作業を同じ
+context に返す場合に限り、同じ ID の実装上の限定修正だけを`SendMessage`で同じ context に返す。
+
+無応答時の状態確認は親所有の silence status inquiry であり、既存の`SendMessage`を使う。これは実装上の
+限定修正でも追加作業でもなく、`work-unit-continuation-routing` の対象外である。新しい作業指示、scope 変更、AC 変更を
+含めない。
 
 親は追加作業を同じ意味の限定修正か、意味変更または accepted 単位の変更かに分類し、route を
 `work-unit-continuation-routing` へ渡す。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて完了した場合だけ accept する。
+
+### Delegated worker silence defaults
+
+介入基準の意味の正本は `impl-lead` 親とする。対象は委譲で起動した worker（fresh と same-ID continuation の両方）で
+ある。parent direct と reviewer は対象外である。worker は監視 interval を決めて親へ進捗を要求しない。並列なら
+worker ごとに最後の意味ある観測を独立に数える。
+
+progress check は親所有の silence status inquiry である。走行中の delegated worker context に状態確認だけを送る。
+
+- 既定では、最後の意味ある観測から 15 分未満では progress check しない。15 分到達後はしてよい（必須ではない）。
+  15 分は異常判定ではなく許可の既定目安である。
+- Human が明示した別の時間基準または介入基準がある場合、その指定が既定に優先する。新しい public parameter schema は
+  作らない。
+- 経過時間だけを根拠に interrupt しない。interrupt は progress check またはその他の観測 evidence から stall、同一失敗の
+  反復、scope 逸脱、blocker、contract 違反等が確認された場合に限定する。
+- inquiry 送信そのものは、worker 側の意味ある応答が観測されるまで clock を reset しない。
+- interrupt 後の再開では、再開した worker に既定の自律実行時間を与える。新しい 15 分 window を数え、過去の interrupt
+  そのものを理由に監視頻度を上げない。ここでの continuation は限定修正の追加作業 continuation ではない。
+- interrupt 後に追加作業が必要になった場合だけ、既存の限定修正分類と `work-unit-continuation-routing` に戻る。
+
+「意味のある進捗・出力・状態変化」は親が観測事実から分類する。file 変更、tool 出力、完了報告、明確な状態遷移を含み、
+経過時間そのものや空の keepalive は含めない。決定表は作らない。時計は親が利用可能な観測時刻で足りる。interrupt の
+How は各 runtime の停止能力に依存し、この節は When / When-not だけを正本化する。
+
+```text
+policy_id = "impl-lead-delegated-worker-silence-defaults-v1"
+applies_to = "delegated worker only; not parent-direct; not reviewer"
+default_progress_check_allowance = "15 minutes after last observed meaningful progress, output, or state change"
+progress_check_meaning = "allowance, not abnormality, not obligation"
+human_override = "explicit Human criteria take precedence"
+interrupt_time_only = "prohibited"
+interrupt_requires = "evidence of stall, repeated same failure, scope deviation, blocker, or contract violation from progress check or other observation"
+post_continuation = "give resumed worker a full default autonomous window; do not raise monitoring frequency because of past interrupt"
+progress_check = "parent-owned silence status inquiry on running delegated worker context"
+progress_check_vehicle = "existing platform continuation vehicle as status inquiry only; not limited-fix continuation; not additional work; not work-unit-continuation-routing"
+```
+
+Gunte が保証するのは policy identity、required fields、その coherent relation までである。runtime の 15 分遵守と
+interrupt 判断の正しさは保証しない。
 
 ## Safe parallel dispatch and integration
 

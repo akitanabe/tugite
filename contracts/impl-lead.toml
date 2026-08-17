@@ -85,6 +85,22 @@ Procedure: 限定修正だけを同じ ID / context へ continuation し、意�
 Outcomes: `same-context-continuation`、`new-id-fresh-context`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: identity and required fields form one relation; Gunte success must not be read as a runtime 15-minute or interrupt-judgment guarantee, and this predicate does not change work-unit-continuation-routing.
+[contracts.impl-delegated-worker-silence-defaults-45bcd5bda7b7]
+kind = "requires"
+slice = "impl-delegated-worker-silence-defaults"
+pattern = '''policy_id = "impl-lead-delegated-worker-silence-defaults-v1"
+applies_to = "delegated worker only; not parent-direct; not reviewer"
+default_progress_check_allowance = "15 minutes after last observed meaningful progress, output, or state change"
+progress_check_meaning = "allowance, not abnormality, not obligation"
+human_override = "explicit Human criteria take precedence"
+interrupt_time_only = "prohibited"
+interrupt_requires = "evidence of stall, repeated same failure, scope deviation, blocker, or contract violation from progress check or other observation"
+post_continuation = "give resumed worker a full default autonomous window; do not raise monitoring frequency because of past interrupt"
+progress_check = "parent-owned silence status inquiry on running delegated worker context"
+progress_check_vehicle = "existing platform continuation vehicle as status inquiry only; not limited-fix continuation; not additional work; not work-unit-continuation-routing"'''
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-parallel-integration-flow-9799ff405418]
 kind = "requires"
 slice = "impl-programmatic-flow-parallel-candidate-integration"

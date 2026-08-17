@@ -1112,6 +1112,10 @@
       "sha256": "b5027abcfddcd2d5ec7866eb4ac822521b696584fb519d1c67ff8f0a1bbaeb4f"
     },
     {
+      "id": "impl-delegated-worker-silence-defaults-45bcd5bda7b7",
+      "sha256": "9504bdc49bd26930eb6a5b0acb1166942bf05b151ce8a3230a572710347e73ec"
+    },
+    {
       "id": "impl-parallel-integration-flow-9799ff405418",
       "sha256": "7eac00750b03d8d42905cc6db231a60455ae19b8e9cd4339ce138c0140ff2518"
     },
@@ -3412,6 +3416,11 @@
     {
       "kind": "anchor",
       "id": "impl-worker-handoff-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-delegated-worker-silence-defaults",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
