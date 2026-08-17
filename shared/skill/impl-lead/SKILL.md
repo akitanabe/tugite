@@ -88,6 +88,25 @@ raw request から成果候補を再抽出させない。返された `work_unit
 同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
 `blocking_gaps` がないこと、Work Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
 
+<!-- @contract impl-work-unit-design-initial-partition-caller -->
+初期のこの step では、親は候補群と grounding に加えて、invocation 固有の確認順序と attention priority を
+`partition_perspectives` として渡せる。これは答えを先付けするものではなく、次の観点を必要な順序で照らすための
+transient execution Data である。
+親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。
+
+- `semantic outcome / purpose`: 各候補が生む外部から観測可能な outcome と単一 purpose。
+- `independent AC / focused verification`: 候補ごとに独立して Green と検証ができる AC と focused verification。
+- `accept / rollback boundary`: 候補単位で accept または rollback できる境界。
+- `semantic dependency`: 候補間で意味上必要な dependency と、その理由。
+- `execution conflict / order / isolation`: shared file、writer、generated output、generator、contract registry、Gunte gate、
+  verification surface の共有を semantic dependency や merge の根拠にせず、execution conflict として order / isolation とともに扱う。
+- `run-wide final gate`: full / run-wide gate は focused verification の代替ではなく、候補確定後の最終 gate として扱う。
+
+この mapping は候補数、split point、merge 対象を指定せず、固定 mode、threshold、expected-output oracle、ledger も導入しない。
+`work-unit-design` の返却後は、候補の採否、全要求の coverage、未要求成果、`blocking_gaps`、Work Unit Data と execution Data の
+境界を親が再確認し、実装・委譲・accept の判断を引き取る。
+<!-- @/contract -->
+
 runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 

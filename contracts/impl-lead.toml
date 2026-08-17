@@ -354,6 +354,13 @@ pattern = '''更新した current `protected_dirty_record` と現在の reposito
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: initial caller supplies attention perspectives; partition and acceptance remain parent decisions.
+[contracts.impl-work-unit-design-initial-partition-caller-3f58e842bc94]
+kind = "requires"
+slice = "impl-work-unit-design-initial-partition-caller"
+pattern = '''親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: invocation guidance, merge preservation, remediation binding, and relation casebook form bounded partition Data.
 [contracts.work-unit-design-partition-input-data-7d13abf1ae94]
 kind = "requires"

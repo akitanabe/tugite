@@ -1216,6 +1216,10 @@
       "sha256": "0fa56c91d1172de477f25422fd1178ca6cb0b8d9a4d6d6168f5c11a777bdead5"
     },
     {
+      "id": "impl-work-unit-design-initial-partition-caller-3f58e842bc94",
+      "sha256": "cc3fa9fb7365cf9217b59502519286ef02e57fbccdf86143d3b210a72b33713b"
+    },
+    {
       "id": "work-unit-design-partition-input-data-7d13abf1ae94",
       "sha256": "8777ad875abd310d0659c358d4e951cc02427a9e42bfb5488e2490e8737b28a4"
     },
@@ -3284,6 +3288,11 @@
     {
       "kind": "span",
       "id": "impl-work-unit-data-canonical",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-work-unit-design-initial-partition-caller",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
