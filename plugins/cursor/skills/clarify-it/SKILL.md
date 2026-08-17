@@ -55,6 +55,10 @@ irreversible または変更コストの高い選択、既存の Human 判断か
 確定済みの説明を繰り返さず、その時点で必要な差分を中心に示す。根拠ある優劣を導ける場合だけ推奨と理由を示し、導けない場合は中立を保ち、
 判断を分ける価値軸を示す。
 
+Human Decision Point などの内部の構造・判定用語は、意思決定モデルと caller / projection の判定用語として維持し、意味を rename / redefine しない。
+Human への発話では、内部語彙を必要がない限り露出させず、判断対象と文脈に応じて自然な表現を Agent が選ぶ。例えば「次に決めたいのは〜です」「ここで判断いただきたいのは〜です」「残っている判断は〜です」などである。
+この自然化は責務境界と意味を維持したまま行い、固定的な内部語彙→対話語彙 dictionary は定義しない。
+
 ## Method
 
 `Frame → Resolve → Select & Present → Integrate → Reevaluate` を標準操作として使う。これは固定 state machine ではない。

@@ -233,7 +233,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "4725978a326a95fc4313fcdb355d0c9153285ce78ada6063b5160bacd13dc8e6"
+      "sha256": "e0aa656046baf3191ca5c42b65e123542e06ff888cbece336a0dd2849b74f4b2"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -336,8 +336,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-title-requires-0dbaeb1a5db8",
-      "sha256": "1e10094ffa2b7f766e70bedfa04af7bbea34ed32dcb7942b5d8254a8bad93b6b"
+      "id": "cursor-readme-title-requires-49842654d95a",
+      "sha256": "0e62cecadba870bd20d6711c5be1aaaee9d40c672d900049c52ed7f28554de10"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
@@ -682,6 +682,10 @@
     {
       "id": "clarify-it-presentation-neutral-cb5372ea8544",
       "sha256": "a174441b5c5ec3011c4351666eb964b79b96d5a22698d2a73b17788594f74898"
+    },
+    {
+      "id": "clarify-it-presentation-policy-c5faea16d915",
+      "sha256": "1af4d3b66b48c4534abeb375297f7d3ffa79780476a9a310683a5882206b1be6"
     },
     {
       "id": "clarify-it-selection-no-score-d9f7fc56beea",
@@ -2364,8 +2368,8 @@
       "sha256": "271716764a98380dd91e1b7a74d5adda3797144bd4ece74744aa8a8bd9614cd0"
     },
     {
-      "id": "clarify-caller-data-d368442b31ae",
-      "sha256": "9af54aab9f01486e2a894f8c476536d0a29ef5aa43175b7134b9f12f9307ce9b"
+      "id": "clarify-caller-data-21af968c33e1",
+      "sha256": "02845c1588e2ac0c1efb544e42c65d7f4f794620c1b3d9dad358fc13362a84a5"
     },
     {
       "id": "kernel-loader-data-b0d341da5646",
