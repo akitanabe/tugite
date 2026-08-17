@@ -353,3 +353,52 @@ slice = "impl-work-unit-protected-dirty-scope"
 pattern = '''更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data は `dependency-dispatch-guard` へ渡す。
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。'''
 applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: invocation guidance, merge preservation, remediation binding, and relation casebook form bounded partition Data.
+[contracts.work-unit-design-partition-input-data-7d13abf1ae94]
+kind = "requires"
+slice = "work-unit-design-partition-input-data"
+pattern = '''`partition_perspectives` は invocation ごとの transient execution Data であり、用途名、split / merge の答え、Work Unit Data の field、出力 field、永続 ledger ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-attention-b1671a136d10]
+kind = "requires"
+slice = "work-unit-design-partition-attention"
+pattern = '''`partition_perspectives` は確認順序と attention priority のみを与える。観点外の既存原則、全入力、既存 signal、candidate facts を維持し、観点で無効化または置換せず、固定 mode、threshold、solver、expected-output oracle を作らない。split / merge / absorb の最終判断はこの Skill が行い、partition_perspectives の優先度を答えや branch にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-contrastive-guard-d0684aace227]
+kind = "requires"
+slice = "work-unit-design-partition-contrastive-guard"
+pattern = '''merge / absorb の直前に一度だけ、分離維持では成立しない具体的 evidence を contrastive に確認する。具体的 evidence があり、同じ受入境界でしか Green / accept / revert が成立しない場合だけ lossy merge / absorb を選べる。evidence のない lossy merge は選ばず、正当な merge はこれで禁止しない。独立 purpose、accepted dependency 上の focused Green、単独 accept / revert、Implementer readiness が成立する候補は、shared file / generator / contract / generated surface / full gate / run-wide invariant / worker capability の共有だけでは消さない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-remediation-binding-9c4dbcaccf8b]
+kind = "requires"
+slice = "work-unit-design-partition-remediation-binding"
+pattern = '''remediation candidate は、同じ origin verified snapshot に束縛された親裁定済み selected finding obligation として入力でき、identity、obligation、AC、mutation oracle、disposition、既存 context を保持する。元の Skill 数や Work Unit 数を partition の根拠にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.work-unit-design-partition-casebook-e9b3d3d10173]
+kind = "requires"
+slice = "work-unit-design-partition-casebook"
+pattern = '''Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。exact Work Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-overmerge-bb5c82f80820]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-initial-over-merge"
+pattern = '''#249 initial over-merge: input facts は independent outcomes / AC / focused verification / accept-rollback と shared surfaces。forbidden shortcut は shared surfaces / run-wide gate だけで merge すること。preserved relation は independent acceptability と dependency / conflict の分離。valid control は本当に同じ受入境界でしか Green にならない候補の merge を許すこと。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-kernel-caller-545b7e6bd64b]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-kernel-caller"
+pattern = '''#210 kernel / caller: input facts は kernel foundation と proposal/review consumers、shared generator/registry。forbidden shortcut は shared surface だけで統合すること。preserved relation は foundation capability と consumer 別 AC / verification / rollback、および dependency。valid control は foundation が単独 capability / contract を持たなければ最初に価値を生む application が所有できること。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.wu-partition-casebook-remediation-oversplit-3922f99e99dd]
+kind = "requires"
+slice = "work-unit-design-partition-casebook-remediation-over-split"
+pattern = '''#249 remediation over-split: input facts は同一 verified snapshot、同じ横断 invariant、親裁定済み findings。forbidden shortcut は元 Skill / Work Unit 境界の機械継承または一括のための identity collapse。preserved relation は coherent apply と finding identity / obligation / AC / mutation oracle / disposition。valid control は authority / external side effect / intermediate snapshot / failure isolation / independent promotion が異なる場合の split。'''
+applies_to = ["claude", "codex", "cursor"]

@@ -1216,6 +1216,38 @@
       "sha256": "0fa56c91d1172de477f25422fd1178ca6cb0b8d9a4d6d6168f5c11a777bdead5"
     },
     {
+      "id": "work-unit-design-partition-input-data-7d13abf1ae94",
+      "sha256": "8777ad875abd310d0659c358d4e951cc02427a9e42bfb5488e2490e8737b28a4"
+    },
+    {
+      "id": "work-unit-design-partition-attention-b1671a136d10",
+      "sha256": "b2aa26e2f50a7346522fb49297639105704970d0c7e5ead701f1eab3b044f308"
+    },
+    {
+      "id": "work-unit-design-partition-contrastive-guard-d0684aace227",
+      "sha256": "21e01f4c7cb4510b5e8bee1021a048733ad361739ecfbd602679e3e6e7889439"
+    },
+    {
+      "id": "work-unit-design-partition-remediation-binding-9c4dbcaccf8b",
+      "sha256": "4b629d5b154aecf465ec44a705631639e9ce310ae0b0fc2d3683de82b5b41762"
+    },
+    {
+      "id": "work-unit-design-partition-casebook-e9b3d3d10173",
+      "sha256": "9330baec2ae7a2c9db1a37d3e024f86b3f4c1ad261710e4c6a6556194f82a01e"
+    },
+    {
+      "id": "wu-partition-casebook-overmerge-bb5c82f80820",
+      "sha256": "4090c813c92004fd6e656803fcdea8df16898e5d092d0ad862ec02972cb4f857"
+    },
+    {
+      "id": "wu-partition-casebook-kernel-caller-545b7e6bd64b",
+      "sha256": "35a4258ae64a266e96151eb85f737add7250d416494d4648ff3cef38c5c9fb13"
+    },
+    {
+      "id": "wu-partition-casebook-remediation-oversplit-3922f99e99dd",
+      "sha256": "7ab24b8258619db352f392667d89a8573b290910d378f885d440563b1df8df96"
+    },
+    {
       "id": "plan-candidate-producer-internal-guard-requires-86104357309e",
       "sha256": "d714dde0d6da96d884685cd21ed2f8ef82b417a799023c8076346b9dbc73f35e"
     },
@@ -4006,7 +4038,47 @@
     },
     {
       "kind": "span",
+      "id": "work-unit-design-partition-input-data",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-attention",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-remediation-binding",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "work-unit-design-work-unit-data-consumer",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-contrastive-guard",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-casebook",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-casebook-initial-over-merge",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-casebook-kernel-caller",
+      "path": "shared/skill/work-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "work-unit-design-partition-casebook-remediation-over-split",
       "path": "shared/skill/work-unit-design/SKILL.md"
     },
     {
