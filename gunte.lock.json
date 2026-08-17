@@ -29,6 +29,7 @@
     "shared/batch-resolve-kernel.md",
     "shared/necessity-kernel.md",
     "shared/plan-artifact-publication.md",
+    "shared/plan-artifact-design.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
     "shared/skill/clarify-it/SKILL.md",
@@ -233,7 +234,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "c96f9c343bd813be4e08872690a8060155082e81cf08d1f980694547aa4b5837"
+      "sha256": "39e7bcbf44f40b09f3f045e347efd741a89dbaa8cfbcb3f75bfb5341818ffbfc"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -336,8 +337,8 @@
       "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
     },
     {
-      "id": "cursor-readme-title-requires-8cadc865d84a",
-      "sha256": "1a6da066e8500a21800feeb0bf3c87a1a137044602d27495d4fa0f288c82dae6"
+      "id": "cursor-readme-title-requires-9832c05b0608",
+      "sha256": "c39afe38c86bc04cbee66180aef9658e8224322a1315d9ad11084807a6f53ebe"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
@@ -2096,8 +2097,8 @@
       "sha256": "fa8c726f942acb15fcca544d25ff2e418269467ea7ec544cf23b8fb7343e361c"
     },
     {
-      "id": "plan-agent-producer-preflight-invocation-boundary-c9ec3270212b",
-      "sha256": "953e55ad0b0bafeebc8a0cbcd9f091aadc5fb1937e582ab9fc2905156185641e"
+      "id": "plan-agent-producer-preflight-invocation-boundary-5722d4a9d94b",
+      "sha256": "880d8dbebceb9faf0e7441664da60c63a5d3777957bc7ce15e40898ab74823c6"
     },
     {
       "id": "plan-agent-producer-loader-action-forbidden-cc23ade40119",
