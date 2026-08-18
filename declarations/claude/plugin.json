@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "tugite",
   "displayName": "Tugite",
-  "description": "impl-lead、plan-agent、plan-interactive、review-refine、code-review、clarify-it と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
+  "description": "impl-lead、plan-agent、plan-interactive、review-refine、code-review、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。",
   "version": "5.2.0",
   "author": {
     "name": "akitanabe"

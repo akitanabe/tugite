@@ -8,6 +8,7 @@ version_from = "shared/VERSION"
 files = [
   "contracts/repository.toml",
   "contracts/clarify-it.toml",
+  "contracts/test-report.toml",
   "contracts/workers.toml",
   "contracts/impl-lead.toml",
   "contracts/plan-agent.toml",
@@ -50,6 +51,7 @@ files = [
   "shared/skill/plan-candidate-producer/SKILL.md",
   "shared/skill/review-refine/SKILL.md",
   "shared/skill/structural-health-gate/SKILL.md",
+  "shared/skill/test-report/SKILL.md",
   "shared/skill/work-unit-design/SKILL.md",
   "shared/repository-guidelines.md",
   "declarations/claude/plugin.json",
@@ -64,6 +66,7 @@ files = [
   "declarations/codex/skills/plan-candidate-producer/openai.yaml",
   "declarations/codex/skills/review-refine/openai.yaml",
   "declarations/codex/skills/structural-health-gate/openai.yaml",
+  "declarations/codex/skills/test-report/openai.yaml",
   "declarations/codex/skills/work-unit-design/openai.yaml",
   "declarations/cursor/plugin.json",
   "shared/VERSION",
