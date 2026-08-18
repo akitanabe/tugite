@@ -1,0 +1,6 @@
+interface:
+  display_name: "Code Review"
+  short_description: "Route specialist reviewers and report evidence-checked findings"
+  default_prompt: "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows."
+policy:
+  allow_implicit_invocation: true

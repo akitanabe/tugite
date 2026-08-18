@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "version": "5.2.0",
-  "description": "Use impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
+  "description": "Use impl-lead, plan-agent, plan-interactive, review-refine, code-review, and clarify-it with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
   "author": {
     "name": "akitanabe"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install agents and delegate with parent QA.",
-    "longDescription": "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. The parent Codex agent performs parent QA and keeps final quality responsibility.",
+    "longDescription": "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, and clarify-it, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. The parent Codex agent performs parent QA and keeps final quality responsibility.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -30,6 +30,7 @@
       "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
       "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
       "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+      "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
       "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."
     ]
