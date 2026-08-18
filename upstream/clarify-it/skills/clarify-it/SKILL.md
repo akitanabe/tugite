@@ -5,7 +5,7 @@ description: >-
   Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。
   成果物や Issue の編集、実装、後続 Action は実行しない。
 ---
-<!-- Generated from shared/. Do not edit directly. -->
+<!-- Generated from src/. Do not edit directly. -->
 
 # clarify-it
 

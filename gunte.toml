@@ -7,7 +7,6 @@ version_from = "shared/VERSION"
 [contracts]
 files = [
   "contracts/repository.toml",
-  "contracts/clarify-it.toml",
   "contracts/workers.toml",
   "contracts/impl-lead.toml",
   "contracts/plan-agent.toml",
@@ -39,8 +38,9 @@ files = [
   "shared/plan-artifact-design.md",
   "shared/resolve-kernel.md",
   "shared/writable-scope-kernel.md",
-  "shared/skill/clarify-it/SKILL.md",
-  "shared/skill/clarify-it/references/philosophy.md",
+  # Why Not: pin 本文は Tugite 内で編集せず、内容変更は akitanabe/clarify-it を変えてから手動再同期する。CI / runtime では fetch しない。
+  "upstream/clarify-it/skills/clarify-it/SKILL.md",
+  "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/impl-lead/references/final-writing-gate.md",
   "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -55,7 +55,6 @@ files = [
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
   "declarations/codex/marketplace.json",
-  "declarations/codex/skills/clarify-it/openai.yaml",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-agent/openai.yaml",
   "declarations/codex/skills/plan-interactive/openai.yaml",
@@ -76,12 +75,14 @@ managed_roots = [
   "contracts.toml",
   ".claude-plugin",
   ".agents/plugins",
+  "upstream",
 ]
 allow_files = [
   "tests/install-agents-test.sh",
   "tests/install-cursor-plugin-test.sh",
   ".claude-plugin/marketplace.json",
   ".agents/plugins/marketplace.json",
+  "upstream/clarify-it/COMMIT",
 ]
 
 [terms.parent_agent]
@@ -190,8 +191,13 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/skill/clarify-it/references/philosophy.md"
-path = "skills/clarify-it/references/philosophy.md"
+match = "upstream/clarify-it/skills/clarify-it/SKILL.md"
+path = "references/upstream/clarify-it/SKILL.md"
+profile = "markdown-v1"
+
+[[targets.claude.rules]]
+match = "upstream/clarify-it/skills/clarify-it/references/philosophy.md"
+path = "references/upstream/clarify-it/references/philosophy.md"
 profile = "markdown-v1"
 
 [[targets.claude.rules]]
@@ -272,8 +278,13 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/skill/clarify-it/references/philosophy.md"
-path = "skills/clarify-it/references/philosophy.md"
+match = "upstream/clarify-it/skills/clarify-it/SKILL.md"
+path = "references/upstream/clarify-it/SKILL.md"
+profile = "markdown-v1"
+
+[[targets.codex.rules]]
+match = "upstream/clarify-it/skills/clarify-it/references/philosophy.md"
+path = "references/upstream/clarify-it/references/philosophy.md"
 profile = "markdown-v1"
 
 [[targets.codex.rules]]
@@ -361,8 +372,13 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/skill/clarify-it/references/philosophy.md"
-path = "skills/clarify-it/references/philosophy.md"
+match = "upstream/clarify-it/skills/clarify-it/SKILL.md"
+path = "references/upstream/clarify-it/SKILL.md"
+profile = "markdown-v1"
+
+[[targets.cursor.rules]]
+match = "upstream/clarify-it/skills/clarify-it/references/philosophy.md"
+path = "references/upstream/clarify-it/references/philosophy.md"
 profile = "markdown-v1"
 
 [[targets.cursor.rules]]

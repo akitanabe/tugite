@@ -1,4 +1,3 @@
-<!-- @only claude -->
 ---
 name: clarify-it
 description: >-
@@ -6,43 +5,20 @@ description: >-
   Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。
   成果物や Issue の編集、実装、後続 Action は実行しない。
 ---
-<!-- @/only -->
-<!-- @only codex -->
----
-name: clarify-it
-description: >-
-  ユーザーが `clarify-it` を明示した場合、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な場合に使う。
-  Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。
-  成果物や Issue の編集、実装、後続 Action は実行しない。
----
-<!-- @/only -->
-<!-- @only cursor -->
----
-name: clarify-it
-description: >-
-  ユーザーが `clarify-it` を明示した場合、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な場合に使う。
-  Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。
-  成果物や Issue の編集、実装、後続 Action は実行しない。
----
-<!-- @/only -->
+<!-- Generated from src/. Do not edit directly. -->
 
 # clarify-it
 
-<!-- @contract clarify-it-invocation -->
 `clarify-it` の明示指定、または「詰めていきたい」「対話しながら設計・方針・判断を固めたい」のように、段階的な
 明確化を求める意図が明確な依頼で開始する。単なる曖昧な相談や、Agent が回答を知らないという理由だけでは開始しない。
 この Skill はそれ単独で動作し、外部の文書、path、URL を runtime dependency として要求しない。
-<!-- @/contract -->
 
 ## Specification
 
-<!-- @contract clarify-it-start-boundary -->
 開始時に、目的、今回のスコープ、すでに確定している制約・判断、Agent が調査・分析・導出できる領域、Human の価値判断が必要に
 なり得る領域を、Agent 内部の意思決定モデルへ整理する。これを前提確認リストとして Human に再承認させず、意思決定の境界そのものを
 確定できない不足だけを Human へ返す。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-normative-hierarchy -->
 規範の優先順位は `Specification > Method > Casebook` とする。Specification は責務と結果の境界、Method は標準操作、
 Casebook は境界例を定める。解釈が衝突した場合はこの順で上位を優先する。
 
@@ -58,29 +34,21 @@ Philosophy は通常の規範でも新しい要件源でもない。3層の矛�
 - 強く固定するのは責任と成果の境界であり、内部の思考経路ではない。
 
 この Data から通常時の新しい obligation を導出しない。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-philosophy-reference -->
 Philosophy reference は非規範であり、新しい obligation を作らない。通常実行に必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。
 矛盾、解釈衝突、または想定外ケースで詳細な設計意図を確認する場合は `references/philosophy.md` を参照する。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-responsibility -->
 Human の決定、観測事実、一時前提、Agent の導出を意味上区別する。Human は目的に照らした価値判断と結果責任を持つ。
 Agent は調査、分析、技術的な導出、判断空間の圧縮、依存関係と整合性の維持、および現在モデルへの再統合に経過責任を持つ。
 Agent が合理的に調査・導出できる事項を Human の選択へ置き換えない。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-human-decision-point -->
 Human Decision Point は、調査と導出の後にも Human の価値判断が本当に残る場合だけ提示する。Agent が答えを知らない、
 技術的調査が不足している、または複数の実装案があるというだけでは Human Decision Point にしない。提示前に、判断を
 変え得る事実、技術的不確実性、主要な反証材料を合理的な範囲で解消する。候補として、複数の妥当な選択肢で価値判断が必要な場合、
 responsibility boundary、domain model・abstraction・design philosophy、public contract・externally observable behavior、
 irreversible または変更コストの高い選択、既存の Human 判断から優劣を導けない場合、Human の意図によって正解が変わる場合を評価する。
 これらへの該当は質問を発生させる十分条件ではなく、既存判断、調査、分析、技術的優劣から結論を導出できるなら Agent が処理する。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-decision-context -->
 一度に提示するのは一つの独立した decision context とする。強く結合した判断は一つの context にまとめ、重くて理解が
 難しい context は論点を増やさず複数 turn に分ける。選択肢は同じ判断対象、判断軸、同程度の抽象度で比較可能にし、標準順序は
 「選択肢・主要差分 → 判断材料 → 推奨と理由 → 採否」とする。推奨を選択肢より先に置かず、同じ context が複数 turn にまたがる場合は
@@ -90,11 +58,9 @@ irreversible または変更コストの高い選択、既存の Human 判断か
 Human Decision Point などの内部の構造・判定用語は、意思決定モデルと caller / projection の判定用語として維持し、意味を rename / redefine しない。
 Human への発話では、内部語彙を必要がない限り露出させず、判断対象と文脈に応じて自然な表現を Agent が選ぶ。例えば「次に決めたいのは〜です」「ここで判断いただきたいのは〜です」「残っている判断は〜です」などである。
 この自然化は責務境界と意味を維持したまま行い、固定的な内部語彙→対話語彙 dictionary は定義しない。
-<!-- @/contract -->
 
 ## Method
 
-<!-- @contract clarify-it-method -->
 `Frame → Resolve → Select & Present → Integrate → Reevaluate` を標準操作として使う。これは固定 state machine ではない。
 
 1. Frame: 現在の目的、観測事実、一時前提、未解決事項と依存を一つの意思決定モデルとして捉える。
@@ -120,9 +86,7 @@ Human の応答、新しい上位概念、前提変更を統合するたびに�
 応答かを確認する。Human が過剰詳細化を示した場合は局所質問を擁護せず、一段上の抽象度から再圧縮する。新しい evidence
 によって選択肢の優劣が変わった場合は、過去の推奨を維持せず、推奨と理由を更新する。圧縮して提示した判断材料について詳細を求められた場合は、
 当初の根拠、前提、観測事実、比較内容、主要な反証材料を正確に展開し、後から別の rationale を生成して当初の根拠とすり替えない。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-completion -->
 未決の Human Decision Point と重要な不整合がなく、現在の前提で一つの一貫した意思決定モデルへ再統合できた場合だけ
 `Completed` とする。完了条件を満たさず途中終了する場合は `Stopped` とし、停止理由と残る判断を返す。
 
@@ -130,17 +94,13 @@ Human の応答、新しい上位概念、前提変更を統合するたびに�
 返す。目的、現在の前提、主要な判断と根拠、重要な依存、棄却した主要代替、残存する不確実性を、対象に必要な範囲で
 再構成する。現在の前提で成立しない古い判断を無批判に残さず、包含・重複した下位判断を必要に応じて整理する。Human はいつでも
 対話を停止できる。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-action-boundary -->
 この Skill は明確化と再統合までを担う。成果物や Issue の編集、実装、委譲、コマンド実行、外部サービスへの書き込み、
 後続 Action の開始は行わない。必要な後続 Action は実行せず、現在モデルの一部として caller / Human へ返す。
 出力形式を固定せず、対象と判断内容に自然な表現を選ぶ。
-<!-- @/contract -->
 
 ## Casebook
 
-<!-- @contract clarify-it-casebook -->
 - 複数案がある: 技術的根拠で優劣を導けるなら Agent が推奨を導き、案の数だけで Human に聞かない。
 - Agent が知らない: 調査可能な不足を価値判断へ変換せず、まず調べる。
 - 判断が強く結合する: 別々に答えると矛盾する判断は一つの decision context にまとめる。
@@ -151,4 +111,3 @@ Human の応答、新しい上位概念、前提変更を統合するたびに�
 - 正しいが細かすぎる質問: 局所的に正しくても対話全体を過剰詳細化するなら、一段上から再圧縮する。
 - 短い `ok`: 対象 context が一意なら統合し、一意でなければ確認する。
 - 最終結果: 対話履歴の列ではなく、現在の一貫した意思決定モデルを返す。
-<!-- @/contract -->

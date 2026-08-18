@@ -63,8 +63,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 ## workflow と agent の surface
 
 現行の public workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-agent`（実装を開始しない計画成果物）、
-`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`clarify-it`（段階的な
-意思決定の明確化）の5つです。internal skill は `plan-candidate-producer`、`structural-health-gate`、`work-unit-design` の3つです。
+`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）の4つです。internal skill は `plan-candidate-producer`、`structural-health-gate`、`work-unit-design` の3つです。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## コーディングスタイルと命名
@@ -128,7 +127,7 @@ programmatic_flow_discretion = "fixed procedure, decision conditions, and outcom
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
 programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
-programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "work-unit-design"]
+programmatic_flow_excluded_skills = ["structural-health-gate", "work-unit-design"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
 
