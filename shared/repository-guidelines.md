@@ -56,15 +56,16 @@ contract の標準例です。
 ## 追加・変更時に触れる場所
 
 agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の
-agent inventory を同じ変更で更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
+agent inventory を同じ変更で更新します。`code-review` の SKILL.md は対象 reviewer の名前集合を持つため、reviewer
+agent の追加・削除時は同じ変更でこの skill も更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
 declarations、Gunte の `sources.files`、managed inventory を更新し、target rule は出力 path、profile、shape が
 変わる場合だけ更新します。生成後は installer test で runtime inventory も確認します。
 
 ## workflow と agent の surface
 
 現行の public workflow skill は `impl-lead`（親の受け入れと QA を保持する実装 loop）、`plan-agent`（実装を開始しない計画成果物）、
-`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`clarify-it`（段階的な
-意思決定の明確化）、`test-report`（指定範囲のテスト群を検証体系として再構成する観測）の6つです。internal skill は `plan-candidate-producer`、`structural-health-gate`、`work-unit-design` の3つです。
+`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`code-review`（専門 reviewer の routing と evidence 検証済み findings 報告）、`clarify-it`（段階的な
+意思決定の明確化）、`test-report`（指定範囲のテスト群を検証体系として再構成する観測）の7つです。internal skill は `plan-candidate-producer`、`structural-health-gate`、`work-unit-design` の3つです。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## コーディングスタイルと命名
@@ -133,7 +134,7 @@ programmatic_flow_discretion = "fixed procedure, decision conditions, and outcom
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
 programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
-programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "test-report", "work-unit-design"]
+programmatic_flow_excluded_skills = ["clarify-it", "code-review", "structural-health-gate", "test-report", "work-unit-design"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
 

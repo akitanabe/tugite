@@ -35,6 +35,7 @@
     "shared/writable-scope-kernel.md",
     "shared/skill/clarify-it/SKILL.md",
     "shared/skill/clarify-it/references/philosophy.md",
+    "shared/skill/code-review/SKILL.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -51,6 +52,7 @@
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
     "declarations/codex/skills/clarify-it/openai.yaml",
+    "declarations/codex/skills/code-review/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
     "declarations/codex/skills/plan-interactive/openai.yaml",
@@ -196,12 +198,12 @@
       "sha256": "5cf96797ae918d622070593c2769de840766cd2638498d4c3f0c310816e853a9"
     },
     {
-      "id": "repository-programmability-boundary-b66fd5885eef",
-      "sha256": "1ded0b4f3fc317dab5c7355567db6a4d0eb7c2d6a8460ad8af6cc7b3562997ca"
+      "id": "repository-programmability-boundary-ac40a8740c94",
+      "sha256": "081c97ae8292738e6ad8fd0e8d72ef8cb49b36d675ccdbd23e63991243817649"
     },
     {
       "id": "programmatic-flow-section-excluded",
-      "sha256": "6845e2f41b967fca53b3fb01bddb8838954bd036983876efe93ebc59a7e35a2f"
+      "sha256": "971a088de0d02875b2793d078de708f847f374c94532fcfdd921350fd495c541"
     },
     {
       "id": "repository-test-qa-baseline-a0b98d2f7393",
@@ -237,7 +239,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "a368526296cc101de2aa89c9882711c84a4ea52c580d3177061df409c735a49f"
+      "sha256": "c6da1b882198e51976e07f478fb931f2e2d8f36149aee8df43a6fa1e9478af58"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -301,7 +303,7 @@
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "c37b9120f5555a3ac0e2a24b73cef1cc1b3b4188a8f157274b2189bde0bbaa56"
+      "sha256": "47965ce4841a715e8c94e3dab2f72524b54d181ac3bb4a6559ad50db79340ad4"
     },
     {
       "id": "cursor-impl-lead-skill",
@@ -330,6 +332,10 @@
     {
       "id": "cursor-review-refine-skill",
       "sha256": "a8e88d24f3d62519110cf5823f6abc5e75e808c43c52fbaf6ec946e1228e0ae4"
+    },
+    {
+      "id": "cursor-code-review-skill",
+      "sha256": "9c592a36d9093fee6b2621e9a090a1a92074a00c8046aea4520b305e58825d7a"
     },
     {
       "id": "cursor-structural-health-gate-skill",
@@ -384,8 +390,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-f878526319ed",
-      "sha256": "27b6ebe6558e58a8d1b25055ab1d248cc0c09462d2ddb1a76caee84162551649"
+      "id": "cursor-readme-public-skills-requires-f5b17f89c6ab",
+      "sha256": "fdae3365263ee2c62d9598ed064b2c3beccdf5a6d9b14fe02248fcea8205caa5"
     },
     {
       "id": "cursor-readme-install-skill-requires-e9e87fe619cf",
@@ -397,7 +403,7 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "b7f5b63c0f18376c2d96ef24753a4510260c51d87b222989baaf553e626781ee"
+      "sha256": "73a64f66f7aec15b7cd80fb2f591233908b32f751049478a5e520bd65b582c90"
     },
     {
       "id": "codex-openai-disabled-policy",
@@ -420,6 +426,10 @@
       "sha256": "14f90611e7bcf6529f4e4c259719f3e0bc4034af5675bbe6fd054e7c064c6fbb"
     },
     {
+      "id": "codex-code-review-openai-identity",
+      "sha256": "84a66c18c356bff4124670ce5261aa7e78e2b29659c9683713fc12ef595b38e4"
+    },
+    {
       "id": "claude-explicit-skill-policy",
       "sha256": "c3dd16cd810b6662c1a5e642cde0d51d85d5d8ea95f92c2637c1d72035986d42"
     },
@@ -430,6 +440,10 @@
     {
       "id": "claude-review-refine-policy",
       "sha256": "09c72b6abc2cb75a78e5e61d39d42561257a90825f873740b922ee1388c3c584"
+    },
+    {
+      "id": "claude-code-review-policy",
+      "sha256": "73173b8c5a1c21e014e721bf8450471b3f5bbadbe0ea50849555b2f6792a04ce"
     },
     {
       "id": "claude-clarify-it-policy",
@@ -446,6 +460,10 @@
     {
       "id": "clarify-it-generated-description",
       "sha256": "ad62d8599a1cdccc0d9e1c1c214f7816060f68d50ca8d85406227dc0be384ff3"
+    },
+    {
+      "id": "code-review-generated-description",
+      "sha256": "ad1f2153af8f768e347e38471526fdf9f125bd0b62cf7608b320c03ecbfcf8ca"
     },
     {
       "id": "clarify-it-codex-prompt",
@@ -485,7 +503,7 @@
     },
     {
       "id": "claude-marketplace-shape",
-      "sha256": "7f079ef3e4883a4ccaac2d4b7291c3418f59992381956ce0c9d3f237f2170721"
+      "sha256": "64a755e33acc0f503eb0b17fbc72bf7dd4a367055484f27fcedbe17e702a735c"
     },
     {
       "id": "codex-marketplace-shape",
@@ -493,11 +511,11 @@
     },
     {
       "id": "claude-plugin-manifest-shape",
-      "sha256": "6d1d85d4e5e9ca45b78ef76b4497443a5cf1b0bce14d68d27028f1bf0bc1478d"
+      "sha256": "eccf5cd18da0157948f94dd066793ef382017e61ff1d3f1a872101824f790582"
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "475a1d24e0890560fe3d88d29a1029fcfd5f6279034e0779924abac8cc5c1cb9"
+      "sha256": "03214ed306142e3938ae584a9b0e7034283494f0f4cf91223d0abeae07bea2fb"
     },
     {
       "id": "clarify-it-invocation-c7163984dcae",

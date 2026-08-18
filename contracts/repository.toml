@@ -286,7 +286,7 @@ pattern = "staging を write して close し、同一 object の byte-identical
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
-[contracts.repository-programmability-boundary-b66fd5885eef]
+[contracts.repository-programmability-boundary-ac40a8740c94]
 kind = "requires"
 slice = "repository-programmability-boundary"
 pattern = '''policy_id = "programmability-boundary-v1"
@@ -302,7 +302,7 @@ programmatic_flow_discretion = "fixed procedure, decision conditions, and outcom
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
 programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
-programmatic_flow_excluded_skills = ["clarify-it", "structural-health-gate", "test-report", "work-unit-design"]
+programmatic_flow_excluded_skills = ["clarify-it", "code-review", "structural-health-gate", "test-report", "work-unit-design"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"'''
 applies_to = ["agents-guidance", "claude-guidance"]
 
@@ -311,14 +311,17 @@ kind = "forbids"
 pattern = "## Programmatic Flows"
 paths = [
   "plugins/claude/skills/clarify-it/SKILL.md",
+  "plugins/claude/skills/code-review/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/test-report/SKILL.md",
   "plugins/claude/skills/work-unit-design/SKILL.md",
   "plugins/codex/skills/clarify-it/SKILL.md",
+  "plugins/codex/skills/code-review/SKILL.md",
   "plugins/codex/skills/structural-health-gate/SKILL.md",
   "plugins/codex/skills/test-report/SKILL.md",
   "plugins/codex/skills/work-unit-design/SKILL.md",
   "plugins/cursor/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/code-review/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/test-report/SKILL.md",
   "plugins/cursor/skills/work-unit-design/SKILL.md",
@@ -437,7 +440,7 @@ value = "6.0.4"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、code-review、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親 Cursor エージェントが計画・QA・最終検証を保持する plugin。"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "author"
@@ -747,6 +750,7 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/cursor/skills/clarify-it/SKILL.md",
+  "plugins/cursor/skills/code-review/SKILL.md",
   "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/skills/review-refine/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
@@ -848,6 +852,18 @@ path = "name"
 op = "equals"
 value = "review-refine"
 
+[contracts.cursor-code-review-skill]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/cursor/skills/code-review/SKILL.md"]
+format = "yaml"
+applies_to = ["cursor"]
+
+[[contracts.cursor-code-review-skill.assertions]]
+path = "name"
+op = "equals"
+value = "code-review"
+
 [contracts.cursor-structural-health-gate-skill]
 kind = "structure"
 subject = "artifact"
@@ -940,13 +956,14 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-f878526319ed]
+[contracts.cursor-readme-public-skills-requires-f5b17f89c6ab]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/impl-lead <実装タスク>
 /plan-agent <plan task>
 /plan-interactive <human-directed plan task>
 /review-refine <artifact review task>
+/code-review <code review task>
 /clarify-it <clarification task>
 /test-report <test understanding task>
 /install-plugin'''
@@ -970,6 +987,7 @@ kind = "structure"
 subject = "artifact"
 paths = [
   "plugins/codex/skills/clarify-it/agents/openai.yaml",
+  "plugins/codex/skills/code-review/agents/openai.yaml",
   "plugins/codex/skills/plan-candidate-producer/agents/openai.yaml",
   "plugins/codex/skills/review-refine/agents/openai.yaml",
   "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
@@ -1098,6 +1116,23 @@ path = "interface.default_prompt"
 op = "equals"
 value = "Use $review-refine only for an explicit standalone review or an explicitly invoked plan-family public workflow parent; review an immutable artifact snapshot and return findings, termination, and caller-owned acceptance evidence."
 
+[contracts.codex-code-review-openai-identity]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/code-review/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+
+[[contracts.codex-code-review-openai-identity.assertions]]
+path = "interface.display_name"
+op = "equals"
+value = "Code Review"
+
+[[contracts.codex-code-review-openai-identity.assertions]]
+path = "interface.default_prompt"
+op = "equals"
+value = "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows."
+
 [contracts.claude-explicit-skill-policy]
 kind = "structure"
 subject = "artifact"
@@ -1150,6 +1185,21 @@ path = "disable-model-invocation"
 op = "absent"
 
 [[contracts.claude-review-refine-policy.assertions]]
+path = "user-invocable"
+op = "absent"
+
+[contracts.claude-code-review-policy]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/code-review/SKILL.md"]
+format = "yaml"
+applies_to = ["claude"]
+
+[[contracts.claude-code-review-policy.assertions]]
+path = "disable-model-invocation"
+op = "absent"
+
+[[contracts.claude-code-review-policy.assertions]]
 path = "user-invocable"
 op = "absent"
 
@@ -1214,6 +1264,22 @@ applies_to = ["claude", "codex", "cursor"]
 path = "description"
 op = "equals"
 value = "ユーザーが `clarify-it` を明示した場合、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な場合に使う。 Human が担う価値判断だけを一度に一つの decision context として提示し、現在の一貫した意思決定モデルへ再統合して返す。 成果物や Issue の編集、実装、後続 Action は実行しない。"
+
+[contracts.code-review-generated-description]
+kind = "structure"
+subject = "artifact"
+paths = [
+  "plugins/claude/skills/code-review/SKILL.md",
+  "plugins/codex/skills/code-review/SKILL.md",
+  "plugins/cursor/skills/code-review/SKILL.md",
+]
+format = "yaml"
+applies_to = ["claude", "codex", "cursor"]
+
+[[contracts.code-review-generated-description.assertions]]
+path = "description"
+op = "equals"
+value = "ユーザーが `code-review` を明示した場合、または Tugite の code-review によるコードレビュー意図が明確な場合に使う。 対象 change set を captured snapshot に固定し、専門 reviewer を振り分け、evidence 検証済み findings を報告する。 修正、採否裁定、レビュー対象への書き込みは行わない。`impl-lead` および plan-family workflow の実行中には内部工程としては起動しない。"
 
 [contracts.clarify-it-codex-prompt]
 kind = "structure"
@@ -1406,7 +1472,7 @@ value = "./plugins/claude"
 [[contracts.claude-marketplace-shape.assertions]]
 path = "plugins.*.description"
 op = "equals"
-value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、code-review、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-marketplace-shape]
 kind = "structure"
@@ -1475,7 +1541,7 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.claude-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "impl-lead、plan-agent、plan-interactive、review-refine、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
+value = "impl-lead、plan-agent、plan-interactive、review-refine、code-review、clarify-it、test-report と internal skill、worker、reviewer、advisor を配布し、親エージェントが計画・QA・最終検証を保持する plugin。"
 
 [contracts.codex-plugin-manifest-shape]
 kind = "structure"
@@ -1502,12 +1568,12 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use impl-lead, plan-agent, plan-interactive, review-refine, clarify-it, and test-report with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use impl-lead, plan-agent, plan-interactive, review-refine, code-review, clarify-it, and test-report with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, clarify-it, and test-report, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. Test-report also applies when a user clearly wants to understand a specified set of tests, and reconstructs them as a verification system without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
+value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, clarify-it, and test-report, their internal skills, Work Unit workers, reviewers, and advisors. Clarify-it also applies when a user clearly wants step-by-step clarification, and returns the reintegrated current decision model without follow-up actions. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and reconstructs them as a verification system without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
@@ -1518,6 +1584,7 @@ value = [
   "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
   "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
   "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
+  "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
   "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
   "Use $install-custom-agents to check, install, or update the bundled custom agents.",
 ]
