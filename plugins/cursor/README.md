@@ -13,6 +13,7 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 - `plan-interactive`: 人間と方向性を確定した候補を構造 gate と固定レビューへ渡す、人間参加型の計画ワークフローです。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
 - `clarify-it`: 明示指定、または対話しながら設計・方針・判断を段階的に明確化する意図が明確な依頼で、Human の価値判断を一度に一つへ圧縮し、現在の意思決定モデルへ再統合して返します。成果物や Issue の編集、実装、後続 Action は実行しません。
+- `test-report`: 明示指定、または指定範囲のテスト群の理解・把握を求める意図が明確な依頼で、テスト群を振る舞い単位に再構成し、検証手段の境界と構造的空白を観測事実として提示します。テスト・コードの編集、実行、品質評価、後続 Action は行いません。
 
 `plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
 
@@ -46,9 +47,11 @@ gunte check
 - [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:plan-interactive`、`/tugite:review-refine`、`/tugite:clarify-it`、Codex では `$impl-lead`、`$plan-agent`、`$plan-interactive`、`$review-refine`、`$clarify-it` を明示して起動できます。
+Claude Code では `/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:plan-interactive`、`/tugite:review-refine`、`/tugite:clarify-it`、`/tugite:test-report`、Codex では `$impl-lead`、`$plan-agent`、`$plan-interactive`、`$review-refine`、`$clarify-it`、`$test-report` を明示して起動できます。
 
 `clarify-it` は明示指定がなくても、対話しながら段階的に明確化する意図が明確な依頼に適用できます。
+
+`test-report` は明示指定がなくても、指定範囲のテスト群の理解・把握を求める意図が明確な依頼に適用できます。
 
 内部 skill は、公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
 
@@ -88,6 +91,7 @@ public skill は次のコマンドで明示起動できます。
 /plan-interactive <human-directed plan task>
 /review-refine <artifact review task>
 /clarify-it <clarification task>
+/test-report <test understanding task>
 /install-plugin
 ```
 
