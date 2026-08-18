@@ -1,6 +1,0 @@
-interface:
-  display_name: "Clarify It"
-  short_description: "Clarify a decision model one human judgment at a time"
-  default_prompt: "Use $clarify-it when explicitly requested or when the user clearly wants to clarify a design, direction, or decision step by step; resolve agent-owned uncertainty, present one human decision context at a time, and return the reintegrated current model without editing artifacts, implementing, or starting follow-up actions."
-policy:
-  allow_implicit_invocation: true

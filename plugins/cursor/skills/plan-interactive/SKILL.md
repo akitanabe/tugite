@@ -34,20 +34,25 @@ Human-confirmed decision として記録する。
 
 ## clarify-it の caller mapping
 
+`plan-interactive` 起動時に、親は次の Loader Data で pinned 内部 snapshot を一度だけ load する。最初の成功本文を同一
+invocation 内で固定し、local clarify-it（freeze-integrity recovery、gate reopen、final acceptance local correction、3択の再投入）でも
+再 load しない。load 失敗時は推測で fallback clarification を行わず、既存の `incomplete` へ返す。clarify-it の semantic identity は検証しない。
+
 ```text
-application = public clarify-it in the same plan-interactive parent context
-dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
-caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
-presentation_policy = inherit clarify-it-decision-context presentation policy without copying or override
-caller_projection = preserve internal vocabulary in caller/projection Data; apply inherited policy to Human-facing utterances
-public_extension = none
+clarify_it_reference = ../../references/upstream/clarify-it/SKILL.md
+clarify_it_load_timing = once at plan-interactive start
+clarify_it_snapshot = first successful body frozen for the invocation
+clarify_it_failure = existing incomplete; no fallback clarification
+clarify_it_identity_check = none
 ```
 
-## clarify / resolution execution bound
+`references/philosophy.md` の参照要否と相対 path は、loaded artifact 自身の規則に従う。
 
-親は loop 開始時に bound、current count（または `limit_reached`）、remaining decisions、semantic progress、materiality を入力 Data として固定し、
-`clarify-loop-bound-routing` Flow へ渡す。bound の値、progress の意味、materiality の判断は親が所有し、Flow 外の
-Human Decision や public parameter へ拡張しない。gate と review の budget は別 Data とする。
+```text
+application = pinned internal upstream clarify-it snapshot in the same plan-interactive parent context
+caller_owns = invocation boundary | binding Human authority | verified workflow Data | observation capability | Completed/Stopped workflow projection | direction freeze | downstream workflow
+public_extension = none
+```
 
 ## kernel preflight と caller mapping
 
@@ -75,16 +80,21 @@ ledger = decision ledger
 
 `interactive-kernel-preflight` Flow はこの Data を使い、path 解決と最終判断は親が所有する。
 
-## 観測 Action と clarify-it 適用
+## 観測 Action
 
 親は current decision model、parent context、必要な runtime behavior、最小 observation request / criteria を Action 実行前 Data として準備する。
-`observation-reapply` Flow が最小 observation、同じ decision model / parent context への再適用、technical gap の返却を唯一の詳細 witness とする。
-観測の意味評価、Human clarification、contradictory Action の裁定は Flow 外の親責務である。
+`observation-reapply` Flow が最小 Observation Action の実行と technical evidence gap の返却を唯一の詳細 witness とする。
+観測の意味評価、decision-model への再適用、Human clarification、contradictory Action の裁定は Flow 外の親責務である。
 
 ## clarify-it result の projection
 
-`clarify-it` の `Completed` / `Stopped` を direction freeze candidate または未完了へ写像する詳細手続きは
-`direction-freeze-projection` と `clarify-loop-bound-routing` Flow が担う。親は verified comparison、remaining decisions、reason を入力として保持し、
+clarify phase の終了判断は次の2つだけとする。回数上限、remaining decisions count、semantic progress 管理、Tugite 独自 completion 判定は
+`plan-interactive` 側で持たない。
+
+- `Completed` → 親が current decision model から freeze に必要な意味単位を抽出する（clarify-it 出力に固定 schema を要求しない）→ `freeze_source_snapshot` → `direction-freeze-projection`
+- `Stopped` → 停止理由と未解決 Human decisions / inconsistency を保持した既存 `incomplete`。独自 clarification 継続も、独自 recovery / continuation status も作らない
+
+`direction-freeze-projection` Flow が semantic projection の唯一の詳細 witness である。親は verified comparison を入力として保持し、
 projection を workflow completion や candidate acceptance と同一視しない。
 
 direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、
@@ -97,8 +107,14 @@ direction freeze は成果物全文の固定ではなく、人間が確定した
 親は要求原文、verified decision ledger、raw source と evidence から、Human-confirmed な価値、重要な scope / exclude、責務、
 意図的な非採用、判断点にならなかった raw specification を含む `freeze_source_snapshot` を入力として固定する。
 projection の identity／bijection／meaning-evidence 対応は `direction-freeze-projection` Flow に渡し、Human の価値判断と evidence の意味評価は親に残す。
-親は freeze 要約と同じ turn に recommendation、短い理由、Human の一度だけの `Yes / No` を提示し、選択 Data を
+親は freeze 要約と同じ turn に recommendation、短い理由、次の3択を提示し、選択 Data を
 `optional-proposal-refinement-routing` Flow に渡す。score、件数 threshold、新しい public knob は作らない。
+独立した direction-freeze 再承認 turn は作らない。proposal refinement の実施可否は Human が選ぶ。
+
+1. この方向で確定し、proposal refinement を行う → freeze 成立 → refinement
+2. この方向で確定し、proposal refinement は行わない → freeze 成立 → skip
+3. 懸念・修正点がある → freeze 不成立。固定方向選択ではなく自由文入力。同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session を開始しない。無関係な既存判断を再承認させない
+
 freeze-integrity では全 constraints の verifier verdict と evidence、最新 snapshot、candidate location、fixed bounds / invocation Data を親が初期入力として準備する。
 Human recovery と後続 Action の結果は各 autonomous boundary から戻った後に裁定し、intermediate Data として再投入する。
 affected dependency closure、immutable `request.scope` / `request.exclude`、scope 外の意味分類は親の Calculation / adjudication であり、
@@ -232,7 +248,7 @@ blocking_gap = incomplete before direction freeze
 
 ## optional proposal refinement の normative relations
 
-親は direction freeze summary、recommendation、short reason、Human の一度だけの `Yes / No`、producer / integrity invocation 前 Data を初期 Data として準備する。
+親は direction freeze summary、recommendation、short reason、Human の一度だけの3択（第3は懸念・修正点の自由文）、producer / integrity invocation 前 Data を初期 Data として準備する。
 proposal result、freeze-integrity verdict / evidence、Human recovery decision、latest snapshot、affected closure、scope / exclude は各 Action 後の
 intermediate Data として親が裁定・再投入する。分岐、proposal stop、check #1 recovery の固定 routing は
 `optional-proposal-refinement-routing` と `freeze-integrity-recovery-routing` Flow に集約し、親は Human Decision と evidence の意味を裁定する。
@@ -286,15 +302,8 @@ Outcomes: 検証済み kernel Data と role mapping、または対応する timi
 
 Trigger: 親の最小観測後も同じ decision model に追加の技術 evidence が必要、または既存 evidence と runtime behavior の不一致が観測されたとき。
 Inputs: initial Action 実行前 Data として、同じ current decision model、親確定の最小 observation request / criteria、required runtime behavior、同じ clarify-it parent context、current verified context。observation result と action evidence は含めない。
-Procedure: 親確定の最小 Observation Action を一度だけ実行し、result と provenance / evidence を中間 Data として freeze して Agentic 親へ返す。親が何を観測するかと result の意味を裁定して再投入した observation Data だけを同じ model と parent context へ追加し、clarify-it を再適用する。その再適用 result も中間 Data として親へ返す。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。
-Outcomes: 更新済み同一 model への clarify-it 再適用 result、または親へ返す technical evidence gap。Flow は observation の意味評価や Human の clarification 内容を expected oracle にしない。
-
-### clarify-loop-bound-routing
-
-Trigger: 各 clarify または resolution loop の開始時に、親が execution bound を固定して routing を要求したとき。
-Inputs: initial Action 実行前 Data として、親が loop 開始時に確定した bound、同一 loop 中の immutable bound、親確定の current count（または `limit_reached`）、remaining decisions、semantic progress、materiality、clarify-it invocation Data。clarify-it result は含めない。
-Procedure: `limit_reached` または current count が bound 以上なら `incomplete` とする。bound 内でも material な decisions が残り semantic progress がないなら `incomplete` とする。それ以外だけ clarify-it を一度実行し、result を中間 Data として Agentic 親へ返す。親が意味を裁定して再投入した next remaining decisions / semantic progress / materiality / current count により、`Completed` は projection、`Stopped` は reason と remaining decisions を preserve した `incomplete`、継続 result は親確定の次 current count で次 loop へ routing する。bound は structural-health-gate と review limit から独立させ、親の terminal を clarify-it `Stopped` として捏造しない。
-Outcomes: 固定 bound 内の loop 継続、または preserve された Data 付き `incomplete`。progress と materiality の意味、bound の選択、clarification 内容は親入力であり Flow の expected oracle ではない。
+Procedure: 親確定の最小 Observation Action を一度だけ実行し、result と provenance / evidence を中間 Data として freeze して Agentic 親へ返す。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。decision-model への再適用は Flow に置かない。
+Outcomes: observation result と provenance / evidence、または親へ返す technical evidence gap。Flow は observation の意味評価、decision-model への再適用、Human の clarification 内容を expected oracle にしない。
 
 ### direction-freeze-projection
 
@@ -305,10 +314,10 @@ Outcomes: verified Data comparison に対応した unique direction freeze candi
 
 ### optional-proposal-refinement-routing
 
-Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の `Yes / No` として提示するとき。
-Inputs: initial Action 実行前 Data として、verified direction-freeze candidate S0、短い recommendation と理由、Human の binding な一度だけの `Yes / No`、S0 に束縛した producer fixed 2 pass invocation Data、fresh-context check #1 invocation Data。proposal result と check result は含めない。
-Procedure: `No` は producer と freeze-integrity を実行せず structural-health-gate へ送る。`Yes` は producer fixed 2 pass を一度実行し、その result を中間 Data として Agentic 親へ返す。親の proposal adjudication Data の再投入後だけ fresh-context check #1 を一度実行し、result / evidence を次の中間 Data として親へ返す。親の integrity adjudication Data を再投入する順序は `producer fixed 2 pass -> parent round-trip -> check #1 -> parent round-trip` に固定する。proposal の `stop-incomplete` は authority conflict かつ親が verified result と裁定した場合だけ返却 candidate を local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。
-Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、local Human recovery の入力、または `incomplete`。Yes / No、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。
+Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の3択として提示するとき。
+Inputs: initial Action 実行前 Data として、verified direction-freeze candidate S0、短い recommendation と理由、Human の binding な一度だけの3択（第3は懸念・修正点の自由文）、S0 に束縛した producer fixed 2 pass invocation Data、fresh-context check #1 invocation Data。proposal result と check result は含めない。
+Procedure: 「この方向で確定し、proposal refinement は行わない」は producer と freeze-integrity を実行せず structural-health-gate へ送る。「この方向で確定し、proposal refinement を行う」は producer fixed 2 pass を一度実行し、その result を中間 Data として Agentic 親へ返す。親の proposal adjudication Data の再投入後だけ fresh-context check #1 を一度実行し、result / evidence を次の中間 Data として親へ返す。親の integrity adjudication Data を再投入する順序は `producer fixed 2 pass -> parent round-trip -> check #1 -> parent round-trip` に固定する。proposal の `stop-incomplete` は authority conflict かつ親が verified result と裁定した場合だけ返却 candidate を local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。「懸念・修正点がある」は freeze 不成立とし、固定方向選択ではなく自由文を同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session、新しい bound 管理、無関係な既存判断の再承認は行わない。
+Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、same-context clarify-it re-entry、local Human recovery の入力、または `incomplete`。3択、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。
 
 ### freeze-integrity-recovery-routing
 

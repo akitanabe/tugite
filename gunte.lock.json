@@ -3,7 +3,6 @@
   "semantic_inputs": [
     "gunte.toml",
     "contracts/repository.toml",
-    "contracts/clarify-it.toml",
     "contracts/test-report.toml",
     "contracts/workers.toml",
     "contracts/impl-lead.toml",
@@ -33,8 +32,8 @@
     "shared/plan-artifact-design.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
-    "shared/skill/clarify-it/SKILL.md",
-    "shared/skill/clarify-it/references/philosophy.md",
+    "upstream/clarify-it/skills/clarify-it/SKILL.md",
+    "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
     "shared/skill/code-review/SKILL.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
@@ -51,7 +50,6 @@
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
-    "declarations/codex/skills/clarify-it/openai.yaml",
     "declarations/codex/skills/code-review/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
@@ -198,12 +196,12 @@
       "sha256": "5cf96797ae918d622070593c2769de840766cd2638498d4c3f0c310816e853a9"
     },
     {
-      "id": "repository-programmability-boundary-ac40a8740c94",
-      "sha256": "081c97ae8292738e6ad8fd0e8d72ef8cb49b36d675ccdbd23e63991243817649"
+      "id": "repository-programmability-boundary-2762ad6d021d",
+      "sha256": "25522f61ebe9b2a99cfb0d8258ae7eab070fdfdf06463eebfa18a11e4b488fce"
     },
     {
       "id": "programmatic-flow-section-excluded",
-      "sha256": "971a088de0d02875b2793d078de708f847f374c94532fcfdd921350fd495c541"
+      "sha256": "81e1f3c2363fb8373e7a6a666887c93ca5594757d50d9ee6d48005ee956cd7a2"
     },
     {
       "id": "repository-test-qa-baseline-a0b98d2f7393",
@@ -239,7 +237,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "c6da1b882198e51976e07f478fb931f2e2d8f36149aee8df43a6fa1e9478af58"
+      "sha256": "9fcd79e8b5030fa371b6f86d83279cac123e501654fed96d02e30244d88e3e90"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -303,19 +301,11 @@
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "47965ce4841a715e8c94e3dab2f72524b54d181ac3bb4a6559ad50db79340ad4"
+      "sha256": "70fe177e112ac09026c95f278a119329c04a965fbf15267706e4c065d6c3c598"
     },
     {
       "id": "cursor-impl-lead-skill",
       "sha256": "1d38c98538108927e419127d942392df49bc990808edb58cbf1e52a0e7445e9e"
-    },
-    {
-      "id": "clarify-it-generated-name",
-      "sha256": "aeca9ef27e7cd65f7f156850bcc4735565380675dfc53ebc4aacd2c0736d86a2"
-    },
-    {
-      "id": "clarify-it-philosophy-reference-shape",
-      "sha256": "fcb33047f6c49138da76d80654efa829e72c47c401aaff9336c13579b06c3b24"
     },
     {
       "id": "cursor-plan-agent-skill",
@@ -358,10 +348,6 @@
       "sha256": "32dc37d65821a391a610f31b57e5638d7d96f5416213271754d94e8ed3a43490"
     },
     {
-      "id": "cursor-readme-clarify-it-implicit-requires-03ea1b0e334b",
-      "sha256": "f7d33a1438f1ed68be5d6971281714a3e2c9ee4bf3e073e164028993fdc569a4"
-    },
-    {
       "id": "cursor-readme-test-report-implicit-requires-8f809456694b",
       "sha256": "9ee54b78aa0575c0fd2dc3545c0055f3141af5417e2c99f087024d86bddfb72b"
     },
@@ -390,8 +376,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-f5b17f89c6ab",
-      "sha256": "fdae3365263ee2c62d9598ed064b2c3beccdf5a6d9b14fe02248fcea8205caa5"
+      "id": "cursor-readme-public-skills-requires-8eeddb46d595",
+      "sha256": "e6e2602e1c4db54662852aa37d29278188899952519b25c933d98dfdf8e589b3"
     },
     {
       "id": "cursor-readme-install-skill-requires-e9e87fe619cf",
@@ -403,7 +389,7 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "73a64f66f7aec15b7cd80fb2f591233908b32f751049478a5e520bd65b582c90"
+      "sha256": "5ebaf88248dba33917d7e3821b1171bbb866d64e38d9887002100bb67a396088"
     },
     {
       "id": "codex-openai-disabled-policy",
@@ -446,10 +432,6 @@
       "sha256": "73173b8c5a1c21e014e721bf8450471b3f5bbadbe0ea50849555b2f6792a04ce"
     },
     {
-      "id": "claude-clarify-it-policy",
-      "sha256": "8c5d855d811b1ee1517d3166df8248c780b8adde5578b8c1da81ca608bd52b93"
-    },
-    {
       "id": "claude-test-report-policy",
       "sha256": "74c39bc9c12e450cb9d146abf6927dc0693048e0f4ba4bb944a675b169b51ddb"
     },
@@ -458,16 +440,8 @@
       "sha256": "280930bfedafaaa73cf9214534fd1e16eed9c2bc05691fc932a6e8590a261814"
     },
     {
-      "id": "clarify-it-generated-description",
-      "sha256": "ad62d8599a1cdccc0d9e1c1c214f7816060f68d50ca8d85406227dc0be384ff3"
-    },
-    {
       "id": "code-review-generated-description",
       "sha256": "ad1f2153af8f768e347e38471526fdf9f125bd0b62cf7608b320c03ecbfcf8ca"
-    },
-    {
-      "id": "clarify-it-codex-prompt",
-      "sha256": "c9942c324610145c0f822081b929e8d387daa8b7098f9e3eb32b049e19058010"
     },
     {
       "id": "test-report-generated-description",
@@ -503,7 +477,7 @@
     },
     {
       "id": "claude-marketplace-shape",
-      "sha256": "64a755e33acc0f503eb0b17fbc72bf7dd4a367055484f27fcedbe17e702a735c"
+      "sha256": "336f9f0f953f21e3ccc073e804d569c0b6cf84fe99d63eb90cd2b8dbbd599d32"
     },
     {
       "id": "codex-marketplace-shape",
@@ -511,263 +485,11 @@
     },
     {
       "id": "claude-plugin-manifest-shape",
-      "sha256": "eccf5cd18da0157948f94dd066793ef382017e61ff1d3f1a872101824f790582"
+      "sha256": "ca39e18cc4e1af29b02b107c9f362027f1e7bb40e167741d95d02495c8926e23"
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "03214ed306142e3938ae584a9b0e7034283494f0f4cf91223d0abeae07bea2fb"
-    },
-    {
-      "id": "clarify-it-invocation-c7163984dcae",
-      "sha256": "eddcd1332fd1063ed541390097d7e6e7d51c396be9e88fd60a00f2607b9eb8fd"
-    },
-    {
-      "id": "clarify-it-self-contained-28b109cc1d05",
-      "sha256": "1d07adbe0188fa1265659c9033496d8321ccb4ed774ee81151994248be08b1d7"
-    },
-    {
-      "id": "clarify-it-normative-904a6c87629b",
-      "sha256": "572b6414232c2612503466abf5be6fd736b7f6d081e6892c3276e458f175a8a1"
-    },
-    {
-      "id": "clarify-it-philosophy-2f631c16d445",
-      "sha256": "747f5d77b35035adf4114a8df6375105ef9bd53101d6b8b448019244dab4221c"
-    },
-    {
-      "id": "clarify-it-recovery-data-fb93399a9ab2",
-      "sha256": "20fe4c8f8c4ae12c8876b3925396852a032683bd7231458c4c1c116b758af33c"
-    },
-    {
-      "id": "clarify-it-responsibility-4391bbcaec44",
-      "sha256": "c78494f790f3de483ec2f206951922eeb046a6aea1593b7360c9700c7d43f413"
-    },
-    {
-      "id": "clarify-it-hdp-66e36dff1273",
-      "sha256": "210e4cf769a2c870cff1c3697d5054f5fdf523546f12efd91a190304bf30cddd"
-    },
-    {
-      "id": "clarify-it-hdp-limit-6eb0486cc0b7",
-      "sha256": "b7ee4a780b65eba7bfa388b86d53aed493fa6f774d45f07cc3d00f0a30b0fe8d"
-    },
-    {
-      "id": "clarify-it-context-286948bb648b",
-      "sha256": "0f6fbf258bb305c1f20e08b52ce9f7d8248df0f17be532c65ecd0e0cf0d9dd9b"
-    },
-    {
-      "id": "clarify-it-method-30e035a9d38a",
-      "sha256": "9b6a663aad39a0073115a08681ff1e6566562150defba384b7a48adfedef1c5a"
-    },
-    {
-      "id": "clarify-it-reconstruct-091f68f0c29c",
-      "sha256": "56515cf9a2be245893171aeeac4ad8a255d64ca89631c53ea04a8c09da5fcf82"
-    },
-    {
-      "id": "clarify-it-ok-recommendation-316568e034cb",
-      "sha256": "9d6bb47f8b11450d903548dfb31808c3f98975d6174e04c3420efc598a160df2"
-    },
-    {
-      "id": "clarify-it-recommendation-update-ee35c5d54e6c",
-      "sha256": "fe7fa32293feef027ebc4c2dad58a3932bc2d6214f7074e38245b1abe4c8a613"
-    },
-    {
-      "id": "clarify-it-recompress-9b39600268fa",
-      "sha256": "94290de74892063f0945ce8205ca9dfa8c93d9fa141a999676887f3df3e42cc2"
-    },
-    {
-      "id": "clarify-it-completion-status-d7f44cbc7d9b",
-      "sha256": "eab342328d83e8c2ba718772dfec6f85a30d74fb78bc43cd2f0ab721a811ae34"
-    },
-    {
-      "id": "clarify-it-natural-output-f905023a5a23",
-      "sha256": "101123dbf08c7369c07a4993d1e4f28c3130cdeff892499920fc6229e0d0b28e"
-    },
-    {
-      "id": "clarify-it-action-boundary-45d96d55a63a",
-      "sha256": "03fb3f686d57781af91416fcceb9f2a570c99eef52d27b300fb4e494d39c9be2"
-    },
-    {
-      "id": "clarify-it-casebook-18220e74abcb",
-      "sha256": "16d3c09e78dcaf152f50d6abd27aded2f21ee266d7837ff99377e6ad303d65cd"
-    },
-    {
-      "id": "clarify-it-no-external-loader",
-      "sha256": "c0c79540bf8b0670abefd493bf1b20fb121ba5951243ea2053540363c5e2f507"
-    },
-    {
-      "id": "clarify-it-no-fixed-schema",
-      "sha256": "e385769224cd62bb4dd8b3f8b6dde9e4e735155caee61c9219b14f3f2900f47e"
-    },
-    {
-      "id": "clarify-it-no-ledger",
-      "sha256": "18c0ce3b0d016d5383aeb6d5e452bc589d8485e8a573a1542400d02586d487a0"
-    },
-    {
-      "id": "clarify-it-no-freeze",
-      "sha256": "93905fe190fd0298a630583c7acaae00d61cf7d8f8e3cf575d494f0e0944a064"
-    },
-    {
-      "id": "clarify-it-no-kernel",
-      "sha256": "1251e985fe3ba3ecba4f72d914f61fe6970ad076d8eaec590c835154ac87fb6f"
-    },
-    {
-      "id": "clarify-it-no-artifact-action",
-      "sha256": "dde4a0f44bab5dc1e59dcc0781c0019068b1dc93a3fe009798278fb9d8dc0bd9"
-    },
-    {
-      "id": "clarify-it-no-issue-action",
-      "sha256": "f212ddcb2cb18dffef07f7b2d6a22740bb8c6747e927d048d15366f9a79e9cbd"
-    },
-    {
-      "id": "clarify-it-no-implementation",
-      "sha256": "2349c76b31df59cc927c8e074bdfe74934942111784bc2d460035274268bb991"
-    },
-    {
-      "id": "clarify-it-no-followup",
-      "sha256": "a6b7a1b6cf170facd4515a5640c7ba271d1d27aefd02cff4b4345a4e753a5ffc"
-    },
-    {
-      "id": "clarify-it-start-boundary-review-0c3e4265a099",
-      "sha256": "e047f1e7a537ce8de3b8c787b8329a41085c7a7206288aaf87c0ad5fda0584a8"
-    },
-    {
-      "id": "clarify-it-philosophy-reference-positioning-80455b6ff638",
-      "sha256": "a7e870fdd20d10e6ee0c78f1b1cf0ebefad3aafd9472aaa7f34b31625ac098d5"
-    },
-    {
-      "id": "clarify-it-philosophy-reference-path-2bddda131e99",
-      "sha256": "c8dddc7025dee1225414ee26376c356e47a944a8fffc2bdece0c95cc1ee0165a"
-    },
-    {
-      "id": "clarify-it-philosophy-introduction-1b6a8ec2578f",
-      "sha256": "44995cf67972060fef0da27f48fdfc534e6fb9c30888bf585a0c2daa9cf6405e"
-    },
-    {
-      "id": "clarify-it-philosophy-introduction-forbids-fe0e3c21f787",
-      "sha256": "5f8d5db560d8a2ae191347df468e46fb0a5a43f756bf97eb98e16d3eca2d92da"
-    },
-    {
-      "id": "clarify-it-philosophy-introduction-forbids-be60225a7306",
-      "sha256": "d5fa13043beea70ac389447d7230b62197ab93c3f1cf7e9f534ea71e464035a5"
-    },
-    {
-      "id": "clarify-it-philosophy-introduction-forbids-642721425d2b",
-      "sha256": "30507bda2a140ccd95451765ba77ac41519ed95e1aa60fd0b4adf37df25e2506"
-    },
-    {
-      "id": "clarify-it-philosophy-nonnormative-1fa5875363b5",
-      "sha256": "0fff2735193c13ec65cecdd12f4e6f4e18f90bf3fe4ae6baa13f61bdea49984b"
-    },
-    {
-      "id": "clarify-it-philosophy-hierarchy-4c5d3878b030",
-      "sha256": "7234449e1184c68371809930aa44fee4de31cea5bb4624a64c5de33555c91d6d"
-    },
-    {
-      "id": "clarify-it-philosophy-recovery-a2b1f65aaea8",
-      "sha256": "f0355849614bffd1f6f8a7eb2f671b508b652c7b98e9cabf8406d9f9df425252"
-    },
-    {
-      "id": "clarify-it-philosophy-local-reference-83242365d70c",
-      "sha256": "276841c02c5eb6bf9f7281191544bd79f223b7794509186ceba362f84a169239"
-    },
-    {
-      "id": "clarify-it-philosophy-caller-return-b46453fa8947",
-      "sha256": "7ccf7a89cfde39beef911c8ead780e95102007fa309f1d09d7db147841589231"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-multiple-177b746ed8ed",
-      "sha256": "8eef4c353d3054d4db3841316dfa30159b86d2cfa97c0053d64ff0f56d3f9b43"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-responsibility-1ef09a709ac0",
-      "sha256": "be3279bb3dc98ac5bc5efecbd1d158746114c27994d7247180dab93b34625f60"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-public-69e1d1562d0c",
-      "sha256": "4dee459c7ac6cdd45c12d8ad4a2697a9cdd020f7cb0b53698a3a0dfb2db1e386"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-cost-305495562600",
-      "sha256": "2618c2e993e594ff37edebddf3f67877ee28cb306aad36c58784746878df6292"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-prior-99d7a30024fe",
-      "sha256": "9e433fee229d05c4cda55c56f6b6d27c4212e1e2333bdb00f6ffb205f5b4111a"
-    },
-    {
-      "id": "clarify-it-hdp-candidate-intent-e51eee9a3c1d",
-      "sha256": "3f2c2495051ea2e0fac2a4689a1086ba0540e1e6e0e645ac0b045448bd848372"
-    },
-    {
-      "id": "clarify-it-hdp-sufficient-6394b8a2b660",
-      "sha256": "9eee24767414540dc8ec5e5a2078d993cf5da9e722addeb4fc6c2157547def2e"
-    },
-    {
-      "id": "clarify-it-hdp-derivable-6d677292929a",
-      "sha256": "dcb6fb0a2c6f43783f24d23e9316c3c99a4fde1315d1df807fce4fc6e52ef15b"
-    },
-    {
-      "id": "clarify-it-presentation-axis-1218ecf92178",
-      "sha256": "763d706ffb20651fe6b21371fb842e55171bf69e173e02530fbbbee429c907db"
-    },
-    {
-      "id": "clarify-it-presentation-order-d6c1cfa2f040",
-      "sha256": "9791e89f22a9d1f8a304162243acd6916084625eab6c7f1bf9ea83faa703666f"
-    },
-    {
-      "id": "clarify-it-presentation-recommendation-order-c66136a6f146",
-      "sha256": "1468065b5c26c027c31e2c11b30877d8f5fcbf38a71d4f8e51d75efe346fc8fc"
-    },
-    {
-      "id": "clarify-it-presentation-multiturn-5afe86bb34c6",
-      "sha256": "23e90b4584813f4226a31f0c396c29e086d991048c02140786d2c5a8617c3e3e"
-    },
-    {
-      "id": "clarify-it-presentation-neutral-cb5372ea8544",
-      "sha256": "a174441b5c5ec3011c4351666eb964b79b96d5a22698d2a73b17788594f74898"
-    },
-    {
-      "id": "clarify-it-presentation-policy-c5faea16d915",
-      "sha256": "1af4d3b66b48c4534abeb375297f7d3ffa79780476a9a310683a5882206b1be6"
-    },
-    {
-      "id": "clarify-it-selection-no-score-d9f7fc56beea",
-      "sha256": "2c171a46dd609a0c562249512a1a4b66ae25b194e94570f59c9343be322d9b10"
-    },
-    {
-      "id": "clarify-it-selection-priority-26ff2760ed32",
-      "sha256": "ef7f4020da2edd1c55565b8904d0439947f7d68df018b6286518e21dcd87779f"
-    },
-    {
-      "id": "clarify-it-evidence-identity-5aa41944906c",
-      "sha256": "05376fb5af49a7244ae6a022947947aafd24d7812526abac63c9a9a7aa0ba63f"
-    },
-    {
-      "id": "clarify-it-consistency-diff-a6afd30da9de",
-      "sha256": "5fe47be8db2ff3c2119783d8516dd7b487c5fec8c7d06d5cca6510478abaac0f"
-    },
-    {
-      "id": "clarify-it-consistency-confirm-e1e954dc959b",
-      "sha256": "048914f1ca13fb1f5618a78b7cfc37791b38df10a540fc23de3b857823be4880"
-    },
-    {
-      "id": "clarify-it-change-no-justification-d0ecc7983f62",
-      "sha256": "ef698c056ccfd6f2363b435de7657974588f1c0c99d01fff532218ddf233d886"
-    },
-    {
-      "id": "clarify-it-reconstruction-direction-514b510a8063",
-      "sha256": "893389fe3318623b7aee0ed31741e455472107b88c0813166fa44640ba098ffe"
-    },
-    {
-      "id": "clarify-it-stop-anytime-445a44a0ee9d",
-      "sha256": "13b5fa165a831f81ed60fc570e9a144cd4e229aac2b7fedba53c7cd624b5e422"
-    },
-    {
-      "id": "clarify-it-low-information-signal-bbd6800aebab",
-      "sha256": "a1371398a5d04839ba89327bb5177c1c3a940b56cec172a21dfcdf283520ee93"
-    },
-    {
-      "id": "clarify-it-completed-cleanup-46bf0861c511",
-      "sha256": "88e97522054ee4b49a67430301bedf127f5a4fa40470e68d9868038459d344c6"
+      "sha256": "1667f13d4ced2b73f8ad52857ed0607d9fda2304bf448d45c2159b80652791d2"
     },
     {
       "id": "test-report-invocation-68edd8617af5",
@@ -2634,8 +2356,24 @@
       "sha256": "271716764a98380dd91e1b7a74d5adda3797144bd4ece74744aa8a8bd9614cd0"
     },
     {
-      "id": "clarify-caller-data-21af968c33e1",
-      "sha256": "02845c1588e2ac0c1efb544e42c65d7f4f794620c1b3d9dad358fc13362a84a5"
+      "id": "clarify-caller-loader-8a889cfe4680",
+      "sha256": "60b6e9b7c8bca77f89ef3d6af84fb8f9447e7e4aa00b4c8ecd4d18cc15d39945"
+    },
+    {
+      "id": "clarify-caller-data-04b6ae545308",
+      "sha256": "f773f5af365cd18b4ea3938caaf5e704ce9bd91c851e74c45685421b003636b6"
+    },
+    {
+      "id": "clarify-caller-public-app-forbids-83522ec43abc",
+      "sha256": "cafb33c0decffc14a007fc042981ee1855b3026c3c04201d006ab238ebefea23"
+    },
+    {
+      "id": "clarify-caller-dialogue-norm-forbids-784a79d5b49e",
+      "sha256": "0c537f6e8d86b9804f9dcf1185b4dd05b6b18601b7cd05facb431351b45819d2"
+    },
+    {
+      "id": "clarify-caller-presentation-forbids-7e2eeef8c9bf",
+      "sha256": "f86224793e5a49baea8df7d94247a750142a08e9232219589dff4170e2386b84"
     },
     {
       "id": "kernel-loader-data-b0d341da5646",
@@ -2678,12 +2416,12 @@
       "sha256": "7576c138589243746f15cb5e8bd49e0c491021e000d05bee9c06a7b5de261edf"
     },
     {
-      "id": "refinement-selection-no-run-forbids-f1e7c0d3fbcb",
-      "sha256": "48e3978fa29f7f42ce73046174e687dd8e7664c4514f18638fe231bceb2d021f"
+      "id": "refinement-selection-skip-run-forbids-a7df5bf442e7",
+      "sha256": "f2467f94c3e389d79fad9eb7c20dfdce727ba6a650ff22ec549258c564cf0535"
     },
     {
-      "id": "refinement-selection-yes-skip-forbids-66fc44279172",
-      "sha256": "f40135d02c927ee22410f8909b4d832ca408c080aa92dcb56ba2c8ddd9d6e26d"
+      "id": "refinement-selection-do-skip-forbids-b7af1937eab0",
+      "sha256": "dfbb9320023ca0104a528cec2744af30d926bee91dd1364e604fdfcfe5d295ac"
     },
     {
       "id": "refinement-stop-fallback-forbids-98ceae45a2a7",
@@ -2818,20 +2556,32 @@
       "sha256": "732188cc9e279f08cf1230cdf312049a48e23da198784efb59f0fc185f6ddf37"
     },
     {
-      "id": "pi-observation-reapply-flow-a85af4f738a1",
-      "sha256": "7c1d86f36c8f4a81531748a21c98732895bf5c3e2ff2a9efe3af47aae4875499"
-    },
-    {
-      "id": "pi-loop-bound-c8bc39d3ca9c",
-      "sha256": "16f7b61bcb4b1d92ed09173ab1c11e067f91403cbd1afa614cb6da92842a41c3"
+      "id": "pi-observation-reapply-flow-01c538047cd1",
+      "sha256": "4848bb12c28de6e2dc88535cf4c880ddd6171ab346913f316a7788b269d60ed8"
     },
     {
       "id": "pi-direction-freeze-159643c56c9a",
       "sha256": "04069fe252ea1a8381fdaa222dea616732e648ce444281cf85bbd9e0ab621b95"
     },
     {
-      "id": "pi-optional-routing-c66ef1d8a424",
-      "sha256": "7ad2ba14cbf05300d6a0823f31e718dbc03a879dc6fd31684080f7c04b966c61"
+      "id": "pi-optional-routing-1abcf152d051",
+      "sha256": "7cf3a8e50be011565ce59a52d84fe5532c68cb7f12db27b9f2f95e4d779ce288"
+    },
+    {
+      "id": "refinement-yes-no-prompt-forbids-e9729e35e410",
+      "sha256": "cb78fcc0b706cde2b6cf5dd4a94a413a4782958aac16747dd8c8c6b498649f98"
+    },
+    {
+      "id": "pi-clarify-completion-d6edf0d076e7",
+      "sha256": "0fb0ca5298e3bfd9b772afa2006e8fa8f3fb8260198e5108e679a42953a97b2c"
+    },
+    {
+      "id": "pi-refinement-choice-4c387ba3f67d",
+      "sha256": "4a5630f4968c4e5bdb5fd2123900952cc59a1ed0398b126e628c54cfeaf1cfeb"
+    },
+    {
+      "id": "pi-refinement-choice-157d9a193881",
+      "sha256": "60b4787e6bf458c71b3cab76c82f1f4702e2dc4c183117c336c50c0bfd29e5a6"
     },
     {
       "id": "pi-integrity-recovery-c5b052ceffdf",
@@ -2851,19 +2601,19 @@
     },
     {
       "id": "plan-interactive-programmatic-flow-trigger-occurrences",
-      "sha256": "ca919218614acc311a9255d2a223edc82f4e53d621c65e5551a56e85b15dbb8d"
+      "sha256": "b40239f714df9e2121201e3dadacb4fddfc423ccea85f4cd34a07498cc7b1649"
     },
     {
       "id": "plan-interactive-programmatic-flow-inputs-occurrences",
-      "sha256": "96b3985317a33b5e9c9faa2e011d785941e0dd894f79f832d5f0051044bf7a8a"
+      "sha256": "749ebd267db584e8316ae2d1739c9db197e0e670ad5f597cdd715f8bfc7a4050"
     },
     {
       "id": "plan-interactive-programmatic-flow-procedure-occurrences",
-      "sha256": "0319e4de38663927109f00e52372847d4bed4377f66331bd635f8d583f1ef19f"
+      "sha256": "4ac53b4aa659e78ef3117c6f4bd59687a505640e4e737c8af6379f8e61ebcaf7"
     },
     {
       "id": "plan-interactive-programmatic-flow-outcomes-occurrences",
-      "sha256": "1c8db470d2d01766d416ce3f8b993836c3e5e6eb459948664c9f763c8d8362f8"
+      "sha256": "26dd1b29debbb4843ff94197adbab149ff0fa308eeefeafff67a73cd86eb4f55"
     },
     {
       "id": "pi-kernel-preflight-occurrences",
@@ -2872,10 +2622,6 @@
     {
       "id": "pi-observation-reapply-flow-occurrences",
       "sha256": "a463ae0100fe2502d09448d3c89ba4f2b4540e4cdec5c0be50f89f2e55c94f4a"
-    },
-    {
-      "id": "pi-loop-bound-occurrences",
-      "sha256": "d9c5d96b362d48f7cdb89b7e114ae6366d7e798fb4b227a366de09cff855d696"
     },
     {
       "id": "pi-direction-freeze-occurrences",
@@ -3452,71 +3198,6 @@
     },
     {
       "kind": "span",
-      "id": "clarify-it-invocation",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-start-boundary",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-normative-hierarchy",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-philosophy-reference",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-responsibility",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-human-decision-point",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-decision-context",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-method",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-completion",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-action-boundary",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-casebook",
-      "path": "shared/skill/clarify-it/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-philosophy-introduction",
-      "path": "shared/skill/clarify-it/references/philosophy.md"
-    },
-    {
-      "kind": "span",
-      "id": "clarify-it-philosophy-positioning",
-      "path": "shared/skill/clarify-it/references/philosophy.md"
-    },
-    {
-      "kind": "span",
       "id": "impl-work-unit-data-canonical",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3866,6 +3547,16 @@
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
+      "kind": "span",
+      "id": "plan-interactive-clarify-completion",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-refinement-choice",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
       "kind": "anchor",
       "id": "plan-interactive-structural-health-gate-start",
       "path": "shared/skill/plan-interactive/SKILL.md"
@@ -3938,11 +3629,6 @@
     {
       "kind": "span",
       "id": "plan-interactive-observation-reapply-flow",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-clarify-loop-bound-routing",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
@@ -4443,11 +4129,6 @@
     {
       "kind": "span",
       "id": "cursor-readme-generation",
-      "path": "README.md"
-    },
-    {
-      "kind": "span",
-      "id": "cursor-readme-clarify-it-implicit",
       "path": "README.md"
     },
     {

@@ -3,15 +3,41 @@ kind = "forbids"
 pattern = "Intermediate Data:"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.clarify-caller-data-21af968c33e1]
+# Why Not: projected upstream SKILL.md に Tugite 側の semantic identity / required headings 契約を足さない。他 loader と同様の identity 検証は行わない。
+[contracts.clarify-caller-loader-8a889cfe4680]
 kind = "requires"
 slice = "plan-interactive-clarify-caller"
-pattern = '''application = public clarify-it in the same plan-interactive parent context
-dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override
-caller_owns = invocation boundary | binding Human authority | verified workflow Data | direction freeze | downstream workflow
-presentation_policy = inherit clarify-it-decision-context presentation policy without copying or override
-caller_projection = preserve internal vocabulary in caller/projection Data; apply inherited policy to Human-facing utterances
+pattern = '''clarify_it_reference = ../../references/upstream/clarify-it/SKILL.md
+clarify_it_load_timing = once at plan-interactive start
+clarify_it_snapshot = first successful body frozen for the invocation
+clarify_it_failure = existing incomplete; no fallback clarification
+clarify_it_identity_check = none'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-caller-data-04b6ae545308]
+kind = "requires"
+slice = "plan-interactive-clarify-caller"
+pattern = '''application = pinned internal upstream clarify-it snapshot in the same plan-interactive parent context
+caller_owns = invocation boundary | binding Human authority | verified workflow Data | observation capability | Completed/Stopped workflow projection | direction freeze | downstream workflow
 public_extension = none'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-caller-public-app-forbids-83522ec43abc]
+kind = "forbids"
+slice = "plan-interactive-clarify-caller"
+pattern = "application = public clarify-it in the same plan-interactive parent context"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-caller-dialogue-norm-forbids-784a79d5b49e]
+kind = "forbids"
+slice = "plan-interactive-clarify-caller"
+pattern = "dialogue_norm = inherit clarify-it Specification, Method, and Casebook without copying or override"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.clarify-caller-presentation-forbids-7e2eeef8c9bf]
+kind = "forbids"
+slice = "plan-interactive-clarify-caller"
+pattern = "presentation_policy = inherit clarify-it-decision-context presentation policy without copying or override"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.kernel-loader-data-b0d341da5646]
@@ -91,16 +117,16 @@ before = "plan-interactive-clarify-start"
 after = "plan-interactive-structural-health-gate-start"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-selection-no-run-forbids-f1e7c0d3fbcb]
+[contracts.refinement-selection-skip-run-forbids-a7df5bf442e7]
 kind = "forbids"
 slice = "plan-interactive-optional-proposal-refinement-routing"
-pattern = "No = run proposal or freeze-integrity check"
+pattern = "この方向で確定し、proposal refinement は行わない = run proposal or freeze-integrity check"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.refinement-selection-yes-skip-forbids-66fc44279172]
+[contracts.refinement-selection-do-skip-forbids-b7af1937eab0]
 kind = "forbids"
 slice = "plan-interactive-optional-proposal-refinement-routing"
-pattern = "Yes = skip proposal or freeze-integrity check"
+pattern = "この方向で確定し、proposal refinement を行う = skip proposal or freeze-integrity check"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.refinement-stop-fallback-forbids-98ceae45a2a7]
@@ -353,22 +379,13 @@ Procedure: resolve は clarify-it 適用前に一度だけ load・identity・必
 Outcomes: 検証済み kernel Data と role mapping、または対応する timing の `incomplete`。Flow は Human の意味判断、Claim の採否、clarify-it の対話結果を expected oracle にせず、loader failure を突破しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.pi-observation-reapply-flow-a85af4f738a1]
+[contracts.pi-observation-reapply-flow-01c538047cd1]
 kind = "requires"
 slice = "plan-interactive-observation-reapply-flow"
 pattern = '''Trigger: 親の最小観測後も同じ decision model に追加の技術 evidence が必要、または既存 evidence と runtime behavior の不一致が観測されたとき。
 Inputs: initial Action 実行前 Data として、同じ current decision model、親確定の最小 observation request / criteria、required runtime behavior、同じ clarify-it parent context、current verified context。observation result と action evidence は含めない。
-Procedure: 親確定の最小 Observation Action を一度だけ実行し、result と provenance / evidence を中間 Data として freeze して Agentic 親へ返す。親が何を観測するかと result の意味を裁定して再投入した observation Data だけを同じ model と parent context へ追加し、clarify-it を再適用する。その再適用 result も中間 Data として親へ返す。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。
-Outcomes: 更新済み同一 model への clarify-it 再適用 result、または親へ返す technical evidence gap。Flow は observation の意味評価や Human の clarification 内容を expected oracle にしない。'''
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.pi-loop-bound-c8bc39d3ca9c]
-kind = "requires"
-slice = "plan-interactive-clarify-loop-bound-routing"
-pattern = '''Trigger: 各 clarify または resolution loop の開始時に、親が execution bound を固定して routing を要求したとき。
-Inputs: initial Action 実行前 Data として、親が loop 開始時に確定した bound、同一 loop 中の immutable bound、親確定の current count（または `limit_reached`）、remaining decisions、semantic progress、materiality、clarify-it invocation Data。clarify-it result は含めない。
-Procedure: `limit_reached` または current count が bound 以上なら `incomplete` とする。bound 内でも material な decisions が残り semantic progress がないなら `incomplete` とする。それ以外だけ clarify-it を一度実行し、result を中間 Data として Agentic 親へ返す。親が意味を裁定して再投入した next remaining decisions / semantic progress / materiality / current count により、`Completed` は projection、`Stopped` は reason と remaining decisions を preserve した `incomplete`、継続 result は親確定の次 current count で次 loop へ routing する。bound は structural-health-gate と review limit から独立させ、親の terminal を clarify-it `Stopped` として捏造しない。
-Outcomes: 固定 bound 内の loop 継続、または preserve された Data 付き `incomplete`。progress と materiality の意味、bound の選択、clarification 内容は親入力であり Flow の expected oracle ではない。'''
+Procedure: 親確定の最小 Observation Action を一度だけ実行し、result と provenance / evidence を中間 Data として freeze して Agentic 親へ返す。technical evidence gap は親境界へ返し、Human Decision Point や clarify-it Stopped に変換しない。contradictory Action、新しい status、固定 output schema、別 context は導入しない。decision-model への再適用は Flow に置かない。
+Outcomes: observation result と provenance / evidence、または親へ返す technical evidence gap。Flow は observation の意味評価、decision-model への再適用、Human の clarification 内容を expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-direction-freeze-159643c56c9a]
@@ -380,13 +397,40 @@ Procedure: source item ごとに非空で一意な ID を一度だけ付与し�
 Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.pi-optional-routing-c66ef1d8a424]
+[contracts.pi-optional-routing-1abcf152d051]
 kind = "requires"
 slice = "plan-interactive-optional-proposal-refinement-routing"
-pattern = '''Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の `Yes / No` として提示するとき。
-Inputs: initial Action 実行前 Data として、verified direction-freeze candidate S0、短い recommendation と理由、Human の binding な一度だけの `Yes / No`、S0 に束縛した producer fixed 2 pass invocation Data、fresh-context check #1 invocation Data。proposal result と check result は含めない。
-Procedure: `No` は producer と freeze-integrity を実行せず structural-health-gate へ送る。`Yes` は producer fixed 2 pass を一度実行し、その result を中間 Data として Agentic 親へ返す。親の proposal adjudication Data の再投入後だけ fresh-context check #1 を一度実行し、result / evidence を次の中間 Data として親へ返す。親の integrity adjudication Data を再投入する順序は `producer fixed 2 pass -> parent round-trip -> check #1 -> parent round-trip` に固定する。proposal の `stop-incomplete` は authority conflict かつ親が verified result と裁定した場合だけ返却 candidate を local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。
-Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、local Human recovery の入力、または `incomplete`。Yes / No、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。'''
+pattern = '''Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の3択として提示するとき。
+Inputs: initial Action 実行前 Data として、verified direction-freeze candidate S0、短い recommendation と理由、Human の binding な一度だけの3択（第3は懸念・修正点の自由文）、S0 に束縛した producer fixed 2 pass invocation Data、fresh-context check #1 invocation Data。proposal result と check result は含めない。
+Procedure: 「この方向で確定し、proposal refinement は行わない」は producer と freeze-integrity を実行せず structural-health-gate へ送る。「この方向で確定し、proposal refinement を行う」は producer fixed 2 pass を一度実行し、その result を中間 Data として Agentic 親へ返す。親の proposal adjudication Data の再投入後だけ fresh-context check #1 を一度実行し、result / evidence を次の中間 Data として親へ返す。親の integrity adjudication Data を再投入する順序は `producer fixed 2 pass -> parent round-trip -> check #1 -> parent round-trip` に固定する。proposal の `stop-incomplete` は authority conflict かつ親が verified result と裁定した場合だけ返却 candidate を local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。「懸念・修正点がある」は freeze 不成立とし、固定方向選択ではなく自由文を同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session、新しい bound 管理、無関係な既存判断の再承認は行わない。
+Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、same-context clarify-it re-entry、local Human recovery の入力、または `incomplete`。3択、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.refinement-yes-no-prompt-forbids-e9729e35e410]
+kind = "forbids"
+slice = "plan-interactive-optional-proposal-refinement-routing"
+pattern = "Human の `Yes / No` として提示するとき"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-clarify-completion-d6edf0d076e7]
+kind = "requires"
+slice = "plan-interactive-clarify-completion"
+pattern = '''- `Completed` → 親が current decision model から freeze に必要な意味単位を抽出する（clarify-it 出力に固定 schema を要求しない）→ `freeze_source_snapshot` → `direction-freeze-projection`
+- `Stopped` → 停止理由と未解決 Human decisions / inconsistency を保持した既存 `incomplete`。独自 clarification 継続も、独自 recovery / continuation status も作らない'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-refinement-choice-4c387ba3f67d]
+kind = "requires"
+slice = "plan-interactive-refinement-choice"
+pattern = '''1. この方向で確定し、proposal refinement を行う → freeze 成立 → refinement
+2. この方向で確定し、proposal refinement は行わない → freeze 成立 → skip
+3. 懸念・修正点がある → freeze 不成立。固定方向選択ではなく自由文入力。同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session を開始しない。無関係な既存判断を再承認させない'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.pi-refinement-choice-157d9a193881]
+kind = "requires"
+slice = "plan-interactive-refinement-choice"
+pattern = "独立した direction-freeze 再承認 turn は作らない。proposal refinement の実施可否は Human が選ぶ。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-integrity-recovery-c5b052ceffdf]
@@ -428,28 +472,28 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-interactive-programmatic-flow-trigger-occurrences]
 kind = "occurrences"
 pattern = '''Trigger:'''
-count = 10
+count = 9
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-inputs-occurrences]
 kind = "occurrences"
 pattern = '''Inputs:'''
-count = 10
+count = 9
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-procedure-occurrences]
 kind = "occurrences"
 pattern = '''Procedure:'''
-count = 10
+count = 9
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-outcomes-occurrences]
 kind = "occurrences"
 pattern = '''Outcomes:'''
-count = 10
+count = 9
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -463,13 +507,6 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.pi-observation-reapply-flow-occurrences]
 kind = "occurrences"
 pattern = "### observation-reapply"
-count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.pi-loop-bound-occurrences]
-kind = "occurrences"
-pattern = "### clarify-loop-bound-routing"
 count = 1
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]

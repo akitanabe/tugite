@@ -1,15 +1,11 @@
 # clarify-it — Philosophy
 
-<!-- @contract clarify-it-philosophy-introduction -->
 `clarify-it` がなぜこの構造を採用するのか、その長期的な設計意図を示す。
-<!-- @/contract -->
 
-<!-- @contract clarify-it-philosophy-positioning -->
 本書は非規範であり、新しい obligation を作らない。`SKILL.md` の Specification / Method / Casebook が優先する。
 通常実行には必須ではなく、`SKILL.md` 内の recovery data だけでも skill は動作できる。本書は、Specification / Method / Casebook の矛盾、解釈衝突、
-想定外ケースで設計意図を深く確認するための local reference である。元の Philosophy にある「成果物へ反映」は、Tugite では
-成果物を直接編集することではなく、現在の意思決定モデルを caller / Human へ返すこととして読む。
-<!-- @/contract -->
+想定外ケースで設計意図を深く確認するための local reference である。本書でいう「成果物へ反映」は、成果物を直接編集する
+ことではなく、現在の意思決定モデルを caller / Human へ返すことを指す。
 
 ## 1. 中核命題
 
@@ -102,7 +98,7 @@ Human の固定的な人格や永続的な好みとして現在を拘束しな�
 
 > **対話の成果は、現在の前提のもとで再統合された、一つの意思決定モデルである。**
 
-Tugite の `clarify-it` は成果物や Issue を編集しないため、ここでいう成果は現在モデルを caller / Human へ返すことを指す。履歴が必要な
+`clarify-it` は成果物や Issue を編集しないため、ここでいう成果は現在モデルを caller / Human へ返すことを指す。履歴が必要な
 場合は、成果物本体とは別に保持できる。
 
 ### Principle 5 — Agent は過去の結論ではなく、現在の根拠に忠実である
