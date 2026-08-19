@@ -11,7 +11,7 @@ Public skill は次の6つです。
 - `plan-interactive`: 人間と方向性を確定した candidate を structural gate と固定 review へ渡します。
 - `review-refine`: 不変 artifact snapshot を bounded round で review し、finding と evidence を親へ返します。
 - `code-review`: 基準付き change set を captured snapshot に固定し、専門 reviewer を振り分け、evidence 検証済み findings を報告します。修正や採否裁定は行いません。
-- `test-report`: 明示指定、または指定範囲のテスト群の理解・把握を求める意図が明確な依頼で、検証手段の境界と構造的空白を観測事実として提示します。テスト・コードの編集、実行、品質評価、後続 Action は行いません。
+- `test-report`: 明示指定、または指定範囲のテスト群の理解・把握を求める意図が明確な依頼で、指定範囲の Verification Topology を観測事実として提示します。テスト・コードの編集、実行、品質評価、後続 Action は行いません。
 
 `plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
 

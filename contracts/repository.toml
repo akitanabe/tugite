@@ -1253,7 +1253,7 @@ applies_to = ["claude", "codex", "cursor"]
 [[contracts.test-report-generated-description.assertions]]
 path = "description"
 op = "equals"
-value = "ユーザーが `test-report` を明示した場合、または指定範囲のテスト群の理解・把握を求める意図が明確な場合に使う。 指定範囲のテスト群を振る舞い単位に再構成し、検証手段の境界と構造的空白を観測事実として提示する。 テスト・コードの編集、実行、品質評価、後続 Action は行わない。"
+value = "ユーザーが `test-report` を明示した場合、または指定範囲のテスト群の理解・把握を求める意図が明確な場合に使う。 指定範囲の Verification Topology を、独立 grounding した Expected Observation を軸に観測事実として提示する。 テスト・コードの編集、実行、品質評価、後続 Action は行わない。"
 
 [contracts.test-report-codex-prompt]
 kind = "structure"
@@ -1265,7 +1265,7 @@ applies_to = ["codex"]
 [[contracts.test-report-codex-prompt.assertions]]
 path = "interface.default_prompt"
 op = "equals"
-value = "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; reconstruct them as behaviors, report verification boundaries and structural gaps as observations, and do not edit, run, evaluate quality, or start follow-up actions."
+value = "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe the specified range as a Verification Topology centered on independently grounded Expected Observations, and do not edit, run, evaluate quality, or start follow-up actions."
 
 [contracts.claude-structural-health-gate-kernel-exclusion]
 kind = "structure"
@@ -1519,13 +1519,13 @@ value = "Use impl-lead, plan-agent, plan-interactive, review-refine, code-review
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Implementation Unit workers, reviewers, and advisors. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and reconstructs them as a verification system without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
+value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Implementation Unit workers, reviewers, and advisors. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and observes them as a Verification Topology without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
 op = "list_order"
 value = [
-  "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; reconstruct them as a verification system and report observed gaps without editing, running, or evaluating tests.",
+  "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
   "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
   "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
   "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
