@@ -259,7 +259,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "c3960758c1392eeed57ab7ba5aa69d542094879e08b26164dda4978be853d8ea"
+      "sha256": "6a207797d5873c4afba3e75863ea464129d255201d3aa1201055217ebb64ff3d"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -358,8 +358,8 @@
       "sha256": "564bc50d22f8101211405fae0677af13df5e7103959ac7b52938f99b0363feff"
     },
     {
-      "id": "cursor-readme-title-requires-81f6fb5d2b73",
-      "sha256": "f5c6af2060da2b5a86d84b44f91959c729d118140847df2e4d4b86435b64b40b"
+      "id": "cursor-readme-title-requires-d5c47c5dbbd5",
+      "sha256": "419af0b98cfdef76728d05e6998fe2c91e3be2d12e320852543b7797aaa01179"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
