@@ -15,17 +15,17 @@ Tugite の Skill、Agent、Issue、実装で同じ語を同じ意味で使うた
 
 ## Task Specification
 
-Task または Work Unit が何を達成すべきかを、LLM が意味的に解釈するための定義です。必要性判定に使う受入境界であり、
+Task または Implementation Unit が何を達成すべきかを、LLM が意味的に解釈するための定義です。必要性判定に使う受入境界であり、
 何を含むかは正本が定めます。issue #193 は略記 `Task Spec` も候補に挙げていますが、正本本文と `contracts/*.toml` の
 pattern では正式名だけを使います。
 
 - 正本: `shared/necessity-kernel.md` の `## Task Specification`
 
-## Work Unit
+## Implementation Unit
 
 親エージェントが要求を正規化し、worker へ委譲する実装単位です。単位が持つ情報の構成は正本が定めます。
 
-- 正本: `shared/skill/impl-lead/SKILL.md` の `Intake and Work Unit normalization`
+- 正本: `shared/skill/impl-lead/SKILL.md` の `Intake and Implementation Unit normalization`
 
 ## Programmatic Flow
 
@@ -55,7 +55,7 @@ caller が Resolution Transaction で裁定対象として供給する個々の�
 
 ## 3 者の関係
 
-`Task Specification` は、Work Unit が何を達成すべきかを意味的に定める側面を指します。LLM が解釈する対象です。
+`Task Specification` は、Implementation Unit が何を達成すべきかを意味的に定める側面を指します。LLM が解釈する対象です。
 
 `Contract` はこれとは別の軸にあり、Skill と Agent の定義に対する機械検証です。`Task Specification` の上位でも
 下位でもありません。

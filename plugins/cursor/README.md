@@ -2,13 +2,13 @@
 
 # Tugite v6.1.0
 
-Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Work Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
+Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Implementation Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
 ## 現行の構成
 
 ### 公開 skill
 
-- `impl-lead`: Work Unit の受け付け、親エージェントによる直接実装または worker への振り分け、TDD、リスクに応じたレビュー、親 QA、最終文章レビューを扱う実装ワークフローです。明示起動時だけ使います。
+- `impl-lead`: Implementation Unit の受け付け、親エージェントによる直接実装または worker への振り分け、TDD、リスクに応じたレビュー、親 QA、最終文章レビューを扱う実装ワークフローです。明示起動時だけ使います。
 - `plan-agent`: 要求とリポジトリの観測から実装 plan の候補を作り、回数を制限したレビューと親の裁定へ渡します。
 - `plan-interactive`: 人間と方向性を確定した候補を構造 gate と固定レビューへ渡す、人間参加型の計画ワークフローです。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
@@ -19,11 +19,11 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 
 ### 内部 skill
 
-`plan-candidate-producer`、`structural-health-gate`、`work-unit-design` は公開ワークフローと同じ親エージェントのコンテキストで使う内部 skill です。直接起動や暗黙のワークフロー切替は行いません。
+`plan-candidate-producer`、`structural-health-gate`、`implementation-unit-design` は公開ワークフローと同じ親エージェントのコンテキストで使う内部 skill です。直接起動や暗黙のワークフロー切替は行いません。
 
 ### Worker / reviewer / advisor
 
-Work Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
+Implementation Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
 リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。
 

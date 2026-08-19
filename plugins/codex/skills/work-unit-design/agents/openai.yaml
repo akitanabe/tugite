@@ -1,6 +1,0 @@
-interface:
-  display_name: "Internal Work Unit Design"
-  short_description: "Normalize related outcome candidates only inside impl-lead"
-  default_prompt: "Use $work-unit-design only inside impl-lead as an internal normalization step; do not invoke it directly."
-policy:
-  allow_implicit_invocation: true

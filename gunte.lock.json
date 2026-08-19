@@ -44,7 +44,7 @@
     "shared/skill/review-refine/SKILL.md",
     "shared/skill/structural-health-gate/SKILL.md",
     "shared/skill/test-report/SKILL.md",
-    "shared/skill/work-unit-design/SKILL.md",
+    "shared/skill/implementation-unit-design/SKILL.md",
     "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
@@ -58,7 +58,7 @@
     "declarations/codex/skills/review-refine/openai.yaml",
     "declarations/codex/skills/structural-health-gate/openai.yaml",
     "declarations/codex/skills/test-report/openai.yaml",
-    "declarations/codex/skills/work-unit-design/openai.yaml",
+    "declarations/codex/skills/implementation-unit-design/openai.yaml",
     "declarations/cursor/plugin.json",
     "README.md"
   ],
@@ -196,12 +196,12 @@
       "sha256": "5cf96797ae918d622070593c2769de840766cd2638498d4c3f0c310816e853a9"
     },
     {
-      "id": "repository-programmability-boundary-2762ad6d021d",
-      "sha256": "25522f61ebe9b2a99cfb0d8258ae7eab070fdfdf06463eebfa18a11e4b488fce"
+      "id": "repository-programmability-boundary-ff1561060870",
+      "sha256": "4d2fc89d385bf9c827bc8f0af76ac61bf5d3494f1ffc76f12d7ce88d0670a372"
     },
     {
       "id": "programmatic-flow-section-excluded",
-      "sha256": "81e1f3c2363fb8373e7a6a666887c93ca5594757d50d9ee6d48005ee956cd7a2"
+      "sha256": "087b0e113f43caa029db37b0d12b67b373cbba8b3b088e553e807337e7ee3c80"
     },
     {
       "id": "repository-test-qa-baseline-a0b98d2f7393",
@@ -301,7 +301,7 @@
     },
     {
       "id": "cursor-non-explicit-metadata-skill-policy",
-      "sha256": "70fe177e112ac09026c95f278a119329c04a965fbf15267706e4c065d6c3c598"
+      "sha256": "6e0d79f76d75221ac1d76bea2cdbacb933d82d669f872f61e3d25da8ce8567ff"
     },
     {
       "id": "cursor-impl-lead-skill",
@@ -332,8 +332,8 @@
       "sha256": "90f48fa1c77f2af9456f8f6edcd2da219c3ca5c772bb67bba5c71420ddc3d608"
     },
     {
-      "id": "cursor-work-unit-design-skill",
-      "sha256": "34d12ab7d268096944e835cba535067bc8339eb39f9e3ae7aa219f2a68cea7fd"
+      "id": "cursor-implementation-unit-design-skill",
+      "sha256": "564bc50d22f8101211405fae0677af13df5e7103959ac7b52938f99b0363feff"
     },
     {
       "id": "cursor-readme-title-requires-576f35e999be",
@@ -389,7 +389,7 @@
     },
     {
       "id": "codex-openai-enabled-policy",
-      "sha256": "5ebaf88248dba33917d7e3821b1171bbb866d64e38d9887002100bb67a396088"
+      "sha256": "4e65f1181372ab7c8d69dc81db925d1ba6efd4cf54288740c2a7cb8b7099d28a"
     },
     {
       "id": "codex-openai-disabled-policy",
@@ -421,7 +421,7 @@
     },
     {
       "id": "claude-internal-skill-policy",
-      "sha256": "1e143361efa6015128300e0170579555bd05fb8ebd422d8ec4cfb17a9efc81fa"
+      "sha256": "6586eb82f7df86ec5dfaf1e24e27251f7accb5c4836d87e5c008e8f1d90e9d32"
     },
     {
       "id": "claude-review-refine-policy",
@@ -489,7 +489,7 @@
     },
     {
       "id": "codex-plugin-manifest-shape",
-      "sha256": "1667f13d4ced2b73f8ad52857ed0607d9fda2304bf448d45c2159b80652791d2"
+      "sha256": "691ababf4cabfffc6b7d5452b5be63863c9577ae8ae5356204fcedce44cc39ed"
     },
     {
       "id": "test-report-invocation-68edd8617af5",
@@ -980,44 +980,44 @@
       "sha256": "34236b0269cdee2ff0bf382593acade7f55888ee872b1535eb5b75adaa924eff"
     },
     {
-      "id": "writable-scope-focused-worker-mapping-requires-b460f9474f0a",
-      "sha256": "cc5e7a83e6a230f5176ded6a1a94c38b6e995ff1f2a4b78cd64bf3a220c10d72"
+      "id": "writable-scope-focused-worker-mapping-requires-b31a42a27b67",
+      "sha256": "d19280176191c4b5f617d3773862e933d42589e8af3ab276af250d3c992b8b46"
     },
     {
-      "id": "writable-scope-implementer-mapping-requires-264046b8175d",
-      "sha256": "5275d6b4fdab42b57713f94fe4f10b78019d97e78e0560e8c530312cbc130683"
+      "id": "writable-scope-implementer-mapping-requires-7e1fe8176a93",
+      "sha256": "0230239cdbdf65eaf997db7a7ae348eb8a21a06c011427cc98d81e5ac0fbadbf"
     },
     {
-      "id": "writable-scope-senior-worker-mapping-requires-ef04795659fd",
-      "sha256": "9f8a5bce34c8575d4a33ffb8d39b5a19b4fb955b1292ca4b75f9b0aa5b858f1b"
+      "id": "writable-scope-senior-worker-mapping-requires-58f0207152cb",
+      "sha256": "b81adb5556cfd391e739ed6315f850490de5c5de7336a59f21420ee0e21b2b1a"
     },
     {
-      "id": "writable-scope-expert-worker-mapping-requires-08538cb50d7c",
-      "sha256": "8b01558fb6c00e66cf6add0d4d47bac4880472a4ccd72bace1ef38a88083408f"
+      "id": "writable-scope-expert-worker-mapping-requires-7ce4dd65c57a",
+      "sha256": "f2e315903152c4489948131045f6e53b495a29b19dcc72995c3c5b69e3923b4c"
     },
     {
-      "id": "work-unit-design-internal-guard-requires-67dbee9ac922",
-      "sha256": "40394ea1333b3deab024d6f4eea884d577c8747a4ea1ae1883c8a18de8b2e897"
+      "id": "implementation-unit-design-internal-guard-requires-a9ff1408b786",
+      "sha256": "0d59930733e083dcaa2872cfab0960deffbcedf316d5a00ce121a68754634df1"
     },
     {
-      "id": "impl-work-unit-data-fields-aca91ed1f266",
-      "sha256": "cc0fc3d0b6d30f2008500dfdf160bc71930e8123679b9b6b62e959c6776864e9"
+      "id": "impl-implementation-unit-data-fields-736f03a8ee36",
+      "sha256": "125a1a33000346cd31622b19145fcfbc0b0e4506751e105f09a47a75278bb0f2"
     },
     {
-      "id": "work-unit-data-consumer-5e12b5ed0407",
-      "sha256": "0bdd7804780fddd4884b686a928d5ecb4e369c0168976c41852680b7b769caf3"
+      "id": "implementation-unit-data-consumer-bfb9a6c94c0d",
+      "sha256": "11f30b92457cc0685411be8e0e0f01e98384ebefa4d7c5947077111e4cb94382"
     },
     {
-      "id": "final-writing-work-unit-consumer-b34e9edbbc2b",
-      "sha256": "ff40510ac2d4dc1e951783e36bac09a3c6561dfb6e06424f706dab6b115ad5df"
+      "id": "final-writing-implementation-unit-consumer-4d319c3d1515",
+      "sha256": "5b96f94569b6bb839345e6a3204f2e2601431f2815f5b7b27e27215a3828f2ea"
     },
     {
       "id": "impl-programmatic-flow-boundary-4b885c8d6556",
       "sha256": "c8e3581467dbd8c3e829bbf2bc5fe4311f9a33701e1eec0abb99c11f58c5ff0c"
     },
     {
-      "id": "impl-dependency-dispatch-flow-137dd3030b98",
-      "sha256": "c9970e0a94777df72f249094dfd9dc2e41ed954b2585f8ef3800349a631b23fa"
+      "id": "impl-dependency-dispatch-flow-14b673f4e076",
+      "sha256": "221ac1b745a566f2dfbfe00113a0c747bdaead01c15db0c03675fd0b69e1c3da"
     },
     {
       "id": "impl-run-owned-creation-flow-202829da54ed",
@@ -1028,24 +1028,24 @@
       "sha256": "41fab0f7d2eabb8111b1e42b47d1644206f98cbcbc9604f88e06aff9495c286b"
     },
     {
-      "id": "impl-writable-scope-handoff-flow-3e2117670176",
-      "sha256": "455a0e2273923c6aebdb81f3abe77f7cc4786fa218c836c2856597825f4ffcaf"
+      "id": "impl-writable-scope-handoff-flow-cba560c3a477",
+      "sha256": "43085e688378c4e06774ccea4f642d456b102bad8b40dbd0ef5687b9e6ad711a"
     },
     {
-      "id": "impl-work-unit-continuation-flow-cf64513488d1",
-      "sha256": "b5027abcfddcd2d5ec7866eb4ac822521b696584fb519d1c67ff8f0a1bbaeb4f"
+      "id": "impl-implementation-unit-continuation-flow-c3ab2a147350",
+      "sha256": "bedf4aaba2a995a05b6030251ee1313d0505d3f0af96115e87a3c10a87e1f6ea"
     },
     {
-      "id": "impl-delegated-worker-silence-defaults-45bcd5bda7b7",
-      "sha256": "9504bdc49bd26930eb6a5b0acb1166942bf05b151ce8a3230a572710347e73ec"
+      "id": "impl-delegated-worker-silence-defaults-0702279bc3a9",
+      "sha256": "45d47f4977e6254ad562da375eaa551e6c0a2dc4c676812fc0e3acc78d29ee47"
     },
     {
       "id": "impl-parallel-integration-flow-9799ff405418",
       "sha256": "7eac00750b03d8d42905cc6db231a60455ae19b8e9cd4339ce138c0140ff2518"
     },
     {
-      "id": "impl-final-writing-invocation-flow-4950dc750094",
-      "sha256": "27f9f7fd79493a697480dd911e9baedbddb7d27c8251d41c78f9ee514fbd0ec1"
+      "id": "impl-final-writing-invocation-flow-f99da992924c",
+      "sha256": "cdf3c9358dc0f03f73d179a1213c973654fc192c962b3d23afb89079559faa70"
     },
     {
       "id": "impl-final-writing-result-flow-bf37b395ce03",
@@ -1084,8 +1084,8 @@
       "sha256": "80e4c61d4f28496f0b8989a42a88dca9b0cac7c524002bce1123dda01c0f78e2"
     },
     {
-      "id": "impl-writable-scope-no-work-unit-field-bfb65969926d",
-      "sha256": "d6471bad127c61bee37c57cb3bc13a40a3dce421b4af29a5dbf19f48336b412e"
+      "id": "impl-writable-scope-no-implementation-unit-field-e1dccb5f4fdb",
+      "sha256": "2e72659d1273b6304476ebf946032a3f7d68aad27f579f14673a0e1f75948125"
     },
     {
       "id": "impl-route-before-writable-scope-loader",
@@ -1124,32 +1124,32 @@
       "sha256": "7c85498932e86756cbb7eaadebea6e7b3c7bb72cbdabfe97cad3254be4d2e89f"
     },
     {
-      "id": "impl-risk-transaction-data-ad2e22f2780f",
-      "sha256": "5f4369d8571e67a9f76ad717d97aae70b3d99f9b458ed826b208224e9dce0bb6"
+      "id": "impl-risk-transaction-data-6b6a8eacb950",
+      "sha256": "8f53ee401c5a3376cefe8c68269f585970a5edbb497fe0779f3aeaeb10f4299e"
     },
     {
-      "id": "impl-risk-remediation-grouping-entry-9e0f78b20331",
-      "sha256": "07858a5427388332723fac86201eb078736e7f100763e9e5eb571198990d3a4c"
+      "id": "impl-risk-remediation-grouping-entry-2d86e9174656",
+      "sha256": "64aa3ae5f9757ab22a4cfe5a67c5540116ef54b7c3cb9d2ad0ec59bf02e72bca"
     },
     {
-      "id": "impl-risk-remediation-perspectives-ea3be64e5dc8",
-      "sha256": "fed9dc9b223c9edd661169b024d844dd3500afd4af95b48ed133e317a6cd6430"
+      "id": "impl-risk-remediation-perspectives-368777611112",
+      "sha256": "e6b3aa3ea639a1938091dac05d38eb91fad695016c7c435bdb711d2ccc706c29"
     },
     {
-      "id": "impl-risk-remediation-regrouping-92113ee50310",
-      "sha256": "27a8208d7a6c2afff875ffa65df82f08134c849c28ca41d2c35203626bcfc696"
+      "id": "impl-risk-remediation-regrouping-a3fb2e282409",
+      "sha256": "c716315dabc17624d398441f54da11f9958f17a32c655ee14c375adb44c3c25d"
     },
     {
-      "id": "impl-risk-remediation-continuation-8689a159bc6f",
-      "sha256": "e0aaaa3c1fcefc2018ff922b334f33582561e9b6d78e3248095310d5396b5ee5"
+      "id": "impl-risk-remediation-continuation-32c9d259f550",
+      "sha256": "7924f9498d6019dcabf4be47ec2422cf7e0a192f61731992bb685af4ae94edfa"
     },
     {
-      "id": "impl-risk-remediation-outer-inner-497edb57dab8",
-      "sha256": "09d4712ca273ac76e0cae29eb56dea17accd008ebc523d09651c2caf9e6ba94c"
+      "id": "impl-risk-remediation-outer-inner-9a8bedc6519d",
+      "sha256": "bfb4016cecf6eefeb038088c4619bdd3d38c3fc12f27c205bada9ed16f29b01b"
     },
     {
-      "id": "impl-final-report-quality-signal-policy-data-262fe75b0817",
-      "sha256": "80cc8ec288cd1193c6402801a43b6a87824ef5e43fce691377836c33ac4a7932"
+      "id": "impl-final-report-quality-signal-policy-data-397eae90a8e6",
+      "sha256": "5c23fbd81761f32ea5f414ce6060d6cf0569a83fb263e75affe72ba3bdd50af6"
     },
     {
       "id": "impl-run-owned-start-identity-data-a3287389ca32",
@@ -1160,48 +1160,48 @@
       "sha256": "6b9688ef3006fdbc9bebc9ab979dbc656d7b783457309becbd7229c44d304238"
     },
     {
-      "id": "impl-work-unit-dirty-scope-3b5429409356",
-      "sha256": "0fa56c91d1172de477f25422fd1178ca6cb0b8d9a4d6d6168f5c11a777bdead5"
+      "id": "impl-implementation-unit-dirty-scope-57ef90a64744",
+      "sha256": "25a397717c8119b6e3d08642aa389beb0f34ada0011c17f18be289857e05339b"
     },
     {
-      "id": "impl-work-unit-design-initial-partition-caller-3f58e842bc94",
-      "sha256": "cc3fa9fb7365cf9217b59502519286ef02e57fbccdf86143d3b210a72b33713b"
+      "id": "impl-implementation-unit-design-initial-partition-98e4095970df",
+      "sha256": "2479f4a29dc4f605b0d54e6f86afec5fdb0167202a4d294b0e671c49b7860744"
     },
     {
-      "id": "impl-worker-tier-partition-interception-60f977bda2ff",
-      "sha256": "4a5858e8f98919c6e1e1330e6bbf8a4b8f6a3c1394ef6bf1dc650e6019f11b3f"
+      "id": "impl-worker-tier-partition-interception-dffb1f5fe8d6",
+      "sha256": "936177bcb8ea43ec0252099f4cdfdc9d0b05fa84b7bc2f0bed1df8d43936026e"
     },
     {
-      "id": "work-unit-design-partition-input-data-7d13abf1ae94",
-      "sha256": "8777ad875abd310d0659c358d4e951cc02427a9e42bfb5488e2490e8737b28a4"
+      "id": "implementation-unit-design-partition-input-data-760ae492e304",
+      "sha256": "13aab103805d8cfe47726f41bdade96f058259ae46e743cc3576b665fef8ada7"
     },
     {
-      "id": "work-unit-design-partition-attention-b1671a136d10",
-      "sha256": "b2aa26e2f50a7346522fb49297639105704970d0c7e5ead701f1eab3b044f308"
+      "id": "implementation-unit-design-partition-attention-d75702039989",
+      "sha256": "76b49a808f0f6856da38e92b6ca10586519e2b69d0cad7120d70f762c2b6cda1"
     },
     {
-      "id": "work-unit-design-partition-contrastive-guard-d0684aace227",
-      "sha256": "21e01f4c7cb4510b5e8bee1021a048733ad361739ecfbd602679e3e6e7889439"
+      "id": "implementation-unit-design-partition-contrastive-8317c1df8a5b",
+      "sha256": "0632e7f0ba01d8f6314a27b682f7e7c2617fd0494eaf53af49aea6fa78bec570"
     },
     {
-      "id": "work-unit-design-partition-remediation-binding-9c4dbcaccf8b",
-      "sha256": "4b629d5b154aecf465ec44a705631639e9ce310ae0b0fc2d3683de82b5b41762"
+      "id": "implementation-unit-design-partition-remediation-ba06271c2d5c",
+      "sha256": "a0d7e9a0ebf9617c7db9c0fb062c750cc0239409a15680f923168d49174329a5"
     },
     {
-      "id": "work-unit-design-partition-casebook-e9b3d3d10173",
-      "sha256": "9330baec2ae7a2c9db1a37d3e024f86b3f4c1ad261710e4c6a6556194f82a01e"
+      "id": "implementation-unit-design-partition-casebook-c13dcee955f2",
+      "sha256": "fe4c1455c05e85518aefff10662d2edd7a7c7faafdbf640351e6775a3e62d924"
     },
     {
-      "id": "wu-partition-casebook-overmerge-bb5c82f80820",
-      "sha256": "4090c813c92004fd6e656803fcdea8df16898e5d092d0ad862ec02972cb4f857"
+      "id": "implementation-unit-partition-casebook-overmerge-e91defc6b121",
+      "sha256": "c74c6559f0f1baa909bb22f810c6842d3fe62620162036da917da11a69cc28cf"
     },
     {
-      "id": "wu-partition-casebook-kernel-caller-545b7e6bd64b",
-      "sha256": "35a4258ae64a266e96151eb85f737add7250d416494d4648ff3cef38c5c9fb13"
+      "id": "implementation-unit-partition-casebook-kernel-d4d987ca49d4",
+      "sha256": "173faaa2afcdfc03e6cdb963c3998f4d6c9dfdc3a43dbbe12dc233eb73c6205e"
     },
     {
-      "id": "wu-partition-casebook-remediation-oversplit-3922f99e99dd",
-      "sha256": "7ab24b8258619db352f392667d89a8573b290910d378f885d440563b1df8df96"
+      "id": "implementation-unit-partition-casebook-oversplit-f4556ef58655",
+      "sha256": "972bfca45ac010af6159d868788308a70b17761c862b20eda5decafc8cd579f0"
     },
     {
       "id": "plan-candidate-producer-internal-guard-requires-86104357309e",
@@ -3198,12 +3198,12 @@
     },
     {
       "kind": "span",
-      "id": "impl-work-unit-data-canonical",
+      "id": "impl-implementation-unit-data-canonical",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-work-unit-design-initial-partition-caller",
+      "id": "impl-implementation-unit-design-initial-partition-caller",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -3233,7 +3233,7 @@
     },
     {
       "kind": "span",
-      "id": "impl-programmatic-flow-work-unit-continuation-routing",
+      "id": "impl-programmatic-flow-implementation-unit-continuation-routing",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -3263,7 +3263,7 @@
     },
     {
       "kind": "span",
-      "id": "impl-work-unit-protected-dirty-scope",
+      "id": "impl-implementation-unit-protected-dirty-scope",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -4048,53 +4048,53 @@
     },
     {
       "kind": "span",
-      "id": "work-unit-design-internal-guard",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-internal-guard",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-input-data",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-input-data",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-attention",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-attention",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-remediation-binding",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-remediation-binding",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-work-unit-data-consumer",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-implementation-unit-data-consumer",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-contrastive-guard",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-contrastive-guard",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-casebook",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-casebook",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-casebook-initial-over-merge",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-casebook-initial-over-merge",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-casebook-kernel-caller",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-casebook-kernel-caller",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "work-unit-design-partition-casebook-remediation-over-split",
-      "path": "shared/skill/work-unit-design/SKILL.md"
+      "id": "implementation-unit-design-partition-casebook-oversplit",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
       "kind": "span",

@@ -12,7 +12,7 @@ Kernel ではなく、各 public workflow が選択して load する shared ref
 次は適用しない。
 
 - skill 全体への Principle 適用
-- impl-lead の Work Unit
+- impl-lead の Implementation Unit
 - `plan-artifact-publication` の保存・publication procedure
 - 上位 Philosophy / Principle 本文
 

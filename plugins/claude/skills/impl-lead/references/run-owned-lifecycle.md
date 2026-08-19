@@ -12,7 +12,7 @@
 ユーザーが既存 checkout、別の isolation/worktree、または worktree を使わない制約を指定していない場合、親は
 `base_snapshot` を確定し、既存の user-owned tracked state を記録した後、最初の書き込み Action より前に、その snapshot から
 run-owned worktree を一つ作成する。作成 Action が run の最初の書き込みであり、source、test、generator、formatter、integration
-を既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Work Unit 数だけでは追加 worktree を作らない。
+を既存の current checkout で先に実行してはならない。run-owned worktree は run 全体の既定 checkout とする。Implementation Unit 数だけでは追加 worktree を作らない。
 既定実行順は直列のまま、並列 writer や immutable review target など具体的な必要がある場合だけ、既存の
 safe-parallel 条件に従って追加 isolation を選ぶ。
 
@@ -32,7 +32,7 @@ run の accept 成否だけで機械的に削除せず、user-owned resource（�
 
 run-owned Creation Action より前に、親は一つの invocation start Data として repository identity、worktree identity、canonical path、
 exact full branch ref、その ref の開始 target である `invocation_start_head`、tracked index/worktree の working state identity を固定する。
-Work Unit の `base_snapshot` はこの invocation baseline と別の Data として保つ。
+Implementation Unit の `base_snapshot` はこの invocation baseline と別の Data として保つ。
 
 tracked working state identity は staged / unstaged、index へ追加済みの entry、削除、mode / type、content identity を表す。secret の本文は
 保存・報告せず、安全な digest 等の identity だけを扱う。開始時の untracked / ignored entry は identity baseline として保存しない。
@@ -55,7 +55,7 @@ persistence と integration の観測結果を共通の Data として扱う。
 
 closeout は `Action → Data → Calculation → Data → Action → Data` の順に進める。まず親は target の repository identity、worktree identity、
 canonical path、exact full branch ref、`invocation_start_head`、HEAD、tracked clean status、全 writer/reviewer の終了、worktree 内だけに残る
-exclusive evidence、ユーザーの保持指定、別 run resource との識別を再観測する。Work Unit の `base_snapshot` と invocation branch の
+exclusive evidence、ユーザーの保持指定、別 run resource との識別を再観測する。Implementation Unit の `base_snapshot` と invocation branch の
 baseline は別の Data として pin し、同じ HEAD でも branch ref が違えば同一実行先とは扱わない。継続 PR のように
 `base_snapshot` と `invocation_start_head` が異なる場合も、各値を混同せず exact identity を再照合する。
 
@@ -67,7 +67,7 @@ writer/reviewer が終了し、worktree 内だけの未統合成果/evidence が
 
 local integration は別の Action として、integration 直前に invocation repository identity、worktree identity/canonical path、exact full branch
 ref、その ref の target、`invocation_start_head`、HEAD、tracked working state identity、tracked clean status を再照合する。
-invocation branch の HEAD は開始時 `invocation_start_head` から drift していないことを確認し、Work Unit の `base_snapshot` と一致することは
+invocation branch の HEAD は開始時 `invocation_start_head` から drift していないことを確認し、Implementation Unit の `base_snapshot` と一致することは
 要求しない。開始時から不変の tracked dirty も integration blocker とする。tracked state の保存・照合ができない場合も blocker とする。
 
 task changed paths は `invocation_start_head..task-owned tip` の tree 上の追加・変更・削除 path 集合とする。rename は source / destination、
