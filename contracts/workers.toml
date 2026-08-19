@@ -50,6 +50,18 @@ slice = "plan-quality-advisor-boundary"
 pattern = "../../references/necessity-kernel.md"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.advisor-bok-path-forbids-b9c93881dd21]
+kind = "forbids"
+slice = "plan-quality-advisor-boundary"
+pattern = "../../references/behavior-observation-kernel.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-quality-behavior-observation-path-forbids-f594e4bbfb0f]
+kind = "forbids"
+slice = "test-quality-general-scope"
+pattern = "../../references/behavior-observation-kernel.md"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.test-quality-general-scope-requires-eadf26e143c5]
 kind = "requires"
 slice = "test-quality-general-scope"

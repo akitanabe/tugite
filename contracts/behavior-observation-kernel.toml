@@ -1,0 +1,340 @@
+[contracts.behavior-observation-kernel-distribution]
+kind = "occurrences"
+pattern = "# Behavior Observation Kernel v1"
+paths = [
+  "plugins/claude/references/behavior-observation-kernel.md",
+  "plugins/codex/references/behavior-observation-kernel.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
+]
+count = 1
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-kernel-mention-allowlist]
+kind = "forbids"
+pattern = "behavior-observation-kernel"
+exclude_paths = [
+  "plugins/claude/agents/plan-quality-advisor.md",
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/references/behavior-observation-kernel.md",
+  "plugins/claude/skills/code-review/SKILL.md",
+  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
+  "plugins/codex/install/agents/plan-quality-advisor.toml",
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/references/behavior-observation-kernel.md",
+  "plugins/codex/skills/code-review/SKILL.md",
+  "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
+  "plugins/cursor/agents/plan-quality-advisor.md",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
+  "plugins/cursor/skills/code-review/SKILL.md",
+  "plugins/cursor/skills/impl-lead/SKILL.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
+
+[contracts.behavior-observation-kernel-title-requires-b1fbdfffd802]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "# Behavior Observation Kernel v1"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-kernel-identity-requires-c016cfb53a5a]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = '''Kernel identity: `behavior-observation-kernel-v1`.
+Kernel dependencies: `none`.'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-contract-heading-requires-9b39bb73f871]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "## Contract"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-kernel-method-heading-requires-abcc3e7275dd]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "## Method"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-reintegration-heading-requires-538b35be49f5]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "## Reintegration"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-consumer-heading-requires-d7aecf964d43]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "## Consumer の責務"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-nongoal-heading-requires-8083b3ab0c79]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "## 非目標"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-expected-observations-requires-17aebd2350c7]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Expected Observations"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-collective-sufficiency-requires-6ff4f8bd0a40]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Collective Sufficiency"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-unresolved-viewpoints-requires-cf391d0058a0]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Relevant Unresolved Viewpoints"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-sufficient-requires-bd2b6b4ae1ec]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Sufficient"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-insufficient-requires-5241f29e7ba9]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Insufficient"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-indeterminate-requires-e698e74c8e15]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Indeterminate"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-flatten-requires-c8360deaac15]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "異なる条件に属する Observation を、条件を失った独立した事実として平坦化しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-coherent-requires-69416c51ea0f]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "同一条件下で相互に矛盾してはならない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-grounding-requires-7f543b7db35e]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "各 Expected Observation は、その必要性を grounding する入力 Behavior の意味、または authoritative Context を説明可能でなければならない。各 Relevant Unresolved Viewpoint も、未確定性を示す具体的な signal へ trace できなければならない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-no-consumer-topology-requires-0f70b4fbfffc]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Kernel は consumer topology、consumer 名、consumer 固有の成果物、評価対象、workflow phase を正本として保持しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-serialized-schema-requires-5c988f55a951]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "共通 serialized Observation schema の定義"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-no-verdict-requires-c9018ed25633]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Kernel は finding severity、accept / reject、新しい product requirement を返さない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-no-quality-verdict-requires-8571dfcabee1]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "Collective Sufficiency を consumer 固有成果物の quality verdict と読み替えない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-rework-requires-38d106ff3d4b]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "`Insufficient` は既知の coverage gap を示す rework state でもある。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-claim-section-requires-8f48963910e6]
+kind = "requires"
+slice = "behavior-observation-kernel-v1"
+pattern = "各 claim または section の役割を分離して扱う。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-plan-quality-advisor-40e55bc83aa3]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "plan-quality-advisor"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-impl-lead-d38b7dbe09be]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "impl-lead"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-test-quality-reviewer-ff1cb3f72c7e]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "test-quality-reviewer"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-test-report-f04f56292444]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "test-report"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.bok-forbids-adversarial-reviewer-86984157c205]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "plan-adversarial-reviewer"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-draft-ac-6d4ed881f36e]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "Draft AC"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-submitted-red-3b915b0f7f8b]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "提出 Red"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.behavior-observation-forbids-target-test-68b9ec7f962e]
+kind = "forbids"
+slice = "behavior-observation-kernel-v1"
+pattern = "対象 test"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
+[contracts.producer-behavior-observation-loader-data-4b90daa69616]
+kind = "requires"
+slice = "plan-candidate-producer-behavior-observation-kernel-loader"
+pattern = '''path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before plan-quality-advisor normal invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = plan-candidate-producer parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-behavior-observation-agentic-load-9820dd119c55]
+kind = "requires"
+slice = "plan-candidate-producer-behavior-observation-kernel-loader"
+pattern = "`plan-candidate-producer` が advisor invocation Data を組み立てる Agentic Action として load する。`producer-invocation-preflight` と `advisor-two-pass-orchestration` はこの Loader を所有しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
+[contracts.impl-parent-red-behavior-observation-loader-data-5db98fa31c75]
+kind = "requires"
+slice = "impl-parent-red-behavior-observation-kernel-loader"
+pattern = '''path = ../../references/behavior-observation-kernel.md
+load_timing = after Red evidence received and before Red accept
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = impl-lead parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-parent-red-independent-a3c521780c22]
+kind = "requires"
+slice = "impl-parent-red-behavior-observation-kernel-loader"
+pattern = "親自身が consumer であり、Implementer へは注入しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-parent-red-no-handoff-copy-e6dfc5ed514b]
+kind = "requires"
+slice = "impl-parent-red-behavior-observation-kernel-loader"
+pattern = "Kernel の導出結果、Expected Observations、meaningful variation、Exploration Lens を Implementer handoff に事前注入しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
+[contracts.impl-tqr-behavior-observation-loader-data-3f53ada80cfa]
+kind = "requires"
+slice = "impl-test-quality-behavior-observation-kernel-loader"
+pattern = '''path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before test-quality-reviewer invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = impl-lead parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-tqr-behavior-observation-only-0bb55caef4f2]
+kind = "requires"
+slice = "impl-test-quality-behavior-observation-kernel-loader"
+pattern = "`test-quality-reviewer` を選んだときだけ注入する。他 reviewer、特に `plan-adversarial-reviewer` へ流さない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
+[contracts.code-review-tqr-behavior-observation-loader-data-247a6ff4cd85]
+kind = "requires"
+slice = "code-review-test-quality-behavior-observation-kernel-loader"
+pattern = '''path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before test-quality-reviewer invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = 当該 reviewer を選定せず理由を報告
+owner = invoking parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.code-review-tqr-behavior-observation-only-27e9e943654f]
+kind = "requires"
+slice = "code-review-test-quality-behavior-observation-kernel-loader"
+pattern = "`test-quality-reviewer` を選定したときだけ、親は次の Loader Data で load し、検証済み本文を既存の `判定基準` または `必要な周辺 context` へ注入する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-behavior-observation-heading-343b2a0837dd]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "## normal invocation の behavior-observation-kernel v1 mapping"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-behavior-observation-injected-only-f4df951a18b2]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "本 Kernel は注入されているときだけ Draft AC の observation sufficiency 照合に使う。未注入の normal invocation は、identity 失敗で止めず、既存の quality observation のまま動く。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-behavior-observation-draft-ac-38a411386153]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "Draft AC はこの consumer の評価対象であり grounding ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-behavior-observation-no-new-req-ae0fa6b0c72f]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "第二 planner にならず、新しい requirement / Behavior / AC を確定しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.tqr-behavior-observation-heading-1dc1abe92e52]
+kind = "requires"
+slice = "test-quality-general-scope"
+pattern = "## behavior-observation-kernel v1 の mapping"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.tqr-behavior-observation-target-test-684acc911f32]
+kind = "requires"
+slice = "test-quality-general-scope"
+pattern = "対象 test は評価対象であり grounding ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.tqr-behavior-observation-no-verdict-map-b00efb46a730]
+kind = "requires"
+slice = "test-quality-general-scope"
+pattern = "Kernel 状態名 `Sufficient` / `Insufficient` / `Indeterminate` を `Pass` / `Needs attention` / `Blocker` に直結しない。"
+applies_to = ["claude", "codex", "cursor"]

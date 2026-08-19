@@ -3,6 +3,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies: `none`."
 paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
+  "plugins/claude/references/behavior-observation-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
   "plugins/claude/references/writable-scope-kernel.md",
@@ -15,6 +16,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies: `none`."
 paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
+  "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
@@ -27,6 +29,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies: `none`."
 paths = [
   "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",
@@ -39,6 +42,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies:"
 paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
+  "plugins/claude/references/behavior-observation-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
   "plugins/claude/references/writable-scope-kernel.md",
@@ -51,6 +55,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies:"
 paths = [
   "plugins/codex/references/batch-resolve-kernel.md",
+  "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
@@ -63,6 +68,7 @@ kind = "occurrences"
 pattern = "Kernel dependencies:"
 paths = [
   "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",
@@ -75,14 +81,17 @@ kind = "forbids"
 pattern = "に依存する。"
 paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
+  "plugins/claude/references/behavior-observation-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
   "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/batch-resolve-kernel.md",
+  "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",
@@ -94,14 +103,17 @@ kind = "forbids"
 pattern = "成立条件として要求する。"
 paths = [
   "plugins/claude/references/batch-resolve-kernel.md",
+  "plugins/claude/references/behavior-observation-kernel.md",
   "plugins/claude/references/necessity-kernel.md",
   "plugins/claude/references/resolve-kernel.md",
   "plugins/claude/references/writable-scope-kernel.md",
   "plugins/codex/references/batch-resolve-kernel.md",
+  "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/references/necessity-kernel.md",
   "plugins/codex/references/resolve-kernel.md",
   "plugins/codex/references/writable-scope-kernel.md",
   "plugins/cursor/references/batch-resolve-kernel.md",
+  "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/references/necessity-kernel.md",
   "plugins/cursor/references/resolve-kernel.md",
   "plugins/cursor/references/writable-scope-kernel.md",

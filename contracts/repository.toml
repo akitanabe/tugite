@@ -35,6 +35,31 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.no-observation-verdict-field]
+kind = "forbids"
+pattern = "observation_verdict"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-status-field]
+kind = "forbids"
+pattern = "observation_status"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-decision-field]
+kind = "forbids"
+pattern = "observation_decision"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-field-field]
+kind = "forbids"
+pattern = "observation_field"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-result-field]
+kind = "forbids"
+pattern = "observation_result"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-artifact-publication-reference-identity]
 kind = "occurrences"
 pattern = "Publication reference identity: `plan-artifact-publication-v1`."
@@ -432,7 +457,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "6.1.0"
+value = "6.1.1"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
@@ -857,10 +882,10 @@ path = "name"
 op = "equals"
 value = "implementation-unit-design"
 
-[contracts.cursor-readme-title-requires-576f35e999be]
+[contracts.cursor-readme-title-requires-81f6fb5d2b73]
 kind = "requires"
 slice = "cursor-readme-title"
-pattern = "# Tugite v6.1.0"
+pattern = "# Tugite v6.1.1"
 applies_to = ["cursor"]
 
 [contracts.readme-risk-directed-static-performance-reviewer-b83942372d45]

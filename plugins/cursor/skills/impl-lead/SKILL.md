@@ -366,6 +366,22 @@ commit range、変更 file、完全な diff text、必要な test 結果と周�
 だけで diff text を代替しない。plan reviewer には plan 全文と AC / constraints を渡す。diff artifact の存在は必須にせず、
 inline か reviewer が全文を読み込める artifact のいずれかを使う。
 
+## behavior-observation-kernel v1 の test-quality-reviewer mapping
+
+`test-quality-reviewer` を選んだときだけ注入する。他 reviewer、特に `plan-adversarial-reviewer` へ流さない。
+
+次の Loader Data がこの load の唯一の正本である。
+
+```text
+path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before test-quality-reviewer invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = impl-lead parent
+delegate_path_resolution = false
+```
+
 ## batch-resolve-kernel v1 の risk-directed review mapping
 
 次の Loader Data が列挙値の唯一の正本である。
@@ -520,6 +536,34 @@ observable な code behavior は各 Implementation Unit で Red → Green → Re
 direct でも委譲でも、親は各単位の結果を受け取った時点の baseline diff、AC、scope、precondition、dirty state、
 test、side effect、既知 risk を自分で確認する。親は worker の報告を鵜呑みにせず、Red/Green/Refactor の evidence、focused
 test、repository-native verification を再実行し、変更が同じ Implementation Unit の責任境界内にあることを確認する。
+
+### Parent Red QA の behavior-observation-kernel v1 mapping
+
+Red 証跡受領後かつ Red 受理前に、親は AC / resolved Behavior + relevant Context から独立に Expected Observations を導出し、提出 Red と照合する。提出 Red は評価対象であり grounding ではない。
+
+見るものは次である。
+
+- Red が AC / resolved Behavior の成立・不成立を区別できるか
+- 必要な meaningful variation について片側だけの人工 test になっていないか
+- Behavior 上必要な Boundary / Failure / Relation の意味が Red で観測可能か
+- variation ごとの条件関係が平坦化されていないか
+- mock / stub が本来確認すべき状態遷移や relation を隠していないか
+
+次の Loader Data がこの load の唯一の正本である。
+
+```text
+path = ../../references/behavior-observation-kernel.md
+load_timing = after Red evidence received and before Red accept
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = impl-lead parent
+delegate_path_resolution = false
+```
+
+親自身が consumer であり、Implementer へは注入しない。Kernel の導出結果、Expected Observations、meaningful variation、Exploration Lens を Implementer handoff に事前注入しない。親 QA の `判定基準` に載せた Kernel 本文を、Red 差し戻し後の Implementer handoff へコピーしない。差し戻し時も具体的な Expected Observation を答えとして渡さず、AC / Behavior に戻して再探索させる。Implementer / worker の Red 手順本文へ Kernel 利用を追加しない。
+
+Green / Refactor / baseline self-QA / risk-directed review / final writing gate を置き換えない。Collective Sufficiency は Implementation Unit accept ではない。direct と委譲の両方で同じ親照合を行う。差し戻し handoff は既存の Implementation Unit Data / AC / constraints / relevant Context に閉じる。
 
 ### Run-owned closeout
 

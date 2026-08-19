@@ -106,6 +106,20 @@ reviewer が入力不足を返した場合は finding として扱わず、親�
 
 Human の明示 reviewer 指定は尊重する。指定 reviewer が対象に不適合な場合は、理由を付して Human 確認へ返す。
 
+## behavior-observation-kernel v1 の test-quality-reviewer mapping
+
+`test-quality-reviewer` を選定したときだけ、親は次の Loader Data で load し、検証済み本文を既存の `判定基準` または `必要な周辺 context` へ注入する。他 reviewer へ流さない。load 失敗時は当該 reviewer を選定せず理由を報告する。返却契約（報告のみ、採否しない）は変えない。
+
+```text
+path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before test-quality-reviewer invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = 当該 reviewer を選定せず理由を報告
+owner = invoking parent
+delegate_path_resolution = false
+```
+
 ## 実行
 
 captured snapshot を基準に read-only reviewer を起動する。全 reviewer が同一の captured snapshot を参照し、
