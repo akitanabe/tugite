@@ -38,42 +38,6 @@ slice = "necessity-kernel-v1"
 pattern = "necessity-kernel-v1"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.kernel-scope-plan-candidate-producer-requires-35fa75424edb]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "plan-candidate-producer"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-scope-plan-interactive-requires-0e86b4ea5fbb]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "plan-interactive"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-scope-review-refine-requires-10ce894fd07a]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "review-refine"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-scope-plan-adversarial-requires-02ca7f2135cb]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "plan-adversarial-reviewer"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-scope-over-engineering-requires-76722b6efca8]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "over-engineering-reviewer"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-scope-plan-quality-requires-07aa96650a40]
-kind = "requires"
-slice = "necessity-kernel-v1"
-pattern = "plan-quality-advisor"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.necessity-kernel-v1-requires-0f8505dfe264]
 kind = "requires"
 slice = "necessity-kernel-v1"
