@@ -210,8 +210,8 @@ gate を通過した candidate snapshot だけを、必要な review goal とと
 
 選んだ方針と採用理由、代替案を採らない理由を記録する。
 
-ユーザーが実装単位の案を求める場合は自由形式成果物の一部として自然文で記述してよいが、正式な Work Unit Data または
-Work Unit normalization とは扱わない。正式な normalization は implementation-time の `impl-lead` が current repository state を
+ユーザーが実装単位の案を求める場合は自由形式成果物の一部として自然文で記述してよいが、正式な Implementation Unit Data または
+Implementation Unit normalization とは扱わない。正式な normalization は implementation-time の `impl-lead` が current repository state を
 再観測して行う。base_snapshot を含む base、route、order、実行結果、review 等の execution data、委譲、実装、worker、isolation、
 後続 Skill の起動権限、accept の確定、保存を成果物へ含めない。
 

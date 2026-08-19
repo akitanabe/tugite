@@ -7,20 +7,20 @@
 
 ## Final writing acceptance gate
 
-全 Work Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
+全 Implementation Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
 accept する直前に `writing-principles-reviewer` の read-only final writing gate を有効な一回として必ず実施する。この gate は
 risk-directed reviewer の選択数・回数の外にあり、変更が小さい、risk がない、または途中で同 reviewer を実施済みであることを
 理由に省略できない。ユーザーが途中または追加 review を指定した場合も実施するが、final writing gate の代替にはならない。
 review の回数・時点に衝突がある場合は最初の review 前に確認して解消し、解消できなければ `stop-incomplete` とする。
 
 `review_base_snapshot` は、final gate の対象として残る task-owned 変更集合が始まる前の、最後の accepted repository state とする。
-Work Unit ごとの統合で `accepted baseline` が更新されても、final gate の `review_base_snapshot` は更新せず、final gate で run が
+Implementation Unit ごとの統合で `accepted baseline` が更新されても、final gate の `review_base_snapshot` は更新せず、final gate で run が
 accept されるまで固定する。gate の `target_snapshot` はその固定 base から元変更と remediation を含む累積候補であり、先行
-Work Unit の変更を累積 diff から除外しない。protected dirty/untracked は別の `protected_dirty_record` として扱う。final finding
-後の remediation run でも未受入候補を新しい baseline にせず、同じ accepted base を継承する。この区別は既存の Work Unit 統合を
+Implementation Unit の変更を累積 diff から除外しない。protected dirty/untracked は別の `protected_dirty_record` として扱う。final finding
+後の remediation run でも未受入候補を新しい baseline にせず、同じ accepted base を継承する。この区別は既存の Implementation Unit 統合を
 置き換える状態機械を追加するものではない。
 reviewed artifact set は `review_base_snapshot` から `target_snapshot` までの repository 累積 diff、存在する commit range と
-各 commit message、reviewer の責務対象として handoff した説明 artifact の集合である。gate handoff には task、全 Work Unit、
+各 commit message、reviewer の責務対象として handoff した説明 artifact の集合である。gate handoff には task、全 Implementation Unit、
 AC、scope / constraints、review base / target、commit range、全変更 file、累積 diff 全文、test 結果、周辺 context、artifact set を
 含める。checkout path、repository path、commit ID だけでこれらを代替しない。
 
@@ -36,7 +36,7 @@ Data と親の理由を closeout に残す。`unresolved` を残したまま acc
 
 ### Final writing findings and remediation
 
-`writing-principles-reviewer` は read-only / report-only のまま finding Data を返し、自身で修正、Implementer、Work Unit owner、受入決定者を
+`writing-principles-reviewer` は read-only / report-only のまま finding Data を返し、自身で修正、Implementer、Implementation Unit owner、受入決定者を
 担わない。親だけが一次情報を確認して adopted / rejected / unresolved と理由を確定する。
 
 `adopted` finding を修正できるかは reviewer の結論ではなく、親が一次情報で確定する。親は proposed change が次の条件を
@@ -46,10 +46,10 @@ Data と親の理由を closeout に残す。`unresolved` を残したまま acc
 - `scope.change` / `scope.exclude`、rollback、verification を修正前に閉じられる。
 - 指摘対応以外の変更を含まず、同じ accepted base から前後の target snapshot を比較できる。
 
-条件を満たす場合、親は `final remediation Work Unit` を一意な新しい `id` で正規化し、`impl-lead` の `Intake and Work Unit normalization` が定める canonical Work Unit Data に適合させる。field の意味や一覧はここで再定義しない。
+条件を満たす場合、親は `final remediation Implementation Unit` を一意な新しい `id` で正規化し、`impl-lead` の `Intake and Implementation Unit normalization` が定める canonical Implementation Unit Data に適合させる。field の意味や一覧はここで再定義しない。
 
-元の Work Unit の意味を変更せず、同じ run の最終 remediation として通常の worker 選択、fresh Implementer context、single writer
-で実装する。`writing-principles-reviewer` は writer、Implementer、Work Unit owner、
+元の Implementation Unit の意味を変更せず、同じ run の最終 remediation として通常の worker 選択、fresh Implementer context、single writer
+で実装する。`writing-principles-reviewer` は writer、Implementer、Implementation Unit owner、
 受入決定者にならず、reviewer と remediation writer を同一 agent または同時 writer にしない。`focused-implementer` や固定 patch agent を
 一律に要求しない。
 
@@ -66,17 +66,17 @@ commit range/commit message が変わりうる。親は before/after identity �
 message を対象にしない局所的な code/test/comment remediation は、先行する eligible 条件を満たす限り許可する。
 
 条件を満たさない finding、または semantic / public contract / 責任境界 / AC / 依存の変更や広い構造変更を要する finding は、
-通常の新しい Work Unit に再正規化する。現 run では修正を accept せず `stop-incomplete` とし、修正後の元変更を含む累積 target に
+通常の新しい Implementation Unit に再正規化する。現 run では修正を accept せず `stop-incomplete` とし、修正後の元変更を含む累積 target に
 対して `mandatory final writing review` を再実行してから受入判断する。#149 の optional risk-directed review は、影響する review
 goal または新しい具体的 risk がある場合だけ再確認し、writing finding の採否だけを理由に全 reviewer を再起動しない。
 
-gate 対象外の execution data の記録は、上記の bounded remediation Work Unit に伴う前後 snapshot・verification の更新、または
+gate 対象外の execution data の記録は、上記の bounded remediation Implementation Unit に伴う前後 snapshot・verification の更新、または
 事実を変えない表現修正だけを許す。ただし上記の eligible remediation exception に該当する reviewed artifact、target_snapshot、
 reviewed artifact set、commit range/commit message の変更は、修正前後の identity と比較、QA、verification を記録することで同じ
 run に accept できる。exception に該当しないこれらの変更や、final verification が対象を変える変更は accept せず
 `stop-incomplete` とし、安全な snapshot 不変の再検証だけを許す。
 
 closeout には writing target、`review_base_snapshot` と remediation 前後の `target_snapshot`、reviewed artifact set、gate result、
-各 finding の adopted / rejected / unresolved と理由、remediation Work Unit（該当時）、focused / repository-native / final
+各 finding の adopted / rejected / unresolved と理由、remediation Implementation Unit（該当時）、focused / repository-native / final
 verification、最終 target、残存 risk を含める。これは execution data の報告であり、固定 QA report、固定 diff artifact、判断点台帳、
 全 reviewer 必須化、固定 review loop、固定修正 agent、over-engineering reviewer の mandatory phase を新設するものではない。

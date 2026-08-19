@@ -5,7 +5,7 @@ Kernel identity: `writable-scope-kernel-v1`.
 Kernel dependencies: `none`.
 
 この共有規範は、親が現在の execution に明示した filesystem 領域集合を、Worker の write boundary として扱うための最小規範である。
-これは Work Unit の意味や platform の実装方法を追加せず、親の execution data と Worker handoff の関係だけを定める。
+これは Implementation Unit の意味や platform の実装方法を追加せず、親の execution data と Worker handoff の関係だけを定める。
 
 ## Scope assignment model
 
@@ -49,7 +49,7 @@ workflow_enforcement_extension = none
 mandatory_write_record = none
 ```
 
-scope change は Worker の判断ではなく、親の execution data と明示的な handoff update で扱う。Work Unit Data に writable scope を
+scope change は Worker の判断ではなく、親の execution data と明示的な handoff update で扱う。Implementation Unit Data に writable scope を
 追加しない。この Kernel は enforcement mechanism、path layout、platform 設定を定義しない。また、一般的な監査記録を強制機構として
 導入せず、親の assignment と handoff を canonical boundary とする。
 <!-- @/contract -->

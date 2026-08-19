@@ -286,7 +286,7 @@ pattern = "staging を write して close し、同一 object の byte-identical
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.
-[contracts.repository-programmability-boundary-2762ad6d021d]
+[contracts.repository-programmability-boundary-ff1561060870]
 kind = "requires"
 slice = "repository-programmability-boundary"
 pattern = '''policy_id = "programmability-boundary-v1"
@@ -302,7 +302,7 @@ programmatic_flow_discretion = "fixed procedure, decision conditions, and outcom
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
 programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "plan-interactive", "review-refine"]
-programmatic_flow_excluded_skills = ["code-review", "structural-health-gate", "test-report", "work-unit-design"]
+programmatic_flow_excluded_skills = ["code-review", "structural-health-gate", "test-report", "implementation-unit-design"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"'''
 applies_to = ["agents-guidance", "claude-guidance"]
 
@@ -313,15 +313,15 @@ paths = [
   "plugins/claude/skills/code-review/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
   "plugins/claude/skills/test-report/SKILL.md",
-  "plugins/claude/skills/work-unit-design/SKILL.md",
+  "plugins/claude/skills/implementation-unit-design/SKILL.md",
   "plugins/codex/skills/code-review/SKILL.md",
   "plugins/codex/skills/structural-health-gate/SKILL.md",
   "plugins/codex/skills/test-report/SKILL.md",
-  "plugins/codex/skills/work-unit-design/SKILL.md",
+  "plugins/codex/skills/implementation-unit-design/SKILL.md",
   "plugins/cursor/skills/code-review/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/test-report/SKILL.md",
-  "plugins/cursor/skills/work-unit-design/SKILL.md",
+  "plugins/cursor/skills/implementation-unit-design/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -751,7 +751,7 @@ paths = [
   "plugins/cursor/skills/review-refine/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
   "plugins/cursor/skills/test-report/SKILL.md",
-  "plugins/cursor/skills/work-unit-design/SKILL.md",
+  "plugins/cursor/skills/implementation-unit-design/SKILL.md",
 ]
 format = "yaml"
 applies_to = ["cursor"]
@@ -845,17 +845,17 @@ path = "name"
 op = "equals"
 value = "structural-health-gate"
 
-[contracts.cursor-work-unit-design-skill]
+[contracts.cursor-implementation-unit-design-skill]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/cursor/skills/work-unit-design/SKILL.md"]
+paths = ["plugins/cursor/skills/implementation-unit-design/SKILL.md"]
 format = "yaml"
 applies_to = ["cursor"]
 
-[[contracts.cursor-work-unit-design-skill.assertions]]
+[[contracts.cursor-implementation-unit-design-skill.assertions]]
 path = "name"
 op = "equals"
-value = "work-unit-design"
+value = "implementation-unit-design"
 
 [contracts.cursor-readme-title-requires-576f35e999be]
 kind = "requires"
@@ -953,7 +953,7 @@ paths = [
   "plugins/codex/skills/review-refine/agents/openai.yaml",
   "plugins/codex/skills/structural-health-gate/agents/openai.yaml",
   "plugins/codex/skills/test-report/agents/openai.yaml",
-  "plugins/codex/skills/work-unit-design/agents/openai.yaml",
+  "plugins/codex/skills/implementation-unit-design/agents/openai.yaml",
 ]
 format = "yaml"
 applies_to = ["codex"]
@@ -1120,7 +1120,7 @@ subject = "artifact"
 paths = [
   "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
-  "plugins/claude/skills/work-unit-design/SKILL.md",
+  "plugins/claude/skills/implementation-unit-design/SKILL.md",
 ]
 format = "yaml"
 applies_to = ["claude"]
@@ -1489,12 +1489,12 @@ value = ["multi-agent", "software-development", "planning", "delegation", "code-
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "description"
 op = "equals"
-value = "Use impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report with internal skills, Work Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
+value = "Use impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report with internal skills, Implementation Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.longDescription"
 op = "equals"
-value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Work Unit workers, reviewers, and advisors. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and reconstructs them as a verification system without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
+value = "Codex skills for the public workflows impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Implementation Unit workers, reviewers, and advisors. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and reconstructs them as a verification system without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility."
 
 [[contracts.codex-plugin-manifest-shape.assertions]]
 path = "interface.defaultPrompt"
@@ -1505,6 +1505,6 @@ value = [
   "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
   "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
   "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
-  "Use $impl-lead to run bounded Work Unit implementation loops with parent QA.",
+  "Use $impl-lead to run bounded Implementation Unit implementation loops with parent QA.",
   "Use $install-custom-agents to check, install, or update the bundled custom agents.",
 ]

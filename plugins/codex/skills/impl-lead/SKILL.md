@@ -1,7 +1,7 @@
 ---
 name: impl-lead
 description: >-
-  明示起動時だけ、親が一つ以上の Work Unit を正規化し、direct または各単位の worker を選び、
+  明示起動時だけ、親が一つ以上の Implementation Unit を正規化し、direct または各単位の worker を選び、
   必要な場合だけ risk-directed review を選び、必須の final writing gate、TDD と親 QA を経て accept または stop-incomplete で安全に閉じる実装 loop。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
@@ -9,29 +9,29 @@ description: >-
 # Active main
 
 この skill はユーザーが明示的に起動した場合だけ開始する。自然言語の作業内容、規模、現在の
-context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Work Unit の direct または
+context から暗黙に起動しない。起動後も、親が受け入れ判断と最終報告を保持する。単一 Implementation Unit の direct または
 一名 worker という既存経路は保ちつつ、同じ run で複数単位を安全に処理できる。
 `risk-directed review` は固定 phase や全作業の必須手順ではなく、親が具体的な risk と判断への影響を説明できる場合だけ実行する。
 これは run を閉じる直前の必須 `final writing gate` とは別責務である。
 
-## Intake and Work Unit normalization
+## Intake and Implementation Unit normalization
 
 親は実装を始める前の初期 Intake で、要求全体、対象 repository、現在の dirty state、基準状態を観測する。Issue、doc、
-plan section、ユーザーの箇条書き、freeze 済み設計などの source boundary を Work Unit boundary とみなさず、対象 file と
+plan section、ユーザーの箇条書き、freeze 済み設計などの source boundary を Implementation Unit boundary とみなさず、対象 file と
 その周辺、呼び出し元・先、関連 test を読んでから、意味上区別できる到達結果を recall 寄りに成果候補として一度観測する。
-1 source から複数、複数 source から一つ、1 source から一つの成果と Work Unit をいずれも許容し、対応数を固定しない。
+1 source から複数、複数 source から一つ、1 source から一つの成果と Implementation Unit をいずれも許容し、対応数を固定しない。
 
 成果候補は semantic end-state についての transient observation である。統合できそうという理由で早期に候補を落とさない一方、
 file 編集、generator、version 更新、verification command などの実装手段・工程は、それ自体が要求成果でない限り候補にしない。
-新しい Data model、schema、必須 ID、Work Unit Data field、固定 input field、provenance field、永続 artifact を導入しない。
+新しい Data model、schema、必須 ID、Implementation Unit Data field、固定 input field、provenance field、永続 artifact を導入しない。
 
 親は coverage を二段階で確認する。成果候補の抽出時には要求全体から意味上の到達結果を取りこぼしていないか確認し、
-Work Unit 確定時には全要求が最終集合へ反映されているか確認する。成果要求は原則としてちょうど一つの Work Unit を primary
+Implementation Unit 確定時には全要求が最終集合へ反映されているか確認する。成果要求は原則としてちょうど一つの Implementation Unit を primary
 owner とし、横断 constraint / invariant は複数単位へ適用でき、non-goal / 今回除外は owner を持たず理由または境界判断を明示する。
 未割当要求を残したまま dispatch しない。
 
-親は成果候補と coverage から run の目的を一つ以上の Work Unit に正規化する。複数であることだけを停止理由にしない。
-Work Unit Data の意味と field の唯一の正本はこの section である。各単位は次の Data を持つ。
+親は成果候補と coverage から run の目的を一つ以上の Implementation Unit に正規化する。複数であることだけを停止理由にしない。
+Implementation Unit Data の意味と field の唯一の正本はこの section である。各単位は次の Data を持つ。
 
 - `id`: run 内で一意な識別子。
 - `purpose`: 単一の目的。
@@ -39,15 +39,15 @@ Work Unit Data の意味と field の唯一の正本はこの section である�
 - `scope`: `change`（変更を許す範囲）と `exclude`（変更しない範囲）。
 - `implementation_freedom`: worker に任せてよい局所判断。なければ空。
 - `constraints`: ユーザー指定、互換性、依存、実行環境その他の制約。
-- `depends_on`: Work Unit ID 間の semantic dependency と、外部・repository・environment の precondition を分けた記述。同じ file、writer、generated output、generator、contract registry、Gunte gate、verification surface の共有だけでは semantic dependency または Work Unit 統合の根拠にならず、execution conflict として扱う。
+- `depends_on`: Implementation Unit ID 間の semantic dependency と、外部・repository・environment の precondition を分けた記述。同じ file、writer、generated output、generator、contract registry、Gunte gate、verification surface の共有だけでは semantic dependency または Implementation Unit 統合の根拠にならず、execution conflict として扱う。
 - `verification`: AC ごとの native test、focused test、必要な最終 gate。
 
-Work Unit Data は上記 canonical field だけを表す。
+Implementation Unit Data は上記 canonical field だけを表す。
 
-Work Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept / revert できる
+Implementation Unit は、単一 purpose、観測可能な完結成果、単独で Green になる検証、無関係な変更なしに accept / revert できる
 変更集合（後続依存の cascade rollback は許す）、独立した副作用と rollback 境界を持つ。
 
-単一 Work Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
+単一 Implementation Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
 boundary、foundation / application の別成果が残っていないか親が自己再検査する。分割しない理由の専用 field、固定 ledger、
 常時の外部説明は要求しない。
 
@@ -55,17 +55,17 @@ boundary、foundation / application の別成果が残っていないか親が�
 未完了範囲・evidence・残存 risk を含む `stop-incomplete` とする。要求と repository の状態を観測せずに worker を
 起動しない。既存の dirty/untracked は scope に含めず、勝手に変更・削除しない。
 
-worker、base、route、order、isolation、result は実行時の execution data として親が記録し、Work Unit の
-意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Work Unit の意味ではなく
+worker、base、route、order、isolation、result は実行時の execution data として親が記録し、Implementation Unit の
+意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Implementation Unit の意味ではなく
 execution data として扱う。
 
-### Optional work-unit design step
+### Optional implementation-unit design step
 
-初期 Intake で明らかな境界は親が Work Unit 化する。分割、統合、semantic dependency が非自明な場合だけ、相互に境界判断が
-影響する関連成果候補群をまとめ、同じ context の内部工程として `work-unit-design` の手順を参照できる。成果候補ごとに個別起動せず、
-raw request から成果候補を再抽出させない。返された `work_units`、分割／統合 signal、`blocking_gaps` は候補であり、親は境界分析を
+初期 Intake で明らかな境界は親が Implementation Unit 化する。分割、統合、semantic dependency が非自明な場合だけ、相互に境界判断が
+影響する関連成果候補群をまとめ、同じ context の内部工程として `implementation-unit-design` の手順を参照できる。成果候補ごとに個別起動せず、
+raw request から成果候補を再抽出させない。返された `implementation_units`、分割／統合 signal、`blocking_gaps` は候補であり、親は境界分析を
 同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
-`blocking_gaps` がないこと、Work Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
+`blocking_gaps` がないこと、Implementation Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
 
 初期のこの step では、親は候補群と grounding に加えて、invocation 固有の確認順序と attention priority を
 `partition_perspectives` として渡せる。これは答えを先付けするものではなく、次の観点を必要な順序で照らすための
@@ -81,14 +81,14 @@ transient execution Data である。
 - `run-wide final gate`: full / run-wide gate は focused verification の代替ではなく、候補確定後の最終 gate として扱う。
 
 この mapping は候補数、split point、merge 対象を指定せず、固定 mode、threshold、expected-output oracle、ledger も導入しない。
-`work-unit-design` の返却後は、候補の採否、全要求の coverage、未要求成果、`blocking_gaps`、Work Unit Data と execution Data の
+`implementation-unit-design` の返却後は、候補の採否、全要求の coverage、未要求成果、`blocking_gaps`、Implementation Unit Data と execution Data の
 境界を親が再確認し、実装・委譲・accept の判断を引き取る。
 
-runtime が Skill 間起動を提供しない場合は、親が `work-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
+runtime が Skill 間起動を提供しない場合は、親が `implementation-unit-design` 本文を同じ Intake／再正規化工程として直接参照する。
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
 実行中の再正規化では新しい成果候補抽出 phase を追加しない。既存の統合、追加分割、部分成果の独立再構成、semantic dependency
-edge の再接続を維持し、必要なら `work-unit-design` を使えるが、初期 Intake の成果候補 discipline を execution-time 全体へ広げない。
+edge の再接続を維持し、必要なら `implementation-unit-design` を使えるが、初期 Intake の成果候補 discipline を execution-time 全体へ広げない。
 
 ## Programmatic Flows
 
@@ -97,7 +97,7 @@ Flow の procedure、条件、outcome は固定であり、Agent は override、
 
 ### dependency-dispatch-guard
 
-Trigger: 親が Work Unit、依存、precondition の意味を確定し、dispatch 可否の固定判定を要求したとき。
+Trigger: 親が Implementation Unit、依存、precondition の意味を確定し、dispatch 可否の固定判定を要求したとき。
 Inputs: run 内 ID の存在と cycle の解消結果、依存先の acceptance、外部・repository・environment precondition の観測値と成立条件・安定性・pin、現在の `base_snapshot`、dispatch 直前に更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data。
 Procedure: dependency、precondition、protected drift の既存 guard 群に新しい意味順序を付けず全件を評価し、全 guard 成立時だけ `dispatch-ready` とする。いずれかの failure、観測不能、または drift は `blocked` とし、Action を実行しない。
 Outcomes: `dispatch-ready`、または `blocked` と failure Data。`blocked` は突破せず、再正規化、確認、`stop-incomplete` の選択を Agentic な親へ返す。
@@ -119,11 +119,11 @@ Outcomes: 明示指定どおりの route Data、`blocked`、または `agentic-s
 ### writable-scope-handoff
 
 Trigger: 親が write-capable Worker route と isolation を確定し、handoff の直前に到達したとき。
-Inputs: 検証済み `writable-scope-kernel-v1` identity と必要本文、親が path 解決した明示 `assigned_writable_scopes`、Work Unit Data、execution constraint。
+Inputs: 検証済み `writable-scope-kernel-v1` identity と必要本文、親が path 解決した明示 `assigned_writable_scopes`、Implementation Unit Data、execution constraint。
 Procedure: writable scope Kernel だけを scope assignment procedure の唯一の正本として、Kernel 本文と assignment を handoff へ注入する。loader、identity、必要 section、assignment の不足・不正・不明では handoff を作らない。
 Outcomes: write boundary を備えた handoff、または no-write の `blocked`。scope 変更や追加領域は Agentic な親の明示 handoff update へ返す。
 
-### work-unit-continuation-routing
+### implementation-unit-continuation-routing
 
 Trigger: 親が返却結果に追加作業が必要と確定し、変更の意味分類を完了したとき。
 Inputs: 同じ ID の AC・scope・責任境界・依存が不変な限定修正、または意味変更・accepted 単位の変更という親の分類、旧 ID / context、依存 edge。
@@ -139,7 +139,7 @@ Outcomes: accepted 候補を含む latest Green baseline と final combined veri
 
 ### final-writing-gate-invocation
 
-Trigger: 全 Work Unit が accept 候補で、親 QA が Green、risk-directed finding の処理が完了したと親が確定し、run accept 直前に到達したとき。
+Trigger: 全 Implementation Unit が accept 候補で、親 QA が Green、risk-directed finding の処理が完了したと親が確定し、run accept 直前に到達したとき。
 Inputs: 検証済み `impl-final-writing-loader` Data、identity と必要 section を検証した reference 本文、親が固定した target snapshot と self-contained handoff Data。
 Procedure: `references/final-writing-gate.md` の `Final writing acceptance gate` だけを invocation procedure の唯一の正本として、有効な read-only gate を一回実施する。省略、既実施 review での代替、writer との重複をしない。
 Outcomes: snapshot に結び付いた有効な reviewer result Data、または `blocked`。loader / invocation failure は突破せず `stop-incomplete` へ送る。
@@ -167,7 +167,7 @@ Outcomes: 照合済み integration / cleanup Data、または resource を保持
 
 ## Dependencies, snapshots, and isolation
 
-親は Work Unit の依存と precondition の意味、観測方法、成立条件、安定性、pin 方法を確定し、dispatch 直前の固定判定を
+親は Implementation Unit の依存と precondition の意味、観測方法、成立条件、安定性、pin 方法を確定し、dispatch 直前の固定判定を
 `dependency-dispatch-guard` へ渡す。
 外部・repository・environment の precondition には、観測方法、成立条件、安定性、pin 方法を記録する。mutable な
 状態を再観測する時点は dispatch 開始直前、外部 Action 直前、accept 直前とする。pin できる precondition は親が dispatch 前に
@@ -176,9 +176,9 @@ Outcomes: 照合済み integration / cleanup Data、または resource を保持
 checkout の ref・履歴を書き換えず、対象・所有権・旧 snapshot への復旧可能性を確認できなければ、確認・再正規化・
 `stop-incomplete` のいずれかを親が選ぶ。
 
-各 Work Unit の dispatch 直前に、親は repository、protected dirty/untracked、依存、現在の run baseline を再観測し、
-`protected_dirty_record` を更新する。これは Work Unit の dispatch、candidate integration、QA / review snapshot protection に限定する。
-Work Unit の統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を止めて再正規化・確認・`stop-incomplete` を選ぶ。
+各 Implementation Unit の dispatch 直前に、親は repository、protected dirty/untracked、依存、現在の run baseline を再観測し、
+`protected_dirty_record` を更新する。これは Implementation Unit の dispatch、candidate integration、QA / review snapshot protection に限定する。
+Implementation Unit の統合と QA では現在状態をこの record と比較し、drift があれば Action と accept を止めて再正規化・確認・`stop-incomplete` を選ぶ。
 更新した current `protected_dirty_record` と現在の repository / run baseline の比較 Data は `dependency-dispatch-guard` へ渡す。
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。
 
@@ -231,7 +231,7 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 ユーザーが指定した worker が品質下限を満たせない場合も無断で変更・続行せず、制約緩和を確認するか、未完了範囲と判断点を
 付けて `stop-incomplete` とする。固定閾値や決定表、暗黙の追加実行環境は持ち込まない。
 
-normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `work-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
+normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `implementation-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
 
 既定の実行順は直列である。各 worker の結果は accept 候補に過ぎず、親が run の baseline に適用して確認するまで
 accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
@@ -259,14 +259,14 @@ scope_change = explicit handoff update
 ```
 
 assignment は親の execution data であり、
-Work Unit Data の field ではない。repository root 外の run-owned worktree も、親が明示した assignment に含められる。
+Implementation Unit Data の field ではない。repository root 外の run-owned worktree も、親が明示した assignment に含められる。
 親は Worker に path 解決や assignment の確定を委ねず、Kernel と assignment を使う handoff procedure を
 `writable-scope-handoff` へ渡す。
 <!-- @/anchor -->
 
 ## Fresh context and continuation
 
-委譲する新しい ID の Work Unit は、Work Unit Data、依存、`base_snapshot`、選択 worker と route、execution constraint、
+委譲する新しい ID の Implementation Unit は、Implementation Unit Data、依存、`base_snapshot`、選択 worker と route、execution constraint、
 isolation、外部副作用の状態、禁止範囲、verification を含む自己完結 handoff で fresh context へ渡す。direct の単位は
 親 context で実行し、新しい worker を起動しない。
 
@@ -274,11 +274,11 @@ isolation、外部副作用の状態、禁止範囲、verification を含む自�
 同じ context に返す場合に限り、同じ ID の実装上の限定修正だけを`followup_task`で同じ context に返す。
 
 無応答時の状態確認は親所有の silence status inquiry であり、既存の`followup_task`を使う。これは実装上の
-限定修正でも追加作業でもなく、`work-unit-continuation-routing` の対象外である。新しい作業指示、scope 変更、AC 変更を
+限定修正でも追加作業でもなく、`implementation-unit-continuation-routing` の対象外である。新しい作業指示、scope 変更、AC 変更を
 含めない。
 
 親は追加作業を同じ意味の限定修正か、意味変更または accepted 単位の変更かに分類し、route を
-`work-unit-continuation-routing` へ渡す。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて完了した場合だけ accept する。
+`implementation-unit-continuation-routing` へ渡す。部分成果は、独立した新 ID、AC、QA、baseline への統合がすべて完了した場合だけ accept する。
 
 ### Delegated worker silence defaults
 
@@ -297,7 +297,7 @@ progress check は親所有の silence status inquiry である。走行中の d
 - inquiry 送信そのものは、worker 側の意味ある応答が観測されるまで clock を reset しない。
 - interrupt 後の再開では、再開した worker に既定の自律実行時間を与える。新しい 15 分 window を数え、過去の interrupt
   そのものを理由に監視頻度を上げない。ここでの continuation は限定修正の追加作業 continuation ではない。
-- interrupt 後に追加作業が必要になった場合だけ、既存の限定修正分類と `work-unit-continuation-routing` に戻る。
+- interrupt 後に追加作業が必要になった場合だけ、既存の限定修正分類と `implementation-unit-continuation-routing` に戻る。
 
 「意味のある進捗・出力・状態変化」は親が観測事実から分類する。file 変更、tool 出力、完了報告、明確な状態遷移を含み、
 経過時間そのものや空の keepalive は含めない。決定表は作らない。時計は親が利用可能な観測時刻で足りる。interrupt の
@@ -313,7 +313,7 @@ interrupt_time_only = "prohibited"
 interrupt_requires = "evidence of stall, repeated same failure, scope deviation, blocker, or contract violation from progress check or other observation"
 post_continuation = "give resumed worker a full default autonomous window; do not raise monitoring frequency because of past interrupt"
 progress_check = "parent-owned silence status inquiry on running delegated worker context"
-progress_check_vehicle = "existing platform continuation vehicle as status inquiry only; not limited-fix continuation; not additional work; not work-unit-continuation-routing"
+progress_check_vehicle = "existing platform continuation vehicle as status inquiry only; not limited-fix continuation; not additional work; not implementation-unit-continuation-routing"
 ```
 
 Gunte が保証するのは policy identity、required fields、その coherent relation までである。runtime の 15 分遵守と
@@ -344,7 +344,7 @@ parallel を要求していなければ直列化できるが、要求してい�
 
 reviewer はユーザーが明示した review goal、または親が AC、diff、test、外部副作用、責務境界その他から特定した具体的な
 risk があり、review 結果が修正、`accept`、`stop-incomplete` の判断を変えうる場合だけ選ぶ。ただし、この risk-directed な
-任意選択とは別に、全 Work Unit の run を閉じる直前には `writing-principles-reviewer` の final writing gate を必ず実施する。
+任意選択とは別に、全 Implementation Unit の run を閉じる直前には `writing-principles-reviewer` の final writing gate を必ず実施する。
 全作業を reviewer に通す固定 phase、非選択 reviewer の台帳、固定 threshold、巨大な decision table は作らない。明示された
 reviewer、目的、回数その他の制約は守る。指定 reviewer が利用不能で、親と代替 evidence だけでは許容不能 risk を検証できない
 場合は確認を求めるか、`stop-incomplete` とする。
@@ -360,7 +360,7 @@ reviewer、目的、回数その他の制約は守る。指定 reviewer が利�
 - `over-engineering-reviewer`: 除去しても AC と制約を失わない要素。
 
 汎用 reviewer を作らず、選択理由と期待する判断変更を execution data に記録する。各 reviewer へは固有の既存入力・出力形式を
-保った自己完結 handoff を渡す。diff reviewer には task / Work Unit、AC、scope と constraints、base / target snapshot、
+保った自己完結 handoff を渡す。diff reviewer には task / Implementation Unit、AC、scope と constraints、base / target snapshot、
 commit range、変更 file、完全な diff text、必要な test 結果と周辺 context を含め、checkout path、repository path、commit ID
 だけで diff text を代替しない。plan reviewer には plan 全文と AC / constraints を渡す。diff artifact の存在は必須にせず、
 inline か reviewer が全文を読み込める artifact のいずれかを使う。
@@ -394,7 +394,7 @@ same_snapshot_findings = Resolution Batch
 dispositions = [adopted, rejected, unresolved]
 ```
 
-親は上記 role field と後続の transaction field を使って finding の mapping、return、Work Unit / run acceptance の
+親は上記 role field と後続の transaction field を使って finding の mapping、return、Implementation Unit / run acceptance の
 Action を行い、既存の親境界を変更しない。
 
 親は counterpart invocation 前に review set を固定する。必要な全 observation と result を回収し、finding を normalize して
@@ -410,25 +410,25 @@ batch_freeze = before mutation
 zero_findings = no Resolution Transaction
 adopted_findings = coherent remediation
 updated_snapshot_re_review = new Resolution Transaction
-transaction_closure = not Work Unit acceptance, not run acceptance
+transaction_closure = not Implementation Unit acceptance, not run acceptance
 final_writing_gate = outside mapping
 ```
 
 上記 Data は impl-lead 固有の caller mapping だけを定める。generic Transaction procedure は Kernel を唯一の正本とし、
-既存の Work Unit、AC、scope、exclude、責任境界を拡張しない。
+既存の Implementation Unit、AC、scope、exclude、責任境界を拡張しない。
 
-### selected finding remediation の Work Unit normalization
+### selected finding remediation の Implementation Unit normalization
 
-同じ origin verified snapshot の Resolution Batch を全件裁定して selected finding set を固定した後、set が非空なら、親は trivial / nontrivial を先に分類せず、mutation / apply の前に関連 remediation candidates を必ず `work-unit-design` へ渡す。zero findings では起動しない。
-入力は各 finding の identity、obligation、AC、mutation oracle、disposition と既存 Work Unit context を保持する。返却される canonical Work Unit candidates について、親が要求 coverage、`blocking_gaps`、Work Unit Data / execution Data 境界、採否、ID を確定する。
+同じ origin verified snapshot の Resolution Batch を全件裁定して selected finding set を固定した後、set が非空なら、親は trivial / nontrivial を先に分類せず、mutation / apply の前に関連 remediation candidates を必ず `implementation-unit-design` へ渡す。zero findings では起動しない。
+入力は各 finding の identity、obligation、AC、mutation oracle、disposition と既存 Implementation Unit context を保持する。返却される canonical Implementation Unit candidates について、親が要求 coverage、`blocking_gaps`、Implementation Unit Data / execution Data 境界、採否、ID を確定する。
 
-remediation の `partition_perspectives` は、origin verified snapshot、finding dependency / shared invariant、coherent apply / combined verification、authority / external side effect、rollback / failure isolation、independent promotion boundary を照らす。元の Skill 数や Work Unit 数を根拠にせず、固定 remediation mode、件数 threshold、solver、expected-output oracle、ledger を導入しない。
+remediation の `partition_perspectives` は、origin verified snapshot、finding dependency / shared invariant、coherent apply / combined verification、authority / external side effect、rollback / failure isolation、independent promotion boundary を照らす。元の Skill 数や Implementation Unit 数を根拠にせず、固定 remediation mode、件数 threshold、solver、expected-output oracle、ledger を導入しない。
 
-apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `work-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。
+apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `implementation-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。
 
-各 remediation group 全体を既存の `work-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。
+各 remediation group 全体を既存の `implementation-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。
 
-Work Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Work Unit 内側の apply / verify boundary とする。Kernel は一つの Work Unit を複数 partition へ refine できるが、複数 Work Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Work Unit を accept しない。
+Implementation Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Implementation Unit 内側の apply / verify boundary とする。Kernel は一つの Implementation Unit を複数 partition へ refine できるが、複数 Implementation Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Implementation Unit を accept しない。
 
 ## Review findings and continuation
 
@@ -456,7 +456,7 @@ review を `continue` するのは、次に確認する具体的な未解決 ris
 
 ## Final writing acceptance gate
 
-親は全 Work Unit、QA、選択した review goal と finding の処理状態を確定し、run accept 直前の必須 invocation を
+親は全 Implementation Unit、QA、選択した review goal と finding の処理状態を確定し、run accept 直前の必須 invocation を
 `final-writing-gate-invocation` へ渡す。返却 result は `final-writing-result-routing` へ渡す。この gate は risk-directed reviewer の
 選択数・回数の外にある。
 
@@ -490,9 +490,9 @@ verification command 内に外部 Action が含まれる場合も、同じ revie
 
 ## Execution data and conditional persistence
 
-Work Unit、plan、finding、QA 結果は会話内 execution data を既定とする。ユーザー要求、後日再開、別 session / 別担当への
+Implementation Unit、plan、finding、QA 結果は会話内 execution data を既定とする。ユーザー要求、後日再開、別 session / 別担当への
 handoff、外部 review、PR、監査、tool / repository 運用によって現在 context より長く生存する必要がある場合だけ、必要な data を
-一般化した persistence resource へ保存する。complexity、file 数、Work Unit 数を固定 threshold にしない。
+一般化した persistence resource へ保存する。complexity、file 数、Implementation Unit 数を固定 threshold にしない。
 
 保存時は resource の purpose / content、identity、ownership / authorization、sensitivity、current state、idempotency、照合方法、
 retention / lifetime、update / cleanup / compensation を確定する。filesystem / repository では path、tracked / untracked、
@@ -505,20 +505,20 @@ resource ID、revision、remote state、API result を確認する。ユーザ�
 親と worker は、確定した purpose、AC、scope、constraints、depends_on、verification を共有し、指定範囲だけを
 編集する。既存 test の削除、skip、期待値の弱体化、未承認の依存追加、生成物の直接編集はしない。
 
-observable な code behavior は各 Work Unit で Red → Green → Refactor を進める。
+observable な code behavior は各 Implementation Unit で Red → Green → Refactor を進める。
 
 1. **Red** — AC から正常系、境界値、異常系、例外経路を導いた test を先に追加し、意味のある failing output を記録する。
    これを Red 証跡として返却 data に含める。意味のある failing test が成立しない場合は、変更前の evidence、成立しない
    理由、代替 verification を返す。形式的な mutation は行わない。
 2. **Green** — 最小の実装で test を通し、focused test と必要な native verification の command と結果を記録する。
 3. **Refactor** — AC、責任境界、error handling、命名を保ったまま重複を整理し、Green を再実行する。意味が変わる場合は
-   Green に戻り、同じ Work Unit の範囲を越えない。
+   Green に戻り、同じ Implementation Unit の範囲を越えない。
 
 ## Parent QA and closeout
 
 direct でも委譲でも、親は各単位の結果を受け取った時点の baseline diff、AC、scope、precondition、dirty state、
 test、side effect、既知 risk を自分で確認する。親は worker の報告を鵜呑みにせず、Red/Green/Refactor の evidence、focused
-test、repository-native verification を再実行し、変更が同じ Work Unit の責任境界内にあることを確認する。
+test、repository-native verification を再実行し、変更が同じ Implementation Unit の責任境界内にあることを確認する。
 
 ### Run-owned closeout
 
@@ -526,7 +526,7 @@ run-owned worktree を作成した run は、先に読み込んだ `run-owned li
 risk-directed review、final writing gate、final verification、必要な外部副作用の照合後に、親は観測 Data を
 `run-owned-closeout` へ渡す。
 
-追加作業の continuation route は `work-unit-continuation-routing` に従う。親が品質下限を満たし、全要求単位を accepted とし、
+追加作業の continuation route は `implementation-unit-continuation-routing` に従う。親が品質下限を満たし、全要求単位を accepted とし、
 選択した review goal と finding の処理結果を確認し、AC、scope、制約、evidence、残存 risk を説明できる場合は、run accept 前に closeout の repository gate を含む final closeout verification を
 実施する。その verification が Green なら run を accept する。新しい failure が出た場合は run を accept せず Adapt または
 `stop-incomplete` へ戻す。品質下限等を満たせない場合は、未完了範囲、満たせない条件、判断点、evidence、残存 risk、未検証事項を明記して
@@ -539,7 +539,7 @@ risk-directed review、final writing gate、final verification、必要な外部
 ```text
 signal_policy = "bounded final-report quality signals"
 run_verdict = "accept | stop-incomplete"
-work_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
+implementation_unit_signal = "identity + short summary + implementation owner + scoped optional risk-directed reviewer + viewpoint + distinguishable verification result"
 reviewer_absence = "none is explicit"
 verification_result = "a result Human can distinguish as passed, failed, not run, or unverified"
 final_writing_gate = "mandatory run-wide; separate from optional risk-directed review; report execution fact and scope"
