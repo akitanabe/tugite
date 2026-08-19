@@ -13,6 +13,7 @@
     "contracts/necessity-kernel.toml",
     "contracts/resolve-kernel.toml",
     "contracts/writable-scope-kernel.toml",
+    "contracts/behavior-observation-kernel.toml",
     "shared/VERSION",
     "shared/agents/focused-implementer.md",
     "shared/agents/expert-implementer.md",
@@ -32,6 +33,7 @@
     "shared/plan-artifact-design.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
+    "shared/behavior-observation-kernel.md",
     "upstream/clarify-it/skills/clarify-it/SKILL.md",
     "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
     "shared/skill/code-review/SKILL.md",
@@ -90,6 +92,26 @@
     {
       "id": "no-kernel-result-field",
       "sha256": "10e4ecba43695f9bc4587c48de255d1f6b20bee8a084bd7de5d558147da0d3f2"
+    },
+    {
+      "id": "no-observation-verdict-field",
+      "sha256": "d1228a73c33deda170bcf0508b972d0942303efe89143f7ec2ef0df96d2f986b"
+    },
+    {
+      "id": "no-observation-status-field",
+      "sha256": "490b1c12449a5fa1b14bb6f98cc9dd1cb37227fc607cffba4df7c07ac8fe343c"
+    },
+    {
+      "id": "no-observation-decision-field",
+      "sha256": "98ffb1ec3dbdd7611ef0b4d5d42e9aefe7d5b0fbf58ace6f53ed06352ee7606b"
+    },
+    {
+      "id": "no-observation-field-field",
+      "sha256": "fcf715fc2c3fc529ff67750b4a4084d018e2e918844cd2e91cb168766154a530"
+    },
+    {
+      "id": "no-observation-result-field",
+      "sha256": "f88b10ceef814a54263fcea03724c73c7c7837500b1c94d120e1648d8d237d2f"
     },
     {
       "id": "plan-artifact-publication-reference-identity",
@@ -674,6 +696,14 @@
     {
       "id": "plan-quality-advisor-boundary-forbids-2d52bc626d88",
       "sha256": "431143e49ff1c37eba1de75f89b2df12fc0f4f8c4f7f632621f2e2119e94d3d5"
+    },
+    {
+      "id": "advisor-bok-path-forbids-b9c93881dd21",
+      "sha256": "a8d430e518fb609f61889a11f415e5f5e992685c67a73ccc008f6fe1363c65f5"
+    },
+    {
+      "id": "test-quality-behavior-observation-path-forbids-f594e4bbfb0f",
+      "sha256": "31eb405365af6556b084f2659cfc752f1a15ed827dc2cba284cccf4d88bb19ba"
     },
     {
       "id": "test-quality-general-scope-requires-eadf26e143c5",
@@ -2649,35 +2679,35 @@
     },
     {
       "id": "kernel-dependencies-none-claude",
-      "sha256": "90b54b59f26063ef386e4f1e50a926460c18d997d40cc846f41fcc3ebfea3f45"
+      "sha256": "ee7d703d5f79b5776799fb9481943e8704b9228de8bb75774e80920f73ac0ead"
     },
     {
       "id": "kernel-dependencies-none-codex",
-      "sha256": "3f4c034541e7e6a8cacbdb84d1c9a7a1a7ac8bde943e907fe9e3487cfe645e45"
+      "sha256": "829846387afcfb58c38978b3d308756f83233faca63b9f7808fa149653e09d8a"
     },
     {
       "id": "kernel-dependencies-none-cursor",
-      "sha256": "93c22c6399fdf626d5e63ed5910914d20ab98d0885154a0e84d4901c73f7dda6"
+      "sha256": "a7ae4831522d4112940f5c01c2f0f44ee4dc819ec9614218272246ad609bf018"
     },
     {
       "id": "kernel-dependencies-key-claude",
-      "sha256": "2970b94c2328e4cd087607f6ef7ba61b55c1847022bf48a269b10bb1e9ae55d7"
+      "sha256": "d74a8ce0d6aff539b32066a13e0038bfc4880d2261caafa4f74428356a18d9fe"
     },
     {
       "id": "kernel-dependencies-key-codex",
-      "sha256": "0b1f3a7b46d7393997866d43303de7c5425f6fca3fbecb46b7729c1810ca4e78"
+      "sha256": "f81de259bf527ee0ad61a4e92605a180710782930fe3c8348b2919c15041f5e5"
     },
     {
       "id": "kernel-dependencies-key-cursor",
-      "sha256": "af2e448112b30fe1e621e718a74ced5b8b0f4210cd1031cb01415801e4dc8cdb"
+      "sha256": "b8069b9362d201f52af8ffbeaea28dbedb139cca6b9cfd5d695b32a70190f343"
     },
     {
       "id": "kernel-positive-dependency-verb",
-      "sha256": "889b5dffb194a6981cad46f5d545c7bb93e3bc4242563cd8598c4b316182bd96"
+      "sha256": "28ebc22da4d8eeb669f8ff3398f0fc20fd586a18124058b9aee4853e4d5d5997"
     },
     {
       "id": "kernel-positive-dependency-condition",
-      "sha256": "77482d528598204bdbfb8a0fccbc018fffac664f6fcb0eec9795469388f6ff0c"
+      "sha256": "64e6e81d15ca021e6f5f696d8d95d24a285bdbea9ada74f9eb2a19cdf19acac0"
     },
     {
       "id": "batch-resolve-kernel-distribution",
@@ -3038,6 +3068,198 @@
     {
       "id": "writable-scope-mandatory-record-cardinality",
       "sha256": "7d336fe5fb2f3bda4070ba9045b74578a636360d119b9ee243c434b63f2b53d7"
+    },
+    {
+      "id": "behavior-observation-kernel-distribution",
+      "sha256": "3fff278380e64217c398e0542ee5862b3a56336acb370d98f5e0f453e9024011"
+    },
+    {
+      "id": "behavior-observation-kernel-mention-allowlist",
+      "sha256": "535b82a6524484997fab90112fd18441f0cde90d4d3afde9373553ca5f98f863"
+    },
+    {
+      "id": "behavior-observation-kernel-title-requires-b1fbdfffd802",
+      "sha256": "34dd9b4fb49cd0115b846b51c61ce02254394cca219738896779da5c217744af"
+    },
+    {
+      "id": "behavior-observation-kernel-identity-requires-c016cfb53a5a",
+      "sha256": "bc64824411932ec4db45af5d2da666cdced5e2886072112334b9191d4a1f44f1"
+    },
+    {
+      "id": "bok-contract-heading-requires-9b39bb73f871",
+      "sha256": "326cca40269458ab4394190c603e59cd792d3337627b602a5903c28aac3c0a5c"
+    },
+    {
+      "id": "behavior-observation-kernel-method-heading-requires-abcc3e7275dd",
+      "sha256": "9ec061dd8309d647e92046871fb5a52fbdc750035a3b3c1951f30009ed787de1"
+    },
+    {
+      "id": "bok-reintegration-heading-requires-538b35be49f5",
+      "sha256": "92a41e20e4f7d1f7283f9f63dae8fbb91ba7530c9d06de9d59a9487ccc017dc7"
+    },
+    {
+      "id": "bok-consumer-heading-requires-d7aecf964d43",
+      "sha256": "e829d421848755977f2a087b2eff2615c8b21107ed347449a2bdf30aaa9d5556"
+    },
+    {
+      "id": "bok-nongoal-heading-requires-8083b3ab0c79",
+      "sha256": "1de785d32237650552d633f23420f0e365e4c50fead579f9f9017aa73db8de1f"
+    },
+    {
+      "id": "behavior-observation-expected-observations-requires-17aebd2350c7",
+      "sha256": "f95785c8b7db6cdb7715912aadb1e339fbe9d02ff24aab5a6ddcc73ca818cb3a"
+    },
+    {
+      "id": "bok-collective-sufficiency-requires-6ff4f8bd0a40",
+      "sha256": "c8fde9528a7405d181d0cfb594eb0a9baba70bf1158f4626d0aa038f9b2483e3"
+    },
+    {
+      "id": "behavior-observation-unresolved-viewpoints-requires-cf391d0058a0",
+      "sha256": "3ac19ca7ca34847728f7763b5b9379c90dde70521ed14afb9f81dd632a5d1b22"
+    },
+    {
+      "id": "behavior-observation-sufficient-requires-bd2b6b4ae1ec",
+      "sha256": "8db8e7c1b836023edceb5c720195b4513e3347bd3f10072ba26bc48de453aa4b"
+    },
+    {
+      "id": "behavior-observation-insufficient-requires-5241f29e7ba9",
+      "sha256": "1b7227de688a89334c87bd82cc1f29644b9519abd03157e6922b969d0c1f69e9"
+    },
+    {
+      "id": "behavior-observation-indeterminate-requires-e698e74c8e15",
+      "sha256": "c30b72d0a01dd671e70b3ea819e2107af920a0686255887828e596ddda14cf1f"
+    },
+    {
+      "id": "behavior-observation-flatten-requires-c8360deaac15",
+      "sha256": "972b3bf9832ff229813d5ca28d3943eca4dd6628f1818039da03babf6cfef34f"
+    },
+    {
+      "id": "behavior-observation-coherent-requires-69416c51ea0f",
+      "sha256": "10cf2cc46f535ff6162d73658532374556cab77cc3f0fb971baa2dffe32986af"
+    },
+    {
+      "id": "behavior-observation-grounding-requires-7f543b7db35e",
+      "sha256": "4fe02ee5f93493e6ecd18b9960a23490b13311b824f0c76c193882a5d19935b1"
+    },
+    {
+      "id": "behavior-observation-no-consumer-topology-requires-0f70b4fbfffc",
+      "sha256": "d2da13e032625e0d37fa8d1aec7d708f3b7df22667137d2328411d84ddf53c75"
+    },
+    {
+      "id": "behavior-observation-serialized-schema-requires-5c988f55a951",
+      "sha256": "8f391007a464ce7d81a8a4452ac77323c7a4ddd2785b80616ef5412cb3e6a228"
+    },
+    {
+      "id": "behavior-observation-no-verdict-requires-c9018ed25633",
+      "sha256": "56906d400bcf4264247b7273607b368fd6e00ed0d000049772bfaecd92f75e4f"
+    },
+    {
+      "id": "behavior-observation-no-quality-verdict-requires-8571dfcabee1",
+      "sha256": "17a93c7e29e6a26fdf1bd80cf530e50f4e8ad3ebcfb327a20957579a18267cb9"
+    },
+    {
+      "id": "behavior-observation-rework-requires-38d106ff3d4b",
+      "sha256": "3d6c3828791c21c8c62aa9199c92a8eacfa8a7b22ca0a9a49aef362ececc9bc8"
+    },
+    {
+      "id": "behavior-observation-claim-section-requires-8f48963910e6",
+      "sha256": "c8d1b57fdcbecc9afa99610bbd499250409d495949ee1266440042f5b104205e"
+    },
+    {
+      "id": "behavior-observation-forbids-plan-quality-advisor-40e55bc83aa3",
+      "sha256": "e7853062369fea13a180cc61616f050c238589e9bdb8db36adefd05cf5e9c7f0"
+    },
+    {
+      "id": "behavior-observation-forbids-impl-lead-d38b7dbe09be",
+      "sha256": "f3d4668bc89de3bf698c2ef34e5f5ff81a1b9aa728f7a0e6cf685a6f49e304ad"
+    },
+    {
+      "id": "behavior-observation-forbids-test-quality-reviewer-ff1cb3f72c7e",
+      "sha256": "4dff02d00c8311a569e292edb0c06a02b013fbc72de8957c7fe0b147d2142c8d"
+    },
+    {
+      "id": "behavior-observation-forbids-test-report-f04f56292444",
+      "sha256": "be3ef1bc12af9df2eb76ff6c4a76385b238a1e1ef72ae65bfa3e91b1f6639514"
+    },
+    {
+      "id": "bok-forbids-adversarial-reviewer-86984157c205",
+      "sha256": "ee1ff7f475f77aaa905d2a6806d8a91c3180ab8f6a11ced6ec1d091eba49bbd4"
+    },
+    {
+      "id": "behavior-observation-forbids-draft-ac-6d4ed881f36e",
+      "sha256": "d4ed62cf33401112a8d406835056929bea93e3c1c7e4441aa43d9dee8da37659"
+    },
+    {
+      "id": "behavior-observation-forbids-submitted-red-3b915b0f7f8b",
+      "sha256": "2a0533f99e5adbc0b344884dc3957f775362d420f9405dace63a0b02329d4c75"
+    },
+    {
+      "id": "behavior-observation-forbids-target-test-68b9ec7f962e",
+      "sha256": "f89dc1e054189b0a3f9af015a964c5bdc433862656cbf2dee10373eb5e6ab5a4"
+    },
+    {
+      "id": "producer-behavior-observation-loader-data-4b90daa69616",
+      "sha256": "9b31b434ac81e8c024629ff0515614c9309f105de36027d166512495c5eb2b64"
+    },
+    {
+      "id": "producer-behavior-observation-agentic-load-9820dd119c55",
+      "sha256": "557c6ac498ad491a0f6cf880470195ea9ae2955d26d9e557aaaf1b143c29e2db"
+    },
+    {
+      "id": "impl-parent-red-behavior-observation-loader-data-5db98fa31c75",
+      "sha256": "ebb2cb5b44711a1be6f01d14913c49a9f66dba3696fe822585a6e513279b1809"
+    },
+    {
+      "id": "impl-parent-red-independent-a3c521780c22",
+      "sha256": "9ab5332c5e2d146117c3909e0b626cbe6f222b9912243c6768dfa23a41458a44"
+    },
+    {
+      "id": "impl-parent-red-no-handoff-copy-e6dfc5ed514b",
+      "sha256": "4826a234b2d158c3d559eb47f2483e515828c85930a66474a4ca4fc13fc8c7ea"
+    },
+    {
+      "id": "impl-tqr-behavior-observation-loader-data-3f53ada80cfa",
+      "sha256": "ed2d1efade58de3e00c2f525a8c45d0e50194730220b08f718735e89ee146366"
+    },
+    {
+      "id": "impl-tqr-behavior-observation-only-0bb55caef4f2",
+      "sha256": "ccf3791b7449abbbfe9a6e973942c0ecea8d3aa0b84fb991ba4fe7b0bdf59875"
+    },
+    {
+      "id": "code-review-tqr-behavior-observation-loader-data-247a6ff4cd85",
+      "sha256": "187920d77333b81a300b30e51a53245544caa85a258ec2ae7616e8a7faf11c3b"
+    },
+    {
+      "id": "code-review-tqr-behavior-observation-only-27e9e943654f",
+      "sha256": "485404788801acb6f26f7cf0374f77f02288701ee41e15bf756726b6e500872b"
+    },
+    {
+      "id": "advisor-behavior-observation-heading-343b2a0837dd",
+      "sha256": "236f01834dafcc9008b7bcfaf21298f94fbec59c6546335fb5045497a5d3c0b2"
+    },
+    {
+      "id": "advisor-behavior-observation-injected-only-f4df951a18b2",
+      "sha256": "f0afe141ff62624621735074e8e38fa4086d43a9a4c56d92bf872a34c9524b6b"
+    },
+    {
+      "id": "advisor-behavior-observation-draft-ac-38a411386153",
+      "sha256": "4e71c998f527178ca8de699d8576e99af1987c1249a87f69fb3b7be9bda93a1f"
+    },
+    {
+      "id": "advisor-behavior-observation-no-new-req-ae0fa6b0c72f",
+      "sha256": "bc32a75d38bf181c774a0d2a6bb2887208d78690e33fedb49dd0f827260dcfba"
+    },
+    {
+      "id": "tqr-behavior-observation-heading-1dc1abe92e52",
+      "sha256": "3999bf221aeb5cbd218f97fabac6beb3265d4afb28d4ce44b33e5c7361fddbef"
+    },
+    {
+      "id": "tqr-behavior-observation-target-test-684acc911f32",
+      "sha256": "9d99dc8101fffe1927cb74f11f4e31c063375a419692967318bf1f9fdaf10aa9"
+    },
+    {
+      "id": "tqr-behavior-observation-no-verdict-map-b00efb46a730",
+      "sha256": "8772dd18844c865a12126c7688b0102aa0de67ea82113249ce7f71c9f3035326"
     }
   ],
   "declarations": [
@@ -3198,6 +3420,16 @@
     },
     {
       "kind": "span",
+      "id": "behavior-observation-kernel-v1",
+      "path": "shared/behavior-observation-kernel.md"
+    },
+    {
+      "kind": "span",
+      "id": "code-review-test-quality-behavior-observation-kernel-loader",
+      "path": "shared/skill/code-review/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-implementation-unit-data-canonical",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3328,6 +3560,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-test-quality-behavior-observation-kernel-loader",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-risk-directed-batch-resolve-kernel-parent-mapping",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3359,6 +3596,11 @@
     {
       "kind": "span",
       "id": "impl-final-writing-loader",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-parent-red-behavior-observation-kernel-loader",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -3764,6 +4006,11 @@
     {
       "kind": "anchor",
       "id": "plan-candidate-producer-kernel-criteria",
+      "path": "shared/skill/plan-candidate-producer/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-candidate-producer-behavior-observation-kernel-loader",
       "path": "shared/skill/plan-candidate-producer/SKILL.md"
     },
     {

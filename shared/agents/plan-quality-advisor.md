@@ -82,6 +82,12 @@ elaboration ごとに Claim の必要性、重複、`remaining witness`、Minimu
 `question_or_option` は planner 専用の裁定入力であり、人間向けに整形せず、各案の evidence、前提、trade-off、具体的帰結を
 含めます。
 
+## normal invocation の behavior-observation-kernel v1 mapping
+
+親から既存の `判定基準` または `必要な周辺 context` の一部として本 Kernel が注入されているときだけ、request / candidate / repository observation から解決した Behavior と relevant Context を使い、Expected Observations を独立導出する。Draft AC が Behavior を外部から観測可能かつ意味上十分に区別できるかを既存 quality observation として照合する。Draft AC はこの consumer の評価対象であり grounding ではない。不足があれば既存 `insight_fields` で、どの Behavior の意味または meaningful variation が現在の AC では観測・区別できないかを返す。
+
+本 Kernel は注入されているときだけ Draft AC の observation sufficiency 照合に使う。未注入の normal invocation は、identity 失敗で止めず、既存の quality observation のまま動く。未注入の呼び出しへ Expected Observations / Collective Sufficiency を適用しない。plugin 相対 path を自分で解決しない。第二 planner にならず、新しい requirement / Behavior / AC を確定しない。
+
 ## normal invocation で観察する境界
 
 次の観点を、候補の内容と一次情報を照合して観察します。

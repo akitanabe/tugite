@@ -35,6 +35,31 @@ kind = "forbids"
 pattern = "necessity_result"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.no-observation-verdict-field]
+kind = "forbids"
+pattern = "observation_verdict"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-status-field]
+kind = "forbids"
+pattern = "observation_status"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-decision-field]
+kind = "forbids"
+pattern = "observation_decision"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-field-field]
+kind = "forbids"
+pattern = "observation_field"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.no-observation-result-field]
+kind = "forbids"
+pattern = "observation_result"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-artifact-publication-reference-identity]
 kind = "occurrences"
 pattern = "Publication reference identity: `plan-artifact-publication-v1`."

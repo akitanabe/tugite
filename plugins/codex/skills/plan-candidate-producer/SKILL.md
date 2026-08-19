@@ -161,6 +161,22 @@ advisor の返す insight は非拘束の Data であり、planner は各 insigh
 advisor insight を自動採用せず、採否を根拠なしに planner の推測で埋めない。新仕様、新しい scope、AC、
 ユーザー嗜好を advisor から派生させない。
 
+## behavior-observation-kernel v1 の parent mapping
+
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/behavior-observation-kernel.md
+load_timing = immediately before plan-quality-advisor normal invocation
+identity = behavior-observation-kernel-v1
+required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
+failure = stop-incomplete
+owner = plan-candidate-producer parent
+delegate_path_resolution = false
+```
+
+`plan-candidate-producer` が advisor invocation Data を組み立てる Agentic Action として load する。`producer-invocation-preflight` と `advisor-two-pass-orchestration` はこの Loader を所有しない。planner 起草中の `判定基準` と freeze-integrity invocation Data の `判定基準` / `必要な周辺 context` には入れない。検証済み本文は normal advisor の既存 `判定基準` / `必要な周辺 context` へだけ注入する。Loader Data と path は advisor Inputs の専用 field にしない。
+
 ## Resolution Batch と Resolution Transaction
 
 `plan-quality-advisor` の一回の one-shot observation と result collection は Resolution Transaction の外側で完了させる。

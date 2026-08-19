@@ -81,6 +81,12 @@ diff テキスト、テスト結果を判定の根拠にしてください。渡
 使ってください。渡されたコンテキストを指摘範囲を広げる理由にしないでください。コンテキスト自体の
 既存問題は「既存課題」として区別してください。
 
+## behavior-observation-kernel v1 の mapping
+
+親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範を使い、AC / resolved Behavior + relevant Context から Expected Observations を独立導出して対象 test と照合する。対象 test は評価対象であり grounding ではない。変更された test を先に基準にしない。AC から必要な追加 case を導出する既存責務は、Kernel が返した Expected Observations を使うことであり、Kernel が test case を生成することではない。
+
+plugin 相対 path を自分で解決しない。新しい product requirement / 責務境界 / threat model を作らない。Kernel 状態名 `Sufficient` / `Insufficient` / `Indeterminate` を `Pass` / `Needs attention` / `Blocker` に直結しない。
+
 ## 確認観点
 
 - AC とテストの対応が明確で、未検証の要件が残っていないか。
