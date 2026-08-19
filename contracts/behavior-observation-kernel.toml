@@ -19,18 +19,21 @@ exclude_paths = [
   "plugins/claude/skills/code-review/SKILL.md",
   "plugins/claude/skills/impl-lead/SKILL.md",
   "plugins/claude/skills/plan-candidate-producer/SKILL.md",
+  "plugins/claude/skills/test-report/SKILL.md",
   "plugins/codex/install/agents/plan-quality-advisor.toml",
   "plugins/codex/install/agents/test-quality-reviewer.toml",
   "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/skills/code-review/SKILL.md",
   "plugins/codex/skills/impl-lead/SKILL.md",
   "plugins/codex/skills/plan-candidate-producer/SKILL.md",
+  "plugins/codex/skills/test-report/SKILL.md",
   "plugins/cursor/agents/plan-quality-advisor.md",
   "plugins/cursor/agents/test-quality-reviewer.md",
   "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/skills/code-review/SKILL.md",
   "plugins/cursor/skills/impl-lead/SKILL.md",
   "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
+  "plugins/cursor/skills/test-report/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
 
