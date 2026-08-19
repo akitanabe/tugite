@@ -87,22 +87,16 @@ slice = "resolve-kernel-v1"
 pattern = "caller-owned boundary"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-kernel-callers-f8b49ee872ce]
-kind = "requires"
-slice = "resolve-kernel-v1"
-pattern = "caller は `plan-candidate-producer` と `plan-interactive` の2つに限定する。"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.resolve-kernel-scope-4490430b813e]
 kind = "requires"
 slice = "resolve-kernel-v1"
 pattern = "caller 固有 mapping は各 caller Skill が所有し、この Kernel は caller role mapping を複製しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.resolve-kernel-scope-2d55b660e4f4]
+[contracts.resolve-kernel-scope-df59918bf5a8]
 kind = "requires"
 slice = "resolve-kernel-v1"
-pattern = "共通 `resolve` Skill の新設と、他 workflow への適用は対象外である。"
+pattern = "共通 `resolve` Skill の新設は対象外である。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.resolve-kernel-659e3baaa09e]

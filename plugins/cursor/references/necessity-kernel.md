@@ -13,8 +13,7 @@ Task Specification に対する必要性で裁定するための最小規範で�
 
 ## 適用範囲
 
-v1 の適用対象は `plan-adversarial-reviewer`、`over-engineering-reviewer`、`plan-quality-advisor` と、
-それらを呼び出す `plan-candidate-producer` / `plan-interactive` / `review-refine` の既存 parent responsibility に限る。
+この Kernel の適用可能性は caller 名ではなく、observation / evidence から導かれた候補を現在の Task Specification に対する必要性で裁定できることで決める。caller 固有 mapping は各 caller が所有し、この Kernel は caller 名を列挙しない。
 `structural-health-gate 適用外`。gate の意味、assessment、caller contract を
 この規範で変更しない。
 
@@ -72,10 +71,7 @@ Broken Obligation、Failure、Evidence、Minimum Resolution Condition、また�
 できず、必要性を安全に分類できない。自動採用・自動却下をせず、既存の `unresolved` / `判断保留` /
 `人間確認`、または安全な candidate を作れない場合の `stop-incomplete` に写像する。
 
-`necessary` / `unnecessary` / `indeterminate` は新共通 verdict field ではない。plan-adversarial-reviewer
-は既存 finding Data、over-engineering-reviewer は既存 finding Data、plan-quality-advisor は既存 insight
-Data を返し、親が既存の `adopted` / `rejected` / `unresolved` または `採用` / `却下` / `範囲外` /
-`判断保留` / `人間確認` へ最終裁定する。severity、Pass、件数をこの分類へ直結しない。
+`necessary` / `unnecessary` / `indeterminate` は新共通 verdict field ではない。caller は既存の返却 Data を使い、親が既存の裁定語彙へ最終裁定する。severity、Pass、件数をこの分類へ直結しない。
 
 判定対象を除去・採用する前に、親が候補を更新した場合は `updated snapshot` を識別し、その snapshot で
 Deletion Test を再判定する。古い snapshot の witness を更新後へ持ち越さない。
