@@ -406,7 +406,7 @@ pattern = '''更新した current `protected_dirty_record` と現在の reposito
 `protected_dirty_record` は run-owned closeout の noise drift 判定へ流用しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: Gunte predicate and slice IDs are limited to 64 characters. Renaming work-unit to implementation-unit lengthens some names past that limit, so those IDs and one slice drop a trailing word instead of keeping the longer mapped form.
+# Why Not: Gunte predicate and slice IDs are limited to 64 characters, so the longer mapped names that would exceed that limit are not kept.
 # Why Not: initial caller supplies attention perspectives; partition and acceptance remain parent decisions.
 [contracts.impl-implementation-unit-design-initial-partition-98e4095970df]
 kind = "requires"
