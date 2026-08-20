@@ -1213,6 +1213,43 @@ before = "plan-agent-publication-loader"
 after = "plan-agent-publication-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: dual load, Git predicate scope, and consumer 3-value must stay coherent; isolated loader presence could hide missing selection mapping.
+[contracts.plan-agent-destination-selection-bcd9020a1200]
+kind = "requires"
+slice = "plan-agent-destination-selection"
+pattern = '''destination_reference = ../../references/destination-selection.md
+destination_load_timing = once before Agentic destination confirmation
+destination_identity = destination-selection-v1
+destination_required_sections = [Inputs / Outputs, Candidate facts, caller_owned_predicates の適用範囲, Programmatic Flows, Agentic unique selection, destination-reselection]
+destination_failure = existing incomplete path; no new status'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-destination-selection-01071454baf2]
+kind = "requires"
+slice = "plan-agent-destination-selection"
+pattern = "Git ignored/index predicates を project-local および canonical path が repository 内に入る OS-temp にだけ適用する範囲で渡す。repository 外の verified OS-temp に Git predicates を適用しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-destination-selection-dafa881f0e95]
+kind = "requires"
+slice = "plan-agent-destination-selection"
+pattern = '''1. explicit 確定 → それを使う
+2. qualified set のときだけ unique selection 本文を適用する
+3. explicit incomplete および入力不足 incomplete → unique selection を起動せず incomplete。`publication_target` を組まない'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-destination-selection-e13691d15861]
+kind = "requires"
+slice = "plan-agent-destination-selection"
+pattern = "`destination-reselection-required` を受けたとき、元が Human explicit なら同じ requested_destination を保持し unique-best auto-select へ落とさない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-destination-selection-27a041ffeb28]
+kind = "requires"
+slice = "plan-agent-destination-selection"
+pattern = "decoy 一覧 HOW と ranking procedure をこの Skill に置かない。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-no-retired-human-save-authority]
 kind = "forbids"
 pattern = "最終成果物の採用と保存・後続 Action の許可は Human が判断する"

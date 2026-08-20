@@ -205,7 +205,59 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-artifact-publication-agentic-target-data]
 kind = "occurrences"
-pattern = "Agentic / mixed side は candidate 比較、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
+pattern = "Agentic / mixed side は filename / retry bound / `publication_target` 組み立てと、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-selection-pointer]
+kind = "occurrences"
+pattern = "destination の選定と unique comparison の正本は `destination-selection-v1` である。この reference は選定・比較 procedure を持たず、pointer だけを残す。"
+count = 1
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-no-unique-best]
+kind = "forbids"
+pattern = "一意な best だけ選ぶ"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-no-ranking-procedure]
+kind = "forbids"
+pattern = "候補を ranking して一つの target を選ぶ"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-no-os-temp-tiebreak]
+kind = "forbids"
+pattern = "同順位、non-Git project、または資格を確認できない場合に verified OS-temp を候補として選ぶ"
+paths = [
+  "plugins/claude/references/plan-artifact-publication.md",
+  "plugins/codex/references/plan-artifact-publication.md",
+  "plugins/cursor/references/plan-artifact-publication.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-publication-write-time-revalidation]
+kind = "occurrences"
+pattern = "write-time の ignored/index 再確認は write safety の remaining witness であり、selector 一次欠格の代替にしない。"
 count = 1
 paths = [
   "plugins/claude/references/plan-artifact-publication.md",
@@ -238,6 +290,32 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-artifact-publication-not-consumer-procedure]
 kind = "forbids"
 pattern = "verified destination identity の下で、同じ filesystem 上に symlink / junction を追従しない atomic / exclusive staging を作成し"
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-family-no-unique-best-procedure]
+kind = "forbids"
+pattern = "一意な best だけ選ぶ"
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-family-no-decoy-how]
+kind = "forbids"
+pattern = "cache、build、vendor など用途が確認できない decoy directory"
 paths = [
   "plugins/claude/skills/plan-agent/SKILL.md",
   "plugins/claude/skills/plan-interactive/SKILL.md",
@@ -308,6 +386,13 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "plan-artifact-publication-flow"
 pattern = "staging を write して close し、同一 object の byte-identical readback を確認する。readback failure は `incomplete` として publish を行わず、complete のときだけ no-clobber publish を行い"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: selection must remain outside this Flow; a nearby ranking disclaimer can survive after the Flow itself starts re-selecting.
+[contracts.plan-artifact-publication-flow-ba71e47c1560]
+kind = "requires"
+slice = "plan-artifact-publication-flow"
+pattern = "`programmatic-publication` は選定を再実行しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: keep the identity, classifications, ownership, assurance, and non-oracle boundary coherent; isolated field checks could admit a contradictory policy.

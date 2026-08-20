@@ -267,6 +267,31 @@ process Data として保持し、status Calculationの入力へ渡す。review-
 review を実行しない場合は、要求の不足、scope、制約、残存 risk を親が確認できる通常の起草確定へ進める。どちらの場合も
 成果物の最終採用、issue や既存 resource への書き戻し、実装・委譲の開始は Human の許可を受けて親が実行する。
 
+<!-- @contract plan-agent-destination-selection -->
+## destination selection
+
+semantic completion eligibility が成立したあと、親は Agentic destination 確定の前に次の Loader Data で `destination-selection` を一度だけ load し、identity と必要本文を検証する。失敗時は推測で destination を確定せず、既存の `incomplete` へ返す。
+
+```text
+destination_reference = ../../references/destination-selection.md
+destination_load_timing = once before Agentic destination confirmation
+destination_identity = destination-selection-v1
+destination_required_sections = [Inputs / Outputs, Candidate facts, caller_owned_predicates の適用範囲, Programmatic Flows, Agentic unique selection, destination-reselection]
+destination_failure = existing incomplete path; no new status
+```
+
+親は既存 project-local の用途 evidence と verified OS-temp を candidate facts として観測し、Git ignored/index predicates を project-local および canonical path が repository 内に入る OS-temp にだけ適用する範囲で渡す。repository 外の verified OS-temp に Git predicates を適用しない。decoy 一覧 HOW と ranking procedure をこの Skill に置かない。
+
+destination 確定は destination-qualification の 3 値に従う:
+
+1. explicit 確定 → それを使う
+2. qualified set のときだけ unique selection 本文を適用する
+3. explicit incomplete および入力不足 incomplete → unique selection を起動せず incomplete。`publication_target` を組まない
+
+成功 destination に filename / retry を足して `publication_target` を確定し、`local-artifact-completion` へ渡す。
+`destination-reselection-required` を受けたとき、元が Human explicit なら同じ requested_destination を保持し unique-best auto-select へ落とさない。元が auto unique-best なら別 destination を無言で選ばない。
+<!-- @/contract -->
+
 <!-- @contract plan-agent-artifact-completion -->
 ## local artifact completion
 

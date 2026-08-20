@@ -18,6 +18,7 @@ files = [
   "contracts/resolve-kernel.toml",
   "contracts/writable-scope-kernel.toml",
   "contracts/behavior-observation-kernel.toml",
+  "contracts/destination-selection.toml",
 ]
 
 [sources]
@@ -37,6 +38,7 @@ files = [
   "shared/batch-resolve-kernel.md",
   "shared/necessity-kernel.md",
   "shared/plan-artifact-publication.md",
+  "shared/destination-selection.md",
   "shared/plan-artifact-design.md",
   "shared/resolve-kernel.md",
   "shared/writable-scope-kernel.md",
@@ -160,6 +162,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/plan-artifact-design.md"
 path = "references/plan-artifact-design.md"
 profile = "markdown-v1"
@@ -248,6 +256,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/plan-artifact-publication.md"
 path = "references/plan-artifact-publication.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -356,6 +370,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/plan-artifact-publication.md"
 path = "references/plan-artifact-publication.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
