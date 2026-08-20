@@ -7,12 +7,12 @@ Publication reference identity: `plan-artifact-publication-v1`.
 この reference は plan-family の Agentic workflow が確定した成果物を安全に保存するための deterministic publication boundary である。
 Kernel ではなく、呼び出し元が選択して確定した target を受け取る shared reference として扱う。
 
-## Agentic / mixed target selection
+destination の選定と unique comparison の正本は `destination-selection-v1` である。この reference は選定・比較 procedure を持たず、pointer だけを残す。caller は skill-relative `../../references/destination-selection.md` で destination を確定してから、この reference の `publication_target` を組み立てる。
 
-Agentic または mixed target selection は、project-local の用途 evidence を比較し、候補を ranking して一つの target を選ぶ。
-成果物の内容から単一 filename component を導出し、exact destination、exact filename、finite retry bound を確定する。
-用途 evidence、Git の ignored / index 資格、canonical containment、symlink / junction 非追従を確認できない candidate は選択しない。
-既存 destination の candidate は destination object identity も確認できなければ選択しない。Flow はこの選択を再実行せず、別 target を
+## Agentic / mixed publication target
+
+Agentic または mixed side は、確定した qualified destination から単一 filename component を導出し、exact destination、exact filename、finite retry bound を確定する。
+既存 destination の candidate は destination object identity も確認できなければ `publication_target` にしない。Flow はこの選定を再実行せず、別 target を
 暗黙に選び直さない。
 
 `publication_target` は次の Data であり、pre-creation に存在しない identity を要求してはならない。
@@ -35,20 +35,13 @@ publication_target = {
 
 既存 destination では、qualification 後に観測した既存 destination object identity を記録する。OS-temp では top-level
 `exact_destination` が作成予定の run-owned directory path であり、verified temp-root 直下への canonical containment を満たす。
-pre-creation に記録する branch 固有 Data は verified temp-root identity と exclusive creation intent だけである。Agentic / mixed side は candidate 比較、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。directory の object identity は Flow が作成成功後に記録し、作成前に将来の identity を推測・要求しない。
+pre-creation に記録する branch 固有 Data は verified temp-root identity と exclusive creation intent だけである。Agentic / mixed side は filename / retry bound / `publication_target` 組み立てと、verified temp-root identity、top-level `exact_destination`、exclusive creation intent の確定 Data を返すまでを所有し、directory を作成しない。directory の object identity は Flow が作成成功後に記録し、作成前に将来の identity を推測・要求しない。
 
-project-local 候補では用途 evidence と ignored / index 資格を満たす exact destination だけを採用する。OS-temp 候補では verified temp-root の
-identity、top-level exact destination の root 直下 containment、symlink / junction 非追従を確認してから、exclusive creation intent を確定 Data として返す。directory の exclusive / non-follow 作成は `programmatic-publication` Flow だけが実行する。
-canonical path が repository 内に入る OS-temp 候補には project-local と同じ containment、用途、ignored / index 資格を適用する。
-
-明示された destination は最優先であり、path type、canonical containment、symlink / junction 非追従、no-clobber を安全に確認できない場合は
-別 destination へ無言で fallback せず `incomplete` とする。未指定の場合だけ、用途が直接 evidence で確認できる既存の project-local 候補を比較し、
-候補なし、同順位、non-Git project、または資格を確認できない場合に verified OS-temp を候補として選ぶ。cache、build、vendor など用途が確認できない
-decoy directory、ignored であることだけの候補、または path が repository containment 外の候補を選ばない。未指定時も project-local directory や ignore rule を新設しない。
+OS-temp では verified temp-root の identity、top-level exact destination の root 直下 containment、symlink / junction 非追従を確認してから、exclusive creation intent を確定 Data として返す。directory の exclusive / non-follow 作成は `programmatic-publication` Flow だけが実行する。
 
 自動 filename は成果物内容由来の短い安全な単一 component とし、空文字、`.`、`..`、absolute path、path separator を採用しない。既存 final path は
 bytes が同一でも上書きせず collision とする。retry bound は invocation 開始時に有限値として固定し、collision の場合だけ numeric suffix を変える。
-各 exact path の資格は staging 作成直前と publish 直前に再確認し、資格喪失は `destination-reselection-required` として親へ返す。
+各 exact path の資格は staging 作成直前と publish 直前に再確認し、資格喪失は `destination-reselection-required` として親へ返す。write-time の ignored/index 再確認は write safety の remaining witness であり、selector 一次欠格の代替にしない。
 
 OS-temp の verified temp-root が資格を満たす場合だけ、その直下の top-level exact destination と exclusive creation intent を選択結果に含める。
 final / staging の全 component について canonical containment と non-follow を確認できる Data を渡し、root、run-owned directory、containment、
@@ -57,7 +50,7 @@ repository との関係が unknown なら Flow を起動せず `incomplete` と�
 ## Programmatic publication Flow
 
 この Flow は、親が意味判断を完了して確定した `publication_target` に対する fixed deterministic procedure だけを実行する。
-target selection、candidate ranking、filename の導出、retry bound の変更は Flow の責務ではない。
+target selection、candidate ranking、filename の導出、retry bound の変更は Flow の責務ではない。`programmatic-publication` は選定を再実行しない。
 
 ### programmatic-publication
 

@@ -14,6 +14,7 @@
     "contracts/resolve-kernel.toml",
     "contracts/writable-scope-kernel.toml",
     "contracts/behavior-observation-kernel.toml",
+    "contracts/destination-selection.toml",
     "shared/VERSION",
     "shared/agents/focused-implementer.md",
     "shared/agents/expert-implementer.md",
@@ -30,6 +31,7 @@
     "shared/batch-resolve-kernel.md",
     "shared/necessity-kernel.md",
     "shared/plan-artifact-publication.md",
+    "shared/destination-selection.md",
     "shared/plan-artifact-design.md",
     "shared/resolve-kernel.md",
     "shared/writable-scope-kernel.md",
@@ -163,7 +165,27 @@
     },
     {
       "id": "plan-artifact-publication-agentic-target-data",
-      "sha256": "93fe4c2238b21e1bb2e85e03dd4d2f2919a3cf9d07f59583db6a7f0253fa5492"
+      "sha256": "fcd694c3ae6dbe02aa140b245d16f458c82beb95806db5dcfd9bb94e5258a0be"
+    },
+    {
+      "id": "plan-artifact-publication-selection-pointer",
+      "sha256": "d4a9acd29434b46f39cb04fda683aefe3eec921be15e8b710817381f823d3e33"
+    },
+    {
+      "id": "plan-artifact-publication-no-unique-best",
+      "sha256": "4b7209b3d21517961e47a2896b22898449328f980ab92b35c4dded33a289f2d5"
+    },
+    {
+      "id": "plan-artifact-publication-no-ranking-procedure",
+      "sha256": "fa24c8b265a3214879137e7a8156d23946d4e40b64be0fc358c7c857d0fa359b"
+    },
+    {
+      "id": "plan-artifact-publication-no-os-temp-tiebreak",
+      "sha256": "a6c69b27881c51a914a9d44b07c1275d356386fe3a84c830b987811a2fac84d5"
+    },
+    {
+      "id": "plan-artifact-publication-write-time-revalidation",
+      "sha256": "87dc7ad0d19a049e585637274ba069f7e79e4a20348d8a92407eaf70bbd4c20a"
     },
     {
       "id": "plan-artifact-publication-no-agentic-directory-creation",
@@ -176,6 +198,14 @@
     {
       "id": "plan-artifact-publication-not-consumer-procedure",
       "sha256": "49b3924b8c3fd328b592b8c604d5e775731cd8b8ad6dbe02ba7f891516ced5a0"
+    },
+    {
+      "id": "plan-family-no-unique-best-procedure",
+      "sha256": "2dcf0b08737113c70cf1af1a853670a9fb42da89c0baba9991f1c41dc3c60b56"
+    },
+    {
+      "id": "plan-family-no-decoy-how",
+      "sha256": "5c7a80c73d8d971d918f93926128ae9d512a73f3af979fed468f75b631668c16"
     },
     {
       "id": "plan-artifact-publication-flow-f09a111cfd8b",
@@ -216,6 +246,10 @@
     {
       "id": "plan-artifact-publication-flow-write-readback-cd9b8e50ead3",
       "sha256": "5cf96797ae918d622070593c2769de840766cd2638498d4c3f0c310816e853a9"
+    },
+    {
+      "id": "plan-artifact-publication-flow-ba71e47c1560",
+      "sha256": "cef27185f75c628c9ce58b1311e0f99c05b51e26d6f5d434017aef7c7e6f7802"
     },
     {
       "id": "repository-programmability-boundary-ff1561060870",
@@ -2134,6 +2168,26 @@
       "sha256": "21afd3a98093331fcb53c565af0c8804dde844fabffd32129066851d6bb7b169"
     },
     {
+      "id": "plan-agent-destination-selection-bcd9020a1200",
+      "sha256": "5ceec2f32584185eb1f76ce34977de1280cf735462791632bd3cfacd8b1cd9dc"
+    },
+    {
+      "id": "plan-agent-destination-selection-01071454baf2",
+      "sha256": "c091439b9c63c5362746ce4c876b5803f6a4a989db5d9e6e8fbef56f9a52b7bc"
+    },
+    {
+      "id": "plan-agent-destination-selection-dafa881f0e95",
+      "sha256": "cd17c761c95caf6ec8a27f1ee1390dd31da57c7bccc5a0fce50844ad99716c97"
+    },
+    {
+      "id": "plan-agent-destination-selection-e13691d15861",
+      "sha256": "470b5ceb28396624e8a0acbced4d2d10dd9ea32edc3b9af3900fe177bbb26b96"
+    },
+    {
+      "id": "plan-agent-destination-selection-27a041ffeb28",
+      "sha256": "e5598cfec952163aae031ebae0677be85e08142a49a3f28fd395d5c0e4ef21d6"
+    },
+    {
       "id": "plan-agent-no-retired-human-save-authority",
       "sha256": "2cffaf9e2879e26b9561727427976a9b77e71ed44843499f92c1db0e4285601a"
     },
@@ -2636,6 +2690,26 @@
     {
       "id": "plan-interactive-publication-loader-970692b302a3",
       "sha256": "0f75026e157f5a12b2d957e1a3fbd04c8b6d997240be46dbc3d4fd6b03774d5f"
+    },
+    {
+      "id": "plan-interactive-destination-selection-c998bc5a2189",
+      "sha256": "c5d9e3ffa15e29559837f3f995fc8e51b48527171e6fdb78408f19d8a62abf07"
+    },
+    {
+      "id": "plan-interactive-destination-selection-d53011ff8183",
+      "sha256": "f2e0302766496f6997e070c9033bdf68dd5c67f4bf04af65a7bd9aa4e148033e"
+    },
+    {
+      "id": "plan-interactive-destination-selection-9c3aa17ffab7",
+      "sha256": "8d07eab6d28b26cf65f3e3185d962d4b1578e1fb4a0c9aac3079710581a35c86"
+    },
+    {
+      "id": "plan-interactive-destination-selection-e2e7ffc5f723",
+      "sha256": "f77c742ac12f686c95691b1d5d9fbdfbfabfed1e22624f592106a4409a7d0acf"
+    },
+    {
+      "id": "plan-interactive-destination-selection-1e7202613c42",
+      "sha256": "cbd26a2f1fa26d3aa480b15fcf4cfe4cdffbd206a1dec5d60f001b8250ecf359"
     },
     {
       "id": "plan-interactive-no-retired-autosave",
@@ -3360,6 +3434,134 @@
     {
       "id": "tqr-behavior-observation-no-verdict-map-b00efb46a730",
       "sha256": "8772dd18844c865a12126c7688b0102aa0de67ea82113249ce7f71c9f3035326"
+    },
+    {
+      "id": "destination-selection-reference-identity",
+      "sha256": "ef4ebd0579dbacbcb9c3a899d2b3eb3033492db454a97d2b416c34787c584705"
+    },
+    {
+      "id": "destination-selection-not-kernel",
+      "sha256": "6e42250bfe1cf58ac1f0d5b7d356edc4d074821b5ab0cc1eb83d6213b00d3185"
+    },
+    {
+      "id": "destination-selection-no-kernel-identity",
+      "sha256": "91e164f3135942fc875baaa5d3122e5f9f61ae0dc394f5beeef8e3650264b7f8"
+    },
+    {
+      "id": "destination-selection-inputs",
+      "sha256": "1bf20dde52439889a812495e6a18a3d8fee380aa43ace67b19e0463548762d9b"
+    },
+    {
+      "id": "destination-selection-no-plan-wayfind-enum",
+      "sha256": "a5aae288c1f44654fb4b8aaf34eef7216eb0e9aa14f2034768635c943e1e9964"
+    },
+    {
+      "id": "destination-selection-no-best-candidate",
+      "sha256": "05da98ed403512d99f4f8a8fdf15e76222ff7680e8d3258d8f9187cb60f781aa"
+    },
+    {
+      "id": "destination-selection-no-storage-adapter",
+      "sha256": "f428bf75cc6026b90de0f26a74686f077583b23341b83674a6d1be7770ed9a57"
+    },
+    {
+      "id": "destination-selection-no-tugite-auto-root",
+      "sha256": "9c091bfc69088a32c2b354d2a313fe89e37f49d61d59f9ce56b864e9f10f8484"
+    },
+    {
+      "id": "destination-selection-git-predicate-scope",
+      "sha256": "6e8a73585d02239303f8fe38b0c2ab0bfa8fc5282a0e39a566e47a54303d72b0"
+    },
+    {
+      "id": "destination-selection-wayfind-seam",
+      "sha256": "d6f55f2fd6c613a0546f91cb122d9b38be6262c3b6862850c74f91e9b0e62dde"
+    },
+    {
+      "id": "destination-selection-explicit-keep",
+      "sha256": "5074148670267ba03831138993b6758a8c04b99916023df32dd702cb68855e1e"
+    },
+    {
+      "id": "destination-qualification-flow-0d13a2b8a564",
+      "sha256": "d04d4e216ab934602b651704fbcd6514345da9d959724b2a75fcdde467635d26"
+    },
+    {
+      "id": "destination-qualification-flow-77c4435c50d7",
+      "sha256": "e8c6d327163cf3d0af0799e72851761561505c2a514cad230e35a7d00cdccafc"
+    },
+    {
+      "id": "destination-qualification-flow-490ab636b5eb",
+      "sha256": "4b9dc6c52562bb0235c7f6f95b90259d019f99657e46b9bc4e65aa9dc6720ec5"
+    },
+    {
+      "id": "destination-qualification-flow-c3075d48c22c",
+      "sha256": "6285c7796c3ec54fc2043dc006021ec5469808d03d93f7de9d4946cbab755ea0"
+    },
+    {
+      "id": "destination-qualification-flow-ae0698ec4ec4",
+      "sha256": "05720eed682dfac42804a6790f94ef1773988d8b430c44b5fc7d7d6374dee7b3"
+    },
+    {
+      "id": "destination-qualification-flow-e8240d0bd002",
+      "sha256": "7676f2789263017531c5d3cc9950f38627076053fcc8fe8a400f6e44af1b7aa9"
+    },
+    {
+      "id": "destination-qualification-no-unique-best-66d5d277ac44",
+      "sha256": "807969fcf27183a71c240938756175ea33498f98af2c7a2ca4c294d3cca7bc84"
+    },
+    {
+      "id": "destination-qualification-flow-field-order",
+      "sha256": "8ae25b668dd66a279f87ffe51ee28bfa51762df30782dfc26e4eaab18739ed9b"
+    },
+    {
+      "id": "destination-qualification-inputs-before-procedure",
+      "sha256": "fe006feb0f91b13677238456214699ccd89967a0fb5ca3d75c7863ebd2dfa54e"
+    },
+    {
+      "id": "destination-qualification-procedure-before-outcomes",
+      "sha256": "9d243b4957425ee9f3fac50c882637c243fba4a21cd699b9500193d4f03aa48a"
+    },
+    {
+      "id": "reopen-resolution-flow-c6d5a4bdf05f",
+      "sha256": "5799c7888dba95e2bf2f744145c09ad3b95e1005d4275f62b9f8b834fe18e7c1"
+    },
+    {
+      "id": "reopen-resolution-flow-e886d62436eb",
+      "sha256": "4fa7d9169c3da0543225dcafa8afab6952ce3ff9793d7a40b6cbd3caacd9e536"
+    },
+    {
+      "id": "reopen-resolution-flow-f8541bbf2367",
+      "sha256": "28a03b06f24297b4707565808364c1b10a1b6f04f5d13118596e9712d2c6a7ba"
+    },
+    {
+      "id": "reopen-resolution-no-unique-best-431bad735b18",
+      "sha256": "b81e220c3259b2301a001a4f985135ab39a8c89278b617022c2769151504bbef"
+    },
+    {
+      "id": "reopen-resolution-flow-field-order",
+      "sha256": "47ed5c02ed13567a78584d14ed09a03b911211ed19664288e44d8300ce362ae3"
+    },
+    {
+      "id": "reopen-resolution-inputs-before-procedure",
+      "sha256": "670ab8520d7be4ad359e7e68438cef44c0702134a12b4a64ba9e81ccabab743b"
+    },
+    {
+      "id": "reopen-resolution-procedure-before-outcomes",
+      "sha256": "3e8d9569e5eafdfe483075a6c71b47c9438828533b5696fdb50b1bd80b91c016"
+    },
+    {
+      "id": "destination-unique-selection-9a137285aef8",
+      "sha256": "2982672679a8714263c63b2e00dfec98992989f8f223551740a0d623adcafc15"
+    },
+    {
+      "id": "destination-unique-selection-8df42a5e75ed",
+      "sha256": "15eb92fab10761aa5d67162ab3cddcab977fea8a8b72597547fe69d1b6cdd35e"
+    },
+    {
+      "id": "destination-unique-selection-21ccf28202f9",
+      "sha256": "1ad20859ee5a8d90e80e2bd89927d4fa75f7142c69c474539e31ececc3c8eb5d"
+    },
+    {
+      "id": "destination-unique-selection-not-flow-b044fb39cdc4",
+      "sha256": "8fa955b596bf1d6bee0121b7b1e21de06c41878382f49fc9798a44b678b4a813"
     }
   ],
   "declarations": [
@@ -3507,6 +3709,61 @@
       "kind": "anchor",
       "id": "publication-flow-outcomes",
       "path": "shared/plan-artifact-publication.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-qualification-flow",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "dest-qual-trigger",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "dest-qual-inputs",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "dest-qual-procedure",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "dest-qual-outcomes",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "reopen-resolution-flow",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "reopen-trigger",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "reopen-inputs",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "reopen-procedure",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "reopen-outcomes",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-unique-selection",
+      "path": "shared/destination-selection.md"
     },
     {
       "kind": "span",
@@ -3865,6 +4122,11 @@
     },
     {
       "kind": "span",
+      "id": "plan-agent-destination-selection",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-agent-artifact-completion",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
@@ -3956,6 +4218,11 @@
     {
       "kind": "anchor",
       "id": "plan-interactive-publication-outcomes",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-destination-selection",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
