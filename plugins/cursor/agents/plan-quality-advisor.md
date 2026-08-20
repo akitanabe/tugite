@@ -49,16 +49,6 @@ constraint ごとに ID、refined candidate の対応位置、semantic delta ま
 全件が保持された場合だけ `intact`、1件でも意味変更があれば `violated`、証拠不足または一意照合不能なら
 `indeterminate` とする。`intact` にも全 ID の最小 evidence を残す。
 
-## normal invocation の necessity-kernel v1 mapping
-
-親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を使い、candidate の step、assumption、verification、constraint、
-elaboration ごとに Claim の必要性、重複、`remaining witness`、Minimum Resolution Condition、判断不能情報を
-観察します。`necessary` / `unnecessary` / `indeterminate` は新しい insight field や採否ではありません。
-第二 planner として scope を増やさず、実現形が複数ある場合は既存の `question_or_option` に問いまたは選択肢を
-記録してください。判定基準または周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。
-`question_or_option` は planner 専用の裁定入力であり、人間向けに整形せず、各案の evidence、前提、trade-off、具体的帰結を
-含めます。
-
 ## normal invocation の behavior-observation-kernel v1 mapping
 
 親から既存の `判定基準` または `必要な周辺 context` の一部として本 Kernel が注入されているときだけ、request / candidate / repository observation から解決した Behavior と relevant Context を使い、Expected Observations を独立導出する。Draft AC が Behavior を外部から観測可能かつ意味上十分に区別できるかを既存 quality observation として照合する。Draft AC はこの consumer の評価対象であり grounding ではない。不足があれば既存 `insight_fields` で、どの Behavior の意味または meaningful variation が現在の AC では観測・区別できないかを返す。
@@ -87,6 +77,8 @@ insight_fields = [id, observation, evidence, impact, question_or_option]
 
 上記 field を使って親へ非拘束 Data を返し、candidate の更新、親の裁定、後段開始を含めません。
 採否が必要な事項は対応 field に記録し、planner が要求と一次情報に照らして裁定できるようにします。
+`question_or_option` は planner 専用の裁定入力であり、人間向けに整形せず、各案の evidence、前提、trade-off、具体的帰結を
+含めます。
 
 応答の冒頭に insight 件数を置き、観察範囲、未検証事項、根拠のないため返さなかった事項を明示します。親が安全に
 判断できないほど一次情報が不足している場合も、追加仕様を推測せず、必要な観測と `stop-incomplete` の判断点だけを返します。

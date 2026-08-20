@@ -8,17 +8,11 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 pattern = "necessity-kernel"
 exclude_paths = [
-  "plugins/claude/agents/plan-quality-advisor.md",
   "plugins/claude/references/necessity-kernel.md",
-  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/claude/skills/plan-interactive/SKILL.md",
-  "plugins/codex/install/agents/plan-quality-advisor.toml",
   "plugins/codex/references/necessity-kernel.md",
-  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
   "plugins/codex/skills/plan-interactive/SKILL.md",
-  "plugins/cursor/agents/plan-quality-advisor.md",
   "plugins/cursor/references/necessity-kernel.md",
-  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/skills/plan-interactive/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
