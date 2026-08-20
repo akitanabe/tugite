@@ -1216,8 +1216,8 @@
       "sha256": "f2e315903152c4489948131045f6e53b495a29b19dcc72995c3c5b69e3923b4c"
     },
     {
-      "id": "implementation-unit-design-internal-guard-requires-a9ff1408b786",
-      "sha256": "0d59930733e083dcaa2872cfab0960deffbcedf316d5a00ce121a68754634df1"
+      "id": "implementation-unit-design-internal-guard-requires-f040d350ad94",
+      "sha256": "a881e954c2c94211df62d911edaa465da93116a10ce93a415bf323a4e0b87450"
     },
     {
       "id": "impl-implementation-unit-data-fields-736f03a8ee36",
@@ -1252,8 +1252,8 @@
       "sha256": "43085e688378c4e06774ccea4f642d456b102bad8b40dbd0ef5687b9e6ad711a"
     },
     {
-      "id": "impl-implementation-unit-continuation-flow-c3ab2a147350",
-      "sha256": "bedf4aaba2a995a05b6030251ee1313d0505d3f0af96115e87a3c10a87e1f6ea"
+      "id": "impl-implementation-unit-continuation-flow-d132c8bb8838",
+      "sha256": "3616b6c36907d083f51813f853e083a6d54d9ddca6b35830b0983a9fc12d6e35"
     },
     {
       "id": "impl-delegated-worker-silence-defaults-0702279bc3a9",
@@ -1360,8 +1360,8 @@
       "sha256": "c716315dabc17624d398441f54da11f9958f17a32c655ee14c375adb44c3c25d"
     },
     {
-      "id": "impl-risk-remediation-continuation-32c9d259f550",
-      "sha256": "7924f9498d6019dcabf4be47ec2422cf7e0a192f61731992bb685af4ae94edfa"
+      "id": "impl-risk-remediation-continuation-b7f5767bc006",
+      "sha256": "7317e8c2658fae9aaa7ee00b34c813ef2c267d2a65e3337d6c6787704717114c"
     },
     {
       "id": "impl-risk-remediation-outer-inner-9a8bedc6519d",
@@ -1388,8 +1388,8 @@
       "sha256": "2479f4a29dc4f605b0d54e6f86afec5fdb0167202a4d294b0e671c49b7860744"
     },
     {
-      "id": "impl-worker-tier-partition-interception-dffb1f5fe8d6",
-      "sha256": "936177bcb8ea43ec0252099f4cdfdc9d0b05fa84b7bc2f0bed1df8d43936026e"
+      "id": "impl-worker-tier-partition-interception-46c49a7199c2",
+      "sha256": "5d1fae07f04018510766808aefe3a96cd1b2bed49f5413326b29b1123b10055c"
     },
     {
       "id": "implementation-unit-design-partition-input-data-760ae492e304",
@@ -1408,8 +1408,8 @@
       "sha256": "a0d7e9a0ebf9617c7db9c0fb062c750cc0239409a15680f923168d49174329a5"
     },
     {
-      "id": "implementation-unit-design-partition-casebook-c13dcee955f2",
-      "sha256": "fe4c1455c05e85518aefff10662d2edd7a7c7faafdbf640351e6775a3e62d924"
+      "id": "implementation-unit-design-partition-casebook-c79844fdf4bb",
+      "sha256": "526a1b6974623995ccf8adac548b463294549e264a78ade439f171b5917d3c67"
     },
     {
       "id": "implementation-unit-partition-casebook-overmerge-e91defc6b121",
@@ -1422,6 +1422,86 @@
     {
       "id": "implementation-unit-partition-casebook-oversplit-f4556ef58655",
       "sha256": "972bfca45ac010af6159d868788308a70b17761c862b20eda5decafc8cd579f0"
+    },
+    {
+      "id": "impl-iud-initial-mandatory-a1864b1fcc31",
+      "sha256": "3a608531ac43325f250fdd64b8e13bc024ed8f7a450847360cb461b8109e9a4d"
+    },
+    {
+      "id": "impl-iud-parent-after-return-79bdcc8c61cc",
+      "sha256": "02f338de0c7439602d59fee5f88f966221b80274cc23b25b3006eed639862133"
+    },
+    {
+      "id": "impl-no-rmo-consumer-47cd29c97c3a",
+      "sha256": "dc153dfd3befb633a0dfd6fa36af276fff68d6f8265e6795ff06b7b2e7e9e9ce"
+    },
+    {
+      "id": "impl-iud-renorm-entries-032fdb8f73c6",
+      "sha256": "9bac890ff905a388a23be70f25497e8c01bead3e469e45847119ea91f46c2c82"
+    },
+    {
+      "id": "impl-iud-renorm-controls-da6c3151017c",
+      "sha256": "85a3a518e96bbc8fa434850f4f48f4e942a25c1d55db2fa3f4ebd975509fa204"
+    },
+    {
+      "id": "impl-risk-meaning-change-renorm-f5a376382c59",
+      "sha256": "3bd261009ef1575e68c2b810d1c3d535bd803840d2770abf40e6acccb6b06b3d"
+    },
+    {
+      "id": "implementation-unit-design-input-single-c5ba9e1990a7",
+      "sha256": "bba423e433324cbcef0f589727f05e1c2b85906cd6d7b9ce40b62c4304b74483"
+    },
+    {
+      "id": "iud-rmo-loader-data-83f57c831195",
+      "sha256": "b98e284e004e73a4920019f62db787bae0e9b85447e70b4b207cff891558cbad"
+    },
+    {
+      "id": "iud-rmo-fail-distinct-a04e3ec45074",
+      "sha256": "8498859e359a560b845ba4eb2259f010abc08f23bba232772adfc807227ce6e6"
+    },
+    {
+      "id": "iud-rmo-target-cardinality-5bd8a15ca0ad",
+      "sha256": "2aa0666dcb10c2747efe58e6b655170dc441fad5893986a89d65de56a5facb7f"
+    },
+    {
+      "id": "iud-rmo-authority-context-7f24c54d0403",
+      "sha256": "ae2bee31788031f7a473e622ff552972fec0e2be69f3797e53977d25fc0a8901"
+    },
+    {
+      "id": "iud-rmo-output-mapping-f8fd5c5d8315",
+      "sha256": "f5646753028f0ad6b6df6a83d5baeb53a539aeb4769ebba7b956d24fbc284b15"
+    },
+    {
+      "id": "iud-rmo-grounding-trace-74f08a4f1ab5",
+      "sha256": "583a1df304cb12bc547aeb905dec133e17272fcc931d941158276954590991b5"
+    },
+    {
+      "id": "iud-casebook-shared-surface-7de9711c5526",
+      "sha256": "0a4b1ed418e5e1a9b875a5b35da6c5b3e32260418fc8f66ed7a11e2777cce097"
+    },
+    {
+      "id": "iud-casebook-hidden-dependency-11b6b0d86166",
+      "sha256": "018f9b8d1d56665a0d6d8f7cfeaf5d60dd7250003eee2c7e5aa68253b70a5de6"
+    },
+    {
+      "id": "iud-casebook-false-verification-051ce16f7efd",
+      "sha256": "c6e14b26d5160e3f306c2669b154bea0bf3fb0fedf0a3f3d0fd03008c859159c"
+    },
+    {
+      "id": "iud-casebook-foundation-application-ee984cfcabb9",
+      "sha256": "8b9f9f190f639d069b602bb10a3926a3f3a21c8a7e4ee7056bf12200b6b45eca"
+    },
+    {
+      "id": "iud-casebook-incidental-finding-ba6b1fe254d4",
+      "sha256": "6ac60174174b49ba6cd74b436a14191ab912516da2e8b9fa4cfb8f70b74880d6"
+    },
+    {
+      "id": "iud-casebook-cardinality-one-3e3af52e3943",
+      "sha256": "32e850240baf8c7d967bbef2774b77fd225ded45cbb99451a00b874315d39311"
+    },
+    {
+      "id": "iud-casebook-observation-points-98735ad3fbad",
+      "sha256": "881528a296ea9ec22e9bd7f8aca080fe93375ff892e768539a834dd3711a902b"
     },
     {
       "id": "plan-candidate-producer-internal-guard-requires-86104357309e",
@@ -3553,7 +3633,7 @@
     },
     {
       "id": "reality-model-observation-kernel-mention-allowlist",
-      "sha256": "a3979144f637445fd4ac2e81f11b690d9babb12dc88c6f5f9efe92de683e8fd0"
+      "sha256": "bc48c6a88d91e75c732f4b47a2886551a96e3cb0b6870677c0f09f6beef82dd8"
     },
     {
       "id": "rmo-title-requires-517053a0a4c0",
@@ -4104,7 +4184,22 @@
     },
     {
       "kind": "span",
+      "id": "impl-mandatory-implementation-unit-design-boundary",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-implementation-unit-design-initial-partition-caller",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-execution-time-renormalization-entries",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-execution-time-renormalization-controls",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -4260,6 +4355,11 @@
     {
       "kind": "span",
       "id": "impl-risk-remediation-outer-inner",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-finding-meaning-change-route",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -5019,6 +5119,11 @@
     },
     {
       "kind": "span",
+      "id": "implementation-unit-design-caller-selected-input",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "implementation-unit-design-partition-input-data",
       "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
@@ -5035,6 +5140,11 @@
     {
       "kind": "span",
       "id": "implementation-unit-design-implementation-unit-data-consumer",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-rmo-parent-mapping",
       "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {
@@ -5060,6 +5170,41 @@
     {
       "kind": "span",
       "id": "implementation-unit-design-partition-casebook-oversplit",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-shared-surface",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-hidden-dependency",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-false-verification",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-foundation-application",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-incidental-finding",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-cardinality-one",
+      "path": "shared/skill/implementation-unit-design/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "implementation-unit-design-casebook-observation-points",
       "path": "shared/skill/implementation-unit-design/SKILL.md"
     },
     {

@@ -60,15 +60,15 @@ worker、base、route、order、isolation、result は実行時の execution dat
 意味を書き換えない。review goal、reviewer handoff、finding、QA result、persistence resource も Implementation Unit の意味ではなく
 execution data として扱う。
 
-### Optional implementation-unit design step
+### Mandatory implementation-unit-design boundary
 
-初期 Intake で明らかな境界は親が Implementation Unit 化する。分割、統合、semantic dependency が非自明な場合だけ、相互に境界判断が
-影響する関連成果候補群をまとめ、同じ context の内部工程として `implementation-unit-design` の手順を参照できる。成果候補ごとに個別起動せず、
-raw request から成果候補を再抽出させない。返された `implementation_units`、分割／統合 signal、`blocking_gaps` は候補であり、親は境界分析を
-同じ深さで繰り返さず、成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved
-`blocking_gaps` がないこと、Implementation Unit Data と execution data の境界だけを run-wide responsibility として再確認する。
+Implementation Unit を形成または再形成するとき、親は single / trivial を理由に `implementation-unit-design` を bypass しない。親が選定した non-empty normalization target を、候補数や自明性によらず一度 `implementation-unit-design` へ渡す。normalization target が空のときは起動しない。
 
-初期のこの step では、親は候補群と grounding に加えて、invocation 固有の確認順序と attention priority を
+親は current Implementation Unit / candidate、未処理 obligation、意味変更 / drift / grouping evidence などの既存 context から関連 normalization target を組む。raw request から新しい候補抽出 phase を作らない。成果候補ごとに個別起動しない。返された `implementation_units`、分割／統合 signal、`blocking_gaps` は候補である。
+
+返却後にだけ、親は成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved `blocking_gaps` がないこと、Implementation Unit Data と execution data の境界、候補の採否と ID を run-wide responsibility として確定する。fresh ID / context と dependency edge は、この再確認の後にだけ確定する。`impl-lead` は RMO path / loader / Method mapping を持たない。
+
+この boundary では、親は候補群と grounding に加えて、invocation 固有の確認順序と attention priority を
 `partition_perspectives` として渡せる。これは答えを先付けするものではなく、次の観点を必要な順序で照らすための
 transient execution Data である。
 親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。
@@ -89,7 +89,27 @@ runtime が Skill 間起動を提供しない場合は、親が `implementation-
 親が候補を採用・差し戻し・stop-incomplete とする判断と、実装・委譲の実行責務は変わらない。
 
 実行中の再正規化では新しい成果候補抽出 phase を追加しない。既存の統合、追加分割、部分成果の独立再構成、semantic dependency
-edge の再接続を維持し、必要なら `implementation-unit-design` を使えるが、初期 Intake の成果候補 discipline を execution-time 全体へ広げない。
+edge の再接続を維持する。
+
+unit を形成または再形成する次の入口は、上記 mandatory boundary へ接続する。
+
+- `dependency-dispatch-guard` が `blocked` を返した後、親が再正規化を選ぶ場合
+- `implementation-unit-continuation-routing` が `renormalization-required` を返した場合
+- protected dirty / base drift の後、親が再正規化を選ぶ場合
+- worker-tier 選択前に AC / 責任境界 / dependency の再設計が必要な場合
+- non-empty selected remediation grouping
+- grouping-relevant evidence が material に変化した regrouping
+- risk finding 競合の解消として再正規化を選ぶ場合
+
+次は再正規化入口にしない。
+
+- same-context 限定修正（`same-context-continuation`）
+- zero findings
+- grouping-relevant evidence が不変な場合
+- promoted obligation の再入力
+- 親が再正規化ではなく確認または `stop-incomplete` を選ぶ route
+
+空 invocation、固定回数、recursive loop を追加しない。
 
 ## Programmatic Flows
 
@@ -128,8 +148,8 @@ Outcomes: write boundary を備えた handoff、または no-write の `blocked`
 
 Trigger: 親が返却結果に追加作業が必要と確定し、変更の意味分類を完了したとき。
 Inputs: 同じ ID の AC・scope・責任境界・依存が不変な限定修正、または意味変更・accepted 単位の変更という親の分類、旧 ID / context、依存 edge。
-Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は新しい ID / fresh context へ送る。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
-Outcomes: `same-context-continuation`、`new-id-fresh-context`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。
+Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は ID / context を確定せず `renormalization-required` を返す。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
+Outcomes: `same-context-continuation`、`renormalization-required`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。
 
 ### parallel-candidate-integration
 
@@ -232,7 +252,7 @@ owner が run-owned resource の ownership、判断、Action、結果照合を�
 ユーザーが指定した worker が品質下限を満たせない場合も無断で変更・続行せず、制約緩和を確認するか、未完了範囲と判断点を
 付けて `stop-incomplete` とする。固定閾値や決定表、暗黙の追加実行環境は持ち込まない。
 
-normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `implementation-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
+normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を mandatory implementation-unit-design boundary へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。
 
 既定の実行順は直列である。各 worker の結果は accept 候補に過ぎず、親が run の baseline に適用して確認するまで
 accepted ではない。統合後の diff、dirty state、AC、scope、precondition、side effect、repository-native verification
@@ -443,7 +463,7 @@ remediation の `partition_perspectives` は、origin verified snapshot、findin
 
 apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `implementation-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。
 
-各 remediation group 全体を既存の `implementation-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。
+各 remediation group 全体を既存の `implementation-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。意味変更、accepted 単位の変更、cross-ID、または一つの既存 ID 由来の obligation を複数 group へ split した各 group は `renormalization-required` とし、finding identity は保持する。fresh unique ID / context は mandatory boundary 返却後に親が確定する。
 
 Implementation Unit grouping は外側の accept / dispatch boundary、Batch Resolve Kernel partition は各 Implementation Unit 内側の apply / verify boundary とする。Kernel は一つの Implementation Unit を複数 partition へ refine できるが、複数 Implementation Unit を一つの partition へ coarsen せず、常時 1:1 ともしない。inner transaction closure だけで Implementation Unit を accept しない。
 
@@ -462,8 +482,9 @@ reviewer の severity や結論を `accept` に直結させず、unresolved find
 
 以下の一般的な `adopted` finding の修正・継続規則は `risk-directed review` に限る。`final writing gate` の finding はこの規則の
 対象外であり、後段の final writing gate 固有の stop / remediation 規則に従う。`adopted` finding の修正は既存の route / context 規則へ戻す。同じ ID で AC、scope、責任境界、依存が不変の限定修正だけを
-同じ context へ返す。意味契約が変わる修正は新しい ID と fresh context へ再正規化し、固定修正 agent を導入しない。修正後は
-親 QA と repository-native verification を再実行し、影響を受けた review goal
+同じ context へ返す。
+意味契約が変わる修正は `implementation-unit-continuation-routing` へ渡し、`renormalization-required` のときは mandatory implementation-unit-design boundary へ接続する。固定修正 agent を導入しない。
+修正後は親 QA と repository-native verification を再実行し、影響を受けた review goal
 だけを新しい snapshot で再 review する。親 QA、新 diff、新 test、副作用 evidence が新しい具体的 risk を示し、結果が判断を
 変えうる場合だけ新しい review goal と対応 reviewer を追加する。影響も新 risk もない reviewer を一律再起動しない。
 

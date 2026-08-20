@@ -1,8 +1,9 @@
-[contracts.implementation-unit-design-internal-guard-requires-a9ff1408b786]
+# Why Not: consumer must accept caller-selected single targets without restoring nontrivial-only or raw-request re-extraction.
+[contracts.implementation-unit-design-internal-guard-requires-f040d350ad94]
 kind = "requires"
 slice = "implementation-unit-design-internal-guard"
-pattern = '''ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
-非自明な `impl-lead` の工程としてだけ使う。'''
+pattern = '''ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、`impl-lead` が選定した non-empty normalization target（単一候補を含む）を受け付ける工程としてだけ使う。正式な Implementation Unit normalization の入口は `impl-lead` だけであり、この Skill
+自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。normalization target が空のときは起動せず、raw request から成果候補を再抽出しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-implementation-unit-data-fields-736f03a8ee36]
@@ -76,13 +77,14 @@ Procedure: writable scope Kernel だけを scope assignment procedure の唯一�
 Outcomes: write boundary を備えた handoff、または no-write の `blocked`。scope 変更や追加領域は Agentic な親の明示 handoff update へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-implementation-unit-continuation-flow-c3ab2a147350]
+# Why Not: Flow must not restore direct new-ID assignment; renormalization-required leaves ID/context unset.
+[contracts.impl-implementation-unit-continuation-flow-d132c8bb8838]
 kind = "requires"
 slice = "impl-programmatic-flow-implementation-unit-continuation-routing"
 pattern = '''Trigger: 親が返却結果に追加作業が必要と確定し、変更の意味分類を完了したとき。
 Inputs: 同じ ID の AC・scope・責任境界・依存が不変な限定修正、または意味変更・accepted 単位の変更という親の分類、旧 ID / context、依存 edge。
-Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は新しい ID / fresh context へ送る。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
-Outcomes: `same-context-continuation`、`new-id-fresh-context`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。'''
+Procedure: 限定修正だけを同じ ID / context へ continuation し、意味変更または accepted 単位の変更は ID / context を確定せず `renormalization-required` を返す。依存 edge を一意に再接続できなければ `blocked` とし、二重計上しない。
+Outcomes: `same-context-continuation`、`renormalization-required`、または `blocked`。分類や再接続の意味判断が未確定なら Agentic な親へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: identity and required fields form one relation; Gunte success must not be read as a runtime 15-minute or interrupt-judgment guarantee, and this predicate does not change implementation-unit-continuation-routing.
@@ -337,11 +339,11 @@ slice = "impl-risk-remediation-regrouping"
 pattern = '''apply / verify / isolate / applicability check により、membership、dependency / conflict / shared invariant、verification point interaction、authority / side effect、rollback / failure isolation、promotion precondition の grouping-relevant evidence が実質変化した場合、親は元の Resolution Batch に閉じた corrective adjudication を行い、次の apply 前に current verified snapshot と未処理 selected obligations だけを `implementation-unit-design` へ再入力する。promoted obligation は再入力、再 apply、別 group への再統合をせず、evidence と membership が不変なら再実行しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: continuation identity belongs to the accepted group boundary, while finding identity remains lossless evidence.
-[contracts.impl-risk-remediation-continuation-32c9d259f550]
+# Why Not: remediation continuation must not pre-assign fresh ID/context before renormalization-required.
+[contracts.impl-risk-remediation-continuation-b7f5767bc006]
 kind = "requires"
 slice = "impl-risk-remediation-continuation"
-pattern = '''各 remediation group 全体を既存の `implementation-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。cross-ID、new-ID-required、または一つの既存 ID 由来の obligation を複数 group へ split した各 group には fresh unique ID / context を割り当て、finding identity は保持する。'''
+pattern = '''各 remediation group 全体を既存の `implementation-unit-continuation-routing` へ渡す。一つの既存 ID に由来する全 obligation が一 group に閉じ、aggregate AC、scope、責任境界、dependency が不変の場合だけ same ID / context を使う。意味変更、accepted 単位の変更、cross-ID、または一つの既存 ID 由来の obligation を複数 group へ split した各 group は `renormalization-required` とし、finding identity は保持する。fresh unique ID / context は mandatory boundary 返却後に親が確定する。'''
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: Implementation Unit acceptance encloses Kernel transactions; transaction closure alone cannot coarsen or accept the outer unit.
@@ -414,11 +416,11 @@ slice = "impl-implementation-unit-design-initial-partition-caller"
 pattern = '''親は `partition_perspectives` として semantic outcome / purpose、independent AC / focused verification、accept / rollback boundary、semantic dependency、execution conflict / order / isolation、run-wide final gate を渡せる。'''
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: worker capability may reflect implementation difficulty, but must not absorb unresolved Implementation Unit boundaries.
-[contracts.impl-worker-tier-partition-interception-dffb1f5fe8d6]
+# Why Not: worker-tier interception is a re-normalization entry, not a private bypass of the canonical boundary.
+[contracts.impl-worker-tier-partition-interception-46c49a7199c2]
 kind = "requires"
 slice = "impl-worker-tier-partition-interception"
-pattern = '''normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を `implementation-unit-design` へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。'''
+pattern = '''normalization 後の worker selection は dispatch まで provisional とする。上位 worker の選択理由が実装難易度ではなく、残存判断密度、複数 semantic family の保持、worker による AC / 責任境界 / dependency の再設計である場合、親は同じ candidate identity と観測理由を mandatory implementation-unit-design boundary へ一度だけ戻す。境界が明瞭なら final selection へ進み、閉じなければ `blocking_gaps` または `stop-incomplete` とする。上位 worker が実装難易度のため必要なら維持でき、上位 worker 禁止、自動 split、tier threshold、再帰 loop を導入しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: invocation guidance, merge preservation, remediation binding, and relation casebook form bounded partition Data.
@@ -446,10 +448,11 @@ slice = "implementation-unit-design-partition-remediation-binding"
 pattern = '''remediation candidate は、同じ origin verified snapshot に束縛された親裁定済み selected finding obligation として入力でき、identity、obligation、AC、mutation oracle、disposition、既存 context を保持する。元の Skill 数や Implementation Unit 数を partition の根拠にしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.implementation-unit-design-partition-casebook-c13dcee955f2]
+# Why Not: Phase 2a relations are independent of the #249/#210 witnesses; collapsing them into one oracle must fail.
+[contracts.implementation-unit-design-partition-casebook-c79844fdf4bb]
 kind = "requires"
 slice = "implementation-unit-design-partition-casebook"
-pattern = '''Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。exact Implementation Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。'''
+pattern = "Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。Phase 2a の Shared Surface ≠ Semantic Dependency、Hidden Semantic Dependency、False Independent Verification、Foundation / Application、Incidental Repository Finding、および cardinality-one control を、input facts → authoritative reality → forbidden shortcut → preserved relation / valid control の関係として扱う。exact Implementation Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。fixed Unit 数または outcome oracle は置かない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.implementation-unit-partition-casebook-overmerge-e91defc6b121]
@@ -468,4 +471,172 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "implementation-unit-design-partition-casebook-oversplit"
 pattern = '''#249 remediation over-split: input facts は同一 verified snapshot、同じ横断 invariant、親裁定済み findings。forbidden shortcut は元 Skill / Implementation Unit 境界の機械継承または一括のための identity collapse。preserved relation は coherent apply と finding identity / obligation / AC / mutation oracle / disposition。valid control は authority / external side effect / intermediate snapshot / failure isolation / independent promotion が異なる場合の split。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: single/trivial bypass and empty invocation must fail independently of later mapping text.
+[contracts.impl-iud-initial-mandatory-a1864b1fcc31]
+kind = "requires"
+slice = "impl-mandatory-implementation-unit-design-boundary"
+pattern = '''Implementation Unit を形成または再形成するとき、親は single / trivial を理由に `implementation-unit-design` を bypass しない。親が選定した non-empty normalization target を、候補数や自明性によらず一度 `implementation-unit-design` へ渡す。normalization target が空のときは起動しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: parent coverage and ID assignment must remain after return; they must not move before implementation-unit-design.
+[contracts.impl-iud-parent-after-return-79bdcc8c61cc]
+kind = "requires"
+slice = "impl-mandatory-implementation-unit-design-boundary"
+pattern = '''返却後にだけ、親は成果候補が暗黙に消えていないこと、要求 coverage、要求されていない新成果がないこと、unresolved `blocking_gaps` がないこと、Implementation Unit Data と execution data の境界、候補の採否と ID を run-wide responsibility として確定する。fresh ID / context と dependency edge は、この再確認の後にだけ確定する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: impl-lead must not become an RMO consumer; kernel path decoys belong to the mention allowlist.
+[contracts.impl-no-rmo-consumer-47cd29c97c3a]
+kind = "requires"
+slice = "impl-mandatory-implementation-unit-design-boundary"
+pattern = '''`impl-lead` は RMO path / loader / Method mapping を持たない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: each formation/reformation entry must remain listed; deleting one pointer must fail this predicate.
+[contracts.impl-iud-renorm-entries-032fdb8f73c6]
+kind = "requires"
+slice = "impl-execution-time-renormalization-entries"
+pattern = '''unit を形成または再形成する次の入口は、上記 mandatory boundary へ接続する。
+
+- `dependency-dispatch-guard` が `blocked` を返した後、親が再正規化を選ぶ場合
+- `implementation-unit-continuation-routing` が `renormalization-required` を返した場合
+- protected dirty / base drift の後、親が再正規化を選ぶ場合
+- worker-tier 選択前に AC / 責任境界 / dependency の再設計が必要な場合
+- non-empty selected remediation grouping
+- grouping-relevant evidence が material に変化した regrouping
+- risk finding 競合の解消として再正規化を選ぶ場合'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: non-triggers must stay control routes; mutating them into mandatory invocation must fail independently.
+[contracts.impl-iud-renorm-controls-da6c3151017c]
+kind = "requires"
+slice = "impl-execution-time-renormalization-controls"
+pattern = '''次は再正規化入口にしない。
+
+- same-context 限定修正（`same-context-continuation`）
+- zero findings
+- grouping-relevant evidence が不変な場合
+- promoted obligation の再入力
+- 親が再正規化ではなく確認または `stop-incomplete` を選ぶ route
+
+空 invocation、固定回数、recursive loop を追加しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: meaning-changing risk fixes must not assign ID/context before the canonical boundary.
+[contracts.impl-risk-meaning-change-renorm-f5a376382c59]
+kind = "requires"
+slice = "impl-risk-finding-meaning-change-route"
+pattern = '''意味契約が変わる修正は `implementation-unit-continuation-routing` へ渡し、`renormalization-required` のときは mandatory implementation-unit-design boundary へ接続する。固定修正 agent を導入しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: cardinality-one input must not revert to related-candidate-only.
+[contracts.implementation-unit-design-input-single-c5ba9e1990a7]
+kind = "requires"
+slice = "implementation-unit-design-caller-selected-input"
+pattern = '''`impl-lead` が選定した non-empty normalization target。単一候補を含み、相互に境界判断が影響する関連成果候補群に限らない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields form one relation; deleting any field must fail independently of mapping prose.
+[contracts.iud-rmo-loader-data-83f57c831195]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = '''path = ../../references/reality-model-observation-kernel.md
+load_timing = after caller context is established and immediately before boundary reasoning
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
+failure = blocking_gaps
+owner = implementation-unit-design parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader failure must not be flattened into Reality Uncertainty.
+[contracts.iud-rmo-fail-distinct-a04e3ec45074]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = '''loader / identity / required-section の不足・不一致では reasoning を開始せず、既存 `blocking_gaps` へ返す。これは Reality evidence の Uncertainty と区別する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: cardinality 1 must not collapse to empty or inter-candidate-only Target.
+[contracts.iud-rmo-target-cardinality-5bd8a15ca0ad]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = "Target は、入力 normalization target が示す Implementation Unit boundary / semantic dependency / independent acceptability の実在関係とする。複数候補では candidate 間 relation を扱う。単一候補では、その提案 boundary が単一の independently acceptable outcome を囲むか、入力 candidate と authoritative context に既に現れる複数 purpose / AC / verification / accept-rollback boundary を隠しているかを扱う。raw request から別候補を再抽出しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: authority conflict must remain Uncertainty; guessing a winner must fail this predicate.
+[contracts.iud-rmo-authority-context-7f24c54d0403]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = '''authoritative context は request、repository contract / evidence、AC / verification reality、accept / rollback reality、dependency evidence、accepted state とする。authority / precedence が未解決なら一方を推測採用せず Uncertainty とする。安全な normalization を阻害するときだけ `blocking_gaps` で caller へ返す。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: RMO must not become a partition solver or auto-block; Incidental must not become an obligation.
+[contracts.iud-rmo-output-mapping-f8fd5c5d8315]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = '''Target-relative Problem / constraint は既存 split / merge / dependency reasoning の grounded evidence とする。Incidental Finding は Unit / obligation へ昇格させない。Uncertainty は上記 bounded mapping に従う。RMO result を split / merge / dependency verdict または `blocking_gaps` へ直接変換せず、既存 semantics が判断する。new grounded evidence で Problem Derivation 前の derivation が無効になった場合だけ Reintegration する。Problem Derivation 後は STOP し、partition verdict を持たない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: trace, sufficiency split, and observation/inference must remain in existing output without new fields.
+[contracts.iud-rmo-grounding-trace-74f08a4f1ab5]
+kind = "requires"
+slice = "implementation-unit-design-rmo-parent-mapping"
+pattern = '''RMO grounding trace は新 schema なしで既存 output へ保持する。split / merge / dependency の各 signal・reason・observation に、Target、authoritative evidence、observation / inference、discrepancy、mismatch attribution、membership、Model Sufficiency と Observed Evidence Sufficiency を区別可能に残す。Target-relative / Incidental / non-blocking Uncertainty も observation へ trace し、blocking Uncertainty だけを `blocking_gaps` へ、何が未確定か・必要 evidence とともに写す。`implementation_units` の field は増やさない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: over-merge via shared surface must remain an independent witness.
+[contracts.iud-casebook-shared-surface-7de9711c5526]
+kind = "requires"
+slice = "implementation-unit-design-casebook-shared-surface"
+pattern = "Shared Surface ≠ Semantic Dependency: input facts は独立した AC / focused verification / accept-rollback と共有 file / generator / registry / generated output / verification surface。authoritative reality は independent acceptability と execution conflict。forbidden shortcut は shared surface だけで merge すること。preserved relation は Shared Surface ≠ Semantic Dependency。valid control は本当に同じ受入境界でしか Green にならない候補の merge を許すこと。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: hidden dependency over-split must remain an independent witness.
+[contracts.iud-casebook-hidden-dependency-11b6b0d86166]
+kind = "requires"
+slice = "implementation-unit-design-casebook-hidden-dependency"
+pattern = "Hidden Semantic Dependency: input facts は file / layer / test surface の見た目の分離と、B が A の capability / invariant なしでは Green / accept できない関係。authoritative reality は実在する semantic dependency。forbidden shortcut は見た目の分離だけで false split すること。preserved relation は Hidden Semantic Dependency。valid control は RMO が split bias を作らず、独立して成立する候補の split を許すこと。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Gunte slice IDs are limited to 64 characters, so false-independent-verification is shortened.
+# Why Not: false independent verification must remain an independent witness.
+[contracts.iud-casebook-false-verification-051ce16f7efd]
+kind = "requires"
+slice = "implementation-unit-design-casebook-false-verification"
+pattern = "False Independent Verification: input facts は別 test の存在と、同一 invariant / shared state への依存。authoritative reality は一方だけでは成立しない independent Green / acceptability。forbidden shortcut は test が別という surface fact だけで independent Unit とすること。preserved relation は False Independent Verification。valid control は本当に独立した focused verification が成立する候補の分離を許すこと。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: foundation/application must not collapse to always-split or always-absorb.
+[contracts.iud-casebook-foundation-application-ee984cfcabb9]
+kind = "requires"
+slice = "implementation-unit-design-casebook-foundation-application"
+pattern = "Foundation / Application: input facts は foundation capability と application consumer、単独 contract / AC / verification / accept boundary の有無。authoritative reality は repository 上で独立成果として実在するか否か。forbidden shortcut は foundation を常に独立 Unit にすること、または常に application へ吸収すること。preserved relation は Foundation / Application の独立 boundary の有無。valid control は foundation が単独 capability / contract を持たなければ最初に価値を生む application が所有できること。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Incidental Finding must remain non-obligation; relocating this witness must fail.
+[contracts.iud-casebook-incidental-finding-ba6b1fe254d4]
+kind = "requires"
+slice = "implementation-unit-design-casebook-incidental-finding"
+pattern = "Incidental Repository Finding: input facts は boundary 調査中に見つかる、candidate outcomes の boundary / dependency / acceptability に影響しない別箇所の repository problem。authoritative reality は current Target 外であること。forbidden shortcut は Incidental Finding を新 Unit / current obligation に昇格すること。preserved relation は Incidental Finding を obligation 化しないこと。valid control は Target-relative な repository defect を既存 semantics の grounded evidence として扱うこと。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: single-candidate control must remain independent of the five relation cases.
+[contracts.iud-casebook-cardinality-one-3e3af52e3943]
+kind = "requires"
+slice = "implementation-unit-design-casebook-cardinality-one"
+pattern = "cardinality-one: input facts は単一の入力候補。authoritative reality は、提案 boundary が単一の independently acceptable outcome を囲むか、入力 candidate と authoritative context に既に現れる複数 purpose / AC / verification / accept-rollback boundary を隠しているか。forbidden shortcut は単一候補だから grounding せず通過すること、または単一 outcome なのに split すること。preserved relation は cardinality-one の Target が boundary / semantic dependency / independent acceptability に限定されること。valid control は単一 outcome なら不要 split しないこと。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Observation Points must stay observational; promoting them to schema or field must fail.
+[contracts.iud-casebook-observation-points-98735ad3fbad]
+kind = "requires"
+slice = "implementation-unit-design-casebook-observation-points"
+pattern = '''common Observation Points は invocation 内の判断補助であり、schema や outward field にはしない。
+
+- `before`: RMO 適用前の shortcut / abstract reasoning
+- `observation`: authoritative reality / discrepancy / constraint
+- `after`: split / merge / dependency reasoning の変化
+- `boundary`: RMO 自身が partition verdict を出していないこと、Incidental Finding を obligation 化していないこと、unnecessary detail expansion が増えていないこと'''
 applies_to = ["claude", "codex", "cursor"]
