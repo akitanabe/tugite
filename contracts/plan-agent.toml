@@ -11,6 +11,69 @@ pattern = '''明示起動された plan-family public workflow parent の同じ 
 plan-family 外の workflow からの流用はしない。'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: loader fields must remain one relation; semantic gate assessment belongs to EVAL.
+[contracts.shg-rmo-loader-data-453907002320]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = '''path = ../../references/reality-model-observation-kernel.md
+load_timing = after caller context is established and immediately before candidate assessment
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
+failure = context-not-established
+owner = structural-health-gate parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-rmo-fail-distinct-ef0e8708ffbe]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = "loader failure は `context-not-established` として親の既存 routing で `stop-incomplete` へ返す。これは Reality evidence 不足の `insufficient-evidence` と区別する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-rmo-viewpoint-b0a3c57f2d16]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = "は Observation Viewpoint として使う。taxonomy を verdict にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-rmo-target-only-59b2413c6c8c]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = "Target-relative Structural Problem だけを structural finding とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-rmo-local-incidental-06ff5dbd32e4]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = "local wording / detail は Incidental Finding"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-rmo-no-false-root-9037f2c34a49]
+kind = "requires"
+slice = "structural-health-gate-rmo-parent-mapping"
+pattern = "同一因果を grounding できる surface だけを root problem に統合し、独立した problem を圧縮しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-boundary-viewpoint-8aa61411daa0]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = '''これらは Observation Viewpoint であり、
+Kernel の taxonomy ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-boundary-no-local-a39477597645]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = '''local wording / detail は Incidental Finding とし、
+structural finding にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shg-boundary-loader-distinct-89377816a5d4]
+kind = "requires"
+slice = "structural-health-gate-boundary"
+pattern = "これは loader failure の `context-not-established` と混同しない。"
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: loader fields must remain one relation; order anchors separately protect meaningful timing.
 [contracts.plan-candidate-producer-batch-loader-data-afb23bdae9ec]
 kind = "requires"
@@ -71,18 +134,96 @@ failure = stop-incomplete
 owner = plan-candidate-producer parent
 delegate_path_resolution = false'''
 applies_to = ["claude", "codex", "cursor"]
-# Why Not: loader fields must remain one relation; semantic reviewer behavior belongs to EVAL.
-[contracts.review-necessity-loader-data-e2bcbd43ae0c]
+# Why Not: loader fields must remain one relation; semantic RMO membership / adjudication belongs to EVAL.
+[contracts.review-rmo-loader-data-5119909ac753]
 kind = "requires"
-slice = "review-refine-kernel-parent-mapping"
-pattern = '''path = ../../references/necessity-kernel.md
-load_timing = before reviewer invocation or parent adjudication
-identity = necessity-kernel-v1
-required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+slice = "review-refine-rmo-parent-mapping"
+pattern = '''path = ../../references/reality-model-observation-kernel.md
+load_timing = after normal reviewer result collection and before parent adjudication
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
 failure = return-to-parent
 owner = review-refine parent
 delegate_path_resolution = false'''
 applies_to = ["claude", "codex", "cursor"]
+# Why Not: loader fields must remain one relation; semantic deletion adjudication belongs to EVAL.
+[contracts.review-dtm-loader-data-448b9b95c48a]
+kind = "requires"
+slice = "review-refine-deletion-test-parent-mapping"
+pattern = '''path = ../../references/deletion-test-method.md
+load_timing = after final-trim reviewer result collection and before parent adjudication
+identity = deletion-test-method-v1
+required_sections = [Inputs, Procedure, Semantic Results, Non-goals]
+failure = return-to-parent
+owner = review-refine parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-rmo-no-auto-adopt-a63609c27bdf]
+kind = "requires"
+slice = "review-refine-rmo-parent-mapping"
+pattern = '''Target-relative Derived Problem
+だけを remediation Claim の候補にできるが、自動採用しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-rmo-incidental-oos-24853375e0d6]
+kind = "requires"
+slice = "review-refine-rmo-parent-mapping"
+pattern = '''Incidental Finding は current modification
+obligation にせず `out-of-scope` へ'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-rmo-finding-trigger-4fadfe7a1b69]
+kind = "requires"
+slice = "review-refine-rmo-parent-mapping"
+pattern = '''通常 reviewer の observation は
+Observation Trigger であり grounding evidence ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-forbid-necessity-004788ae9925]
+kind = "forbids"
+slice = "review-refine-rmo-parent-mapping"
+pattern = "necessity-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-dtm-selected-set-0400a908dde0]
+kind = "requires"
+slice = "review-refine-deletion-test-parent-mapping"
+pattern = '''apply 前に
+coherent selected deletion set 全体も一つの deletion candidate として origin / current verified snapshot に
+対して再評価する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-dtm-no-batch-witness-740cb38f24cb]
+kind = "requires"
+slice = "review-refine-deletion-test-parent-mapping"
+pattern = '''個別 candidate の
+評価で同じ selected Batch 内の別 candidate を stable remaining witness として扱わない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-dtm-updated-snapshot-ded1751ea0e8]
+kind = "requires"
+slice = "review-refine-deletion-test-parent-mapping"
+pattern = "更新後は新しい snapshot で再判定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-forbid-old-preflight-name]
+kind = "forbids"
+pattern = "review-kernel-preflight"
+paths = [
+  "plugins/claude/skills/review-refine/SKILL.md",
+  "plugins/codex/skills/review-refine/SKILL.md",
+  "plugins/cursor/skills/review-refine/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-ledger-grounding-9b558451510d]
+kind = "requires"
+slice = "review-refine-batch-resolve-kernel-parent-mapping"
+pattern = '''Target、grounding trace、observation / inference、
+membership、attribution を再現可能な形で残す。'''
+applies_to = ["claude", "codex", "cursor"]
+
 # Why Not: loader fields must remain one relation; the order anchor protects meaningful timing.
 [contracts.review-batch-loader-data-bab77a47fc0f]
 kind = "requires"
@@ -442,10 +583,22 @@ before = "plan-candidate-producer-kernel-reference"
 after = "plan-candidate-producer-kernel-criteria"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-reference-before-criteria]
+[contracts.review-refine-rmo-reference-before-criteria]
 kind = "order"
-before = "review-refine-kernel-reference"
-after = "review-refine-kernel-criteria"
+before = "review-refine-rmo-reference"
+after = "review-refine-rmo-criteria"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-dtm-reference-before-criteria]
+kind = "order"
+before = "review-refine-deletion-test-reference"
+after = "review-refine-deletion-test-criteria"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-rmo-before-batch]
+kind = "order"
+before = "review-refine-rmo-criteria"
+after = "review-refine-resolution-transaction-start"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-refine-adjudication-requires-6121b42635ea]
@@ -1683,13 +1836,13 @@ slice = "review-refine-programmatic-flows"
 pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-preflight-flow-bbbc01a4b407]
+[contracts.review-refine-reference-preflight-flow-d2e902bf9823]
 kind = "requires"
-slice = "review-kernel-preflight"
-pattern = '''Trigger: 親が reviewer invocation、parent adjudication、または最初の Resolution Transaction の各 timing に向けて kernel preflight を要求したとき。
-Inputs: `necessity-kernel-v1` と `batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
-Procedure: `necessity-kernel-v1` は reviewer invocation または parent adjudication の直前に、`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に、それぞれ一度だけ load と identity / 必要本文を検証する。necessity の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、necessity failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
-Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または necessity failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。'''
+slice = "review-reference-preflight"
+pattern = '''Trigger: 親が reviewer result collection 後の parent adjudication、または最初の Resolution Transaction の各 timing に向けて reference preflight を要求したとき。
+Inputs: `reality-model-observation-kernel-v1`、`deletion-test-method-v1`、`batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
+Procedure: `reality-model-observation-kernel-v1` は通常 reviewer result collection 後、parent adjudication 直前に一度だけ load と identity / 必要本文を検証する。`deletion-test-method-v1` は final-trim reviewer result collection 後、parent adjudication 直前に一度だけ load と identity / 必要本文を検証する。`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に一度だけ load と identity / 必要本文を検証する。RMO / Deletion Test の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、RMO / Deletion Test failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
+Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または RMO / Deletion Test failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-refine-deferred-freeze-flow-5129b54f4308]
@@ -1767,9 +1920,9 @@ count = 5
 paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-preflight-flow-occurrences]
+[contracts.review-refine-reference-preflight-flow-occurrences]
 kind = "occurrences"
-pattern = "### review-kernel-preflight"
+pattern = "### review-reference-preflight"
 count = 1
 paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
@@ -1802,22 +1955,22 @@ count = 1
 paths = ["plugins/claude/skills/review-refine/SKILL.md", "plugins/codex/skills/review-refine/SKILL.md", "plugins/cursor/skills/review-refine/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-preflight-field-order]
+[contracts.review-refine-reference-preflight-field-order]
 kind = "order"
-before = "review-kernel-preflight-trigger"
-after = "review-kernel-preflight-inputs"
+before = "review-reference-preflight-trigger"
+after = "review-reference-preflight-inputs"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-preflight-inputs-before-procedure]
+[contracts.review-refine-reference-preflight-inputs-before-procedure]
 kind = "order"
-before = "review-kernel-preflight-inputs"
-after = "review-kernel-preflight-procedure"
+before = "review-reference-preflight-inputs"
+after = "review-reference-preflight-procedure"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-kernel-preflight-procedure-before-outcomes]
+[contracts.review-refine-reference-preflight-procedure-before-outcomes]
 kind = "order"
-before = "review-kernel-preflight-procedure"
-after = "review-kernel-preflight-outcomes"
+before = "review-reference-preflight-procedure"
+after = "review-reference-preflight-outcomes"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.review-refine-deferred-freeze-field-order]

@@ -18,6 +18,8 @@ files = [
   "contracts/resolve-kernel.toml",
   "contracts/writable-scope-kernel.toml",
   "contracts/behavior-observation-kernel.toml",
+  "contracts/reality-model-observation-kernel.toml",
+  "contracts/deletion-test-method.toml",
   "contracts/destination-selection.toml",
 ]
 
@@ -43,6 +45,8 @@ files = [
   "shared/resolve-kernel.md",
   "shared/writable-scope-kernel.md",
   "shared/behavior-observation-kernel.md",
+  "shared/reality-model-observation-kernel.md",
+  "shared/deletion-test-method.md",
   # Why Not: pin 本文は Tugite 内で編集せず、内容変更は akitanabe/clarify-it を変えてから手動再同期する。CI / runtime では fetch しない。
   "upstream/clarify-it/skills/clarify-it/SKILL.md",
   "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
@@ -192,6 +196,18 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/reality-model-observation-kernel.md"
+path = "references/reality-model-observation-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/agents/*.md"
 path = "agents/{1}.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -286,6 +302,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/behavior-observation-kernel.md"
 path = "references/behavior-observation-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/reality-model-observation-kernel.md"
+path = "references/reality-model-observation-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -400,6 +428,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/behavior-observation-kernel.md"
 path = "references/behavior-observation-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/reality-model-observation-kernel.md"
+path = "references/reality-model-observation-kernel.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
