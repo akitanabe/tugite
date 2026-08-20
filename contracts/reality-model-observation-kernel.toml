@@ -16,12 +16,15 @@ exclude_paths = [
   "plugins/claude/references/reality-model-observation-kernel.md",
   "plugins/claude/skills/review-refine/SKILL.md",
   "plugins/claude/skills/structural-health-gate/SKILL.md",
+  "plugins/claude/skills/implementation-unit-design/SKILL.md",
   "plugins/codex/references/reality-model-observation-kernel.md",
   "plugins/codex/skills/review-refine/SKILL.md",
   "plugins/codex/skills/structural-health-gate/SKILL.md",
+  "plugins/codex/skills/implementation-unit-design/SKILL.md",
   "plugins/cursor/references/reality-model-observation-kernel.md",
   "plugins/cursor/skills/review-refine/SKILL.md",
   "plugins/cursor/skills/structural-health-gate/SKILL.md",
+  "plugins/cursor/skills/implementation-unit-design/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]
 

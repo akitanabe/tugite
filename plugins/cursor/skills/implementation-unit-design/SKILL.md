@@ -10,9 +10,8 @@ description: >-
 ## 位置づけと発火
 
 この Skill は新しい worker を起動するものではなく、呼び出し元の親が同じ context で従う判断手順書である。
-ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、実装単位の分割、統合、semantic dependency が
-非自明な `impl-lead` の工程としてだけ使う。正式な Implementation Unit normalization の入口は `impl-lead` だけであり、この Skill
-自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。
+ユーザーの直接要求、通常会話、`plan-agent` から暗黙に設計を始めず、`impl-lead` が選定した non-empty normalization target（単一候補を含む）を受け付ける工程としてだけ使う。正式な Implementation Unit normalization の入口は `impl-lead` だけであり、この Skill
+自身は要求全体から成果を決めず、実装・委譲・後続工程を開始しない。normalization target が空のときは起動せず、raw request から成果候補を再抽出しない。
 
 runtime で Skill 間起動が提供されない場合、親はこの本文を工程として直接参照する。発火条件、入力、
 候補の裁定、blocking の扱い、採用・実行・保存を親が持つという責務は変えない。
@@ -21,7 +20,7 @@ runtime で Skill 間起動が提供されない場合、親はこの本文を�
 
 親から、`normalization candidates`、grounding、invocation 固有の `partition_perspectives` の組を入力として受け取る。
 
-- `impl-lead` が要求全体から観測した、相互に境界判断が影響する関連成果候補群。
+- `impl-lead` が選定した non-empty normalization target。単一候補を含み、相互に境界判断が影響する関連成果候補群に限らない。
 - grounding としての要求原文、AC の素材、constraints、既知の依存、repository の現状と既存調査。再正規化では
   既存 Implementation Unit 集合、accepted 状況、worker 返却も含む。
 - invocation ごとに親が注入する `partition_perspectives`。これは確認順序と attention priority を示す transient execution Data であり、観点外の既存原則・全入力・既存 signal・candidate facts を取り除かない。
@@ -46,6 +45,30 @@ remediation candidate は、同じ origin verified snapshot に束縛された�
 `worker`、`base_snapshot`、`isolation`、route、order、実行結果、review、保存先、
 後続 Skill の起動権限を出力へ含めない。
 候補の採用、再検査、accept／stop-incomplete、委譲、実行、保存は必ず受け取り側の親が判断する。
+
+## reality-model-observation-kernel v1 の parent mapping
+
+caller context 成立後、boundary reasoning 直前に各 invocation 一度 load する。次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/reality-model-observation-kernel.md
+load_timing = after caller context is established and immediately before boundary reasoning
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
+failure = blocking_gaps
+owner = implementation-unit-design parent
+delegate_path_resolution = false
+```
+
+loader / identity / required-section の不足・不一致では reasoning を開始せず、既存 `blocking_gaps` へ返す。これは Reality evidence の Uncertainty と区別する。推測で継続しない。
+
+Target は、入力 normalization target が示す Implementation Unit boundary / semantic dependency / independent acceptability の実在関係とする。複数候補では candidate 間 relation を扱う。単一候補では、その提案 boundary が単一の independently acceptable outcome を囲むか、入力 candidate と authoritative context に既に現れる複数 purpose / AC / verification / accept-rollback boundary を隠しているかを扱う。raw request から別候補を再抽出しない。要求全体、solution design、Task Specification 自体を Target にしない。
+
+authoritative context は request、repository contract / evidence、AC / verification reality、accept / rollback reality、dependency evidence、accepted state とする。authority / precedence が未解決なら一方を推測採用せず Uncertainty とする。安全な normalization を阻害するときだけ `blocking_gaps` で caller へ返す。
+
+Target-relative Problem / constraint は既存 split / merge / dependency reasoning の grounded evidence とする。Incidental Finding は Unit / obligation へ昇格させない。Uncertainty は上記 bounded mapping に従う。RMO result を split / merge / dependency verdict または `blocking_gaps` へ直接変換せず、既存 semantics が判断する。new grounded evidence で Problem Derivation 前の derivation が無効になった場合だけ Reintegration する。Problem Derivation 後は STOP し、partition verdict を持たない。
+
+RMO grounding trace は新 schema なしで既存 output へ保持する。split / merge / dependency の各 signal・reason・observation に、Target、authoritative evidence、observation / inference、discrepancy、mismatch attribution、membership、Model Sufficiency と Observed Evidence Sufficiency を区別可能に残す。Target-relative / Incidental / non-blocking Uncertainty も observation へ trace し、blocking Uncertainty だけを `blocking_gaps` へ、何が未確定か・必要 evidence とともに写す。`implementation_units` の field は増やさない。
 
 ## 判断の進め方
 
@@ -98,11 +121,24 @@ layer 固有の要求が独立検証できる場合だけ、結果として 1 un
 
 Casebook は relation を再確認するための invocation 内の判断補助であり、canonical Implementation Unit の正本や exact Implementation Unit 数の oracle ではない。
 
-Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。exact Implementation Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。
+Relation-based Casebook は #249 initial over-merge、#210 kernel / caller、#249 remediation over-split を、input facts → forbidden shortcut → preserved relation → valid control の関係として扱う。Phase 2a の Shared Surface ≠ Semantic Dependency、Hidden Semantic Dependency、False Independent Verification、Foundation / Application、Incidental Repository Finding、および cardinality-one control を、input facts → authoritative reality → forbidden shortcut → preserved relation / valid control の関係として扱う。exact Implementation Unit 数を oracle にせず、新しい正本にも、canonical output や impl-lead 親の採否・coverage・ID・dispatch・accept 責務の代替にもならない。fixed Unit 数または outcome oracle は置かない。
 
 - #249 initial over-merge: input facts は independent outcomes / AC / focused verification / accept-rollback と shared surfaces。forbidden shortcut は shared surfaces / run-wide gate だけで merge すること。preserved relation は independent acceptability と dependency / conflict の分離。valid control は本当に同じ受入境界でしか Green にならない候補の merge を許すこと。
 - #210 kernel / caller: input facts は kernel foundation と proposal/review consumers、shared generator/registry。forbidden shortcut は shared surface だけで統合すること。preserved relation は foundation capability と consumer 別 AC / verification / rollback、および dependency。valid control は foundation が単独 capability / contract を持たなければ最初に価値を生む application が所有できること。
 - #249 remediation over-split: input facts は同一 verified snapshot、同じ横断 invariant、親裁定済み findings。forbidden shortcut は元 Skill / Implementation Unit 境界の機械継承または一括のための identity collapse。preserved relation は coherent apply と finding identity / obligation / AC / mutation oracle / disposition。valid control は authority / external side effect / intermediate snapshot / failure isolation / independent promotion が異なる場合の split。
+- Shared Surface ≠ Semantic Dependency: input facts は独立した AC / focused verification / accept-rollback と共有 file / generator / registry / generated output / verification surface。authoritative reality は independent acceptability と execution conflict。forbidden shortcut は shared surface だけで merge すること。preserved relation は Shared Surface ≠ Semantic Dependency。valid control は本当に同じ受入境界でしか Green にならない候補の merge を許すこと。
+- Hidden Semantic Dependency: input facts は file / layer / test surface の見た目の分離と、B が A の capability / invariant なしでは Green / accept できない関係。authoritative reality は実在する semantic dependency。forbidden shortcut は見た目の分離だけで false split すること。preserved relation は Hidden Semantic Dependency。valid control は RMO が split bias を作らず、独立して成立する候補の split を許すこと。
+- False Independent Verification: input facts は別 test の存在と、同一 invariant / shared state への依存。authoritative reality は一方だけでは成立しない independent Green / acceptability。forbidden shortcut は test が別という surface fact だけで independent Unit とすること。preserved relation は False Independent Verification。valid control は本当に独立した focused verification が成立する候補の分離を許すこと。
+- Foundation / Application: input facts は foundation capability と application consumer、単独 contract / AC / verification / accept boundary の有無。authoritative reality は repository 上で独立成果として実在するか否か。forbidden shortcut は foundation を常に独立 Unit にすること、または常に application へ吸収すること。preserved relation は Foundation / Application の独立 boundary の有無。valid control は foundation が単独 capability / contract を持たなければ最初に価値を生む application が所有できること。
+- Incidental Repository Finding: input facts は boundary 調査中に見つかる、candidate outcomes の boundary / dependency / acceptability に影響しない別箇所の repository problem。authoritative reality は current Target 外であること。forbidden shortcut は Incidental Finding を新 Unit / current obligation に昇格すること。preserved relation は Incidental Finding を obligation 化しないこと。valid control は Target-relative な repository defect を既存 semantics の grounded evidence として扱うこと。
+- cardinality-one: input facts は単一の入力候補。authoritative reality は、提案 boundary が単一の independently acceptable outcome を囲むか、入力 candidate と authoritative context に既に現れる複数 purpose / AC / verification / accept-rollback boundary を隠しているか。forbidden shortcut は単一候補だから grounding せず通過すること、または単一 outcome なのに split すること。preserved relation は cardinality-one の Target が boundary / semantic dependency / independent acceptability に限定されること。valid control は単一 outcome なら不要 split しないこと。
+
+common Observation Points は invocation 内の判断補助であり、schema や outward field にはしない。
+
+- `before`: RMO 適用前の shortcut / abstract reasoning
+- `observation`: authoritative reality / discrepancy / constraint
+- `after`: split / merge / dependency reasoning の変化
+- `boundary`: RMO 自身が partition verdict を出していないこと、Incidental Finding を obligation 化していないこと、unnecessary detail expansion が増えていないこと
 
 ## 親への返却境界
 
