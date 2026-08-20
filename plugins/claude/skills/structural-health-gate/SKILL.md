@@ -40,12 +40,33 @@ producer の判断、成果物の行き先、後段処理を識別する値は�
 advisor、producer、その他の後段処理を起動しない。親は別 route へ切り替えず、未成立理由を添えて
 `stop-incomplete` とする。
 
+## reality-model-observation-kernel v1 の parent mapping
+
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/reality-model-observation-kernel.md
+load_timing = after caller context is established and immediately before candidate assessment
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
+failure = context-not-established
+owner = structural-health-gate parent
+delegate_path_resolution = false
+```
+
+この load は一度だけ行う。loader failure は `context-not-established` として親の既存 routing で `stop-incomplete` へ返す。これは Reality evidence 不足の `insufficient-evidence` と区別する。推測で継続しない。
+
+Target は candidate の structural locality / health とする。requirements、candidate snapshot、repository evidence は authoritative context である。既存 taxonomy（duplicated source of truth、unresolved responsibility、requirements / design / AC / verification 不整合、state / responsibility、ripple、root defect、exception / stop 増殖）は Observation Viewpoint として使う。taxonomy を verdict にしない。
+
+Target-relative Structural Problem だけを structural finding とする。local wording / detail は Incidental Finding、evidence / authority 不足は Uncertainty とする。同一因果を grounding できる surface だけを root problem に統合し、独立した problem を圧縮しない。根拠のない root 統合はしない。既存 assessment / output に grounding と observation / inference を残す。routing / accept の責務は変えない。
+
 ## 観測
 
 caller context は明示起動された plan-family public workflow parent に限る。上記の `caller_context` が成立した場合だけ、
 candidate の assessment を開始する。
 
-次を、表現上の指摘ではなく構造上の因果として確認する。
+次を、表現上の指摘ではなく構造上の因果として確認する。これらは Observation Viewpoint であり、
+Kernel の taxonomy ではない。
 
 - duplicated source of truth と、同じ判断が複数箇所で独立に更新される責務。
 - 未解決の方向性または責務が、新しい設計判断を後段へ要求していないか。
@@ -56,19 +77,22 @@ candidate の assessment を開始する。
 - 例外、停止条件、stop contract の追加が増殖し、共通責務の欠落を覆っていないか。
 
 長さ、複雑さ、finding 数だけを理由に `return` しない。局所修正で閉じる密度、詳細不足、文章上の重複は
-通常の review で扱えるため、構造欠陥の evidence と混同しない。
+通常の review で扱えるため、構造欠陥の evidence と混同しない。local wording / detail は Incidental Finding とし、
+structural finding にしない。
 
 ## evidence Data
 
-finding は同じ原因を統合し、少なくとも次を返す。
+finding は同じ原因を統合し、少なくとも次を返す。同一因果を grounding できる surface だけを root problem に
+統合し、独立した problem を圧縮しない。根拠のない root 統合はしない。
 
 - `location`: candidate 内の箇所と、照合した要求または source。
 - `non_local_reason`: local fix だけでは閉じない理由と、影響する責務または判断。
 - `predicted_amplification`: review や実装で同じ欠陥が増幅すると予測する因果。
 - `predicted_churn`: 修正の反復、例外増加、AC や verification の再変更として予測される churn。
 
-各 finding は観測事実と推論を分ける。必須 field のいずれかを根拠付きで埋められない場合は
-`insufficient-evidence` とし、`return` の根拠にしない。reviewer または advisor を使う場合、その出力は
+各 finding は観測事実と推論を分ける。grounding と observation / inference を assessment / output に残す。
+必須 field のいずれかを根拠付きで埋められない場合は
+`insufficient-evidence` とし、`return` の根拠にしない。これは loader failure の `context-not-established` と混同しない。reviewer または advisor を使う場合、その出力は
 evidence のみであり、candidate の採否、修正、再起草、工程の終了を決めさせない。
 
 ## 責務境界

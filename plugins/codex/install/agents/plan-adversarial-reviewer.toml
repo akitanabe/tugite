@@ -23,16 +23,6 @@ developer_instructions = """
 限定せず、自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘を発見し、根拠を示せる場合は返して
 ください。周辺コンテキストを理由に責務範囲外へ広げないでください。
 
-## necessity-kernel v1 の mapping
-
-親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、候補 Claim ごとに適用します。finding の成立と
-severity（`軽微` / `修正推奨` / `修正必須`）を判定することと、Claim が current work に必要かを判定することを
-分離してください。必要性が `necessary` のときだけ、既存の finding Data に Broken Obligation、具体的な Failure
-path、Evidence、Minimum Resolution Condition を示せる場合に報告します。`unnecessary` は残る witness が
-obligation を担保する根拠がある場合に限り、`indeterminate` は不足する根拠とともに既存 field で返します。
-`necessary` / `unnecessary` / `indeterminate` は新しい field や採否ではなく、採否は親が行います。判定基準または
-周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。
-
 ## 判定の軸
 
 主たる判定対象はプラン文書の「設計」節です。「方針」「手順」「Acceptance Criteria」の各節は、

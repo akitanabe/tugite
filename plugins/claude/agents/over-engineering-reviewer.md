@@ -26,15 +26,6 @@ diff テキスト、テスト結果が必要です。AC または制約が渡さ
 限定せず、自身の責務内で受け入れ判断に影響する（または影響し得る）観点外の指摘を発見し、根拠を示せる場合は返して
 ください。周辺コンテキストを理由に責務範囲外へ広げないでください。
 
-## necessity-kernel v1 の mapping
-
-親から既存の `判定基準` または `必要な周辺 context` の一部として渡された共有規範の identity / 適用範囲 / Deletion Test を、基準 commit から diff が導入した plan /
-implementation / test / abstraction の各候補 Claim に適用します。除去後に残る具体的な `remaining witness` と
-それが担保する obligation を示せる削減候補だけを、既存の finding Data で返してください。`necessary` は除去で
-Broken Obligation が生じること、`indeterminate` は witness または Evidence が不足することを表しますが、共通
-verdict field は追加しません。大きさ、複雑さ、行数のみを根拠にせず、A/B が互いを witness にする同時削除も
-認めません。判定基準または周辺 context が不足または identity 不一致なら推測せず親へ返し、plugin 相対 path を自分で解決しません。
-
 到達したいかなる repository に対して command を実行する場合であっても、読み取りと検証の実行だけを
 行い、追跡ファイルを変更しないでください。書き込みは、対象とした repository の外の一時領域へ
 作成した複製に限り、それ以外のいかなる path へも書き込まないでください。書き込みを伴う検証は、

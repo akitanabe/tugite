@@ -32,16 +32,52 @@ slice = "plan-quality-advisor-boundary"
 pattern = "insight_fields = [id, observation, evidence, impact, question_or_option]"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-adversarial-kernel-mapping-forbids-a0b32b5e7331]
+[contracts.plan-adv-no-necessity-path-6fa4e713115b]
 kind = "forbids"
-slice = "plan-adversarial-kernel-mapping"
+slice = "plan-adversarial-return-fields"
 pattern = "../../references/necessity-kernel.md"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.over-engineering-kernel-mapping-forbids-6d2f2cfb1cd0]
+[contracts.plan-adv-no-rmo-path-bf8f447751ca]
 kind = "forbids"
-slice = "over-engineering-kernel-mapping"
+slice = "plan-adversarial-return-fields"
+pattern = "../../references/reality-model-observation-kernel.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adv-no-dtm-path-890cce4c6d63]
+kind = "forbids"
+slice = "plan-adversarial-return-fields"
+pattern = "../../references/deletion-test-method.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adv-failure-path-30fd1d366de6]
+kind = "requires"
+slice = "plan-adversarial-return-fields"
+pattern = "具体的な失敗経路"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.over-eng-no-necessity-path-6192ecc28c03]
+kind = "forbids"
+slice = "over-engineering-return-fields"
 pattern = "../../references/necessity-kernel.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.over-eng-no-rmo-path-fdd794dc3d2e]
+kind = "forbids"
+slice = "over-engineering-return-fields"
+pattern = "../../references/reality-model-observation-kernel.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.over-eng-no-dtm-path-286f6de39a38]
+kind = "forbids"
+slice = "over-engineering-return-fields"
+pattern = "../../references/deletion-test-method.md"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.over-eng-remaining-witness-384cc6c9293b]
+kind = "requires"
+slice = "over-engineering-return-fields"
+pattern = "取り除いた後も残る実装または検証とそれが担保する AC"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-boundary-forbids-2d52bc626d88]

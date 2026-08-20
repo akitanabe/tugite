@@ -97,17 +97,17 @@ procedure、条件、outcome は固定であり、Agent は override、bypass、
 残る意味判断は Agentic な親へ返す。
 <!-- @/contract -->
 
-<!-- @contract review-kernel-preflight -->
-### review-kernel-preflight
+<!-- @contract review-reference-preflight -->
+### review-reference-preflight
 
-<!-- @anchor review-kernel-preflight-trigger -->
-Trigger: 親が reviewer invocation、parent adjudication、または最初の Resolution Transaction の各 timing に向けて kernel preflight を要求したとき。
-<!-- @anchor review-kernel-preflight-inputs -->
-Inputs: `necessity-kernel-v1` と `batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
-<!-- @anchor review-kernel-preflight-procedure -->
-Procedure: `necessity-kernel-v1` は reviewer invocation または parent adjudication の直前に、`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に、それぞれ一度だけ load と identity / 必要本文を検証する。necessity の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、necessity failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
-<!-- @anchor review-kernel-preflight-outcomes -->
-Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または necessity failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。
+<!-- @anchor review-reference-preflight-trigger -->
+Trigger: 親が reviewer result collection 後の parent adjudication、または最初の Resolution Transaction の各 timing に向けて reference preflight を要求したとき。
+<!-- @anchor review-reference-preflight-inputs -->
+Inputs: `reality-model-observation-kernel-v1`、`deletion-test-method-v1`、`batch-resolve-kernel-v1` の Loader Data（path、timing、identity、required_sections、failure、owner、delegate_path_resolution）、既存の `判定基準` / `必要な周辺 context`、および role mapping Data。
+<!-- @anchor review-reference-preflight-procedure -->
+Procedure: `reality-model-observation-kernel-v1` は通常 reviewer result collection 後、parent adjudication 直前に一度だけ load と identity / 必要本文を検証する。`deletion-test-method-v1` は final-trim reviewer result collection 後、parent adjudication 直前に一度だけ load と identity / 必要本文を検証する。`batch-resolve-kernel-v1` は最初の Resolution Transaction の前に一度だけ load と identity / 必要本文を検証する。RMO / Deletion Test の検証済み本文は既存の `判定基準` または `必要な周辺 context` へ、batch の検証済み本文は既存の role mapping へ注入する。timing と loader を統合せず、RMO / Deletion Test failure は `return-to-parent`、batch failure は既存の意味どおり `stop-incomplete` または `review-not-established` とする。
+<!-- @anchor review-reference-preflight-outcomes -->
+Outcomes: criteria / role mapping を注入済みの `ready`、`review-not-established`、`stop-incomplete`、または RMO / Deletion Test failure の `return-to-parent`。loader の failure を突破せず、loader 本文の意味判断は Flow 外の親へ返す。
 <!-- @/contract -->
 
 <!-- @contract deferred-freeze -->
@@ -162,34 +162,67 @@ Procedure: 省略時の settings は `threshold: 5`、`base_rounds: 1`、`escala
 Outcomes: trim count を含む `eligible`、`skip`、または settings validation の `input-error`。trim finding の採否、削減内容、rejected への戻し、後続 Action は Flow 外の親へ返す。
 <!-- @/contract -->
 
-<!-- @contract review-refine-kernel-parent-mapping -->
-## necessity-kernel v1 の parent mapping
+<!-- @contract review-refine-rmo-parent-mapping -->
+## reality-model-observation-kernel v1 の parent mapping
 
-<!-- @anchor review-refine-kernel-reference -->
+<!-- @anchor review-refine-rmo-reference -->
 次の Loader Data が列挙値の唯一の正本である。
 
 ```text
-path = ../../references/necessity-kernel.md
-load_timing = before reviewer invocation or parent adjudication
-identity = necessity-kernel-v1
-required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+path = ../../references/reality-model-observation-kernel.md
+load_timing = after normal reviewer result collection and before parent adjudication
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
 failure = return-to-parent
 owner = review-refine parent
 delegate_path_resolution = false
 ```
 
 loader の timing、failure、owner、delegate_path_resolution、および検証済み本文の注入先は
-`review-kernel-preflight` Flow が唯一の手続き正本として扱う。`plan-adversarial-reviewer` または final trim の
-`over-engineering-reviewer` 起動時は、Flow が返した検証済み Data を既存の判定基準へ渡す。
+`review-reference-preflight` Flow が唯一の手続き正本として扱う。通常 reviewer の observation は
+Observation Trigger であり grounding evidence ではない。親は Target と authoritative context を固定し、
+finding から独立した evidence で RMO を行う。
 
-<!-- @anchor review-refine-kernel-criteria -->
+<!-- @anchor review-refine-rmo-criteria -->
 
-reviewer の observation / evidence から候補 Claim（追加・維持・変更・除去・検証・調査する obligation）が導かれる
-場合、親は既存の判定基準に含めた Task Specification と Deletion Test を一つの snapshot と一つの
-Claim に適用する。`necessary` / `unnecessary` / `indeterminate` は新しい verdict field ではなく、親が既存の
-`adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation` へ裁定する。`indeterminate` は自動採用・却下せず、必要なら
-`stop-incomplete` とする。更新後は新しい snapshot で再判定し、severity、Pass、件数、既存 round budget または
-termination を直結させない。これは既存語彙へ写像する規範であり、新verdict fieldではない。
+RMO の意味結果を、origin finding provenance へ trace できる consumer-owned Resolution Point へ mapping し、
+同一 snapshot の Resolution Batch membership を凍結してから既存5値へ裁定する。Target-relative Derived Problem
+だけを remediation Claim の候補にできるが、自動採用しない。Incidental Finding は current modification
+obligation にせず `out-of-scope` へ、Uncertainty は evidence に応じて `deferred`、`human-confirmation`、
+`stop-incomplete` へ写像する。`Target-relative` / Incidental / Uncertainty は新しい verdict field ではなく、
+親が既存の `adopted` / `rejected` / `out-of-scope` / `deferred` / `human-confirmation` へ裁定する。
+severity、Pass、件数、既存 round budget または termination を直結させない。これは既存語彙へ写像する規範であり、
+新verdict fieldではない。
+<!-- @/contract -->
+
+<!-- @contract review-refine-deletion-test-parent-mapping -->
+## deletion-test-method v1 の parent mapping
+
+<!-- @anchor review-refine-deletion-test-reference -->
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/deletion-test-method.md
+load_timing = after final-trim reviewer result collection and before parent adjudication
+identity = deletion-test-method-v1
+required_sections = [Inputs, Procedure, Semantic Results, Non-goals]
+failure = return-to-parent
+owner = review-refine parent
+delegate_path_resolution = false
+```
+
+loader の timing、failure、owner、delegate_path_resolution、および検証済み本文の注入先は
+`review-reference-preflight` Flow が唯一の手続き正本として扱う。final trim の各 over-engineering
+removal candidate を origin verified snapshot に対して Deletion Test する。
+
+<!-- @anchor review-refine-deletion-test-criteria -->
+
+`deletion preserves obligations` は removal finding の採用候補、`deletion breaks obligations` は不採用、
+`indeterminate` は既存の `deferred` / `human-confirmation` / `stop-incomplete` へ写像する。個別 candidate の
+評価で同じ selected Batch 内の別 candidate を stable remaining witness として扱わない。apply 前に
+coherent selected deletion set 全体も一つの deletion candidate として origin / current verified snapshot に
+対して再評価する。combined deletion が obligation を壊す場合は該当 removal を selected set から外して再裁定し、
+interaction を安全に解けなければ `indeterminate` とする。更新後は新しい snapshot で再判定する。
 <!-- @/contract -->
 
 <!-- @contract review-refine-parent-adjudication-vocabulary -->
@@ -220,7 +253,7 @@ delegate_path_resolution = false
 ```
 
 上記 Loader Data の timing、failure、owner、delegate_path_resolution、および role mapping への注入は
-`review-kernel-preflight` Flow に委譲する。owner / delegate_path_resolution の境界は親が保持する。
+`review-reference-preflight` Flow に委譲する。owner / delegate_path_resolution の境界は親が保持する。
 
 次の role Data が列挙値の唯一の正本である。
 
@@ -242,7 +275,8 @@ invocation、result collection の Action は transaction 外で行う。
 
 <!-- @anchor review-refine-resolution-transaction-start -->
 通常の review round は、同じ artifact の origin verified snapshot を固定し、transaction 外で完了した reviewer observation
-を finding から Resolution Point へ mapping して、Resolution Batch を transaction 開始時までに固定する。1 normal review round は
+を Observation Trigger として RMO し、semantically distinct な result を origin finding provenance へ trace できる
+consumer-owned Resolution Point へ mapping して、Resolution Batch を transaction 開始時までに固定する。1 normal review round は
 原則として1つの Resolution Transaction であり、その内部を次の順序で実行する。
 
 ```text
@@ -279,6 +313,8 @@ mutation を行わずに既存の caller boundary へ返す。
 Kernel の execution result と evidence を使い、review-refine parent が既存の `finding_ledger` と `hold_ledger` を更新する。Kernel は
 ledger、round、termination、induced-loop、ledger の carry-over を所有または更新しない。既存の5値（`adopted`、`rejected`、`out-of-scope`、
 `deferred`、`human-confirmation`）の語彙と意味は変更せず、reviewer の非拘束 finding を親が既存の裁定境界へ写像する。
+finding の identity / provenance と evidence / reason に、Target、grounding trace、observation / inference、
+membership、attribution を再現可能な形で残す。common RMO schema や新 verdict は追加しない。
 
 ### final trim の Resolution Transaction
 
@@ -287,7 +323,7 @@ verified snapshot を各回の origin に固定する。trim finding を Resolut
 trim を行う場合は新しい snapshot を origin とする新しい transaction を開始する。Kernel は trim、over-engineering、count semantics
 を所有せず、trim を通常 round や誘発判定の窓へ加算しない。
 
-necessity-kernel v1 の mapping はこの batch mapping から独立して不変であり、相互の本文、identity、読み込み順、結果を成立条件に
+reality-model-observation-kernel v1 と deletion-test-method v1 の mapping はこの batch mapping から独立して不変であり、相互の本文、identity、読み込み順、結果を成立条件に
 しない。
 <!-- @/contract -->
 
@@ -302,7 +338,8 @@ necessity-kernel v1 の mapping はこの batch mapping から独立して不変
 trim の finding も同じ指摘台帳へ記録し、発行元 reviewer で区別する。
 
 finding ごとに `id`、発行元、対象 snapshot、evidence、影響する AC / risk、親の裁定、理由、`induced` と
-`induced_by`（因果対応する採用修正と verification、非誘発時は null。通常 reviewer の判定対象だけ）を記録する。
+`induced_by`（因果対応する採用修正と verification、非誘発時は null。通常 reviewer の判定対象だけ）、
+Target、grounding trace、observation / inference、membership、attribution を記録する。
 全 round・全 reviewer 通算の指摘台帳を維持し、未解決 finding は裁定
 未確定、`adopted` 修正の未反映、または `human-confirmation` とする。`deferred` は凍結済みの完了した裁定なので未解決に
 含めない。
@@ -366,6 +403,8 @@ skip、input-error、trim 回数を確定する。eligible のときだけ適用
 削減 finding の裁定を原則 `adopted` から `rejected` へ戻す。`human-confirmation` が必要な trim finding は `out-of-scope` として渡す。
 trim の finding もその場で5値へ裁定し、未解決一覧と残存事項へ反映する。規定3回なら全体構造、レビュー誘発要素、
 残存する過剰の順を推奨観点とし、回数を上書きした場合の観点は親が決める。
+Deletion Test と selected-set 再評価は `deletion-test-method v1 の parent mapping` に従う。updated snapshot では
+古い witness を持ち越さず再評価する。
 
 ## 出力と終了値
 
