@@ -14,10 +14,13 @@ kind = "forbids"
 pattern = "deletion-test-method"
 exclude_paths = [
   "plugins/claude/references/deletion-test-method.md",
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/claude/skills/review-refine/SKILL.md",
   "plugins/codex/references/deletion-test-method.md",
+  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
   "plugins/codex/skills/review-refine/SKILL.md",
   "plugins/cursor/references/deletion-test-method.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/skills/review-refine/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]

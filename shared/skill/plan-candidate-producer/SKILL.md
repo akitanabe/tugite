@@ -60,11 +60,24 @@ Flow の procedure、条件、outcome は固定であり、Agent は override、
 <!-- @anchor producer-preflight-trigger -->
 Trigger: 親が plan-candidate-producer invocation を開始し、固定 preflight の実行を要求したとき。
 <!-- @anchor producer-preflight-inputs -->
-Inputs: 親が注入した batch-resolve-kernel v1 と necessity-kernel v1 の Loader Data、authority、authority_constraints、candidate Claim 判定前の一次情報。
+Inputs: 親が注入した batch-resolve-kernel v1 の Loader Data、authority、authority_constraints。
 <!-- @anchor producer-preflight-procedure -->
-Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。batch の検証後も necessity-kernel loader は独立して、candidate Claim adjudication の前に検証する。両 loader の load timing と mapping は相互の load 順に依存させず、authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
+Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
 <!-- @anchor producer-preflight-outcomes -->
 Outcomes: 検証済み preflight Data、または `stop-incomplete`。loader / authority failure は突破せず、candidate content と Claim の意味判断は Agentic な親へ返す。
+<!-- @/contract -->
+
+<!-- @contract candidate-reality-grounding -->
+### candidate-reality-grounding
+
+<!-- @anchor producer-grounding-trigger -->
+Trigger: working candidate draft の change model が形成され、initial verified candidate S0 として verify / promote する直前。または、既に grounding closure を満たした candidate について、change model の identity / central semantics の material change、または新しい grounded evidence / context / constraint により既存 Observable Reality Model / discrepancy derivation が無効化されたと producer が確認したとき。invocation が新しいこと自体、wording、根拠の整理、同じ change model 内の局所的具体化は trigger にしない。
+<!-- @anchor producer-grounding-inputs -->
+Inputs: working candidate 全体から解決した単一の candidate change-model Target。request、Human-confirmed / frozen specification、repository contract / invariant、caller-confirmed constraint。repository current state、code / config / schema、existing tests、verification surface など独立した observable evidence。candidate が前提にする dependency / constraint。再 grounding では、検証可能な直前 closure と、それが依存した Target / evidence / context / constraint、および今回の変更差分。candidate は Target semantics / evaluation subject としてのみ使い、自身の正しさを示す evidence にしない。
+<!-- @anchor producer-grounding-procedure -->
+Procedure: Flow owner は後述 Loader Data で `reality-model-observation-kernel-v1` と必要 section を検証してから RMO を実行する。失敗時は推測せず既存 `stop-incomplete` へ返す。1 candidate = 1 change-model Target と authoritative context / observable evidence capability を解決し、step / Claim 単位へ Target を分割しない。raw semantic result を transient な Data として Agentic な producer parent へ返す。parent の Claim 導出・裁定・反映は Flow 外で行い、その後に invalidation condition と closure condition を固定確認する。central semantics または derivation が再び無効化された場合だけ再 grounding する。
+<!-- @anchor producer-grounding-outcomes -->
+Outcomes: grounding closure を満たし、S0 の verify / promotion または既存 advisor flow への復帰が可能な candidate。Agent 権限内の追加観測で解消できない material な evidence gap のため、安全な verify / recommend ができない `stop-incomplete`。loader / identity / required section failure または検証不能な過去 closure による既存 incomplete 結果。
 <!-- @/contract -->
 
 <!-- @contract advisor-two-pass-orchestration -->
@@ -135,8 +148,9 @@ ledger = adoption ledger
 親は上記 role field を使って既存責務へ mapping する。counterpart observation Action は Resolution Transaction 外の
 one-shotとし、resolver が要求、一次情報、current verified snapshot を基準に裁定する。
 
-この batch-resolve-kernel mapping と後述の necessity-kernel mapping は別 section の独立した規範である。互いの本文を
-前提にせず、相互の読み込み順に依存させない。
+この batch-resolve-kernel mapping は Reality Model Observation および Deletion Test Method と独立した規範である。
+RMO Derived Problem を Resolution Point にせず、RMO を closed Batch の内側へ挿入せず、Batch membership / semantics を変更しない。
+互いの本文を前提にせず、相互の読み込み順に依存させない。
 
 ### authority の開始前 validation
 
@@ -159,9 +173,10 @@ constraint_failure = stop-incomplete before refinement
 ## current verified candidate の caller mapping
 
 `caller_context` で既存 candidate を受け取る場合は current verified candidate snapshot を S0 とし、一から再起草せず、未検証の working state を
-baseline にしない。初回は要求、一次情報、観測可能な条件から working candidate を起草し、それらに対する verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot として確立する。
+baseline にしない。過去の grounding closure とその依存を既存 caller / process evidence から検証できる場合だけ、その closure を差分比較に使う。検証不能な既存 verified candidate は grounding 済みと推測せず、invocation identity だけを理由に RMO を無条件再実行せず、既存の incomplete 境界へ返す。
+初回は要求、一次情報、観測可能な条件から working candidate を起草し、`candidate-reality-grounding` の grounding closure を満たしたうえで、それらに対する verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot として確立する。
 各改善は working state へ apply し、verify と semantic progress が成功した後にだけ current verified snapshot を更新する。
-失敗時の snapshot 維持と selected partition の扱いは後述の Resolution Transaction に従い、working state を昇格させない。
+失敗時の snapshot 維持と selected partition の扱いは後述の Resolution Transaction に従い、working state を昇格させない。grounding closure を満たすまで、candidate を次の advisor input または producer の S1 / S2 return として引き渡さない。
 <!-- @/contract -->
 
 <!-- @contract candidate-producer-boundary -->
@@ -171,41 +186,69 @@ planner は一次情報（要求原文、repository、既存仕様）を調査�
 verification、残存 risk を含む working candidate を起草する。上記 caller mapping に従って検証した内容だけを、
 同じ内容を識別できる current verified `candidate snapshot` として保持する。
 
-## necessity-kernel v1 の parent mapping
-
-<!-- @anchor plan-candidate-producer-kernel-reference -->
-次の Loader Data が列挙値の唯一の正本である。
-
-```text
-path = ../../references/necessity-kernel.md
-load_timing = before candidate Claim adjudication
-identity = necessity-kernel-v1
-required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
-failure = stop-incomplete
-owner = plan-candidate-producer parent
-delegate_path_resolution = false
-```
-
-necessity-kernel の loader procedure は `producer-invocation-preflight` だけが所有する。この mapping は Loader Data と検証済み本文の injection boundary だけを提供し、load / identity / required section / failure routing を再定義しない。検証済み本文を既存の
-<!-- @anchor plan-candidate-producer-kernel-criteria -->
-`判定基準` または `必要な周辺 context` の一部にする。`plan-quality-advisor` 起動時は既取得 Data を既存の判定基準として渡し、owner / delegate_path_resolution の境界を維持する。
-
-候補 Claim の必要性は既存の判定基準に含めた Task Specification と Deletion Test で観察する。
-Claim は finding / insight 本文ではなく、candidate に追加・維持・変更・除去・検証・調査する obligation の候補
-であり、必要性の根拠を既存の observation / evidence から追跡する。`necessary` / `unnecessary` /
-`indeterminate` を新しい返却 field にせず、親は下記の adoption ledger の語彙へ写像する。候補を更新した後は
-更新された snapshot で再判定し、互いを witness とする同時削除を認めない。必要性分類は既存語彙へ写像し、新verdict fieldではない。round budget / termination へ直結させない。`structural-health-gate` の意味は
-この mapping の対象外である。
-
 必要な場合だけ plan-candidate-producer planner は normal invocation の read-only `plan-quality-advisor` に candidate snapshot と判定基準を渡す。
 advisor の返す insight は非拘束の Data であり、planner は各 insight を一次情報と要求に照らして次の台帳へ裁定する。
 
 - `adopted`: 根拠があり、candidate の具体的な品質向上になるため採用した insight。
 - `rejected`: 一次情報に反する、既存の制約で不要、または scope 外のため採用しない insight。
-- `unresolved`: 根拠または人間の判断が不足し、採否を決められない insight。
+- `unresolved`: 根拠または人間の判断が不足し、採否を決められない insight。安全な推奨ができない場合の返却は既存の `stop-incomplete` 境界に従う。
 
 advisor insight を自動採用せず、採否を根拠なしに planner の推測で埋めない。新仕様、新しい scope、AC、
 ユーザー嗜好を advisor から派生させない。
+<!-- @/contract -->
+
+<!-- @contract plan-candidate-producer-rmo-parent-mapping -->
+## reality-model-observation-kernel v1 の parent mapping
+
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/reality-model-observation-kernel.md
+load_timing = before initial verified candidate S0 verify / promote, and on invalidation-triggered re-grounding
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
+failure = stop-incomplete
+owner = plan-candidate-producer parent
+delegate_path_resolution = false
+```
+
+`candidate-reality-grounding` がこの Loader Data を消費する唯一の loader procedure である。この section は列挙 Data の mapping と consumer 境界だけを提供し、load / identity / required section / failure routing を再定義しない。`producer-invocation-preflight` と `advisor-two-pass-orchestration` はこの Loader を所有しない。
+
+Target は 1 candidate = 1 change-model Target に限定する。current state / current reality assumptions、desired state、current → desired の change relationship、candidate が前提とする dependency / constraint を扱う。Task Specification / request / repository evidence / accepted specification は Target 自体ではなく authoritative context とする。個々の plan step / Claim ごとに Target を細分化しない。
+
+working candidate は Target semantics / evaluation subject として使うが、その Target が正しいことの grounding evidence として自己利用しない。candidate 内の主張だけを理由に Reality distinction / dependency / constraint を成立させない。discrepancy は request、確定仕様、repository contract / invariant、独立した observable evidence から導出する。
+
+Target-relative Problem は current Target との discrepancy として扱い、必要なら別の remediation Claim を導出して producer が採否を裁定する。Problem を `adopted` や Resolution Point へ直結しない。RMO 自身は修正案、採否、candidate mutation を決めない。
+
+Incidental Finding は current candidate satisfaction を変えない限り candidate obligation / adoption ledger へ昇格させない。
+
+Uncertainty は、未解消では安全な verify / recommend ができず、Target semantics に material で、Agent 権限内の追加観測でも解消不能という 3 条件をすべて満たす場合だけ blocking gap / `stop-incomplete` とする。その他は既存 assumptions / residual risks 境界へ写像する。Uncertainty の存在だけで停止しない。Agent が取得可能な evidence で解消できる technical gap を fabricated assumption で埋めない。
+
+raw RMO result は reintegration 後に保持せず、RMO 専用 ledger、status、verdict、per-Claim result を作らない。新しい persistent witness field は作らない。同一 workflow 内で必要な closure / promotion evidence は既存 caller context、verification evidence、process Data の境界で運ぶ。
+
+grounding closure は Derived Problem が 0 件になるまで回す improvement loop ではない。current change-model Target に対する RMO invocation / required reintegration が完了し、必要な remediation Claim の導出・裁定・反映が完了し、candidate verification を阻害する unresolved Uncertainty が残っていない candidate だけを grounding-eligible とする。Incidental Finding は closure を妨げない。Problem 0 件や exhaustive observation は要求しない。
+
+advisor insight は従来どおり Resolution Point → immutable Resolution Batch → Batch Resolve Kernel transaction で裁定・適用・verify・promote する。各 Batch 完了後、producer caller boundary が実際に promoted された candidate と、直前 closure が依存した Target / evidence / context / constraint を比較する。invalidation がなければ既存 closure を維持し、RMO を再実行しない。invalidation があれば、closed Batch は変更せず、その candidate を Target として `candidate-reality-grounding` を実行する。採用 remediation は Batch 外の producer-owned grounding revision path で反映し、既存 verified-snapshot 規則で verify / promote する。stale closure を再利用せず、actual revised candidate と新しい grounded evidence を比較する。structural gate retry などから新しい evidence / context / constraint が入る場合も同じ invalidation 判定を使い、単なる再 invocation は trigger にしない。
+<!-- @/contract -->
+
+<!-- @contract plan-candidate-producer-deletion-test-parent-mapping -->
+## deletion-test-method v1 の parent mapping
+
+producer が具体的な deletion / trim / merge による要素消去 Claim を選択した後、適用前にだけ load する。add / modify / verify / investigate Claim や final candidate 全体へ DTM を実行しない。exhaustive Claim exploration を別名で復活させない。
+
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = ../../references/deletion-test-method.md
+load_timing = after a concrete deletion / trim / merge removal Claim is selected and before apply
+identity = deletion-test-method-v1
+required_sections = [Inputs, Procedure, Semantic Results, Non-goals]
+failure = stop-incomplete
+owner = plan-candidate-producer parent
+delegate_path_resolution = false
+```
+
+loader / identity / required section の不足では削除を実行しない。`preserves / breaks / indeterminate` は producer adjudication への入力であり、`adopted / rejected / unresolved` の別名や自動 mapping にしない。loader failure または `indeterminate` では削除を実行せず対象要素を保持し、removal Claim を unresolved とする。削除しない candidate を安全に verify / recommend できる場合だけ継続し、できない場合は `stop-incomplete` とする。
 <!-- @/contract -->
 
 <!-- @contract plan-candidate-producer-behavior-observation-kernel-loader -->

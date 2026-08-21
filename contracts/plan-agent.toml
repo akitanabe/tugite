@@ -122,14 +122,14 @@ kind = "requires"
 slice = "plan-candidate-producer-batch-resolution-role-mapping"
 pattern = "immutable とし、plan-candidate-producer 内で再生成・追加・削除・置換しない"
 applies_to = ["claude", "codex", "cursor"]
-# Why Not: loader fields must remain one relation; semantic Claim adjudication belongs to EVAL.
-[contracts.plan-candidate-producer-necessity-loader-data-4c92eb3a7096]
+# Why Not: loader fields must remain one relation; semantic RMO membership / adjudication belongs to EVAL.
+[contracts.producer-rmo-loader-data-af3dd903466c]
 kind = "requires"
-slice = "candidate-producer-boundary"
-pattern = '''path = ../../references/necessity-kernel.md
-load_timing = before candidate Claim adjudication
-identity = necessity-kernel-v1
-required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = '''path = ../../references/reality-model-observation-kernel.md
+load_timing = before initial verified candidate S0 verify / promote, and on invalidation-triggered re-grounding
+identity = reality-model-observation-kernel-v1
+required_sections = [Contract, Observable Reality Model, Method, Reintegration, Target Membership Check, Consumer Responsibilities, Non-goals]
 failure = stop-incomplete
 owner = plan-candidate-producer parent
 delegate_path_resolution = false'''
@@ -577,12 +577,6 @@ slice = "structural-health-gate-kernel-exclusion-output"
 pattern = "review-refine"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-kernel-reference-before-criteria]
-kind = "order"
-before = "plan-candidate-producer-kernel-reference"
-after = "plan-candidate-producer-kernel-criteria"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.review-refine-rmo-reference-before-criteria]
 kind = "order"
 before = "review-refine-rmo-reference"
@@ -743,12 +737,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "plan-candidate-producer-bounded-return"
 pattern = "Resolution Transaction を完了し"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.candidate-producer-boundary-requires-71c110088df1]
-kind = "requires"
-slice = "candidate-producer-boundary"
-pattern = "`structural-health-gate` の意味は この mapping の対象外である"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-boundary-requires-cad74d5c8b39]
@@ -1415,12 +1403,12 @@ slice = "plan-candidate-producer-programmatic-flows"
 pattern = "Flow の procedure、条件、outcome は固定であり、Agent は override、bypass、置換しない。outcome の後に複数の妥当な Action が残る意味判断は Agentic な親へ返す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-candidate-producer-preflight-flow-ed264820436f]
+[contracts.plan-candidate-producer-preflight-flow-3a124c40b74c]
 kind = "requires"
 slice = "producer-invocation-preflight"
 pattern = '''Trigger: 親が plan-candidate-producer invocation を開始し、固定 preflight の実行を要求したとき。
-Inputs: 親が注入した batch-resolve-kernel v1 と necessity-kernel v1 の Loader Data、authority、authority_constraints、candidate Claim 判定前の一次情報。
-Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。batch の検証後も necessity-kernel loader は独立して、candidate Claim adjudication の前に検証する。両 loader の load timing と mapping は相互の load 順に依存させず、authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
+Inputs: 親が注入した batch-resolve-kernel v1 の Loader Data、authority、authority_constraints。
+Procedure: batch-resolve-kernel loader を invocation start に一度だけ検証し、必要本文と identity / required_sections / failure / owner / delegate_path_resolution を確認する。authority の列挙 / shape / identity / traceability は fixed validation として扱う。candidate content と Claim の採否・意味判断をこの Flow に入れない。
 Outcomes: 検証済み preflight Data、または `stop-incomplete`。loader / authority failure は突破せず、candidate content と Claim の意味判断は Agentic な親へ返す。'''
 applies_to = ["claude", "codex", "cursor"]
 
@@ -1467,12 +1455,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 slice = "plan-candidate-producer-batch-resolve-kernel-loader"
 pattern = "親は上記 Loader Data の field を使って load と必要本文の検証を行い"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.producer-necessity-loader-pointer-72439dca3f27]
-kind = "requires"
-slice = "candidate-producer-boundary"
-pattern = "necessity-kernel の loader procedure は `producer-invocation-preflight` だけが所有する。この mapping は Loader Data と検証済み本文の injection boundary だけを提供し、load / identity / required section / failure routing を再定義しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.producer-necessity-loader-no-procedure-a90d171cfe09]
@@ -1581,28 +1563,28 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-candidate-producer-flow-trigger-occurrences]
 kind = "occurrences"
 pattern = "Trigger:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-candidate-producer-flow-inputs-occurrences]
 kind = "occurrences"
 pattern = "Inputs:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-candidate-producer-flow-procedure-occurrences]
 kind = "occurrences"
 pattern = "Procedure:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-candidate-producer-flow-outcomes-occurrences]
 kind = "occurrences"
 pattern = "Outcomes:"
-count = 2
+count = 3
 paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -1644,6 +1626,13 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-candidate-producer-two-pass-flow-occurrences]
 kind = "occurrences"
 pattern = "### advisor-two-pass-orchestration"
+count = 1
+paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-grounding-flow-occurrences]
+kind = "occurrences"
+pattern = "### candidate-reality-grounding"
 count = 1
 paths = ["plugins/claude/skills/plan-candidate-producer/SKILL.md", "plugins/codex/skills/plan-candidate-producer/SKILL.md", "plugins/cursor/skills/plan-candidate-producer/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
@@ -1791,6 +1780,36 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "advisor-two-pass-procedure"
 after = "advisor-two-pass-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-grounding-field-order]
+kind = "order"
+before = "producer-grounding-trigger"
+after = "producer-grounding-inputs"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-grounding-inputs-before-procedure]
+kind = "order"
+before = "producer-grounding-inputs"
+after = "producer-grounding-procedure"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-candidate-producer-grounding-procedure-before-outcomes]
+kind = "order"
+before = "producer-grounding-procedure"
+after = "producer-grounding-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-preflight-before-grounding]
+kind = "order"
+before = "producer-invocation-preflight"
+after = "candidate-reality-grounding"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-grounding-before-two-pass]
+kind = "order"
+before = "candidate-reality-grounding"
+after = "advisor-two-pass-orchestration"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-gate-field-order]
@@ -2043,4 +2062,309 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "final-trim-count-and-routing-procedure"
 after = "final-trim-count-and-routing-outcomes"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Flow fields are deterministic execution Data; keep parent-owned Claim meaning outside the Flow.
+[contracts.producer-grounding-flow-3a32434111e9]
+kind = "requires"
+slice = "candidate-reality-grounding"
+pattern = '''Trigger: working candidate draft の change model が形成され、initial verified candidate S0 として verify / promote する直前。または、既に grounding closure を満たした candidate について、change model の identity / central semantics の material change、または新しい grounded evidence / context / constraint により既存 Observable Reality Model / discrepancy derivation が無効化されたと producer が確認したとき。invocation が新しいこと自体、wording、根拠の整理、同じ change model 内の局所的具体化は trigger にしない。
+Inputs: working candidate 全体から解決した単一の candidate change-model Target。request、Human-confirmed / frozen specification、repository contract / invariant、caller-confirmed constraint。repository current state、code / config / schema、existing tests、verification surface など独立した observable evidence。candidate が前提にする dependency / constraint。再 grounding では、検証可能な直前 closure と、それが依存した Target / evidence / context / constraint、および今回の変更差分。candidate は Target semantics / evaluation subject としてのみ使い、自身の正しさを示す evidence にしない。
+Procedure: Flow owner は後述 Loader Data で `reality-model-observation-kernel-v1` と必要 section を検証してから RMO を実行する。失敗時は推測せず既存 `stop-incomplete` へ返す。1 candidate = 1 change-model Target と authoritative context / observable evidence capability を解決し、step / Claim 単位へ Target を分割しない。raw semantic result を transient な Data として Agentic な producer parent へ返す。parent の Claim 導出・裁定・反映は Flow 外で行い、その後に invalidation condition と closure condition を固定確認する。central semantics または derivation が再び無効化された場合だけ再 grounding する。
+Outcomes: grounding closure を満たし、S0 の verify / promotion または既存 advisor flow への復帰が可能な candidate。Agent 権限内の追加観測で解消できない material な evidence gap のため、安全な verify / recommend ができない `stop-incomplete`。loader / identity / required section failure または検証不能な過去 closure による既存 incomplete 結果。'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: loader fields must remain one relation; semantic deletion adjudication belongs to EVAL.
+[contracts.producer-dtm-loader-data-5f411f103d93]
+kind = "requires"
+slice = "plan-candidate-producer-deletion-test-parent-mapping"
+pattern = '''path = ../../references/deletion-test-method.md
+load_timing = after a concrete deletion / trim / merge removal Claim is selected and before apply
+identity = deletion-test-method-v1
+required_sections = [Inputs, Procedure, Semantic Results, Non-goals]
+failure = stop-incomplete
+owner = plan-candidate-producer parent
+delegate_path_resolution = false'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: RMO load procedure must stay in the grounding Flow, not preflight or two-pass.
+[contracts.producer-rmo-loader-pointer-629f27c94bef]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "`candidate-reality-grounding` がこの Loader Data を消費する唯一の loader procedure である。この section は列挙 Data の mapping と consumer 境界だけを提供し、load / identity / required section / failure routing を再定義しない。`producer-invocation-preflight` と `advisor-two-pass-orchestration` はこの Loader を所有しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: step/Claim slicing or a quality-wide Target would reopen Target decomposition as a new problem.
+[contracts.producer-rmo-one-target-64b802e8b8a5]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Target は 1 candidate = 1 change-model Target に限定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a candidate-only assertion can satisfy a weaker evidence mention while skipping independent repository/spec grounding.
+[contracts.producer-rmo-self-grounding-834e16263c24]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "working candidate は Target semantics / evaluation subject として使うが、その Target が正しいことの grounding evidence として自己利用しない。candidate 内の主張だけを理由に Reality distinction / dependency / constraint を成立させない。discrepancy は request、確定仕様、repository contract / invariant、独立した observable evidence から導出する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: auto-promotion would collapse Incidental into adoption ledger membership.
+[contracts.producer-rmo-incidental-f3d290f09c94]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Incidental Finding は current candidate satisfaction を変えない限り candidate obligation / adoption ledger へ昇格させない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: treating Problem as adopted/Resolution Point would make RMO the solver.
+[contracts.producer-rmo-problem-claim-70ce4cdc1679]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Target-relative Problem は current Target との discrepancy として扱い、必要なら別の remediation Claim を導出して producer が採否を裁定する。Problem を `adopted` や Resolution Point へ直結しない。RMO 自身は修正案、採否、candidate mutation を決めない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: existence-only stop would erase the 3-condition blocking gate.
+[contracts.producer-rmo-nonblocking-uncertainty-370efcdc8903]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Uncertainty の存在だけで停止しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: any one missing condition would let fabricated completeness or premature Human escalation through.
+[contracts.producer-rmo-blocking-uncertainty-71fdc907ce0e]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Uncertainty は、未解消では安全な verify / recommend ができず、Target semantics に material で、Agent 権限内の追加観測でも解消不能という 3 条件をすべて満たす場合だけ blocking gap / `stop-incomplete` とする。その他は既存 assumptions / residual risks 境界へ写像する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a requires on blocking text can still pass if obtainable evidence is filled by assumption; the extra forbid catches that path.
+[contracts.producer-rmo-no-fabricated-assumption-5cd65c760c32]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Agent が取得可能な evidence で解消できる technical gap を fabricated assumption で埋めない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: invocation-identity or wording-only triggers would make every advisor pass a new grounding.
+[contracts.producer-rmo-nonsemantic-no-rerun-92322a2a96c2]
+kind = "requires"
+slice = "candidate-reality-grounding"
+pattern = "invocation が新しいこと自体、wording、根拠の整理、同じ change model 内の局所的具体化は trigger にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: reusing a prior closure witness would hide material Target/evidence change.
+[contracts.producer-rmo-invalidation-compare-7cb97aae5fc7]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "stale closure を再利用せず、actual revised candidate と新しい grounded evidence を比較する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: S1/S2 or advisor handoff before closure would skip the S0 grounding gate.
+[contracts.producer-rmo-closure-before-handoff-bd5110ed442e]
+kind = "requires"
+slice = "plan-candidate-producer-verified-snapshot-baseline"
+pattern = "grounding closure を満たすまで、candidate を次の advisor input または producer の S1 / S2 return として引き渡さない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: guessing a past closure, or rerunning only because the invocation is new, would invent grounding evidence.
+[contracts.producer-rmo-unverified-past-closure-2e169d1d4e2f]
+kind = "requires"
+slice = "plan-candidate-producer-verified-snapshot-baseline"
+pattern = "検証不能な既存 verified candidate は grounding 済みと推測せず、invocation identity だけを理由に RMO を無条件再実行せず、既存の incomplete 境界へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: zero-problem or exhaustive-observation closure would turn grounding into an improvement loop.
+[contracts.producer-rmo-closure-not-zero-431247a6a4d1]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Problem 0 件や exhaustive observation は要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a persistent RMO ledger/verdict would add a return channel the workflow does not own.
+[contracts.producer-rmo-no-persistence-6430bd9aa187]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "raw RMO result は reintegration 後に保持せず、RMO 専用 ledger、status、verdict、per-Claim result を作らない。新しい persistent witness field は作らない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: Batch Resolve Kernel membership must not absorb RMO problems.
+[contracts.producer-rmo-batch-independent-6bbc993fba67]
+kind = "requires"
+slice = "plan-candidate-producer-batch-resolution-role-mapping"
+pattern = "RMO Derived Problem を Resolution Point にせず、RMO を closed Batch の内側へ挿入せず、Batch membership / semantics を変更しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: re-grounding after Batch is invalidation-only and stays outside the closed Batch.
+[contracts.producer-rmo-batch-invalidation-4cd03d2af6f0]
+kind = "requires"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "invalidation がなければ既存 closure を維持し、RMO を再実行しない。invalidation があれば、closed Batch は変更せず、その candidate を Target として `candidate-reality-grounding` を実行する。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: keep-the-old-verify-sentence-only would let S0 promote before grounding closure.
+[contracts.producer-s0-grounding-before-verify-a0166d21c1b6]
+kind = "requires"
+slice = "plan-candidate-producer-verified-snapshot-baseline"
+pattern = "`candidate-reality-grounding` の grounding closure を満たしたうえで、それらに対する verify の成功と semantic progress の確認後にだけ、初期 current verified snapshot"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: whole-candidate DTM would restore exhaustive exploration under another name.
+[contracts.producer-dtm-deletion-triggered-ba6eda7fd43f]
+kind = "requires"
+slice = "plan-candidate-producer-deletion-test-parent-mapping"
+pattern = "producer が具体的な deletion / trim / merge による要素消去 Claim を選択した後、適用前にだけ load する。add / modify / verify / investigate Claim や final candidate 全体へ DTM を実行しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: aliasing preserves/breaks/indeterminate onto adopted/rejected/unresolved would make DTM the adjudicator.
+[contracts.producer-dtm-no-alias-verdict-e565924eca1c]
+kind = "requires"
+slice = "plan-candidate-producer-deletion-test-parent-mapping"
+pattern = "`preserves / breaks / indeterminate` は producer adjudication への入力であり、`adopted / rejected / unresolved` の別名や自動 mapping にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: deleting on indeterminate would treat unknown remaining-witness as a successful removal.
+[contracts.producer-dtm-indeterminate-keep-37a89c351435]
+kind = "requires"
+slice = "plan-candidate-producer-deletion-test-parent-mapping"
+pattern = "loader failure または `indeterminate` では削除を実行せず対象要素を保持し、removal Claim を unresolved とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: necessity deletion can be implemented by stripping all kernel mappings, including remaining BOK observation.
+[contracts.advisor-bok-draft-ac-84863947d055]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "Draft AC が Behavior を外部から観測可能かつ意味上十分に区別できるかを既存 quality observation として照合する。Draft AC はこの consumer の評価対象であり grounding ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: making BOK mandatory on uninjected calls would add a new advisor stop path.
+[contracts.advisor-bok-optional-inject-c2002ac95c45]
+kind = "requires"
+slice = "plan-quality-advisor-boundary"
+pattern = "本 Kernel は注入されているときだけ Draft AC の observation sufficiency 照合に使う。"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: preflight must not regain a necessity loader after migration.
+[contracts.producer-preflight-no-necessity-5bb5075d0b97]
+kind = "forbids"
+slice = "producer-invocation-preflight"
+pattern = "necessity-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: RMO loader must not hitchhike on preflight.
+[contracts.producer-preflight-no-rmo-940cd6259caa]
+kind = "forbids"
+slice = "producer-invocation-preflight"
+pattern = "reality-model-observation-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: RMO must not mix into the two-pass Flow.
+[contracts.producer-two-pass-no-rmo-loader-5f51b9373cdb]
+kind = "forbids"
+slice = "advisor-two-pass-orchestration"
+pattern = "reality-model-observation-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: leaving necessity-kernel in the Claim-boundary slice would keep producer as a remaining consumer.
+[contracts.producer-boundary-no-necessity-710307b6a936]
+kind = "forbids"
+slice = "candidate-producer-boundary"
+pattern = "necessity-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: advisor normal invocation must not restore necessity mapping.
+[contracts.advisor-no-necessity-404c5d5b1bee]
+kind = "forbids"
+slice = "plan-quality-advisor-boundary"
+pattern = "necessity-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: advisor must not receive a duplicate RMO injection.
+[contracts.advisor-no-rmo-ae9a8d76e352]
+kind = "forbids"
+slice = "plan-quality-advisor-boundary"
+pattern = "reality-model-observation-kernel"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a requires-only self-grounding clause can still be satisfied by a decoy that self-justifies.
+[contracts.producer-rmo-no-self-justify-d61856304163]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "candidate 自身だけで Target を正当化する"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: deleting the Incidental sentence is not enough if a decoy auto-ledger sentence remains admissible.
+[contracts.producer-rmo-no-auto-ledger-6e26a815300e]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "発見を自動で remediation / ledger entry にする"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a requires-only Problem/Claim split can still pass if RMO is written as the adopter.
+[contracts.producer-rmo-no-rmo-adopt-2e8dd57f81f8]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "RMO が solution / adopt を決める"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: flipping 停止しない to 停止する would still contain 停止; the forbid targets the reversed clause.
+[contracts.producer-rmo-no-unconditional-stop-7de21a43a5df]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "Uncertainty の存在だけで停止する"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: a requires on the negative trigger clause can be dropped unless the unconditional-rerun decoy is independently forbidden.
+[contracts.producer-grounding-no-unconditional-rerun-2ab1e96a5a89]
+kind = "forbids"
+slice = "candidate-reality-grounding"
+pattern = "advisor pass / mutation ごとに無条件再実行する"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: result-to-decision wording can coexist with deletion-triggered loader text unless separately forbidden.
+[contracts.producer-dtm-no-alias-direct-c46980cb3d13]
+kind = "forbids"
+slice = "plan-candidate-producer-deletion-test-parent-mapping"
+pattern = "result→decision 直結"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: renaming necessary/unnecessary/indeterminate into the RMO mapping would revive the retired taxonomy.
+[contracts.producer-no-old-taxonomy-4b5f48ad5b08]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "`necessary` / `unnecessary` / `indeterminate`"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: mapping must not duplicate the Flow load procedure.
+[contracts.producer-rmo-loader-no-procedure-39060aeda0fc]
+kind = "forbids"
+slice = "plan-candidate-producer-rmo-parent-mapping"
+pattern = "親は上記 Loader Data の field を使って load と必要本文の検証を行い"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.producer-runtime-forbids-necessity]
+kind = "forbids"
+pattern = "necessity-kernel"
+paths = [
+  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
+  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
+  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-runtime-forbids-necessity]
+kind = "forbids"
+pattern = "necessity-kernel"
+paths = [
+  "plugins/claude/agents/plan-quality-advisor.md",
+  "plugins/codex/install/agents/plan-quality-advisor.toml",
+  "plugins/cursor/agents/plan-quality-advisor.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.advisor-runtime-forbids-rmo]
+kind = "forbids"
+pattern = "reality-model-observation-kernel"
+paths = [
+  "plugins/claude/agents/plan-quality-advisor.md",
+  "plugins/codex/install/agents/plan-quality-advisor.toml",
+  "plugins/cursor/agents/plan-quality-advisor.md",
+]
 applies_to = ["claude", "codex", "cursor"]
