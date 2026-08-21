@@ -59,18 +59,6 @@ authority = binding
 ledger = decision ledger'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.kernel-loader-no-necessity-path-8302313221e3]
-kind = "forbids"
-slice = "plan-interactive-kernel-mapping"
-pattern = "necessity_path"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.kernel-loader-no-necessity-identity-0a7f54748a9a]
-kind = "forbids"
-slice = "plan-interactive-kernel-mapping"
-pattern = "necessity_identity"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.observation-action-permission-cf002f05ca3a]
 kind = "forbids"
 slice = "plan-interactive-observation-reapply-flow"

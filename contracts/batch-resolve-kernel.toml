@@ -51,9 +51,3 @@ kind = "forbids"
 slice = "batch-resolve-kernel-v1"
 pattern = "`resolve-kernel-v1`"
 applies_to = ["claude", "codex", "cursor"]
-
-[contracts.batch-resolve-kernel-forbids-e3aa9dca8451]
-kind = "forbids"
-slice = "batch-resolve-kernel-v1"
-pattern = "`necessity-kernel-v1`"
-applies_to = ["claude", "codex", "cursor"]

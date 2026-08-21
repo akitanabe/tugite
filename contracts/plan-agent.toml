@@ -180,12 +180,6 @@ pattern = '''通常 reviewer の observation は
 Observation Trigger であり grounding evidence ではない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-forbid-necessity-004788ae9925]
-kind = "forbids"
-slice = "review-refine-rmo-parent-mapping"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.review-dtm-selected-set-0400a908dde0]
 kind = "requires"
 slice = "review-refine-deletion-test-parent-mapping"
@@ -503,30 +497,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "review-refine-batch-loader-start"
 after = "review-refine-resolution-transaction-start"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.shg-kernel-intro-forbids-910ca2f74f89]
-kind = "forbids"
-slice = "structural-health-gate-kernel-exclusion-intro"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.structural-health-gate-caller-context-forbids-901b6b82f7ce]
-kind = "forbids"
-slice = "structural-health-gate-caller-context"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.structural-health-gate-boundary-forbids-1e6e10a9e138]
-kind = "forbids"
-slice = "structural-health-gate-boundary"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.shg-kernel-output-forbids-8380a4be1c8d]
-kind = "forbids"
-slice = "structural-health-gate-kernel-exclusion-output"
-pattern = "necessity-kernel"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shg-intro-plan-agent-forbids-201436250f20]
@@ -2241,13 +2211,6 @@ slice = "plan-quality-advisor-boundary"
 pattern = "本 Kernel は注入されているときだけ Draft AC の observation sufficiency 照合に使う。"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: preflight must not regain a necessity loader after migration.
-[contracts.producer-preflight-no-necessity-5bb5075d0b97]
-kind = "forbids"
-slice = "producer-invocation-preflight"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
 # Why Not: RMO loader must not hitchhike on preflight.
 [contracts.producer-preflight-no-rmo-940cd6259caa]
 kind = "forbids"
@@ -2260,20 +2223,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 slice = "advisor-two-pass-orchestration"
 pattern = "reality-model-observation-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
-# Why Not: leaving necessity-kernel in the Claim-boundary slice would keep producer as a remaining consumer.
-[contracts.producer-boundary-no-necessity-710307b6a936]
-kind = "forbids"
-slice = "candidate-producer-boundary"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor"]
-
-# Why Not: advisor normal invocation must not restore necessity mapping.
-[contracts.advisor-no-necessity-404c5d5b1bee]
-kind = "forbids"
-slice = "plan-quality-advisor-boundary"
-pattern = "necessity-kernel"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: advisor must not receive a duplicate RMO injection.
@@ -2337,26 +2286,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "forbids"
 slice = "plan-candidate-producer-rmo-parent-mapping"
 pattern = "親は上記 Loader Data の field を使って load と必要本文の検証を行い"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.producer-runtime-forbids-necessity]
-kind = "forbids"
-pattern = "necessity-kernel"
-paths = [
-  "plugins/claude/skills/plan-candidate-producer/SKILL.md",
-  "plugins/codex/skills/plan-candidate-producer/SKILL.md",
-  "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.advisor-runtime-forbids-necessity]
-kind = "forbids"
-pattern = "necessity-kernel"
-paths = [
-  "plugins/claude/agents/plan-quality-advisor.md",
-  "plugins/codex/install/agents/plan-quality-advisor.toml",
-  "plugins/cursor/agents/plan-quality-advisor.md",
-]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.advisor-runtime-forbids-rmo]

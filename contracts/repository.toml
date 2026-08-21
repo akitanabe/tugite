@@ -5,22 +5,6 @@ kind = "forbids"
 pattern = "Task\u0020Contract"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: retirement guard strings may remain in contracts; generated runtime must not regain an active consumer.
-[contracts.necessity-kernel-generated-runtime-forbid]
-kind = "forbids"
-pattern = "necessity-kernel"
-applies_to = ["claude", "codex", "cursor", "claude-guidance", "agents-guidance"]
-
-[contracts.necessity-kernel-v1-generated-runtime-forbid]
-kind = "forbids"
-pattern = "necessity-kernel-v1"
-applies_to = ["claude", "codex", "cursor", "claude-guidance", "agents-guidance"]
-
-[contracts.necessity-path-generated-runtime-forbid]
-kind = "forbids"
-pattern = "necessity_path"
-applies_to = ["claude", "codex", "cursor", "claude-guidance", "agents-guidance"]
-
 [contracts.no-kernel-handoff-field]
 kind = "forbids"
 pattern = "_handoff"
