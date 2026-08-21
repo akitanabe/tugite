@@ -8,12 +8,12 @@ Public skill は次の6つです。
 
 - `impl-lead`: Implementation Unit を正規化し、direct または worker の実装、TDD、必要な risk-directed review、親 QA、final writing gate を進めます。
 - `plan-agent`: 要求と repository の観測から plan candidate を作り、bounded review と親の裁定へ渡します。
-- `plan-interactive`: 人間と方向性を確定した candidate を structural gate と固定 review へ渡します。
+- `plan-interactive`: 人間と方向性を freeze したあと、必須の common Plan synthesis、structural gate、bounded review へ進みます。
 - `review-refine`: 不変 artifact snapshot を bounded round で review し、finding と evidence を親へ返します。
 - `code-review`: 基準付き change set を captured snapshot に固定し、専門 reviewer を振り分け、evidence 検証済み findings を報告します。修正や採否裁定は行いません。
 - `test-report`: 明示指定、または指定範囲のテスト群の理解・把握を求める意図が明確な依頼で、指定範囲の Verification Topology を観測事実として提示します。テスト・コードの編集、実行、品質評価、後続 Action は行いません。
 
-`plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
+`plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら既定 review を行い、明示的な skip と reviewer 非適用は Human final acceptance へ進みます。readiness 不足は review-not-established とします。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
 
 `plan-candidate-producer`、`structural-health-gate`、`implementation-unit-design` は public workflow の同じ親 context だけで使う internal skill です。直接の user invocation は受け付けません。
 

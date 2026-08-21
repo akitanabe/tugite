@@ -50,7 +50,7 @@ Agent は注入された Kernel を自分の責務内で適用するだけとし
 - Kernel の適用結果による最終的な採否・裁定が親責務である既存 workflow では、その責務境界を維持します。
 - Kernel は親が持つ round budget、termination、verdict field の責務へ踏み込みません。
 
-`necessity-kernel-v1`（正本は `shared/necessity-kernel.md`、配布物では `references/necessity-kernel.md`）がこの
+`reality-model-observation-kernel-v1`（正本は `shared/reality-model-observation-kernel.md`、配布物では `references/reality-model-observation-kernel.md`）がこの
 contract の標準例です。
 
 ## 追加・変更時に触れる場所

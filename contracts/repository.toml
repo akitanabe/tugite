@@ -10,31 +10,6 @@ kind = "forbids"
 pattern = "_handoff"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.no-kernel-verdict-field]
-kind = "forbids"
-pattern = "necessity_verdict"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.no-kernel-status-field]
-kind = "forbids"
-pattern = "necessity_status"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.no-kernel-decision-field]
-kind = "forbids"
-pattern = "necessity_decision"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.no-kernel-field-field]
-kind = "forbids"
-pattern = "necessity_field"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.no-kernel-result-field]
-kind = "forbids"
-pattern = "necessity_result"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.no-observation-verdict-field]
 kind = "forbids"
 pattern = "observation_verdict"
@@ -1151,7 +1126,7 @@ value = "Plan Interactive"
 [[contracts.codex-plan-interactive-openai-identity.assertions]]
 path = "interface.default_prompt"
 op = "equals"
-value = "Use $plan-interactive only when explicitly requested to draft a human-directed plan, then gate and review it without starting implementation."
+value = "Use $plan-interactive only when explicitly requested to draft a human-directed plan, then run mandatory common synthesis, gate, and bounded review without starting implementation."
 
 [contracts.codex-plan-candidate-producer-openai-identity]
 kind = "structure"
@@ -1612,7 +1587,7 @@ op = "list_order"
 value = [
   "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
   "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
-  "Use $plan-interactive to draft a human-directed planning artifact through gate and fixed review without starting implementation.",
+  "Use $plan-interactive to draft a human-directed planning artifact through mandatory common synthesis, gate, and bounded review without starting implementation.",
   "Use $review-refine to review an immutable artifact snapshot with bounded rounds and caller-owned acceptance evidence.",
   "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
   "Use $impl-lead to run bounded Implementation Unit implementation loops with parent QA.",

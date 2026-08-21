@@ -32,12 +32,6 @@ slice = "plan-quality-advisor-boundary"
 pattern = "insight_fields = [id, observation, evidence, impact, question_or_option]"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-adv-no-necessity-path-6fa4e713115b]
-kind = "forbids"
-slice = "plan-adversarial-return-fields"
-pattern = "../../references/necessity-kernel.md"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.plan-adv-no-rmo-path-bf8f447751ca]
 kind = "forbids"
 slice = "plan-adversarial-return-fields"
@@ -56,12 +50,6 @@ slice = "plan-adversarial-return-fields"
 pattern = "具体的な失敗経路"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.over-eng-no-necessity-path-6192ecc28c03]
-kind = "forbids"
-slice = "over-engineering-return-fields"
-pattern = "../../references/necessity-kernel.md"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.over-eng-no-rmo-path-fdd794dc3d2e]
 kind = "forbids"
 slice = "over-engineering-return-fields"
@@ -78,12 +66,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "over-engineering-return-fields"
 pattern = "取り除いた後も残る実装または検証とそれが担保する AC"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-quality-advisor-boundary-forbids-2d52bc626d88]
-kind = "forbids"
-slice = "plan-quality-advisor-boundary"
-pattern = "../../references/necessity-kernel.md"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.advisor-bok-path-forbids-b9c93881dd21]

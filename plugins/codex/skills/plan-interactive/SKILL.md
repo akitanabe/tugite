@@ -1,8 +1,8 @@
 ---
 name: plan-interactive
 description: >-
-  ユーザーが明示した場合だけ、人間との方向性裁定から計画・設計成果物を起草し、gate と固定 review を経た
-  確定候補または未完了結果を返す public workflow。
+  ユーザーが明示した場合だけ、人間との方向性裁定から計画・設計成果物を起草し、mandatory な common Plan
+  synthesis、gate、bounded review を経た確定候補または未完了結果を返す public workflow。
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
@@ -11,12 +11,32 @@ description: >-
 この Skill は人間参加型の自由形式計画・設計成果物を起草し、親が確定候補または未完了結果を返す public workflow
 である。`plan-agent` と自動切替せず、双方向ともユーザーの明示起動だけで開始する。
 
+`plan-agent` と `plan-interactive` の違いは、Plan synthesis 前の direction / authority の決定方法と、
+`plan-interactive` 固有の Human recovery / final acceptance に限定する。full Plan synthesis の canonical owner は
+既存 `plan-candidate-producer` である。direction freeze は constraint Data であり、Plan Artifact candidate または
+初期 S0 ではない。
+
+```text
+plan-agent
+  Agent-owned direction
+  authority = discretionary
+        ↓
+plan-candidate-producer
+
+plan-interactive
+  clarify-it + verified Human direction freeze
+  authority = constrained
+  authority_constraints = verified freeze 全件
+        ↓
+plan-candidate-producer
+```
+
 ## 発火制御と責務
 
 - `plan-interactive` の起動または同等の明示要求がある場合だけ起動し、context から暗黙起動しない。
 - 各 platform の invocation metadata は上記の explicit-only 契約を表し、その範囲を拡張しない。
 - 実装、委譲、Worker 起動、worktree 操作、後続の実装開始を行わず、final acceptance 後の final-candidate だけを local artifact へ保存する。
-- 起草、対話、gate、review、final acceptance 候補または未完了の返却までを担う。人間は方向性と最終結果の責任を持ち、
+- 起草、対話、mandatory synthesis、gate、review、final acceptance 候補または未完了の返却までを担う。人間は方向性と最終結果の責任を持ち、
   public workflow parent は planner として、調査、具体化、整合性、verification、工程の経過責任を持つ。後続 Action は
   人間へ残す。
 
@@ -33,7 +53,7 @@ Human-confirmed decision として記録する。
 ## clarify-it の caller mapping
 
 `plan-interactive` 起動時に、親は次の Loader Data で pinned 内部 snapshot を一度だけ load する。最初の成功本文を同一
-invocation 内で固定し、local clarify-it（freeze-integrity recovery、gate reopen、final acceptance local correction、3択の再投入）でも
+invocation 内で固定し、local clarify-it（freeze-integrity recovery、gate reopen、final acceptance local correction）でも
 再 load しない。load 失敗時は推測で fallback clarification を行わず、既存の `incomplete` へ返す。clarify-it の semantic identity は検証しない。
 
 ```text
@@ -54,7 +74,7 @@ public_extension = none
 
 ## kernel preflight と caller mapping
 
-`interactive-kernel-preflight` Flow が resolve / necessity の load timing、identity、必要本文、failure routing の唯一の詳細 witness である。
+`interactive-kernel-preflight` Flow が resolve-kernel の load timing、identity、必要本文、failure routing の唯一の詳細 witness である。
 親は skill-relative loader Data、caller=`plan-interactive`、resolver=`planner`、counterpart=`human`、authority=`binding`、
 ledger=`decision ledger` を入力として準備し、検証済み本文だけを既存の判定基準へ注入する。
 
@@ -65,10 +85,6 @@ resolve_path = ../../references/resolve-kernel.md
 resolve_identity = resolve-kernel-v1
 resolve_dependencies = none
 resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]
-necessity_path = ../../references/necessity-kernel.md
-necessity_identity = necessity-kernel-v1
-necessity_dependencies = none
-necessity_required_sections = [適用範囲, Task Specification, Claim と evidence, Deletion Test]
 caller = plan-interactive
 resolver = planner
 counterpart = human
@@ -87,7 +103,7 @@ ledger = decision ledger
 ## clarify-it result の projection
 
 clarify phase の終了判断は次の2つだけとする。回数上限、remaining decisions count、semantic progress 管理、Tugite 独自 completion 判定は
-`plan-interactive` 側で持たない。
+`plan-interactive` 側で持たない。`clarify-it: Completed` は Human Decision Context の completion であり、Plan Artifact completion ではない。
 
 - `Completed` → 親が current decision model から freeze に必要な意味単位を抽出する（clarify-it 出力に固定 schema を要求しない）→ `freeze_source_snapshot` → `direction-freeze-projection`
 - `Stopped` → 停止理由と未解決 Human decisions / inconsistency を保持した既存 `incomplete`。独自 clarification 継続も、独自 recovery / continuation status も作らない
@@ -96,33 +112,23 @@ clarify phase の終了判断は次の2つだけとする。回数上限、remai
 projection を workflow completion や candidate acceptance と同一視しない。
 
 direction freeze は成果物全文の固定ではなく、人間が確定した意味判断を保護する境界とする。親は方向性、実装イメージ、
-重要な verification を圧縮して人間へ示し、freeze 後の gate と review へ frozen decisions と変更可能な具体化を区別して渡す。
+重要な verification を圧縮して人間へ示し、freeze 後の mandatory producer へ frozen decisions を immutable `authority_constraints` として渡す。
 大きな purpose または scope の変更が入力された場合は既存成果物へ増分追加せず、この public workflow 全体を再策定する。
 過去 decision は自動継承せず、candidate prior decisions と再利用知見として現在の要求と evidence で再検証する。
 
-## direction freeze Data と optional proposal refinement
+## direction freeze Data
 
 親は要求原文、verified decision ledger、raw source と evidence から、Human-confirmed な価値、重要な scope / exclude、責務、
 意図的な非採用、判断点にならなかった raw specification を含む `freeze_source_snapshot` を入力として固定する。
 projection の identity／bijection／meaning-evidence 対応は `direction-freeze-projection` Flow に渡し、Human の価値判断と evidence の意味評価は親に残す。
-親は freeze 要約と同じ turn に recommendation、短い理由、次の3択を提示し、選択 Data を
-`optional-proposal-refinement-routing` Flow に渡す。score、件数 threshold、新しい public knob は作らない。
-独立した direction-freeze 再承認 turn は作らない。proposal refinement の実施可否は Human が選ぶ。
-
-1. この方向で確定し、proposal refinement を行う → freeze 成立 → refinement
-2. この方向で確定し、proposal refinement は行わない → freeze 成立 → skip
-3. 懸念・修正点がある → freeze 不成立。固定方向選択ではなく自由文入力。同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session を開始しない。無関係な既存判断を再承認させない
-
-freeze-integrity では全 constraints の verifier verdict と evidence、最新 snapshot、candidate location、fixed bounds / invocation Data を親が初期入力として準備する。
-Human recovery と後続 Action の結果は各 autonomous boundary から戻った後に裁定し、intermediate Data として再投入する。
-affected dependency closure、immutable `request.scope` / `request.exclude`、scope 外の意味分類は親の Calculation / adjudication であり、
-`freeze-integrity-recovery-routing` Flow はそれらを入力として routing する。未解決 Human Decision が残る candidate は gate へ渡さない。
+verified freeze 全件を immutable `authority_constraints` とし、direction freeze 自体を existing verified candidate または初期 S0 として扱わない。
+未解決 Human Decision が残る freeze は producer へ渡さない。
 
 ## plan-artifact-design の parent-owned load
 
 `interactive-kernel-preflight` に相乗りしない。clarify-it 中は load しない。最初の artifact 本文起草・再構成の直前に、親は次の
 Loader Data で局所 validation として一度だけ load し、identity と required section を検証する。最初の成功 snapshot を同一
-invocation 内で固定し、proposal refinement と review 反映でも再利用する。失敗時は推測で従来形式の artifact を生成せず、既存の
+invocation 内で固定し、gate retry の producer 再実行と review 採用修正でも再利用する。失敗時は推測で従来形式の artifact を生成せず、既存の
 `incomplete` へ返す。検証済み本文だけを既存の判定基準へ注入する。
 
 ```text
@@ -135,25 +141,66 @@ design_snapshot = first successful verified body is frozen for the invocation
 design_use = inject verified body into existing 判定基準; Loader Data and path are not producer Inputs; no dedicated channel or return field
 ```
 
+## constrained producer の caller ownership
+
+plan-candidate-producer の invocation boundary、constrained authority、resolution execution bound は `plan-interactive` が所有する。
+internal `plan-candidate-producer` の開始時に、caller=`plan-interactive`、resolver=planner、counterpart=`plan-quality-advisor`（Resolution
+Transaction 外の one-shot observation）を mapping し、`authority = constrained` を注入する。`authority_constraints` は verified
+direction freeze 全件であり、subset や再生成した集合ではない。direction freeze を existing verified candidate / 初期 S0 として渡さない。
+初回は要求、repository observation、全 authority constraints から candidate を構成し、gate retry では current verified candidate を
+S0 として同じ constraints で再実行してよい。
+
+```text
+caller = plan-interactive
+authority = constrained
+authority_constraints = verified freeze 全件
+freeze_as_existing_s0 = prohibited
+producer_skip = prohibited
+```
+
+`plan-candidate-producer` は request、repository observation、全 authority constraints から `plan-artifact-design` 準拠の candidate を構成し、
+RMO grounding、verify、固定 2 advisor pass を閉じる。`complete` で返した latest S2 / current verified candidate だけを downstream 候補にする。
+`stop-incomplete` の場合は caller-owned parent がそこで停止し、integrity / gate / review を選択しない。`authority_conflict` は
+constraint ID、evidence、影響範囲とともに Human boundary へ返す。producer の固定 2-pass と重複する additional refinement orchestration は置かない。
+
+## freeze-integrity
+
+Human authority protection は一つの freeze-integrity procedure を正本とする。candidate-changing boundary の後に、latest candidate と
+全 constraint ID / `frozen_meaning` / `source_evidence` を fresh に照合する。stale check や subset check を再利用しない。
+
+trigger は次に固定する。
+
+- 各 producer invocation が `complete` で返した latest S2 の後。初回、gate retry、new freeze 後の recovery を含む。
+- `review-refine` の adopted revision を反映した latest snapshot の後。
+
+final-acceptance local correction は、affected closure に対する local `clarify-it → verified new freeze → constrained producer complete` へ戻すため、
+producer-complete trigger で保護する。
+
+親は全 constraints の verifier verdict と evidence、最新 snapshot、candidate location、fixed bounds / invocation Data を初期入力として準備する。
+`freeze-integrity-routing` Flow が deterministic routing の唯一の詳細 witness である。全 frozen meaning を保持した AC / verification /
+local detail の追加は許可し、baseline 全文を変更禁止対象にしない。
+
 ## structural-health-gate
 
-direction freeze 候補を受け取った場合は、提案が全件却下された場合も同じ親 context の internal
-`structural-health-gate` へ渡す。input には generic `caller_context` Data（`workflow_family: plan-family`、
-`invocation: explicit-public-parent`）を含める。`context 不成立` は別 route へ切り替えず `stop-incomplete` とする。
+producer `complete` かつ freeze-integrity `intact` の current verified candidate だけを、同じ親 context の internal
+`structural-health-gate` へ渡す。direction freeze や `clarify-it: Completed` を gate へ直接送らない。input には generic
+`caller_context` Data（`workflow_family: plan-family`、`invocation: explicit-public-parent`）を含める。`context 不成立` は別 route へ切り替えず `stop-incomplete` とする。
 
 親は gate 予算を独立した `rounds` Data として管理し、assessment 1回を1 round と数える。`rounds.limit` は下限1の
 ceiling とし、ユーザー指定を優先する。未指定なら親が loop 開始時に固定し、1未満は補正せず `stop-incomplete` とする。
 1未満では assessment、producer の再実行、後段を起動しない。gate 予算と review 予算は別 Data とする。
 gate assessment / evidence、current round、fixed context を初期 Data として `structural-gate-reopen-routing` Flow に渡す。
-Human response、affected decision / dependency closure、new freeze、new selection、changed review scope は return 後の intermediate Data とし、
+Human response、affected decision / dependency closure、new freeze は return 後の intermediate Data とし、
 gate finding の意味、Human response、candidate の採否は親が裁定する。
 
-## review の適用と固定順序
+## review の適用と dispatch
 
-工程順序は `clarify-it → direction freeze projection → optional proposal refinement / freeze-integrity → structural-health-gate → review-refine` であり、gate が `pass` した snapshot だけを
-次の判定へ渡す。親は `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から reviewer applicability を判定し、
-review skip、review goal、reviewer data、Acceptance Criteria / 設計 readiness とともに Action 実行前 Data として `fixed-review-routing` Flow へ渡す。
-適用可否、Human の review skip、入力の意味と readiness は親が所有する。
+工程順序は `clarify-it → direction freeze projection → mandatory constrained producer → freeze-integrity → structural-health-gate → review dispatch` であり、gate が `pass` した snapshot だけを
+次の判定へ渡す。review applicability / opt-out / readiness は public parent dispatch が `plan-agent` と同じ意味で所有する。
+`review-refine` は dispatch 後の loop / termination を所有し、artifact status は caller が別に裁定する。
+親は `artifact_kind` と既定 `plan-adversarial-reviewer` の責務から reviewer applicability を判定し、
+確認済み applicability、明示 opt-out、review goal、reviewer data、Acceptance Criteria / 設計 readiness とともに Action 実行前 Data として `review-dispatch` Flow へ渡す。
+適用可否、Human の review opt-out、入力の意味と readiness は親が所有する。
 
 `review-refine` には不変 snapshot、`artifact_kind`、`caller_context`、要求と判定基準、review goal、reviewer・回数制約、
 必要なら継続台帳を渡す。回数制約がなければ親が loop 開始時に上限と打ち切りを決める。既定 reviewer は
@@ -164,41 +211,31 @@ review skip、review goal、reviewer data、Acceptance Criteria / 設計 readine
 
 親は成果物、finding / hold ledger、未解決 finding、final trim、`termination`、`adversarial_review_count` を受け取り、
 finding を既存5区分へ evidence と理由付きで裁定する。frozen decision の変更、affected dependency closure、再 review scope は親の意味判断である。
-`fixed-review-routing` Flow は applicability、skip、input failure、review result の固定 routing だけを担い、finding の採否を決めない。
+`review-dispatch` Flow は applicability、opt-out、readiness、input failure の固定 routing だけを担い、finding の採否を決めない。
+`termination` は review-refine がどのように終了したかを示す process Data であり、candidate status は caller が別に裁定する。
 
-review は frozen decisions を守る限り具体化・verification 補強・複雑性削減を許す。frozen decision の変更が必要なら親が `人間確認` へ止める。
+review は frozen decisions を守る限り具体化・verification 補強・複雑性削減を許す。採用修正後の latest snapshot は fresh integrity check を通してから
+final acceptance 候補にする。frozen decision の変更が必要なら親が `人間確認` へ止める。
 
 ## review 完了と final acceptance
 
 review 実行結果、`converged` / `induced-loop`、未解決 finding、レビュー不成立、`round-limit`、`stop-incomplete`、台帳、残存 risk は親が受け取り、
 確定候補か未完了かを裁定する。代替 evidence による完了扱い、clarify-it への自動逆遷移、未完了 artifact 保存は行わない。
+`nonapplicable` と `applicable + explicit opt-out` は normal completion として Human final acceptance へ進める。
 
 final acceptance は direction freeze と分離し、既定で必須とする。Human の明示 opt-out は親が approval Action の省略として確定するが、report は残す。
 Semantic Delta baseline、summary、方向変更、verification、risk、default required / pre-existing binding opt-out は `final-acceptance-routing` Flow の初期入力 Data とする。
 Human response と correction classification は acceptance Action 後に親が裁定して再投入する intermediate Data とする。
 Flow 外では Human acceptance、local / large / closure の分類、correction scope、意味評価を親が保持する。
 
-final report の provenance は親が governing phase-selection point から計算し、過去 cycle や advisor history を露出しない。
+final report は過去 cycle や advisor history を露出しない。
 
 ## clarify-it 局所再適用の親 routing Data
 
-工程順序は `clarify-it → direction freeze projection → optional proposal refinement / freeze-integrity → structural-health-gate → review-refine` とし、
+工程順序は `clarify-it → direction freeze projection → mandatory constrained producer → freeze-integrity → structural-health-gate → review dispatch` とし、
 親は gate return、frozen review finding、review stop、final acceptance correction の分類と affected closure を入力として各 Flow に渡す。
-`structural-gate-reopen-routing`、`fixed-review-routing`、`final-acceptance-routing` が deterministic routing の唯一の詳細 witness であり、
+`structural-gate-reopen-routing`、`review-dispatch`、`final-acceptance-routing` が deterministic routing の唯一の詳細 witness であり、
 Human の再判断、closure の意味、out-of-scope 分類、large purpose / scope change の判断は親が保持する。
-
-## necessity adjudication の親 Data
-
-親は検証済み necessity kernel を caller 固有責務へ次の最小 Data だけで mapping する。
-
-```text
-criteria_injection = verified Task Specification + Deletion Test
-mapping = necessary -> adopted; unnecessary -> rejected; indeterminate -> unresolved
-mapping_target = existing adoption ledger; no new result field
-```
-
-Claim、evidence、updated snapshot 再判定、mutual deletion guard、budget / termination 非直結、gate 適用外は検証済み kernel 本文を
-既存の判定基準として継承し、この caller mapping または `clarify-it` に再記述しない。
 
 ## freeze 前 advisor の親 Data
 
@@ -243,13 +280,6 @@ blocking_gap = incomplete before direction freeze
 
 親はこの Calculation の結果を direction freeze の verified workflow Data に反映する。Human へは必要な判断材料だけを
 `clarify-it` の既存規範で提示し、verification schema 自体を流入させない。
-
-## optional proposal refinement の normative relations
-
-親は direction freeze summary、recommendation、short reason、Human の一度だけの3択（第3は懸念・修正点の自由文）、producer / integrity invocation 前 Data を初期 Data として準備する。
-proposal result、freeze-integrity verdict / evidence、Human recovery decision、latest snapshot、affected closure、scope / exclude は各 Action 後の
-intermediate Data として親が裁定・再投入する。分岐、proposal stop、check #1 recovery の固定 routing は
-`optional-proposal-refinement-routing` と `freeze-integrity-recovery-routing` Flow に集約し、親は Human Decision と evidence の意味を裁定する。
 
 ## Programmatic Flows
 
@@ -314,10 +344,10 @@ authority = not Git management, durable persistence, final acceptance, or downst
 
 ### interactive-kernel-preflight
 
-Trigger: 親が最初の clarify-it または candidate Claim adjudication を開始する直前で、kernel preflight を要求したとき。
-Inputs: resolve-kernel と necessity-kernel の skill-relative path、各 identity、必要 section、dependencies、plan-interactive の caller/role mapping、親の判定基準。
-Procedure: resolve は clarify-it 適用前に一度だけ load・identity・必要本文を検証し、necessity は candidate Claim adjudication 前に一度だけ load・identity・必要本文を検証する。resolve の failure は clarify-it 前、necessity の failure は Claim adjudication 前に `incomplete` とし、検証済み本文だけを親の既存判定基準へ注入する。二つの timing を統合せず、path 解決と最終判断は親が所有する。
-Outcomes: 検証済み kernel Data と role mapping、または対応する timing の `incomplete`。Flow は Human の意味判断、Claim の採否、clarify-it の対話結果を expected oracle にせず、loader failure を突破しない。
+Trigger: 親が最初の clarify-it を開始する直前で、kernel preflight を要求したとき。
+Inputs: resolve-kernel の skill-relative path、identity、必要 section、dependencies、plan-interactive の caller/role mapping、親の判定基準。
+Procedure: resolve は clarify-it 適用前に一度だけ load・identity・必要本文を検証する。resolve の failure は clarify-it 前に `incomplete` とし、検証済み本文だけを親の既存判定基準へ注入する。path 解決と最終判断は親が所有する。
+Outcomes: 検証済み kernel Data と role mapping、または `incomplete`。Flow は Human の意味判断、clarify-it の対話結果を expected oracle にせず、loader failure を突破しない。
 
 ### observation-reapply
 
@@ -330,40 +360,40 @@ Outcomes: observation result と provenance / evidence、または親へ返す t
 
 Trigger: clarify-it `Completed` の verified Data comparison が一意の direction freeze candidate projection を許可したとき。
 Inputs: initial Calculation 実行前 Data として、要求原文、verified decision ledger、全意味単位を含む raw `freeze_source_snapshot`、source evidence、workflow-local opaque ID generation input。direction freeze candidate は含めない。
-Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source から projection した direction freeze candidate と exact comparison result を中間 Data として扱う。source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合し、照合済み `{id, frozen_meaning, source_evidence}` だけを candidate Outcome へ projection する。新しい meaning、condition、decision は加えず、不完全・空・再生成・曖昧な投影は proposal 前に `stop-incomplete` とする。
-Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または proposal を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。
+Procedure: source item ごとに非空で一意な ID を一度だけ付与し、source から projection した direction freeze candidate と exact comparison result を中間 Data として扱う。source ID 集合と constraint ID 集合の exact bijection、未投影・重複・余分・meaning mismatch の不在を全数照合し、照合済み `{id, frozen_meaning, source_evidence}` だけを candidate Outcome へ projection する。新しい meaning、condition、decision は加えず、不完全・空・再生成・曖昧な投影は producer 前に `stop-incomplete` とする。
+Outcomes: verified Data comparison に対応した unique direction freeze candidate projection、または producer を禁止する `stop-incomplete`。Human Decision、clarification 内容、evidence の意味評価、candidate の採否は親が保持し expected oracle にしない。
 
-### optional-proposal-refinement-routing
+### constrained-producer-routing
 
-Trigger: direction freeze summary と同じ turn で、親が optional proposal refinement の routing を Human の3択として提示するとき。
-Inputs: initial Action 実行前 Data として、verified direction-freeze candidate S0、短い recommendation と理由、Human の binding な一度だけの3択（第3は懸念・修正点の自由文）、S0 に束縛した producer fixed 2 pass invocation Data、fresh-context check #1 invocation Data。proposal result と check result は含めない。
-Procedure: 「この方向で確定し、proposal refinement は行わない」は producer と freeze-integrity を実行せず structural-health-gate へ送る。「この方向で確定し、proposal refinement を行う」は producer fixed 2 pass を一度実行し、その result を中間 Data として Agentic 親へ返す。親の proposal adjudication Data の再投入後だけ fresh-context check #1 を一度実行し、result / evidence を次の中間 Data として親へ返す。親の integrity adjudication Data を再投入する順序は `producer fixed 2 pass -> parent round-trip -> check #1 -> parent round-trip` に固定する。proposal の `stop-incomplete` は authority conflict かつ親が verified result と裁定した場合だけ返却 candidate を local Human recovery の入力にし、それ以外は pre-refinement fallback と gate を禁止して outward `incomplete` とする。「懸念・修正点がある」は freeze 不成立とし、固定方向選択ではなく自由文を同じ invocation / 同じ current decision model / 同じ load snapshot へ再投入する。新しい clarify session、新しい bound 管理、無関係な既存判断の再承認は行わない。
-Outcomes: proposal skipped から gate、proposal と integrity を通過した routing、same-context clarify-it re-entry、local Human recovery の入力、または `incomplete`。3択、proposal の意味評価、Human Decision、adoption は親入力・親裁定であり Flow は expected oracle を固定しない。
+Trigger: 親が verified direction freeze 全件を immutable `authority_constraints` として確定し、mandatory constrained producer の routing を要求したとき。
+Inputs: initial Action 実行前 Data として、要求原文、repository observation、`authority = constrained`、verified freeze 全件の `authority_constraints`、producer invocation Data。direction freeze を existing verified candidate / 初期 S0 としては含めない。producer result は含めない。
+Procedure: producer を必ず一度起動する。direction freeze から gate / review / final acceptance へ直行せず、additional refinement の Human choice で base synthesis を skip しない。producer `stop-incomplete` は downstream を起動せず `incomplete` とする。`authority_conflict` は constraint ID、evidence、影響範囲とともに Human boundary へ返す。`complete` の latest S2 だけを freeze-integrity へ送る。
+Outcomes: producer-complete latest S2 の integrity routing、`authority_conflict` の Human boundary、または `incomplete`。constraint の意味変更、candidate の採否、Human Decision は親裁定であり Flow は expected oracle にしない。
 
-### freeze-integrity-recovery-routing
+### freeze-integrity-routing
 
-Trigger: successful refinement 後の fresh-context freeze-integrity check #1 が `intact`、`violated`、または `indeterminate` を返したとき。
-Inputs: initial Action 実行前 Data として、check #1 verdict / 全 evidence、constraint IDs と candidate locations、最新 verified snapshot S0、immutable constraints と `request.scope` / `request.exclude`、fixed recovery bounds / invocation Data。Human decision、recovery freeze、fresh proposal、check #2 result は含めない。
-Procedure: check #1 が `intact` の場合だけ verified candidate を structural-health-gate へ送る。`violated` または `indeterminate` では check #1 evidence を Agentic 親 / Human へ返し、親の Human 再判断 / affected closure を中間 Data として再投入した後に、`local clarify-it -> verified recovery freeze -> producer fixed 2 pass -> fresh-context check #2` を mandatory に順序実行する。local clarify-it result、verified recovery freeze、producer fixed 2 pass result、check #2 result / evidence はそれぞれ中間 Data として次 step 前に親へ返し、親裁定 Data の再投入を要求する。`affected_scope = constraint IDs + candidate locations -> dependency closure -> affected obligations`、`request.scope = affected obligations`、`request.exclude = all other candidate obligations` とし、scope 外は `rejected | out-of-scope` として apply せず、locator / closure / exclusivity を安全に確定できなければ proposal 前に `stop-incomplete` とする。optional selection、direct structural gate、legacy dialogue route を挟まず、check #2 が `intact` でなければ Trust failure の `stop-incomplete` とし再 reopen しない。
-Outcomes: check #1 `intact` の gate routing、check #2 `intact` の verified candidate を structural-health-gate へ送る routing、または Trust failure / scope failure の `stop-incomplete`。Trust failure では check #2 が非 `intact` だったこと、verdict、問題が残る constraint 周辺、`stop-incomplete` だけを報告し、raw advisor history は露出しない。Human recovery の内容、evidence の意味評価、affected closure の妥当性は親が裁定し expected oracle にしない。
+Trigger: producer が `complete` で返した latest S2 の後、または `review-refine` の adopted revision を反映した latest snapshot の後に、親が fresh freeze-integrity を要求したとき。
+Inputs: initial Action 実行前 Data として、全 constraint ID / `frozen_meaning` / `source_evidence`、latest candidate、trigger 種別（post-producer / post-review）、fixed bounds / invocation Data。stale check evidence と subset check は含めない。Human decision と recovery freeze は含めない。
+Procedure: 全 constraints を latest candidate に対して fresh に独立照合する。stale check や subset check を再利用しない。`intact` は次の gate、review dispatch、または final acceptance へ進める。post-producer `violated` は constraint を変更せずには安全な candidate を作れない場合、`authority_conflict` として Human boundary へ返し、new freeze 後は producer から再開する。post-review `violated` は violating working snapshot を promote せず、last constraint-intact verified snapshot を維持し、影響 finding を `human-confirmation` へ再裁定する。Human が freeze を維持する場合は finding を再裁定し、安全な candidate に対する changed-scope review を経て final acceptance へ進む。Human が direction を変える場合は `Human decision → verified new freeze → constrained producer complete latest S2 → fresh integrity → gate → review dispatch → final acceptance` の順で再入する。`indeterminate` は Agent authority 内で evidence を取得できる場合だけ同じ candidate を fresh に再照合する。取得不能、closure 不成立、または fixed budget 到達では `incomplete` とする。violating snapshot を再開 baseline にしない。
+Outcomes: `intact` の downstream routing、post-producer `authority_conflict`、post-review last-intact 維持と `human-confirmation`、または `incomplete`。Human recovery の内容、evidence の意味評価、finding の採否は親が裁定し expected oracle にしない。
 
 ### structural-gate-reopen-routing
 
 Trigger: structural-health-gate が current candidate に対する `return`、`pass`、または `insufficient-evidence` を親へ返したとき。
-Inputs: initial Action 実行前 Data として、gate result / evidence の problem / impact / recommendation、独立した `rounds.limit`、current round、fixed parent context。Human response、affected closure、new freeze、new selection、rerun result は含めない。
-Procedure: `pass` は downstream review へ送る。`return` かつ current round が limit 未満の場合だけ finding を Agentic 親へ返す。親 / Human response と親確定の affected decision / dependency closure を中間 Data として再投入した後に、local clarify-it、new direction freeze、new optional selection、changed review scope、gate rerun を順に行う。各 result / evidence は中間 Data として親へ戻し、親裁定 Data を再投入してから次へ進む。前 cycle の opt-in や governing value を継承しない。limit 到達、`insufficient-evidence`、closure failure、finding 全件却下で内容不変、または同一内容の場合は `stop-incomplete` とし、別 identity を作らない。
-Outcomes: downstream review、budget 内 local reopen、または `stop-incomplete`。gate finding の意味、Human response、reopen scope、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。
+Inputs: initial Action 実行前 Data として、gate result / evidence の problem / impact / recommendation、独立した `rounds.limit`、current round、fixed parent context、current verified candidate、同じ immutable `authority_constraints`。Human response、affected closure、new freeze、producer result、integrity result は含めない。
+Procedure: `pass` は review dispatch へ送る。`return` かつ current round が limit 未満の場合だけ finding を Agentic 親へ返す。親が constraints 内の具体化で閉じると裁定した場合は、current verified candidate と同じ constraints で producer を retry し、`complete` 後に fresh integrity check を行う。constraint 変更が必要なら local `clarify-it → new freeze → constrained producer` へ戻し、complete 後に fresh integrity を行う。各 result / evidence は中間 Data として親へ戻し、親裁定 Data を再投入してから次へ進む。前 cycle の freeze / constraints / review opt-out を次 cycle の既定として継承しない。limit 到達、`insufficient-evidence`、closure failure、または evidence 不足は `incomplete` とし、別 identity を作らない。old integrity evidence を再利用しない。
+Outcomes: review dispatch、budget 内 producer retry または new-freeze recovery、または `incomplete`。gate finding の意味、Human response、constraint 変更要否、candidate の採否は親入力・親裁定であり Flow は expected oracle を固定しない。
 
-### fixed-review-routing
+### review-dispatch
 
-Trigger: structural gate `pass` 後に、親が artifact snapshot と reviewer applicability / readiness を確定して fixed review routing を要求したとき。
-Inputs: initial Action 実行前 Data として、artifact snapshot / artifact_kind、reviewer applicability、Human の明示 review skip、review goal、reviewer data / availability、Acceptance Criteria / design readiness、fixed review invocation Data。review result classification は含めない。
-Procedure: reviewer applicability を explicit skip より先に評価する。nonapplicable は正常に review を省略して起草確定へ進める。applicable かつ明示 skip は review 未実施の draft と残存 risk を `incomplete` として返す。applicable かつ skip なしで input が成立した場合だけ fixed review を一度 dispatch し、result を中間 Data として Agentic 親へ返す。review Action を routing 時に再実行せず、親の finding adjudication / classification Data と必要な Human-confirmation input の再投入後だけ、`converged` または未解決 finding のない `induced-loop` を candidate routing へ渡す。input failure、reviewer failure、`round-limit`、`stop-incomplete`、未解決 finding を伴う `induced-loop`、review-not-established は candidate にしない。frozen decision の変更を要する finding は親の Human confirmation へ返し、自動 reopen や自動 clarify-it を行わない。
-Outcomes: nonapplicable completion、fixed review dispatch、review candidate、parent Human-confirmation input、または review-not-established / `incomplete`。finding の意味的な採否、Human Decision、converged / induced-loop の受容、changed review scope は親裁定であり Flow は唯一の expected oracle にしない。
+Trigger: 親が artifact snapshot と review readiness を確定し、review routing を要求したとき。
+Inputs: 親確定の artifact_kind、applicability、user review opt-out、review goal、reviewer data、Acceptance Criteria / 設計 readiness、reviewer availability。
+Procedure: parent-confirmed applicability は opt-out より先に評価する。nonapplicable は normal completion、applicable + opt-out は normal completion、applicable + no opt-out + ready は review dispatch とする。readiness failure または reviewer failure は review-not-established として親へ返す。
+Outcomes: nonapplicable、opt-out、review dispatch、または明示的な `review-not-established`。Flow は accept を返さず、finding の意味的な採否と artifact status は親へ返す。
 
 ### final-acceptance-routing
 
-Trigger: gate と fixed review を通過した candidate、または review 非適用の draft が final acceptance の親判定へ到達したとき。
+Trigger: gate と review dispatch を通過した candidate、または review 非適用 / explicit opt-out の draft が final acceptance の親判定へ到達したとき。
 Inputs: initial Action 実行前 Data として、final candidate、最新 direction freeze を Semantic Delta baseline とする Data、summary、direction change、verification result、remaining risk、default required、pre-existing binding explicit opt-out、acceptance invocation Data。Human Decision と correction classification result は含めない。
-Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。それ以外は acceptance Action を一度実行し、Human response を中間 Data として Agentic 親へ返す。親が裁定した local / large / closure classification の再投入後だけ routing する。local correction は affected closure の clarify-it、new freeze、new selection、gate、changed-scope review、再 acceptance を順に routing し、各 autonomous result と親裁定 Data を中間 Data として parent round-trip する。large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。final report は governing phase-selection point の `proposal refinement: executed | skipped` だけを表示する。`executed -> gate return -> skipped = skipped`、`skipped -> gate return -> executed = executed`、`executed -> Trust recovery -> intact = executed`、`executed -> final acceptance correction -> skipped = skipped` とし、gate return または correction の新 selection を使用する。
+Procedure: direction freeze、gate pass、review 済み candidate を final acceptance と同一視せず、既定で acceptance Action と report を要求する。explicit opt-out は approval Action だけを省略し report を残す。それ以外は acceptance Action を一度実行し、Human response を中間 Data として Agentic 親へ返す。親が裁定した local / large / closure classification の再投入後だけ routing する。local correction は affected closure の local `clarify-it → verified new freeze → constrained producer complete` を順に routing し、complete 後の fresh integrity、gate、changed-scope review、再 acceptance を経る。各 autonomous result と親裁定 Data を中間 Data として parent round-trip する。large purpose / scope change は public workflow 全体を再策定し、closure failure は `incomplete` とする。non-intact な snapshot から final acceptance へ直行しない。
 Outcomes: final acceptance、明示 opt-out 後の report、local correction loop、large reformulation、または closure failure の `incomplete`。local / large / closure の分類、Human acceptance、verification の意味評価、最終採否は親入力・親裁定であり Flow は expected oracle にしない。
