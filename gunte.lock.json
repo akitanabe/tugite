@@ -78,26 +78,6 @@
       "sha256": "f59ed192b707017c6b6d7f656c650ee358044bffd9073fa744ca3cf457f103b7"
     },
     {
-      "id": "no-kernel-verdict-field",
-      "sha256": "cfd77b202552f4bf36679b0f8ce4211db05e6ce8abb42fce957786cde9106e46"
-    },
-    {
-      "id": "no-kernel-status-field",
-      "sha256": "39ddb7c78e2727a68e1628bb6c4cf5357b4a14901bb5dafcbf12fcc6397d407f"
-    },
-    {
-      "id": "no-kernel-decision-field",
-      "sha256": "66862b63cb70f57f23057458800eb9166084715dad759cd4ed8ef3017ef0f55f"
-    },
-    {
-      "id": "no-kernel-field-field",
-      "sha256": "767c8f4c2080027af03b5d42d39d0a280a8e8906ca8c04ee47d4bd3ebd8a1b0f"
-    },
-    {
-      "id": "no-kernel-result-field",
-      "sha256": "10e4ecba43695f9bc4587c48de255d1f6b20bee8a084bd7de5d558147da0d3f2"
-    },
-    {
       "id": "no-observation-verdict-field",
       "sha256": "d1228a73c33deda170bcf0508b972d0942303efe89143f7ec2ef0df96d2f986b"
     },
@@ -2372,10 +2352,6 @@
     {
       "id": "producer-batch-loader-no-procedure-4d983aec799b",
       "sha256": "2a4ae67e47d68a2942e849795ab03d1331ad94496cf9e124a3a9f82df855a438"
-    },
-    {
-      "id": "producer-necessity-loader-no-procedure-a90d171cfe09",
-      "sha256": "fa8c726f942acb15fcca544d25ff2e418269467ea7ec544cf23b8fb7343e361c"
     },
     {
       "id": "plan-agent-producer-preflight-invocation-boundary-5722d4a9d94b",

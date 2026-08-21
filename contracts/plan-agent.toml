@@ -1427,12 +1427,6 @@ slice = "plan-candidate-producer-batch-resolve-kernel-loader"
 pattern = "親は上記 Loader Data の field を使って load と必要本文の検証を行い"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.producer-necessity-loader-no-procedure-a90d171cfe09]
-kind = "forbids"
-slice = "candidate-producer-boundary"
-pattern = "candidate Claim を判定する前に、advisor 起動の有無にかかわらず、親は上記 Loader Data の field を使って load と必要本文の検証を行い"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.plan-agent-producer-preflight-invocation-boundary-5722d4a9d94b]
 kind = "requires"
 slice = "plan-agent-proposal-resolution-ownership"
@@ -2197,7 +2191,7 @@ slice = "plan-candidate-producer-deletion-test-parent-mapping"
 pattern = "loader failure または `indeterminate` では削除を実行せず対象要素を保持し、removal Claim を unresolved とする。"
 applies_to = ["claude", "codex", "cursor"]
 
-# Why Not: necessity deletion can be implemented by stripping all kernel mappings, including remaining BOK observation.
+# Why Not: unused kernel mappings can be stripped without also dropping remaining BOK observation.
 [contracts.advisor-bok-draft-ac-84863947d055]
 kind = "requires"
 slice = "plan-quality-advisor-boundary"
