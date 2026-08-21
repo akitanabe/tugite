@@ -14,7 +14,6 @@ files = [
   "contracts/plan-interactive.toml",
   "contracts/kernel.toml",
   "contracts/batch-resolve-kernel.toml",
-  "contracts/necessity-kernel.toml",
   "contracts/resolve-kernel.toml",
   "contracts/writable-scope-kernel.toml",
   "contracts/behavior-observation-kernel.toml",
@@ -38,7 +37,6 @@ files = [
   "shared/agents/test-quality-reviewer.md",
   "shared/agents/writing-principles-reviewer.md",
   "shared/batch-resolve-kernel.md",
-  "shared/necessity-kernel.md",
   "shared/plan-artifact-publication.md",
   "shared/destination-selection.md",
   "shared/plan-artifact-design.md",
@@ -154,12 +152,6 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/necessity-kernel.md"
-path = "references/necessity-kernel.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.claude.rules]]
 match = "shared/plan-artifact-publication.md"
 path = "references/plan-artifact-publication.md"
 profile = "markdown-v1"
@@ -260,12 +252,6 @@ allow_dirs = ["skills/install-custom-agents"]
 [[targets.codex.rules]]
 match = "shared/batch-resolve-kernel.md"
 path = "references/batch-resolve-kernel.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.codex.rules]]
-match = "shared/necessity-kernel.md"
-path = "references/necessity-kernel.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -386,12 +372,6 @@ allow_dirs = ["skills/install-plugin"]
 [[targets.cursor.rules]]
 match = "shared/batch-resolve-kernel.md"
 path = "references/batch-resolve-kernel.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.cursor.rules]]
-match = "shared/necessity-kernel.md"
-path = "references/necessity-kernel.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 

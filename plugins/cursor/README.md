@@ -10,12 +10,12 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 
 - `impl-lead`: Implementation Unit の受け付け、親エージェントによる直接実装または worker への振り分け、TDD、リスクに応じたレビュー、親 QA、最終文章レビューを扱う実装ワークフローです。明示起動時だけ使います。
 - `plan-agent`: 要求とリポジトリの観測から実装 plan の候補を作り、回数を制限したレビューと親の裁定へ渡します。
-- `plan-interactive`: 人間と方向性を確定した候補を構造 gate と固定レビューへ渡す、人間参加型の計画ワークフローです。
+- `plan-interactive`: 人間と方向性を freeze したあと、必須の common Plan synthesis、構造 gate、bounded review へ進む人間参加型の計画ワークフローです。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
 - `code-review`: 基準付き change set を captured snapshot に固定し、専門 reviewer を振り分け、evidence 検証済み findings を報告します。修正や採否裁定は行いません。
 - `test-report`: 明示指定、または指定範囲のテスト群の理解・把握を求める意図が明確な依頼で、指定範囲の Verification Topology を観測事実として提示します。テスト・コードの編集、実行、品質評価、後続 Action は行いません。
 
-`plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら固定 review を行い、明示的な skip は未完了として返します。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
+`plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら既定 review を行い、明示的な skip と reviewer 非適用は Human final acceptance へ進みます。readiness 不足は review-not-established とします。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
 
 ### 内部 skill
 

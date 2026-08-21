@@ -15,11 +15,12 @@ Tugite の Skill、Agent、Issue、実装で同じ語を同じ意味で使うた
 
 ## Task Specification
 
-Task または Implementation Unit が何を達成すべきかを、LLM が意味的に解釈するための定義です。必要性判定に使う受入境界であり、
-何を含むかは正本が定めます。issue #193 は略記 `Task Spec` も候補に挙げていますが、正本本文と `contracts/*.toml` の
+Task または Implementation Unit が何を達成すべきかを、LLM が意味的に解釈するための定義です。具体的な
+acceptance boundary は current request と current workflow source が所有します。この辞書は general admission
+checker ではありません。issue #193 は略記 `Task Spec` も候補に挙げていますが、正本本文と `contracts/*.toml` の
 pattern では正式名だけを使います。
 
-- 正本: `shared/necessity-kernel.md` の `## Task Specification`
+- 正本: current request と、適用中の workflow source
 
 ## Implementation Unit
 
