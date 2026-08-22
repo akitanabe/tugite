@@ -268,10 +268,13 @@ pattern = "verified destination identity の下で、同じ filesystem 上に sy
 paths = [
   "plugins/claude/skills/plan-agent/SKILL.md",
   "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-interactive/references/publication.md",
   "plugins/codex/skills/plan-agent/SKILL.md",
   "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/references/publication.md",
   "plugins/cursor/skills/plan-agent/SKILL.md",
   "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/references/publication.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -281,10 +284,13 @@ pattern = "一意な best だけ選ぶ"
 paths = [
   "plugins/claude/skills/plan-agent/SKILL.md",
   "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-interactive/references/publication.md",
   "plugins/codex/skills/plan-agent/SKILL.md",
   "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/references/publication.md",
   "plugins/cursor/skills/plan-agent/SKILL.md",
   "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/references/publication.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -294,10 +300,13 @@ pattern = "cache、build、vendor など用途が確認できない decoy direct
 paths = [
   "plugins/claude/skills/plan-agent/SKILL.md",
   "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-interactive/references/publication.md",
   "plugins/codex/skills/plan-agent/SKILL.md",
   "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/references/publication.md",
   "plugins/cursor/skills/plan-agent/SKILL.md",
   "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/references/publication.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 

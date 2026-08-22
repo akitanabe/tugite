@@ -53,6 +53,11 @@ assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/
 assert_same "$source_repo/plugins/cursor/skills/impl-lead/SKILL.md" "$dest_dir/skills/impl-lead/SKILL.md"
 assert_same "$source_repo/plugins/cursor/references/upstream/clarify-it/SKILL.md" "$dest_dir/references/upstream/clarify-it/SKILL.md"
 assert_same "$source_repo/plugins/cursor/references/upstream/clarify-it/references/philosophy.md" "$dest_dir/references/upstream/clarify-it/references/philosophy.md"
+
+for reference in clarification observation pre-freeze-advisor direction-freeze synthesis freeze-integrity structural-gate review final-acceptance publication; do
+  assert_same "$source_repo/plugins/cursor/skills/plan-interactive/references/$reference.md" "$dest_dir/skills/plan-interactive/references/$reference.md"
+done
+
 [[ ! -e "$dest_dir/skills/clarify-it" ]] || fail "public clarify-it skill was installed"
 [[ "$install_output" == *"$dest_dir"* ]] || fail "install output did not mention destination"
 
