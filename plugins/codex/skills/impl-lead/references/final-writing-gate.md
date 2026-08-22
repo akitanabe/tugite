@@ -5,6 +5,36 @@
 この reference は、`impl-lead` が run を accept する直前に行う final writing gate と、採用 finding の remediation 境界を定義する。
 親は `SKILL.md` で指定された時点に全文を読み、reviewer の報告を一次情報で裁定する。
 
+次の Loader Data が列挙値の唯一の正本である。
+
+```text
+path = references/final-writing-gate.md
+load_timing = before final writing gate
+identity = impl-lead final writing gate v1
+required_sections = [Final writing acceptance gate, Final writing findings and remediation]
+required_scope = [snapshot, handoff, read-only isolation, finding adjudication, bounded remediation, re-gate, closeout data]
+failure = stop-incomplete
+owner = impl-lead parent
+reviewer_authority = report-only
+```
+
+親は上記 Loader Data の field を使って load と必要本文の検証を行い、failure field に従って失敗処理する。
+owner / reviewer_authority の境界を維持し、reviewer を writer または受入決定者にしない。
+
+### final-writing-gate-invocation
+
+Trigger: 全 Implementation Unit が accept 候補で、親 QA が Green、risk-directed finding の処理が完了したと親が確定し、run accept 直前に到達したとき。
+Inputs: 検証済み `impl-final-writing-loader` Data、identity と必要 section を検証した reference 本文、親が固定した target snapshot と self-contained handoff Data。
+Procedure: `references/final-writing-gate.md` の `Final writing acceptance gate` だけを invocation procedure の唯一の正本として、有効な read-only gate を一回実施する。省略、既実施 review での代替、writer との重複をしない。
+Outcomes: snapshot に結び付いた有効な reviewer result Data、または `blocked`。loader / invocation failure は突破せず `stop-incomplete` へ送る。
+
+### final-writing-result-routing
+
+Trigger: final writing gate の reviewer result が親へ返却されたとき。
+Inputs: target snapshot と照合済み result、finding Data の有無、検証済み `impl-final-writing-loader` Data と reference 本文。
+Procedure: `references/final-writing-gate.md` の `Final writing findings and remediation` だけを result routing procedure の唯一の正本として、result を no-finding、parent-adjudication-required、invalid / incomplete に振り分ける。finding の意味的な採否を Flow 内で決めない。
+Outcomes: `gate-complete`、`parent-adjudication-required`、または `blocked`。後続 remediation の eligibility、risk、採否は Agentic な親へ返し、invalid / incomplete は `stop-incomplete` へ送る。
+
 ## Final writing acceptance gate
 
 全 Implementation Unit が accept 候補となり、親 QA が Green で、選択した review goal と finding の採否・処理が完了した後、run を
