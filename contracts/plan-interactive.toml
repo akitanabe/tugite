@@ -4,10 +4,10 @@ pattern = "Intermediate Data:"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: projected upstream SKILL.md に Tugite 側の semantic identity / required headings 契約を足さない。他 loader と同様の identity 検証は行わない。
-[contracts.clarify-caller-loader-8a889cfe4680]
+[contracts.clarify-caller-loader-7c1aa2bbd194]
 kind = "requires"
 slice = "plan-interactive-clarify-caller"
-pattern = '''clarify_it_reference = ../../references/upstream/clarify-it/SKILL.md
+pattern = '''clarify_it_reference = ../../../references/upstream/clarify-it/SKILL.md
 clarify_it_load_timing = once at plan-interactive start
 clarify_it_snapshot = first successful body frozen for the invocation
 clarify_it_failure = existing incomplete; no fallback clarification
@@ -40,10 +40,10 @@ slice = "plan-interactive-clarify-caller"
 pattern = "presentation_policy = inherit clarify-it-decision-context presentation policy without copying or override"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.kernel-loader-data-e30862f1b645]
+[contracts.kernel-loader-data-ed3b8772c5fa]
 kind = "requires"
 slice = "plan-interactive-kernel-mapping"
-pattern = '''resolve_path = ../../references/resolve-kernel.md
+pattern = '''resolve_path = ../../../references/resolve-kernel.md
 resolve_identity = resolve-kernel-v1
 resolve_dependencies = none
 resolve_required_sections = [Caller boundary と role, Current verified snapshot、working state、frontier, Atomic resolution unit, Exit と停止, Kernel non-dependency]'''
@@ -284,20 +284,20 @@ artifact_excludes = [Semantic Delta, Verification Delta, Human Attention, gate r
 stdout = Result, short Summary, optional Human Attention, Artifact local path'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-interactive-publication-loader-970692b302a3]
+[contracts.plan-interactive-publication-loader-2317db198d5b]
 kind = "requires"
 slice = "plan-interactive-local-artifact-completion"
-pattern = '''publication_reference = ../../references/plan-artifact-publication.md
+pattern = '''publication_reference = ../../../references/plan-artifact-publication.md
 publication_load_timing = once before programmatic-publication use
 publication_identity = plan-artifact-publication-v1
 publication_use = parent-confirmed publication_target -> programmatic-publication -> outward status/stdout projection'''
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: dual load, Git predicate scope, and consumer 3-value must stay coherent; isolated loader presence could hide missing selection mapping.
-[contracts.plan-interactive-destination-selection-c998bc5a2189]
+[contracts.plan-interactive-destination-selection-82a8eafff6bb]
 kind = "requires"
 slice = "plan-interactive-destination-selection"
-pattern = '''destination_reference = ../../references/destination-selection.md
+pattern = '''destination_reference = ../../../references/destination-selection.md
 destination_load_timing = once before Agentic destination confirmation
 destination_identity = destination-selection-v1
 destination_required_sections = [Inputs / Outputs, Candidate facts, caller_owned_predicates の適用範囲, Programmatic Flows, Agentic unique selection, destination-reselection]
@@ -351,9 +351,9 @@ kind = "occurrences"
 pattern = "### local-artifact-completion"
 count = 1
 paths = [
-  "plugins/claude/skills/plan-interactive/SKILL.md",
-  "plugins/codex/skills/plan-interactive/SKILL.md",
-  "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-interactive/references/publication.md",
+  "plugins/codex/skills/plan-interactive/references/publication.md",
+  "plugins/cursor/skills/plan-interactive/references/publication.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -388,14 +388,14 @@ pattern = "Outcomes: published result と `final-candidate` の outward status /
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: file-global field counts can be satisfied by a decoy after the real Flow loses its Procedure.
-[contracts.plan-interactive-local-artifact-flow-661be7a32758]
+[contracts.plan-interactive-local-artifact-flow-60d743b9a760]
 kind = "requires"
 slice = "plan-interactive-local-artifact-completion"
 pattern = '''Trigger: final acceptance が完了した、または Human が final acceptance を明示 opt-out し、親が exact `publication_target` を確定したとき。
 Inputs: final acceptance / opt-out Data、凍結した成果物本文 bytes、および親確定の `publication_target` Data。`publication_target` は existing destination の observed destination object identity、または OS-temp の verified temp-root identity / top-level `exact_destination` / exclusive creation intent の排他的 Data を持ち、作成前の directory object identity を要求しない。
-Procedure: skill-relative `../../references/plan-artifact-publication.md` を publication invocation 前に一度だけ load し、identity `plan-artifact-publication-v1` と必要本文を検証する。検証済み reference の `programmatic-publication` Flow に、親確定の `publication_target` をそのまま渡す。Flow の published result から outward status と stdout の Result、Summary、必要な Human Attention、Artifact path だけを projection する。consumer は target selection、candidate ranking、filename、retry bound、publication procedure を再実行・複製しない。
+Procedure: skill-relative `../../../references/plan-artifact-publication.md` を publication invocation 前に一度だけ load し、identity `plan-artifact-publication-v1` と必要本文を検証する。検証済み reference の `programmatic-publication` Flow に、親確定の `publication_target` をそのまま渡す。Flow の published result から outward status と stdout の Result、Summary、必要な Human Attention、Artifact path だけを projection する。consumer は target selection、candidate ranking、filename、retry bound、publication procedure を再実行・複製しない。
 ```text
-publication_reference = ../../references/plan-artifact-publication.md
+publication_reference = ../../../references/plan-artifact-publication.md
 publication_load_timing = once before programmatic-publication use
 publication_identity = plan-artifact-publication-v1
 publication_use = parent-confirmed publication_target -> programmatic-publication -> outward status/stdout projection
@@ -623,31 +623,32 @@ slice = "plan-interactive-final-acceptance-routing"
 pattern = "non-intact な snapshot から final acceptance へ直行する"
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: root は Flow 本文の複製を保持しない duplicate-free router を維持する。
 [contracts.plan-interactive-programmatic-flow-trigger-occurrences]
 kind = "occurrences"
 pattern = '''Trigger:'''
-count = 9
+count = 0
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-inputs-occurrences]
 kind = "occurrences"
 pattern = '''Inputs:'''
-count = 9
+count = 0
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-procedure-occurrences]
 kind = "occurrences"
 pattern = '''Procedure:'''
-count = 9
+count = 0
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-interactive-programmatic-flow-outcomes-occurrences]
 kind = "occurrences"
 pattern = '''Outcomes:'''
-count = 9
+count = 0
 paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -655,56 +656,56 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "occurrences"
 pattern = "### interactive-kernel-preflight"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/clarification.md", "plugins/codex/skills/plan-interactive/references/clarification.md", "plugins/cursor/skills/plan-interactive/references/clarification.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-observation-reapply-flow-occurrences]
 kind = "occurrences"
 pattern = "### observation-reapply"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/observation.md", "plugins/codex/skills/plan-interactive/references/observation.md", "plugins/cursor/skills/plan-interactive/references/observation.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-direction-freeze-occurrences]
 kind = "occurrences"
 pattern = "### direction-freeze-projection"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/direction-freeze.md", "plugins/codex/skills/plan-interactive/references/direction-freeze.md", "plugins/cursor/skills/plan-interactive/references/direction-freeze.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-producer-routing-occurrences]
 kind = "occurrences"
 pattern = "### constrained-producer-routing"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/synthesis.md", "plugins/codex/skills/plan-interactive/references/synthesis.md", "plugins/cursor/skills/plan-interactive/references/synthesis.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-integrity-routing-occurrences]
 kind = "occurrences"
 pattern = "### freeze-integrity-routing"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/freeze-integrity.md", "plugins/codex/skills/plan-interactive/references/freeze-integrity.md", "plugins/cursor/skills/plan-interactive/references/freeze-integrity.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-gate-reopen-occurrences]
 kind = "occurrences"
 pattern = "### structural-gate-reopen-routing"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/structural-gate.md", "plugins/codex/skills/plan-interactive/references/structural-gate.md", "plugins/cursor/skills/plan-interactive/references/structural-gate.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-review-dispatch-occurrences]
 kind = "occurrences"
 pattern = "### review-dispatch"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/review.md", "plugins/codex/skills/plan-interactive/references/review.md", "plugins/cursor/skills/plan-interactive/references/review.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-final-acceptance-occurrences]
 kind = "occurrences"
 pattern = "### final-acceptance-routing"
 count = 1
-paths = ["plugins/claude/skills/plan-interactive/SKILL.md", "plugins/codex/skills/plan-interactive/SKILL.md", "plugins/cursor/skills/plan-interactive/SKILL.md"]
+paths = ["plugins/claude/skills/plan-interactive/references/final-acceptance.md", "plugins/codex/skills/plan-interactive/references/final-acceptance.md", "plugins/cursor/skills/plan-interactive/references/final-acceptance.md"]
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.pi-retired-optional-refinement-occurrences]

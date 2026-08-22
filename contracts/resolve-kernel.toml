@@ -26,15 +26,15 @@ pattern = "resolve-kernel"
 exclude_paths = [
   "plugins/claude/references/resolve-kernel.md",
   "plugins/claude/skills/plan-agent/SKILL.md",
-  "plugins/claude/skills/plan-interactive/SKILL.md",
+  "plugins/claude/skills/plan-interactive/references/clarification.md",
   "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/codex/references/resolve-kernel.md",
   "plugins/codex/skills/plan-agent/SKILL.md",
-  "plugins/codex/skills/plan-interactive/SKILL.md",
+  "plugins/codex/skills/plan-interactive/references/clarification.md",
   "plugins/codex/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/references/resolve-kernel.md",
   "plugins/cursor/skills/plan-agent/SKILL.md",
-  "plugins/cursor/skills/plan-interactive/SKILL.md",
+  "plugins/cursor/skills/plan-interactive/references/clarification.md",
   "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor", "claude-marketplace", "codex-marketplace"]

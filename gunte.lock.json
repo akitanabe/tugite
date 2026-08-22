@@ -46,6 +46,16 @@
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/plan-interactive/SKILL.md",
+    "shared/skill/plan-interactive/references/clarification.md",
+    "shared/skill/plan-interactive/references/observation.md",
+    "shared/skill/plan-interactive/references/pre-freeze-advisor.md",
+    "shared/skill/plan-interactive/references/direction-freeze.md",
+    "shared/skill/plan-interactive/references/synthesis.md",
+    "shared/skill/plan-interactive/references/freeze-integrity.md",
+    "shared/skill/plan-interactive/references/structural-gate.md",
+    "shared/skill/plan-interactive/references/review.md",
+    "shared/skill/plan-interactive/references/final-acceptance.md",
+    "shared/skill/plan-interactive/references/publication.md",
     "shared/skill/plan-candidate-producer/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
     "shared/skill/structural-health-gate/SKILL.md",
@@ -179,15 +189,15 @@
     },
     {
       "id": "plan-artifact-publication-not-consumer-procedure",
-      "sha256": "49b3924b8c3fd328b592b8c604d5e775731cd8b8ad6dbe02ba7f891516ced5a0"
+      "sha256": "10bfb129d4430544ff716d2214fabc231c162be392f2c90385b087a703b11c0b"
     },
     {
       "id": "plan-family-no-unique-best-procedure",
-      "sha256": "2dcf0b08737113c70cf1af1a853670a9fb42da89c0baba9991f1c41dc3c60b56"
+      "sha256": "9970eec0e46469941cc0fb092c317c819e8a91ae62253c4179b0e40d0f32c013"
     },
     {
       "id": "plan-family-no-decoy-how",
-      "sha256": "5c7a80c73d8d971d918f93926128ae9d512a73f3af979fed468f75b631668c16"
+      "sha256": "f567f75107122a7bbff5379a3fe13e97b693ae394da9734092e13f85edc36352"
     },
     {
       "id": "plan-artifact-publication-flow-f09a111cfd8b",
@@ -2858,8 +2868,8 @@
       "sha256": "271716764a98380dd91e1b7a74d5adda3797144bd4ece74744aa8a8bd9614cd0"
     },
     {
-      "id": "clarify-caller-loader-8a889cfe4680",
-      "sha256": "60b6e9b7c8bca77f89ef3d6af84fb8f9447e7e4aa00b4c8ecd4d18cc15d39945"
+      "id": "clarify-caller-loader-7c1aa2bbd194",
+      "sha256": "c0420da506aef55e835c62d4aba97b25879ecc0558bcff046db182f21be7bf35"
     },
     {
       "id": "clarify-caller-data-04b6ae545308",
@@ -2878,8 +2888,8 @@
       "sha256": "f86224793e5a49baea8df7d94247a750142a08e9232219589dff4170e2386b84"
     },
     {
-      "id": "kernel-loader-data-e30862f1b645",
-      "sha256": "50e671539ee82823fad22ad86d187809b23ac9d32fbaa834f899a20aa892327f"
+      "id": "kernel-loader-data-ed3b8772c5fa",
+      "sha256": "3eb8fab8aed525d60df825557980239b4b399f4b9c380c47dadb263320e06f27"
     },
     {
       "id": "kernel-role-data-9e606fc1f1f0",
@@ -3022,12 +3032,12 @@
       "sha256": "eb83ca318eecef342bfba284cd97ad5ca46f7138feff89eb747544b01e89a7ce"
     },
     {
-      "id": "plan-interactive-publication-loader-970692b302a3",
-      "sha256": "0f75026e157f5a12b2d957e1a3fbd04c8b6d997240be46dbc3d4fd6b03774d5f"
+      "id": "plan-interactive-publication-loader-2317db198d5b",
+      "sha256": "6580ca0550ecccde970914a55c783a76444a903652f8d20c8cafc76d84ca230b"
     },
     {
-      "id": "plan-interactive-destination-selection-c998bc5a2189",
-      "sha256": "c5d9e3ffa15e29559837f3f995fc8e51b48527171e6fdb78408f19d8a62abf07"
+      "id": "plan-interactive-destination-selection-82a8eafff6bb",
+      "sha256": "a5a02702925a9f44189c2f3e8dc495e55e3e352095cbc1e5d12fd91be8473881"
     },
     {
       "id": "plan-interactive-destination-selection-d53011ff8183",
@@ -3055,7 +3065,7 @@
     },
     {
       "id": "plan-interactive-local-artifact-flow-occurrences",
-      "sha256": "22beb7c240dd655f28921f25c24153fc4b2dd366a39c01fe47dc6d29aa7eb3c7"
+      "sha256": "f59a1aca06bafe7ba966dbbf1d74f48d2a5a0663be754f682e1e322744f2c298"
     },
     {
       "id": "plan-interactive-local-artifact-completion-8c0d65863538",
@@ -3078,8 +3088,8 @@
       "sha256": "bf58cdca0fb9ccc8c2f017d000be995a51391fbc5cdbc0da00c6d796659dbbc9"
     },
     {
-      "id": "plan-interactive-local-artifact-flow-661be7a32758",
-      "sha256": "61c6d38614b761c6be5f95fd28e59eb70790c3a296c05da625834dd07efd34dd"
+      "id": "plan-interactive-local-artifact-flow-60d743b9a760",
+      "sha256": "81b27325e12ca23eb8d2fe081d5868b97a8ca5e1a386948df5c5df7ebac8ebd6"
     },
     {
       "id": "plan-interactive-local-artifact-flow-order",
@@ -3203,51 +3213,51 @@
     },
     {
       "id": "plan-interactive-programmatic-flow-trigger-occurrences",
-      "sha256": "b40239f714df9e2121201e3dadacb4fddfc423ccea85f4cd34a07498cc7b1649"
+      "sha256": "7f7ba9dfa37b9db5057ae68f464af3dc1f151695e4138a022ff4f604687946ea"
     },
     {
       "id": "plan-interactive-programmatic-flow-inputs-occurrences",
-      "sha256": "749ebd267db584e8316ae2d1739c9db197e0e670ad5f597cdd715f8bfc7a4050"
+      "sha256": "cbb70e1b43c7d9b9e5632df0c79fdbeb18e9ba38d4361ee7f2712797c5c64a28"
     },
     {
       "id": "plan-interactive-programmatic-flow-procedure-occurrences",
-      "sha256": "4ac53b4aa659e78ef3117c6f4bd59687a505640e4e737c8af6379f8e61ebcaf7"
+      "sha256": "a1a728bf5ecf8776c5992e7062e550a9aa3247f6afd3df119bddf9a97f65c356"
     },
     {
       "id": "plan-interactive-programmatic-flow-outcomes-occurrences",
-      "sha256": "26dd1b29debbb4843ff94197adbab149ff0fa308eeefeafff67a73cd86eb4f55"
+      "sha256": "e6ca3a66e743532f1c7192178fbfde75afbb307845cec11c0843c05fcc01a781"
     },
     {
       "id": "pi-kernel-preflight-occurrences",
-      "sha256": "3d9342cd98f3061c94514a6474a07690b167b1977f059b3ad64f371d236d086a"
+      "sha256": "c5d159976055fb23f9acade8bb9fa46bbcf1e752c2bcf1bf9c00673911594746"
     },
     {
       "id": "pi-observation-reapply-flow-occurrences",
-      "sha256": "a463ae0100fe2502d09448d3c89ba4f2b4540e4cdec5c0be50f89f2e55c94f4a"
+      "sha256": "7dad813459a05a1446c49e6424c1dfdef2baa8c380a5fb4d029f36df699ae3f0"
     },
     {
       "id": "pi-direction-freeze-occurrences",
-      "sha256": "183864c4b52cead55c3785524277b3152ff191f86619721de2cb0c2206e95a75"
+      "sha256": "4ba0ee6bd0add2d71ab7b3d751a1d925f51ac29cc9bb563c248e01a639a12634"
     },
     {
       "id": "pi-producer-routing-occurrences",
-      "sha256": "f4b3126eef145b5a26b9b5e0dcf7369b30d5da302ec5709e36a16b387a30b396"
+      "sha256": "22082be395a44d37e90c4ea4323526fe66153486497dc0345ea65c3d19d0fe2f"
     },
     {
       "id": "pi-integrity-routing-occurrences",
-      "sha256": "f21daa1d8e901b0062b49bb1cfad979751bee88e78255fa984b6682a8f9625de"
+      "sha256": "cdd41ea2fd3c2a31195b5bd3f2eefd2069472aac07743bf161e3c9c30443c3a2"
     },
     {
       "id": "pi-gate-reopen-occurrences",
-      "sha256": "5bd7ab2145dc099f726b9825916a7b329dbb577c93ea305f800a83644505c9f5"
+      "sha256": "e4de129848c8b638446dca6a9a344740eef67632fed52b32db0572c7452d28da"
     },
     {
       "id": "pi-review-dispatch-occurrences",
-      "sha256": "165e345c3e2da8532fbebdeb28248456fb549a6dc5406e781ba5a546c7c3e0f5"
+      "sha256": "49a84a36cbb1baacb06f00733af938bea4051cd75a03e1978617075e3df5c63b"
     },
     {
       "id": "pi-final-acceptance-occurrences",
-      "sha256": "87a4d78f527c4a48ac9a61b7055e7e9161d614449fdc8e4de58c9203d5f42e33"
+      "sha256": "ccc7eb30f4dff17d9dbcef2dd33149990e4647a0c8304f49168e55b0803fd8f6"
     },
     {
       "id": "pi-retired-optional-refinement-occurrences",
@@ -3323,7 +3333,7 @@
     },
     {
       "id": "resolve-kernel-mention-allowlist",
-      "sha256": "9c42125f56aa094a1066a50c2b7f826f2c730e5872af3519eabe454a12a6d5f3"
+      "sha256": "4922704ee3ea627b9687d1a13fe5f39b45541293db2757965b55f778daecf18e"
     },
     {
       "id": "resolve-kernel-mapping-forbids-30e9e5d5c1df",
@@ -4580,18 +4590,8 @@
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
-      "kind": "span",
-      "id": "plan-interactive-clarify-caller",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
       "kind": "anchor",
       "id": "plan-interactive-kernel-load",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-kernel-mapping",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
@@ -4601,7 +4601,7 @@
     },
     {
       "kind": "span",
-      "id": "plan-interactive-clarify-completion",
+      "id": "plan-interactive-advisor-parent",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
@@ -4610,28 +4610,13 @@
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
-      "kind": "span",
-      "id": "plan-interactive-producer-ownership",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
       "kind": "anchor",
       "id": "plan-interactive-freeze-integrity-start",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
-      "kind": "span",
-      "id": "plan-interactive-freeze-integrity",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
       "kind": "anchor",
       "id": "plan-interactive-structural-health-gate-start",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-structural-health-gate",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
@@ -4641,98 +4626,123 @@
     },
     {
       "kind": "span",
-      "id": "plan-interactive-handoff",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-advisor-parent",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-verification-derivation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
       "id": "plan-interactive-programmatic-flows",
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "plan-interactive-local-artifact-completion",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-final-acceptance-complete",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-publication-inputs",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-publication-loader",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-publication-outcomes",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "id": "plan-interactive-clarify-caller",
+      "path": "shared/skill/plan-interactive/references/clarification.md"
     },
     {
       "kind": "span",
-      "id": "plan-interactive-destination-selection",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "id": "plan-interactive-kernel-mapping",
+      "path": "shared/skill/plan-interactive/references/clarification.md"
     },
     {
       "kind": "span",
-      "id": "plan-interactive-artifact-completion",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "id": "plan-interactive-clarify-completion",
+      "path": "shared/skill/plan-interactive/references/clarification.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-interactive-kernel-preflight",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/clarification.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-observation-reapply-flow",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-verification-derivation",
+      "path": "shared/skill/plan-interactive/references/direction-freeze.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-direction-freeze-projection",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/direction-freeze.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-producer-ownership",
+      "path": "shared/skill/plan-interactive/references/synthesis.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-constrained-producer-routing",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-freeze-integrity",
+      "path": "shared/skill/plan-interactive/references/freeze-integrity.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-freeze-integrity-routing",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/freeze-integrity.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-structural-health-gate",
+      "path": "shared/skill/plan-interactive/references/structural-gate.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-structural-gate-reopen-routing",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/structural-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-handoff",
+      "path": "shared/skill/plan-interactive/references/review.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-review-dispatch",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/review.md"
     },
     {
       "kind": "span",
       "id": "plan-interactive-final-acceptance-routing",
-      "path": "shared/skill/plan-interactive/SKILL.md"
+      "path": "shared/skill/plan-interactive/references/final-acceptance.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-local-artifact-completion",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-final-acceptance-complete",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-publication-inputs",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-publication-loader",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-publication-outcomes",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-destination-selection",
+      "path": "shared/skill/plan-interactive/references/publication.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-artifact-completion",
+      "path": "shared/skill/plan-interactive/references/publication.md"
     },
     {
       "kind": "span",
