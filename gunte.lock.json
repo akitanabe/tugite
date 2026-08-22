@@ -42,6 +42,12 @@
     "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
     "shared/skill/code-review/SKILL.md",
     "shared/skill/impl-lead/SKILL.md",
+    "shared/skill/impl-lead/references/execution.md",
+    "shared/skill/impl-lead/references/delegation.md",
+    "shared/skill/impl-lead/references/parallel-execution.md",
+    "shared/skill/impl-lead/references/parent-qa.md",
+    "shared/skill/impl-lead/references/risk-review.md",
+    "shared/skill/impl-lead/references/external-effects.md",
     "shared/skill/impl-lead/references/final-writing-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-agent/SKILL.md",
@@ -1190,6 +1196,14 @@
       "sha256": "125a1a33000346cd31622b19145fcfbc0b0e4506751e105f09a47a75278bb0f2"
     },
     {
+      "id": "impl-under-split-self-check-963c057ff597",
+      "sha256": "6c74ae7deb729a13b63bff7c31974776f2daddaa97fb8451140e2c938a7b8284"
+    },
+    {
+      "id": "impl-under-split-self-check-occurrences",
+      "sha256": "b6e9d4a3ba2657acfacb2123b494d1fa45ef0ed5f8ad6d1c027af14b9f901d94"
+    },
+    {
       "id": "implementation-unit-data-consumer-bfb9a6c94c0d",
       "sha256": "11f30b92457cc0685411be8e0e0f01e98384ebefa4d7c5947077111e4cb94382"
     },
@@ -1266,16 +1280,12 @@
       "sha256": "acc9cee8191a8f6d5aa6074e49efa959788e1eb91f5e643af33032db0eade9f6"
     },
     {
-      "id": "impl-writable-scope-loader-data-745d20959539",
-      "sha256": "80e4c61d4f28496f0b8989a42a88dca9b0cac7c524002bce1123dda01c0f78e2"
+      "id": "impl-writable-scope-loader-data-5b6586b0acc0",
+      "sha256": "aad21643d629f48365547afde6ec620f1e0701ed9deaf92c621961efb42c8f52"
     },
     {
       "id": "impl-writable-scope-no-implementation-unit-field-e1dccb5f4fdb",
       "sha256": "2e72659d1273b6304476ebf946032a3f7d68aad27f579f14673a0e1f75948125"
-    },
-    {
-      "id": "impl-route-before-writable-scope-loader",
-      "sha256": "289e7765ca56a757eab9f5a4f75c623950007e3b78c2f50a8ab53b4ff640889a"
     },
     {
       "id": "impl-writable-scope-loader-before-worker-handoff",
@@ -1290,6 +1300,62 @@
       "sha256": "7ef992f442cfcd79e1a2b770c09d3ce27d682abde165b7cba991c16afdc5a6d5"
     },
     {
+      "id": "impl-execution-reference-identity",
+      "sha256": "5d8323e5e2654a4bdf7045413effac8e8ae5d35f0c910ee61cd36603a6879805"
+    },
+    {
+      "id": "impl-delegation-reference-identity",
+      "sha256": "34fbf8874c1de6f343a4d8f5b1562b55dfe59230a912da4910b4f7b25111fb9d"
+    },
+    {
+      "id": "impl-parallel-execution-reference-identity",
+      "sha256": "21f9b355446b0c694b2e1e04911b11e94f05c415473009ad9910fd26ef688d8a"
+    },
+    {
+      "id": "impl-parent-qa-reference-identity",
+      "sha256": "1fd41e6995a1c84590fb86e8feb455979d1bba6b9d801a074b67fa2fe571df10"
+    },
+    {
+      "id": "impl-risk-review-reference-identity",
+      "sha256": "0d5aa2811153935244f2d252839ea23b4d9612da8171823f5df333b9c4ded4c4"
+    },
+    {
+      "id": "impl-external-effects-reference-identity",
+      "sha256": "fcce90adafe3ad70b8f985f6b9f2262dd6c9883a6db1a1f2846e8f90fbb7e02f"
+    },
+    {
+      "id": "impl-route-record-execution-c4b058994a21",
+      "sha256": "1fe980f27a3bc261f5be280beede9838c5c80d665bd6f5f5dab9e70ef55b4b03"
+    },
+    {
+      "id": "impl-route-record-delegation-703da3102207",
+      "sha256": "6014c381b77b186cfe8af3e6c80d69ac3277ea00ac73fbdfaf19c7586ac9e9e8"
+    },
+    {
+      "id": "impl-route-record-parallel-execution-110cc829be74",
+      "sha256": "25e87b9bd394d962005ca673351a89292127a0a438978ca774f67fa88f9d3347"
+    },
+    {
+      "id": "impl-route-record-parent-qa-7d8048937df9",
+      "sha256": "f42e4e763b42497ba91029b7b7c13e66b0d1197d0915b50a95f35b2782c86454"
+    },
+    {
+      "id": "impl-route-record-risk-review-091b59e1fc4d",
+      "sha256": "7bed2062167d5bb355500a079b6b7eb47bad09282eb957321869b0c2c85448cd"
+    },
+    {
+      "id": "impl-route-record-external-effects-6d23e07390af",
+      "sha256": "8c72daa89b2724073eb24b73425c667aa9710b1194e5b418b40d62291ad794e2"
+    },
+    {
+      "id": "impl-route-record-run-owned-lifecycle-3410d3b58069",
+      "sha256": "1cde1553cd26e934af2129abd54614bd4101ca5380d8bc2e7617b438b307954b"
+    },
+    {
+      "id": "impl-route-record-final-writing-gate-b39b8e0350fe",
+      "sha256": "46342916d051c6f71db310a8ab9fc70e63a3908568ed62810455a6ee32f72ce6"
+    },
+    {
       "id": "impl-review-principle-ceabaf730e06",
       "sha256": "f951edd9d8f94a41656186348949785bcb5d2b8dfad9e61efd9d2a8ec353eacc"
     },
@@ -1298,12 +1364,20 @@
       "sha256": "18feaa18abedeba924a965b66d3e19ad5712723e13d7fdd8e2e0603811c8bbd3"
     },
     {
-      "id": "impl-review-principle-before-risk-selection",
-      "sha256": "b87bbac01dc3162b1dbdab677c8f2092df9733bfe35979c922c68876dee08c69"
+      "id": "impl-review-principle-before-reference-routing",
+      "sha256": "8590b9813d67c900b8e03a2ebd25eb152418c8afb570f69e1c54802d28c80d1b"
     },
     {
-      "id": "impl-risk-loader-data-2d889f0bd611",
-      "sha256": "5ff3de7f246783ed36dbafba01adcab7ca8ebc2554b7232c50e429fcea530ebe"
+      "id": "impl-parallel-pre-screen-before-reference-routing",
+      "sha256": "56efe1d49601027027c566f0c3638339fc9968ed2a2db5162186b1a0ba196fa9"
+    },
+    {
+      "id": "impl-risk-loader-data-d3921a902f65",
+      "sha256": "84bf2a59e7239bc86f1eb65a33172eb44a1573e22947a8bf0989e4448dff96b7"
+    },
+    {
+      "id": "impl-risk-zero-findings-no-batch-load-3610b707919a",
+      "sha256": "66cd5e421b965adbe3384c9e349d431ec2694300d12927da49ed837141cad516"
     },
     {
       "id": "impl-risk-role-mapping-data-60ec1585a906",
@@ -3299,7 +3373,7 @@
     },
     {
       "id": "batch-resolve-kernel-mention-allowlist",
-      "sha256": "e23156ca094a1eb655781611bc8c1a87172dfaf0eba672117b913c6bb92186ee"
+      "sha256": "f126623b7115c1159fc25c517914c6456751825a9e974f1cf83da99223a9390d"
     },
     {
       "id": "batch-resolve-kernel-requires-a0fc1aa6b7f0",
@@ -3483,7 +3557,7 @@
     },
     {
       "id": "behavior-observation-kernel-mention-allowlist",
-      "sha256": "8877e58b99ae596544c748551e406cfe64adecaf46147e901a02be803ff42746"
+      "sha256": "70e222b46894840b45da0ed7ebf0d6e4229f7f5756ba5d6941d209f49f01c451"
     },
     {
       "id": "behavior-observation-kernel-title-requires-b1fbdfffd802",
@@ -3614,8 +3688,8 @@
       "sha256": "557c6ac498ad491a0f6cf880470195ea9ae2955d26d9e557aaaf1b143c29e2db"
     },
     {
-      "id": "impl-parent-red-behavior-observation-loader-data-5db98fa31c75",
-      "sha256": "ebb2cb5b44711a1be6f01d14913c49a9f66dba3696fe822585a6e513279b1809"
+      "id": "impl-parent-red-behavior-observation-loader-data-70500b3c90f0",
+      "sha256": "71c82075ed4a8ee885e8f3a257809a227e35788339485514b499c88462e8df10"
     },
     {
       "id": "impl-parent-red-independent-a3c521780c22",
@@ -3626,8 +3700,8 @@
       "sha256": "4826a234b2d158c3d559eb47f2483e515828c85930a66474a4ca4fc13fc8c7ea"
     },
     {
-      "id": "impl-tqr-behavior-observation-loader-data-3f53ada80cfa",
-      "sha256": "ed2d1efade58de3e00c2f525a8c45d0e50194730220b08f718735e89ee146366"
+      "id": "impl-tqr-behavior-observation-loader-data-8d6051d18546",
+      "sha256": "b46fb1bd641c49d922ec460ea6b8d6dc5498f47aa290ea1f911c568aabffb1c3"
     },
     {
       "id": "impl-tqr-behavior-observation-only-0bb55caef4f2",
@@ -4240,106 +4314,6 @@
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
-      "kind": "span",
-      "id": "impl-programmatic-flows",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-dependency-dispatch-guard",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-run-owned-checkout-creation",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-explicit-route-constraint",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-writable-scope-handoff",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-implementation-unit-continuation-routing",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-parallel-candidate-integration",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-final-writing-gate-invocation",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-final-writing-result-routing",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-external-side-effect-retry",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-programmatic-flow-run-owned-closeout",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-implementation-unit-protected-dirty-scope",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-run-owned-default-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-run-owned-lifecycle-loader",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-route-execution-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-worker-tier-partition-interception",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-writable-scope-loader-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-writable-scope-loader",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "impl-worker-handoff-start",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-delegated-worker-silence-defaults",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
       "kind": "anchor",
       "id": "impl-review-principle-start",
       "path": "shared/skill/impl-lead/SKILL.md"
@@ -4351,68 +4325,208 @@
     },
     {
       "kind": "anchor",
-      "id": "impl-risk-selection-start",
+      "id": "impl-parallel-pre-screen-start",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-reference-routing-start",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-directed-static-performance-reviewer",
+      "id": "impl-route-record-execution",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-test-quality-behavior-observation-kernel-loader",
+      "id": "impl-route-record-delegation",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-directed-batch-resolve-kernel-parent-mapping",
+      "id": "impl-route-record-parallel-execution",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-grouping-entry",
+      "id": "impl-route-record-parent-qa",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-perspectives",
+      "id": "impl-route-record-risk-review",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-regrouping",
+      "id": "impl-route-record-external-effects",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-continuation",
+      "id": "impl-route-record-run-owned-lifecycle",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "impl-risk-remediation-outer-inner",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-risk-finding-meaning-change-route",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-final-writing-loader",
-      "path": "shared/skill/impl-lead/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "impl-parent-red-behavior-observation-kernel-loader",
+      "id": "impl-route-record-final-writing-gate",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
       "kind": "span",
       "id": "impl-final-report-quality-signal-policy-data",
       "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flows",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-dependency-dispatch-guard",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-run-owned-checkout-creation",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-explicit-route-constraint",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-implementation-unit-continuation-routing",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-implementation-unit-protected-dirty-scope",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-run-owned-default-start",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-run-owned-lifecycle-loader",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-route-execution-start",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-worker-tier-partition-interception",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-writable-scope-loader-start",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-writable-scope-loader",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-writable-scope-handoff",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-worker-handoff-start",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-delegated-worker-silence-defaults",
+      "path": "shared/skill/impl-lead/references/delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-parallel-candidate-integration",
+      "path": "shared/skill/impl-lead/references/parallel-execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-parent-red-behavior-observation-kernel-loader",
+      "path": "shared/skill/impl-lead/references/parent-qa.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-directed-static-performance-reviewer",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-test-quality-behavior-observation-kernel-loader",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-directed-batch-resolve-kernel-parent-mapping",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-grouping-entry",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-perspectives",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-regrouping",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-continuation",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-remediation-outer-inner",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-risk-finding-meaning-change-route",
+      "path": "shared/skill/impl-lead/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-external-side-effect-retry",
+      "path": "shared/skill/impl-lead/references/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-final-writing-loader",
+      "path": "shared/skill/impl-lead/references/final-writing-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-final-writing-gate-invocation",
+      "path": "shared/skill/impl-lead/references/final-writing-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-final-writing-result-routing",
+      "path": "shared/skill/impl-lead/references/final-writing-gate.md"
     },
     {
       "kind": "span",
@@ -4427,6 +4541,11 @@
     {
       "kind": "span",
       "id": "impl-run-owned-start-identity",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-programmatic-flow-run-owned-closeout",
       "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {

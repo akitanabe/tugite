@@ -17,21 +17,24 @@ exclude_paths = [
   "plugins/claude/agents/test-quality-reviewer.md",
   "plugins/claude/references/behavior-observation-kernel.md",
   "plugins/claude/skills/code-review/SKILL.md",
-  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/claude/skills/impl-lead/references/parent-qa.md",
+  "plugins/claude/skills/impl-lead/references/risk-review.md",
   "plugins/claude/skills/plan-candidate-producer/SKILL.md",
   "plugins/claude/skills/test-report/SKILL.md",
   "plugins/codex/install/agents/plan-quality-advisor.toml",
   "plugins/codex/install/agents/test-quality-reviewer.toml",
   "plugins/codex/references/behavior-observation-kernel.md",
   "plugins/codex/skills/code-review/SKILL.md",
-  "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/codex/skills/impl-lead/references/parent-qa.md",
+  "plugins/codex/skills/impl-lead/references/risk-review.md",
   "plugins/codex/skills/plan-candidate-producer/SKILL.md",
   "plugins/codex/skills/test-report/SKILL.md",
   "plugins/cursor/agents/plan-quality-advisor.md",
   "plugins/cursor/agents/test-quality-reviewer.md",
   "plugins/cursor/references/behavior-observation-kernel.md",
   "plugins/cursor/skills/code-review/SKILL.md",
-  "plugins/cursor/skills/impl-lead/SKILL.md",
+  "plugins/cursor/skills/impl-lead/references/parent-qa.md",
+  "plugins/cursor/skills/impl-lead/references/risk-review.md",
   "plugins/cursor/skills/plan-candidate-producer/SKILL.md",
   "plugins/cursor/skills/test-report/SKILL.md",
 ]
@@ -238,10 +241,10 @@ pattern = "`plan-candidate-producer` が advisor invocation Data を組み立て
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
-[contracts.impl-parent-red-behavior-observation-loader-data-5db98fa31c75]
+[contracts.impl-parent-red-behavior-observation-loader-data-70500b3c90f0]
 kind = "requires"
 slice = "impl-parent-red-behavior-observation-kernel-loader"
-pattern = '''path = ../../references/behavior-observation-kernel.md
+pattern = '''path = ../../../references/behavior-observation-kernel.md
 load_timing = after Red evidence received and before Red accept
 identity = behavior-observation-kernel-v1
 required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]
@@ -263,10 +266,10 @@ pattern = "Kernel の導出結果、Expected Observations、meaningful variation
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields are one declaration Data block; splitting them could accept a partial mapping.
-[contracts.impl-tqr-behavior-observation-loader-data-3f53ada80cfa]
+[contracts.impl-tqr-behavior-observation-loader-data-8d6051d18546]
 kind = "requires"
 slice = "impl-test-quality-behavior-observation-kernel-loader"
-pattern = '''path = ../../references/behavior-observation-kernel.md
+pattern = '''path = ../../../references/behavior-observation-kernel.md
 load_timing = immediately before test-quality-reviewer invocation
 identity = behavior-observation-kernel-v1
 required_sections = [Contract, Method, Reintegration, Consumer の責務, 非目標]

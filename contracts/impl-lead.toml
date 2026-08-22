@@ -23,6 +23,25 @@ pattern = '''Implementation Unit Data の意味と field の唯一の正本は�
 Implementation Unit Data は上記 canonical field だけを表す。'''
 applies_to = ["claude", "codex", "cursor"]
 
+# Why Not: under-split self-check is an independent parent obligation; deleting it must fail even when canonical fields remain.
+[contracts.impl-under-split-self-check-963c057ff597]
+kind = "requires"
+slice = "impl-implementation-unit-data-canonical"
+pattern = '''単一 Implementation Unit として正規化する場合も、内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback
+boundary、foundation / application の別成果が残っていないか親が自己再検査する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-under-split-self-check-occurrences]
+kind = "occurrences"
+pattern = "内部に独立して Green / accept できる複数成果、独立 AC / verification / rollback"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/cursor/skills/impl-lead/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.implementation-unit-data-consumer-bfb9a6c94c0d]
 kind = "requires"
 slice = "implementation-unit-design-implementation-unit-data-consumer"
@@ -198,10 +217,10 @@ after = "impl-route-execution-start"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields and assignment fields form one parent-owned execution boundary, so one predicate protects their complete relation.
-[contracts.impl-writable-scope-loader-data-745d20959539]
+[contracts.impl-writable-scope-loader-data-5b6586b0acc0]
 kind = "requires"
 slice = "impl-writable-scope-loader"
-pattern = '''path = ../../references/writable-scope-kernel.md
+pattern = '''path = ../../../references/writable-scope-kernel.md
 load_timing = before first write-capable Worker handoff
 identity = writable-scope-kernel-v1
 dependencies = none
@@ -219,12 +238,6 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "impl-writable-scope-loader"
 pattern = "Implementation Unit Data の field ではない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-route-before-writable-scope-loader]
-kind = "order"
-before = "impl-route-execution-start"
-after = "impl-writable-scope-loader-start"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-writable-scope-loader-before-worker-handoff]
@@ -255,6 +268,146 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.impl-execution-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead execution v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/execution.md",
+  "plugins/codex/skills/impl-lead/references/execution.md",
+  "plugins/cursor/skills/impl-lead/references/execution.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-delegation-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead delegation v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/delegation.md",
+  "plugins/codex/skills/impl-lead/references/delegation.md",
+  "plugins/cursor/skills/impl-lead/references/delegation.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-parallel-execution-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead parallel execution v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/parallel-execution.md",
+  "plugins/codex/skills/impl-lead/references/parallel-execution.md",
+  "plugins/cursor/skills/impl-lead/references/parallel-execution.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-parent-qa-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead parent QA v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/parent-qa.md",
+  "plugins/codex/skills/impl-lead/references/parent-qa.md",
+  "plugins/cursor/skills/impl-lead/references/parent-qa.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-risk-review-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead risk review v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/risk-review.md",
+  "plugins/codex/skills/impl-lead/references/risk-review.md",
+  "plugins/cursor/skills/impl-lead/references/risk-review.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-external-effects-reference-identity]
+kind = "occurrences"
+pattern = "# impl-lead external effects v1"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/external-effects.md",
+  "plugins/codex/skills/impl-lead/references/external-effects.md",
+  "plugins/cursor/skills/impl-lead/references/external-effects.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: each of the 8 minimal route records is the sole root-owned pointer to its reference; the record shape (trigger/path/expected identity/failure) must not silently gain or lose fields.
+[contracts.impl-route-record-execution-c4b058994a21]
+kind = "requires"
+slice = "impl-route-record-execution"
+pattern = '''trigger = dependency/precondition、base snapshot/isolation、direct route の実行順、continuation routing の判断に至ったとき
+path = references/execution.md
+expected identity = impl-lead execution v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-delegation-703da3102207]
+kind = "requires"
+slice = "impl-route-record-delegation"
+pattern = '''trigger = 委譲 route を選び、worker tier、fresh handoff、writable scope、worker silence policy の判断に至ったとき
+path = references/delegation.md
+expected identity = impl-lead delegation v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-parallel-execution-110cc829be74]
+kind = "requires"
+slice = "impl-route-record-parallel-execution"
+pattern = '''trigger = 上記 Parallel minimal pre-screen を通過した並列候補が形成されたとき
+path = references/parallel-execution.md
+expected identity = impl-lead parallel execution v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-parent-qa-7d8048937df9]
+kind = "requires"
+slice = "impl-route-record-parent-qa"
+pattern = '''trigger = worker/direct の結果を受け取り、親 QA（Red 観測含む）または run を閉じる前の closeout-前 QA を行うとき
+path = references/parent-qa.md
+expected identity = impl-lead parent QA v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-risk-review-091b59e1fc4d]
+kind = "requires"
+slice = "impl-route-record-risk-review"
+pattern = '''trigger = 上記 Review minimal pre-screen を通過した risk-review candidate が形成されたとき
+path = references/risk-review.md
+expected identity = impl-lead risk review v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-external-effects-6d23e07390af]
+kind = "requires"
+slice = "impl-route-record-external-effects"
+pattern = '''trigger = 外部副作用を伴う Action の状態管理・retry・conditional persistence の operation が必要になったとき
+path = references/external-effects.md
+expected identity = impl-lead external effects v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-route-record-run-owned-lifecycle-3410d3b58069]
+kind = "requires"
+slice = "impl-route-record-run-owned-lifecycle"
+pattern = '''trigger = run-owned checkout の作成または closeout の判定に到達したとき
+path = references/run-owned-lifecycle.md
+expected identity = impl-lead run-owned lifecycle v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: final-writing-gate is the mandatory unconditional route; its trigger text must not gain a pre-screen dependency.
+[contracts.impl-route-record-final-writing-gate-b39b8e0350fe]
+kind = "requires"
+slice = "impl-route-record-final-writing-gate"
+pattern = '''trigger = 全 Implementation Unit が accept 候補で run accept 直前に到達したとき（必須、pre-screen なし）
+path = references/final-writing-gate.md
+expected identity = impl-lead final writing gate v1
+failure = stop-incomplete'''
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-review-principle-ceabaf730e06]
 kind = "requires"
 slice = "impl-review-principle"
@@ -272,22 +425,37 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-review-principle-before-risk-selection]
+# Why Not: risk-review pre-screen must precede the Reference routing section that names risk-review.md, so the load-before-selection order is verifiable even though the full risk selection procedure now lives in a separate reference artifact.
+[contracts.impl-review-principle-before-reference-routing]
 kind = "order"
 before = "impl-review-principle-start"
-after = "impl-risk-selection-start"
+after = "impl-reference-routing-start"
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: parallel pre-screen must precede the Reference routing section that names parallel-execution.md.
+[contracts.impl-parallel-pre-screen-before-reference-routing]
+kind = "order"
+before = "impl-parallel-pre-screen-start"
+after = "impl-reference-routing-start"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: loader fields are coherent declaration Data and must not match independently across unrelated prose.
-[contracts.impl-risk-loader-data-2d889f0bd611]
+[contracts.impl-risk-loader-data-d3921a902f65]
 kind = "requires"
 slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
-pattern = '''path = ../../references/batch-resolve-kernel.md
+pattern = '''path = ../../../references/batch-resolve-kernel.md
 identity = batch-resolve-kernel-v1
 dependencies = none
 required_sections = [適用モデル, snapshot discipline, Resolution Transaction, caller boundary]
 failure = stop-incomplete
 owner = impl-lead parent'''
+applies_to = ["claude", "codex", "cursor"]
+
+# Why Not: zero findings must not start a Batch Resolve load/transaction; deleting this prohibition must fail.
+[contracts.impl-risk-zero-findings-no-batch-load-3610b707919a]
+kind = "requires"
+slice = "impl-risk-directed-batch-resolve-kernel-parent-mapping"
+pattern = "この loader は finding が0件の review、final writing gate だけの処理のためには起動しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 # Why Not: role and snapshot fields are one caller mapping Data block.

@@ -28,7 +28,6 @@ worktree を作成できない場合も current checkout へ暗黙 fallback し�
 run の accept 成否だけで機械的に削除せず、user-owned resource（ユーザー指定の checkout/worktree や branch）を無断変更・削除しない。
 <!-- @/contract -->
 
-<!-- @contract impl-run-owned-start-identity -->
 ### Invocation start identity
 
 run-owned Creation Action より前に、親は一つの invocation start Data として repository identity、worktree identity、canonical path、
@@ -39,6 +38,7 @@ tracked working state identity は staged / unstaged、index へ追加済みの 
 保存・報告せず、安全な digest 等の identity だけを扱う。開始時の untracked / ignored entry は identity baseline として保存しない。
 後続の integration preflight では現在の untracked / ignored entry を task changed paths との衝突計算のためだけに観測する。
 
+<!-- @contract impl-run-owned-start-identity -->
 ```text
 start_data = invocation identity + tracked working state
 invocation_identity = repository + worktree + canonical path + exact full branch ref + invocation_start_head
@@ -49,7 +49,15 @@ noise_baseline = none for untracked / ignored
 
 ## Closeout
 
-<!-- @contract impl-run-owned-closeout-safety -->
+<!-- @contract impl-programmatic-flow-run-owned-closeout -->
+### run-owned-closeout
+
+Trigger: run-owned checkout を作成した run で、親が final verification と必要な外部副作用照合を完了し closeout 可否判定へ到達したとき。
+Inputs: 検証済み `impl-run-owned-lifecycle-loader` Data と reference 本文、親が観測した成果の永続化、resource identity、tracked state、collision、writer / reviewer 終了 Data。
+Procedure: `references/run-owned-lifecycle.md` の `Closeout` だけを procedure の唯一の正本とし、integration result 後の cleanup eligibility を Calculation として判定し、実際の cleanup と post-observation / 照合は Action として実行し、その観測結果を Data として返す。unsafe または unknown なら resource を保持する。
+Outcomes: 照合済み integration / cleanup Data、または resource を保持した `blocked`。`blocked` は突破せず `stop-incomplete` と残存 Action の判断を Agentic な親へ返す。
+<!-- @/contract -->
+
 run-owned worktree は成果保管場所ではなく一時的な実行 resource である。ユーザーが保持を指定していない場合、親は
 `accepted` と `stop-incomplete` のどちらで終わる run でも、次の closeout 判定を経て安全なときは削除する既定を持つ。
 削除は品質 evidence や accept の根拠ではなく、親 QA、選択した risk-directed review、final writing gate、final verification、
@@ -111,6 +119,7 @@ tracked working state identity、collision を含む観測した blocker、残�
 出力しない。integration と worktree removal が成立した後の task branch retained は
 残存 risk として報告するが、それだけで `accepted` を妨げない。
 
+<!-- @contract impl-run-owned-closeout-safety -->
 ```text
 closeout_scope = tracked identity + collision_free
 collision_free = no current task-path collision
