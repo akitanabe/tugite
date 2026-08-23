@@ -35,6 +35,82 @@ kind = "forbids"
 pattern = "observation_result"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-artifact-design-identity-c45332a488a4]
+kind = "requires"
+slice = "plan-artifact-design-identity"
+pattern = "Plan artifact design reference identity: `plan-artifact-design-v1`."
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-projection-relation-5b36aac79b9a]
+kind = "requires"
+slice = "plan-artifact-projection-model"
+pattern = "Design Summary と Detailed Plan は、同じ current verified planning state / decisions から同一 artifact 内の異なる semantic projection として導出する。両 projection は互いを意味 source にせず、source にない新しい設計判断を追加せず、意味を矛盾させない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-projection-authority-b281d10cf5c2]
+kind = "requires"
+slice = "plan-artifact-projection-model"
+pattern = "`plan-agent` は Agent-resolved planning decisions、`plan-interactive` は clarify-it 後の verified Human-confirmed constraints / decisions を source authority とする。direction freeze は downstream authority を保護する constraint Data であり、Design Summary、Detailed Plan、または planning candidate ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-design-summary-purpose-9b5dabd254c5]
+kind = "requires"
+slice = "plan-artifact-design-summary"
+pattern = "Human-facing Summary は、Human の理解、design review、共有、design reuse のための Design Summary である。単語数による機械的な短縮ではなく、設計判断を単独で理解できる抽象度へ投影する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-design-summary-content-88e0990cf692]
+kind = "requires"
+slice = "plan-artifact-design-summary"
+pattern = "Risk / Attention は該当事項がある場合のみ含める。Goal / Approach / Scope / Verification は原則必須とする。Context、Exclude、主要な responsibility boundary、important planning decisions、重要な rejected alternatives と理由も、該当する場合に保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-design-summary-exclusion-d3981fc06730]
+kind = "requires"
+slice = "plan-artifact-design-summary"
+pattern = "file 単位の変更 step、test command の網羅、internal workflow history、review / adoption ledger、fine-grained Completion Criteria、Agent が実装時にだけ必要とする詳細 dependency explanation は、原則として Design Summary へ流入させない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-detailed-plan-retention-82e298d38d1c]
+kind = "requires"
+slice = "plan-artifact-detailed-plan"
+pattern = "Agent-facing Detail は、Agent が実装と verification に使う Detailed Plan である。該当する Acceptance Criteria、concrete design、dependency / constraint、implementation-oriented scope、verification、局所 Completion Criteria、assumption / unresolved question、residual risk を保持する。Design Summary は Detailed Plan を置換せず、Human readability のために Detailed Plan の情報を削らない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-artifact-stdout-summary-6e842ddb918e]
+kind = "requires"
+slice = "plan-artifact-projection-model"
+pattern = "stdout の short Summary は Design Summary 全文ではなく、artifact から stdout 用にさらに圧縮した projection である。既存の stdout field 集合を変更せず、stdout を Design Summary または Detailed Plan の代替にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-plan-artifact-design-loader]
+kind = "occurrences"
+pattern = '''design_reference = ../../references/plan-artifact-design.md
+design_load_timing = once immediately before first artifact drafting or restructuring in the invocation
+design_identity = plan-artifact-design-v1
+design_required_sections = [適用範囲, Human-facing Summary, Agent-facing Detail, Verification / Completion Criteria の近接配置, Acceptance Criteria / Verification / Completion Criteria の責務分離, Information placement, Reference pointer]'''
+count = 1
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-interactive-plan-artifact-design-loader]
+kind = "occurrences"
+pattern = '''design_reference = ../../../references/plan-artifact-design.md
+design_load_timing = once immediately before first artifact drafting or restructuring in the invocation
+design_identity = plan-artifact-design-v1
+design_required_sections = [適用範囲, Human-facing Summary, Agent-facing Detail, Verification / Completion Criteria の近接配置, Acceptance Criteria / Verification / Completion Criteria の責務分離, Information placement, Reference pointer]'''
+count = 1
+paths = [
+  "plugins/claude/skills/plan-interactive/references/synthesis.md",
+  "plugins/codex/skills/plan-interactive/references/synthesis.md",
+  "plugins/cursor/skills/plan-interactive/references/synthesis.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-artifact-publication-reference-identity]
 kind = "occurrences"
 pattern = "Publication reference identity: `plan-artifact-publication-v1`."
@@ -526,7 +602,7 @@ value = "Tugite"
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "version"
 op = "equals"
-value = "6.1.4"
+value = "6.1.5"
 
 [[contracts.cursor-plugin-manifest-shape.assertions]]
 path = "description"
@@ -951,10 +1027,10 @@ path = "name"
 op = "equals"
 value = "implementation-unit-design"
 
-[contracts.cursor-readme-title-requires-512308a9d309]
+[contracts.cursor-readme-title-requires-36fd2b3e598b]
 kind = "requires"
 slice = "cursor-readme-title"
-pattern = "# Tugite v6.1.4"
+pattern = "# Tugite v6.1.5"
 applies_to = ["cursor"]
 
 [contracts.readme-risk-directed-static-performance-reviewer-b83942372d45]

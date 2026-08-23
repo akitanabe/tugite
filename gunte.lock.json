@@ -114,6 +114,46 @@
       "sha256": "f88b10ceef814a54263fcea03724c73c7c7837500b1c94d120e1648d8d237d2f"
     },
     {
+      "id": "plan-artifact-design-identity-c45332a488a4",
+      "sha256": "075024d77872ae52fbceaa751a0e2751b320703a417023af32592d279cc05a6b"
+    },
+    {
+      "id": "plan-artifact-projection-relation-5b36aac79b9a",
+      "sha256": "ea6594813eb5a980a09c343f2d564afda1c525724b631d6d805c11e6333f7581"
+    },
+    {
+      "id": "plan-artifact-projection-authority-b281d10cf5c2",
+      "sha256": "bf5a8f6a9d600707d03f9c9659543761786c76e4b72816efac3c0ec481c624d5"
+    },
+    {
+      "id": "plan-artifact-design-summary-purpose-9b5dabd254c5",
+      "sha256": "2b3196588dee0f4ef2ee6cf0f482b55355fa8a246a773e82b3c4f7bdbaf4361e"
+    },
+    {
+      "id": "plan-artifact-design-summary-content-88e0990cf692",
+      "sha256": "698803ad370ca8afe72307fda5598b9625b72c2203bc5ab96b428dfe571ea996"
+    },
+    {
+      "id": "plan-artifact-design-summary-exclusion-d3981fc06730",
+      "sha256": "af0c94085a116d80fcdb6af1d5a246d5e0da5344d8c6c553f6eff07e67c0114b"
+    },
+    {
+      "id": "plan-artifact-detailed-plan-retention-82e298d38d1c",
+      "sha256": "dc51f01bd990042b3c416e83fd709da9a801c22c1e721ca7ff8635df80ab0173"
+    },
+    {
+      "id": "plan-artifact-stdout-summary-6e842ddb918e",
+      "sha256": "2317d538fbb440e753163757b7853c92e7447598a2ed58a961763f19d4c50083"
+    },
+    {
+      "id": "plan-agent-plan-artifact-design-loader",
+      "sha256": "0d62d6a869b0e085dfac7637deb6f34203670f6c4268bfd037e61213bf265597"
+    },
+    {
+      "id": "plan-interactive-plan-artifact-design-loader",
+      "sha256": "5b3376ec7992de230a434c30201d587498d7f7d05561335c8950ef7e80097886"
+    },
+    {
       "id": "plan-artifact-publication-reference-identity",
       "sha256": "361cedd795caa5e0d01562d36495c943aac23aea68878aab49e67b5020005a6f"
     },
@@ -291,7 +331,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "8c35de696b6baf7c46248679e74cadddba599aed9cbb9cd60051247740201ea0"
+      "sha256": "726707b4d501acfe885a5a26a68d1cfb9d444da5da892010a22d74891b4848ea"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -390,8 +430,8 @@
       "sha256": "564bc50d22f8101211405fae0677af13df5e7103959ac7b52938f99b0363feff"
     },
     {
-      "id": "cursor-readme-title-requires-512308a9d309",
-      "sha256": "1d259a4395a166e8bbb40bc1dea29a5780df0c4b6b6a4c73d3e8394c88be1d86"
+      "id": "cursor-readme-title-requires-36fd2b3e598b",
+      "sha256": "60aafe4d7dbe334ba755bb44fee94f84a80d0bf55da449b2d4885cb627c1542c"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
@@ -4267,6 +4307,26 @@
       "kind": "span",
       "id": "destination-unique-selection",
       "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-artifact-design-identity",
+      "path": "shared/plan-artifact-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-artifact-projection-model",
+      "path": "shared/plan-artifact-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-artifact-design-summary",
+      "path": "shared/plan-artifact-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-artifact-detailed-plan",
+      "path": "shared/plan-artifact-design.md"
     },
     {
       "kind": "span",
