@@ -59,6 +59,12 @@ slice = "plan-artifact-design-summary"
 pattern = "Human-facing Summary は、Human の理解、design review、共有、design reuse のための Design Summary である。単語数による機械的な短縮ではなく、設計判断を単独で理解できる抽象度へ投影する。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-artifact-design-summary-content-88e0990cf692]
+kind = "requires"
+slice = "plan-artifact-design-summary"
+pattern = "Risk / Attention は該当事項がある場合のみ含める。Goal / Approach / Scope / Verification は原則必須とする。Context、Exclude、主要な responsibility boundary、important planning decisions、重要な rejected alternatives と理由も、該当する場合に保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-artifact-design-summary-exclusion-d3981fc06730]
 kind = "requires"
 slice = "plan-artifact-design-summary"
