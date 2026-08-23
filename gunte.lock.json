@@ -331,7 +331,7 @@
     },
     {
       "id": "cursor-plugin-manifest-shape",
-      "sha256": "8c35de696b6baf7c46248679e74cadddba599aed9cbb9cd60051247740201ea0"
+      "sha256": "726707b4d501acfe885a5a26a68d1cfb9d444da5da892010a22d74891b4848ea"
     },
     {
       "id": "cursor-worker-agent-shape",
@@ -430,8 +430,8 @@
       "sha256": "564bc50d22f8101211405fae0677af13df5e7103959ac7b52938f99b0363feff"
     },
     {
-      "id": "cursor-readme-title-requires-512308a9d309",
-      "sha256": "1d259a4395a166e8bbb40bc1dea29a5780df0c4b6b6a4c73d3e8394c88be1d86"
+      "id": "cursor-readme-title-requires-36fd2b3e598b",
+      "sha256": "60aafe4d7dbe334ba755bb44fee94f84a80d0bf55da449b2d4885cb627c1542c"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-b83942372d45",
