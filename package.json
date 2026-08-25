@@ -1,0 +1,14 @@
+{
+  "name": "tugite-skill-lint-verification",
+  "private": true,
+  "engines": {
+    "node": "20.x || 22.x || 24.x"
+  },
+  "scripts": {
+    "lint:skills": "textlint"
+  },
+  "devDependencies": {
+    "textlint": "15.8.x",
+    "textlint-rule-preset-skill-lint": "github:akitanabe/skill-lint#d4ab485ec3687be97cc04614900493c19d4c7cb8"
+  }
+}

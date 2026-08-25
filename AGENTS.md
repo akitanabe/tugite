@@ -53,6 +53,21 @@ Agent は注入された Kernel を自分の責務内で適用するだけとし
 `reality-model-observation-kernel-v1`（正本は `shared/reality-model-observation-kernel.md`、配布物では `references/reality-model-observation-kernel.md`）がこの
 contract の標準例です。
 
+## v7 Skill Coding Rules と skill-lint
+
+v7 の新規作業として Skill、shared component、contract、test、lint rule を作成・変更するときは、repository root の
+`skill-coding-rules.md` を正本として適用します。規範本文を `AGENTS.md`、contract、lint rule へ複製しません。
+
+v7 の `SKILL.md` を作成・変更した場合は、対象ファイルを明示して `skill-lint` を実行します。
+
+```text
+npm ci
+npm run lint:skills -- path/to/SKILL.md
+```
+
+`skill-lint` は `SKILL.md` の機械判定可能なリスクを検出する補助層であり、shared component、contract、test の保証や、
+repository-wide な lint の成功を意味しません。既存 v6 artifact の lint finding を、この v7 baseline 導入の scope へ取り込みません。
+
 ## 追加・変更時に触れる場所
 
 agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の
