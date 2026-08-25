@@ -107,6 +107,7 @@ managed_roots = [
 allow_files = [
   "tests/install-agents-test.sh",
   "tests/install-cursor-plugin-test.sh",
+  "tests/programmatic-flow-lint-test.js",
   ".claude-plugin/marketplace.json",
   ".agents/plugins/marketplace.json",
   "upstream/clarify-it/COMMIT",
