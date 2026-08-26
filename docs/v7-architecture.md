@@ -25,6 +25,50 @@ Local Model は、calling workflow が一回の top-level invocation の目的�
 
 各 Method は自身に割り当てられた構築範囲の完了を判断する。Local Model 全体が workflow の次責務へ進める状態かの最終判断は calling workflow が所有する。Reality 全体の網羅は要求しない。
 
+### Model Construction Core
+
+Model Construction は、**task-local Local Model を現在の construction purpose に対して観測可能な gap へ投影し、必要な resolution を行い、結果を同じ Local Model へ戻す共通 progression** を持つ。この Core は特定の既存 workflow architecture や state machine を前提とせず、Tugite v7 の current responsibility / boundary として自己完結して定義する。
+
+概念上の共通 Core は次とする。
+
+```text
+task-local Local Model
+        ↓ semantic subject
+Model Observation
+        ↓
+Exploration Projection
++ Projection Sufficiency
+        ↓
+Gap identification / qualification
+        ↓
+Gap Resolution
+        ├─ available context / repository exploration
+        ├─ bounded evidence acquisition
+        ├─ Research Agent
+        └─ Human interaction
+             (Method boundary が許可する場合のみ)
+        ↓
+grounded result / judgment
+        ↓
+Reintegration / Recomposition as needed
+        ↓
+same task-local Local Model
+        ↓
+bounded re-observation as needed
+```
+
+この progression は固定 state machine ではない。現在目的に対する reasoning responsibility と continuation relation を表す。
+
+- **Exploration Projection** は、current Local Model の semantics を現在の construction purpose に対して観測可能な差異へ投影した bounded Observable Projection である。第二の Local Model ではなく、独自 ownership / persistence / canonical schema を持たない。
+- **Projection Sufficiency** は、その Exploration Projection が現在の bounded construction judgment に必要な意味差を十分に識別できるかを評価する。Local Model 全体の completeness、workflow readiness、Reality completeness とは同一視しない。
+- **Gap** は、Exploration Projection により current construction purpose に対して unresolved と観測された material distinction / uncertainty / dependency である。共通 fixed gap schema や exhaustive gap enumeration は要求しない。
+- **Gap Resolution** は、current gap の resolution basis と利用可能な source / authority に応じて、Agent-side analysis、repository exploration、evidence acquisition、Research Agent、または Method が許可する Human interaction を利用する。
+- **Reintegration** は、新しい grounded information / judgment の semantic effect を同じ Local Model へ戻す。新 evidence が既存理解を変える場合は stale understanding を並置して残すのではなく、affected semantics を更新する。
+- **Recomposition** は current Local Model の material semantic region が invalidated した場合の repair として利用できる。新情報のたびに全面再構築することを要求しない。
+- semantic delta が Local Model に戻った場合、必要な affected semantics だけを bounded に再観測し、Exploration Projection / Projection Sufficiency を更新する。
+
+この Core により、Model Construction は「Agent が十分だと感じたら終了する」自己内省だけに依存せず、Local Model の semantics を Exploration Projection へ投影して gap / sufficiency を観測しながら construction を進める。
+
 ### Model Construction Methods
 
 v7 では、calling workflow が所有する task-local Local Model を構築するために、次の二つの独立した Method を置く。
@@ -32,7 +76,7 @@ v7 では、calling workflow が所有する task-local Local Model を構築す
 - `Agentic Model Construction`: Agent が利用可能な context / evidence / repository / observation を用いて Local Model を構築する。追加の Human interaction は行わない。
 - `Interactive Model Construction`: Agent-side の調査・分析を行ったうえで、Human の明示的な判断を completion boundary に含めて Local Model を構築する。
 
-両 Method は repository exploration、Research Agent、Model Observation、evidence integration を必要に応じて利用できる。両者の identity は探索量や探索手法ではなく、**Human の追加判断を completion に必要とするか**にある。
+両 Method は上記 Model Construction Core を共有し、Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration の progression を同じ意味境界で利用する。repository exploration、Research Agent、追加 evidence acquisition は gap resolution の手段であり、両者の identity を分ける基準ではない。両者の identity は探索量や探索手法ではなく、**Human の追加判断を completion に必要とするか**にある。
 
 calling workflow は通常、一つの Model Construction Method を利用する。複数 Method の利用・切り替え・順序・役割は、calling workflow が明示的に定義した場合だけ許可する。Method 自身は別 Method を自律起動しない。
 
@@ -42,66 +86,101 @@ calling workflow は、Agentic Model Construction を先に実行し、material 
 
 ### Agentic Model Construction
 
-Agent が利用可能な情報と調査能力だけで Local Model を構築する。
+Agentic Model Construction は、上記 Model Construction Core を追加の Human interaction なしで実行する。
 
-- request 時点ですでに Human から与えられている context / constraint / direction は利用できる。
-- repository exploration、Research Agent、Model Observation、追加の evidence acquisition を必要に応じて利用できる。
-- 追加の Human interaction は行わない。
-- 自身に割り当てられた構築範囲について十分な理解が成立したら完了できる。
-- 次工程の方向・範囲・結果を実質的に変え得る material な情報不足が、Agent-side の調査・分析でも解消できない場合は停止する。
-- 停止時は、分かっていること、不足していること、その不足がなぜ進行を妨げるかを calling workflow へ返す。
-- 次工程に影響しない uncertainty は、明示したまま完了してよい。
+- request 時点ですでに Human から与えられている context / constraint / direction は通常の input として利用できる。
+- current Local Model を Model Observation で Exploration Projection へ投影し、current construction purpose に対する gap / qualification を識別する。
+- Agent-side reasoning / analysis、available context / repository exploration、Research Agent による bounded evidence acquisition を gap resolution に利用できる。
+- Research Agent result / direct evidence は same Local Model へ Reintegration し、material semantic region が invalidated した場合だけ Recomposition する。
+- semantic delta 後は affected semantics を必要な範囲で bounded re-observation する。
+- assigned construction scope に blocking gap が残らなければ completion できる。未知ゼロや Reality completeness は要求しない。
+- 次工程の方向・範囲・結果を実質的に変えない unresolved uncertainty は qualification として保持したまま completion してよい。
+- Agent-side の bounded resolution route でも解消できない material blocking gap が残る場合は、current understanding、material gap、その gap が進行を妨げる理由を calling workflow へ返して停止する。
+- 追加の Human interaction は開始せず、Interactive Model Construction への切り替えも自律的に行わない。
 
 ### Interactive Model Construction
 
-Agent-side の調査・分析に加えて Human の明示的な判断を completion boundary に含める。
+Interactive Model Construction は、Agentic と同じ Model Construction Core に Human resolution route と final Human judgment boundary を追加する。
 
-- repository / available context から解消できる事項を先に調査・導出する。
-- Agent が分からないこと自体を Human 判断へ置き換えない。
-- 必要な Human 判断は途中でも取得できる。
-- Human-facing interaction は current domain language で行い、内部の model / decision / exploration vocabulary の理解を要求しない。
-- 途中の Human 判断は current understanding へ再統合する。
-- **統合後の現在理解を Human が判断できる形で提示し、Human がその理解を downstream の前提として採用して次へ進むことを明示的に認めるまで完了しない。**
-- Human が不足・修正を指摘した場合は、必要な再調査・再統合を行い、更新後の理解について再度 Human の判断を得る。
-- material uncertainty が残る場合でも、その uncertainty を明示した状態で進むことを Human が判断することはできる。
-- 最終確認は downstream artifact / plan 自体の acceptance ではなく、downstream が利用する現在理解の acceptance である。
+- current Local Model を Model Observation で Exploration Projection へ投影し、current construction purpose に対する gap / qualification を識別する。
+- Human に入力・判断を求める前に、Agent-side reasoning / analysis、available context / repository exploration、Research Agent で解消できる gap を先に処理する。
+- Agent が分からないことや Research Agent へ委譲できること自体を Human interaction の理由にしない。
+- Human interaction は、Exploration Projection 上の current gap について resolution source / authority が Human にある場合に利用する。
+- Human にのみ保持される factual / contextual information と、Human authority が必要な preference / trade-off / direction / responsibility judgment を意味上区別する。
+- Human-facing interaction は current domain language で行い、内部の Local Model / Exploration Projection / gap / Recomposition vocabulary の理解を要求しない。
+- Human response、Research Agent result、direct evidence は same Local Model へ Reintegration する。Human response 自体を Recomposition trigger にしない。
+- grounded information / judgment により material semantic region が invalidated した場合だけ Recomposition し、semantic delta 後は affected semantics を bounded re-observation する。
+- 途中で Human interaction を行っていても final Human judgment は省略しない。
+- **統合・再観測後の current understanding を Human が判断できる形で提示し、Human がその理解を downstream の前提として採用して次へ進むことを明示的に認めるまで completion しない。**
+- Human が不足・修正を指摘した場合はその semantic effect を再統合し、必要なら Recomposition / bounded re-observation を行い、更新後の理解について再度 Human の判断を得る。
+- material uncertainty が残る場合でも、その uncertainty を明示した状態で進むことを Human が判断できる。Human approval によって unknown fact を known fact に変えない。
+- final confirmation は downstream artifact / plan 自体の acceptance ではなく、downstream が利用する current understanding の acceptance である。
 
 ### Evidence Acquisition and Integration
 
-Model Construction Method は、自身の責務に必要な evidence acquisition を判断する。
+Model Construction Method は Exploration Projection 上の current gap と自身の authority boundary に基づき、必要な resolution route を判断する。新しい factual evidence との接触が必要な場合は evidence acquisition を行い、その結果を same Local Model へ再統合する。
+
+repository / available context の直接探索で解消できる gap は Method 自身が解消してよい。bounded な source inspection / exploration を context-isolated に委譲する価値がある場合は Research Agent を利用できる。
 
 Research Agent は、要求された evidence acquisition / bounded exploration を context-isolated に実行し、grounded な結果を caller に返す。
 
 Research Agent は次を所有しない。
 
 - Local Model
+- Exploration Projection の意味判断
+- gap の最終的な materiality / priority
 - task direction
 - planning
 - finding の最終的な意味判断
-- exploration continuation の最終判断
+- exploration continuation / completion の最終判断
 
-Research Agent は、取得結果を caller が再統合可能な evidence として返し、scope を自律拡張しない。
+Research Agent は、取得結果を caller が再統合可能な evidence として返し、scope を自律拡張しない。Research Agent の result 自体を新しい Local Model または canonical exploration state にしない。
 
 ## Model Observation Boundary
 
-Model Observation は Local Model を生成する主体ではない。
-
-Model Construction Method は calling workflow が所有する現在理解を更新し、Model Observation は model semantics を observable distinctions へ接続して、何を観測すれば model を評価できるかを導出する。
+Model Observation は Local Model を生成・所有・更新する主体ではない。Model Construction Core において、**current Local Model を semantic subject として Exploration Projection へ投影し、その Projection Sufficiency を評価する observation responsibility** を担う。
 
 概念上の関係は次とする。
 
 ```text
-Model Construction Method
-    ├─ Model Observation
-    │    ├─ Behavior Model Observation
-    │    └─ Reality Model Observation
-    └─ Evidence Acquisition
-         └─ Research Agent
+task-local Local Model
+        ↓
+Model Observation
+        ↓
+Exploration Projection
++ Projection Sufficiency
+        ↓
+Model Construction
+  gap identification / resolution
+        ↓
+Reintegration
+        ↓
+same task-local Local Model
 ```
 
-Model Observation の conceptual canonical source は `akitanabe/model-observation-docs` とする。
+Model Observation は次を所有しない。
+
+- Local Model ownership / mutation
+- factual evidence acquisition
+- Research Agent dispatch
+- gap resolution
+- Human judgment
+- Reintegration / Recomposition
+- Model Construction completion
+- workflow readiness / downstream action
+
+Exploration Projection は Model Observation の bounded output であり、Local Model の代替・コピー・persistent companion model ではない。Projection Sufficiency が `sufficient` であることも Local Model 全体の completeness や workflow readiness を保証しない。
+
+新しい evidence contact により current understanding が変化した場合、その semantic effect は Model Construction 側が Local Model へ Reintegration し、その後に必要な範囲で Model Observation を再実行する。Model Observation 自身が evidence を取得して Local Model を mutate したことにはしない。
+
+Model Observation の conceptual canonical source は `akitanabe/model-observation-docs` とする。特に次を canonical reference とする。
+
+- `docs/ja/model-observation-epistemic-foundation.md`
+- `docs/ja/model-observation.md`
 
 Tugite v7 は外部 repository を runtime dependency にせず、consumer が実行に必要な semantics、boundary、stopping condition を self-contained に保持する。Tugite 側で Model Observation の一般理論を別定義しない。
+
+Behavior Model Observation / Reality Model Observation は concrete specialization として必要時に利用できるが、Model Construction Core は特定 specialization の常時実行を要求しない。
 
 ## Public Workflows
 
@@ -208,7 +287,11 @@ v7 core では Model Construction Method を必須化しない。Implementation 
 共通責務:
 
 - calling workflow が所有する一つの task-local Local Model を更新する
-- available context、repository evidence、Research Agent、Model Observation 等から得た evidence を必要に応じて統合する
+- current Local Model を Model Observation の semantic subject として扱い、bounded Exploration Projection / Projection Sufficiency を得る
+- Exploration Projection から current construction purpose に対する gap / qualification を識別する
+- current gap の resolution basis に応じて available context、repository exploration、evidence acquisition、Research Agent、Method が許可する Human interaction を利用する
+- grounded result / judgment の semantic effect を same Local Model へ Reintegration し、必要なら invalidated region を Recomposition する
+- semantic delta 後は affected semantics を必要な範囲で bounded re-observation する
 - supporting evidence と material uncertainty を後続判断に必要な範囲で保持する
 - 自身に割り当てられた構築範囲の終了を判断する
 - calling workflow が利用できる understanding を返す
@@ -216,7 +299,8 @@ v7 core では Model Construction Method を必須化しない。Implementation 
 共通して所有しない責務:
 
 - Local Model の ownership
-- Local Model の canonical schema / persistence
+- Local Model / Exploration Projection の canonical schema / persistence
+- Projection Sufficiency と Local Model completeness / workflow readiness の同一視
 - workflow 全体の readiness judgment
 - downstream response / plan / artifact の生成
 - Method の選択・切り替え・composition
@@ -225,19 +309,17 @@ v7 core では Model Construction Method を必須化しない。Implementation 
 
 shared Method とし、standalone Skill にはしない。
 
-Agent-side の調査・分析・evidence acquisition によって Local Model を構築する。追加の Human interaction は所有しない。
+同じ Model Construction Core を追加の Human interaction なしで実行する。Exploration Projection 上の gap を Agent-side reasoning / repository exploration / Research Agent で解消し、result を same Local Model へ Reintegration する。material semantic region が invalidated した場合だけ Recomposition し、affected semantics を bounded re-observation する。
 
-material な情報不足が Agent-side で解消できず、次工程の方向・範囲・結果を実質的に変え得る場合は停止する。停止時は、current understanding、material gap、その gap が進行を妨げる理由を calling workflow へ返す。
+assigned construction scope に blocking gap が残らなければ completion できる。Agent-side の bounded resolution route でも解消不能で、次工程を実質的に変え得る material gap が残る場合は caller へ qualified stop を返す。
 
 ### Interactive Model Construction
 
 shared Method とし、standalone Skill にはしない。
 
-Agent-side で解消できる事項を先に処理し、必要な Human 判断を current understanding へ統合する。
+Agentic と同じ Model Construction Core に Human resolution route と final Human judgment boundary を追加する。Agent-side で解消できる gap を先に処理し、Human-held fact / context または Human authority judgment が resolution basis である場合だけ Human interaction を利用する。
 
-completion には Human の最終確認を必須とする。統合後の現在理解と material uncertainty を Human が判断できる形で提示し、Human がその理解を downstream の前提として採用して次へ進むことを明示的に認めるまで完了しない。
-
-Human が不足・修正を指摘した場合は、必要な再調査・再統合を行い、更新後の理解について再度確認する。
+Human response を same Local Model へ Reintegration し、material invalidation が成立した場合だけ Recomposition / bounded re-observation を行う。completion には、統合・再観測後の current understanding を Human が downstream の前提として採用する final judgment を必須とする。
 
 ### Planning Synthesis
 
@@ -297,12 +379,22 @@ Local Model の internal representation や working file layout は architecture
 
 初期 validation は representative case による behavior validation を先行する。特に次を確認する。
 
-- Agentic が repository exploration / Research Agent / Model Observation を必要に応じて使い、Agent-side だけで十分なら完了できる
+- current Local Model から Model Observation により bounded Exploration Projection / Projection Sufficiency を構成できる
+- Exploration Projection が第二の Local Model / persistent state として扱われない
+- Projection Sufficiency と Local Model completeness / workflow readiness / Reality completeness を同一視しない
+- observed gap が適切な resolution route へ接続され、new evidence / judgment が same Local Model へ再統合される
+- corrective evidence が既存理解を変えた場合、stale understanding の追記ではなく affected semantics が更新される
+- local semantic update で整合が保てる場合に unnecessary Recomposition を行わない
+- grounded information / judgment により material semantic region が invalidated した場合だけ Recomposition し、unaffected semantics / boundaries を保持する
+- Recomposition 後も same task-local Local Model を維持する
+- semantic delta 後の re-observation が affected semantics に対して bounded に行われる
+- Model Observation が factual evidence acquisition / Research Agent dispatch / Reintegration / completion を所有しない
+- Agentic が同じ Core を利用し、repository exploration / Research Agent 等の Agent-side resolution だけで十分なら Human interaction なしで完了できる
 - Agentic が次工程を変え得る material な情報不足を Agent-side で解消できない場合に停止し、その不足を calling workflow へ返せる
-- Interactive が repository / available context から解消できる事項を先に処理できる
+- Interactive が同じ Core を利用し、repository / available context から解消できる事項を先に処理できる
 - Interactive が途中の Human 判断を current understanding へ再統合できる
 - Interactive が統合後の現在理解について Human の最終確認を得るまで完了しない
-- Human が不足を指摘した場合に再調査・再統合し、更新後に再確認できる
+- Human が不足を指摘した場合に再調査・再統合・bounded re-observation し、更新後に再確認できる
 - Method の切り替えが Method 自身ではなく calling workflow の定義によってのみ発生する
 - 複数 Method を利用しても同じ task-local Local Model を更新し続ける
 - exploration finding によって caller scope / authority を拡張しない
@@ -401,6 +493,7 @@ Public Workflows
 
 Shared Methods
 ├─ Model Construction
+│    ├─ Core: Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration
 │    ├─ Agentic Model Construction
 │    └─ Interactive Model Construction
 ├─ Planning Synthesis
@@ -408,6 +501,7 @@ Shared Methods
 
 Observation Methods
 ├─ Model Observation
+│    └─ Exploration Projection / Projection Sufficiency
 ├─ Behavior Model Observation
 └─ Reality Model Observation
 
@@ -460,10 +554,10 @@ v7 core に含めない事項:
 
 ```text
 1. v7 architecture
-2. Model Construction
+2. Model Construction Core + Model Observation integration / Exploration Projection
 3. Agentic Model Construction
 4. Research Agent
-5. Model Observation consumer methods
+5. Model Observation specialization consumer methods (BMO / RMO)
 6. Interactive Model Construction
 7. Planning Synthesis
 8. plan-agent
@@ -477,4 +571,4 @@ v7 core に含めない事項:
 16. integration / canonical switch
 ```
 
-最初に共通の Model Construction boundary と Agentic Model Construction を成立させ、その後に Research Agent / Model Observation を接続する。Interactive Model Construction は Human judgment boundary を追加する独立 Method として構築する。
+最初に `Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration` の共通 Model Construction Core を成立させ、その Core 上で Agentic Model Construction を構築する。その後に delegated evidence acquisition として Research Agent、必要な concrete observation specialization として BMO / RMO consumer semantics を接続する。Interactive Model Construction は同じ Core に Human judgment boundary を追加する独立 Method として構築する。
