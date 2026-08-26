@@ -60,10 +60,28 @@ semantic effect evaluation
 
 Model Construction は Model Observation の一般理論を再定義せず、construction consumer として次の mapping を利用する。
 
-- Observed Model は、current construction purpose に関係する current Local Model semantics とする。
-- bounded observation question は、assigned construction judgment を変え得る観測可能差異とする。
+- Model / Model Identity は、caller-owned task-local Local Model とする。
+- Model Semantics は、assigned construction purpose に関係する established Local Model semantics とする。
+- Model-relative Judgment / bounded observation question は、assigned construction scope において、construction judgment に必要な意味差を Exploration Projection が十分に識別できるかとする。
+- Observable Distinctions は、established Local Model semantics に grounded され、bounded construction judgment を変え得る意味差とする。
 - Observable Projection は Exploration Projection とする。
-- Projection Sufficiency の `sufficient`、`insufficient`、`indeterminate` は意味上区別するが、serialized field や mandatory schema にはしない。
+- Projection Sufficiency は、Exploration Projection が bounded observation question に必要な Model Semantics を十分に区別できるかを `sufficient`、`insufficient`、`indeterminate` に分類する。分類は serialized field や mandatory schema にはしない。
+
+### Continuation Policy
+
+Projection Sufficiency State に応じて次へ進む。
+
+- `sufficient`: Exploration Projection を gap identification / qualification へ渡す。
+- `insufficient` / `indeterminate`: 不足または不確定の原因を construction gap / qualification として保持し、Method が許す resolution route で解決する。grounded result / judgment を Local Model へ Reintegration した後、affected semantics を bounded に再観測する。
+- material な原因を Method が許す bounded resolution route で解消できない場合は、その Method の qualified stop とする。
+
+Projection Sufficiency 単独を Method completion や workflow readiness の判定にはしない。
+
+### Model-first / Grounded Projection
+
+repository や available evidence に存在することだけを理由に、Observable Distinction や requirement を作らない。distinction の relevance は established Local Model semantics に grounded し、projection の過程で Local Model に新しい意味を追加しない。
+
+新しい authoritative information が current semantics を変える場合は、先にその semantic effect を Local Model へ Reintegration し、その後に affected semantics を再観測する。authoritative information から Exploration Projection へ意味を直接注入しない。
 
 Model Observation は Exploration Projection の構成と Projection Sufficiency の評価を所有する。次は所有しない。
 
