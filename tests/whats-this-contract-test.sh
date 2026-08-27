@@ -40,7 +40,7 @@ mutate_ownership() {
 }
 
 mutate_interactive_connection() {
-  perl -0pi -e 's/Agent-side の bounded resolution を先に行います。/Agent-side の bounded resolution を後に行います。/' "$1/shared/skill/whats-this/SKILL.md"
+  perl -0pi -e 's/construction Method として利用します。/construction Method として記録します。/' "$1/shared/skill/whats-this/SKILL.md"
 }
 
 mutate_reintegration() {
@@ -48,7 +48,7 @@ mutate_reintegration() {
 }
 
 mutate_completion_output() {
-  perl -0pi -e 's/unknown fact を known fact に変えず/unknown fact を known fact に変えます/' "$1/shared/skill/whats-this/SKILL.md"
+  perl -0pi -e 's/requested output へ直接接続し、/固定 report へ接続し、/' "$1/shared/skill/whats-this/SKILL.md"
 }
 
 mutate_document() {
@@ -107,13 +107,13 @@ for target in claude codex cursor; do
     "ownership-$target" "$target" whats-this-ownership-2aa0a2707b35 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_ownership
   run_contract_failure \
-    "interactive-$target" "$target" whats-this-interactive-connection-847eff3a5080 requires_violation \
+    "interactive-$target" "$target" whats-this-interactive-connection-159f2da9a4d4 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_interactive_connection
   run_contract_failure \
-    "reintegration-$target" "$target" whats-this-reintegration-1061604335ab requires_violation \
+    "reintegration-$target" "$target" whats-this-reintegration-741726b3c149 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_reintegration
   run_contract_failure \
-    "completion-$target" "$target" whats-this-completion-output-0623a3802f44 requires_violation \
+    "completion-$target" "$target" whats-this-completion-output-b68b52f208e7 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_completion_output
   run_contract_failure \
     "document-$target" "$target" whats-this-document occurrences_violation \
