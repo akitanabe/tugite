@@ -39,34 +39,6 @@ allow_files = [
   "shared/README.md",
 ]
 
-[targets.shared-contracts]
-output_root = ".local/gunte/shared-contracts"
-managed_roots = ["documents"]
-
-[[targets.shared-contracts.rules]]
-match = "shared/model-construction.md"
-path = "documents/model-construction.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.shared-contracts.rules]]
-match = "shared/agentic-model-construction.md"
-path = "documents/agentic-model-construction.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.shared-contracts.rules]]
-match = "shared/behavior-model-observation.md"
-path = "documents/behavior-model-observation.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
-[[targets.shared-contracts.rules]]
-match = "shared/reality-model-observation.md"
-path = "documents/reality-model-observation.md"
-profile = "markdown-v1"
-header = "<!-- Generated from shared/. Do not edit directly. -->"
-
 # Why Not: v7 は canonical shared/ を選択的に再構築中のため、旧 v6 plugin の未再構築ファイルを managed inventory に含めない。
 [targets.claude]
 output_root = "plugins/claude"
