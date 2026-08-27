@@ -101,33 +101,33 @@ run_contract_failure() {
 
 for target in claude codex cursor; do
   run_contract_failure \
-    "explicit-$target" "$target" whats-this-explicit-invocation-6aff5f790dc7 requires_violation \
+    "rejects-implicit-invocation-$target" "$target" whats-this-explicit-invocation-6aff5f790dc7 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_explicit_invocation
   run_contract_failure \
-    "ownership-$target" "$target" whats-this-ownership-2aa0a2707b35 requires_violation \
+    "rejects-broken-one-model-ownership-$target" "$target" whats-this-ownership-2aa0a2707b35 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_ownership
   run_contract_failure \
-    "interactive-$target" "$target" whats-this-interactive-connection-159f2da9a4d4 requires_violation \
+    "rejects-broken-interactive-method-connection-$target" "$target" whats-this-interactive-connection-159f2da9a4d4 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_interactive_connection
   run_contract_failure \
-    "reintegration-$target" "$target" whats-this-reintegration-741726b3c149 requires_violation \
+    "rejects-broken-same-model-routing-$target" "$target" whats-this-reintegration-741726b3c149 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_reintegration
   run_contract_failure \
-    "completion-$target" "$target" whats-this-completion-output-b68b52f208e7 requires_violation \
+    "rejects-broken-requested-output-boundary-$target" "$target" whats-this-completion-output-b68b52f208e7 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_completion_output
   run_contract_failure \
-    "document-$target" "$target" whats-this-document occurrences_violation \
+    "rejects-missing-whats-this-title-$target" "$target" whats-this-document occurrences_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_document
 done
 
 run_contract_failure \
-  claude-policy claude whats-this-claude-invocation-policy occurrences_violation \
+  rejects-implicit-claude-skill-invocation claude whats-this-claude-invocation-policy occurrences_violation \
   shared/skill/whats-this/SKILL.md plugins/claude/skills/whats-this/SKILL.md mutate_claude_invocation_policy
 run_contract_failure \
-  cursor-policy cursor whats-this-cursor-invocation-policy occurrences_violation \
+  rejects-implicit-cursor-skill-invocation cursor whats-this-cursor-invocation-policy occurrences_violation \
   shared/skill/whats-this/SKILL.md plugins/cursor/skills/whats-this/SKILL.md mutate_cursor_invocation_policy
 run_contract_failure \
-  codex-policy codex whats-this-codex-invocation-policy occurrences_violation \
+  rejects-implicit-codex-declaration codex whats-this-codex-invocation-policy occurrences_violation \
   declarations/codex/skills/whats-this/openai.yaml plugins/codex/skills/whats-this/agents/openai.yaml mutate_codex_invocation_policy
 
 echo "PASS: whats-this contract mutation test"
