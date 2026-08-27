@@ -1,5 +1,4 @@
 # Tugite v7 Interactive Model Construction
-<!-- @anchor shared-v7-interactive-model-document -->
 
 ## Identity
 
