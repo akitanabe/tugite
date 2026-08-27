@@ -146,8 +146,10 @@ sufficiency を変えうる場合に限る。Reality に理論上さらに detai
 
 Model Sufficiency が `Sufficient` の場合、caller が許可した boundary 内で、frozen な criteria / conditions
 に沿って concrete evidence と接触する。観測中に新しい思いつきがあっても、criteria を都合よく追加・変更
-しない。新 evidence が model を無効化した場合は caller が semantic effect を判断し、依存する distinction
-と signal を再導出してから観測を続ける。
+しない。新 evidence が model を無効化した場合、RMO は stale な model のまま観測を続けない。caller がその
+evidence の authority / semantic effect を判断し、必要なら同じ task-local Local Model へ Reintegration /
+Recomposition を行う。caller が更新済みの Target / Context を RMO へ再注入した後、RMO は影響を受けた
+distinction / signal だけを再導出してから観測を続ける。
 
 直接観測した evidence、そこからの inference、limitation、未取得の根拠を分ける。`Model Sufficiency` と
 `Observed Evidence Sufficiency` は別であり、前者が十分でも、後者が不足していれば Reality judgment、
@@ -198,8 +200,8 @@ observation / inference、limitation、unresolved point を伴う caller-owned r
 Problem へ自動変換されない。
 
 caller は result の authority と semantic effect を判断し、必要なら同じ top-level invocation の同じ
-task-local Local Model へ Reintegration / Recomposition する。その後、影響を受けた RMO distinction / signal
-だけを bounded に再観測する。Research Agent は第二の Local Model、独自の task semantics、continuation を
+task-local Local Model へ Reintegration / Recomposition する。caller はその結果の更新済み Target / Context を
+RMO へ再注入し、RMO は影響を受けた distinction / signal だけを再導出して bounded に再観測する。Research Agent は第二の Local Model、独自の task semantics、continuation を
 持たず、RMO もその result を理由に Target を拡張したり remediation を開始したりしない。これは Phase 1 の
 `1 top-level workflow invocation = exactly 1 task-local Local Model` と caller-owned Reintegration boundary
 を維持する。
@@ -216,7 +218,7 @@ task-local Local Model へ Reintegration / Recomposition する。その後、�
 | Observed Evidence Sufficiency が不足 | discrepancy、attribution、membership、Problem を確定せず、limitation / unresolved evidence を保持して停止するか、caller-owned additional acquisition に返す。 |
 | signal が ambiguous で satisfied / discrepant の両方を同じ結果に写す | Model Sufficiency を `Sufficient` とせず、grounded discriminator、conditions、gap、または unresolved viewpoint の解決へ戻す。 |
 | grounded discriminator があり、admitted distinctions が cover される | proxy 条件と observation / inference を保持したうえで Model Sufficiency を評価し、`Sufficient` のときだけ authorized concrete observation へ進む。 |
-| caller が RMO gap から bounded Research Agent objective を作る | caller が dispatch と authority を所有し、返却 result を semantic judgment して同じ Local Model へ Reintegration する。RMO はその更新を読み、必要な依存 distinction / signal を再評価する。 |
+| caller が RMO gap から bounded Research Agent objective を作る | caller が dispatch と authority を所有し、返却 result の authority / semantic effect を判断して同じ Local Model へ Reintegration / Recomposition する。更新済み Target / Context を RMO へ再注入した後、RMO は必要な依存 distinction / signal だけを再導出する。 |
 | Research Agent が scope や Target を広げたくなる | objective、authority、Target、RMO semantics を拡張せず、limitation / unresolved point を返して停止する。RMO は implicit dispatch、第二 Local Model、remediation を持たない。 |
 
 これらの対照は、Target-first、signal grounding、Model / Observed Evidence の二つの sufficiency、
