@@ -1,8 +1,8 @@
 # Reality Model Observation
-<!-- @anchor shared-v7-rmo-document -->
+<!-- @anchor shared-rmo-document -->
 
-<!-- @contract shared-v7-rmo-identity-boundary -->
-<!-- @anchor shared-v7-rmo-identity-relation -->
+<!-- @contract shared-rmo-identity-boundary -->
+<!-- @anchor shared-rmo-identity-relation -->
 ## Identity and boundary
 
 `Reality Model Observation`（RMO）は、bounded な `Target` を、Observer が扱う Reality
@@ -67,8 +67,8 @@ Target identity / central semantics、Human の value judgment、成功 threshol
 
 ## Outputs and ownership
 
-<!-- @contract shared-v7-rmo-output-boundary -->
-<!-- @anchor shared-v7-rmo-output-relation -->
+<!-- @contract shared-rmo-output-boundary -->
+<!-- @anchor shared-rmo-output-relation -->
 必要に応じて、RMO は次の意味を caller が追跡できる形で返す。
 
 - **Observable Reality Model** — Required Reality Distinctions、各 distinction の Target / Context
@@ -124,8 +124,8 @@ flatten したりしない。
 
 ### Cover → Trim → Classify
 
-<!-- @contract shared-v7-rmo-model-sufficiency -->
-<!-- @anchor shared-v7-rmo-model-sufficiency-relation -->
+<!-- @contract shared-rmo-model-sufficiency -->
+<!-- @anchor shared-rmo-model-sufficiency-relation -->
 admitted な Required Reality Distinctions が、coherent な signal set で discriminable であるか、または
 具体的な gap / unresolved viewpoint として明示されているかを確認する。Target judgment を変えない signal
 や、利用できるだけの内部 step・値・組み合わせは mandatory にしない。
@@ -154,8 +154,8 @@ sufficiency を変えうる場合に限る。Reality に理論上さらに detai
 
 ## Concrete observation and evidence sufficiency
 
-<!-- @contract shared-v7-rmo-observation-gate -->
-<!-- @anchor shared-v7-rmo-observation-relation -->
+<!-- @contract shared-rmo-observation-gate -->
+<!-- @anchor shared-rmo-observation-relation -->
 Model Sufficiency が `Sufficient` の場合、caller が許可した boundary 内で、frozen な criteria / conditions
 に沿って concrete evidence と接触する。観測中に新しい思いつきがあっても、criteria を都合よく追加・変更
 しない。新 evidence が model を無効化した場合、RMO は stale な model のまま観測を続けない。caller がその
@@ -180,8 +180,8 @@ signal があることは継続理由にならない。
 
 ## Attribution and Target Membership
 
-<!-- @contract shared-v7-rmo-membership-stop -->
-<!-- @anchor shared-v7-rmo-attribution-relation -->
+<!-- @contract shared-rmo-membership-stop -->
+<!-- @anchor shared-rmo-attribution-relation -->
 discrepancy がある場合に限り、少なくとも次の可能性を区別して mismatch attribution を行う。
 
 - current design / semantic-model defect
@@ -194,7 +194,7 @@ attribution が未確定なら `Uncertainty` として停止する。
 
 attribution を踏まえ、次を問う。
 
-<!-- @anchor shared-v7-rmo-membership-relation -->
+<!-- @anchor shared-rmo-membership-relation -->
 > この observed difference は、現在定義済みの Target の satisfaction を変えるか。
 
 - **Yes** — current Target に属する discrepancy として Target-relative Problem を導出できる。
@@ -210,8 +210,8 @@ Improvement Candidate にならない。
 
 ## Caller-owned Research Agent composition
 
-<!-- @contract shared-v7-rmo-caller-ownership -->
-<!-- @anchor shared-v7-rmo-caller-relation -->
+<!-- @contract shared-rmo-caller-ownership -->
+<!-- @anchor shared-rmo-caller-relation -->
 RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
 な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。
 Research Agent の result は evidence、source basis、execution result、

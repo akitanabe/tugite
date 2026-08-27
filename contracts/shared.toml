@@ -1,4 +1,4 @@
-[contracts.shared-v7-model-document]
+[contracts.shared-model-document]
 kind = "occurrences"
 pattern = "# Tugite v7 Model Construction"
 count = 1
@@ -9,49 +9,49 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-owner-db07ae576000]
+[contracts.shared-model-owner-0a06937163a7]
 kind = "requires"
-slice = "shared-v7-model-ownership"
+slice = "shared-model-ownership"
 pattern = "- **`1 top-level workflow invocation = exactly 1 task-local Local Model`** とする。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-nested-owner-4687683f59de]
+[contracts.shared-model-nested-owner-f2a68bdd9d53]
 kind = "requires"
-slice = "shared-v7-model-ownership"
+slice = "shared-model-ownership"
 pattern = "- nested workflow、consumer、reviewer、Research Agent は独自 Local Model を所有しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-document-before-ownership]
+[contracts.shared-model-document-before-ownership]
 kind = "order"
-before = "shared-v7-model-document"
-after = "shared-v7-model-ownership-relation"
+before = "shared-model-document"
+after = "shared-model-ownership-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-transition-b886f92ec2d2]
+[contracts.shared-model-transition-b0b9d98f7c8a]
 kind = "requires"
-slice = "shared-v7-model-transition"
+slice = "shared-model-transition"
 pattern = "Recomposition は、Reintegration または grounded dependency evaluation により current Local Model の material semantic region が invalidated した場合の repair である。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-completion-db8eec93168a]
+[contracts.shared-model-completion-ca6125f763d3]
 kind = "requires"
-slice = "shared-v7-model-completion"
+slice = "shared-model-completion"
 pattern = "Projection Sufficiency は Method completion と同一ではなく、Method completion は workflow readiness とも同一ではない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-reintegration-before-recomposition]
+[contracts.shared-model-reintegration-before-recomposition]
 kind = "order"
-before = "shared-v7-model-reintegration"
-after = "shared-v7-model-recomposition"
+before = "shared-model-reintegration"
+after = "shared-model-recomposition"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-model-document-before-completion]
+[contracts.shared-model-document-before-completion]
 kind = "order"
-before = "shared-v7-model-document"
-after = "shared-v7-model-completion-relation"
+before = "shared-model-document"
+after = "shared-model-completion-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-document]
+[contracts.shared-agentic-document]
 kind = "occurrences"
 pattern = "# Agentic Model Construction"
 count = 1
@@ -62,49 +62,49 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-human-boundary-dfe2412f0dfc]
+[contracts.shared-agentic-human-boundary-25666f6214ed]
 kind = "requires"
-slice = "shared-v7-agentic-human-boundary"
+slice = "shared-agentic-human-boundary"
 pattern = "違いは construction 中に新しい Human interaction channel を開始しないことである。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-nonmaterial-completion-d738c8226e27]
+[contracts.shared-agentic-nonmaterial-completion-b8acfc860981]
 kind = "requires"
-slice = "shared-v7-agentic-completion"
+slice = "shared-agentic-completion"
 pattern = "次工程の方向・範囲・結果を実質的に変えない unresolved uncertainty は qualification として保持したまま completion してよい。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-material-stop-cb67f6a519ed]
+[contracts.shared-agentic-material-stop-b9d435dbe794]
 kind = "requires"
-slice = "shared-v7-agentic-qualified-stop"
+slice = "shared-agentic-qualified-stop"
 pattern = "Agent-side で合理的に利用可能な bounded resolution route を用いても gap が解消できず、その gap が次工程の方向・範囲・結果を実質的に変え得る場合は停止する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-stop-owner-02cdea4d08aa]
+[contracts.shared-agentic-stop-owner-3f736f38cad1]
 kind = "requires"
-slice = "shared-v7-agentic-qualified-stop"
+slice = "shared-agentic-qualified-stop"
 pattern = "Agentic Model Construction 自身は Human に質問せず、Interactive Model Construction への切り替えも行わない。停止後の扱いは calling workflow が所有する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-document-before-human]
+[contracts.shared-agentic-document-before-human]
 kind = "order"
-before = "shared-v7-agentic-document"
-after = "shared-v7-agentic-human-relation"
+before = "shared-agentic-document"
+after = "shared-agentic-human-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-human-before-completion]
+[contracts.shared-agentic-human-before-completion]
 kind = "order"
-before = "shared-v7-agentic-human-relation"
-after = "shared-v7-agentic-completion-relation"
+before = "shared-agentic-human-relation"
+after = "shared-agentic-completion-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-agentic-completion-before-stop]
+[contracts.shared-agentic-completion-before-stop]
 kind = "order"
-before = "shared-v7-agentic-completion-relation"
-after = "shared-v7-agentic-stop-relation"
+before = "shared-agentic-completion-relation"
+after = "shared-agentic-stop-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-document]
+[contracts.shared-bmo-document]
 kind = "occurrences"
 pattern = "# Behavior Model Observation"
 count = 1
@@ -115,73 +115,73 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-projection-only-f9413a5c8ae1]
+[contracts.shared-bmo-projection-only-de9eb55c6428]
 kind = "requires"
-slice = "shared-v7-bmo-identity-boundary"
+slice = "shared-bmo-identity-boundary"
 pattern = "**projection-only specialization**"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-stop-point-7f83d28c98b7]
+[contracts.shared-bmo-stop-point-01675369f57f]
 kind = "requires"
-slice = "shared-v7-bmo-identity-boundary"
+slice = "shared-bmo-identity-boundary"
 pattern = "BMO はこの停止点までを所有する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-admission-grounding-481d61d09c57]
+[contracts.shared-bmo-admission-grounding-b24100b5bd7f]
 kind = "requires"
-slice = "shared-v7-bmo-admission-grounding"
+slice = "shared-bmo-admission-grounding"
 pattern = "candidate は Behavior または authority を持つ Context に grounding があり、かつ入力 Behavior の意味上の distinction である場合だけ `Admit` する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-no-self-grounding-05d0be6285d2]
+[contracts.shared-bmo-no-self-grounding-e7a91f8a5a7a]
 kind = "requires"
-slice = "shared-v7-bmo-grounding"
+slice = "shared-bmo-grounding"
 pattern = "評価対象 claim 自身を、その claim の Expected Observation の grounding に再利用しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-collective-nonverdict-913b5d4c55e6]
+[contracts.shared-bmo-collective-nonverdict-349808e9f3c1]
 kind = "requires"
-slice = "shared-v7-bmo-collective-sufficiency"
+slice = "shared-bmo-collective-sufficiency"
 pattern = "consumer 固有の成果物・評価対象・downstream quality、workflow readiness、Reality verification、Real / Reality の完全性、Behavior 自体の真理を判定するものではない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-stop-boundary-99e402e8c543]
+[contracts.shared-bmo-stop-boundary-63e89da0fa23]
 kind = "requires"
-slice = "shared-v7-bmo-stop-boundary"
+slice = "shared-bmo-stop-boundary"
 pattern = "Expected Observation Model と Collective Sufficiency を返したら停止する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-document-before-identity]
+[contracts.shared-bmo-document-before-identity]
 kind = "order"
-before = "shared-v7-bmo-document"
-after = "shared-v7-bmo-identity-relation"
+before = "shared-bmo-document"
+after = "shared-bmo-identity-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-identity-before-grounding]
+[contracts.shared-bmo-identity-before-grounding]
 kind = "order"
-before = "shared-v7-bmo-identity-relation"
-after = "shared-v7-bmo-grounding-relation"
+before = "shared-bmo-identity-relation"
+after = "shared-bmo-grounding-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-grounding-before-admission]
+[contracts.shared-bmo-grounding-before-admission]
 kind = "order"
-before = "shared-v7-bmo-grounding-relation"
-after = "shared-v7-bmo-admission-relation"
+before = "shared-bmo-grounding-relation"
+after = "shared-bmo-admission-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-admission-before-collective]
+[contracts.shared-bmo-admission-before-collective]
 kind = "order"
-before = "shared-v7-bmo-admission-relation"
-after = "shared-v7-bmo-collective-relation"
+before = "shared-bmo-admission-relation"
+after = "shared-bmo-collective-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-bmo-collective-before-stop]
+[contracts.shared-bmo-collective-before-stop]
 kind = "order"
-before = "shared-v7-bmo-collective-relation"
-after = "shared-v7-bmo-stop-relation"
+before = "shared-bmo-collective-relation"
+after = "shared-bmo-stop-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-document]
+[contracts.shared-rmo-document]
 kind = "occurrences"
 pattern = "# Reality Model Observation"
 count = 1
@@ -192,115 +192,115 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-problem-stop-138e049d9294]
+[contracts.shared-rmo-problem-stop-1fb7709bb544]
 kind = "requires"
-slice = "shared-v7-rmo-identity-boundary"
+slice = "shared-rmo-identity-boundary"
 pattern = "RMO は Problem Derivation で停止する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-no-remediation-05cb73cac808]
+[contracts.shared-rmo-no-remediation-4051e3027cbb]
 kind = "requires"
-slice = "shared-v7-rmo-output-boundary"
+slice = "shared-rmo-output-boundary"
 pattern = "- remediation、implementation、Improvement Candidate、Change Proposal"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-no-acquisition-36277821816d]
+[contracts.shared-rmo-no-acquisition-d2e391c1e354]
 kind = "requires"
-slice = "shared-v7-rmo-output-boundary"
+slice = "shared-rmo-output-boundary"
 pattern = "- evidence acquisition、Research Agent の dispatch、same Local Model への Reintegration / Recomposition"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-model-nonreadiness-21f8e939cf57]
+[contracts.shared-rmo-model-nonreadiness-b85bc1e53d7f]
 kind = "requires"
-slice = "shared-v7-rmo-model-sufficiency"
+slice = "shared-rmo-model-sufficiency"
 pattern = "`Sufficient` は Reality 全体の completeness、External Real への到達、actual evidence の取得、workflow readiness を意味しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-observation-gate-10f2cd54f683]
+[contracts.shared-rmo-observation-gate-15d3bd0f5759]
 kind = "requires"
-slice = "shared-v7-rmo-observation-gate"
+slice = "shared-rmo-observation-gate"
 pattern = '''Model Sufficiency が `Sufficient` の場合、caller が許可した boundary 内で、frozen な criteria / conditions
 に沿って concrete evidence と接触する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-sufficiency-distinction-588350c91ae0]
+[contracts.shared-rmo-sufficiency-distinction-21c261b792fc]
 kind = "requires"
-slice = "shared-v7-rmo-observation-gate"
+slice = "shared-rmo-observation-gate"
 pattern = '''`Model Sufficiency` と
 `Observed Evidence Sufficiency` は別であり'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-membership-problem-5e4892d318be]
+[contracts.shared-rmo-membership-problem-9790505a7c36]
 kind = "requires"
-slice = "shared-v7-rmo-membership-stop"
+slice = "shared-rmo-membership-stop"
 pattern = "- **Yes** — current Target に属する discrepancy として Target-relative Problem を導出できる。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-membership-incidental-9a6124cefd67]
+[contracts.shared-rmo-membership-incidental-93f99814d6a3]
 kind = "requires"
-slice = "shared-v7-rmo-membership-stop"
+slice = "shared-rmo-membership-stop"
 pattern = "- **No** — Target を拡張せず、必要なら Incidental Finding として返して停止する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-membership-uncertainty-b33fc6ad7195]
+[contracts.shared-rmo-membership-uncertainty-9ca581848977]
 kind = "requires"
-slice = "shared-v7-rmo-membership-stop"
+slice = "shared-rmo-membership-stop"
 pattern = '''- **Unclear** — Target semantics、authority、または observed evidence の解決が必要な `Uncertainty` として
   停止する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-caller-dispatch-dbe800131db5]
+[contracts.shared-rmo-caller-dispatch-4aea549a60c4]
 kind = "requires"
-slice = "shared-v7-rmo-caller-ownership"
+slice = "shared-rmo-caller-ownership"
 pattern = '''RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
 な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-caller-reintegration-afdd017ae1e2]
+[contracts.shared-rmo-caller-reintegration-e176768f6990]
 kind = "requires"
-slice = "shared-v7-rmo-caller-ownership"
+slice = "shared-rmo-caller-ownership"
 pattern = '''caller は result の authority と semantic effect を判断し、必要なら同じ top-level invocation の同じ
 task-local Local Model へ Reintegration / Recomposition する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-document-before-identity]
+[contracts.shared-rmo-document-before-identity]
 kind = "order"
-before = "shared-v7-rmo-document"
-after = "shared-v7-rmo-identity-relation"
+before = "shared-rmo-document"
+after = "shared-rmo-identity-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-identity-before-output]
+[contracts.shared-rmo-identity-before-output]
 kind = "order"
-before = "shared-v7-rmo-identity-relation"
-after = "shared-v7-rmo-output-relation"
+before = "shared-rmo-identity-relation"
+after = "shared-rmo-output-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-output-before-model]
+[contracts.shared-rmo-output-before-model]
 kind = "order"
-before = "shared-v7-rmo-output-relation"
-after = "shared-v7-rmo-model-sufficiency-relation"
+before = "shared-rmo-output-relation"
+after = "shared-rmo-model-sufficiency-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-model-before-observation]
+[contracts.shared-rmo-model-before-observation]
 kind = "order"
-before = "shared-v7-rmo-model-sufficiency-relation"
-after = "shared-v7-rmo-observation-relation"
+before = "shared-rmo-model-sufficiency-relation"
+after = "shared-rmo-observation-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-observation-before-attribution]
+[contracts.shared-rmo-observation-before-attribution]
 kind = "order"
-before = "shared-v7-rmo-observation-relation"
-after = "shared-v7-rmo-attribution-relation"
+before = "shared-rmo-observation-relation"
+after = "shared-rmo-attribution-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-attribution-before-membership]
+[contracts.shared-rmo-attribution-before-membership]
 kind = "order"
-before = "shared-v7-rmo-attribution-relation"
-after = "shared-v7-rmo-membership-relation"
+before = "shared-rmo-attribution-relation"
+after = "shared-rmo-membership-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-v7-rmo-membership-before-caller]
+[contracts.shared-rmo-membership-before-caller]
 kind = "order"
-before = "shared-v7-rmo-membership-relation"
-after = "shared-v7-rmo-caller-relation"
+before = "shared-rmo-membership-relation"
+after = "shared-rmo-caller-relation"
 applies_to = ["claude", "codex", "cursor"]

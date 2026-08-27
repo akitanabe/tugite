@@ -1,8 +1,8 @@
 # Behavior Model Observation
-<!-- @anchor shared-v7-bmo-document -->
+<!-- @anchor shared-bmo-document -->
 
-<!-- @contract shared-v7-bmo-identity-boundary -->
-<!-- @anchor shared-v7-bmo-identity-relation -->
+<!-- @contract shared-bmo-identity-boundary -->
+<!-- @anchor shared-bmo-identity-relation -->
 ## Identity and boundary
 
 `Behavior Model Observation`（BMO）は、Model Observation を Behavior に適用する Tugite consumer method である。BMO は
@@ -26,8 +26,8 @@ BMO はこの停止点までを所有する。`Expected Observation Model` は b
 
 ## Inputs and ownership
 
-<!-- @contract shared-v7-bmo-grounding -->
-<!-- @anchor shared-v7-bmo-grounding-relation -->
+<!-- @contract shared-bmo-grounding -->
+<!-- @anchor shared-bmo-grounding-relation -->
 consumer は BMO に次を渡す。
 
 - **Resolved Behavior** — 対象 Behavior の identity と中核的な意味が解決済みであること
@@ -41,8 +41,8 @@ Context の authority はファイル種別や存在だけから推測しない�
 consumer が評価・設計・照合する対象と、BMO が導出根拠として使う reference / discovery Context は役割を分ける。評価対象 claim 自身を、その claim の Expected Observation の grounding に再利用しない。同一 artifact に両方がある場合も claim / section 単位で分離する。BMO の出力は consumer 固有の評価対象や成果物の存在・内容から逆算しない。
 <!-- @/contract -->
 
-<!-- @contract shared-v7-bmo-admission-grounding -->
-<!-- @anchor shared-v7-bmo-admission-relation -->
+<!-- @contract shared-bmo-admission-grounding -->
+<!-- @anchor shared-bmo-admission-relation -->
 ## Method
 
 次の順序は reasoning direction であり、固定 state machine、mandatory phase、共通 serialized schema ではない。
@@ -87,8 +87,8 @@ BMO は共通の serialized schema を要求しないが、consumer が意味を
 
 ### Collective Sufficiency
 
-<!-- @contract shared-v7-bmo-collective-sufficiency -->
-<!-- @anchor shared-v7-bmo-collective-relation -->
+<!-- @contract shared-bmo-collective-sufficiency -->
+<!-- @anchor shared-bmo-collective-relation -->
 Collective Sufficiency は、入力された Behavior に対する Expected Observation Model 自体の導出十分性である。consumer 固有の成果物・評価対象・downstream quality、workflow readiness、Reality verification、Real / Reality の完全性、Behavior 自体の真理を判定するものではない。
 
 - **Sufficient** — Behavior の意味と Admit された meaningful variation が、相互に coherent な Expected Observations 全体で区別でき、Relevant Unresolved Viewpoint が残っていない。
@@ -107,8 +107,8 @@ Collective Sufficiency は、入力された Behavior に対する Expected Obse
 
 ## Stop boundary and reintegration
 
-<!-- @contract shared-v7-bmo-stop-boundary -->
-<!-- @anchor shared-v7-bmo-stop-relation -->
+<!-- @contract shared-bmo-stop-boundary -->
+<!-- @anchor shared-bmo-stop-relation -->
 Expected Observation Model と Collective Sufficiency を返したら停止する。BMO は次を所有・開始しない。
 
 - actual observation、Concrete Observation、Reality verification

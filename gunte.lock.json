@@ -30,393 +30,393 @@
   ],
   "contracts": [
     {
-      "id": "shared-v7-model-document",
-      "sha256": "64801e3def756e779de5e07ce3d3b54fba83043d04a3b8140dff2ad276c15929"
+      "id": "shared-model-document",
+      "sha256": "255a86a0cc768b2d751edbdd1e47a7a0cce164f9bfbfb63cefb33bb23ad4bb6f"
     },
     {
-      "id": "shared-v7-model-owner-db07ae576000",
-      "sha256": "3033b6aef728fdd62801494afa9b9875297817776abd7bbd6b66c0f52a8ba9c4"
+      "id": "shared-model-owner-0a06937163a7",
+      "sha256": "fc32d008571591906496a42475caf39744bab023b60f5350bbba727f266555ad"
     },
     {
-      "id": "shared-v7-model-nested-owner-4687683f59de",
-      "sha256": "05c9857c5b4e76e6d92df90c7cef3a448f9c2407fe68a2a4438839bf08cf769d"
+      "id": "shared-model-nested-owner-f2a68bdd9d53",
+      "sha256": "002cfeac913ce42f943656fc60b9967642b36a29b86a94d51f2f10cbdc8f7590"
     },
     {
-      "id": "shared-v7-model-document-before-ownership",
-      "sha256": "cd9e09aa68a22c0421bb34eee921724fff2d119bf982e32ac29d09c0f7c9af0c"
+      "id": "shared-model-document-before-ownership",
+      "sha256": "e724dc8ceb7f7a615844cdddef70c644d513b45c5b1c60bfbdb2900cf4d2e807"
     },
     {
-      "id": "shared-v7-model-transition-b886f92ec2d2",
-      "sha256": "afb63317ca97911ce770b71db2785ba9e3f10679994658442aac1cb6c5861854"
+      "id": "shared-model-transition-b0b9d98f7c8a",
+      "sha256": "7383c3a30f5f41c1e4b16283264658cba34b44ed137d854c631fdfb10ce19bc9"
     },
     {
-      "id": "shared-v7-model-completion-db8eec93168a",
-      "sha256": "dbb8958f09cf2aa8b4ee852bcc67757dc1355e7b1d6688348eaf4393c69f8cdf"
+      "id": "shared-model-completion-ca6125f763d3",
+      "sha256": "e084d256e2cd02669593757149855d8ea6954a6aaf56ebbde9a6f50c77ce15de"
     },
     {
-      "id": "shared-v7-model-reintegration-before-recomposition",
-      "sha256": "48a366f6811d184c382bd9be60656f4966ad9f2f5429315be8a790bbba9802c1"
+      "id": "shared-model-reintegration-before-recomposition",
+      "sha256": "0fa62f39949f736b977f712b1ada9ae80386490fe1ae613312e7f57dab1760e2"
     },
     {
-      "id": "shared-v7-model-document-before-completion",
-      "sha256": "05251e15f5d01b111040c98098bf05071691c79ba39b2a548cf43f33e37cecd8"
+      "id": "shared-model-document-before-completion",
+      "sha256": "2321bdf7f4bab2d95350648bad013536cc110a2f6ff31e0e025acd844aec318b"
     },
     {
-      "id": "shared-v7-agentic-document",
-      "sha256": "1402e17011ac2b0a0e1b569fa76420b9cf3c5384b6419b4a78314c0f189f2f74"
+      "id": "shared-agentic-document",
+      "sha256": "0f38a873008f8cdf305734437ca48724793b214ed33b2cb91a29e2f130d4a730"
     },
     {
-      "id": "shared-v7-agentic-human-boundary-dfe2412f0dfc",
-      "sha256": "1a4937df3d476ddcccb4b2467acb3de51787913ce183e95d0160f592f47b1997"
+      "id": "shared-agentic-human-boundary-25666f6214ed",
+      "sha256": "dbad4e2725e393c2e4d05720af9e322449c3ec9c73a17261c9c7daa8cb83d2e0"
     },
     {
-      "id": "shared-v7-agentic-nonmaterial-completion-d738c8226e27",
-      "sha256": "5e46ea6cfdef8a0dccbacfc3f63f69e518671af731ce3aa3a9b56b24641f378c"
+      "id": "shared-agentic-nonmaterial-completion-b8acfc860981",
+      "sha256": "6284dbe1cc28e290c1204203180d591ff73bcb2c478987de45dd2e294f023ac6"
     },
     {
-      "id": "shared-v7-agentic-material-stop-cb67f6a519ed",
-      "sha256": "40776c4b2348b50b3d515c14bed742cb80b70b94cd278dbf11fc7677a7b8e0ae"
+      "id": "shared-agentic-material-stop-b9d435dbe794",
+      "sha256": "dc4dd36243a872e2e0ac81063d8a6126c1d312eb4c137d802346d49fb7b87362"
     },
     {
-      "id": "shared-v7-agentic-stop-owner-02cdea4d08aa",
-      "sha256": "1575e55694625a26c27a10cc2accf699d8bf7fede690c1e2ecf93c0ee3edb236"
+      "id": "shared-agentic-stop-owner-3f736f38cad1",
+      "sha256": "916adb98026e4a34f7eac73a3852d5fafafadee265d2c8458d57eb1f7b2a9372"
     },
     {
-      "id": "shared-v7-agentic-document-before-human",
-      "sha256": "49a8e9277b1e29ecb15072fc52b9dbd38e8f12157ea111dec9a22e6005389e50"
+      "id": "shared-agentic-document-before-human",
+      "sha256": "36b8351ba2d3f1851baa900ede15981ef07b0f26a17f97024c62003302a3f77e"
     },
     {
-      "id": "shared-v7-agentic-human-before-completion",
-      "sha256": "3a723fe653e033b32af36c2df329526ce5f4fdfdd5f8121e15dc56a6b9f1aa5f"
+      "id": "shared-agentic-human-before-completion",
+      "sha256": "63aa90a59774b3224ee501e320631a98cfbf97e7968b2a4cc699ad826e9c699d"
     },
     {
-      "id": "shared-v7-agentic-completion-before-stop",
-      "sha256": "5a90fbc21e09cea9fb4df659f5c4d5e47fee0373d7225bd23511d150e4e6cd82"
+      "id": "shared-agentic-completion-before-stop",
+      "sha256": "e0c461d0c8366a7f36c4f5da2cc37e2e3d34dbdfa3bed719b13878e198bce1cc"
     },
     {
-      "id": "shared-v7-bmo-document",
-      "sha256": "89266ef4c49a37b6b34d8b51175c2c97b7e453eabeb0800ab680f59ace789041"
+      "id": "shared-bmo-document",
+      "sha256": "916c40637a354cf66a4ee4548806d3431ad1cba1f7d409909db67c35bf3bef78"
     },
     {
-      "id": "shared-v7-bmo-projection-only-f9413a5c8ae1",
-      "sha256": "3a5af840781681f516de46dfc345f09e4770a1e88a5e464e2c22d3c1b50374a5"
+      "id": "shared-bmo-projection-only-de9eb55c6428",
+      "sha256": "bd1ff7ab51a46960efcdec14ea9d8f1143cb15874fcbddb075657db2f6da27f5"
     },
     {
-      "id": "shared-v7-bmo-stop-point-7f83d28c98b7",
-      "sha256": "891c0ad3290ab114beb2a800dbe494c371b1e56c15363e95a9f60faa4fdb5067"
+      "id": "shared-bmo-stop-point-01675369f57f",
+      "sha256": "687166a176472d170bf98696567678680bd05c3064e45defe3432d1c9eb6f33a"
     },
     {
-      "id": "shared-v7-bmo-admission-grounding-481d61d09c57",
-      "sha256": "d21f972d3239d4a8c37f4df0d617d193c1902aec67fc50dbc19823ed9e6a5329"
+      "id": "shared-bmo-admission-grounding-b24100b5bd7f",
+      "sha256": "25b871797e904fb67282cb7a4f363b0cb2603340de51099c25845a8b8d26ef6e"
     },
     {
-      "id": "shared-v7-bmo-no-self-grounding-05d0be6285d2",
-      "sha256": "c031e73efc606f6ef4ee98e32834158fb0c69107c0650e9e04fc1a6566917a8e"
+      "id": "shared-bmo-no-self-grounding-e7a91f8a5a7a",
+      "sha256": "1edcc6681f5f857ea45dbf80675024639fb44408fd38f65d084c3808cbf2cc1b"
     },
     {
-      "id": "shared-v7-bmo-collective-nonverdict-913b5d4c55e6",
-      "sha256": "2912c82b1cc5d36129ee3332d9d0ed5c18da8db1540431c5625b40d34f0e78ba"
+      "id": "shared-bmo-collective-nonverdict-349808e9f3c1",
+      "sha256": "60daf139c0d959abca9d737b279cc925932e3610cdca6be6022d0963941d4ccc"
     },
     {
-      "id": "shared-v7-bmo-stop-boundary-99e402e8c543",
-      "sha256": "a0004eec9af94678fbf8be601451e687716d555c4ed58703050cf894c3416f8a"
+      "id": "shared-bmo-stop-boundary-63e89da0fa23",
+      "sha256": "d6f6f95c7d11399ea27a4a363c331e97068fe4674d6a28ea35bb7ec3958082fc"
     },
     {
-      "id": "shared-v7-bmo-document-before-identity",
-      "sha256": "df90dd6d542966ed6e3c46de3e464d2a5bf4468c5557173099057730162429df"
+      "id": "shared-bmo-document-before-identity",
+      "sha256": "a8da1762960569edc3c3dcb7c24c3c03b2c2d1f594bd5a489a3593f28f840047"
     },
     {
-      "id": "shared-v7-bmo-identity-before-grounding",
-      "sha256": "737c03b268a4b65af3fa952c6509885f2d904be4d09915150fe013e74e5279ee"
+      "id": "shared-bmo-identity-before-grounding",
+      "sha256": "cb684d8a3339ec36bf1cb989e72083de36a116fba871e41ed07727c3d33a2380"
     },
     {
-      "id": "shared-v7-bmo-grounding-before-admission",
-      "sha256": "1b09be99f4fc041879ceef1805f160f5a851e81df2b193b1b122f62b4e77d272"
+      "id": "shared-bmo-grounding-before-admission",
+      "sha256": "546a2f7e7efb354b4cd91652de54b5351534a4064b784b3a4f8bf453a35d8fa5"
     },
     {
-      "id": "shared-v7-bmo-admission-before-collective",
-      "sha256": "ccfb586efb06a0a1a66fb3e23fcba61a930f8a1951455a90b2dafb31a7048461"
+      "id": "shared-bmo-admission-before-collective",
+      "sha256": "502052f2cdb0ea3c8e4936c82e65ab2dea1213af3b8a2d353d5fa19c84884e36"
     },
     {
-      "id": "shared-v7-bmo-collective-before-stop",
-      "sha256": "75b0c71e8e6e1284b2ccb86ad8869dd9e9771c42e6c51b30c726ffa9b31912ed"
+      "id": "shared-bmo-collective-before-stop",
+      "sha256": "86d251b5b7b7246afe57c361e869d553dcb24f7a7962c35d6adce5e729425def"
     },
     {
-      "id": "shared-v7-rmo-document",
-      "sha256": "1ac7aa1f6be89b3c07524b1e3c4a417a2fd06eaa345ce698a358be0e367b1ab8"
+      "id": "shared-rmo-document",
+      "sha256": "7d4ec858132830bcaad668fdd5bda20c671199093b3998d8591a315ace497f4f"
     },
     {
-      "id": "shared-v7-rmo-problem-stop-138e049d9294",
-      "sha256": "78432bb4c8d82de633765a721928e9ff635371ced9bb6800672e884078a18370"
+      "id": "shared-rmo-problem-stop-1fb7709bb544",
+      "sha256": "3e536b6f2526128c8cf766c06196b2ea076f817ac6a4c0f6f7fd824207ff5c69"
     },
     {
-      "id": "shared-v7-rmo-no-remediation-05cb73cac808",
-      "sha256": "1e3462be1911c3a74a4427826ce1d6646b4820f5325b679a30f6fb56948a1d87"
+      "id": "shared-rmo-no-remediation-4051e3027cbb",
+      "sha256": "d5b11fb831c91ecf28f17b53a77578a434f6607f1eb3853ce4b5dabe449792bb"
     },
     {
-      "id": "shared-v7-rmo-no-acquisition-36277821816d",
-      "sha256": "6c2c9023eebe686d2bd9d6f2eae9d39b1a2107870477cd9a9a6cfcfaad383f1b"
+      "id": "shared-rmo-no-acquisition-d2e391c1e354",
+      "sha256": "979cb1d5f92234785db2e2d39c17d64835f57cee03474e1407622331985706ce"
     },
     {
-      "id": "shared-v7-rmo-model-nonreadiness-21f8e939cf57",
-      "sha256": "037db22a8ec0908dbb191d1170b3a8198be4373e3f02b14d98ede50504c18a50"
+      "id": "shared-rmo-model-nonreadiness-b85bc1e53d7f",
+      "sha256": "7ed95fe14cd69c29617db960336c20cb26b178f5faaec9adb6a19c6eb3ad5ec1"
     },
     {
-      "id": "shared-v7-rmo-observation-gate-10f2cd54f683",
-      "sha256": "db8945b44702f403fb833f75f406785b8002dd0d36990da4fa866f4135df36c8"
+      "id": "shared-rmo-observation-gate-15d3bd0f5759",
+      "sha256": "45a3025158934dc926f5ee61d45102a5384f4822ee2c8953506ecf5381eec3d4"
     },
     {
-      "id": "shared-v7-rmo-sufficiency-distinction-588350c91ae0",
-      "sha256": "20f9829953bc40d8e4538a8101bd4e154fde8dd5e652284fdf4779dced0ad9ce"
+      "id": "shared-rmo-sufficiency-distinction-21c261b792fc",
+      "sha256": "f704b91b70de7b8b946ff28dc144dae61d09f4e75dae9d89f93ef49248a3c0d5"
     },
     {
-      "id": "shared-v7-rmo-membership-problem-5e4892d318be",
-      "sha256": "22be134fe9b8346f71d3300089a7f29e5d00d236d01f44e08c768f36c990d036"
+      "id": "shared-rmo-membership-problem-9790505a7c36",
+      "sha256": "117e681062c720ad8792061409312baf9b4a449b1d8970f01bcac7460286847d"
     },
     {
-      "id": "shared-v7-rmo-membership-incidental-9a6124cefd67",
-      "sha256": "60f26cf656f9608c25140e2e095a8f965ff581f4cb1f73f704cfca25acc357bc"
+      "id": "shared-rmo-membership-incidental-93f99814d6a3",
+      "sha256": "a422b4ae6632686ffc8684506668fa408f24d0165ee060ac9d4a75a8267c01af"
     },
     {
-      "id": "shared-v7-rmo-membership-uncertainty-b33fc6ad7195",
-      "sha256": "569c43fc750b75e9122b4716ca5f8102812f6be3dcb7ed73152c2790f0d6bad2"
+      "id": "shared-rmo-membership-uncertainty-9ca581848977",
+      "sha256": "eeff2cefd5a7cc7344d3dbf7e2ebf8e4ce465deb9773a24e324413e7af66413e"
     },
     {
-      "id": "shared-v7-rmo-caller-dispatch-dbe800131db5",
-      "sha256": "ea33213dc3a1f127a7ebf5cb545be47d726cafb03fc78dc7050cdd3117d74ac2"
+      "id": "shared-rmo-caller-dispatch-4aea549a60c4",
+      "sha256": "918c312f5bc7dd7211dc0940717e8f2e8d12f392ac3d88b0bd9c7343f34911f6"
     },
     {
-      "id": "shared-v7-rmo-caller-reintegration-afdd017ae1e2",
-      "sha256": "782730277597c9c83d859b9e77ce7dc06c4a0691acdac00c20c060ef33cc4a61"
+      "id": "shared-rmo-caller-reintegration-e176768f6990",
+      "sha256": "6b636df68b4622ec8191273550bcba28598e54df56b10cc6e69688927dfd0ece"
     },
     {
-      "id": "shared-v7-rmo-document-before-identity",
-      "sha256": "3d02370a003fc13f58c85beddd19846fc08783a16a9abe2aabf474211e7a2d9f"
+      "id": "shared-rmo-document-before-identity",
+      "sha256": "145639aacf0632f6c92571a29222ccf6137ddd82ef6b0d7212fccc3bb59f4a80"
     },
     {
-      "id": "shared-v7-rmo-identity-before-output",
-      "sha256": "d825cfe23036bc13e62ffde5f57314903bc998078d6c1683f8f56ed8c5dfecb5"
+      "id": "shared-rmo-identity-before-output",
+      "sha256": "fe2f2d3117b9be3cea437995f503fff2e6c8fc525175274438a969ca463fe206"
     },
     {
-      "id": "shared-v7-rmo-output-before-model",
-      "sha256": "19ec4f88f513486d736ed27a29b789b1d0821254c4222e51ea3dc6562a648be1"
+      "id": "shared-rmo-output-before-model",
+      "sha256": "f097f2a5f1513ea1dc05f9792dbc9cd075eb0bfcda18126e01fb738126cc6bb5"
     },
     {
-      "id": "shared-v7-rmo-model-before-observation",
-      "sha256": "cb06c01107922334b122762076fd995a361a280123b433d1eec2ced8d910dadc"
+      "id": "shared-rmo-model-before-observation",
+      "sha256": "66964bb7068f2f6676bcd686eaca1659b496eca8680acad366f93429a9b0bf24"
     },
     {
-      "id": "shared-v7-rmo-observation-before-attribution",
-      "sha256": "e094f21358a5b550738a7f85a916939fdf48eed0e96115e7e0f7380eec2b93c6"
+      "id": "shared-rmo-observation-before-attribution",
+      "sha256": "e7fa78333983700f7d37664c860a610de58e2dd24e64ceb74ba53c5e2d119990"
     },
     {
-      "id": "shared-v7-rmo-attribution-before-membership",
-      "sha256": "884ad0939a9b02932bb149143ac7b8edba9584da18653410f016f96faa7b2cc6"
+      "id": "shared-rmo-attribution-before-membership",
+      "sha256": "56dfa92ff083cd7eb73bec8a99984ec2315453946f7b13c470dbe3065082cc70"
     },
     {
-      "id": "shared-v7-rmo-membership-before-caller",
-      "sha256": "b7d8eb4215129452281b0952140e2bc55703c3d66e15c1e11ffa7d2870c5238d"
+      "id": "shared-rmo-membership-before-caller",
+      "sha256": "3b073914cd69bd16660480bf29818d97533bf4e0599b045c363fe9879d7ccce2"
     }
   ],
   "declarations": [
     {
       "kind": "anchor",
-      "id": "shared-v7-model-document",
+      "id": "shared-model-document",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-model-ownership",
+      "id": "shared-model-ownership",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-model-ownership-relation",
+      "id": "shared-model-ownership-relation",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-model-transition",
+      "id": "shared-model-transition",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-model-reintegration",
+      "id": "shared-model-reintegration",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-model-recomposition",
+      "id": "shared-model-recomposition",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-model-completion",
+      "id": "shared-model-completion",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-model-completion-relation",
+      "id": "shared-model-completion-relation",
       "path": "shared/model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-agentic-document",
+      "id": "shared-agentic-document",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-agentic-human-boundary",
+      "id": "shared-agentic-human-boundary",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-agentic-human-relation",
+      "id": "shared-agentic-human-relation",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-agentic-completion",
+      "id": "shared-agentic-completion",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-agentic-completion-relation",
+      "id": "shared-agentic-completion-relation",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-agentic-qualified-stop",
+      "id": "shared-agentic-qualified-stop",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-agentic-stop-relation",
+      "id": "shared-agentic-stop-relation",
       "path": "shared/agentic-model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-document",
+      "id": "shared-bmo-document",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-bmo-identity-boundary",
+      "id": "shared-bmo-identity-boundary",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-identity-relation",
+      "id": "shared-bmo-identity-relation",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-bmo-grounding",
+      "id": "shared-bmo-grounding",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-grounding-relation",
+      "id": "shared-bmo-grounding-relation",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-bmo-admission-grounding",
+      "id": "shared-bmo-admission-grounding",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-admission-relation",
+      "id": "shared-bmo-admission-relation",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-bmo-collective-sufficiency",
+      "id": "shared-bmo-collective-sufficiency",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-collective-relation",
+      "id": "shared-bmo-collective-relation",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-bmo-stop-boundary",
+      "id": "shared-bmo-stop-boundary",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-bmo-stop-relation",
+      "id": "shared-bmo-stop-relation",
       "path": "shared/behavior-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-document",
+      "id": "shared-rmo-document",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-identity-boundary",
+      "id": "shared-rmo-identity-boundary",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-identity-relation",
+      "id": "shared-rmo-identity-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-output-boundary",
+      "id": "shared-rmo-output-boundary",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-output-relation",
+      "id": "shared-rmo-output-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-model-sufficiency",
+      "id": "shared-rmo-model-sufficiency",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-model-sufficiency-relation",
+      "id": "shared-rmo-model-sufficiency-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-observation-gate",
+      "id": "shared-rmo-observation-gate",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-observation-relation",
+      "id": "shared-rmo-observation-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-membership-stop",
+      "id": "shared-rmo-membership-stop",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-attribution-relation",
+      "id": "shared-rmo-attribution-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-membership-relation",
+      "id": "shared-rmo-membership-relation",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "span",
-      "id": "shared-v7-rmo-caller-ownership",
+      "id": "shared-rmo-caller-ownership",
       "path": "shared/reality-model-observation.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-v7-rmo-caller-relation",
+      "id": "shared-rmo-caller-relation",
       "path": "shared/reality-model-observation.md"
     }
   ]

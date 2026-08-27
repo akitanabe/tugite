@@ -1,5 +1,5 @@
 # Tugite v7 Model Construction
-<!-- @anchor shared-v7-model-document -->
+<!-- @anchor shared-model-document -->
 
 ## Purpose
 
@@ -9,8 +9,8 @@
 
 ## Ownership
 
-<!-- @contract shared-v7-model-ownership -->
-<!-- @anchor shared-v7-model-ownership-relation -->
+<!-- @contract shared-model-ownership -->
+<!-- @anchor shared-model-ownership-relation -->
 - **`1 top-level workflow invocation = exactly 1 task-local Local Model`** とする。
 - Local Model の owner は calling workflow とする。
 - Local Model は invocation の目的に局所化された evidence-grounded な意味構造であり、ephemeral とする。
@@ -131,15 +131,15 @@ Reintegration / Recomposition する。
 
 ## Reintegration
 
-<!-- @contract shared-v7-model-transition -->
-<!-- @anchor shared-v7-model-reintegration -->
+<!-- @contract shared-model-transition -->
+<!-- @anchor shared-model-reintegration -->
 新しい grounded information / judgment の bounded semantic effect を same Local Model へ戻す通常更新である。
 
 新 evidence が既存理解を変更する場合、stale understanding を単純追記して残さず、affected semantics を current evidence に合わせて更新する。
 
 ## Recomposition
 
-<!-- @anchor shared-v7-model-recomposition -->
+<!-- @anchor shared-model-recomposition -->
 Recomposition は、Reintegration または grounded dependency evaluation により current Local Model の material semantic region が invalidated した場合の repair である。
 
 - 新情報のたびには実行しない。
@@ -175,8 +175,8 @@ Agentic Model Construction
 
 ## Completion Responsibility
 
-<!-- @contract shared-v7-model-completion -->
-<!-- @anchor shared-v7-model-completion-relation -->
+<!-- @contract shared-model-completion -->
+<!-- @anchor shared-model-completion-relation -->
 各 Method は自身に割り当てられた construction scope の完了または停止を判断する。
 
 calling workflow は、返された understanding を利用して workflow 全体として次責務へ進めるかを判断する。
