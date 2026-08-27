@@ -1,6 +1,6 @@
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Tugite v7 Interactive Model Construction
+# Interactive Model Construction
 
 ## Identity
 

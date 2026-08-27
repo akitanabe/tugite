@@ -1,4 +1,5 @@
-# Tugite v7 Interactive Model Construction
+# Interactive Model Construction
+<!-- @anchor shared-interactive-document -->
 
 ## Identity
 
@@ -33,13 +34,18 @@ Research Agent による evidence acquisition / local analysis である。Resea
 Agent が分からないこと、複数の案があること、Research Agent を利用できることだけでは Human interaction を開始しない。Agent-side の
 resolution で得た grounded result は、task-wide な意味判断を外部へ移さず、Interactive Method が同じ Local Model へ Reintegration する。
 
+<!-- @contract shared-interactive-resolution-boundary -->
+<!-- @anchor shared-interactive-resolution-relation -->
 Agent-side の bounded route を尽くしても material な gap が残り、その resolution source または binding authority が Human にある場合
 だけ、Human-owned resolution を開始できる。Human interaction を、単なる不足感や推測の補強のために使わない。
+<!-- @/contract -->
 
 ## Human-owned resolution
 
 Human interaction は現在の task / domain に必要な入力を、次の意味上異なる二つの source として扱う。
 
+<!-- @contract shared-interactive-human-boundary -->
+<!-- @anchor shared-interactive-human-relation -->
 ### Human-held fact / context
 
 これは repository や利用可能な source から取得できず、Human だけが保持する、既に成立している factual / contextual premise である。
@@ -53,6 +59,7 @@ direction を選ぶ必要がある判断である。既に成立している tec
 を factual evidence として扱わない。
 Human の判断は current task に対する binding input として同じ Local Model に統合するが、それだけを理由に未許可の operation や scope
 expansion を始めない。
+<!-- @/contract -->
 
 ### Human-facing interaction
 
@@ -62,8 +69,11 @@ Local Model、Exploration Projection、Projection Sufficiency、gap、Reintegrat
 
 ## Reintegration and semantic effect
 
+<!-- @contract shared-interactive-reintegration -->
+<!-- @anchor shared-interactive-reintegration-relation -->
 Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration する。応答が
 返ったこと自体は Recomposition の trigger ではない。Reintegration 後に semantic effect を評価し、必要な範囲だけを更新する。
+<!-- @/contract -->
 
 - current semantics が維持される、または non-material な局所更新で足りる場合は、同じ Local Model の local repair / Reintegration と
   必要な bounded re-observation だけを行う。
@@ -76,12 +86,15 @@ uncertainty を保持したまま追加の判断または確認へ戻す。
 
 ## Final Human judgment and completion
 
+<!-- @contract shared-interactive-completion -->
+<!-- @anchor shared-interactive-completion-relation -->
 Agent-side resolution、Human response の Reintegration、必要な repair と bounded re-observation の後、Interactive Method は current
 understanding と retained material uncertainty / qualification を Human が判断できる形で提示する。
 
 Human がその current understanding を downstream の前提として採用し、次へ進むことを明示的に認めるまで、Interactive Method は completion
 しない。これは current understanding の acceptance であり、downstream plan や artifact 自体の acceptance ではない。uncertainty を残した
 状態で進む判断は可能だが、Human の approval によって unknown fact を known fact に変えない。
+<!-- @/contract -->
 
 Human が correction、missing premise、または unresolved concern を返した場合は、同じ Local Model へ再度 Reintegration し、semantic effect
 に応じて local repair または affected region の Recomposition と bounded re-observation を行ったうえで、current understanding の final
@@ -89,8 +102,11 @@ Human judgment を取り直す。
 
 ## Method composition
 
+<!-- @contract shared-interactive-composition -->
+<!-- @anchor shared-interactive-composition-relation -->
 Interactive Model Construction 自身は Agentic Model Construction を起動しない。Agentic から Interactive への switching、Method の順序、
 および複数 Method を同じ invocation で組み合わせる判断は calling workflow が所有する。
+<!-- @/contract -->
 
 ```text
 calling workflow

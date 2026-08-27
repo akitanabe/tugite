@@ -94,6 +94,54 @@
       "sha256": "e0c461d0c8366a7f36c4f5da2cc37e2e3d34dbdfa3bed719b13878e198bce1cc"
     },
     {
+      "id": "shared-interactive-document",
+      "sha256": "5719e2db265c541aab412fe23de74e9ccfd7c08ed4d2a96caf9ebc191b1804a7"
+    },
+    {
+      "id": "shared-interactive-human-gate-4d2eae08514a",
+      "sha256": "d8945deeb60ecc5678e8af07ed04f9123b0f4cb207cff56e8e0c9e3d8a2be3ac"
+    },
+    {
+      "id": "shared-interactive-human-fact-boundary-cbe3ae518c85",
+      "sha256": "81206514c6abc6fc5bf2e731c9fab26a0518ebbf2963e2f2a91cf0195797f881"
+    },
+    {
+      "id": "shared-interactive-human-authority-boundary-7a8e864b44a9",
+      "sha256": "3f20f6077b8b9bdcb5f3fcf12e2eb4d00b0bf6ac3ab83613c16d6ea636407946"
+    },
+    {
+      "id": "shared-interactive-same-model-reintegration-fbf4213baf9f",
+      "sha256": "69ca735e55a6ddb93478e731f5f3a0854c8e8101f1a5f761c220f23b3adb6135"
+    },
+    {
+      "id": "shared-interactive-human-completion-050abfec7604",
+      "sha256": "9be5e589fd7a58dce9034cfb5ea3998fc64b1324c0a6a23cc00c890201a95555"
+    },
+    {
+      "id": "shared-interactive-switching-owner-01db52f9bcca",
+      "sha256": "5d98d8b399d29b821589d65e571859a8ced3ba3c8802c62cb0671ecd59cc964e"
+    },
+    {
+      "id": "shared-interactive-document-before-resolution",
+      "sha256": "644c80bb062181a6a2591dd33f2fa55600fcbd92cb01809e9e78e18f96f19c87"
+    },
+    {
+      "id": "shared-interactive-resolution-before-human",
+      "sha256": "050608ea6739bc954fbff3b770f8362e5c0cc8549394e0e737504757a194676a"
+    },
+    {
+      "id": "shared-interactive-human-before-reintegration",
+      "sha256": "4ae2c9085a942a7588b40836a68954b008920c588d7158af618a39488548edf9"
+    },
+    {
+      "id": "shared-interactive-reintegration-before-completion",
+      "sha256": "ac8beb41861d41b8fb53a71b9636a5321aad71af7d732ddeb94c08fd0e198130"
+    },
+    {
+      "id": "shared-interactive-completion-before-composition",
+      "sha256": "b0ba196255054b865e023d4c03efcf77478de3c66f45adf3a5bf3ebccdfa686d"
+    },
+    {
       "id": "shared-bmo-document",
       "sha256": "916c40637a354cf66a4ee4548806d3431ad1cba1f7d409909db67c35bf3bef78"
     },
@@ -293,6 +341,61 @@
       "kind": "anchor",
       "id": "shared-agentic-stop-relation",
       "path": "shared/agentic-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-document",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-resolution-boundary",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-resolution-relation",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-human-boundary",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-human-relation",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-reintegration",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-reintegration-relation",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-completion",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-completion-relation",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-composition",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-interactive-composition-relation",
+      "path": "shared/interactive-model-construction.md"
     },
     {
       "kind": "anchor",

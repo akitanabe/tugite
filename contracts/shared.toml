@@ -104,6 +104,88 @@ before = "shared-agentic-completion-relation"
 after = "shared-agentic-stop-relation"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.shared-interactive-document]
+kind = "occurrences"
+pattern = "# Interactive Model Construction"
+count = 1
+paths = [
+  "plugins/claude/references/interactive-model-construction.md",
+  "plugins/codex/references/interactive-model-construction.md",
+  "plugins/cursor/references/interactive-model-construction.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-human-gate-4d2eae08514a]
+kind = "requires"
+slice = "shared-interactive-resolution-boundary"
+pattern = '''Agent-side の bounded route を尽くしても material な gap が残り、その resolution source または binding authority が Human にある場合
+だけ、Human-owned resolution を開始できる。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-human-fact-boundary-cbe3ae518c85]
+kind = "requires"
+slice = "shared-interactive-human-boundary"
+pattern = '''Human が今回の task で選ぶ binding direction、scope、
+authority はここに含めず、事実または文脈の source として扱う。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-human-authority-boundary-7a8e864b44a9]
+kind = "requires"
+slice = "shared-interactive-human-boundary"
+pattern = '''これは preference、trade-off、direction、responsibility、scope、authority のように、Human authority が今回の task に対する binding
+direction を選ぶ必要がある判断である。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-same-model-reintegration-fbf4213baf9f]
+kind = "requires"
+slice = "shared-interactive-reintegration"
+pattern = "Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-human-completion-050abfec7604]
+kind = "requires"
+slice = "shared-interactive-completion"
+pattern = '''Human がその current understanding を downstream の前提として採用し、次へ進むことを明示的に認めるまで、Interactive Method は completion
+しない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-switching-owner-01db52f9bcca]
+kind = "requires"
+slice = "shared-interactive-composition"
+pattern = '''Agentic から Interactive への switching、Method の順序、
+および複数 Method を同じ invocation で組み合わせる判断は calling workflow が所有する。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-document-before-resolution]
+kind = "order"
+before = "shared-interactive-document"
+after = "shared-interactive-resolution-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-resolution-before-human]
+kind = "order"
+before = "shared-interactive-resolution-relation"
+after = "shared-interactive-human-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-human-before-reintegration]
+kind = "order"
+before = "shared-interactive-human-relation"
+after = "shared-interactive-reintegration-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-reintegration-before-completion]
+kind = "order"
+before = "shared-interactive-reintegration-relation"
+after = "shared-interactive-completion-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-completion-before-composition]
+kind = "order"
+before = "shared-interactive-completion-relation"
+after = "shared-interactive-composition-relation"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.shared-bmo-document]
 kind = "occurrences"
 pattern = "# Behavior Model Observation"
