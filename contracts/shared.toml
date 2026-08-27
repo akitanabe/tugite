@@ -1,0 +1,291 @@
+[contracts.shared-v7-model-document]
+kind = "occurrences"
+pattern = "# Tugite v7 Model Construction"
+count = 1
+paths = [".local/gunte/shared-v7-contracts/documents/model-construction.md"]
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-owner-5e2b8b392201]
+kind = "requires"
+slice = "shared-v7-model-ownership"
+pattern = "- **`1 top-level workflow invocation = exactly 1 task-local Local Model`** とする。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-nested-owner-07ed8500dbb9]
+kind = "requires"
+slice = "shared-v7-model-ownership"
+pattern = "- nested workflow、consumer、reviewer、Research Agent は独自 Local Model を所有しない。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-document-before-ownership]
+kind = "order"
+before = "shared-v7-model-document"
+after = "shared-v7-model-ownership-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-transition-8ee2eab59f2e]
+kind = "requires"
+slice = "shared-v7-model-transition"
+pattern = "Recomposition は、Reintegration または grounded dependency evaluation により current Local Model の material semantic region が invalidated した場合の repair である。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-completion-1b7e4dca6359]
+kind = "requires"
+slice = "shared-v7-model-completion"
+pattern = "Projection Sufficiency は Method completion と同一ではなく、Method completion は workflow readiness とも同一ではない。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-reintegration-before-recomposition]
+kind = "order"
+before = "shared-v7-model-reintegration"
+after = "shared-v7-model-recomposition"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-model-document-before-completion]
+kind = "order"
+before = "shared-v7-model-document"
+after = "shared-v7-model-completion-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-document]
+kind = "occurrences"
+pattern = "# Agentic Model Construction"
+count = 1
+paths = [".local/gunte/shared-v7-contracts/documents/agentic-model-construction.md"]
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-human-boundary-c33e46f73b82]
+kind = "requires"
+slice = "shared-v7-agentic-human-boundary"
+pattern = "違いは construction 中に新しい Human interaction channel を開始しないことである。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-nonmaterial-completion-5f912b7d0e29]
+kind = "requires"
+slice = "shared-v7-agentic-completion"
+pattern = "次工程の方向・範囲・結果を実質的に変えない unresolved uncertainty は qualification として保持したまま completion してよい。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-material-stop-e5166be41edb]
+kind = "requires"
+slice = "shared-v7-agentic-qualified-stop"
+pattern = "Agent-side で合理的に利用可能な bounded resolution route を用いても gap が解消できず、その gap が次工程の方向・範囲・結果を実質的に変え得る場合は停止する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-stop-owner-3136cb2bc843]
+kind = "requires"
+slice = "shared-v7-agentic-qualified-stop"
+pattern = "Agentic Model Construction 自身は Human に質問せず、Interactive Model Construction への切り替えも行わない。停止後の扱いは calling workflow が所有する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-document-before-human]
+kind = "order"
+before = "shared-v7-agentic-document"
+after = "shared-v7-agentic-human-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-human-before-completion]
+kind = "order"
+before = "shared-v7-agentic-human-relation"
+after = "shared-v7-agentic-completion-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-agentic-completion-before-stop]
+kind = "order"
+before = "shared-v7-agentic-completion-relation"
+after = "shared-v7-agentic-stop-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-document]
+kind = "occurrences"
+pattern = "# Behavior Model Observation"
+count = 1
+paths = [".local/gunte/shared-v7-contracts/documents/behavior-model-observation.md"]
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-projection-only-33629d55190f]
+kind = "requires"
+slice = "shared-v7-bmo-identity-boundary"
+pattern = "**projection-only specialization**"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-stop-point-3712e1702b95]
+kind = "requires"
+slice = "shared-v7-bmo-identity-boundary"
+pattern = "BMO はこの停止点までを所有する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-admission-grounding-d30b3d4ac064]
+kind = "requires"
+slice = "shared-v7-bmo-admission-grounding"
+pattern = "candidate は Behavior または authority を持つ Context に grounding があり、かつ入力 Behavior の意味上の distinction である場合だけ `Admit` する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-no-self-grounding-7e0e9275fd8e]
+kind = "requires"
+slice = "shared-v7-bmo-grounding"
+pattern = "評価対象 claim 自身を、その claim の Expected Observation の grounding に再利用しない。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-collective-nonverdict-3140677fb21c]
+kind = "requires"
+slice = "shared-v7-bmo-collective-sufficiency"
+pattern = "consumer 固有の成果物・評価対象・downstream quality、workflow readiness、Reality verification、Real / Reality の完全性、Behavior 自体の真理を判定するものではない。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-stop-boundary-57ed70177942]
+kind = "requires"
+slice = "shared-v7-bmo-stop-boundary"
+pattern = "Expected Observation Model と Collective Sufficiency を返したら停止する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-document-before-identity]
+kind = "order"
+before = "shared-v7-bmo-document"
+after = "shared-v7-bmo-identity-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-identity-before-grounding]
+kind = "order"
+before = "shared-v7-bmo-identity-relation"
+after = "shared-v7-bmo-grounding-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-grounding-before-admission]
+kind = "order"
+before = "shared-v7-bmo-grounding-relation"
+after = "shared-v7-bmo-admission-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-admission-before-collective]
+kind = "order"
+before = "shared-v7-bmo-admission-relation"
+after = "shared-v7-bmo-collective-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-bmo-collective-before-stop]
+kind = "order"
+before = "shared-v7-bmo-collective-relation"
+after = "shared-v7-bmo-stop-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-document]
+kind = "occurrences"
+pattern = "# Reality Model Observation"
+count = 1
+paths = [".local/gunte/shared-v7-contracts/documents/reality-model-observation.md"]
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-problem-stop-2611ec071d14]
+kind = "requires"
+slice = "shared-v7-rmo-identity-boundary"
+pattern = "RMO は Problem Derivation で停止する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-no-remediation-efff1b0e698e]
+kind = "requires"
+slice = "shared-v7-rmo-output-boundary"
+pattern = "- remediation、implementation、Improvement Candidate、Change Proposal"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-no-acquisition-56faea4219fd]
+kind = "requires"
+slice = "shared-v7-rmo-output-boundary"
+pattern = "- evidence acquisition、Research Agent の dispatch、same Local Model への Reintegration / Recomposition"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-model-nonreadiness-2cb56aecc2c7]
+kind = "requires"
+slice = "shared-v7-rmo-model-sufficiency"
+pattern = "`Sufficient` は Reality 全体の completeness、External Real への到達、actual evidence の取得、workflow readiness を意味しない。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-observation-gate-f1bf5d41b1c3]
+kind = "requires"
+slice = "shared-v7-rmo-observation-gate"
+pattern = '''Model Sufficiency が `Sufficient` の場合、caller が許可した boundary 内で、frozen な criteria / conditions
+に沿って concrete evidence と接触する。'''
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-sufficiency-distinction-49d148234a56]
+kind = "requires"
+slice = "shared-v7-rmo-observation-gate"
+pattern = '''`Model Sufficiency` と
+`Observed Evidence Sufficiency` は別であり'''
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-membership-problem-56eaf462e93f]
+kind = "requires"
+slice = "shared-v7-rmo-membership-stop"
+pattern = "- **Yes** — current Target に属する discrepancy として Target-relative Problem を導出できる。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-membership-incidental-efb328f8a783]
+kind = "requires"
+slice = "shared-v7-rmo-membership-stop"
+pattern = "- **No** — Target を拡張せず、必要なら Incidental Finding として返して停止する。"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-membership-uncertainty-a85b6abb25de]
+kind = "requires"
+slice = "shared-v7-rmo-membership-stop"
+pattern = '''- **Unclear** — Target semantics、authority、または observed evidence の解決が必要な `Uncertainty` として
+  停止する。'''
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-caller-dispatch-d4a48b959269]
+kind = "requires"
+slice = "shared-v7-rmo-caller-ownership"
+pattern = '''RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
+な場合、caller が bounded objective、scope、authority、relevant context / evidence surface を確定して
+Research Agent に委譲してよい。'''
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-caller-reintegration-a95b84105a71]
+kind = "requires"
+slice = "shared-v7-rmo-caller-ownership"
+pattern = '''caller は result の authority と semantic effect を判断し、必要なら同じ top-level invocation の同じ
+task-local Local Model へ Reintegration / Recomposition する。'''
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-document-before-identity]
+kind = "order"
+before = "shared-v7-rmo-document"
+after = "shared-v7-rmo-identity-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-identity-before-output]
+kind = "order"
+before = "shared-v7-rmo-identity-relation"
+after = "shared-v7-rmo-output-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-output-before-model]
+kind = "order"
+before = "shared-v7-rmo-output-relation"
+after = "shared-v7-rmo-model-sufficiency-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-model-before-observation]
+kind = "order"
+before = "shared-v7-rmo-model-sufficiency-relation"
+after = "shared-v7-rmo-observation-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-observation-before-attribution]
+kind = "order"
+before = "shared-v7-rmo-observation-relation"
+after = "shared-v7-rmo-attribution-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-attribution-before-membership]
+kind = "order"
+before = "shared-v7-rmo-attribution-relation"
+after = "shared-v7-rmo-membership-relation"
+applies_to = ["shared-v7-contracts"]
+
+[contracts.shared-v7-rmo-membership-before-caller]
+kind = "order"
+before = "shared-v7-rmo-membership-relation"
+after = "shared-v7-rmo-caller-relation"
+applies_to = ["shared-v7-contracts"]

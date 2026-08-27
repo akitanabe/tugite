@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plan Interactive"
+  short_description: "Draft a human-directed plan through common synthesis, gate, and bounded review"
+  default_prompt: "Use $plan-interactive only when explicitly requested to draft a human-directed plan, then run mandatory common synthesis, gate, and bounded review without starting implementation."
+policy:
+  allow_implicit_invocation: false

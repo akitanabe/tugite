@@ -1,0 +1,196 @@
+spec_version = 2
+
+[project]
+id = "tugite"
+version_from = "shared/VERSION"
+
+[contracts]
+files = ["contracts/shared.toml"]
+
+[sources]
+files = [
+  "shared/VERSION",
+  "shared/model-construction.md",
+  "shared/agentic-model-construction.md",
+  "shared/behavior-model-observation.md",
+  "shared/reality-model-observation.md",
+  "declarations/claude/plugin.json",
+  "declarations/claude/marketplace.json",
+  "declarations/codex/plugin.json",
+  "declarations/codex/marketplace.json",
+  "declarations/codex/skills/code-review/openai.yaml",
+  "declarations/codex/skills/impl-lead/openai.yaml",
+  "declarations/codex/skills/plan-agent/openai.yaml",
+  "declarations/codex/skills/plan-interactive/openai.yaml",
+  "declarations/codex/skills/plan-candidate-producer/openai.yaml",
+  "declarations/codex/skills/review-refine/openai.yaml",
+  "declarations/codex/skills/structural-health-gate/openai.yaml",
+  "declarations/codex/skills/test-report/openai.yaml",
+  "declarations/codex/skills/implementation-unit-design/openai.yaml",
+  "declarations/cursor/plugin.json",
+]
+managed_roots = ["shared", "contracts", "declarations"]
+allow_files = [
+  "shared/README.md",
+]
+
+[targets.shared-v7-contracts]
+output_root = ".local/gunte/shared-v7-contracts"
+managed_roots = ["documents"]
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared/model-construction.md"
+path = "documents/model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared/agentic-model-construction.md"
+path = "documents/agentic-model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared/behavior-model-observation.md"
+path = "documents/behavior-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared/reality-model-observation.md"
+path = "documents/reality-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+# Why Not: v7 は canonical shared/ を選択的に再構築中のため、旧 v6 plugin の未再構築ファイルを managed inventory に含めない。
+[targets.claude]
+output_root = "plugins/claude"
+
+[[targets.claude.rules]]
+match = "shared/model-construction.md"
+path = "references/model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/agentic-model-construction.md"
+path = "references/agentic-model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/behavior-model-observation.md"
+path = "references/behavior-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/reality-model-observation.md"
+path = "references/reality-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "declarations/claude/plugin.json"
+path = ".claude-plugin/plugin.json"
+profile = "json-v1"
+metadata = [
+  { field = "version", from = "project:version", type = "string" },
+]
+
+[targets.codex]
+output_root = "plugins/codex"
+
+[[targets.codex.rules]]
+match = "shared/model-construction.md"
+path = "references/model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/agentic-model-construction.md"
+path = "references/agentic-model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/behavior-model-observation.md"
+path = "references/behavior-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/reality-model-observation.md"
+path = "references/reality-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/VERSION"
+path = "install/VERSION"
+profile = "plain-text-v1"
+value_from = "project:version"
+
+[[targets.codex.rules]]
+match = "declarations/codex/skills/*/openai.yaml"
+path = "skills/{1}/agents/openai.yaml"
+profile = "markdown-v1"
+
+[[targets.codex.rules]]
+match = "declarations/codex/plugin.json"
+path = ".codex-plugin/plugin.json"
+profile = "json-v1"
+metadata = [
+  { field = "version", from = "project:version", type = "string" },
+]
+
+[targets.cursor]
+output_root = "plugins/cursor"
+
+[[targets.cursor.rules]]
+match = "shared/model-construction.md"
+path = "references/model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/agentic-model-construction.md"
+path = "references/agentic-model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/behavior-model-observation.md"
+path = "references/behavior-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/reality-model-observation.md"
+path = "references/reality-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "declarations/cursor/plugin.json"
+path = ".cursor-plugin/plugin.json"
+profile = "json-v1"
+metadata = [
+  { field = "version", from = "project:version", type = "string" },
+]
+
+[targets.claude-marketplace]
+output_root = ".claude-plugin"
+
+[[targets.claude-marketplace.rules]]
+match = "declarations/claude/marketplace.json"
+path = "marketplace.json"
+profile = "json-v1"
+
+[targets.codex-marketplace]
+output_root = ".agents/plugins"
+
+[[targets.codex-marketplace.rules]]
+match = "declarations/codex/marketplace.json"
+path = "marketplace.json"
+profile = "json-v1"

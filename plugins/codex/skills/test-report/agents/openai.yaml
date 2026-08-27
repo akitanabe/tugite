@@ -1,0 +1,6 @@
+interface:
+  display_name: "Test Report"
+  short_description: "Reconstruct a test suite as a verification system for humans"
+  default_prompt: "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe the specified range as a Verification Topology centered on independently grounded Expected Observations, and do not edit, run, evaluate quality, or start follow-up actions."
+policy:
+  allow_implicit_invocation: true
