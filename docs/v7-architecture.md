@@ -537,6 +537,44 @@ v7 architecture
 
 v6 artifact は evidence として参照できるが、v7 artifact の初期状態としてコピーしない。
 
+### Current Infrastructure as Implementation Evidence
+
+v6 / current canonical artifact の semantics / responsibility を v7 artifact の設計根拠として継承しない。一方、新しい v7 artifact が repository に既存の infrastructure category を利用する場合は、その current integration mechanism を implementation evidence として確認する。
+
+これは clone-and-prune の例外ではない。確認対象は旧 artifact の意味仕様ではなく、artifact が repository 上で成立するための integration surface である。該当するものについて、少なくとも次を確認対象に含める。
+
+- canonical source / artifact representation
+- platform-specific generation / declaration
+- packaging / distribution / installation
+- applicable lint / contract / repository test
+- current verification command / regression path
+
+既存 mechanism を利用できる場合でも、その mechanism に載っている v6 semantics / responsibility を v7 へ暗黙継承しない。current need がない generic integration framework / test framework も新設しない。
+
+v7 artifact が既存 infrastructure category を利用する場合、実装完了前に対応する integration surface を確認し、該当する generation / distribution / installation / test / verification path が v7 candidate に対して成立することを verification boundary に含める。
+
+### Per-Artifact Implementation and Verification
+
+```text
+architecture / current responsibility
+        ↓
+artifact implementation
+        ↓
+existing infrastructure integration check
+        ↓
+representative behavior validation
+        ↓
+applicable generation / distribution / installation / test verification
+        ↓
+必要なら current invariant の contract
+        ↓
+lint / repository verification
+```
+
+`existing infrastructure integration check` は、実装対象が既存 infrastructure category を利用する場合だけ適用する。既存 infrastructure を利用しない artifact のために v6 / current canonical を儀式的に探索しない。
+
+変更された integration boundary に machine-observable behavior がある場合、対応する既存 test を更新するか、必要最小限の test を追加する。representative Agent behavior validation と infrastructure verification / repository test は代替関係にしない。既存 test / verification path で十分な場合は v7 専用 framework を増やさない。
+
 v7 完成時に repository-wide verification を行い、v7 candidate を canonical `shared/` へ切り替える。`shared-v7/` という migration concept を完成 architecture に残さない。
 
 ## v7 Core Scope
