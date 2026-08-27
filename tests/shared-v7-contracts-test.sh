@@ -32,10 +32,8 @@ assert_projection_inventory() {
   )
   local actual=()
 
-  mapfile -t actual < <(find "$projection" -maxdepth 1 -type f -printf '%f\n' | sort)
+  mapfile -t actual < <(find "$projection" -type f -printf '%P\n' | sort)
   [[ "${actual[*]}" == "${expected[*]}" ]] || fail "unexpected projection inventory: ${actual[*]}"
-  [[ ! -e "$projection/README.md" ]] || fail "README.md was projected"
-  [[ ! -e "$projection/agents/research-agent.md" ]] || fail "research-agent.md was projected"
 }
 
 replace_once() {
@@ -114,6 +112,19 @@ test_fresh_repository_builds_shared_v7_projection() {
     gunte check --target shared-v7-contracts
   )
   assert_projection_inventory "$repository"
+}
+
+test_projection_inventory_rejects_nested_files() {
+  local repository="$tmp_dir/nested-inventory"
+
+  mkdir -p "$repository"
+  cp -a "$baseline_template/." "$repository"
+  mkdir -p "$repository/.local/gunte/shared-v7-contracts/documents/unexpected"
+  touch "$repository/.local/gunte/shared-v7-contracts/documents/unexpected/extra.md"
+
+  if (assert_projection_inventory "$repository") 2>/dev/null; then
+    fail "nested projection file was not rejected"
+  fi
 }
 
 test_model_construction_ownership_is_required() {
@@ -308,6 +319,71 @@ test_relation_anchor_cannot_move_to_another_document() {
   [[ "$(sha256sum "$repository/$agentic_projection")" == "$agentic_hash_before" ]] || fail "moved anchor rewrote agentic projection"
 }
 
+test_reintegration_must_precede_recomposition() {
+  local repository="$tmp_dir/reversed-model-order"
+  local projection=.local/gunte/shared-v7-contracts/documents/model-construction.md
+  local projection_hash_before
+  local output
+
+  mkdir -p "$repository"
+  cp -a "$baseline_template/." "$repository"
+  projection_hash_before="$(sha256sum "$repository/$projection")"
+  replace_once \
+    "$repository/shared-v7/model-construction.md" \
+    '<!-- @anchor shared-v7-model-reintegration -->' \
+    '<!-- @anchor shared-v7-model-order-placeholder -->'
+  replace_once \
+    "$repository/shared-v7/model-construction.md" \
+    '<!-- @anchor shared-v7-model-recomposition -->' \
+    '<!-- @anchor shared-v7-model-reintegration -->'
+  replace_once \
+    "$repository/shared-v7/model-construction.md" \
+    '<!-- @anchor shared-v7-model-order-placeholder -->' \
+    '<!-- @anchor shared-v7-model-recomposition -->'
+
+  if output="$(cd "$repository" && gunte emit --target shared-v7-contracts 2>&1)"; then
+    fail "reversed Reintegration/Recomposition order unexpectedly passed"
+  fi
+
+  [[ "$output" == *"shared-v7-model-reintegration-before-recomposition"* ]] || fail "reversed model order did not report its contract: $output"
+  [[ "$output" == *"order_violation"* ]] || fail "reversed model order did not report order_violation: $output"
+  [[ "$output" == *"shared-v7/model-construction.md"* ]] || fail "reversed model order did not report model-construction.md: $output"
+  [[ "$(sha256sum "$repository/$projection")" == "$projection_hash_before" ]] || fail "reversed model order rewrote the projection"
+}
+
+test_document_identity_cannot_move_to_another_path() {
+  local repository="$tmp_dir/moved-document-identity"
+  local model_projection=.local/gunte/shared-v7-contracts/documents/model-construction.md
+  local agentic_projection=.local/gunte/shared-v7-contracts/documents/agentic-model-construction.md
+  local model_hash_before
+  local agentic_hash_before
+  local output
+
+  mkdir -p "$repository"
+  cp -a "$baseline_template/." "$repository"
+  model_hash_before="$(sha256sum "$repository/$model_projection")"
+  agentic_hash_before="$(sha256sum "$repository/$agentic_projection")"
+  replace_once \
+    "$repository/shared-v7/model-construction.md" \
+    '# Tugite v7 Model Construction' \
+    '# Model Construction'
+  replace_once \
+    "$repository/shared-v7/agentic-model-construction.md" \
+    '# Agentic Model Construction' \
+    $'# Agentic Model Construction\n\n# Tugite v7 Model Construction'
+
+  if output="$(cd "$repository" && gunte emit --target shared-v7-contracts 2>&1)"; then
+    fail "moved document identity unexpectedly passed"
+  fi
+
+  [[ "$output" == *"shared-v7-model-document"* ]] || fail "moved identity did not report its occurrence contract: $output"
+  [[ "$output" == *"occurrences_violation"* ]] || fail "moved identity did not report occurrences_violation: $output"
+  [[ "$output" == *"target shared-v7-contracts"* ]] || fail "moved identity did not report target shared-v7-contracts: $output"
+  [[ "$output" == *"shared-v7/model-construction.md"* ]] || fail "moved identity did not report model-construction.md: $output"
+  [[ "$(sha256sum "$repository/$model_projection")" == "$model_hash_before" ]] || fail "moved identity rewrote model projection"
+  [[ "$(sha256sum "$repository/$agentic_projection")" == "$agentic_hash_before" ]] || fail "moved identity rewrote agentic projection"
+}
+
 test_target_resolution_rejects_unknown_target() {
   local output
 
@@ -364,9 +440,12 @@ test_fresh_repository_builds_shared_v7_projection
 baseline_template="$tmp_dir/template"
 new_repository_copy "$baseline_template"
 (cd "$baseline_template" && gunte emit --target shared-v7-contracts)
+test_projection_inventory_rejects_nested_files
 test_model_construction_ownership_is_required
 test_current_semantic_witnesses_are_required
 test_relation_anchor_cannot_move_to_another_document
+test_reintegration_must_precede_recomposition
+test_document_identity_cannot_move_to_another_path
 test_target_resolution_rejects_unknown_target
 test_stale_projection_is_detected
 test_missing_projection_is_rebuilt_by_emit
