@@ -110,10 +110,10 @@ for target in claude codex cursor; do
     "interactive-$target" "$target" whats-this-interactive-connection-847eff3a5080 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_interactive_connection
   run_contract_failure \
-    "reintegration-$target" "$target" whats-this-reintegration-ce2b6ede4994 requires_violation \
+    "reintegration-$target" "$target" whats-this-reintegration-1061604335ab requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_reintegration
   run_contract_failure \
-    "completion-$target" "$target" whats-this-completion-output-1a25838fa4ae requires_violation \
+    "completion-$target" "$target" whats-this-completion-output-0623a3802f44 requires_violation \
     shared/skill/whats-this/SKILL.md "plugins/$target/skills/whats-this/SKILL.md" mutate_completion_output
   run_contract_failure \
     "document-$target" "$target" whats-this-document occurrences_violation \

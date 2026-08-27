@@ -22,9 +22,8 @@ description: >-
 
 ## Interactive Model Construction connection
 
-`whats-this` は既存の `Interactive Model Construction` を construction Method として利用します。Interactive の Human boundary、Human-held
-fact / context と Human authority judgment の区別、same-model Reintegration、material な invalidation に限る Recomposition、bounded
-re-observation、final Human judgment の意味は、次の shared source に委ねます。
+`whats-this` は既存の `Interactive Model Construction` を construction Method として利用します。Interactive 固有の Human boundary、
+semantic effect、completion の意味は、次の shared source に委ねます。
 
 `whats-this` は既存の `Interactive Model Construction` を Method として利用し、Agent-side の bounded resolution を先に行います。Agent が単に分からない、または複数案があるというだけでは Human interaction を始めません。material な gap の resolution source または binding authority が Human にある場合だけ、Human-owned resolution に接続します。
 
@@ -42,23 +41,20 @@ evidence の acquisition と task-relative な判断を分離します。`whats-
 
 ## Reintegration and semantic effect
 
-Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration します。応答が返ったこと自体は Recomposition の trigger ではなく、material な semantic region が invalidated した場合だけ affected region を Recomposition し、unaffected semantics を保持した bounded repair を行います。
+`whats-this` は Human response または judgment を Interactive の result として受け取り、別の Local Model や独立した report state を作らず、calling workflow の同じ task-local Local Model に戻します。Recomposition と re-observation の要否は既存の `Interactive Model Construction` の semantic-effect rule に従い、応答の到着だけを理由に全域を再構成しません。
 
-current semantics が維持される、または影響が局所的な場合は、同じ Local Model の local repair と必要な bounded re-observation だけを行います。
-material な意味領域が無効になった場合は、affected region とその dependency だけを再構成し、修復後に affected semantics を再観測します。
-semantic effect が不明な場合は、unknown を確定事実へ変換せず、必要な uncertainty または qualification を保持します。
+Interactive の semantic-effect rule に従った result を受け取った後も、`whats-this` は同じ Local Model と requested output の境界を維持します。
 
 ## Completion and requested output
 
-current understanding と retained material uncertainty / qualification を提示し、Human が downstream の前提として採用して次へ進むことを明示するまで completion しません。current understanding の acceptance と downstream artifact / plan の acceptance は分けます。Human approval は unknown fact を known fact に変えず、requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。
+`whats-this` は Interactive の final Human judgment boundary を通過した current understanding と retained material uncertainty / qualification を、Human が downstream の前提として採用できる形で扱います。current understanding の acceptance と downstream artifact / plan の acceptance は分け、Human approval は unknown fact を known fact に変えず、requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。
 
 出力は explanation、comparison、analysis、repository overview、investigation result、または invocation が明示した artifact など、要求された
 成果へ直接つなぎます。探索中に別の finding が見つかっても、それだけで task scope、repository write authority、implementation、remediation を
 拡張しません。指定された出力の qualification に反映できない変更は行いません。
 
-Human が correction、missing premise、または unresolved concern を返した場合は、同じ Local Model へ再び Reintegration し、semantic effect に
-応じて local repair または affected region の Recomposition と bounded re-observation を行ったうえで、current understanding に対する final
-Human judgment を取り直します。
+Human が correction、missing premise、または unresolved concern を返した場合は、既存の Interactive Method へ再接続し、同じ Local Model と
+requested output の境界を維持します。
 
 ## Non-goals
 
