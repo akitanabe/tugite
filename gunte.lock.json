@@ -12,12 +12,14 @@
     "shared/research-agent-delegation.md",
     "shared/agents/research-agent.md",
     "shared/skill/explorer-this/SKILL.md",
+    "shared/skill/whats-this/SKILL.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
     "declarations/codex/skills/code-review/openai.yaml",
     "declarations/codex/skills/explorer-this/openai.yaml",
+    "declarations/codex/skills/whats-this/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
     "declarations/codex/skills/plan-interactive/openai.yaml",
@@ -352,6 +354,62 @@
     {
       "id": "shared-research-result-before-semantic",
       "sha256": "8d228dbebca49792a9c0e4d98d41719d47538ef90b0a85340ba0a64f2ba455fa"
+    },
+    {
+      "id": "whats-this-document",
+      "sha256": "483e833322ede35772819979c48270ebe9cf2919c1edcc0cb1c43dc33e8c8ce8"
+    },
+    {
+      "id": "whats-this-explicit-invocation-6aff5f790dc7",
+      "sha256": "2b08e0bc90712073c936b4307e073e7e84aa71527b1ef7525b1c8ffb21efdd16"
+    },
+    {
+      "id": "whats-this-ownership-2aa0a2707b35",
+      "sha256": "fc950e8bdc61ccd1695944a5d6cc47f692324de9df9fe83529a4491e09ac1c50"
+    },
+    {
+      "id": "whats-this-interactive-connection-847eff3a5080",
+      "sha256": "eba87203659376cc328f5c2cb056c3e29a07515e61d5f63c80d1b6c094010b9e"
+    },
+    {
+      "id": "whats-this-reintegration-ce2b6ede4994",
+      "sha256": "765e49b8ac2502cb712350bdee4a0ac332d1f677bb1d7f8c6092f241edab6e10"
+    },
+    {
+      "id": "whats-this-completion-output-1a25838fa4ae",
+      "sha256": "cd75a4c1bd85fac5281a47fd8f66c80abf44b1fb7039b7d3d8905f50546012c3"
+    },
+    {
+      "id": "whats-this-document-before-explicit-invocation",
+      "sha256": "a97ae22fb3cc3bacf6c55b40f3c3c58701423146f7877f2788bdec0d09c0c4e4"
+    },
+    {
+      "id": "whats-this-explicit-invocation-before-ownership",
+      "sha256": "af516c5d1e48ec160029d2ef5c5a78490f54e11e89ea38dfa34d76fa754a8d0a"
+    },
+    {
+      "id": "whats-this-ownership-before-interactive",
+      "sha256": "409be9bea2fb0b802a0ff8132fb2dd789ba7d7dcca7fc7821f40ebbb77f5ccbf"
+    },
+    {
+      "id": "whats-this-interactive-before-reintegration",
+      "sha256": "d4d24c87d28b498a5ae9495c6d449db4e18227e34e97bd6be007d48f47cbf43c"
+    },
+    {
+      "id": "whats-this-reintegration-before-completion",
+      "sha256": "11b5251261c670a2c91cf3739ad39106fed07dd2e6aad3a50b2319ca4c3a4e7f"
+    },
+    {
+      "id": "whats-this-claude-invocation-policy",
+      "sha256": "e39a86ab3520cea04ec6ffd84f11a67b7ace6b584d664f2491984a006a792146"
+    },
+    {
+      "id": "whats-this-codex-invocation-policy",
+      "sha256": "43b643880a9317a917c2f99e58c0f4632a5e9d7f8d6473d99a22dfd4ee29ad76"
+    },
+    {
+      "id": "whats-this-cursor-invocation-policy",
+      "sha256": "4c62dee0498e4add45a5c4f7a8566306c1fe835d44880f8ebafc5bbb0a7dd30d"
     }
   ],
   "declarations": [
@@ -709,6 +767,61 @@
       "kind": "span",
       "id": "shared-research-semantic-ownership",
       "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-document-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "whats-this-explicit-invocation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-explicit-invocation-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "whats-this-ownership",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-ownership-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "whats-this-interactive-connection",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-interactive-connection-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "whats-this-reintegration",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-reintegration-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "whats-this-completion-output",
+      "path": "shared/skill/whats-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "whats-this-completion-output-relation",
+      "path": "shared/skill/whats-this/SKILL.md"
     }
   ]
 }

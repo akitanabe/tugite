@@ -545,3 +545,95 @@ kind = "order"
 before = "shared-research-result-relation"
 after = "shared-research-semantic-relation"
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-document]
+kind = "occurrences"
+pattern = "# whats-this"
+count = 1
+paths = [
+  "plugins/claude/skills/whats-this/SKILL.md",
+  "plugins/codex/skills/whats-this/SKILL.md",
+  "plugins/cursor/skills/whats-this/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-explicit-invocation-6aff5f790dc7]
+kind = "requires"
+slice = "whats-this-explicit-invocation"
+pattern = "`whats-this` は、明示的に起動されたときだけ利用する public workflow です。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-ownership-2aa0a2707b35]
+kind = "requires"
+slice = "whats-this-ownership"
+pattern = "一回の invocation に対して `whats-this` は exactly one の task-local Local Model を所有し、task scope、requested output、write authority も保持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-interactive-connection-847eff3a5080]
+kind = "requires"
+slice = "whats-this-interactive-connection"
+pattern = "`whats-this` は既存の `Interactive Model Construction` を Method として利用し、Agent-side の bounded resolution を先に行います。Agent が単に分からない、または複数案があるというだけでは Human interaction を始めません。material な gap の resolution source または binding authority が Human にある場合だけ、Human-owned resolution に接続します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-reintegration-ce2b6ede4994]
+kind = "requires"
+slice = "whats-this-reintegration"
+pattern = "Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration します。応答が返ったこと自体は Recomposition の trigger ではなく、material な semantic region が invalidated した場合だけ affected region を Recomposition し、unaffected semantics を保持した bounded repair を行います。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-completion-output-1a25838fa4ae]
+kind = "requires"
+slice = "whats-this-completion-output"
+pattern = "current understanding と retained material uncertainty / qualification を提示し、Human が downstream の前提として採用して次へ進むことを明示するまで completion しません。current understanding の acceptance と downstream artifact / plan の acceptance は分けます。Human approval は unknown fact を known fact に変えず、requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-document-before-explicit-invocation]
+kind = "order"
+before = "whats-this-document-relation"
+after = "whats-this-explicit-invocation-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-explicit-invocation-before-ownership]
+kind = "order"
+before = "whats-this-explicit-invocation-relation"
+after = "whats-this-ownership-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-ownership-before-interactive]
+kind = "order"
+before = "whats-this-ownership-relation"
+after = "whats-this-interactive-connection-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-interactive-before-reintegration]
+kind = "order"
+before = "whats-this-interactive-connection-relation"
+after = "whats-this-reintegration-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-reintegration-before-completion]
+kind = "order"
+before = "whats-this-reintegration-relation"
+after = "whats-this-completion-output-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.whats-this-claude-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/claude/skills/whats-this/SKILL.md"]
+applies_to = ["claude"]
+
+[contracts.whats-this-codex-invocation-policy]
+kind = "occurrences"
+pattern = "allow_implicit_invocation: false"
+count = 1
+paths = ["plugins/codex/skills/whats-this/agents/openai.yaml"]
+applies_to = ["codex"]
+
+[contracts.whats-this-cursor-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/cursor/skills/whats-this/SKILL.md"]
+applies_to = ["cursor"]
