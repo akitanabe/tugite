@@ -1,6 +1,0 @@
-interface:
-  display_name: "Plan Agent"
-  short_description: "Draft a free-form plan without starting implementation"
-  default_prompt: "Use $plan-agent to draft or refine a free-form planning artifact without implementing, delegating, or advancing to a next stage."
-policy:
-  allow_implicit_invocation: false
