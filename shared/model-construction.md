@@ -1,4 +1,4 @@
-# Tugite v7 Model Construction
+# Model Construction
 <!-- @anchor shared-model-document -->
 
 ## Purpose
