@@ -44,14 +44,15 @@ Human interaction は現在の task / domain に必要な入力を、次の意�
 
 ### Human-held fact / context
 
-これは repository や利用可能な source から取得できず、Human だけが保持する factual / contextual premise である。既存の外部前提、
-task に固有の context、Human だけが知る constraint や history などが含まれる。これは Human authority judgment ではなく、事実または
-文脈の source として扱う。
+これは repository や利用可能な source から取得できず、Human だけが保持する、既に成立している factual / contextual premise である。
+既存の外部前提、task に固有の context、外部の制約や history などが含まれる。Human が今回の task で選ぶ binding direction、scope、
+authority はここに含めず、事実または文脈の source として扱う。
 
 ### Human authority judgment
 
-これは preference、trade-off、direction、responsibility、scope、authority のように、Human authority が binding direction を決める
-必要がある判断である。technical fact とこの判断を混同せず、Human の approval や preference を factual evidence として扱わない。
+これは preference、trade-off、direction、responsibility、scope、authority のように、Human authority が今回の task に対する binding
+direction を選ぶ必要がある判断である。既に成立している technical fact / context とこの判断を混同せず、Human の approval や preference
+を factual evidence として扱わない。
 Human の判断は current task に対する binding input として同じ Local Model に統合するが、それだけを理由に未許可の operation や scope
 expansion を始めない。
 
