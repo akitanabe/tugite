@@ -264,6 +264,94 @@
     {
       "id": "shared-rmo-membership-before-caller",
       "sha256": "3b073914cd69bd16660480bf29818d97533bf4e0599b045c363fe9879d7ccce2"
+    },
+    {
+      "id": "shared-research-document",
+      "sha256": "ea4558f13b0bd82f5eb26f00ed908cb59bf4561f4d99e24c0048e54614016a41"
+    },
+    {
+      "id": "shared-research-policy-boundary-30ee0ca5d748",
+      "sha256": "955749e2b16c0d5c93ac0290468f77059c5073d168ef5c913c5a09165529ee68"
+    },
+    {
+      "id": "shared-research-agent-identity-32fa7a98bdd7",
+      "sha256": "04ee3f0761a2ed6db962050164fa04a4ab9f883225133d567c882630a521044f"
+    },
+    {
+      "id": "shared-research-unavailable-577b8d84cb2e",
+      "sha256": "128df5fad8e0ba19e945dc0a037c322dfe86c6765deb5c9d64f77b288448d4ed"
+    },
+    {
+      "id": "shared-research-claude-invocation-3727af62b959",
+      "sha256": "b652e32345b452f029fffe87b0ef8caad61c3525b9efe5e2c843436f9f9b37bc"
+    },
+    {
+      "id": "shared-research-codex-invocation-30b3f1cfa6a9",
+      "sha256": "87f9a848c7360fbd329053f222b1c2d1efbfb2c02ff7879e6429d9bbb4127428"
+    },
+    {
+      "id": "shared-research-cursor-invocation-7566fd1678c3",
+      "sha256": "0b01ff77fcdb303617ba2929136cd1734b65ef7a7f15aec63a4d1f2f8aead3e4"
+    },
+    {
+      "id": "shared-research-delegation-input-e2374d0662f2",
+      "sha256": "884c5d39496e279969e0e2c04b888eff02f68a502c53c340179eef946e9058a3"
+    },
+    {
+      "id": "shared-research-exact-authority-0236f3c4c428",
+      "sha256": "d01bc5fb540d2fe7c0309d4dabc055753469208b73ff23141a2d854c228b9311"
+    },
+    {
+      "id": "shared-research-retry-authority-83c8f257aaa1",
+      "sha256": "de077d98337c43fc0fad0f29a0b58b9bcbf0dd34d188d57493ee1a9907f068a5"
+    },
+    {
+      "id": "shared-research-cleanup-result-543508a0bf22",
+      "sha256": "693df6b5d83d28b4c1fc23fbc17a3d1ac0df266aeb095bf824139da63a3ab076"
+    },
+    {
+      "id": "shared-research-result-usability-ff29d4676985",
+      "sha256": "c42aebe6d67647935707e36c94a02e8a0f3695c0bb8bcb81d7c2b783dbb54aa6"
+    },
+    {
+      "id": "shared-research-result-data-c04d57d8de32",
+      "sha256": "7a0c262cd5ea3a14dd4f6e3d8d830af4a61faab9f3b625cc73c368460bb467a2"
+    },
+    {
+      "id": "shared-research-semantic-boundary-348519df26bb",
+      "sha256": "b8d31061acd16fcbe02190f464bc81e2791d68bf2bae16e19ad9cca8f86666b2"
+    },
+    {
+      "id": "shared-research-semantic-owner-30b714a5f1db",
+      "sha256": "2099db665dff6527d54634640fd5c40e2be1822842ccbdf6f9a970585f4142f6"
+    },
+    {
+      "id": "shared-research-document-before-boundary",
+      "sha256": "83c52b51f795a64dbd1c7ae883e585ac58c1ae98ba416ba99a95e87a5550a382"
+    },
+    {
+      "id": "shared-research-boundary-before-invocation",
+      "sha256": "413eace3ba21325f3358cffba46c0f0a673df1a4b05c2cdb510f715d5803f14d"
+    },
+    {
+      "id": "shared-research-invocation-before-input",
+      "sha256": "179ce503b6d47f7f8943ccc48c2abb2fde632ebd0f0940444b56595bca923a42"
+    },
+    {
+      "id": "shared-research-input-before-authority",
+      "sha256": "061f45f0471ac7fa1fdeeca6a40883d7bc29d136b0c02ff399cc3c7afa7e9d64"
+    },
+    {
+      "id": "shared-research-authority-before-safety",
+      "sha256": "eb93fe724ef5d8e906b004809261a87991875ca041ed01febad90ac9ab135a24"
+    },
+    {
+      "id": "shared-research-safety-before-result",
+      "sha256": "5701641b9df7e18aeab47b058b6c743e7010c90b25d944715aee95833cf47e7a"
+    },
+    {
+      "id": "shared-research-result-before-semantic",
+      "sha256": "8d228dbebca49792a9c0e4d98d41719d47538ef90b0a85340ba0a64f2ba455fa"
     }
   ],
   "declarations": [
@@ -521,6 +609,106 @@
       "kind": "anchor",
       "id": "shared-rmo-caller-relation",
       "path": "shared/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-document",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-boundary",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-boundary-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-invocation-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-invocation-identity",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-invocation-unavailable",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-platform-invocation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-input-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-delegation-input",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-authority-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-exact-authority",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-safety-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-retry-authority",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-cleanup-result",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-result-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-result-data",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-result-usability",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-semantic-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-semantic-boundary",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-semantic-ownership",
+      "path": "shared/research-agent-delegation.md"
     }
   ]
 }
