@@ -2,7 +2,7 @@
 
 `shared/` は、Tugite v7 をゼロベースで再構成する canonical construction surface です。
 
-既存 v6 の source は `shared_v6/` に一時隔離しています。v7 の artifact は、current architecture の責務と boundary から必要なものだけを `shared/` へ selective rebuild します。
+既存 v6 の source は `shared-v6/` に一時隔離しています。v7 の artifact は、current architecture の責務と boundary から必要なものだけを `shared/` へ selective rebuild します。
 
 v6 source の clone-and-prune や、将来の artifact を空の placeholder として先に追加することは、この surface の構築方法ではありません。
 

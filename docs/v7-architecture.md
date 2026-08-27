@@ -424,7 +424,7 @@ plan-interactive specific
 v7 は current v6 source を一時隔離し、新しい canonical `shared/` でゼロベース構築する。
 
 ```text
-shared_v6/
+shared-v6/
   → current v6 source, temporary reference only
 
 shared/
@@ -443,7 +443,7 @@ v7 architecture
 
 v6 artifact は evidence として参照できるが、v7 artifact の初期状態としてコピーしない。
 
-v7 完成時に repository-wide verification を行い、`shared_v6/` を削除して v7 canonical `shared/` を維持する。
+v7 完成時に repository-wide verification を行い、`shared-v6/` を削除して v7 canonical `shared/` を維持する。
 
 ## v7 Core Scope
 
