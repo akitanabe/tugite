@@ -238,7 +238,7 @@ RMO へ再注入し、RMO は影響を受けた distinction / signal だけを�
 | signal が ambiguous で satisfied / discrepant の両方を同じ結果に写す | Model Sufficiency を `Sufficient` とせず、grounded discriminator、conditions、gap、または unresolved viewpoint の解決へ戻す。 |
 | grounded discriminator があり、admitted distinctions が cover される | proxy 条件と observation / inference を保持したうえで Model Sufficiency を評価し、`Sufficient` のときだけ authorized concrete observation へ進む。 |
 | caller が RMO gap から bounded Research Agent objective を作る | caller が dispatch と authority を所有し、返却 result の authority / semantic effect を判断して同じ Local Model へ Reintegration / Recomposition する。更新済み Target / Context を RMO へ再注入した後、RMO は必要な依存 distinction / signal だけを再導出する。 |
-| Research Agent が scope や Target を広げたくなる | objective、authority、Target、RMO semantics を拡張せず、limitation / unresolved point を返して停止する。RMO は implicit dispatch、第二 Local Model、remediation を持たない。 |
+| Research Agent が scope や Target を広げたくなる | objective、authority、Target、RMO semantics を拡張せず、limitation / unresolved point を返して待機する。RMO は implicit dispatch、第二 Local Model、remediation を持たない。 |
 
 これらの対照は、Target-first、signal grounding、Model / Observed Evidence の二つの sufficiency、
 observation / inference の分離、attribution、membership、Problem stop、および caller-owned dispatch を

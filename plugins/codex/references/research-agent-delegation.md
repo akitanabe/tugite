@@ -62,5 +62,5 @@ Research Agent に次を委譲しない。
 - implementation、remediation、finding の採否
 - Reintegration、Recomposition、workflow continuation / completion
 
-Research Agent は grounded result を返して停止する。caller は必要な result を同じ task-local Local Model へ Reintegration し、
+Research Agent は grounded result を返して待機する。caller は必要な result を同じ task-local Local Model へ Reintegration し、
 Recomposition、再観測、continuation の要否を判断する。

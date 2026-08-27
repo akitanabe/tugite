@@ -69,7 +69,7 @@ repository、source、比較対象、または execution-based evidence の取�
 Research Agent delegation boundary に従って current platform の Research Agent を利用できます。caller は objective、scope、
 authority、relevant context / evidence surface をその invocation の目的に合わせて与えます。
 
-Research Agent は evidence acquisition と局所的な evidence-relative judgment を返して停止します。task-wide な materiality、
+Research Agent は evidence acquisition と局所的な evidence-relative judgment を返して待機します。task-wide な materiality、
 task direction、scope、Local Model、Exploration Projection、Reintegration、Recomposition、workflow continuation、completion、
 implementation、または remediation は caller が所有します。返却された observation、inference、limitation、unresolved point を
 区別し、必要な場合は同じ Local Model へ Reintegration してから後続の判断を行います。

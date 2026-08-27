@@ -54,4 +54,4 @@ caller が所有します。grounded result を新しい Local Model や task se
 ## Result and stop
 
 固定 schema は要求しません。objective に必要な acquired evidence、source basis、relevant execution result、bounded local inference、
-observation / inference の区別、limitations、unresolved points を caller が追跡できる形で返します。結果を返したら停止します。
+observation / inference の区別、limitations、unresolved points を caller が追跡できる形で返します。結果を返したら待機します。
