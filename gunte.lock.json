@@ -6,6 +6,7 @@
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
+    "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
     "shared/reality-model-observation.md",
     "shared/research-agent-delegation.md",
