@@ -281,7 +281,7 @@ task の再設計、worker selection、execution order、implementation は所�
 Model Construction は次の三 artifact で構成する。
 
 ```text
-shared-v7/
+shared/
   model-construction.md
   agentic-model-construction.md
   interactive-model-construction.md
@@ -421,17 +421,17 @@ plan-interactive specific
 
 ## Construction Surface
 
-v7 は current v6 canonical tree と分離した construction surface でゼロベース構築する。
+v7 は current v6 source を一時隔離し、新しい canonical `shared/` でゼロベース構築する。
 
 ```text
-shared/
-  → current v6 canonical
+shared_v6/
+  → current v6 source, temporary reference only
 
-shared-v7/
-  → v7 construction surface
+shared/
+  → v7 canonical construction surface
 ```
 
-`shared-v7/` は v6 source tree の clone-and-prune にしない。
+`shared/` は v6 source tree の clone-and-prune にしない。current architecture の責務と boundary から必要な artifact だけを selective rebuild する。
 
 ```text
 v7 architecture
@@ -443,7 +443,7 @@ v7 architecture
 
 v6 artifact は evidence として参照できるが、v7 artifact の初期状態としてコピーしない。
 
-v7 完成時に repository-wide verification を行い、v7 candidate を canonical `shared/` へ切り替える。`shared-v7/` という migration concept を完成 architecture に残さない。
+v7 完成時に repository-wide verification を行い、`shared_v6/` を削除して v7 canonical `shared/` を維持する。
 
 ## v7 Core Scope
 
