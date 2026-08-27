@@ -196,17 +196,16 @@ Improvement Candidate にならない。
 ## Caller-owned Research Agent composition
 
 RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
-な場合、caller が bounded objective、scope、authority、relevant context / evidence surface を確定して
-Research Agent に委譲してよい。Research Agent の result は evidence、source basis、execution result、
+な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。
+Research Agent の result は evidence、source basis、execution result、
 observation / inference、limitation、unresolved point を伴う caller-owned result であり、RMO の意味判断や
 Problem へ自動変換されない。
 
 caller は result の authority と semantic effect を判断し、必要なら同じ top-level invocation の同じ
 task-local Local Model へ Reintegration / Recomposition する。caller はその結果の更新済み Target / Context を
-RMO へ再注入し、RMO は影響を受けた distinction / signal だけを再導出して bounded に再観測する。Research Agent は第二の Local Model、独自の task semantics、continuation を
-持たず、RMO もその result を理由に Target を拡張したり remediation を開始したりしない。これは Phase 1 の
-`1 top-level workflow invocation = exactly 1 task-local Local Model` と caller-owned Reintegration boundary
-を維持する。
+RMO へ再注入し、RMO は影響を受けた distinction / signal だけを再導出して bounded に再観測する。Research Agent は第二の Local Model、
+独自の task semantics、continuation を持たず、RMO もその result を理由に Target を拡張したり remediation を開始したりしない。
+これは `1 top-level workflow invocation = exactly 1 task-local Local Model` と caller-owned Reintegration boundary を維持する。
 
 ## Case F / G representative contrasts
 

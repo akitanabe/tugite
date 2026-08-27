@@ -120,18 +120,12 @@ resolution route は gap の意味、利用可能な source、authority boundary
 
 ## Research Agent Boundary
 
-Research Agent は bounded evidence acquisition / source inspection / exploration を context-isolated に実行し、grounded result を返す helper である。
+Research Agent は bounded evidence acquisition と local analysis を context-isolated に実行し、grounded result を返す actual subagent である。
+caller 共通の delegation / operation policy は同じ directory の `research-agent-delegation.md` が所有する。
 
-Research Agent は次を所有しない。
-
-- Local Model
-- Exploration Projection の意味判断
-- gap の materiality / priority / resolution completion
-- task direction / authority
-- Reintegration / Recomposition
-- Model Construction completion
-
-Research Agent の結果は Model Construction Method が意味判断し、same Local Model へ再統合する。
+Model Construction Method は current gap から bounded objective と必要な boundary を構成し、Research Agent の result を
+task-relative に意味判断する。result は第二の Local Model や continuation decision ではなく、必要な semantic effect を same Local Model へ
+Reintegration / Recomposition する。
 
 ## Reintegration
 

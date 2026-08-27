@@ -28,9 +28,9 @@ Exploration Projection 上の current gap について、Agent-side で利用可
 
 ### Research Agent Delegation
 
-bounded な source inspection / exploration を context-isolated に委譲する価値がある場合は Research Agent を利用する。
-
-Research Agent は caller / runtime が利用可能にした場合だけ resolution route として選ぶ。Phase 1 で agent artifact が存在しないことを、暗黙 dispatch や semantic ownership の移譲に読み替えない。
+bounded な evidence acquisition / local analysis を context-isolated に委譲する価値があり、caller / runtime が actual Research Agent を
+利用可能にした場合は resolution route として選ぶ。caller input、operation authority、retry、cleanup、result usability は同じ directory の
+`research-agent-delegation.md` に従う。
 
 ```text
 current gap
@@ -42,9 +42,8 @@ Agentic Model Construction
 same Local Model へ Reintegration
 ```
 
-Research Agent に Local Model、gap の意味判断、task direction、continuation / completion を委譲しない。
-
-direct exploration または Research Agent から得た grounded result は Core へ渡す。same Local Model への反映、必要な repair、bounded re-observation は `model-construction.md` の責任境界に従う。
+direct exploration または Research Agent から得た grounded result は Core へ渡す。task-relative semantic judgment、same Local Model への
+反映、必要な repair、bounded re-observation は `model-construction.md` の責任境界に従う。
 
 ## Completion
 

@@ -233,12 +233,11 @@ pattern = '''- **Unclear** — Target semantics、authority、または observed
   停止する。'''
 applies_to = ["shared-contracts"]
 
-[contracts.shared-v7-rmo-caller-dispatch-87ccccd07bff]
+[contracts.shared-v7-rmo-caller-dispatch-531fce6fc09f]
 kind = "requires"
 slice = "shared-v7-rmo-caller-ownership"
 pattern = '''RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
-な場合、caller が bounded objective、scope、authority、relevant context / evidence surface を確定して
-Research Agent に委譲してよい。'''
+な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。'''
 applies_to = ["shared-contracts"]
 
 [contracts.shared-v7-rmo-caller-reintegration-8654652ab5fb]

@@ -8,6 +8,8 @@
     "shared/agentic-model-construction.md",
     "shared/behavior-model-observation.md",
     "shared/reality-model-observation.md",
+    "shared/research-agent-delegation.md",
+    "shared/agents/research-agent.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
@@ -177,8 +179,8 @@
       "sha256": "aae2bc96d00d2dc30918b0243cb4ccc758a32f5731445f13148f8a6e3fec23d1"
     },
     {
-      "id": "shared-v7-rmo-caller-dispatch-87ccccd07bff",
-      "sha256": "c588305bacc68a3a172a60b20238957415af2445ef6b24dfdd32c32bd6301483"
+      "id": "shared-v7-rmo-caller-dispatch-531fce6fc09f",
+      "sha256": "d82c2f257576cb864f7daaf8178450ca90f3fe4ac244dff8f0d345f2fc87f9fe"
     },
     {
       "id": "shared-v7-rmo-caller-reintegration-8654652ab5fb",
