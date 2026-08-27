@@ -1,5 +1,8 @@
 # Reality Model Observation
+<!-- @anchor shared-v7-rmo-document -->
 
+<!-- @contract shared-v7-rmo-identity-boundary -->
+<!-- @anchor shared-v7-rmo-identity-relation -->
 ## Identity and boundary
 
 `Reality Model Observation`（RMO）は、bounded な `Target` を、Observer が扱う Reality
@@ -16,6 +19,7 @@ evidence との接触によって Observer の Current Reality を更新する�
 RMO は Problem Derivation で停止する。RMO の projection は calling workflow の task-local Local Model、
 第二の Local Model、persistent state、canonical な固定 schema ではない。また mandatory phase、独立
 lifecycle、固定 state machine、exhaustive な Reality taxonomy を導入しない。
+<!-- @/contract -->
 
 ```text
 Target + authoritative Context + evidence surface
@@ -63,6 +67,8 @@ Target identity / central semantics、Human の value judgment、成功 threshol
 
 ## Outputs and ownership
 
+<!-- @contract shared-v7-rmo-output-boundary -->
+<!-- @anchor shared-v7-rmo-output-relation -->
 必要に応じて、RMO は次の意味を caller が追跡できる形で返す。
 
 - **Observable Reality Model** — Required Reality Distinctions、各 distinction の Target / Context
@@ -80,6 +86,7 @@ RMO は次を所有・出力する責務を持たない。
 - Target の再定義・拡張、次の Improvement Loop、workflow continuation / completion
 - finding の採否、severity、accept / reject、downstream verdict
 - evidence acquisition、Research Agent の dispatch、same Local Model への Reintegration / Recomposition
+<!-- @/contract -->
 
 ## Projection derivation
 
@@ -117,6 +124,8 @@ flatten したりしない。
 
 ### Cover → Trim → Classify
 
+<!-- @contract shared-v7-rmo-model-sufficiency -->
+<!-- @anchor shared-v7-rmo-model-sufficiency-relation -->
 admitted な Required Reality Distinctions が、coherent な signal set で discriminable であるか、または
 具体的な gap / unresolved viewpoint として明示されているかを確認する。Target judgment を変えない signal
 や、利用できるだけの内部 step・値・組み合わせは mandatory にしない。
@@ -141,9 +150,12 @@ readiness を意味しない。`Insufficient` / `Indeterminate` は、authority 
 があり、その解決が distinction、signal mapping、interpretation condition、attribution、membership、または
 sufficiency を変えうる場合に限る。Reality に理論上さらに detail があることや、generic best practice だけでは
 `Indeterminate` の理由にしない。
+<!-- @/contract -->
 
 ## Concrete observation and evidence sufficiency
 
+<!-- @contract shared-v7-rmo-observation-gate -->
+<!-- @anchor shared-v7-rmo-observation-relation -->
 Model Sufficiency が `Sufficient` の場合、caller が許可した boundary 内で、frozen な criteria / conditions
 に沿って concrete evidence と接触する。観測中に新しい思いつきがあっても、criteria を都合よく追加・変更
 しない。新 evidence が model を無効化した場合、RMO は stale な model のまま観測を続けない。caller がその
@@ -164,9 +176,12 @@ discrepancy、attribution、membership を確定しない。その場合は obse
 Observed Evidence Sufficiency が十分なときだけ、Updated Current Reality と Target-relative expected
 distinction を照合する。discrepancy がなければ Problem を生成せず停止する。自己内省の余地や別の測定可能な
 signal があることは継続理由にならない。
+<!-- @/contract -->
 
 ## Attribution and Target Membership
 
+<!-- @contract shared-v7-rmo-membership-stop -->
+<!-- @anchor shared-v7-rmo-attribution-relation -->
 discrepancy がある場合に限り、少なくとも次の可能性を区別して mismatch attribution を行う。
 
 - current design / semantic-model defect
@@ -179,6 +194,7 @@ attribution が未確定なら `Uncertainty` として停止する。
 
 attribution を踏まえ、次を問う。
 
+<!-- @anchor shared-v7-rmo-membership-relation -->
 > この observed difference は、現在定義済みの Target の satisfaction を変えるか。
 
 - **Yes** — current Target に属する discrepancy として Target-relative Problem を導出できる。
@@ -190,9 +206,12 @@ Target-relative Problem は observed evidence に grounded で、Target との�
 current Target の scope 内にあり、solution や improvement proposal を含まない。Problem Derivation 後は
 必ず停止する。観測で発見した外部の問題は、その発見だけでは current Target、continuation condition、
 Improvement Candidate にならない。
+<!-- @/contract -->
 
 ## Caller-owned Research Agent composition
 
+<!-- @contract shared-v7-rmo-caller-ownership -->
+<!-- @anchor shared-v7-rmo-caller-relation -->
 RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
 な場合、caller が bounded objective、scope、authority、relevant context / evidence surface を確定して
 Research Agent に委譲してよい。Research Agent の result は evidence、source basis、execution result、
@@ -205,6 +224,7 @@ RMO へ再注入し、RMO は影響を受けた distinction / signal だけを�
 持たず、RMO もその result を理由に Target を拡張したり remediation を開始したりしない。これは Phase 1 の
 `1 top-level workflow invocation = exactly 1 task-local Local Model` と caller-owned Reintegration boundary
 を維持する。
+<!-- @/contract -->
 
 ## Case F / G representative contrasts
 

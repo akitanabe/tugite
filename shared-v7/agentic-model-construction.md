@@ -1,5 +1,8 @@
 # Agentic Model Construction
+<!-- @anchor shared-v7-agentic-document -->
 
+<!-- @contract shared-v7-agentic-human-boundary -->
+<!-- @anchor shared-v7-agentic-human-relation -->
 ## Identity
 
 `Agentic Model Construction` は、Model Construction Core を追加の Human interaction なしで実行し、Agent が利用可能な context、repository、observation、research によって task-local Local Model を構築する shared Method である。
@@ -7,6 +10,7 @@
 standalone public Skill にはしない。
 
 `Agentic` は Human-derived information を禁止する意味ではない。request 時点ですでに与えられている Human context / constraint / direction は通常の input として利用できる。違いは construction 中に新しい Human interaction channel を開始しないことである。
+<!-- @/contract -->
 
 ## Shared Core
 
@@ -44,14 +48,19 @@ direct exploration または Research Agent から得た grounded result は Cor
 
 ## Completion
 
+<!-- @contract shared-v7-agentic-completion -->
+<!-- @anchor shared-v7-agentic-completion-relation -->
 Agent-side resolution の結果、自身に割り当てられた construction scope について blocking gap が残らない場合は completion できる。
 
 未知がゼロであることや Reality 全体の網羅は要求しない。次工程の方向・範囲・結果を実質的に変えない unresolved uncertainty は qualification として保持したまま completion してよい。
 
 Projection Sufficiency 単独を completion 判定にはしない。Exploration Projection 上の gap / qualification と更新済み Local Model を合わせて Method scope の completion を判断する。
+<!-- @/contract -->
 
 ## Qualified Stop on Material Gap
 
+<!-- @contract shared-v7-agentic-qualified-stop -->
+<!-- @anchor shared-v7-agentic-stop-relation -->
 Agent-side で合理的に利用可能な bounded resolution route を用いても gap が解消できず、その gap が次工程の方向・範囲・結果を実質的に変え得る場合は停止する。
 
 grounded basis を得られない material gap を、plausible inference だけで解消済みと扱わない。
@@ -67,6 +76,7 @@ grounded basis を得られない material gap を、plausible inference だけ�
 固定 return schema は要求しない。
 
 Agentic Model Construction 自身は Human に質問せず、Interactive Model Construction への切り替えも行わない。停止後の扱いは calling workflow が所有する。
+<!-- @/contract -->
 
 ## Output
 

@@ -20,6 +20,7 @@ files = [
   "contracts/reality-model-observation-kernel.toml",
   "contracts/deletion-test-method.toml",
   "contracts/destination-selection.toml",
+  "contracts/shared-v7.toml",
 ]
 
 [sources]
@@ -45,6 +46,10 @@ files = [
   "shared/behavior-observation-kernel.md",
   "shared/reality-model-observation-kernel.md",
   "shared/deletion-test-method.md",
+  "shared-v7/model-construction.md",
+  "shared-v7/agentic-model-construction.md",
+  "shared-v7/behavior-model-observation.md",
+  "shared-v7/reality-model-observation.md",
   # Why Not: pin 本文は Tugite 内で編集せず、内容変更は akitanabe/clarify-it を変えてから手動再同期する。CI / runtime では fetch しない。
   "upstream/clarify-it/skills/clarify-it/SKILL.md",
   "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
@@ -108,6 +113,7 @@ allow_files = [
   "tests/install-agents-test.sh",
   "tests/install-cursor-plugin-test.sh",
   "tests/programmatic-flow-lint-test.js",
+  "tests/shared-v7-contracts-test.sh",
   ".claude-plugin/marketplace.json",
   ".agents/plugins/marketplace.json",
   "upstream/clarify-it/COMMIT",
@@ -121,6 +127,7 @@ claude-marketplace = "親エージェント"
 codex-marketplace = "親 Codex エージェント"
 agents-guidance = "親 Codex エージェント"
 claude-guidance = "親エージェント"
+shared-v7-contracts = "親エージェント"
 
 [terms.reviewer_invocation]
 claude = "新規 Agent"
@@ -130,6 +137,7 @@ claude-marketplace = "新規 Agent"
 codex-marketplace = "新しい reviewer worker"
 agents-guidance = "新しい reviewer worker"
 claude-guidance = "新規 Agent"
+shared-v7-contracts = "新規 Agent"
 
 [terms.new_worker_invocation]
 claude = "新規の `Agent` 呼び出し"
@@ -139,6 +147,7 @@ claude-marketplace = "新規の `Agent` 呼び出し"
 codex-marketplace = "新しい worker の起動"
 agents-guidance = "新しい worker の起動"
 claude-guidance = "新規の `Agent` 呼び出し"
+shared-v7-contracts = "新規の `Agent` 呼び出し"
 
 [terms.new_worker]
 claude = "新規 `Agent`"
@@ -148,6 +157,7 @@ claude-marketplace = "新規 `Agent`"
 codex-marketplace = "新しい worker"
 agents-guidance = "新しい worker"
 claude-guidance = "新規 `Agent`"
+shared-v7-contracts = "新規 `Agent`"
 
 [terms.continuation_mechanism]
 claude = "`SendMessage`"
@@ -157,6 +167,35 @@ claude-marketplace = "`SendMessage`"
 codex-marketplace = "`followup_task`"
 agents-guidance = "`followup_task`"
 claude-guidance = "`SendMessage`"
+shared-v7-contracts = "`SendMessage`"
+
+[targets.shared-v7-contracts]
+output_root = ".local/gunte/shared-v7-contracts"
+managed_roots = ["documents"]
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared-v7/model-construction.md"
+path = "documents/model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared-v7/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared-v7/agentic-model-construction.md"
+path = "documents/agentic-model-construction.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared-v7/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared-v7/behavior-model-observation.md"
+path = "documents/behavior-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared-v7/. Do not edit directly. -->"
+
+[[targets.shared-v7-contracts.rules]]
+match = "shared-v7/reality-model-observation.md"
+path = "documents/reality-model-observation.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared-v7/. Do not edit directly. -->"
 
 [targets.claude]
 output_root = "plugins/claude"

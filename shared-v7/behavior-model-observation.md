@@ -1,5 +1,8 @@
 # Behavior Model Observation
+<!-- @anchor shared-v7-bmo-document -->
 
+<!-- @contract shared-v7-bmo-identity-boundary -->
+<!-- @anchor shared-v7-bmo-identity-relation -->
 ## Identity and boundary
 
 `Behavior Model Observation`（BMO）は、Model Observation を Behavior に適用する Tugite consumer method である。BMO は
@@ -19,9 +22,12 @@ STOP
 ```
 
 BMO はこの停止点までを所有する。`Expected Observation Model` は bounded projection であり、calling workflow の task-local Local Model の所有・更新、第二の Local Model、または persistent state ではない。BMO の利用は caller が目的に応じて選ぶ optional specialization であり、mandatory phase や独立 lifecycle を導入しない。canonical Model Observation の一般理論を runtime に読み込まず、Tugite consumer が必要とするこの specialization の contract だけを保持する。
+<!-- @/contract -->
 
 ## Inputs and ownership
 
+<!-- @contract shared-v7-bmo-grounding -->
+<!-- @anchor shared-v7-bmo-grounding-relation -->
 consumer は BMO に次を渡す。
 
 - **Resolved Behavior** — 対象 Behavior の identity と中核的な意味が解決済みであること
@@ -33,7 +39,10 @@ Behavior の identity または中核的な意味が未解決で、それが Exp
 Context の authority はファイル種別や存在だけから推測しない。authority を持つ Context 間で precedence が未解決であり、その解決が Expected Observation または Collective Sufficiency を変え得る場合は、一方を選択したり silent merge したりせず、影響とともに `Relevant Unresolved Viewpoint` として保持する。
 
 consumer が評価・設計・照合する対象と、BMO が導出根拠として使う reference / discovery Context は役割を分ける。評価対象 claim 自身を、その claim の Expected Observation の grounding に再利用しない。同一 artifact に両方がある場合も claim / section 単位で分離する。BMO の出力は consumer 固有の評価対象や成果物の存在・内容から逆算しない。
+<!-- @/contract -->
 
+<!-- @contract shared-v7-bmo-admission-grounding -->
+<!-- @anchor shared-v7-bmo-admission-relation -->
 ## Method
 
 次の順序は reasoning direction であり、固定 state machine、mandatory phase、共通 serialized schema ではない。
@@ -47,6 +56,7 @@ Behavior Semantics と Relevant Authoritative Context から、成立・不成�
 同じ operation を契機としていても、独立して成立・不成立を判定できる意味は別 Behavior である。別 Behavior を variation として BMO の Expected Observation Model に混在させず、consumer が別途扱えるよう区別して返す。
 
 candidate は Behavior または authority を持つ Context に grounding があり、かつ入力 Behavior の意味上の distinction である場合だけ `Admit` する。測定可能であること、既存 artifact・実装・テストに現れること、一般に重要であること、observer が想像できることだけでは admission の根拠にならない。grounding のない候補は推測で補完しない。
+<!-- @/contract -->
 
 ### 2. Project — Identify → Calibrate
 
@@ -77,11 +87,14 @@ BMO は共通の serialized schema を要求しないが、consumer が意味を
 
 ### Collective Sufficiency
 
+<!-- @contract shared-v7-bmo-collective-sufficiency -->
+<!-- @anchor shared-v7-bmo-collective-relation -->
 Collective Sufficiency は、入力された Behavior に対する Expected Observation Model 自体の導出十分性である。consumer 固有の成果物・評価対象・downstream quality、workflow readiness、Reality verification、Real / Reality の完全性、Behavior 自体の真理を判定するものではない。
 
 - **Sufficient** — Behavior の意味と Admit された meaningful variation が、相互に coherent な Expected Observations 全体で区別でき、Relevant Unresolved Viewpoint が残っていない。
 - **Insufficient** — Behavior の意味または Admit された meaningful variation のうち、Expected Observations で区別できないものが具体的に残っている。未カバーの意味と理由を保持する。現在の入力から補える場合は Explore または Project へ戻って再導出する。
 - **Indeterminate** — 既知の coverage gap は確定できないが、Relevant Unresolved Viewpoint が残るため十分性を確定できない。
+<!-- @/contract -->
 
 ### Relevant Unresolved Viewpoint
 
@@ -94,6 +107,8 @@ Collective Sufficiency は、入力された Behavior に対する Expected Obse
 
 ## Stop boundary and reintegration
 
+<!-- @contract shared-v7-bmo-stop-boundary -->
+<!-- @anchor shared-v7-bmo-stop-relation -->
 Expected Observation Model と Collective Sufficiency を返したら停止する。BMO は次を所有・開始しない。
 
 - actual observation、Concrete Observation、Reality verification
@@ -103,6 +118,7 @@ Expected Observation Model と Collective Sufficiency を返したら停止す�
 - consumer 固有の finding、verdict、severity、accept / reject、remediation、implementation change
 
 consumer から新しい authoritative Context が再注入され、既存の variation・grounding・Expected Observation が無効になった場合だけ、最後に信頼できる段階まで戻って依存する導出を再適用する。stale な導出を新しい導出と並置して残さない。Behavior の identity または中核的意味が変わる場合は、BMO 内で再定義せず consumer に Behavior の再解決を返す。
+<!-- @/contract -->
 
 ## Case E semantic contrasts
 

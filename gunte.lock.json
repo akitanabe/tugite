@@ -16,6 +16,7 @@
     "contracts/reality-model-observation-kernel.toml",
     "contracts/deletion-test-method.toml",
     "contracts/destination-selection.toml",
+    "contracts/shared-v7.toml",
     "shared/VERSION",
     "shared/agents/focused-implementer.md",
     "shared/agents/expert-implementer.md",
@@ -38,6 +39,10 @@
     "shared/behavior-observation-kernel.md",
     "shared/reality-model-observation-kernel.md",
     "shared/deletion-test-method.md",
+    "shared-v7/model-construction.md",
+    "shared-v7/agentic-model-construction.md",
+    "shared-v7/behavior-model-observation.md",
+    "shared-v7/reality-model-observation.md",
     "upstream/clarify-it/skills/clarify-it/SKILL.md",
     "upstream/clarify-it/skills/clarify-it/references/philosophy.md",
     "shared/skill/code-review/SKILL.md",
@@ -4120,6 +4125,194 @@
     {
       "id": "destination-unique-selection-not-flow-b044fb39cdc4",
       "sha256": "8fa955b596bf1d6bee0121b7b1e21de06c41878382f49fc9798a44b678b4a813"
+    },
+    {
+      "id": "shared-v7-model-document",
+      "sha256": "e7e316a688438d1bcffd52c90dce0adc571b5baee4b9d3b12f74a9c8402d82fb"
+    },
+    {
+      "id": "shared-v7-model-owner-5e2b8b392201",
+      "sha256": "28f19c70e00a210f33111a5b4978c2c73dd8e0b8a904cc49a67f725da11284d5"
+    },
+    {
+      "id": "shared-v7-model-nested-owner-07ed8500dbb9",
+      "sha256": "a1400e1035e6bf0fc2da74f0366f386012ef6016722c069846e94049271d2147"
+    },
+    {
+      "id": "shared-v7-model-document-before-ownership",
+      "sha256": "63bf5da5dfefbf90cb256d381c0a3f6906cd572e20690f8be7599c0283486a4e"
+    },
+    {
+      "id": "shared-v7-model-transition-8ee2eab59f2e",
+      "sha256": "bfd0555024aa5842d1e5007013c8335abdae2bf278ba5f28edde1bf35ab9bfdb"
+    },
+    {
+      "id": "shared-v7-model-completion-1b7e4dca6359",
+      "sha256": "4b7216eb04952d901d63415a1a84a2390dbbad6f8f419b52e3aabaab4b877e14"
+    },
+    {
+      "id": "shared-v7-model-reintegration-before-recomposition",
+      "sha256": "16a34c8c9d8dbf95d246b2664e5607185412e0e70d6d7ba7a4d2372259284467"
+    },
+    {
+      "id": "shared-v7-model-document-before-completion",
+      "sha256": "76862786c86edd2f5d2b09746b13de212a2819a33834290bd08dc9e469a470ff"
+    },
+    {
+      "id": "shared-v7-agentic-document",
+      "sha256": "745067e4991f84f9b74633194e49ad404c46a62e83d56087514bcb194510b525"
+    },
+    {
+      "id": "shared-v7-agentic-human-boundary-c33e46f73b82",
+      "sha256": "b93e159d1785238c8477b3ce2fc7fe2f47a3711c3c783e82199ce80caaa053bc"
+    },
+    {
+      "id": "shared-v7-agentic-nonmaterial-completion-5f912b7d0e29",
+      "sha256": "518b3f38ef55fc10038d1abd241c678204579a7a9bf05ea14d93b72c32451c4d"
+    },
+    {
+      "id": "shared-v7-agentic-material-stop-e5166be41edb",
+      "sha256": "f40b09e959f210ba53f3e3f5bb9473583e28d302fa3313b7005f31811f68ba6f"
+    },
+    {
+      "id": "shared-v7-agentic-stop-owner-3136cb2bc843",
+      "sha256": "3fae096a2d363f90245218aa8303fd40665b5860d870ce47297e717a4f41991a"
+    },
+    {
+      "id": "shared-v7-agentic-document-before-human",
+      "sha256": "963de69bb9ce41eb50a80be578521a81c0d0964627888513fd7dc4fd485df839"
+    },
+    {
+      "id": "shared-v7-agentic-human-before-completion",
+      "sha256": "d7bc9ce57aa2eb0fc815633a6d16d10d2af8bf53dfb177396d1ffbaae5ab0589"
+    },
+    {
+      "id": "shared-v7-agentic-completion-before-stop",
+      "sha256": "1f13e7c8c6b7cbb53d0869a00886ef09fdd66d49a6e6c5d1096dbd26338cd11a"
+    },
+    {
+      "id": "shared-v7-bmo-document",
+      "sha256": "bb493f696353cc7e1a9239450a0ebfa939690931427a8e69557a7ce3721d4fb2"
+    },
+    {
+      "id": "shared-v7-bmo-projection-only-33629d55190f",
+      "sha256": "15383c4a48a858262932827b6cdef485b20f257f0d56fb8ace6f7ffe3268ce54"
+    },
+    {
+      "id": "shared-v7-bmo-stop-point-3712e1702b95",
+      "sha256": "0c1933299b68f14300f35f726b69ea6b837c397c08ad808e88105e1b1b3f1635"
+    },
+    {
+      "id": "shared-v7-bmo-admission-grounding-d30b3d4ac064",
+      "sha256": "63a582118d4407b53eca456bee5d2eb527caf9fafa456059dcfceb37fa2d2b8b"
+    },
+    {
+      "id": "shared-v7-bmo-no-self-grounding-7e0e9275fd8e",
+      "sha256": "59f5337462b6ad16594de744e983cad4257059ff18d4a44c500c198f505d456e"
+    },
+    {
+      "id": "shared-v7-bmo-collective-nonverdict-3140677fb21c",
+      "sha256": "29c9088aa8477d8ee73d8b7eca6d17cdb8b1d5fe2aaaf99be156d92c0587fac4"
+    },
+    {
+      "id": "shared-v7-bmo-stop-boundary-57ed70177942",
+      "sha256": "18dee76972d75fa6610a1b5d25fb34554303872251bcb3aa097183b287245a83"
+    },
+    {
+      "id": "shared-v7-bmo-document-before-identity",
+      "sha256": "ccac43e904666860814431d837ce74ac9b87b6b708ca01d9a85914cd0d838171"
+    },
+    {
+      "id": "shared-v7-bmo-identity-before-grounding",
+      "sha256": "11f43350eff83044710a457c844c6ace40a6118873bbfa9aabfd7db04a1fe0f7"
+    },
+    {
+      "id": "shared-v7-bmo-grounding-before-admission",
+      "sha256": "3102d5e2ef1767ec7fd71c54377776326a5b2c9fefb00757f0cf00ae5bebf825"
+    },
+    {
+      "id": "shared-v7-bmo-admission-before-collective",
+      "sha256": "fe75e586dd6c5d1e3bc46853c862a243c89a9221c636d07f3ad3cade77b153f5"
+    },
+    {
+      "id": "shared-v7-bmo-collective-before-stop",
+      "sha256": "5a33318025519bab926e71ff5cadf93de78db76a7c3ceee24c426d4037f14fa8"
+    },
+    {
+      "id": "shared-v7-rmo-document",
+      "sha256": "0cb2f6985b46b3b45b6a68498351cd614cdc2cf55c149533f8a28a9478cef828"
+    },
+    {
+      "id": "shared-v7-rmo-problem-stop-2611ec071d14",
+      "sha256": "80ffdad2c295384e757e97ee701a07bbbe22e058ef0920c4eac8a8d6586f30d2"
+    },
+    {
+      "id": "shared-v7-rmo-no-remediation-efff1b0e698e",
+      "sha256": "a3cd9a8acf9c75ebc89538034332c4b61100aa6556683f39e0553af66d3818fd"
+    },
+    {
+      "id": "shared-v7-rmo-no-acquisition-56faea4219fd",
+      "sha256": "f98dbc43627b07ba86cb3e5e8d95e2de9541b638d4d43a3b7a91474ecc760c4d"
+    },
+    {
+      "id": "shared-v7-rmo-model-nonreadiness-2cb56aecc2c7",
+      "sha256": "29b811662b3a80f3bbdf24f8bc7fc8425ec85325c691b58afda4f8470e0eb836"
+    },
+    {
+      "id": "shared-v7-rmo-observation-gate-f1bf5d41b1c3",
+      "sha256": "2512cade262598ae0cd71656be2d557f59ac7fa62f2ea502c5b00eac5ab5f62f"
+    },
+    {
+      "id": "shared-v7-rmo-sufficiency-distinction-49d148234a56",
+      "sha256": "36541649ff90b952b55aa22b541ddaf6dc02fe213afea14e2b1630e4f9a3c59e"
+    },
+    {
+      "id": "shared-v7-rmo-membership-problem-56eaf462e93f",
+      "sha256": "fd8f9c631de63a90f1377031793926f42c79e311dc75bbcddcb8d69ffe8c116e"
+    },
+    {
+      "id": "shared-v7-rmo-membership-incidental-efb328f8a783",
+      "sha256": "0a4bb296bba97c26beb1b5efdee1a404efd2f6ca9546932b5ba621f045500e0c"
+    },
+    {
+      "id": "shared-v7-rmo-membership-uncertainty-a85b6abb25de",
+      "sha256": "15ab0547d80683040abed47c054677b418b34c17ce5771463404fce79ab94762"
+    },
+    {
+      "id": "shared-v7-rmo-caller-dispatch-d4a48b959269",
+      "sha256": "f0ddb597be00d339863b57ec9628206c1958bc5cea9e062218568a2bf72c19d2"
+    },
+    {
+      "id": "shared-v7-rmo-caller-reintegration-a95b84105a71",
+      "sha256": "e6937993fc4bea4ca2f20d0cfcbe2b6149319ee0550d4388d4057bded87f2b8d"
+    },
+    {
+      "id": "shared-v7-rmo-document-before-identity",
+      "sha256": "23887cebdd5d6954ed45a78a3ba1bc29f7be062982873dc277d35d9f9d916a30"
+    },
+    {
+      "id": "shared-v7-rmo-identity-before-output",
+      "sha256": "0985df548970f4be96d8e59b1089411cf5e104759e75dcc5ba7b9bb304970a62"
+    },
+    {
+      "id": "shared-v7-rmo-output-before-model",
+      "sha256": "2c0c99d1efbd2bac0406d7d77b0c8a2786b887a8a85db2c0f94069ae824b2ff5"
+    },
+    {
+      "id": "shared-v7-rmo-model-before-observation",
+      "sha256": "b03f740c616dfdc7b6cc18150c4f1595f4d18c0de3f1513b65d0345cfb032359"
+    },
+    {
+      "id": "shared-v7-rmo-observation-before-attribution",
+      "sha256": "410dbdc8263f41d00675c682ca4b31a0705c4db6043de7b4ac09115840c1636c"
+    },
+    {
+      "id": "shared-v7-rmo-attribution-before-membership",
+      "sha256": "e2d8ae65d4d864ebeb35f8a3bf1f6153ecf32038ab3eb5e7e7f445c9db6c14fd"
+    },
+    {
+      "id": "shared-v7-rmo-membership-before-caller",
+      "sha256": "badedb73c88403515131e8621f1a8e91d980a01fcf05a2e99a17976daa07103f"
     }
   ],
   "declarations": [
@@ -4352,6 +4545,206 @@
       "kind": "span",
       "id": "deletion-test-method-v1",
       "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-model-document",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-model-ownership",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-model-ownership-relation",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-model-transition",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-model-reintegration",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-model-recomposition",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-model-completion",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-model-completion-relation",
+      "path": "shared-v7/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-agentic-document",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-agentic-human-boundary",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-agentic-human-relation",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-agentic-completion",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-agentic-completion-relation",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-agentic-qualified-stop",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-agentic-stop-relation",
+      "path": "shared-v7/agentic-model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-document",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-bmo-identity-boundary",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-identity-relation",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-bmo-grounding",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-grounding-relation",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-bmo-admission-grounding",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-admission-relation",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-bmo-collective-sufficiency",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-collective-relation",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-bmo-stop-boundary",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-bmo-stop-relation",
+      "path": "shared-v7/behavior-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-document",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-identity-boundary",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-identity-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-output-boundary",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-output-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-model-sufficiency",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-model-sufficiency-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-observation-gate",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-observation-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-membership-stop",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-attribution-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-membership-relation",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-v7-rmo-caller-ownership",
+      "path": "shared-v7/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-v7-rmo-caller-relation",
+      "path": "shared-v7/reality-model-observation.md"
     },
     {
       "kind": "span",

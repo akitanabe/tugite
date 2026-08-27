@@ -1,4 +1,5 @@
 # Tugite v7 Model Construction
+<!-- @anchor shared-v7-model-document -->
 
 ## Purpose
 
@@ -8,12 +9,15 @@
 
 ## Ownership
 
+<!-- @contract shared-v7-model-ownership -->
+<!-- @anchor shared-v7-model-ownership-relation -->
 - **`1 top-level workflow invocation = exactly 1 task-local Local Model`** とする。
 - Local Model の owner は calling workflow とする。
 - Local Model は invocation の目的に局所化された evidence-grounded な意味構造であり、ephemeral とする。
 - canonical artifact、persistent state、共通 fixed schema、score、state machine、mandatory serialized representation を要求しない。
 - nested workflow、consumer、reviewer、Research Agent は独自 Local Model を所有しない。
 - 複数 Method を利用しても同じ一つの Local Model を継続的に更新する。
+<!-- @/contract -->
 
 ## Model Construction Core
 
@@ -133,12 +137,15 @@ Research Agent の結果は Model Construction Method が意味判断し、same 
 
 ## Reintegration
 
+<!-- @contract shared-v7-model-transition -->
+<!-- @anchor shared-v7-model-reintegration -->
 新しい grounded information / judgment の bounded semantic effect を same Local Model へ戻す通常更新である。
 
 新 evidence が既存理解を変更する場合、stale understanding を単純追記して残さず、affected semantics を current evidence に合わせて更新する。
 
 ## Recomposition
 
+<!-- @anchor shared-v7-model-recomposition -->
 Recomposition は、Reintegration または grounded dependency evaluation により current Local Model の material semantic region が invalidated した場合の repair である。
 
 - 新情報のたびには実行しない。
@@ -146,6 +153,7 @@ Recomposition は、Reintegration または grounded dependency evaluation に�
 - invalidated region と dependency を必要な範囲で再構成する。
 - repair 後も same Local Model を継続する。
 - repair 後は affected semantics を bounded に再観測する。
+<!-- @/contract -->
 
 ## Evidence Integrity
 
@@ -173,11 +181,14 @@ Agentic Model Construction
 
 ## Completion Responsibility
 
+<!-- @contract shared-v7-model-completion -->
+<!-- @anchor shared-v7-model-completion-relation -->
 各 Method は自身に割り当てられた construction scope の完了または停止を判断する。
 
 calling workflow は、返された understanding を利用して workflow 全体として次責務へ進めるかを判断する。
 
 Projection Sufficiency は Method completion と同一ではなく、Method completion は workflow readiness とも同一ではない。
+<!-- @/contract -->
 
 ## Non-goals
 
