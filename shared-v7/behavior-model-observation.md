@@ -118,7 +118,3 @@ consumer から新しい authoritative Context が再注入され、既存の va
 | authority conflict があり precedence 未解決 | 解決結果が Expected Observation または sufficiency を変え得るなら silent merge / 選択をせず Relevant Unresolved Viewpoint とし、通常は `Indeterminate` とする。 |
 | Admit された全 variation が covered | Behavior の意味と全 variation が coherent に区別され、Relevant Unresolved Viewpoint がなければ `Sufficient`。これは actual observation や downstream quality の成功を意味しない。 |
 | Admit された variation の一部が uncovered | 未カバーの variation と区別できない理由を返し、`Insufficient` とする。現在の入力で補える間は再 Explore / Project し、補えなければ partial result として停止する。 |
-
-## Minimal operational question
-
-> この Behavior が成立している状態と成立していない状態では、何が観測可能に異なる必要があるか。その差異は Behavior または authoritative Context に grounding されているか。Expected Observations 全体で、Behavior の意味と admitted meaningful variation を十分に区別できるか。
