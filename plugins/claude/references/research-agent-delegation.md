@@ -62,6 +62,24 @@ grounded result は固定 schema ではなく、objective に必要な次の意�
 caller は result の evidence / authority relation と task-relative semantic effect を判断する。partial / unknown result や limitation を
 plausible inference で埋めず、利用できる evidence と未解決事項を区別する。
 
+## Continued Delegation
+
+各 continuation は新しい bounded delegation とする。
+
+caller は objective、scope、authority、relevant context / evidence surface をその都度確認して渡す。
+
+prior authority、retry permission、operation target、scope、task semantics を自動継承させない。
+
+同じ runtime instance への continuation でも、caller は今回の delegation input を再構成する。
+
+prior research context は evidence / source relation / bounded local inference として再利用できるが、今回の objective、scope、authority、task semantics を拡張する入力にはしない。
+
+caller が fresh invocation を選んだ場合、必要な delegation input と再利用可能な research context を再構成して渡す。
+
+runtime / platform が continuation capability を提供しない場合は fresh invocation を使う。
+
+fallback は delegation failure ではなく continuation capability の不足に対する caller-side の invocation 選択であり、Research Agent 自身は continuation、fresh 切り替え、次の operation を開始しない。
+
 ## Semantic ownership
 
 Research Agent に次を委譲しない。

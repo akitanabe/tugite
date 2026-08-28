@@ -149,6 +149,37 @@ Recomposition は、Reintegration または grounded dependency evaluation に�
 - repair 後は affected semantics を bounded に再観測する。
 <!-- @/contract -->
 
+## Context Continuation
+
+<!-- @contract shared-model-continuation -->
+<!-- @anchor shared-model-continuation-relation -->
+caller は Reintegration / Recomposition 後に affected semantics を bounded に再観測し、次の bounded objective を構成する。
+<!-- @/contract -->
+
+prior research context を次の objective に使う場合も、continuation の要否と current objective は caller が決める。
+
+<!-- @contract shared-model-continuation-reusability -->
+<!-- @anchor shared-model-continuation-reusability-relation -->
+caller は prior research context の material reusability を判断する。
+<!-- @/contract -->
+
+materially reusable とは、既存 evidence から追加 source を追える、source relation / comparison を保てる、既知の limitation / unresolved point を直接詰められる、または observation と inference の区別を維持できることである。
+
+<!-- @contract shared-model-continuation-same-surface -->
+source / evidence surface の同一性を material reusability の前提にしない。
+<!-- @/contract -->
+
+<!-- @contract shared-model-continuation-preference -->
+materially reusable と判断できる場合、caller は same runtime instance への continuation を fresh invocation より優先できる。
+<!-- @/contract -->
+
+<!-- @contract shared-model-continuation-fresh -->
+<!-- @anchor shared-model-continuation-fresh-relation -->
+context が意味を歪める、semantic subject が変わる、または独立した evidence acquisition が必要な場合、caller は fresh invocation を選ぶ。
+<!-- @/contract -->
+
+Research Agent に continuation、fresh の選択、gap の materiality、Local Model の意味、scope / authority / task semantics の拡張を委譲しない。
+
 ## Evidence Integrity
 
 calling workflow へ understanding を返すときは、後続判断に必要な supporting evidence、authority relation、material uncertainty / qualification を失わない。

@@ -95,6 +95,39 @@ caller は result の evidence / authority relation と task-relative semantic e
 plausible inference で埋めず、利用できる evidence と未解決事項を区別する。
 <!-- @/contract -->
 
+## Continued Delegation
+
+<!-- @contract shared-research-continuation -->
+<!-- @anchor shared-research-continuation-relation -->
+各 continuation は新しい bounded delegation とする。
+<!-- @/contract -->
+
+<!-- @contract shared-research-continuation-input -->
+caller は objective、scope、authority、relevant context / evidence surface をその都度確認して渡す。
+<!-- @/contract -->
+
+<!-- @contract shared-research-continuation-authority -->
+prior authority、retry permission、operation target、scope、task semantics を自動継承させない。
+<!-- @/contract -->
+
+同じ runtime instance への continuation でも、caller は今回の delegation input を再構成する。
+
+<!-- @contract shared-research-continuation-context -->
+<!-- @anchor shared-research-continuation-context-relation -->
+prior research context は evidence / source relation / bounded local inference として再利用できるが、今回の objective、scope、authority、task semantics を拡張する入力にはしない。
+<!-- @/contract -->
+
+<!-- @contract shared-research-fresh-fallback -->
+<!-- @anchor shared-research-fresh-fallback-relation -->
+caller が fresh invocation を選んだ場合、必要な delegation input と再利用可能な research context を再構成して渡す。
+<!-- @/contract -->
+
+<!-- @contract shared-research-runtime-fallback -->
+runtime / platform が continuation capability を提供しない場合は fresh invocation を使う。
+<!-- @/contract -->
+
+fallback は delegation failure ではなく continuation capability の不足に対する caller-side の invocation 選択であり、Research Agent 自身は continuation、fresh 切り替え、次の operation を開始しない。
+
 ## Semantic ownership
 
 <!-- @anchor shared-research-semantic-relation -->

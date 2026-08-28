@@ -64,6 +64,42 @@
       "sha256": "2321bdf7f4bab2d95350648bad013536cc110a2f6ff31e0e025acd844aec318b"
     },
     {
+      "id": "shared-model-68da64fb0fab",
+      "sha256": "4ad4daf65ef7fe3bc32d4de1851614959c934271e4ef3dca6a14e6d39ca65a66"
+    },
+    {
+      "id": "shared-model-continuation-8c4a52400725",
+      "sha256": "3b16d6b59632b948120a9da7152bad42f29db9b72e81eceeb055080ca3a919ce"
+    },
+    {
+      "id": "shared-model-continuation-3f1d082f7078",
+      "sha256": "540d166b98864551b7ef01c7786ff95601e7720bc6b097c7e93f76c2a9974cd3"
+    },
+    {
+      "id": "shared-model-continuation-same-328b3e8f9d66",
+      "sha256": "49410084f0411e585cd14968153a7eb00ede02541150d7aeb91421aed911093a"
+    },
+    {
+      "id": "shared-model-continuation-4b43b225c95f",
+      "sha256": "41d735c5a466daafdb9feb628bac3b9c4b667719e882aa2cca45f163a879e071"
+    },
+    {
+      "id": "shared-model-reintegration-before-continuation",
+      "sha256": "5ca68f9bee8a94ddb2293a73ab63cf25d050a520ac11636bca8cc59d7d477263"
+    },
+    {
+      "id": "shared-model-continuation-before-reusability",
+      "sha256": "ac84321094e7b04e37fce72ac8f5e6c25cc22d2f3eb7cb56f541da7c722b1e67"
+    },
+    {
+      "id": "shared-model-reusability-before-fresh",
+      "sha256": "89cf96c98c06f13d404ccce4c918cb3eb6d7fe91be1d4fb1204acc648011ef46"
+    },
+    {
+      "id": "shared-model-recomposition-before-continuation",
+      "sha256": "8a36bbfaf1f6d4f3f8fc9836870349695512158d58a0b71c017dd0a9386fd054"
+    },
+    {
       "id": "shared-agentic-document",
       "sha256": "0f38a873008f8cdf305734437ca48724793b214ed33b2cb91a29e2f130d4a730"
     },
@@ -320,6 +356,30 @@
       "sha256": "7a0c262cd5ea3a14dd4f6e3d8d830af4a61faab9f3b625cc73c368460bb467a2"
     },
     {
+      "id": "shared-research-eb17f91a3baf",
+      "sha256": "ae316df555aa810ba6972d83176ee9926591821072c70bc938dcaf8f2844015f"
+    },
+    {
+      "id": "shared-research-continuation-40eec5514ee7",
+      "sha256": "a52500973113737bf125154abbdf4410f971c3fc7f5c4d07804488604f8bce8a"
+    },
+    {
+      "id": "shared-research-continuation-ead0b86f6236",
+      "sha256": "f9ac68c86c9d10b94d652abc63fc253d1612465eac37232bddbeae7f1b5a36e8"
+    },
+    {
+      "id": "shared-research-continuation-c05a7849e175",
+      "sha256": "7055ac5afb3cecce588e5eea2f0c56cd4314e66e42d2248c6644241c3f68f71b"
+    },
+    {
+      "id": "shared-research-6f1f8c4ab4d5",
+      "sha256": "ef6d086f7dfee973318c5ef3f1b73ca2dbbfbaf22b888b666f7378e128fb894c"
+    },
+    {
+      "id": "shared-research-runtime-25372d2a9aaf",
+      "sha256": "0551b335c95e84c83a1f3eec0a769bcb365408ae10ca48bbbd12cb01c7235f4f"
+    },
+    {
       "id": "shared-research-semantic-boundary-348519df26bb",
       "sha256": "b8d31061acd16fcbe02190f464bc81e2791d68bf2bae16e19ad9cca8f86666b2"
     },
@@ -354,6 +414,26 @@
     {
       "id": "shared-research-result-before-semantic",
       "sha256": "8d228dbebca49792a9c0e4d98d41719d47538ef90b0a85340ba0a64f2ba455fa"
+    },
+    {
+      "id": "shared-research-result-before-continuation",
+      "sha256": "82f02da2fd94566c33ce0517089647c5f58de6445d63b2bd3dc168db570041bd"
+    },
+    {
+      "id": "shared-research-continuation-before-context",
+      "sha256": "645e8b87159c73ebc9f6a5e9de4d7fd46ec91a0748b5576d8c5d419fd935d2db"
+    },
+    {
+      "id": "shared-research-context-before-fresh",
+      "sha256": "f1c05cfc18941490040d9f3385eaf65f03596de65bb5fa84a805f93253c7a18f"
+    },
+    {
+      "id": "shared-research-fresh-before-semantic",
+      "sha256": "a204c5840094eb771d5f18e19317e771c1ccbd6efa25fce97e3bc80ba5f1c4a2"
+    },
+    {
+      "id": "shared-research-agent-retained-361ea41904d6",
+      "sha256": "c60a532eb782667a63efd177a046d52995e272be37f6641d796c34fd381ebea5"
     },
     {
       "id": "whats-this-document",
@@ -505,6 +585,46 @@
     {
       "kind": "anchor",
       "id": "shared-model-recomposition",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-model-continuation",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-model-continuation-relation",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-model-continuation-reusability",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-model-continuation-reusability-relation",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-model-continuation-same-surface",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-model-continuation-preference",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-model-continuation-fresh",
+      "path": "shared/model-construction.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-model-continuation-fresh-relation",
       "path": "shared/model-construction.md"
     },
     {
@@ -818,6 +938,51 @@
       "path": "shared/research-agent-delegation.md"
     },
     {
+      "kind": "span",
+      "id": "shared-research-continuation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-continuation-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-continuation-input",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-continuation-authority",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-continuation-context",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-continuation-context-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-fresh-fallback",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-fresh-fallback-relation",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-runtime-fallback",
+      "path": "shared/research-agent-delegation.md"
+    },
+    {
       "kind": "anchor",
       "id": "shared-research-semantic-relation",
       "path": "shared/research-agent-delegation.md"
@@ -831,6 +996,11 @@
       "kind": "span",
       "id": "shared-research-semantic-ownership",
       "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-agent-retained-context",
+      "path": "shared/agents/research-agent.md"
     },
     {
       "kind": "anchor",

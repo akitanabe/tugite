@@ -51,6 +51,60 @@ before = "shared-model-document"
 after = "shared-model-completion-relation"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.shared-model-68da64fb0fab]
+kind = "requires"
+slice = "shared-model-continuation"
+pattern = "caller は Reintegration / Recomposition 後に affected semantics を bounded に再観測し、次の bounded objective を構成する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-continuation-8c4a52400725]
+kind = "requires"
+slice = "shared-model-continuation-reusability"
+pattern = "caller は prior research context の material reusability を判断する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-continuation-3f1d082f7078]
+kind = "requires"
+slice = "shared-model-continuation-fresh"
+pattern = "context が意味を歪める、semantic subject が変わる、または独立した evidence acquisition が必要な場合、caller は fresh invocation を選ぶ。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-continuation-same-328b3e8f9d66]
+kind = "requires"
+slice = "shared-model-continuation-same-surface"
+pattern = "source / evidence surface の同一性を material reusability の前提にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-continuation-4b43b225c95f]
+kind = "requires"
+slice = "shared-model-continuation-preference"
+pattern = "materially reusable と判断できる場合、caller は same runtime instance への continuation を fresh invocation より優先できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-reintegration-before-continuation]
+kind = "order"
+before = "shared-model-reintegration"
+after = "shared-model-continuation-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-continuation-before-reusability]
+kind = "order"
+before = "shared-model-continuation-relation"
+after = "shared-model-continuation-reusability-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-reusability-before-fresh]
+kind = "order"
+before = "shared-model-continuation-reusability-relation"
+after = "shared-model-continuation-fresh-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-model-recomposition-before-continuation]
+kind = "order"
+before = "shared-model-recomposition"
+after = "shared-model-continuation-relation"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.shared-agentic-document]
 kind = "occurrences"
 pattern = "# Agentic Model Construction"
@@ -487,6 +541,42 @@ pattern = '''- acquired / observed evidence と source basis
 - caller の判断または追加 acquisition が必要な unresolved point'''
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.shared-research-eb17f91a3baf]
+kind = "requires"
+slice = "shared-research-continuation"
+pattern = "各 continuation は新しい bounded delegation とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-continuation-40eec5514ee7]
+kind = "requires"
+slice = "shared-research-continuation-input"
+pattern = "caller は objective、scope、authority、relevant context / evidence surface をその都度確認して渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-continuation-ead0b86f6236]
+kind = "requires"
+slice = "shared-research-continuation-authority"
+pattern = "prior authority、retry permission、operation target、scope、task semantics を自動継承させない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-continuation-c05a7849e175]
+kind = "requires"
+slice = "shared-research-continuation-context"
+pattern = "prior research context は evidence / source relation / bounded local inference として再利用できるが、今回の objective、scope、authority、task semantics を拡張する入力にはしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-6f1f8c4ab4d5]
+kind = "requires"
+slice = "shared-research-fresh-fallback"
+pattern = "caller が fresh invocation を選んだ場合、必要な delegation input と再利用可能な research context を再構成して渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-runtime-25372d2a9aaf]
+kind = "requires"
+slice = "shared-research-runtime-fallback"
+pattern = "runtime / platform が continuation capability を提供しない場合は fresh invocation を使う。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.shared-research-semantic-boundary-348519df26bb]
 kind = "requires"
 slice = "shared-research-semantic-boundary"
@@ -544,6 +634,36 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "shared-research-result-relation"
 after = "shared-research-semantic-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-result-before-continuation]
+kind = "order"
+before = "shared-research-result-relation"
+after = "shared-research-continuation-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-continuation-before-context]
+kind = "order"
+before = "shared-research-continuation-relation"
+after = "shared-research-continuation-context-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-context-before-fresh]
+kind = "order"
+before = "shared-research-continuation-context-relation"
+after = "shared-research-fresh-fallback-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-fresh-before-semantic]
+kind = "order"
+before = "shared-research-fresh-fallback-relation"
+after = "shared-research-semantic-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-research-agent-retained-361ea41904d6]
+kind = "requires"
+slice = "shared-research-agent-retained-context"
+pattern = "保持 context の利用範囲は current bounded input の内側である。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.whats-this-document]
