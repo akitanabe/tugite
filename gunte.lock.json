@@ -410,6 +410,70 @@
     {
       "id": "whats-this-cursor-invocation-policy",
       "sha256": "4c62dee0498e4add45a5c4f7a8566306c1fe835d44880f8ebafc5bbb0a7dd30d"
+    },
+    {
+      "id": "explorer-this-document",
+      "sha256": "45652338046ab49c372e03ae9cdece4fb5854fb84cf5ea9cb5a55b248f48cd7a"
+    },
+    {
+      "id": "explorer-this-agentic-first-f7726fdb98b3",
+      "sha256": "7d8ace0a6d763125a24a799686d90601f950863ad80316af7346d7bde5c2ef5f"
+    },
+    {
+      "id": "explorer-this-fallback-boundary-2f0e78869ab4",
+      "sha256": "b366b3f7b79e0cb26d667124ba10e7bcd0aaac13fb7930139608f1ef1a84b2e9"
+    },
+    {
+      "id": "explorer-this-nonhuman-stop-b7450dd0304d",
+      "sha256": "25524c96ceb39a9c61e6ffda9b171fa93d745916ee1991f6770d6b2e123a1d13"
+    },
+    {
+      "id": "explorer-this-continuity-f34cebd89ba8",
+      "sha256": "5922ad6e43101f911246e0fd9132e7de447d60ddbb6bba8f976a8a462a2681d2"
+    },
+    {
+      "id": "explorer-this-authority-383e26f59917",
+      "sha256": "0a1ccd139497f922baf58059ca643d9363bb6cf04116e47b8fadfac7035e636e"
+    },
+    {
+      "id": "explorer-this-output-337180f80846",
+      "sha256": "da6798b465d6dc622459be730f50027f873b129cb76680dc1aeda6a26075e95c"
+    },
+    {
+      "id": "explorer-this-document-before-agentic",
+      "sha256": "33939801b772503df19eaafc61183df14d7284a2a5651bcccd31fa3929b39073"
+    },
+    {
+      "id": "explorer-this-agentic-before-fallback",
+      "sha256": "6601200f407b3c3cb12893658e89445fccaf1c1cabd8abf8fa11f030e4d2eb4d"
+    },
+    {
+      "id": "explorer-this-fallback-before-nonhuman",
+      "sha256": "9962a2a7e43dbbd3fc3350a0ab5f9491cee3405245109a1aa316dc556d813de1"
+    },
+    {
+      "id": "explorer-this-nonhuman-before-continuity",
+      "sha256": "279aac5354825b6f9b8af625148b7d962ba9e341cb82b58bbb7eb1d4ad44585b"
+    },
+    {
+      "id": "explorer-this-continuity-before-authority",
+      "sha256": "6a40a07dde995a804b85a48f0e992861703b457782946ed05fbcc0eabb7f39fe"
+    },
+    {
+      "id": "explorer-this-authority-before-output",
+      "sha256": "7376ef26e15d01a4a3a80613d4f1632b78ec66ec1c9fe17b7230ded988ba5748"
+    },
+    {
+      "id": "explorer-this-claude-invocation-policy",
+      "sha256": "b5f550eb02897f80c1e460aaa2d6c498fa5e3aa6ce69ce5f518776f21417d3c1"
+    },
+    {
+      "id": "explorer-this-codex-invocation-policy",
+      "sha256": "25309164c551bd2be5fa7035b7632755895f501bc8914c555a2c6ed1a3c95cb0"
+    },
+    {
+      "id": "explorer-this-cursor-invocation-policy",
+      "sha256": "09748b1d1242c334c033df6c6a0969e897e715f11ea2576e6f7d6c96634fcb89"
     }
   ],
   "declarations": [
@@ -767,6 +831,71 @@
       "kind": "span",
       "id": "shared-research-semantic-ownership",
       "path": "shared/research-agent-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-document-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-agentic-first",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-agentic-first-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-fallback-boundary",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-fallback-boundary-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-nonhuman-stop",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-nonhuman-stop-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-continuity",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-continuity-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-authority",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-authority-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-output",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "explorer-this-output-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
     },
     {
       "kind": "anchor",

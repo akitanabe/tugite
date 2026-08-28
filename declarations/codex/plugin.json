@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install agents and delegate with parent QA.",
-    "longDescription": "Codex skills for the public workflows whats-this, explorer-this, impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Implementation Unit workers, reviewers, and advisors. Whats-this and explorer-this are explicit-only, keep one task-local Local Model, and connect directly to requested output; whats-this uses Interactive Model Construction while explorer-this qualified-stops on unresolved material gaps. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and observes them as a Verification Topology without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility.",
+    "longDescription": "Codex skills for the public workflows whats-this, explorer-this, impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report, their internal skills, Implementation Unit workers, reviewers, and advisors. Whats-this and explorer-this are explicit-only, keep one task-local Local Model, and connect directly to requested output; whats-this uses Interactive Model Construction while explorer-this uses Agentic Model Construction first and composes Interactive Model Construction only for unresolved Human-owned material gaps, leaving non-Human material gaps as qualified stops. Code-review also applies when a user clearly wants a Tugite code-review of a change set, and reports evidence-checked findings without fixing or adjudicating. Test-report also applies when a user clearly wants to understand a specified set of tests, and observes them as a Verification Topology without editing, running, or evaluating tests. The parent Codex agent performs parent QA and keeps final quality responsibility.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -27,7 +27,7 @@
     ],
     "defaultPrompt": [
       "Use $whats-this only for an explicit public workflow; keep one task-local Local Model, use Interactive Model Construction, and connect directly to the requested output.",
-      "Use $explorer-this only for explicit public exploration requests; keep one task-local Local Model, connect directly to the requested output, and qualified-stop on unresolved material gaps.",
+      "Use $explorer-this only for explicit public exploration requests; keep one task-local Local Model, use Agentic Model Construction first, compose Interactive Model Construction only for unresolved Human-owned material gaps, and connect the result directly to the requested output.",
       "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
       "Use $plan-agent to draft or refine a free-form planning artifact without starting implementation.",
       "Use $plan-interactive to draft a human-directed planning artifact through mandatory common synthesis, gate, and bounded review without starting implementation.",

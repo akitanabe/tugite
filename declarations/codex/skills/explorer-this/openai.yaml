@@ -1,6 +1,6 @@
 interface:
   display_name: "Explorer This"
-  short_description: "Run explicit exploration with one task-local model and direct requested output"
-  default_prompt: "Use $explorer-this only for an explicit public exploration request; use one task-local Local Model, connect directly to the requested output, and qualified-stop when a material gap remains unresolved."
+  short_description: "Run explicit Agentic-first exploration with conditional Interactive fallback"
+  default_prompt: "Use $explorer-this only for an explicit public exploration request; keep one task-local Local Model, use Agentic Model Construction first, compose Interactive Model Construction only for an unresolved Human-owned material gap, and connect the result directly to the requested output."
 policy:
   allow_implicit_invocation: false

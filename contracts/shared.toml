@@ -637,3 +637,107 @@ pattern = "disable-model-invocation: true"
 count = 1
 paths = ["plugins/cursor/skills/whats-this/SKILL.md"]
 applies_to = ["cursor"]
+
+[contracts.explorer-this-document]
+kind = "occurrences"
+pattern = "# explorer-this"
+count = 1
+paths = [
+  "plugins/claude/skills/explorer-this/SKILL.md",
+  "plugins/codex/skills/explorer-this/SKILL.md",
+  "plugins/cursor/skills/explorer-this/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-agentic-first-f7726fdb98b3]
+kind = "requires"
+slice = "explorer-this-agentic-first"
+pattern = "`explorer-this` は Agentic Model Construction を first route として利用し、Agentic が completion した場合は Interactive Model Construction を起動せず、元の requested output へ直接接続します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-fallback-boundary-2f0e78869ab4]
+kind = "requires"
+slice = "explorer-this-fallback-boundary"
+pattern = "Agentic の qualified stop 後も unresolved gap が material で、その resolution source または binding authority が Human-owned の場合だけ、Interactive Model Construction を直接 composition します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-nonhuman-stop-b7450dd0304d]
+kind = "requires"
+slice = "explorer-this-nonhuman-stop"
+pattern = "Human-owned の根拠がない factual uncertainty、evidence capability limitation、または単なる Agent の不確かさは Interactive fallback にせず、qualified stop を維持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-continuity-f34cebd89ba8]
+kind = "requires"
+slice = "explorer-this-continuity"
+pattern = "fallback の前後で、同じ task-local Local Model、取得済み evidence、current semantics、qualification を継続し、second Local Model、serialized handoff、再構築を追加しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-authority-383e26f59917]
+kind = "requires"
+slice = "explorer-this-authority"
+pattern = "Method の選択・切り替え・composition は `explorer-this` calling workflow が所有し、`whats-this` を nested invocation せず、fallback を理由に task scope や write authority を拡張したり、autonomous remediation / unrelated write を開始したりしません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-output-337180f80846]
+kind = "requires"
+slice = "explorer-this-output"
+pattern = "`explorer-this` は fallback の後も current understanding と retained qualification を元の requested output へ接続し、明示された destination / write authority を維持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-document-before-agentic]
+kind = "order"
+before = "explorer-this-document-relation"
+after = "explorer-this-agentic-first-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-agentic-before-fallback]
+kind = "order"
+before = "explorer-this-agentic-first-relation"
+after = "explorer-this-fallback-boundary-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-fallback-before-nonhuman]
+kind = "order"
+before = "explorer-this-fallback-boundary-relation"
+after = "explorer-this-nonhuman-stop-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-nonhuman-before-continuity]
+kind = "order"
+before = "explorer-this-nonhuman-stop-relation"
+after = "explorer-this-continuity-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-continuity-before-authority]
+kind = "order"
+before = "explorer-this-continuity-relation"
+after = "explorer-this-authority-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-authority-before-output]
+kind = "order"
+before = "explorer-this-authority-relation"
+after = "explorer-this-output-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explorer-this-claude-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/claude/skills/explorer-this/SKILL.md"]
+applies_to = ["claude"]
+
+[contracts.explorer-this-codex-invocation-policy]
+kind = "occurrences"
+pattern = "allow_implicit_invocation: false"
+count = 1
+paths = ["plugins/codex/skills/explorer-this/agents/openai.yaml"]
+applies_to = ["codex"]
+
+[contracts.explorer-this-cursor-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/cursor/skills/explorer-this/SKILL.md"]
+applies_to = ["cursor"]
