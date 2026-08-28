@@ -95,6 +95,9 @@ CLI の振る舞いを記述します。repository の inventory、frontmatter�
 生成、projection、serialization、byte drift を別のテストで再実装しません。関連する振る舞いと失敗経路を保護し、
 数値による coverage 基準は設けません。
 
+TDDを通すことだけを目的として、契約の意味的な改変を一時コピーへ適用し `gunte emit` の拒否を確認する個別の契約 mutation test ファイル（例: `tests/*-contract-test.sh`）を作成・コミットしてはなりません。契約の保証は `contracts/` と Gunte の標準検証に委ねます。
+契約で保証すべき不変条件には Gunte contract を必須とし、正本・生成物から決定論的に観測できる不変条件を個別テストで代替してはなりません。
+
 計画成果物の既定 verification は、この repository で実行できる native 手段に限り、EVAL を含めない。
 Gunte が保証しない点は残存 risk / 未検証とし、受け入れを EVAL 実行に依存させない。
 EVAL は Human が明示したとき、または既存 EVAL 成果物の変更自体が要求対象のときだけ使う。
