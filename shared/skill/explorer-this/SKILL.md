@@ -131,7 +131,7 @@ decision ledger、handoff protocol を追加しません。
 
 <!-- @contract explorer-this-authority -->
 <!-- @anchor explorer-this-authority-relation -->
-Method の選択・切り替え・composition は `explorer-this` calling workflow が所有し、`whats-this` を nested invocation せず、fallback を理由に task scope や write authority を拡張したり、autonomous remediation / unrelated write を開始したりしません。
+Method の選択・切り替え・composition は `explorer-this` calling workflow が所有し、`how-it` を nested invocation せず、fallback を理由に task scope や write authority を拡張したり、autonomous remediation / unrelated write を開始したりしません。
 <!-- @/contract -->
 
 Interactive Model Construction 自身へ switching responsibility を移さず、fallback は Human-owned resolution のための caller-side composition
@@ -154,7 +154,7 @@ remediation を開始しません。finding は requested output の内容や qu
 ## Non-goals
 
 - Model Construction Core、Agentic Model Construction、Interactive Model Construction の redesign
-- Human resolution route、`whats-this`、または generic Model Construction router
+- Human resolution route、`how-it`、または generic Model Construction router
 - Planning Synthesis、`plan-agent`、`plan-interactive`
 - fixed exploration workflow、universal exploration report、fixed input / output / gap schema
 - generic exploration framework、generic public Skill framework、または固定 Human interaction framework

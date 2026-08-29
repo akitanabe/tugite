@@ -18,14 +18,14 @@ files = [
   "shared/researcher-delegation.md",
   "shared/agents/researcher.md",
   "shared/skill/explorer-this/SKILL.md",
-  "shared/skill/whats-this/SKILL.md",
+  "shared/skill/how-it/SKILL.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
   "declarations/codex/marketplace.json",
   "declarations/codex/skills/code-review/openai.yaml",
   "declarations/codex/skills/explorer-this/openai.yaml",
-  "declarations/codex/skills/whats-this/openai.yaml",
+  "declarations/codex/skills/how-it/openai.yaml",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-agent/openai.yaml",
   "declarations/codex/skills/plan-interactive/openai.yaml",
@@ -102,8 +102,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/skill/whats-this/SKILL.md"
-path = "skills/whats-this/SKILL.md"
+match = "shared/skill/how-it/SKILL.md"
+path = "skills/how-it/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -176,8 +176,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/skill/whats-this/SKILL.md"
-path = "skills/whats-this/SKILL.md"
+match = "shared/skill/how-it/SKILL.md"
+path = "skills/how-it/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -252,8 +252,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/skill/whats-this/SKILL.md"
-path = "skills/whats-this/SKILL.md"
+match = "shared/skill/how-it/SKILL.md"
+path = "skills/how-it/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 

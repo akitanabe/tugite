@@ -12,14 +12,14 @@
     "shared/researcher-delegation.md",
     "shared/agents/researcher.md",
     "shared/skill/explorer-this/SKILL.md",
-    "shared/skill/whats-this/SKILL.md",
+    "shared/skill/how-it/SKILL.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
     "declarations/codex/skills/code-review/openai.yaml",
     "declarations/codex/skills/explorer-this/openai.yaml",
-    "declarations/codex/skills/whats-this/openai.yaml",
+    "declarations/codex/skills/how-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
     "declarations/codex/skills/plan-interactive/openai.yaml",
@@ -436,60 +436,60 @@
       "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
     },
     {
-      "id": "whats-this-document",
-      "sha256": "483e833322ede35772819979c48270ebe9cf2919c1edcc0cb1c43dc33e8c8ce8"
+      "id": "how-it-document",
+      "sha256": "fdeb93d350128713853090b5b6d3724e9b9c68c046503ea52b71f36e070a5e93"
     },
     {
-      "id": "whats-this-explicit-invocation-6aff5f790dc7",
-      "sha256": "2b08e0bc90712073c936b4307e073e7e84aa71527b1ef7525b1c8ffb21efdd16"
+      "id": "how-it-explicit-invocation-8b3794ded21a",
+      "sha256": "f90dd9c2544ce5de4444d82dd76e567f1d902fb693132824f18ac9e06e5bd978"
     },
     {
-      "id": "whats-this-ownership-2aa0a2707b35",
-      "sha256": "fc950e8bdc61ccd1695944a5d6cc47f692324de9df9fe83529a4491e09ac1c50"
+      "id": "how-it-ownership-3005b7f582bf",
+      "sha256": "b2b6949f0f787fd63d06c5cb20434b2012d1c5fe1ffce601869774b5aa9d103a"
     },
     {
-      "id": "whats-this-interactive-connection-159f2da9a4d4",
-      "sha256": "269a53b4278ecd8f482b9407fa5c28c5ae34ff689910ecdb1067cd863689c8a3"
+      "id": "how-it-interactive-connection-45d8bcf62616",
+      "sha256": "4529f521f050d0dd43725917e10286ff35fcdced60009f25285526d3709b5ebf"
     },
     {
-      "id": "whats-this-reintegration-741726b3c149",
-      "sha256": "bebd1e3f5e3c0ea0dfd50f37aa7c97b7ae89c79b249c60df2215b51dad084356"
+      "id": "how-it-reintegration-dea8815c5b7a",
+      "sha256": "d605286f7f40539139b60c66ecf1d98ce2852ac52711c9c85b2f1ac293336cc2"
     },
     {
-      "id": "whats-this-completion-output-b68b52f208e7",
-      "sha256": "ba8b076a0aad9ffc858d5d61f8edf911ff6857b3043ab660fba84c38b0b90407"
+      "id": "how-it-completion-output-7cf310af5553",
+      "sha256": "ffc89560835d0b809cf5b0d4d11d51dc6f1af165268660f119e5f1ce236052bf"
     },
     {
-      "id": "whats-this-document-before-explicit-invocation",
-      "sha256": "a97ae22fb3cc3bacf6c55b40f3c3c58701423146f7877f2788bdec0d09c0c4e4"
+      "id": "how-it-document-before-explicit-invocation",
+      "sha256": "290d6f534f064f24ed81af6091b716c63ee5138791236b19bc4e0643219b324b"
     },
     {
-      "id": "whats-this-explicit-invocation-before-ownership",
-      "sha256": "af516c5d1e48ec160029d2ef5c5a78490f54e11e89ea38dfa34d76fa754a8d0a"
+      "id": "how-it-explicit-invocation-before-ownership",
+      "sha256": "499fd4e6c1e3fadec560ed5191418eb5478191379468816b9377ba4aa4280456"
     },
     {
-      "id": "whats-this-ownership-before-interactive",
-      "sha256": "409be9bea2fb0b802a0ff8132fb2dd789ba7d7dcca7fc7821f40ebbb77f5ccbf"
+      "id": "how-it-ownership-before-interactive",
+      "sha256": "f4ffbaf27140a03c9608fd3e5540587ce8becb5036e18f490e78c21af364b5e8"
     },
     {
-      "id": "whats-this-interactive-before-reintegration",
-      "sha256": "d4d24c87d28b498a5ae9495c6d449db4e18227e34e97bd6be007d48f47cbf43c"
+      "id": "how-it-interactive-before-reintegration",
+      "sha256": "ead28e7086f98c28cf736510401b961b2022f735f4c0c51192b5ee929ce68fbf"
     },
     {
-      "id": "whats-this-reintegration-before-completion",
-      "sha256": "11b5251261c670a2c91cf3739ad39106fed07dd2e6aad3a50b2319ca4c3a4e7f"
+      "id": "how-it-reintegration-before-completion",
+      "sha256": "f085d05c86fec80ae8e11ff8d522357f258403db4a606d01c59e4ec2248a9a1b"
     },
     {
-      "id": "whats-this-claude-invocation-policy",
-      "sha256": "e39a86ab3520cea04ec6ffd84f11a67b7ace6b584d664f2491984a006a792146"
+      "id": "how-it-claude-invocation-policy",
+      "sha256": "1f7f5ef71b4fa5abdbe44725a52cf446f0e81592dcbf5b2c4b016e134b048f50"
     },
     {
-      "id": "whats-this-codex-invocation-policy",
-      "sha256": "43b643880a9317a917c2f99e58c0f4632a5e9d7f8d6473d99a22dfd4ee29ad76"
+      "id": "how-it-codex-invocation-policy",
+      "sha256": "46dab3cbac6ed907094a6a39229fa4826c4b608b61c9d3e035e23456d5576c2a"
     },
     {
-      "id": "whats-this-cursor-invocation-policy",
-      "sha256": "4c62dee0498e4add45a5c4f7a8566306c1fe835d44880f8ebafc5bbb0a7dd30d"
+      "id": "how-it-cursor-invocation-policy",
+      "sha256": "561850818442aaa20efd928f7948a5319db60cdcaea03bd373c3f0d0ede1f90d"
     },
     {
       "id": "explorer-this-document",
@@ -512,8 +512,8 @@
       "sha256": "5922ad6e43101f911246e0fd9132e7de447d60ddbb6bba8f976a8a462a2681d2"
     },
     {
-      "id": "explorer-this-authority-383e26f59917",
-      "sha256": "0a1ccd139497f922baf58059ca643d9363bb6cf04116e47b8fadfac7035e636e"
+      "id": "explorer-this-authority-7a10fe33e865",
+      "sha256": "900b47f0d339203462ea9c8a0e64347375d072011f646f4a3e8a540b1d55b90b"
     },
     {
       "id": "explorer-this-output-337180f80846",
@@ -1069,58 +1069,58 @@
     },
     {
       "kind": "anchor",
-      "id": "whats-this-document-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-document-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "whats-this-explicit-invocation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-explicit-invocation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "whats-this-explicit-invocation-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-explicit-invocation-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "whats-this-ownership",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-ownership",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "whats-this-ownership-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-ownership-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "whats-this-interactive-connection",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-interactive-connection",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "whats-this-interactive-connection-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-interactive-connection-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "whats-this-reintegration",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-reintegration",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "whats-this-reintegration-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-reintegration-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "whats-this-completion-output",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-completion-output",
+      "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "whats-this-completion-output-relation",
-      "path": "shared/skill/whats-this/SKILL.md"
+      "id": "how-it-completion-output-relation",
+      "path": "shared/skill/how-it/SKILL.md"
     }
   ]
 }

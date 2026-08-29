@@ -666,96 +666,96 @@ slice = "shared-researcher-retained-context"
 pattern = "保持 context の利用範囲は current bounded input の内側である。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-document]
+[contracts.how-it-document]
 kind = "occurrences"
-pattern = "# whats-this"
+pattern = "# how-it"
 count = 1
 paths = [
-  "plugins/claude/skills/whats-this/SKILL.md",
-  "plugins/codex/skills/whats-this/SKILL.md",
-  "plugins/cursor/skills/whats-this/SKILL.md",
+  "plugins/claude/skills/how-it/SKILL.md",
+  "plugins/codex/skills/how-it/SKILL.md",
+  "plugins/cursor/skills/how-it/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-explicit-invocation-6aff5f790dc7]
+[contracts.how-it-explicit-invocation-8b3794ded21a]
 kind = "requires"
-slice = "whats-this-explicit-invocation"
-pattern = "`whats-this` は、明示的に起動されたときだけ利用する public workflow です。"
+slice = "how-it-explicit-invocation"
+pattern = "`how-it` は、明示的に起動されたときだけ利用する public workflow です。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-ownership-2aa0a2707b35]
+[contracts.how-it-ownership-3005b7f582bf]
 kind = "requires"
-slice = "whats-this-ownership"
-pattern = "一回の invocation に対して `whats-this` は exactly one の task-local Local Model を所有し、task scope、requested output、write authority も保持します。"
+slice = "how-it-ownership"
+pattern = "一回の invocation に対して `how-it` は exactly one の task-local Local Model を所有し、task scope、requested output、write authority も保持します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-interactive-connection-159f2da9a4d4]
+[contracts.how-it-interactive-connection-45d8bcf62616]
 kind = "requires"
-slice = "whats-this-interactive-connection"
-pattern = "`whats-this` は既存の `Interactive Model Construction` を construction Method として利用します。"
+slice = "how-it-interactive-connection"
+pattern = "`how-it` は既存の `Interactive Model Construction` を construction Method として利用します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-reintegration-741726b3c149]
+[contracts.how-it-reintegration-dea8815c5b7a]
 kind = "requires"
-slice = "whats-this-reintegration"
-pattern = "`whats-this` は Interactive の result を、calling workflow が所有する同じ task-local Local Model に戻し、別の Local Model や独立した report state を作りません。"
+slice = "how-it-reintegration"
+pattern = "`how-it` は Interactive の result を、calling workflow が所有する同じ task-local Local Model に戻し、別の Local Model や独立した report state を作りません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-completion-output-b68b52f208e7]
+[contracts.how-it-completion-output-7cf310af5553]
 kind = "requires"
-slice = "whats-this-completion-output"
-pattern = "`whats-this` は Interactive の completion boundary を通過した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。"
+slice = "how-it-completion-output"
+pattern = "`how-it` は Interactive の completion boundary を通過した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-document-before-explicit-invocation]
+[contracts.how-it-document-before-explicit-invocation]
 kind = "order"
-before = "whats-this-document-relation"
-after = "whats-this-explicit-invocation-relation"
+before = "how-it-document-relation"
+after = "how-it-explicit-invocation-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-explicit-invocation-before-ownership]
+[contracts.how-it-explicit-invocation-before-ownership]
 kind = "order"
-before = "whats-this-explicit-invocation-relation"
-after = "whats-this-ownership-relation"
+before = "how-it-explicit-invocation-relation"
+after = "how-it-ownership-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-ownership-before-interactive]
+[contracts.how-it-ownership-before-interactive]
 kind = "order"
-before = "whats-this-ownership-relation"
-after = "whats-this-interactive-connection-relation"
+before = "how-it-ownership-relation"
+after = "how-it-interactive-connection-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-interactive-before-reintegration]
+[contracts.how-it-interactive-before-reintegration]
 kind = "order"
-before = "whats-this-interactive-connection-relation"
-after = "whats-this-reintegration-relation"
+before = "how-it-interactive-connection-relation"
+after = "how-it-reintegration-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-reintegration-before-completion]
+[contracts.how-it-reintegration-before-completion]
 kind = "order"
-before = "whats-this-reintegration-relation"
-after = "whats-this-completion-output-relation"
+before = "how-it-reintegration-relation"
+after = "how-it-completion-output-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.whats-this-claude-invocation-policy]
+[contracts.how-it-claude-invocation-policy]
 kind = "occurrences"
 pattern = "disable-model-invocation: true"
 count = 1
-paths = ["plugins/claude/skills/whats-this/SKILL.md"]
+paths = ["plugins/claude/skills/how-it/SKILL.md"]
 applies_to = ["claude"]
 
-[contracts.whats-this-codex-invocation-policy]
+[contracts.how-it-codex-invocation-policy]
 kind = "occurrences"
 pattern = "allow_implicit_invocation: false"
 count = 1
-paths = ["plugins/codex/skills/whats-this/agents/openai.yaml"]
+paths = ["plugins/codex/skills/how-it/agents/openai.yaml"]
 applies_to = ["codex"]
 
-[contracts.whats-this-cursor-invocation-policy]
+[contracts.how-it-cursor-invocation-policy]
 kind = "occurrences"
 pattern = "disable-model-invocation: true"
 count = 1
-paths = ["plugins/cursor/skills/whats-this/SKILL.md"]
+paths = ["plugins/cursor/skills/how-it/SKILL.md"]
 applies_to = ["cursor"]
 
 [contracts.explorer-this-document]
@@ -793,10 +793,10 @@ slice = "explorer-this-continuity"
 pattern = "fallback の前後で、同じ task-local Local Model、取得済み evidence、current semantics、qualification を継続し、second Local Model、serialized handoff、再構築を追加しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.explorer-this-authority-383e26f59917]
+[contracts.explorer-this-authority-7a10fe33e865]
 kind = "requires"
 slice = "explorer-this-authority"
-pattern = "Method の選択・切り替え・composition は `explorer-this` calling workflow が所有し、`whats-this` を nested invocation せず、fallback を理由に task scope や write authority を拡張したり、autonomous remediation / unrelated write を開始したりしません。"
+pattern = "Method の選択・切り替え・composition は `explorer-this` calling workflow が所有し、`how-it` を nested invocation せず、fallback を理由に task scope や write authority を拡張したり、autonomous remediation / unrelated write を開始したりしません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.explorer-this-output-337180f80846]

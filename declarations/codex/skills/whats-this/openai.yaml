@@ -1,6 +1,0 @@
-interface:
-  display_name: "What's This"
-  short_description: "Use Interactive Model Construction for explicit requested-output workflows"
-  default_prompt: "Use $whats-this only for an explicit public workflow; keep one task-local Local Model, use Interactive Model Construction, and connect directly to the requested output."
-policy:
-  allow_implicit_invocation: false
