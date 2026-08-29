@@ -46,7 +46,7 @@ package/plugin 相対 path の探索規則を新設しません。
 - `../../references/agentic-model-construction.md`
 - `../../references/behavior-model-observation.md`
 - `../../references/reality-model-observation.md`
-- `../../references/research-agent-delegation.md`
+- `../../references/researcher-delegation.md`
 
 ## Optional evidence acquisition
 

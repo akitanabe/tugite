@@ -213,7 +213,7 @@ Improvement Candidate にならない。
 <!-- @contract shared-rmo-caller-ownership -->
 <!-- @anchor shared-rmo-caller-relation -->
 RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
-な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。
+な場合、caller は同じ directory の `researcher-delegation.md` に従って actual Research Agent に委譲してよい。
 Research Agent の result は evidence、source basis、execution result、
 observation / inference、limitation、unresolved point を伴う caller-owned result であり、RMO の意味判断や
 Problem へ自動変換されない。

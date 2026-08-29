@@ -385,11 +385,11 @@ pattern = '''- **Unclear** — Target semantics、authority、または observed
   停止する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-rmo-caller-dispatch-4aea549a60c4]
+[contracts.shared-rmo-caller-dispatch-3d995cb5bb6d]
 kind = "requires"
 slice = "shared-rmo-caller-ownership"
 pattern = '''RMO は Research Agent を dispatch しない。RMO の Required Reality Distinction に対して追加 evidence が必要
-な場合、caller は同じ directory の `research-agent-delegation.md` に従って actual Research Agent に委譲してよい。'''
+な場合、caller は同じ directory の `researcher-delegation.md` に従って actual Research Agent に委譲してよい。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-rmo-caller-reintegration-e176768f6990]
@@ -446,24 +446,24 @@ kind = "occurrences"
 pattern = "# Research Agent Delegation"
 count = 1
 paths = [
-  "plugins/claude/references/research-agent-delegation.md",
-  "plugins/codex/references/research-agent-delegation.md",
-  "plugins/cursor/references/research-agent-delegation.md",
+  "plugins/claude/references/researcher-delegation.md",
+  "plugins/codex/references/researcher-delegation.md",
+  "plugins/cursor/references/researcher-delegation.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-research-policy-boundary-30ee0ca5d748]
+[contracts.shared-research-policy-boundary-e174e101fb2e]
 kind = "requires"
 slice = "shared-research-boundary"
 pattern = '''この文書は caller が Research Agent を利用するための共通 delegation / operation policy を所有する。
-actual Research Agent prompt の正本は `agents/research-agent.md` とし、この文書は agent の探索手順や task-relative semantic judgment を
+actual Research Agent prompt の正本は `agents/researcher.md` とし、この文書は agent の探索手順や task-relative semantic judgment を
 所有しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-research-agent-identity-32fa7a98bdd7]
+[contracts.shared-researcher-identity-54e4f3b57011]
 kind = "requires"
 slice = "shared-research-invocation-identity"
-pattern = '''caller は `research-agent` を起動し、delegation input と authority を渡す。agent identity は設定された agent の名前、runtime instance の
+pattern = '''caller は `researcher` を起動し、delegation input と authority を渡す。agent identity は設定された agent の名前、runtime instance の
 label / task name は実行単位の識別情報として、それぞれ独立した data として扱う。'''
 applies_to = ["claude", "codex", "cursor"]
 
@@ -474,22 +474,22 @@ pattern = '''named agent identity の解決は invocation の成立条件であ�
 limitation / unresolved point を保持して返し、Research Agent による evidence acquisition の成功を記録しない。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-research-claude-invocation-3727af62b959]
+[contracts.shared-research-claude-invocation-a76cca468365]
 kind = "requires"
 slice = "shared-research-platform-invocation"
-pattern = "`research-agent` を named subagent として起動し、delegation input と authority を渡す。"
+pattern = "`researcher` を named subagent として起動し、delegation input と authority を渡す。"
 applies_to = ["claude"]
 
-[contracts.shared-research-codex-invocation-30b3f1cfa6a9]
+[contracts.shared-research-codex-invocation-1e9b00b6bea0]
 kind = "requires"
 slice = "shared-research-platform-invocation"
-pattern = '''`research-agent` を named subagent として `fork_turns = "none"` で起動し、delegation input と authority を渡す。'''
+pattern = '''`researcher` を named subagent として `fork_turns = "none"` で起動し、delegation input と authority を渡す。'''
 applies_to = ["codex"]
 
-[contracts.shared-research-cursor-invocation-7566fd1678c3]
+[contracts.shared-research-cursor-invocation-8249f86fdc2e]
 kind = "requires"
 slice = "shared-research-platform-invocation"
-pattern = "Cursor Agent の named subagent を `/research-agent` として起動し、delegation input と authority を渡す。"
+pattern = "Cursor Agent の named subagent を `/researcher` として起動し、delegation input と authority を渡す。"
 applies_to = ["cursor"]
 
 [contracts.shared-research-delegation-input-e2374d0662f2]
@@ -660,9 +660,9 @@ before = "shared-research-fresh-fallback-relation"
 after = "shared-research-semantic-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-research-agent-retained-361ea41904d6]
+[contracts.shared-researcher-retained-e9f44941dc1d]
 kind = "requires"
-slice = "shared-research-agent-retained-context"
+slice = "shared-researcher-retained-context"
 pattern = "保持 context の利用範囲は current bounded input の内側である。"
 applies_to = ["claude", "codex", "cursor"]
 

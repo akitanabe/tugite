@@ -62,7 +62,7 @@ workflow 全体の completion を caller として保持します。
 
 - `../../references/model-construction.md`
 - `../../references/interactive-model-construction.md`
-- `../../references/research-agent-delegation.md`
+- `../../references/researcher-delegation.md`
 
 ## Reintegration and semantic effect
 

@@ -123,7 +123,7 @@ resolution route は gap の意味、利用可能な source、authority boundary
 ## Research Agent Boundary
 
 Research Agent は bounded evidence acquisition と local analysis を context-isolated に実行し、grounded result を返す actual subagent である。
-caller 共通の delegation / operation policy は同じ directory の `research-agent-delegation.md` が所有する。
+caller 共通の delegation / operation policy は同じ directory の `researcher-delegation.md` が所有する。
 
 Model Construction Method は current gap から bounded objective と必要な boundary を構成し、Research Agent の result を
 task-relative に意味判断する。result は第二の Local Model や continuation decision ではなく、必要な semantic effect を same Local Model へ

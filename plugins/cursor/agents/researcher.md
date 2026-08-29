@@ -1,8 +1,8 @@
 ---
-name: "research-agent"
-description: "bounded objective の内側で evidence acquisition と局所分析を行い、grounded result を返す Research Agent。"
-model: sonnet
-effort: medium
+name: researcher
+description: >-
+  bounded objective の内側で evidence acquisition と局所分析を行い、grounded result を返す Research Agent。
+model: composer-2.5
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

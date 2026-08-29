@@ -5,18 +5,18 @@
 ## Boundary
 
 この文書は caller が Research Agent を利用するための共通 delegation / operation policy を所有する。
-actual Research Agent prompt の正本は `agents/research-agent.md` とし、この文書は agent の探索手順や task-relative semantic judgment を
+actual Research Agent prompt の正本は `agents/researcher.md` とし、この文書は agent の探索手順や task-relative semantic judgment を
 所有しない。
 
 ## Named subagent invocation
 
-caller は `research-agent` を起動し、delegation input と authority を渡す。agent identity は設定された agent の名前、runtime instance の
+caller は `researcher` を起動し、delegation input と authority を渡す。agent identity は設定された agent の名前、runtime instance の
 label / task name は実行単位の識別情報として、それぞれ独立した data として扱う。
 
 named agent identity の解決は invocation の成立条件である。解決できない場合、caller は `Research Agent unavailable` と
 limitation / unresolved point を保持して返し、Research Agent による evidence acquisition の成功を記録しない。
 
-Cursor Agent の named subagent を `/research-agent` として起動し、delegation input と authority を渡す。
+Cursor Agent の named subagent を `/researcher` として起動し、delegation input と authority を渡す。
 
 ## Delegation input
 

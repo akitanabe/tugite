@@ -71,7 +71,7 @@ else
 fi
 
 required_agents=(
-  research-agent.toml
+  researcher.toml
 )
 retired_agents=(
   expert-selection-reviewer.toml
@@ -178,7 +178,7 @@ Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:
-  research-agent
+  researcher
 
 IMPORTANT:
   Restart the Codex session before using these custom agents.

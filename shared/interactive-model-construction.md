@@ -29,7 +29,7 @@ Model Observation、BMO、RMO、Research Agent は、それぞれ caller が与�
 Exploration Projection から construction gap または qualification が観測された場合、Human に入力や判断を求める前に、Agent-side で
 解消できる範囲を処理する。利用可能な route は、reasoning / analysis、available context、repository / source exploration、bounded な
 Research Agent による evidence acquisition / local analysis である。Research Agent を使う場合の caller-side delegation と operation は
-`research-agent-delegation.md`、agent の evidence-relative boundary は `agents/research-agent.md` に従う。
+`researcher-delegation.md`、agent の evidence-relative boundary は `agents/researcher.md` に従う。
 
 Agent が分からないこと、複数の案があること、Research Agent を利用できることだけでは Human interaction を開始しない。Agent-side の
 resolution で得た grounded result は、task-wide な意味判断を外部へ移さず、Interactive Method が同じ Local Model へ Reintegration する。

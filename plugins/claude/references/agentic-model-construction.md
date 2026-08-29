@@ -28,7 +28,7 @@ Exploration Projection 上の current gap について、Agent-side で利用可
 
 bounded な evidence acquisition / local analysis を context-isolated に委譲する価値があり、caller / runtime が actual Research Agent を
 利用可能にした場合は resolution route として選ぶ。caller input、operation authority、retry、cleanup、result usability は同じ directory の
-`research-agent-delegation.md` に従う。
+`researcher-delegation.md` に従う。
 
 ```text
 current gap

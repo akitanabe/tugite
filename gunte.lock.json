@@ -9,8 +9,8 @@
     "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
     "shared/reality-model-observation.md",
-    "shared/research-agent-delegation.md",
-    "shared/agents/research-agent.md",
+    "shared/researcher-delegation.md",
+    "shared/agents/researcher.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/whats-this/SKILL.md",
     "declarations/claude/plugin.json",
@@ -268,8 +268,8 @@
       "sha256": "eeff2cefd5a7cc7344d3dbf7e2ebf8e4ce465deb9773a24e324413e7af66413e"
     },
     {
-      "id": "shared-rmo-caller-dispatch-4aea549a60c4",
-      "sha256": "918c312f5bc7dd7211dc0940717e8f2e8d12f392ac3d88b0bd9c7343f34911f6"
+      "id": "shared-rmo-caller-dispatch-3d995cb5bb6d",
+      "sha256": "8cf56eb87384aabfa84dc1e4be1a03822947499768877a3f6169a334ccd0623a"
     },
     {
       "id": "shared-rmo-caller-reintegration-e176768f6990",
@@ -305,31 +305,31 @@
     },
     {
       "id": "shared-research-document",
-      "sha256": "ea4558f13b0bd82f5eb26f00ed908cb59bf4561f4d99e24c0048e54614016a41"
+      "sha256": "f4c5eae4012a7645128c5d2e9dc3027c38883a5b03ddfcfa84cc57860bcf28f9"
     },
     {
-      "id": "shared-research-policy-boundary-30ee0ca5d748",
-      "sha256": "955749e2b16c0d5c93ac0290468f77059c5073d168ef5c913c5a09165529ee68"
+      "id": "shared-research-policy-boundary-e174e101fb2e",
+      "sha256": "464edbdd9103c94ea16daad6ddb896fd080e8e73486b05bd66595ea8960630b4"
     },
     {
-      "id": "shared-research-agent-identity-32fa7a98bdd7",
-      "sha256": "04ee3f0761a2ed6db962050164fa04a4ab9f883225133d567c882630a521044f"
+      "id": "shared-researcher-identity-54e4f3b57011",
+      "sha256": "2f52e937e653baccea856f468dd8bbf3f4dcd42da1aff199ad9f85281bc86929"
     },
     {
       "id": "shared-research-unavailable-577b8d84cb2e",
       "sha256": "128df5fad8e0ba19e945dc0a037c322dfe86c6765deb5c9d64f77b288448d4ed"
     },
     {
-      "id": "shared-research-claude-invocation-3727af62b959",
-      "sha256": "b652e32345b452f029fffe87b0ef8caad61c3525b9efe5e2c843436f9f9b37bc"
+      "id": "shared-research-claude-invocation-a76cca468365",
+      "sha256": "6fe905715e726d05c0a0ed67ef3823fb48ca62293222aaa49244fff6e2219dd4"
     },
     {
-      "id": "shared-research-codex-invocation-30b3f1cfa6a9",
-      "sha256": "87f9a848c7360fbd329053f222b1c2d1efbfb2c02ff7879e6429d9bbb4127428"
+      "id": "shared-research-codex-invocation-1e9b00b6bea0",
+      "sha256": "8c8a2105a89239986212acfc1536deb6dd6187d7facbee697fcf6269a793896f"
     },
     {
-      "id": "shared-research-cursor-invocation-7566fd1678c3",
-      "sha256": "0b01ff77fcdb303617ba2929136cd1734b65ef7a7f15aec63a4d1f2f8aead3e4"
+      "id": "shared-research-cursor-invocation-8249f86fdc2e",
+      "sha256": "587ba0108e23e13abfee5e95baa6f12ce48438e2511a7e3a257086c23f47f6ea"
     },
     {
       "id": "shared-research-delegation-input-e2374d0662f2",
@@ -432,8 +432,8 @@
       "sha256": "a204c5840094eb771d5f18e19317e771c1ccbd6efa25fce97e3bc80ba5f1c4a2"
     },
     {
-      "id": "shared-research-agent-retained-361ea41904d6",
-      "sha256": "c60a532eb782667a63efd177a046d52995e272be37f6641d796c34fd381ebea5"
+      "id": "shared-researcher-retained-e9f44941dc1d",
+      "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
     },
     {
       "id": "whats-this-document",
@@ -855,152 +855,152 @@
     {
       "kind": "anchor",
       "id": "shared-research-document",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-boundary",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-boundary-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-invocation-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-invocation-identity",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-invocation-unavailable",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-platform-invocation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-input-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-delegation-input",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-authority-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-exact-authority",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-safety-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-retry-authority",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-cleanup-result",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-result-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-result-data",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-result-usability",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-continuation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-continuation-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-continuation-input",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-continuation-authority",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-continuation-context",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-continuation-context-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-fresh-fallback",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-fresh-fallback-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-runtime-fallback",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "anchor",
       "id": "shared-research-semantic-relation",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-semantic-boundary",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-semantic-ownership",
-      "path": "shared/research-agent-delegation.md"
+      "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
-      "id": "shared-research-agent-retained-context",
-      "path": "shared/agents/research-agent.md"
+      "id": "shared-researcher-retained-context",
+      "path": "shared/agents/researcher.md"
     },
     {
       "kind": "anchor",

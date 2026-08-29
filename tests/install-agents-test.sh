@@ -6,7 +6,7 @@ installer="$repo_root/plugins/codex/install/install-agents.sh"
 expected_version="$(cat "$repo_root/plugins/codex/install/VERSION")"
 plugin_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$repo_root/plugins/codex/.codex-plugin/plugin.json")"
 required_agents=(
-  research-agent
+  researcher
 )
 
 # Fail the test with a concise diagnostic.
@@ -35,8 +35,8 @@ create_fixture() {
   mktemp -d "$fixture_parent/install-agents-test.XXXXXX"
 }
 
-research_agent_source="$repo_root/plugins/codex/install/agents/research-agent.toml"
-[[ -f "$research_agent_source" && ! -L "$research_agent_source" ]] || \
+researcher_source="$repo_root/plugins/codex/install/agents/researcher.toml"
+[[ -f "$researcher_source" && ! -L "$researcher_source" ]] || \
   fail "required Research Agent definition is missing"
 
 fixture_parent="$repo_root/.local"
@@ -147,7 +147,7 @@ test_force_update_removes_all_retired_agents() {
   [[ ! -e "$agent_dir/expert-selection-reviewer.toml" ]] || fail "forced update retained expert-selection-reviewer"
   [[ ! -e "$agent_dir/review-patch-refactorer.toml" ]] || fail "forced update retained review-patch-refactorer"
   [[ ! -e "$agent_dir/writing-principles-refactorer.toml" ]] || fail "forced update retained writing-principles-refactorer"
-  assert_same "$research_agent_source" "$agent_dir/research-agent.toml"
+  assert_same "$researcher_source" "$agent_dir/researcher.toml"
   [[ -f "$agent_dir/unrelated.toml" ]] || fail "forced migration removed an unrelated agent"
 }
 
@@ -190,7 +190,7 @@ test_install_rejects_symlinked_codex_directory() {
 
   [[ $status -ne 0 ]] || fail "installer accepted a symlinked .codex directory"
   [[ "$(cat "$outside/sentinel")" == "outside sentinel" ]] || fail "scope escape changed outside sentinel"
-  [[ ! -e "$outside/research-agent.toml" ]] || fail "scope escape installed outside the repository"
+  [[ ! -e "$outside/researcher.toml" ]] || fail "scope escape installed outside the repository"
 }
 
 test_install_rejects_agent_and_version_destination_symlinks() {
@@ -199,7 +199,7 @@ test_install_rejects_agent_and_version_destination_symlinks() {
   local repo="$case_dir/repo"
   mkdir -p "$repo/.codex/agents" "$outside"
   printf '%s\n' 'agent sentinel' > "$outside/agent-sentinel"
-  ln -s "$outside/agent-sentinel" "$repo/.codex/agents/research-agent.toml"
+  ln -s "$outside/agent-sentinel" "$repo/.codex/agents/researcher.toml"
 
   set +e
   "$installer" --force --repo "$repo" >/dev/null 2>&1
@@ -209,7 +209,7 @@ test_install_rejects_agent_and_version_destination_symlinks() {
   [[ $agent_status -ne 0 ]] || fail "installer accepted a required-agent destination symlink"
   [[ "$(cat "$outside/agent-sentinel")" == "agent sentinel" ]] || fail "required-agent symlink target was overwritten"
 
-  rm -f "$repo/.codex/agents/research-agent.toml"
+  rm -f "$repo/.codex/agents/researcher.toml"
   printf '%s\n' 'version sentinel' > "$outside/version-sentinel"
   ln -s "$outside/version-sentinel" "$repo/.codex/agents/.tugite-version"
 
@@ -228,9 +228,9 @@ test_dangling_retired_agent_requires_approved_migration
 test_install_rejects_symlinked_codex_directory
 test_install_rejects_agent_and_version_destination_symlinks
 
-printf '%s\n' 'local customization' > "$agent_dir/research-agent.toml"
+printf '%s\n' 'local customization' > "$agent_dir/researcher.toml"
 printf '%s\n' '0.9.0' > "$agent_dir/.tugite-version"
-before_hash="$(sha256sum "$agent_dir/research-agent.toml")"
+before_hash="$(sha256sum "$agent_dir/researcher.toml")"
 
 set +e
 refusal_output="$("$installer" --repo "$target_repo" 2>&1)"
@@ -238,10 +238,10 @@ refusal_status=$?
 set -e
 [[ $refusal_status -eq 3 ]] || fail "update without --force should exit 3"
 [[ "$refusal_output" == *"--force"* ]] || fail "refusal did not explain explicit overwrite"
-[[ "$(sha256sum "$agent_dir/research-agent.toml")" == "$before_hash" ]] || fail "refused update changed an agent"
+[[ "$(sha256sum "$agent_dir/researcher.toml")" == "$before_hash" ]] || fail "refused update changed an agent"
 
 "$installer" --force --repo "$target_repo"
 [[ "$(cat "$agent_dir/.tugite-version")" == "$expected_version" ]] || fail "forced update did not record version"
-assert_same "$research_agent_source" "$agent_dir/research-agent.toml"
+assert_same "$researcher_source" "$agent_dir/researcher.toml"
 
 echo "PASS: install-agents"
