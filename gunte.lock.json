@@ -3,6 +3,9 @@
   "semantic_inputs": [
     "gunte.toml",
     "contracts/shared.toml",
+    "contracts/how-it.toml",
+    "contracts/explorer-this.toml",
+    "contracts/review-refine.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -502,6 +505,34 @@
       "sha256": "1247f3fa1b7deb089601ddd808db74bd55105560472049f18604f3f3764bdb29"
     },
     {
+      "id": "deletion-test-document",
+      "sha256": "7a7b65ed993208442556d39c5411496ba80612ec0a02762644c76984003384a1"
+    },
+    {
+      "id": "deletion-test-6b243b405f74",
+      "sha256": "974c19b1380102ba593b6447b77970f87fca532543a336d2a01311d9bfcc607d"
+    },
+    {
+      "id": "deletion-test-selected-ae2434b6a7ae",
+      "sha256": "7e684c4a4e873586a47dd895a0a108e52197ba4fc168208174d3dceb9a744e80"
+    },
+    {
+      "id": "deletion-test-c270339249b4",
+      "sha256": "7a5c844b5b02f40aae26a85e50d8e6ec6cd813d4b200dea5c7a5ba15240d40e0"
+    },
+    {
+      "id": "deletion-test-document-before-trigger",
+      "sha256": "a3ea77435264823a379013ef3cc392a1355695c108aa79825e0a34cc2813b9ec"
+    },
+    {
+      "id": "deletion-test-trigger-before-selected-set",
+      "sha256": "85d485a198d9155cdb49af90a98db4811bc8f3e47564792472e15887b862fb34"
+    },
+    {
+      "id": "deletion-test-selected-set-before-caller",
+      "sha256": "4c0920c8c8b1a360fafb1796517931231d51ff9be7a48c638cce6b79e2ba7f4e"
+    },
+    {
       "id": "how-it-document",
       "sha256": "fdeb93d350128713853090b5b6d3724e9b9c68c046503ea52b71f36e070a5e93"
     },
@@ -620,34 +651,6 @@
     {
       "id": "explorer-this-cursor-invocation-policy",
       "sha256": "09748b1d1242c334c033df6c6a0969e897e715f11ea2576e6f7d6c96634fcb89"
-    },
-    {
-      "id": "deletion-test-document",
-      "sha256": "7a7b65ed993208442556d39c5411496ba80612ec0a02762644c76984003384a1"
-    },
-    {
-      "id": "deletion-test-6b243b405f74",
-      "sha256": "974c19b1380102ba593b6447b77970f87fca532543a336d2a01311d9bfcc607d"
-    },
-    {
-      "id": "deletion-test-selected-ae2434b6a7ae",
-      "sha256": "7e684c4a4e873586a47dd895a0a108e52197ba4fc168208174d3dceb9a744e80"
-    },
-    {
-      "id": "deletion-test-c270339249b4",
-      "sha256": "7a5c844b5b02f40aae26a85e50d8e6ec6cd813d4b200dea5c7a5ba15240d40e0"
-    },
-    {
-      "id": "deletion-test-document-before-trigger",
-      "sha256": "a3ea77435264823a379013ef3cc392a1355695c108aa79825e0a34cc2813b9ec"
-    },
-    {
-      "id": "deletion-test-trigger-before-selected-set",
-      "sha256": "85d485a198d9155cdb49af90a98db4811bc8f3e47564792472e15887b862fb34"
-    },
-    {
-      "id": "deletion-test-selected-set-before-caller",
-      "sha256": "4c0920c8c8b1a360fafb1796517931231d51ff9be7a48c638cce6b79e2ba7f4e"
     },
     {
       "id": "review-refine-document",

@@ -5,7 +5,12 @@ id = "tugite"
 version_from = "shared/VERSION"
 
 [contracts]
-files = ["contracts/shared.toml"]
+files = [
+  "contracts/shared.toml",
+  "contracts/how-it.toml",
+  "contracts/explorer-this.toml",
+  "contracts/review-refine.toml",
+]
 
 [sources]
 files = [
