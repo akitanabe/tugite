@@ -336,8 +336,28 @@
       "sha256": "884c5d39496e279969e0e2c04b888eff02f68a502c53c340179eef946e9058a3"
     },
     {
+      "id": "shared-research-web-evidence-ffdcc7b1b98f",
+      "sha256": "f7b4f00a6e654dcdabf9398bac9a4c84843e53638c936b96f5f8f4bcf25c2018"
+    },
+    {
       "id": "shared-research-exact-authority-0236f3c4c428",
       "sha256": "d01bc5fb540d2fe7c0309d4dabc055753469208b73ff23141a2d854c228b9311"
+    },
+    {
+      "id": "shared-research-web-b3aab42b8ced",
+      "sha256": "28ef502bdeae0f313c80118189d7ae729580b6d453dce0979901317a21a4e6f0"
+    },
+    {
+      "id": "shared-research-web-egress-1bbf93afa900",
+      "sha256": "9330dd94803837e34b4305754d5f404ff368c4c088379558bfe9b73bfc30b869"
+    },
+    {
+      "id": "shared-research-web-06f1fd3dc053",
+      "sha256": "179e4b5186f57ee17f231f0d296d38491d7c51bf6a2ee9f83b52edd182b605ff"
+    },
+    {
+      "id": "shared-research-web-content-468b985f562a",
+      "sha256": "27f80f34e49c6dd5510beb9aa37000732279c86288b91f1481dee5f42cc4f86b"
     },
     {
       "id": "shared-research-retry-authority-83c8f257aaa1",
@@ -356,6 +376,10 @@
       "sha256": "7a0c262cd5ea3a14dd4f6e3d8d830af4a61faab9f3b625cc73c368460bb467a2"
     },
     {
+      "id": "shared-research-web-result-d6478ccbda11",
+      "sha256": "2e88978bfdd5f697dc959ec4d8de5c30d3f8f7dcb42e2e852b0703b3bf52507b"
+    },
+    {
       "id": "shared-research-eb17f91a3baf",
       "sha256": "ae316df555aa810ba6972d83176ee9926591821072c70bc938dcaf8f2844015f"
     },
@@ -364,8 +388,8 @@
       "sha256": "a52500973113737bf125154abbdf4410f971c3fc7f5c4d07804488604f8bce8a"
     },
     {
-      "id": "shared-research-continuation-ead0b86f6236",
-      "sha256": "f9ac68c86c9d10b94d652abc63fc253d1612465eac37232bddbeae7f1b5a36e8"
+      "id": "shared-research-continuation-4b6ab63534fc",
+      "sha256": "815e2fd467cdc89f888057b99fcd70312a5a4ebf5c89c6aca85bf29379003fc7"
     },
     {
       "id": "shared-research-continuation-c05a7849e175",
@@ -432,8 +456,48 @@
       "sha256": "a204c5840094eb771d5f18e19317e771c1ccbd6efa25fce97e3bc80ba5f1c4a2"
     },
     {
+      "id": "shared-research-input-before-web-evidence",
+      "sha256": "7219608a182a85c914d3a7fe6797d49fb082b70481d1739b67dab868d8ded443"
+    },
+    {
+      "id": "shared-research-authority-before-web",
+      "sha256": "e1b7a5f80b58ed4a34c49006d70aa7600f47a53b5ba2e1e9cee297515dedd3cb"
+    },
+    {
+      "id": "shared-research-result-before-web-trace",
+      "sha256": "9ee49c27075aa5e06ba3d9df17e2716386861544e766a28608a0e177fa7eeb47"
+    },
+    {
       "id": "shared-researcher-retained-e9f44941dc1d",
       "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
+    },
+    {
+      "id": "shared-researcher-web-b629a8f943dd",
+      "sha256": "c5adb4d168b0b39413c179c88b341faa4b6c74170f2c2ea234749ff7712a40ed"
+    },
+    {
+      "id": "shared-researcher-web-d7f0ff4c1b60",
+      "sha256": "d08bacd84ec3a08273cf2d5925b630e735450b48deb61d3b8b92bb64653c99f2"
+    },
+    {
+      "id": "shared-researcher-web-12afcc41b330",
+      "sha256": "050a0f039662f97e81f6d01307ca2e05231d533072301412140ac341dd423d0f"
+    },
+    {
+      "id": "shared-researcher-web-egress-9bb67349bd69",
+      "sha256": "1704b9017b075bdf0e1f8a46a05b5648bbf196ba22d95941280732baaa18d337"
+    },
+    {
+      "id": "shared-researcher-web-result-517834c0bdd4",
+      "sha256": "f05e9faed48546496cb051bd2d057673f25fc7dba52b5c59dfa4a08b8d54d887"
+    },
+    {
+      "id": "shared-research-claude-web-tools",
+      "sha256": "460ad42c152a7fc9a5fc412894f92c24871bed9c04b1da5d5b5fdcdc38002f1e"
+    },
+    {
+      "id": "shared-research-codex-web-search",
+      "sha256": "1247f3fa1b7deb089601ddd808db74bd55105560472049f18604f3f3764bdb29"
     },
     {
       "id": "how-it-document",
@@ -899,12 +963,47 @@
     },
     {
       "kind": "anchor",
+      "id": "shared-research-web-input-relation",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-evidence-surface",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "anchor",
       "id": "shared-research-authority-relation",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-web-authority-relation",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-authority",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-egress",
       "path": "shared/researcher-delegation.md"
     },
     {
       "kind": "span",
       "id": "shared-research-exact-authority",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-availability",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-content-boundary",
       "path": "shared/researcher-delegation.md"
     },
     {
@@ -930,6 +1029,16 @@
     {
       "kind": "span",
       "id": "shared-research-result-data",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "shared-research-web-result-relation",
+      "path": "shared/researcher-delegation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-research-web-result-trace",
       "path": "shared/researcher-delegation.md"
     },
     {
@@ -999,7 +1108,32 @@
     },
     {
       "kind": "span",
+      "id": "shared-researcher-web-input",
+      "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
       "id": "shared-researcher-retained-context",
+      "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-researcher-web-responsibility",
+      "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-researcher-web-boundary",
+      "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-researcher-web-egress",
+      "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-researcher-web-result-trace",
       "path": "shared/agents/researcher.md"
     },
     {

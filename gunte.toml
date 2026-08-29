@@ -166,6 +166,7 @@ metadata = [
   { field = "model", from = "frontmatter:codex.model", type = "string" },
   { field = "model_reasoning_effort", from = "frontmatter:codex.model_reasoning_effort", type = "string" },
   { field = "sandbox_mode", from = "frontmatter:codex.sandbox_mode", type = "string", required = false },
+  { field = "web_search", from = "frontmatter:codex.web_search", type = "string", required = false },
   { field = "nickname_candidates", from = "frontmatter:codex.nickname_candidates", type = "string_list" },
 ]
 
