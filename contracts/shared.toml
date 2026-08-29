@@ -959,3 +959,163 @@ pattern = "disable-model-invocation: true"
 count = 1
 paths = ["plugins/cursor/skills/explorer-this/SKILL.md"]
 applies_to = ["cursor"]
+
+[contracts.deletion-test-document]
+kind = "occurrences"
+pattern = "# Deletion Test Method"
+count = 1
+paths = [
+  "plugins/claude/references/deletion-test-method.md",
+  "plugins/codex/references/deletion-test-method.md",
+  "plugins/cursor/references/deletion-test-method.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-6b243b405f74]
+kind = "requires"
+slice = "deletion-test-trigger"
+pattern = "deletion-triggered shared Method"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-selected-ae2434b6a7ae]
+kind = "requires"
+slice = "deletion-test-selected-set"
+pattern = "同じ stable snapshot 上で再 Test"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-c270339249b4]
+kind = "requires"
+slice = "deletion-test-caller-ownership"
+pattern = "consumer が Method result と current responsibility に基づいてこれらを裁定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-document-before-trigger]
+kind = "order"
+before = "deletion-test-document"
+after = "deletion-test-trigger-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-trigger-before-selected-set]
+kind = "order"
+before = "deletion-test-trigger-relation"
+after = "deletion-test-selected-set-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.deletion-test-selected-set-before-caller]
+kind = "order"
+before = "deletion-test-selected-set-relation"
+after = "deletion-test-caller-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-document]
+kind = "occurrences"
+pattern = "# review-refine"
+count = 1
+paths = [
+  "plugins/claude/skills/review-refine/SKILL.md",
+  "plugins/codex/skills/review-refine/SKILL.md",
+  "plugins/cursor/skills/review-refine/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-local-standalone-994ee5455250]
+kind = "requires"
+slice = "review-refine-local-model"
+pattern = "exactly one の task-local Local Model"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-local-standalone-d6e48319fbb6]
+kind = "requires"
+slice = "review-refine-local-model"
+pattern = "current review purpose / criteria / evidence context を解決して所有する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-local-nested-b1a39889a2a4]
+kind = "requires"
+slice = "review-refine-local-model"
+pattern = "caller-owned Local Model の consumer-specific projection"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-local-nested-non-71038f0172e1]
+kind = "requires"
+slice = "review-refine-local-model"
+pattern = "独自 Local Model を作らない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-adjudication-7fbc25e30beb]
+kind = "requires"
+slice = "review-refine-adjudication"
+pattern = "同じ origin verified snapshot に対する findings は"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-adjudication-four-e9881efe6054]
+kind = "requires"
+slice = "review-refine-adjudication"
+pattern = "mutation 前に全件を `adopted / rejected / out-of-scope / unresolved` の4値"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-adjudication-coherent-a9c73d6a3ff6]
+kind = "requires"
+slice = "review-refine-adjudication"
+pattern = "conflict / dependency を解消してから single coherent refinement として working state へ反映する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-promotion-ee2d590b05ad]
+kind = "requires"
+slice = "review-refine-promotion"
+pattern = "workflow-owned verification と meaningful semantic progress の両方が成立した後だけ verified snapshot へ promote"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-promotion-b468374e54f6]
+kind = "requires"
+slice = "review-refine-promotion"
+pattern = "failure を安全に閉じられない場合は working state を破棄して prior latest verified snapshot を維持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-convergence-e41632fab2fe]
+kind = "requires"
+slice = "review-refine-convergence"
+pattern = "外向き status は `converged / incomplete` の2値"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-convergence-2f1ba07e7262]
+kind = "requires"
+slice = "review-refine-convergence"
+pattern = "`converged` は material / actionable finding の収束"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-responsibility-30e02b6b9747]
+kind = "requires"
+slice = "review-refine-responsibility"
+pattern = "Human interaction の開始、external resource への persistent write、downstream workflow の開始を所有しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-document-before-local-model]
+kind = "order"
+before = "review-refine-document"
+after = "review-refine-local-model-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-local-model-before-adjudication]
+kind = "order"
+before = "review-refine-local-model-relation"
+after = "review-refine-adjudication-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-adjudication-before-promotion]
+kind = "order"
+before = "review-refine-adjudication-relation"
+after = "review-refine-promotion-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-promotion-before-convergence]
+kind = "order"
+before = "review-refine-promotion-relation"
+after = "review-refine-convergence-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-convergence-before-responsibility]
+kind = "order"
+before = "review-refine-convergence-relation"
+after = "review-refine-responsibility-relation"
+applies_to = ["claude", "codex", "cursor"]

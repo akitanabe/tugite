@@ -1,6 +1,6 @@
 interface:
   display_name: "Review Refine"
-  short_description: "Review an artifact with bounded rounds and final trim"
-  default_prompt: "Use $review-refine only for an explicit standalone review or an explicitly invoked plan-family public workflow parent; review an immutable artifact snapshot and return findings, termination, and caller-owned acceptance evidence."
+  short_description: "Refine a verified artifact through bounded review"
+  default_prompt: "Use $review-refine only for an explicit standalone review or an explicitly invoked plan-family public workflow parent; return converged or incomplete with the latest verified candidate."
 policy:
   allow_implicit_invocation: true

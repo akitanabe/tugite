@@ -9,10 +9,12 @@
     "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
     "shared/reality-model-observation.md",
+    "shared/deletion-test-method.md",
     "shared/researcher-delegation.md",
     "shared/agents/researcher.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/how-it/SKILL.md",
+    "shared/skill/review-refine/SKILL.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
@@ -618,6 +620,106 @@
     {
       "id": "explorer-this-cursor-invocation-policy",
       "sha256": "09748b1d1242c334c033df6c6a0969e897e715f11ea2576e6f7d6c96634fcb89"
+    },
+    {
+      "id": "deletion-test-document",
+      "sha256": "7a7b65ed993208442556d39c5411496ba80612ec0a02762644c76984003384a1"
+    },
+    {
+      "id": "deletion-test-6b243b405f74",
+      "sha256": "974c19b1380102ba593b6447b77970f87fca532543a336d2a01311d9bfcc607d"
+    },
+    {
+      "id": "deletion-test-selected-ae2434b6a7ae",
+      "sha256": "7e684c4a4e873586a47dd895a0a108e52197ba4fc168208174d3dceb9a744e80"
+    },
+    {
+      "id": "deletion-test-c270339249b4",
+      "sha256": "7a5c844b5b02f40aae26a85e50d8e6ec6cd813d4b200dea5c7a5ba15240d40e0"
+    },
+    {
+      "id": "deletion-test-document-before-trigger",
+      "sha256": "a3ea77435264823a379013ef3cc392a1355695c108aa79825e0a34cc2813b9ec"
+    },
+    {
+      "id": "deletion-test-trigger-before-selected-set",
+      "sha256": "85d485a198d9155cdb49af90a98db4811bc8f3e47564792472e15887b862fb34"
+    },
+    {
+      "id": "deletion-test-selected-set-before-caller",
+      "sha256": "4c0920c8c8b1a360fafb1796517931231d51ff9be7a48c638cce6b79e2ba7f4e"
+    },
+    {
+      "id": "review-refine-document",
+      "sha256": "5bed92917497ec68131a0350f2620a136355ff4df05bf6b5069bd52cdf5e4c04"
+    },
+    {
+      "id": "review-refine-local-standalone-994ee5455250",
+      "sha256": "0556364fa23d892a4077dd8dce2809972f0551adb3595b0014e489ac3e91db2a"
+    },
+    {
+      "id": "review-refine-local-standalone-d6e48319fbb6",
+      "sha256": "76a6edadf60b177029b1802ef2ee361f6d50cf6053d026ba52e9da1fac296641"
+    },
+    {
+      "id": "review-refine-local-nested-b1a39889a2a4",
+      "sha256": "0856b3647ee5d8359192807927f067f3a96358429e55842a89f1c09652452d78"
+    },
+    {
+      "id": "review-refine-local-nested-non-71038f0172e1",
+      "sha256": "99f62a711d594950bdcfa5f75e20eba9b6c907dfadf60f592e4f74dd9eb9556f"
+    },
+    {
+      "id": "review-refine-adjudication-7fbc25e30beb",
+      "sha256": "242c9eaf2d46c05240cf3c7c80eadd805de210cb75485adecda3e4abae2bc585"
+    },
+    {
+      "id": "review-refine-adjudication-four-e9881efe6054",
+      "sha256": "ab0264f3907487c925809d6b34b34d586ed2b0b5c6485ab6b65b7ccb6f5f2001"
+    },
+    {
+      "id": "review-refine-adjudication-coherent-a9c73d6a3ff6",
+      "sha256": "c36908fb61cfb3d933b9d66bf254af1dca8e718444652b17b9345a25af03b84b"
+    },
+    {
+      "id": "review-refine-promotion-ee2d590b05ad",
+      "sha256": "141df6f99c12f162750d8512d4f772805c5e1c8c8e4a2d3b3466b29220be7eb3"
+    },
+    {
+      "id": "review-refine-promotion-b468374e54f6",
+      "sha256": "bf6040146b1bb982656fd3ccdbb833ed14c1278fdf32c10d8e08394bf81663bc"
+    },
+    {
+      "id": "review-refine-convergence-e41632fab2fe",
+      "sha256": "74d7d2fbc0180852fc8fa4e45e630f18c8c882ec2e5a2dc9ce3bff3015aca031"
+    },
+    {
+      "id": "review-refine-convergence-2f1ba07e7262",
+      "sha256": "67ab13627a0eb0e4b79342391bdd695bde061c4bee7d33d13392f90cb20a6317"
+    },
+    {
+      "id": "review-refine-responsibility-30e02b6b9747",
+      "sha256": "328fa34439e22870b2921ef167db58d06932ce58bf22231296c66671fb65e9e6"
+    },
+    {
+      "id": "review-refine-document-before-local-model",
+      "sha256": "0fd8dd91e9e549c5d1df763951925f8c11bb7e0462bf79ca20de9df930fd05bc"
+    },
+    {
+      "id": "review-refine-local-model-before-adjudication",
+      "sha256": "41178f937e3e9a5e548eec2f72a77ba9ddd4223be1359fcc09c03091dbe5ad9c"
+    },
+    {
+      "id": "review-refine-adjudication-before-promotion",
+      "sha256": "c544708143680b2be5c0e4c9a00bf7aa6e2280b993caef2e20f5f3c9e15938e5"
+    },
+    {
+      "id": "review-refine-promotion-before-convergence",
+      "sha256": "6616bf1f052179170b2eb7e05e35eafd92cdcb6158dca48d1ea287e7ee957466"
+    },
+    {
+      "id": "review-refine-convergence-before-responsibility",
+      "sha256": "b06dbb5ecfbb7e46a66729471ce74b084d705abd9ab3395dd400cb26e9ecbf4a"
     }
   ],
   "declarations": [
@@ -915,6 +1017,41 @@
       "kind": "anchor",
       "id": "shared-rmo-caller-relation",
       "path": "shared/reality-model-observation.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deletion-test-document",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "deletion-test-trigger",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deletion-test-trigger-relation",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "deletion-test-selected-set",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deletion-test-selected-set-relation",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "deletion-test-caller-ownership",
+      "path": "shared/deletion-test-method.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "deletion-test-caller-relation",
+      "path": "shared/deletion-test-method.md"
     },
     {
       "kind": "anchor",
@@ -1255,6 +1392,61 @@
       "kind": "anchor",
       "id": "how-it-completion-output-relation",
       "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-document",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-local-model",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-local-model-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-adjudication",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-adjudication-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-promotion",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-promotion-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-convergence",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-convergence-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-responsibility",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-responsibility-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
     }
   ]
 }

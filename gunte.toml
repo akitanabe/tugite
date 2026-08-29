@@ -15,10 +15,12 @@ files = [
   "shared/interactive-model-construction.md",
   "shared/behavior-model-observation.md",
   "shared/reality-model-observation.md",
+  "shared/deletion-test-method.md",
   "shared/researcher-delegation.md",
   "shared/agents/researcher.md",
   "shared/skill/explorer-this/SKILL.md",
   "shared/skill/how-it/SKILL.md",
+  "shared/skill/review-refine/SKILL.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
@@ -76,6 +78,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/researcher-delegation.md"
 path = "references/researcher-delegation.md"
 profile = "markdown-v1"
@@ -104,6 +112,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.claude.rules]]
 match = "shared/skill/how-it/SKILL.md"
 path = "skills/how-it/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/review-refine/SKILL.md"
+path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -149,6 +163,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
 match = "shared/researcher-delegation.md"
 path = "references/researcher-delegation.md"
 profile = "markdown-v1"
@@ -179,6 +199,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/skill/how-it/SKILL.md"
 path = "skills/how-it/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/review-refine/SKILL.md"
+path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -235,6 +261,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
+match = "shared/deletion-test-method.md"
+path = "references/deletion-test-method.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
 match = "shared/researcher-delegation.md"
 path = "references/researcher-delegation.md"
 profile = "markdown-v1"
@@ -255,6 +287,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/skill/how-it/SKILL.md"
 path = "skills/how-it/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/review-refine/SKILL.md"
+path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
