@@ -1,0 +1,103 @@
+[contracts.plan-agent-document]
+kind = "occurrences"
+pattern = "# plan-agent"
+count = 1
+paths = [
+  "plugins/claude/skills/plan-agent/SKILL.md",
+  "plugins/codex/skills/plan-agent/SKILL.md",
+  "plugins/cursor/skills/plan-agent/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-ownership-4f1870ace344]
+kind = "requires"
+slice = "plan-agent-ownership"
+pattern = "exactly one の task-local Local Model を所有"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-direction-a8fbd46c1841]
+kind = "requires"
+slice = "plan-agent-direction"
+pattern = "planning direction を workflow-local judgment として確立"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-qualified-stop-01d9a08d4122]
+kind = "requires"
+slice = "plan-agent-qualified-stop"
+pattern = "`incomplete` を返し、Interactive fallback、Planning Core invocation、speculative direction の選択を行いません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-core-input-119f47c030fb]
+kind = "requires"
+slice = "plan-agent-core-input"
+pattern = "established direction、authority constraints、resolved upstream evidence を共通の Planning Core へ渡します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-result-d47b2dd8e5b1]
+kind = "requires"
+slice = "plan-agent-result"
+pattern = "後処理で candidate を変更しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-plan-only-4a1cfc3e08d3]
+kind = "requires"
+slice = "plan-agent-plan-only"
+pattern = "implementation、delegation、Issue / PR 更新、downstream workflow を開始しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-document-before-ownership]
+kind = "order"
+before = "plan-agent-document-relation"
+after = "plan-agent-ownership-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-ownership-before-direction]
+kind = "order"
+before = "plan-agent-ownership-relation"
+after = "plan-agent-direction-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-direction-before-stop]
+kind = "order"
+before = "plan-agent-direction-relation"
+after = "plan-agent-qualified-stop-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-stop-before-core]
+kind = "order"
+before = "plan-agent-qualified-stop-relation"
+after = "plan-agent-core-input-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-core-before-result]
+kind = "order"
+before = "plan-agent-core-input-relation"
+after = "plan-agent-result-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-result-before-completion]
+kind = "order"
+before = "plan-agent-result-relation"
+after = "plan-agent-plan-only-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-claude-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/claude/skills/plan-agent/SKILL.md"]
+applies_to = ["claude"]
+
+[contracts.plan-agent-codex-invocation-policy]
+kind = "occurrences"
+pattern = "allow_implicit_invocation: false"
+count = 1
+paths = ["plugins/codex/skills/plan-agent/agents/openai.yaml"]
+applies_to = ["codex"]
+
+[contracts.plan-agent-cursor-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/cursor/skills/plan-agent/SKILL.md"]
+applies_to = ["cursor"]

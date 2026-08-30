@@ -5,6 +5,8 @@
     "contracts/shared.toml",
     "contracts/how-it.toml",
     "contracts/explorer-this.toml",
+    "contracts/plan-agent.toml",
+    "contracts/plan-interactive.toml",
     "contracts/review-refine.toml",
     "shared/VERSION",
     "shared/model-construction.md",
@@ -22,6 +24,8 @@
     "shared/agents/over-engineering-reviewer.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/how-it/SKILL.md",
+    "shared/skill/plan-agent/SKILL.md",
+    "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
@@ -816,6 +820,150 @@
     {
       "id": "explorer-this-cursor-invocation-policy",
       "sha256": "09748b1d1242c334c033df6c6a0969e897e715f11ea2576e6f7d6c96634fcb89"
+    },
+    {
+      "id": "plan-agent-document",
+      "sha256": "d1d6827efef2a22a60a11e007d66a27f38f4fb13c563735c2e4da88b684aeeb3"
+    },
+    {
+      "id": "plan-agent-ownership-4f1870ace344",
+      "sha256": "5d1bb2f24db949bf28ada1fb4b8be2d9904873ee57b3104b2fb521b45488793f"
+    },
+    {
+      "id": "plan-agent-direction-a8fbd46c1841",
+      "sha256": "4c6ba55b6d8694720fdbf125c00efa922d7bda8fa58ef53aea564aba3e704e00"
+    },
+    {
+      "id": "plan-agent-qualified-stop-01d9a08d4122",
+      "sha256": "884b342a0e4c8a115d4c3b646a902b0829e43c77e66bc1848d295b456868882a"
+    },
+    {
+      "id": "plan-agent-core-input-119f47c030fb",
+      "sha256": "6b182e8e8cf442980c0e30082f1250d8cb0ba15c9266dd50e1c620445003205f"
+    },
+    {
+      "id": "plan-agent-result-d47b2dd8e5b1",
+      "sha256": "96b7b756a2e6f121f14f7e7b192c238b3d2f1c5babcbb8c94322093a0e5bfbb3"
+    },
+    {
+      "id": "plan-agent-plan-only-4a1cfc3e08d3",
+      "sha256": "74d24cfb099297014068fc9bf0f341d641cbebe7ebb59cc9f622b93ea9adcb52"
+    },
+    {
+      "id": "plan-agent-document-before-ownership",
+      "sha256": "16e1034f603d195bcc979a0c34df58f7097687a0963adf936d35adbe59924a9c"
+    },
+    {
+      "id": "plan-agent-ownership-before-direction",
+      "sha256": "e0a36af8e22979d762ba2a80ec141f505cea654a8a7fcaef84491590544f59aa"
+    },
+    {
+      "id": "plan-agent-direction-before-stop",
+      "sha256": "21fab6150863733276ba02c3add0543499d745594bfbf9bf3206c6cc4fea1658"
+    },
+    {
+      "id": "plan-agent-stop-before-core",
+      "sha256": "565b077e0581a372e235573ad5cc58d2023ec149e8b192eba28cbd1c95ab9825"
+    },
+    {
+      "id": "plan-agent-core-before-result",
+      "sha256": "7752493068637ce1f51b5433526b7d5ec0c1def43d9ddea533df0e2a7093dd7d"
+    },
+    {
+      "id": "plan-agent-result-before-completion",
+      "sha256": "0075ace1fb39c583f6ad37584255c05e6ca256e66eda5c039800bd44b4071602"
+    },
+    {
+      "id": "plan-agent-claude-invocation-policy",
+      "sha256": "fe13ea5f6598c644ae6aab430a3455170a7c808e3a9951e0be495e599900436c"
+    },
+    {
+      "id": "plan-agent-codex-invocation-policy",
+      "sha256": "d03baa3acc5394fae0a6f4cd5b87f62c21aa641252ca7e8d3af258b6e30c3948"
+    },
+    {
+      "id": "plan-agent-cursor-invocation-policy",
+      "sha256": "0e6f0ce6ba1901a2347d14d3dca46ae5e4bbe562c1b37ef8ad6dd3a221a580ac"
+    },
+    {
+      "id": "plan-interactive-document",
+      "sha256": "b47a39d7fd7e1913b5f282afb65e4e71875e5c10de34ce391a52c69b6e6c3c65"
+    },
+    {
+      "id": "plan-interactive-ownership-e59db0d27680",
+      "sha256": "0d439f2ab8fbb3968446433117b20d90847c4553c18a81fd9ef0f672bd09a391"
+    },
+    {
+      "id": "plan-interactive-authority-4fcffc0dc724",
+      "sha256": "2b22de75aa48d8fadcd9112d0d0ee9db457d429da552007ae13e1a8590b8a3d8"
+    },
+    {
+      "id": "plan-interactive-core-input-f09a90a98fb9",
+      "sha256": "5eb9d4d5a635dc7d1f690ae1a7fbeafb8023fc093f77adf147a2318e4eb1ea38"
+    },
+    {
+      "id": "plan-interactive-authority-preservation-3efbe97c71e7",
+      "sha256": "65cc219f5ecab29ce01065bfb5539ca9ffba0007852b3738169eca18b261c49c"
+    },
+    {
+      "id": "plan-interactive-incomplete-627dfd75fd1a",
+      "sha256": "0c8ccc48ea041bcd5746c690a4d3fa9b449a7e4c0df49c3a15c79c9a2be9f8e4"
+    },
+    {
+      "id": "plan-interactive-human-boundary-270d3e1ef25a",
+      "sha256": "defb12121b7655622fa83ab61dc8e6d89004bdc9a2b5e8b978a28afc96b81245"
+    },
+    {
+      "id": "plan-interactive-result-09c971fed184",
+      "sha256": "05e2dccb5cf14acc889b4f7d4c8cf09aed98cb230013014dbc3952f420f048a0"
+    },
+    {
+      "id": "plan-interactive-plan-only-99c5358fe59a",
+      "sha256": "983acb40a3d0a48311a96786e099611dc5e6cfc9c3c94f960d73ef5b316b9650"
+    },
+    {
+      "id": "plan-interactive-document-before-ownership",
+      "sha256": "9bff2882bdb3014277342fbc091e1177cf9df2f3201ccdd80b1777efb020aca0"
+    },
+    {
+      "id": "plan-interactive-ownership-before-authority",
+      "sha256": "091dd1c155b06d5916eb38a0562662cf23dc2732b1000e24a0b90aba100c0aea"
+    },
+    {
+      "id": "plan-interactive-authority-before-core",
+      "sha256": "cbe9c3975152960f5cddde60958e8c8ebfc3db7614c2e288bb99feaf1941324c"
+    },
+    {
+      "id": "plan-interactive-core-before-preservation",
+      "sha256": "45ff8af11798cc6fbefb6afba2460863108ec27232974678a61b02d516da6470"
+    },
+    {
+      "id": "plan-interactive-preservation-before-incomplete",
+      "sha256": "db609417397438b9d13f8eefd7d263ef856fa193d893298970f563fc43f2547d"
+    },
+    {
+      "id": "plan-interactive-incomplete-before-human",
+      "sha256": "4c668b6dfd1162c56264f2b11d66bc269b11fbf881e2002ff92d3c823dc324d1"
+    },
+    {
+      "id": "plan-interactive-human-before-result",
+      "sha256": "ad1592cd2095bbb02300419de944f810fbf7074dcdfd2db201df54767826330d"
+    },
+    {
+      "id": "plan-interactive-result-before-completion",
+      "sha256": "f563d90a2861867ccb6c0042c48a86a935d3d791dfd267ab691bf65b0859a2dd"
+    },
+    {
+      "id": "plan-interactive-claude-invocation-policy",
+      "sha256": "5e52eeba4e73d0f48f9ce8e81231a6e683965c13ffb49f54d7af4286e0e3192f"
+    },
+    {
+      "id": "plan-interactive-codex-invocation-policy",
+      "sha256": "0328184e90abe54035edea543511b35347e03e930199f4c570b8e9385ae21690"
+    },
+    {
+      "id": "plan-interactive-cursor-invocation-policy",
+      "sha256": "11d07614c94d428de2a07229a5a35139b63345571bda54d4c0dcab6ce794f3be"
     },
     {
       "id": "review-refine-document",
@@ -1694,6 +1842,156 @@
       "kind": "anchor",
       "id": "how-it-completion-output-relation",
       "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-document-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-ownership",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-ownership-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-direction",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-direction-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-qualified-stop",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-qualified-stop-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-core-input",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-core-input-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-result",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-result-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-plan-only",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-plan-only-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-document-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-ownership",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-ownership-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-authority",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-authority-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-core-input",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-core-input-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-authority-preservation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-authority-preservation-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-incomplete",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-incomplete-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-human-boundary",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-human-boundary-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-result",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-result-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-interactive-plan-only",
+      "path": "shared/skill/plan-interactive/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-interactive-plan-only-relation",
+      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "anchor",

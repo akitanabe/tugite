@@ -9,6 +9,8 @@ files = [
   "contracts/shared.toml",
   "contracts/how-it.toml",
   "contracts/explorer-this.toml",
+  "contracts/plan-agent.toml",
+  "contracts/plan-interactive.toml",
   "contracts/review-refine.toml",
 ]
 
@@ -30,6 +32,8 @@ files = [
   "shared/agents/over-engineering-reviewer.md",
   "shared/skill/explorer-this/SKILL.md",
   "shared/skill/how-it/SKILL.md",
+  "shared/skill/plan-agent/SKILL.md",
+  "shared/skill/plan-interactive/SKILL.md",
   "shared/skill/review-refine/SKILL.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
@@ -138,6 +142,18 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/skill/plan-agent/SKILL.md"
+path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/plan-interactive/SKILL.md"
+path = "skills/plan-interactive/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/skill/review-refine/SKILL.md"
 path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -233,6 +249,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/skill/how-it/SKILL.md"
 path = "skills/how-it/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/plan-agent/SKILL.md"
+path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/plan-interactive/SKILL.md"
+path = "skills/plan-interactive/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -333,6 +361,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/skill/how-it/SKILL.md"
 path = "skills/how-it/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/plan-agent/SKILL.md"
+path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/plan-interactive/SKILL.md"
+path = "skills/plan-interactive/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
