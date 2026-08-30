@@ -720,16 +720,11 @@ slice = "shared-researcher-retained-context"
 pattern = "保持 context の利用範囲は current bounded input の内側である。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-researcher-web-b629a8f943dd]
+[contracts.shared-researcher-web-50bef07fd46b]
 kind = "requires"
 slice = "shared-researcher-web-input"
-pattern = "caller が今回の bounded input に external Web evidence surface を含めた場合、利用可能でかつ scope / authority 内の Web evidence acquisition を選択できます。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.shared-researcher-web-d7f0ff4c1b60]
-kind = "requires"
-slice = "shared-researcher-web-responsibility"
-pattern = "available な Web search、Web documentation、read-only Web source inspection も caller-authorized observation として選択できます。"
+pattern = '''caller が今回の bounded input で external Web evidence surface を scope に含め、その利用を authority に含めた場合、
+利用可能な Web search、Web documentation、read-only Web source inspection を evidence acquisition として選択できます。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-researcher-web-12afcc41b330]

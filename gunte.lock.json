@@ -482,12 +482,8 @@
       "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
     },
     {
-      "id": "shared-researcher-web-b629a8f943dd",
-      "sha256": "c5adb4d168b0b39413c179c88b341faa4b6c74170f2c2ea234749ff7712a40ed"
-    },
-    {
-      "id": "shared-researcher-web-d7f0ff4c1b60",
-      "sha256": "d08bacd84ec3a08273cf2d5925b630e735450b48deb61d3b8b92bb64653c99f2"
+      "id": "shared-researcher-web-50bef07fd46b",
+      "sha256": "91527b0ffcd5e5706213afb4fccdc9cf25a0feaa1189fdd2a32cd848c58e5f8e"
     },
     {
       "id": "shared-researcher-web-12afcc41b330",
@@ -1517,11 +1513,6 @@
     {
       "kind": "span",
       "id": "shared-researcher-retained-context",
-      "path": "shared/agents/researcher.md"
-    },
-    {
-      "kind": "span",
-      "id": "shared-researcher-web-responsibility",
       "path": "shared/agents/researcher.md"
     },
     {
