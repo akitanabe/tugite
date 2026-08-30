@@ -926,7 +926,7 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.plan-adversarial-reviewer-claude-readonly-defense]
 kind = "occurrences"
 pattern = '''tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch'''
+disallowedTools: Edit, Write, NotebookEdit'''
 count = 1
 paths = ["plugins/claude/agents/plan-adversarial-reviewer.md"]
 applies_to = ["claude"]
@@ -976,8 +976,8 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.over-engineering-reviewer-claude-readonly-defense]
 kind = "occurrences"
-pattern = '''tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch'''
+pattern = '''tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit'''
 count = 1
 paths = ["plugins/claude/agents/over-engineering-reviewer.md"]
 applies_to = ["claude"]
@@ -1027,8 +1027,8 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-claude-readonly-defense]
 kind = "occurrences"
-pattern = '''tools: Read
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch'''
+pattern = '''tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit'''
 count = 1
 paths = ["plugins/claude/agents/plan-quality-advisor.md"]
 applies_to = ["claude"]

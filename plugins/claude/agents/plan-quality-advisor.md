@@ -3,8 +3,8 @@ name: "plan-quality-advisor"
 description: "Planning Synthesis の concrete question と supplied context だけを観察し、grounded non-binding material を返す stateless advisor。"
 model: opus
 effort: high
-tools: Read
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch
+tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

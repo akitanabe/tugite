@@ -5,8 +5,8 @@ name = "plan-quality-advisor"
 description = "Planning Synthesis の concrete question と supplied context だけを観察し、grounded non-binding material を返す stateless advisor。"
 model = "opus"
 effort = "high"
-tools = ["Read"]
-disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch"]
+tools = ["Read", "Grep", "Glob", "Bash"]
+disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Stateless planning advisor for one concrete question and supplied context, returning grounded non-binding material to Planning Synthesis."
@@ -17,7 +17,7 @@ nickname_candidates = ["Plan Quality Advisor", "Planning Advisor", "Plan Observe
 
 [cursor]
 description = "Planning Synthesis の concrete question と supplied context だけを観察し、grounded non-binding material を返す stateless advisor。"
-model = "composer-2.5"
+model = "cursor-grok-4.6-high"
 readonly = true
 +++
 <!-- @only cursor -->
@@ -25,7 +25,7 @@ readonly = true
 name: plan-quality-advisor
 description: >-
   Planning Synthesis の concrete question と supplied context だけを観察し、grounded non-binding material を返す stateless advisor。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- @/only -->

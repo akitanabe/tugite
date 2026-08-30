@@ -3,8 +3,8 @@ name: "over-engineering-reviewer"
 description: "Planning Core の normal convergence 後に、verified Plan から不要な複雑性の削除候補を返す stateless reviewer。"
 model: opus
 effort: high
-tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch
+tools: Read, Grep, Glob, Bash
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

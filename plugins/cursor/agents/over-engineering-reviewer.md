@@ -2,7 +2,7 @@
 name: over-engineering-reviewer
 description: >-
   Planning Core の normal convergence 後に、verified Plan から不要な複雑性の削除候補を返す stateless reviewer。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->

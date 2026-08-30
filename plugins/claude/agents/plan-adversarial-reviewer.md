@@ -4,7 +4,7 @@ description: "Planning Core の immutable Plan snapshot を current authority �
 model: opus
 effort: high
 tools: Read, Grep, Glob
-disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch
+disallowedTools: Edit, Write, NotebookEdit
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 

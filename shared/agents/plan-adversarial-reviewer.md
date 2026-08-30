@@ -6,7 +6,7 @@ description = "Planning Core の immutable Plan snapshot を current authority �
 model = "opus"
 effort = "high"
 tools = ["Read", "Grep", "Glob"]
-disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch"]
+disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Stateless adversarial reviewer of an immutable Plan snapshot, returning grounded failure paths within current authority."
@@ -17,7 +17,7 @@ nickname_candidates = ["Plan Adversarial Reviewer", "Plan Challenger", "Planning
 
 [cursor]
 description = "Planning Core の immutable Plan snapshot を current authority 内で反証し、concrete failure path を返す stateless reviewer。"
-model = "composer-2.5"
+model = "cursor-grok-4.6-high"
 readonly = true
 +++
 <!-- @only cursor -->
@@ -25,7 +25,7 @@ readonly = true
 name: plan-adversarial-reviewer
 description: >-
   Planning Core の immutable Plan snapshot を current authority 内で反証し、concrete failure path を返す stateless reviewer。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- @/only -->

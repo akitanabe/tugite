@@ -2,7 +2,7 @@
 name: plan-adversarial-reviewer
 description: >-
   Planning Core の immutable Plan snapshot を current authority 内で反証し、concrete failure path を返す stateless reviewer。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->

@@ -5,8 +5,8 @@ name = "over-engineering-reviewer"
 description = "Planning Core の normal convergence 後に、verified Plan から不要な複雑性の削除候補を返す stateless reviewer。"
 model = "opus"
 effort = "high"
-tools = ["Read", "Grep", "Glob"]
-disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch"]
+tools = ["Read", "Grep", "Glob", "Bash"]
+disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Stateless final-trim reviewer returning grounded removals of unnecessary complexity from a verified Plan."
@@ -17,7 +17,7 @@ nickname_candidates = ["Over-engineering Reviewer", "Plan Trimmer", "Complexity 
 
 [cursor]
 description = "Planning Core の normal convergence 後に、verified Plan から不要な複雑性の削除候補を返す stateless reviewer。"
-model = "composer-2.5"
+model = "cursor-grok-4.6-high"
 readonly = true
 +++
 <!-- @only cursor -->
@@ -25,7 +25,7 @@ readonly = true
 name: over-engineering-reviewer
 description: >-
   Planning Core の normal convergence 後に、verified Plan から不要な複雑性の削除候補を返す stateless reviewer。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- @/only -->

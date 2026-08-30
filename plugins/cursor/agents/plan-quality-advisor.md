@@ -2,7 +2,7 @@
 name: plan-quality-advisor
 description: >-
   Planning Synthesis の concrete question と supplied context だけを観察し、grounded non-binding material を返す stateless advisor。
-model: composer-2.5
+model: cursor-grok-4.6-high
 readonly: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->

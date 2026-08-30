@@ -607,7 +607,7 @@
     },
     {
       "id": "plan-adversarial-reviewer-claude-readonly-defense",
-      "sha256": "40a844473e21832f0a249151782a8a83389f81ad2328182153a92278a0fa33d7"
+      "sha256": "40e2b77e36ca22dda9036266426f9857f3d4d113ea1b35d429d3ae4fec9df5f8"
     },
     {
       "id": "plan-adversarial-reviewer-codex-sandbox",
@@ -635,7 +635,7 @@
     },
     {
       "id": "over-engineering-reviewer-claude-readonly-defense",
-      "sha256": "817af69f5012e439913a5d8267e71b115bba81b612e34830ec1ee8f36e94bd70"
+      "sha256": "b24fb2951d7e4539c75648522e8a4799d47f874e77deb65e75681c4cce1b9e7e"
     },
     {
       "id": "over-engineering-reviewer-codex-sandbox",
@@ -663,7 +663,7 @@
     },
     {
       "id": "plan-quality-advisor-claude-readonly-defense",
-      "sha256": "ec442245b84ac1dfa9146c6be2d482ec4bb1ab67cfce4f0193bcaed7e1d2c201"
+      "sha256": "3337ecdb50531495faccbc0fb23ecacb68e01b50d1899b521c54e11e375dd425"
     },
     {
       "id": "plan-quality-advisor-codex-sandbox",
