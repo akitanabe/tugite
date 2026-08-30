@@ -705,6 +705,10 @@
       "sha256": "328fa34439e22870b2921ef167db58d06932ce58bf22231296c66671fb65e9e6"
     },
     {
+      "id": "review-refine-final-trim-a1f6db7039e0",
+      "sha256": "342c5a93baeae16a0a2e4aafad893b7d01a22738f8cb839a0367729584efd4ba"
+    },
+    {
       "id": "review-refine-document-before-local-model",
       "sha256": "0fd8dd91e9e549c5d1df763951925f8c11bb7e0462bf79ca20de9df930fd05bc"
     },
@@ -1439,6 +1443,11 @@
     {
       "kind": "anchor",
       "id": "review-refine-convergence-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-final-trim-reviewer",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {

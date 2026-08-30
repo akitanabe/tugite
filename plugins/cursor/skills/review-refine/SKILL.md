@@ -33,6 +33,7 @@ caller は次の invocation Data を必要な範囲で渡す。
 - 利用可能な specialized reviewer capability と必要な evidence surface
 - user / caller 指定の operational bound。未指定なら invocation-local な bounded execution condition
 - `final_trim = off | applicable`。`applicable` の場合は obligations / constraints / evidence context
+- optional な `final_trim_reviewer` designation。指定時は applicable な final trim にだけ適用する
 
 生成された Skill から参照する shared Method は次の path にある。各 platform の generated path を基準に解決する。
 
@@ -133,6 +134,10 @@ quality condition にはしない。bound 到達時に未収束なら `incomplet
 
 `final_trim` は default `off` とする。caller が `applicable` と、trimming に必要な obligations / constraints / evidence context を渡した場合だけ、
 normal convergence 後の subtractive final phase として実行する。`review-refine` は applicability を自律的に追加・変更しない。
+
+`final_trim_reviewer` が指定された場合、applicable な final trim はその reviewer capability を使い、未指定なら既存の reviewer selection を維持する。`final_trim = off` では適用しない。
+
+指定された reviewer capability が成立しない場合は、self-review や別 reviewer への暗黙の切り替えをせず `incomplete` とする。この designation は final trim phase にだけ適用し、normal review の required reviewer、specialized capability selection、round routing へ流用しない。
 
 `applicable` の場合は concrete removal candidate を Deletion Test Method で個別に Test し、`preserves` の候補から作った coherent selected deletion set 全体を
 一つの candidate として再 Test する。parent が採用した set だけを working trim に反映し、verification 成功後に promote する。

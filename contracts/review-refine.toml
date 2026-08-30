@@ -81,6 +81,12 @@ slice = "review-refine-responsibility"
 pattern = "Human interaction の開始、external resource への persistent write、downstream workflow の開始を所有しない。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.review-refine-final-trim-a1f6db7039e0]
+kind = "requires"
+slice = "review-refine-final-trim-reviewer"
+pattern = "`final_trim_reviewer` が指定された場合、applicable な final trim はその reviewer capability を使い、未指定なら既存の reviewer selection を維持する。`final_trim = off` では適用しない。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.review-refine-document-before-local-model]
 kind = "order"
 before = "review-refine-document"
