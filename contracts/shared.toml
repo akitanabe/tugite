@@ -956,10 +956,10 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.over-engineering-reviewer-context-c190ef33f3d9]
+[contracts.over-engineering-reviewer-context-32a82b6257b1]
 kind = "requires"
 slice = "over-engineering-reviewer-context-boundary"
-pattern = "Planning Core が渡す latest verified Plan snapshot、preserve obligations / constraints、necessary evidence だけを対象にする fresh / context-isolated read-only Agent です。"
+pattern = "呼び出し元が渡す review target、comparison base、preserve obligations / constraints、necessary evidence だけを対象にする fresh / context-isolated read-only Agent です。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.over-engineering-reviewer-result-c1e6bbc56824]
@@ -968,10 +968,10 @@ slice = "over-engineering-reviewer-result-boundary"
 pattern = "concrete removal / simplification candidate、失われない obligation の evidence、削除後に残る witness、uncertainty / limitation を区別して返します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.over-engineering-reviewer-responsibility-f4741aefd5fe]
+[contracts.over-engineering-reviewer-responsibility-acf713039be9]
 kind = "requires"
 slice = "over-engineering-reviewer-responsibility-boundary"
-pattern = "additive redesign、finding の採否、candidate mutation、Deletion Test、remediation、review continuation / completion は所有しません。"
+pattern = "additive redesign、finding の採否、review target の mutation、removal の実行、verification、review continuation / completion は所有しません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.over-engineering-reviewer-claude-readonly-defense]
