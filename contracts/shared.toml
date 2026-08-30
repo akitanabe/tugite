@@ -905,10 +905,10 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-adversarial-reviewer-context-9a3e5054183f]
+[contracts.plan-adversarial-reviewer-context-ee076628d448]
 kind = "requires"
 slice = "plan-adversarial-reviewer-context-boundary"
-pattern = "Planning Core が渡す immutable Plan snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、必要なら affected re-review scope だけを対象にする fresh / context-isolated read-only Agent です。"
+pattern = "呼び出し元が渡す immutable Plan snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、必要なら affected re-review scope だけを対象にする fresh / context-isolated read-only Agent です。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-adversarial-reviewer-result-4565300f18da]
