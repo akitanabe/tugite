@@ -71,6 +71,7 @@ else
 fi
 
 required_agents=(
+  plan-quality-advisor.toml
   researcher.toml
 )
 retired_agents=(
@@ -178,6 +179,7 @@ Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:
+  plan-quality-advisor
   researcher
 
 IMPORTANT:

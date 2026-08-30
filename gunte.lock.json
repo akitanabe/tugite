@@ -11,10 +11,12 @@
     "shared/agentic-model-construction.md",
     "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
+    "shared/planning-synthesis.md",
     "shared/reality-model-observation.md",
     "shared/deletion-test-method.md",
     "shared/researcher-delegation.md",
     "shared/agents/researcher.md",
+    "shared/agents/plan-quality-advisor.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/how-it/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
@@ -505,6 +507,66 @@
       "sha256": "1247f3fa1b7deb089601ddd808db74bd55105560472049f18604f3f3764bdb29"
     },
     {
+      "id": "planning-synthesis-document",
+      "sha256": "dbeae4e4a2ec8e54f4630e310a87b5d19798c3d924d82878708df36dfe88eef2"
+    },
+    {
+      "id": "planning-synthesis-input-7697f1534b2c",
+      "sha256": "7cfd73738beea29aac023d433959c1a00ff34a36fd17268b5f1e8f358b63f029"
+    },
+    {
+      "id": "planning-synthesis-authority-642de1243f45",
+      "sha256": "282f8eaef32c9c57331f264c0622fdcc052c6bc170e32e5a047bb9d0f53213ea"
+    },
+    {
+      "id": "planning-synthesis-result-7ee695cb77fa",
+      "sha256": "41864e9fd2deae366880d236c86d89d515c22275d7f55e345e76ad1b84db349f"
+    },
+    {
+      "id": "planning-synthesis-advisor-0bb36870d564",
+      "sha256": "85c6d22f79e58eb070b7fb1420e9f1006c0820f2cad8a51426de0343a60ebe61"
+    },
+    {
+      "id": "planning-synthesis-direct-case-90a8bb2a3a64",
+      "sha256": "b0aa341124345123a0daa8860074c22716c902025b942fa88874fdc2f29c0bc9"
+    },
+    {
+      "id": "planning-synthesis-advice-case-ac1a8bec94c2",
+      "sha256": "99599926d6e512d6fcf90b33f42e5d29350ec291996570791aadcc5f1f472e69"
+    },
+    {
+      "id": "planning-synthesis-gap-case-7fbcdabc0985",
+      "sha256": "83c793f3716eb85a91a69e5838175a2b204eda37a686f182fbc9e5f0538919ee"
+    },
+    {
+      "id": "plan-quality-advisor-document",
+      "sha256": "277ce6f2efc42e66a2560d2c3be23766beed8985ccbb2bc0bc49efc032f39241"
+    },
+    {
+      "id": "plan-quality-advisor-context-3d3d8441980e",
+      "sha256": "8e1694a9fa6700cb5e5ab582f098a8e0869ecf14fb91007ed96905f7d217e20c"
+    },
+    {
+      "id": "plan-quality-advisor-result-8a7187457440",
+      "sha256": "98cd257fc94a6b6b994885907879c33fb6d591f41032aec691680a6617b3e4a8"
+    },
+    {
+      "id": "plan-quality-advisor-responsibility-17e82f94c534",
+      "sha256": "597fe1b5189ec1e71311f1d2d9b08d262a79cf9fc78cad1c0d37a4e469f25c7e"
+    },
+    {
+      "id": "plan-quality-advisor-claude-readonly-defense",
+      "sha256": "ec442245b84ac1dfa9146c6be2d482ec4bb1ab67cfce4f0193bcaed7e1d2c201"
+    },
+    {
+      "id": "plan-quality-advisor-codex-sandbox",
+      "sha256": "93d12fe89904d01dc3a8a74f224750c25500eded5bac3123ef3192235ddf90f1"
+    },
+    {
+      "id": "plan-quality-advisor-cursor-readonly",
+      "sha256": "a96190a269127bcd46ca3663f44ff22eab3964392173dc62fd88dd4ed375c2a1"
+    },
+    {
       "id": "deletion-test-document",
       "sha256": "7a7b65ed993208442556d39c5411496ba80612ec0a02762644c76984003384a1"
     },
@@ -956,6 +1018,41 @@
       "path": "shared/behavior-model-observation.md"
     },
     {
+      "kind": "span",
+      "id": "planning-synthesis-input-boundary",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-authority-boundary",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-advisor-boundary",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-result-boundary",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-direct-case",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-advice-case",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-gap-case",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
       "kind": "anchor",
       "id": "shared-rmo-document",
       "path": "shared/reality-model-observation.md"
@@ -1279,6 +1376,21 @@
       "kind": "span",
       "id": "shared-researcher-web-result-trace",
       "path": "shared/agents/researcher.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-quality-advisor-context-boundary",
+      "path": "shared/agents/plan-quality-advisor.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-quality-advisor-result-boundary",
+      "path": "shared/agents/plan-quality-advisor.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-quality-advisor-responsibility-boundary",
+      "path": "shared/agents/plan-quality-advisor.md"
     },
     {
       "kind": "anchor",

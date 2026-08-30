@@ -55,11 +55,12 @@ for skill in explorer-this how-it review-refine; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 
-for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation reality-model-observation deletion-test-method researcher-delegation; do
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis reality-model-observation deletion-test-method researcher-delegation; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 
 assert_same "$source_repo/plugins/cursor/agents/researcher.md" "$dest_dir/agents/researcher.md"
+assert_same "$source_repo/plugins/cursor/agents/plan-quality-advisor.md" "$dest_dir/agents/plan-quality-advisor.md"
 
 [[ ! -e "$dest_dir/skills/clarify-it" ]] || fail "public clarify-it skill was installed"
 [[ "$install_output" == *"$dest_dir"* ]] || fail "install output did not mention destination"

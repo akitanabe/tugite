@@ -763,6 +763,110 @@ pattern = "web_search = \"cached\""
 count = 1
 paths = ["plugins/codex/install/agents/researcher.toml"]
 applies_to = ["codex"]
+
+[contracts.planning-synthesis-document]
+kind = "occurrences"
+pattern = "# Planning Synthesis"
+count = 1
+paths = [
+  "plugins/claude/references/planning-synthesis.md",
+  "plugins/codex/references/planning-synthesis.md",
+  "plugins/cursor/references/planning-synthesis.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-input-7697f1534b2c]
+kind = "requires"
+slice = "planning-synthesis-input-boundary"
+pattern = "caller は一つの task-local Local Model の owner のまま、planning に必要な current understanding、established planning direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-authority-642de1243f45]
+kind = "requires"
+slice = "planning-synthesis-authority-boundary"
+pattern = "Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-result-7ee695cb77fa]
+kind = "requires"
+slice = "planning-synthesis-result-boundary"
+pattern = "返す結果は current task に material な planning semantics を持つ coherent Plan candidate、または candidate coherence を妨げる具体的な material input gap である。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-advisor-0bb36870d564]
+kind = "requires"
+slice = "planning-synthesis-advisor-boundary"
+pattern = "Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-direct-case-90a8bb2a3a64]
+kind = "requires"
+slice = "planning-synthesis-direct-case"
+pattern = "input が coherent synthesis に十分なら、advisor を起動せず Planning Synthesis が必要な判断を行い candidate を返せる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-advice-case-ac1a8bec94c2]
+kind = "requires"
+slice = "planning-synthesis-advice-case"
+pattern = "supplied Researcher evidence が局所 trade-off に関係する場合、concrete question と必要 context だけの fresh advisor request を使い、Planning Synthesis が advice を裁定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-gap-case-7fbcdabc0985]
+kind = "requires"
+slice = "planning-synthesis-gap-case"
+pattern = "candidate coherence に material な fact が input にない場合、その fact と影響を gap として caller へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-document]
+kind = "occurrences"
+pattern = "# plan-quality-advisor"
+count = 1
+paths = [
+  "plugins/claude/agents/plan-quality-advisor.md",
+  "plugins/codex/install/agents/plan-quality-advisor.toml",
+  "plugins/cursor/agents/plan-quality-advisor.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-context-3d3d8441980e]
+kind = "requires"
+slice = "plan-quality-advisor-context-boundary"
+pattern = "一つの concrete advisory question と、その判断に必要な supplied context だけを対象にする fresh / context-isolated Agent です。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-result-8a7187457440]
+kind = "requires"
+slice = "plan-quality-advisor-result-boundary"
+pattern = "source evidence と advisor の inference を区別し、Planning Synthesis が採否を判断できる grounded non-binding material を返します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-responsibility-17e82f94c534]
+kind = "requires"
+slice = "plan-quality-advisor-responsibility-boundary"
+pattern = "candidate の変更、Plan の採否、binding verdict、authority-integrity verification、gate、comprehensive review、repository exploration / research、Researcher invocation、requirement / direction / scope の確立、workflow continuation / completion、Human interaction は所有しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-claude-readonly-defense]
+kind = "occurrences"
+pattern = '''tools: Read
+disallowedTools: Bash, Edit, Write, NotebookEdit, WebFetch, WebSearch'''
+count = 1
+paths = ["plugins/claude/agents/plan-quality-advisor.md"]
+applies_to = ["claude"]
+
+[contracts.plan-quality-advisor-codex-sandbox]
+kind = "occurrences"
+pattern = "sandbox_mode = \"read-only\""
+count = 1
+paths = ["plugins/codex/install/agents/plan-quality-advisor.toml"]
+applies_to = ["codex"]
+
+[contracts.plan-quality-advisor-cursor-readonly]
+kind = "occurrences"
+pattern = "readonly: true"
+count = 1
+paths = ["plugins/cursor/agents/plan-quality-advisor.md"]
+applies_to = ["cursor"]
 [contracts.deletion-test-document]
 kind = "occurrences"
 pattern = "# Deletion Test Method"

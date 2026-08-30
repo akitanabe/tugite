@@ -6,6 +6,7 @@ installer="$repo_root/plugins/codex/install/install-agents.sh"
 expected_version="$(cat "$repo_root/plugins/codex/install/VERSION")"
 plugin_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$repo_root/plugins/codex/.codex-plugin/plugin.json")"
 required_agents=(
+  plan-quality-advisor
   researcher
 )
 
@@ -38,6 +39,9 @@ create_fixture() {
 researcher_source="$repo_root/plugins/codex/install/agents/researcher.toml"
 [[ -f "$researcher_source" && ! -L "$researcher_source" ]] || \
   fail "required Research Agent definition is missing"
+advisor_source="$repo_root/plugins/codex/install/agents/plan-quality-advisor.toml"
+[[ -f "$advisor_source" && ! -L "$advisor_source" ]] || \
+  fail "required plan-quality-advisor definition is missing"
 
 fixture_parent="$repo_root/.local"
 tmp_dir="$(create_fixture "$repo_root")"
@@ -148,6 +152,7 @@ test_force_update_removes_all_retired_agents() {
   [[ ! -e "$agent_dir/review-patch-refactorer.toml" ]] || fail "forced update retained review-patch-refactorer"
   [[ ! -e "$agent_dir/writing-principles-refactorer.toml" ]] || fail "forced update retained writing-principles-refactorer"
   assert_same "$researcher_source" "$agent_dir/researcher.toml"
+  assert_same "$advisor_source" "$agent_dir/plan-quality-advisor.toml"
   [[ -f "$agent_dir/unrelated.toml" ]] || fail "forced migration removed an unrelated agent"
 }
 
@@ -198,18 +203,23 @@ test_install_rejects_agent_and_version_destination_symlinks() {
   local outside="$case_dir/outside"
   local repo="$case_dir/repo"
   mkdir -p "$repo/.codex/agents" "$outside"
-  printf '%s\n' 'agent sentinel' > "$outside/agent-sentinel"
-  ln -s "$outside/agent-sentinel" "$repo/.codex/agents/researcher.toml"
+  local required_agent
+  for required_agent in "${required_agents[@]}"; do
+    local sentinel="$outside/$required_agent-sentinel"
+    local destination="$repo/.codex/agents/$required_agent.toml"
+    printf '%s\n' 'agent sentinel' > "$sentinel"
+    ln -s "$sentinel" "$destination"
 
-  set +e
-  "$installer" --force --repo "$repo" >/dev/null 2>&1
-  local agent_status=$?
-  set -e
+    set +e
+    "$installer" --force --repo "$repo" >/dev/null 2>&1
+    local agent_status=$?
+    set -e
 
-  [[ $agent_status -ne 0 ]] || fail "installer accepted a required-agent destination symlink"
-  [[ "$(cat "$outside/agent-sentinel")" == "agent sentinel" ]] || fail "required-agent symlink target was overwritten"
+    [[ $agent_status -ne 0 ]] || fail "installer accepted a required-agent destination symlink: $required_agent"
+    [[ "$(cat "$sentinel")" == "agent sentinel" ]] || fail "required-agent symlink target was overwritten: $required_agent"
+    rm -f "$destination"
+  done
 
-  rm -f "$repo/.codex/agents/researcher.toml"
   printf '%s\n' 'version sentinel' > "$outside/version-sentinel"
   ln -s "$outside/version-sentinel" "$repo/.codex/agents/.tugite-version"
 
@@ -243,5 +253,6 @@ set -e
 "$installer" --force --repo "$target_repo"
 [[ "$(cat "$agent_dir/.tugite-version")" == "$expected_version" ]] || fail "forced update did not record version"
 assert_same "$researcher_source" "$agent_dir/researcher.toml"
+assert_same "$advisor_source" "$agent_dir/plan-quality-advisor.toml"
 
 echo "PASS: install-agents"
