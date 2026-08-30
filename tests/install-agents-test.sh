@@ -6,6 +6,8 @@ installer="$repo_root/plugins/codex/install/install-agents.sh"
 expected_version="$(cat "$repo_root/plugins/codex/install/VERSION")"
 plugin_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$repo_root/plugins/codex/.codex-plugin/plugin.json")"
 required_agents=(
+  over-engineering-reviewer
+  plan-adversarial-reviewer
   plan-quality-advisor
   researcher
 )
@@ -36,12 +38,11 @@ create_fixture() {
   mktemp -d "$fixture_parent/install-agents-test.XXXXXX"
 }
 
-researcher_source="$repo_root/plugins/codex/install/agents/researcher.toml"
-[[ -f "$researcher_source" && ! -L "$researcher_source" ]] || \
-  fail "required Research Agent definition is missing"
-advisor_source="$repo_root/plugins/codex/install/agents/plan-quality-advisor.toml"
-[[ -f "$advisor_source" && ! -L "$advisor_source" ]] || \
-  fail "required plan-quality-advisor definition is missing"
+for required_agent in "${required_agents[@]}"; do
+  required_agent_source="$repo_root/plugins/codex/install/agents/$required_agent.toml"
+  [[ -f "$required_agent_source" && ! -L "$required_agent_source" ]] || \
+    fail "required agent definition is missing: $required_agent"
+done
 
 fixture_parent="$repo_root/.local"
 tmp_dir="$(create_fixture "$repo_root")"
@@ -151,8 +152,9 @@ test_force_update_removes_all_retired_agents() {
   [[ ! -e "$agent_dir/expert-selection-reviewer.toml" ]] || fail "forced update retained expert-selection-reviewer"
   [[ ! -e "$agent_dir/review-patch-refactorer.toml" ]] || fail "forced update retained review-patch-refactorer"
   [[ ! -e "$agent_dir/writing-principles-refactorer.toml" ]] || fail "forced update retained writing-principles-refactorer"
-  assert_same "$researcher_source" "$agent_dir/researcher.toml"
-  assert_same "$advisor_source" "$agent_dir/plan-quality-advisor.toml"
+  for required_agent in "${required_agents[@]}"; do
+    assert_same "$repo_root/plugins/codex/install/agents/$required_agent.toml" "$agent_dir/$required_agent.toml"
+  done
   [[ -f "$agent_dir/unrelated.toml" ]] || fail "forced migration removed an unrelated agent"
 }
 
@@ -252,7 +254,8 @@ set -e
 
 "$installer" --force --repo "$target_repo"
 [[ "$(cat "$agent_dir/.tugite-version")" == "$expected_version" ]] || fail "forced update did not record version"
-assert_same "$researcher_source" "$agent_dir/researcher.toml"
-assert_same "$advisor_source" "$agent_dir/plan-quality-advisor.toml"
+for required_agent in "${required_agents[@]}"; do
+  assert_same "$repo_root/plugins/codex/install/agents/$required_agent.toml" "$agent_dir/$required_agent.toml"
+done
 
 echo "PASS: install-agents"

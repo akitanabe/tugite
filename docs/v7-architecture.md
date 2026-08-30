@@ -344,6 +344,19 @@ plan-family の共通 planning capability とする。
 * review
 * final acceptance
 
+### Planning Core
+
+plan-family の shared orchestration Method とする。
+
+top-level planning workflow が所有する一つの task-local Local Model から planning-relevant projection、established direction、authority
+constraints を受け取り、Planning Synthesis と nested `review-refine` を接続する。coherent candidate だけを stable S0 review target とし、
+required normal `plan-adversarial-reviewer` による strengthening / bounded re-review の convergence 後に、mandatory
+`over-engineering-reviewer` final trim と Deletion Test を行う。
+
+Planning Core は Local Model、Planning Synthesis の judgment、`review-refine` の adjudication / mutation / completion、top-level workflow の
+final acceptance を所有しない。synthesis gap または安全に閉じない review / verification は latest verified candidate があれば保持した
+`incomplete` とし、nested review が返した candidate を後処理で変更しない。
+
 ### Implementation Unit Design
 
 `impl-lead` が利用する shared Method とする。
@@ -496,7 +509,10 @@ Shared Methods
 │    ├─ Core: Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration
 │    ├─ Agentic Model Construction
 │    └─ Interactive Model Construction
-├─ Planning Synthesis
+├─ Planning Core
+│    ├─ Planning Synthesis
+│    ├─ required normal review: plan-adversarial-reviewer
+│    └─ mandatory final trim: over-engineering-reviewer
 └─ Implementation Unit Design
 
 Observation Methods
@@ -507,7 +523,9 @@ Observation Methods
 
 Agents
 ├─ Research Agent
-└─ Specialized Reviewer Agents
+├─ Plan Quality Advisor
+├─ Plan Adversarial Reviewer
+└─ Over-engineering Reviewer
 
 plan-interactive specific
 └─ Authority Integrity Verification

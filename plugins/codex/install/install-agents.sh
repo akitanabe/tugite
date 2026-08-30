@@ -71,6 +71,8 @@ else
 fi
 
 required_agents=(
+  over-engineering-reviewer.toml
+  plan-adversarial-reviewer.toml
   plan-quality-advisor.toml
   researcher.toml
 )
@@ -179,6 +181,8 @@ Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:
+  over-engineering-reviewer
+  plan-adversarial-reviewer
   plan-quality-advisor
   researcher
 

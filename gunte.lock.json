@@ -12,11 +12,14 @@
     "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
     "shared/planning-synthesis.md",
+    "shared/planning-core.md",
     "shared/reality-model-observation.md",
     "shared/deletion-test-method.md",
     "shared/researcher-delegation.md",
     "shared/agents/researcher.md",
     "shared/agents/plan-quality-advisor.md",
+    "shared/agents/plan-adversarial-reviewer.md",
+    "shared/agents/over-engineering-reviewer.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/how-it/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
@@ -539,6 +542,110 @@
       "sha256": "83c793f3716eb85a91a69e5838175a2b204eda37a686f182fbc9e5f0538919ee"
     },
     {
+      "id": "planning-core-document",
+      "sha256": "4e2b6b802caf5b78e3b9838cde9fbd2643e0c0e272bcee323faf393dcda25886"
+    },
+    {
+      "id": "planning-core-input-60b9abb9549f",
+      "sha256": "fac8f96f71b0b6969b0d12f3410e11d21e4236149a9b5ca05ea39d17b016ae62"
+    },
+    {
+      "id": "planning-core-synthesis-gap-5d685524a0cf",
+      "sha256": "f0b0f05de1b0b3e6ee7ac7f5692d42a257893c016b271826533e9279f4c3c994"
+    },
+    {
+      "id": "planning-core-s0-1a8a4d2aebc3",
+      "sha256": "c3134754ff11182669e84e361b6f30b040b64eb4979fc04e9ca452793c949b90"
+    },
+    {
+      "id": "planning-core-review-input-f0ab5dfed8f1",
+      "sha256": "3aff5c6e6ac2bfc7650b809737215fbe457e4d27281e1b5b4c78d2562855f651"
+    },
+    {
+      "id": "planning-core-sequence-787c5367ea52",
+      "sha256": "0d2796beecc7f710944b52883426548fdc407fa6186674f979e241bb798bf90d"
+    },
+    {
+      "id": "planning-core-result-71d5753bca1c",
+      "sha256": "1740729b5006ea905ed0ae7a6a3faf6c6229685dee3ba8c5dd2a3da402738870"
+    },
+    {
+      "id": "planning-core-strengthen-trim-c4728ee002fa",
+      "sha256": "bd525eaca54dff4492722eea5eb5188eeefa791678f5143bb625bcce930435bf"
+    },
+    {
+      "id": "planning-core-gap-case-390677ec727a",
+      "sha256": "61556cef3fa1b494c3147b4de41b4da0cda56676bd9196b545f4027f050934c9"
+    },
+    {
+      "id": "planning-core-adversarial-incomplete-0cc44678af50",
+      "sha256": "8d6d8de84de32eebaf3dda2f48c1e51a207c0e995334836b28056bf158bf18de"
+    },
+    {
+      "id": "planning-core-trim-defect-aa2a737ff2c5",
+      "sha256": "4cf63f15bceef61bcbf7af0e0393934f665a417796ac3bce92c2a6efa7244c3d"
+    },
+    {
+      "id": "planning-core-authority-case-5b3b4ef6e479",
+      "sha256": "a2ee75e575ce335d82efd586e90d34f47a94051e2c6ea51549d5e6124a59d34c"
+    },
+    {
+      "id": "plan-adversarial-reviewer-document",
+      "sha256": "bbe85261e9a7572bcd4014d6c5031484dc2fbda91ba9779fce8af52b58e40a76"
+    },
+    {
+      "id": "plan-adversarial-reviewer-context-9a3e5054183f",
+      "sha256": "e6d9ea7efb822770d783d750202764d44973edbb7f6e664ae7728ede242e1602"
+    },
+    {
+      "id": "plan-adversarial-reviewer-result-4565300f18da",
+      "sha256": "376a94a557c29d6dfd208a091cff03e8ccbdc6cb54532293b9d7e4183b0484e0"
+    },
+    {
+      "id": "plan-adversarial-reviewer-responsibility-cc1964ca83c8",
+      "sha256": "bbff15f9f7bd21d76d2b5c276f08f45d17e652b9acd57f8ae0e8ce57f314f8a7"
+    },
+    {
+      "id": "plan-adversarial-reviewer-claude-readonly-defense",
+      "sha256": "40a844473e21832f0a249151782a8a83389f81ad2328182153a92278a0fa33d7"
+    },
+    {
+      "id": "plan-adversarial-reviewer-codex-sandbox",
+      "sha256": "f90b9e22bdeeb5c1b08c12a117d6dcac900c2e2b7838458af5c412fe33de7aaa"
+    },
+    {
+      "id": "plan-adversarial-reviewer-cursor-readonly",
+      "sha256": "76519ed75e06bfa5b955891ea4a237a2172ed390b8b0914caadd110a8c6b47e5"
+    },
+    {
+      "id": "over-engineering-reviewer-document",
+      "sha256": "f3ce3d9bab8e91af07844d078f980d6ed682f7cb2eedc8adb1c3992025c7c53b"
+    },
+    {
+      "id": "over-engineering-reviewer-context-c190ef33f3d9",
+      "sha256": "07f098cc91eac39f493217ebaf8d9f3203007ff4b10e4f93c4ff2182365cd668"
+    },
+    {
+      "id": "over-engineering-reviewer-result-c1e6bbc56824",
+      "sha256": "3d538f9ed102fa6c7a3a482f1d894e2186ecae5fb25cba36ac36a17fa080983d"
+    },
+    {
+      "id": "over-engineering-reviewer-responsibility-f4741aefd5fe",
+      "sha256": "63e70525dec129012cf78180e161f6f7e03f4c7bfb40f7c1003a800966861796"
+    },
+    {
+      "id": "over-engineering-reviewer-claude-readonly-defense",
+      "sha256": "817af69f5012e439913a5d8267e71b115bba81b612e34830ec1ee8f36e94bd70"
+    },
+    {
+      "id": "over-engineering-reviewer-codex-sandbox",
+      "sha256": "c97538ab26382cd812a6d0a9282df6122283d01d39a08a53859b11c21b45cc6f"
+    },
+    {
+      "id": "over-engineering-reviewer-cursor-readonly",
+      "sha256": "63a322c819078c264d22ded5f180675d57873dd78859a8ab9526ac5b9db290a6"
+    },
+    {
       "id": "plan-quality-advisor-document",
       "sha256": "277ce6f2efc42e66a2560d2c3be23766beed8985ccbb2bc0bc49efc032f39241"
     },
@@ -1053,6 +1160,61 @@
       "path": "shared/planning-synthesis.md"
     },
     {
+      "kind": "span",
+      "id": "planning-core-input-boundary",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-synthesis-gap",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-s0-boundary",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-review-input",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-review-sequence",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-result-boundary",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-strengthen-trim-case",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-gap-case",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-adversarial-incomplete-case",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-trim-defect-case",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-authority-case",
+      "path": "shared/planning-core.md"
+    },
+    {
       "kind": "anchor",
       "id": "shared-rmo-document",
       "path": "shared/reality-model-observation.md"
@@ -1391,6 +1553,36 @@
       "kind": "span",
       "id": "plan-quality-advisor-responsibility-boundary",
       "path": "shared/agents/plan-quality-advisor.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-context-boundary",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-result-boundary",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-responsibility-boundary",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "over-engineering-reviewer-context-boundary",
+      "path": "shared/agents/over-engineering-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "over-engineering-reviewer-result-boundary",
+      "path": "shared/agents/over-engineering-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "over-engineering-reviewer-responsibility-boundary",
+      "path": "shared/agents/over-engineering-reviewer.md"
     },
     {
       "kind": "anchor",

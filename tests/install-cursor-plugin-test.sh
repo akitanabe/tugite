@@ -19,6 +19,7 @@ assert_same() {
 [[ -f "$installer" ]] || fail "missing installer: $installer"
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
+[[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 
 tmp_dir="$(mktemp -d)"
@@ -55,12 +56,13 @@ for skill in explorer-this how-it review-refine; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 
-for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis reality-model-observation deletion-test-method researcher-delegation; do
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 
-assert_same "$source_repo/plugins/cursor/agents/researcher.md" "$dest_dir/agents/researcher.md"
-assert_same "$source_repo/plugins/cursor/agents/plan-quality-advisor.md" "$dest_dir/agents/plan-quality-advisor.md"
+for agent in over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher; do
+  assert_same "$source_repo/plugins/cursor/agents/$agent.md" "$dest_dir/agents/$agent.md"
+done
 
 [[ ! -e "$dest_dir/skills/clarify-it" ]] || fail "public clarify-it skill was installed"
 [[ "$install_output" == *"$dest_dir"* ]] || fail "install output did not mention destination"
