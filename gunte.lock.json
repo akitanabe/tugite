@@ -654,12 +654,12 @@
       "sha256": "8e1694a9fa6700cb5e5ab582f098a8e0869ecf14fb91007ed96905f7d217e20c"
     },
     {
-      "id": "plan-quality-advisor-result-8a7187457440",
-      "sha256": "98cd257fc94a6b6b994885907879c33fb6d591f41032aec691680a6617b3e4a8"
+      "id": "plan-quality-advisor-result-fcce2e7e65d5",
+      "sha256": "22f6f6bb49ae9eaac354ff661100cab9a50c254c391c4dad8d6778fa1699a3f7"
     },
     {
-      "id": "plan-quality-advisor-responsibility-17e82f94c534",
-      "sha256": "597fe1b5189ec1e71311f1d2d9b08d262a79cf9fc78cad1c0d37a4e469f25c7e"
+      "id": "plan-quality-advisor-responsibility-42eaeb862d3a",
+      "sha256": "e84cd0f4d893d8bd2e62f9bb6fb7b2ca51b8f510f4ae4aa22558c8e6aa3b4bff"
     },
     {
       "id": "plan-quality-advisor-claude-readonly-defense",
