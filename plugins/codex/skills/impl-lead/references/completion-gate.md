@@ -8,6 +8,8 @@ Completion Gate は Parent QA と必要な risk review を通過した Unit を 
 
 候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、code の How、test の What、commit の Why、comment / DocBlock の Why Not を確認する。
 
+fresh `writing-principles-reviewer` を起動する場合は `fork_turns = "none"` を指定する。
+
 ## Programmatic Flow
 
 ### unit-completion-control

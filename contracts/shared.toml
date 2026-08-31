@@ -798,6 +798,13 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.planning-synthesis-codex-fresh-advisor-invocation]
+kind = "occurrences"
+pattern = '''fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を指定する。'''
+count = 1
+paths = ["plugins/codex/references/planning-synthesis.md"]
+applies_to = ["codex"]
+
 [contracts.planning-synthesis-input-7697f1534b2c]
 kind = "requires"
 slice = "planning-synthesis-input-boundary"

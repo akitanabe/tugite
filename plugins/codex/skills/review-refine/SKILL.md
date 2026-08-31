@@ -54,6 +54,8 @@ self-review で代行せず、latest verified candidate と material reason を�
 reviewer Action は、prior reviewer context を持たない `fresh adversarial observation` と、origin reviewer context を保つ
 `contextual resolution continuation` に分ける。fresh は initial と additional の二つの起動理由を持つ。
 
+fresh reviewer を起動する場合は `fork_turns = "none"` を指定する。
+
 initial fresh は `S0`、fixed purpose / criteria、authority obligations、necessary evidence、bound が成立すれば、additional fresh 用の risk packet を要求せず起動する。
 
 fresh reviewer input は current immutable snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、observation scope に閉じる。

@@ -16,6 +16,8 @@ residual design judgment、reasoning difficulty、誤った場合の rework と�
 
 最初の実装は fresh context に渡す。同じ Implementer に clarification または現在の Unit 内 correction を続けさせる場合だけ continuation を使い、別 Unit、別責務、失効した前提、independent observation には fresh context を使う。
 
+fresh Implementer を起動する場合は `fork_turns = "none"` を指定する。
+
 handoff は Unit Data、base、必要な surrounding context、検証方法と、`../../../references/writable-scope.md` の Writable Scope Method に従って親が確定した assignment / target membership を含む。Implementer に assignment の推測や暗黙拡張をさせない。追加 region が Unit scope 内なら親が explicit assignment update と target membership を確定して再 handoff し、Unit scope の拡張を要するなら update せず `stop-incomplete` とする。
 
 Implementer は Red → Green → Refactor で外部から観測可能な振る舞いを実装し、正常、境界、異常、failure path、side effect の order / retry / partial failure / idempotency を applicable な範囲で検証する。meaningful Red が成立しない変更では failing test を捏造せず、pre-change evidence、理由、alternative verification を返す。commit は `impl-lead` 親が所有し、Implementer は commit しない。

@@ -13,6 +13,10 @@ default は delegation である。責任境界と検証が狭く parent context
 residual design judgment、reasoning difficulty、誤った場合の rework と他 branch への影響から `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` を選ぶ。file 数、change size、迷いだけを tier 根拠にしない。通常の bounded Unit は `implementer`、狭く検証が明確なら `focused-implementer`、残存設計判断が多ければ `senior-implementer`、親の設計判断に依存する最高難度の局所実装だけ `expert-implementer` とする。senior / expert tier でも AC、Unit boundary、responsibility、semantic dependency の再設計を Implementer に補わせない。
 
 最初の実装は fresh context に渡す。同じ Implementer に clarification または現在の Unit 内 correction を続けさせる場合だけ continuation を使い、別 Unit、別責務、失効した前提、independent observation には fresh context を使う。
+<!-- @only codex -->
+
+fresh Implementer を起動する場合は `fork_turns = "none"` を指定する。
+<!-- @/only -->
 
 handoff は Unit Data、base、必要な surrounding context、検証方法と、`../../../references/writable-scope.md` の Writable Scope Method に従って親が確定した assignment / target membership を含む。Implementer に assignment の推測や暗黙拡張をさせない。追加 region が Unit scope 内なら親が explicit assignment update と target membership を確定して再 handoff し、Unit scope の拡張を要するなら update せず `stop-incomplete` とする。
 

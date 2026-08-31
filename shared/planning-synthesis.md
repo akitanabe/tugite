@@ -52,6 +52,10 @@ advisor は mandatory phase、comprehensive review、gate ではありません�
 upstream Researcher evidence だけを渡す fresh / context-isolated request とします。異なる question は独立した invocation に分け、prior
 advisor conversation や advisor output を次の invocation へ暗黙に継承しません。複数回使うか、どの question を渡すかは Planning
 Synthesis が判断し、advisor に loop、next question、continuation、round limit の所有を移しません。
+<!-- @only codex -->
+
+fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を指定する。
+<!-- @/only -->
 
 <!-- @contract planning-synthesis-advisor-boundary -->
 Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。

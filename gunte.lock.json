@@ -551,6 +551,10 @@
       "sha256": "dbeae4e4a2ec8e54f4630e310a87b5d19798c3d924d82878708df36dfe88eef2"
     },
     {
+      "id": "planning-synthesis-codex-fresh-advisor-invocation",
+      "sha256": "9ce531732f8c10138a60b00900a0c3384149b74fda55b752771254b65dd2810b"
+    },
+    {
       "id": "planning-synthesis-input-7697f1534b2c",
       "sha256": "7cfd73738beea29aac023d433959c1a00ff34a36fd17268b5f1e8f358b63f029"
     },
@@ -1159,6 +1163,10 @@
       "sha256": "5bed92917497ec68131a0350f2620a136355ff4df05bf6b5069bd52cdf5e4c04"
     },
     {
+      "id": "review-refine-codex-fresh-reviewer-invocation",
+      "sha256": "e80df2533240c2137e9d327cfec82b56a28623b7d7627b73aef2ecd7e458a511"
+    },
+    {
       "id": "review-refine-local-standalone-994ee5455250",
       "sha256": "0556364fa23d892a4077dd8dce2809972f0551adb3595b0014e489ac3e91db2a"
     },
@@ -1285,6 +1293,18 @@
     {
       "id": "impl-lead-document",
       "sha256": "e8f2a94bc059d990906928d052e4be5d69a807e50a0ccb91e87d8a87d5060334"
+    },
+    {
+      "id": "impl-lead-codex-fresh-implementer-invocation",
+      "sha256": "0705e2f1deae3241c6663d78189a3bcc0bf716d5b997d378585d98f70d710d35"
+    },
+    {
+      "id": "impl-lead-codex-fresh-risk-reviewer-invocation",
+      "sha256": "ac33427b8a1aa49331f2dc0130531514375ff5bb482a35594eb5b8ca3551cd47"
+    },
+    {
+      "id": "impl-lead-codex-fresh-writing-reviewer-invocation",
+      "sha256": "314d2d2aab140029ab03a0d95e3e321f98a4d155300afd4b0f3a0b7b37e3d81e"
     },
     {
       "id": "impl-lead-method-document",

@@ -9,6 +9,13 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.review-refine-codex-fresh-reviewer-invocation]
+kind = "occurrences"
+pattern = '''fresh reviewer を起動する場合は `fork_turns = "none"` を指定する。'''
+count = 1
+paths = ["plugins/codex/skills/review-refine/SKILL.md"]
+applies_to = ["codex"]
+
 [contracts.review-refine-local-standalone-994ee5455250]
 kind = "requires"
 slice = "review-refine-local-model"
