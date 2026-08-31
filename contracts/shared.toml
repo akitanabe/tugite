@@ -1117,3 +1117,261 @@ kind = "order"
 before = "deletion-test-selected-set-relation"
 after = "deletion-test-caller-relation"
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-document]
+kind = "occurrences"
+pattern = "# Writable Scope Method"
+count = 1
+paths = [
+  "plugins/claude/references/writable-scope.md",
+  "plugins/codex/references/writable-scope.md",
+  "plugins/cursor/references/writable-scope.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writable-scope-assignment-relation]
+kind = "occurrences"
+pattern = '''assignment_owner = caller / execution orchestration
+write_eligibility = valid assignment + caller-confirmed target membership
+missing_invalid_or_unknown = no-write + return to caller
+unassigned_or_additional_target = no-write + return to caller
+scope_update = valid explicit assignment update + caller-confirmed target membership
+data_lifetime = transient execution Data'''
+count = 1
+paths = [
+  "plugins/claude/references/writable-scope.md",
+  "plugins/codex/references/writable-scope.md",
+  "plugins/cursor/references/writable-scope.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementer-common-boundary]
+kind = "occurrences"
+pattern = '''unit_owner = caller
+implementer_scope = exactly one caller-defined Implementation Unit
+redefinition = none for boundary / Acceptance Criteria / responsibility / semantic dependency / implementation scope
+task_wide_semantic_ownership = caller'''
+count = 1
+paths = [
+  "plugins/claude/agents/focused-implementer.md",
+  "plugins/claude/agents/implementer.md",
+  "plugins/claude/agents/senior-implementer.md",
+  "plugins/claude/agents/expert-implementer.md",
+  "plugins/codex/install/agents/focused-implementer.toml",
+  "plugins/codex/install/agents/implementer.toml",
+  "plugins/codex/install/agents/senior-implementer.toml",
+  "plugins/codex/install/agents/expert-implementer.toml",
+  "plugins/cursor/agents/focused-implementer.md",
+  "plugins/cursor/agents/implementer.md",
+  "plugins/cursor/agents/senior-implementer.md",
+  "plugins/cursor/agents/expert-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementer-writable-scope-boundary]
+kind = "occurrences"
+pattern = "valid な assignment と caller-confirmed target membership の両方がある"
+count = 1
+paths = [
+  "plugins/claude/agents/focused-implementer.md",
+  "plugins/claude/agents/implementer.md",
+  "plugins/claude/agents/senior-implementer.md",
+  "plugins/claude/agents/expert-implementer.md",
+  "plugins/codex/install/agents/focused-implementer.toml",
+  "plugins/codex/install/agents/implementer.toml",
+  "plugins/codex/install/agents/senior-implementer.toml",
+  "plugins/codex/install/agents/expert-implementer.toml",
+  "plugins/cursor/agents/focused-implementer.md",
+  "plugins/cursor/agents/implementer.md",
+  "plugins/cursor/agents/senior-implementer.md",
+  "plugins/cursor/agents/expert-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.focused-implementer-tier]
+kind = "occurrences"
+pattern = "tier_freedom = empty or narrowly local implementation choice with clear verification"
+count = 1
+paths = [
+  "plugins/claude/agents/focused-implementer.md",
+  "plugins/codex/install/agents/focused-implementer.toml",
+  "plugins/cursor/agents/focused-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementer-tier]
+kind = "occurrences"
+pattern = "tier_freedom = normal local implementation judgment inside a bounded Unit"
+count = 1
+paths = [
+  "plugins/claude/agents/implementer.md",
+  "plugins/codex/install/agents/implementer.toml",
+  "plugins/cursor/agents/implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.senior-implementer-tier]
+kind = "occurrences"
+pattern = "tier_freedom = high residual local design judgment or rework risk inside the Unit"
+count = 1
+paths = [
+  "plugins/claude/agents/senior-implementer.md",
+  "plugins/codex/install/agents/senior-implementer.toml",
+  "plugins/cursor/agents/senior-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.expert-implementer-tier]
+kind = "occurrences"
+pattern = "tier_freedom = parent-level reasoning capability materially affects implementation quality inside the Unit"
+count = 1
+paths = [
+  "plugins/claude/agents/expert-implementer.md",
+  "plugins/codex/install/agents/expert-implementer.toml",
+  "plugins/cursor/agents/expert-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementation-reviewer-common-boundary]
+kind = "occurrences"
+pattern = '''review_context = caller-supplied target + comparison base + obligations / constraints / evidence
+session = fresh + context-isolated
+repository_access = read-only
+finding_adjudication = caller
+workflow_ownership = caller'''
+count = 1
+paths = [
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/responsibility-boundary-reviewer.md",
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/claude/agents/static-performance-reviewer.md",
+  "plugins/claude/agents/writing-principles-reviewer.md",
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/codex/install/agents/static-performance-reviewer.toml",
+  "plugins/codex/install/agents/writing-principles-reviewer.toml",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+  "plugins/cursor/agents/static-performance-reviewer.md",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementation-reviewer-no-finding-path]
+kind = "occurrences"
+pattern = "material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。"
+count = 1
+paths = [
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/responsibility-boundary-reviewer.md",
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/claude/agents/static-performance-reviewer.md",
+  "plugins/claude/agents/writing-principles-reviewer.md",
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/codex/install/agents/static-performance-reviewer.toml",
+  "plugins/codex/install/agents/writing-principles-reviewer.toml",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+  "plugins/cursor/agents/static-performance-reviewer.md",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-quality-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = changed test quality and meaningful failure protection"
+count = 1
+paths = [
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.responsibility-boundary-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = responsibility placement / mixed concerns / side-effect separation"
+count = 1
+paths = [
+  "plugins/claude/agents/responsibility-boundary-reviewer.md",
+  "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.security-side-effect-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = authorization / secrets / destructive and external Actions / failure safety"
+count = 1
+paths = [
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.static-performance-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = I/O amplification / computation / retention / query shape"
+count = 1
+paths = [
+  "plugins/claude/agents/static-performance-reviewer.md",
+  "plugins/codex/install/agents/static-performance-reviewer.toml",
+  "plugins/cursor/agents/static-performance-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writing-principles-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = code How / test What / commit Why / comment and DocBlock Why Not"
+count = 1
+paths = [
+  "plugins/claude/agents/writing-principles-reviewer.md",
+  "plugins/codex/install/agents/writing-principles-reviewer.toml",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.implementation-reviewer-claude-readonly]
+kind = "occurrences"
+pattern = "disallowedTools:"
+count = 1
+paths = [
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/responsibility-boundary-reviewer.md",
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/claude/agents/static-performance-reviewer.md",
+  "plugins/claude/agents/writing-principles-reviewer.md",
+]
+applies_to = ["claude"]
+
+[contracts.implementation-reviewer-codex-readonly]
+kind = "occurrences"
+pattern = "sandbox_mode = \"read-only\""
+count = 1
+paths = [
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/codex/install/agents/static-performance-reviewer.toml",
+  "plugins/codex/install/agents/writing-principles-reviewer.toml",
+]
+applies_to = ["codex"]
+
+[contracts.implementation-reviewer-cursor-readonly]
+kind = "occurrences"
+pattern = "readonly: true"
+count = 1
+paths = [
+  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+  "plugins/cursor/agents/static-performance-reviewer.md",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+applies_to = ["cursor"]

@@ -19,6 +19,16 @@
     "shared/reality-model-observation.md",
     "shared/deletion-test-method.md",
     "shared/researcher-delegation.md",
+    "shared/writable-scope.md",
+    "shared/agents/focused-implementer.md",
+    "shared/agents/implementer.md",
+    "shared/agents/senior-implementer.md",
+    "shared/agents/expert-implementer.md",
+    "shared/agents/test-quality-reviewer.md",
+    "shared/agents/responsibility-boundary-reviewer.md",
+    "shared/agents/security-side-effect-reviewer.md",
+    "shared/agents/static-performance-reviewer.md",
+    "shared/agents/writing-principles-reviewer.md",
     "shared/agents/researcher.md",
     "shared/agents/plan-quality-advisor.md",
     "shared/agents/plan-adversarial-reviewer.md",
@@ -722,6 +732,78 @@
     {
       "id": "deletion-test-selected-set-before-caller",
       "sha256": "4c0920c8c8b1a360fafb1796517931231d51ff9be7a48c638cce6b79e2ba7f4e"
+    },
+    {
+      "id": "writable-scope-document",
+      "sha256": "4c8a8c5d19a57203c1d1530b370c26a40b82be651fce633b3a1f575fe740cc05"
+    },
+    {
+      "id": "writable-scope-assignment-relation",
+      "sha256": "2a1dc51f1d93e1d69acccb311d615bd56ab0f72c1e25e3d9036885ce299908f3"
+    },
+    {
+      "id": "implementer-common-boundary",
+      "sha256": "e8e9f1f6f518b4a8a1c336f9b0a0d0a85917929242d741e2758272a00db6efb9"
+    },
+    {
+      "id": "implementer-writable-scope-boundary",
+      "sha256": "e60ddb4b1c695d032f3172fd32a92cc73d71fbc78df3a9b069244b3861f7a223"
+    },
+    {
+      "id": "focused-implementer-tier",
+      "sha256": "0b0450689b84bf6155bc4e1e341742416566b2850ae8b102de271fd400d46475"
+    },
+    {
+      "id": "implementer-tier",
+      "sha256": "b8689bbcce38185d263293381960e74f47862d68473de76f62e3fc3f08256856"
+    },
+    {
+      "id": "senior-implementer-tier",
+      "sha256": "85b54b18b0f08b0b7f8d727a3712339e8951425f4edf52e7a0acf6e6a7d1be62"
+    },
+    {
+      "id": "expert-implementer-tier",
+      "sha256": "2d8913d5420c970ffe6f07321575fbdc01ed33cfbb3c88cf29ac941fc88979a2"
+    },
+    {
+      "id": "implementation-reviewer-common-boundary",
+      "sha256": "0b5bc8400a939fcfcdf638b273c65d21caec5169c8decd43520c27cc1ad9d9a8"
+    },
+    {
+      "id": "implementation-reviewer-no-finding-path",
+      "sha256": "c6440b80fc605b8891732e55eb88e3889108900fb5b75310e03fda91fb4154e3"
+    },
+    {
+      "id": "test-quality-reviewer-specialization",
+      "sha256": "2ee0bc91c91a18fd6eac9e54a22c7ed2c38e7a194b5110ebe873294e292bd6db"
+    },
+    {
+      "id": "responsibility-boundary-reviewer-specialization",
+      "sha256": "7ed25dac4286ef8bfd991e4a9f525f2b9252481875a2f3e5fc9ba54a7ef1a38e"
+    },
+    {
+      "id": "security-side-effect-reviewer-specialization",
+      "sha256": "93955b1e1d64092abb0e5a1617a5d57906793be16ba54618aa72ec7ac91c5648"
+    },
+    {
+      "id": "static-performance-reviewer-specialization",
+      "sha256": "f02bc175923b4057c78b29a25d737a5ef380c146d00c2287f95884e0a5bd737a"
+    },
+    {
+      "id": "writing-principles-reviewer-specialization",
+      "sha256": "b807839152d5b8490d0f95c09460155b94f3ac09d70c6f89b3d22c7e0e465d8a"
+    },
+    {
+      "id": "implementation-reviewer-claude-readonly",
+      "sha256": "6dc00d5fda5e414e4cdb4cee665bd36798467123f23c22766f5ebfdc9fcd3c96"
+    },
+    {
+      "id": "implementation-reviewer-codex-readonly",
+      "sha256": "6c1d6e64ec3916a92b81edc1a6474ba67c606d5944937557a848a8f73db57fe4"
+    },
+    {
+      "id": "implementation-reviewer-cursor-readonly",
+      "sha256": "011efdb44d51c4019e8b3c16720e85e65ac7a2d0541cc864ae0fa4c808a69a3f"
     },
     {
       "id": "how-it-document",

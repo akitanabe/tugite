@@ -6,10 +6,19 @@ installer="$repo_root/plugins/codex/install/install-agents.sh"
 expected_version="$(cat "$repo_root/plugins/codex/install/VERSION")"
 plugin_version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$repo_root/plugins/codex/.codex-plugin/plugin.json")"
 required_agents=(
+  expert-implementer
+  focused-implementer
+  implementer
   over-engineering-reviewer
   plan-adversarial-reviewer
   plan-quality-advisor
   researcher
+  responsibility-boundary-reviewer
+  security-side-effect-reviewer
+  senior-implementer
+  static-performance-reviewer
+  test-quality-reviewer
+  writing-principles-reviewer
 )
 
 # Fail the test with a concise diagnostic.

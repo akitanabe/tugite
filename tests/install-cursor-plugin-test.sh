@@ -20,6 +20,7 @@ assert_same() {
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
+[[ -f "$repo_root/plugins/cursor/references/writable-scope.md" ]] || fail "missing Writable Scope Method reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" ]] || fail "missing Implementation Unit Design method"
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
@@ -60,11 +61,11 @@ done
 
 assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" "$dest_dir/skills/impl-lead/references/implementation-unit-design.md"
 
-for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation; do
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 
-for agent in over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher; do
+for agent in expert-implementer focused-implementer implementer over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher responsibility-boundary-reviewer security-side-effect-reviewer senior-implementer static-performance-reviewer test-quality-reviewer writing-principles-reviewer; do
   assert_same "$source_repo/plugins/cursor/agents/$agent.md" "$dest_dir/agents/$agent.md"
 done
 

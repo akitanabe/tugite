@@ -71,10 +71,19 @@ else
 fi
 
 required_agents=(
+  expert-implementer.toml
+  focused-implementer.toml
+  implementer.toml
   over-engineering-reviewer.toml
   plan-adversarial-reviewer.toml
   plan-quality-advisor.toml
   researcher.toml
+  responsibility-boundary-reviewer.toml
+  security-side-effect-reviewer.toml
+  senior-implementer.toml
+  static-performance-reviewer.toml
+  test-quality-reviewer.toml
+  writing-principles-reviewer.toml
 )
 retired_agents=(
   expert-selection-reviewer.toml
@@ -181,10 +190,19 @@ Installed Tugite custom agents version $bundled_version to:
   $agent_dir
 
 Installed agents:
+  expert-implementer
+  focused-implementer
+  implementer
   over-engineering-reviewer
   plan-adversarial-reviewer
   plan-quality-advisor
   researcher
+  responsibility-boundary-reviewer
+  security-side-effect-reviewer
+  senior-implementer
+  static-performance-reviewer
+  test-quality-reviewer
+  writing-principles-reviewer
 
 IMPORTANT:
   Restart the Codex session before using these custom agents.
