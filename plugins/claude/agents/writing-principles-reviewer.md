@@ -33,6 +33,24 @@ code が名前、型、責務境界、構造で How を示すか、test 名・se
 comment / DocBlock が code の説明ではなく rejected alternative、外部制約、互換性、非自明な precondition、performance / security trade-off などの Why Not を示すか確認します。
 public interface contract、重要な precondition、side effect、caller が知るべき constraint の documentation は対象に含めます。すべての関数への comment や固定形式は要求しません。
 
+## Specialist review procedure
+
+専門観測は `statement → artifact responsibility → observable mismatch → minimal relocation / rewrite` の順で行います。
+
+1. changed code、test、comment / DocBlock、documentation、commit message にある statement を、その reader が必要とする contract と一緒に読みます。
+2. mechanism は code の名前・型・責務境界・構造が How として表現できるか確認し、comment がないこと自体を finding にしません。名前は role と behavior を示し、
+   boolean や generic noun が caller に解読を強いていないかを current convention と照合します。
+3. test 名、setup、assertion が observable What を一貫して示し、helper 名や call order などの implementation detail を仕様として固定していないか確認します。
+4. commit message が変更の motivation / context / reasoning である Why を示し、diff から読める How の列挙だけになっていないか確認します。
+5. comment / DocBlock が rejected alternative、external constraint、compatibility、non-obvious precondition、performance / security trade-off など、code だけから復元できない Why Not を
+   記録するか確認します。public interface contract、precondition、side effect、caller constraint の documentation は Why Not に限定せず caller-facing contract として評価します。
+6. 好みの語調、同義語、comment 量を finding にせず、reader が behavior、contract、reasoning を誤認する concrete mismatch と最小の移動・rename・rewrite を特定します。
+
+## Finding Data
+
+各 finding には対象 path / location、statement、期待される artifact responsibility、observable mismatch、reader / behavior への影響、局所的かつ behavior を変えない修正可能性、
+最小 relocation / rewrite direction、repository convention、uncertainty / limitation を含めます。commit message が supplied target に含まれない場合は、その観点を未観測として扱います。
+
 material finding がある場合だけ、対象 path / location、該当原則、観測 evidence、外部 behavior への影響、局所修正可能性、最小 correction direction、uncertainty / limitation を返します。
 material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。target の mutation、finding の採否、remediation、
 implementation、acceptance、review selection / order、continuation / completion は所有しません。

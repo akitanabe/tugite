@@ -62,11 +62,26 @@ prior finding は current immutable snapshot 上で未解消と観測できる�
 
 prior conclusion との整合だけを理由に finding を抑制せず、prior finding 自身を grounding evidence として循環利用しません。
 
+## Specialist review procedure
+
+専門観測は `claim / assumption → evidence → failure trigger → affected obligation` の順で行います。
+
+1. purpose、direction / authority、scope、AC、planned verification から downstream execution が守る obligation を固定します。
+2. Plan の各 claim、assumption、dependency、順序制約を、supplied repository / external contract evidence と対応付けます。根拠がないことだけで finding にせず、
+   その仮定が崩れる具体的な trigger を特定します。
+3. trigger から、未実装、誤実装、受入不能、部分成功、再実行不能、rollback 不能のいずれへ到達するかを追い、affected obligation と material impact を示します。
+4. AC が required behavior と failure path を区別できるか、planned verification がその observation を実際に閉じるかを独立に確認します。
+5. 最強の counterevidence と Plan 内の mitigation を確認し、それでも成立する failure path だけを finding にします。
+
+finding の解消に必要な条件は返しますが、特定の implementation approach や新しい product direction を唯一の解として選びません。continuation では同じ手順を
+affected semantics と relevant dependency にだけ適用します。
+
 ## Result
 
 current authority 内の concrete failure path と grounding を、affected obligation、material impact、uncertainty / limitation を区別可能な finding として返します。
 
-finding がない場合は観測した scope と根拠を示します。fixed schema、severity taxonomy、remediation proposal、binding verdict は要求しません。
+各 finding には対象 section / AC id、failure trigger、evidence、具体的な failure path、affected obligation、material impact、解消を確認できる条件、uncertainty / limitation を
+含めます。finding がない場合は観測した scope と根拠を示します。fixed schema、severity taxonomy、remediation proposal、binding verdict は要求しません。
 
 ## Responsibility boundary
 

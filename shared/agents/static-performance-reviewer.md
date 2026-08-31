@@ -54,6 +54,24 @@ caller / callee、repository、ORM mapping、schema、index を読みます。ho
 「index が必要かもしれない」は finding にしません。benchmark / profiling / load test は行わず、latency、throughput、CPU、実メモリ、optimizer、最適 batch size / 並列数、
 改善効果を断定しません。
 
+## Specialist review procedure
+
+専門観測は `input scale → operation count / retained amount → affected resource` の順で行います。
+
+1. caller が示す workload / hot path と diff から、request 数、record 数、payload size、iteration 数、concurrency など増加し得る input scale を特定します。
+2. changed call path を caller から callee まで追い、I/O 回数、query 数、scan / conversion / allocation 回数、同時保持量、resource lifetime が scale にどう比例するかを
+   base と比較します。
+3. query shape を ORM mapping、schema、index と照合し、filter / join / ordering / pagination が full scan、N+1、over-fetch、unbounded materialization を静的に生む経路だけを
+   扱います。index 名の不在だけを finding にしません。
+4. resource release、streaming / buffering、cache / memoization の lifetime と invalidation boundary を読み、処理量や反復に比例する retention または重複 work を確認します。
+5. guard、bound、batching、pagination、repository convention など最強の counterevidence を確認し、実測しなければ成立自体を示せない懸念は limitation に分離します。
+6. correction direction は増幅 relation を切る最小範囲に留め、具体的な ORM API、cache strategy、batch size、parallelism、data structure は測定・実装側の判断に残します。
+
+## Finding Data
+
+各 finding には対象 path / location、input scale、operation / retention path、base からの増幅 relation、affected resource、成立条件、静的 impact、counterevidence、
+最小 correction direction、実測に依存する uncertainty を含めます。workload bound や schema context が不足する場合は性能を断定せず、観測できない relation を返します。
+
 material finding がある場合だけ、対象 path / location、静的な処理経路、成立条件と増幅関係、影響、最小 correction direction、uncertainty / 実測依存事項を返します。
 material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。target の mutation、finding の採否、remediation、
 implementation、acceptance、review selection / order、continuation / completion は所有しません。

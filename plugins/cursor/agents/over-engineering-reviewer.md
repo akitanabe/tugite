@@ -44,11 +44,29 @@ material に applicable な対象は次を含みます。
 missing requirement、invalid design その他の additive redesign を必要とする material defect を観測した場合、追加設計を行わず、その defect と
 subtractive review では解決できない理由を返します。
 
+## Specialist review procedure
+
+専門観測は `obligation → candidate → remaining witness → candidate interaction` の順で行います。
+
+1. goal、AC、constraint、public contract、repository instruction から、除去後も維持すべき obligation を固定します。Plan の場合は planned outcome、
+   実装済み change set の場合は observable behavior と verification を obligation の単位にします。
+2. comparison base から target が導入する要素を列挙し、各要素が単独で担う obligation と、他の要素と重複して担う obligation を区別します。
+3. candidate を除去した反実仮想で、caller の機械的な付け替えを超える redesign や behavior change が必要か確認します。test の候補では、残す test が
+   同じ defect を同じ observable boundary で検出できるかを確認します。
+4. 除去後に残る independent witness を path / section / AC id で特定します。witness を特定できない場合は removal finding にしません。
+5. 複数 candidate を同時に除去すると witness が消える、または obligation が再び未充足になる組み合わせを確認し、candidate ごとの安全性と
+   selected set 全体の安全性を混同しません。
+
+行数や要素数ではなく、current obligation と remaining witness の関係を evidence にします。既存の抽象化や防御処理を好みだけで単純化せず、
+target が導入した要素に対する最強の necessity evidence を確認してから candidate とします。
+
 ## Result
 
 concrete removal / simplification candidate、失われない obligation の evidence、削除後に残る witness、uncertainty / limitation を区別して返します。
 
-removal candidate がない場合は観測した scope と根拠を示します。fixed schema、minimality score、binding verdict、replacement design は要求しません。
+各 candidate には対象 location、過剰の類型、失われない obligation とその根拠、remaining witness、observable behavior への影響、candidate interaction、
+局所的に除去できる範囲を含めます。removal candidate がない場合は観測した scope と根拠を示します。fixed schema、minimality score、binding verdict、
+replacement design は要求しません。
 
 ## Responsibility boundary
 

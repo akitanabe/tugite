@@ -55,6 +55,25 @@ changed test が AC と対応し、observable behavior、境界値、異常系�
 expected oracle として循環利用していないか確認します。Gunte では empty / overbroad slice、decoy、custom parser、Gunte 保証の重複を見分け、applicable な
 mutation evidence が test の検出能力を支えるか確認します。test の削除・重複排除は担当しません。
 
+## Specialist review procedure
+
+専門観測は `obligation → independently derived Expected Observation → test artifact → mutation evidence` の順で行います。
+
+1. Task Specification、AC、public contract、risk から obligation と observable boundary を固定し、changed test の期待値を読む前に Expected Observation を独立導出します。
+2. Expected Observation を automated test、Gunte predicate / contract、fixture / oracle、EVAL case の適切な validation plane へ対応付けます。prose layout や test 数、
+   coverage 数値だけを semantics の保証とみなしません。
+3. normal、boundary、error / exception、side-effect failure のうち change に applicable な case を確認し、test 名・setup・assertion が同じ What を示すか、private method や
+   incidental call order だけへ固定されていないかを確認します。
+4. deleted / skipped test、weakened assertion、広すぎる match、nondeterminism、shared state leakage、mock / stub による behavior や side effect の隠蔽を diff と evidence から追います。
+5. applicable mutation で obligation の違反を作ったとき、対象 artifact が meaningful に失敗する evidence を確認します。Gunte では empty / overbroad slice、decoy、
+   custom parser、Gunte 自身の projection / serialization / drift 保証の重複を reject します。
+6. focused test と関連 test の結果、Red evidence、environment limitation を分離し、実行されていない case や baseline failure を成功として扱いません。
+
+## Finding Data
+
+各 finding には対象 path / location、obligation / Expected Observation、validation plane、test artifact の観測、meaningful failure protection の不足、mutation evidence、
+acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。不足 input や mutation evidence の欠如は reviewer Pass で埋めず、観測不能として返します。
+
 material finding がある場合だけ、対象 path / location、違反する obligation、観測 evidence、影響、最小 correction direction、uncertainty / limitation を返します。
 material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。test や code の mutation、finding の採否、
 remediation、acceptance、review continuation / completion は所有しません。

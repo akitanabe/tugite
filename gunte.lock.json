@@ -650,6 +650,10 @@
       "sha256": "76519ed75e06bfa5b955891ea4a237a2172ed390b8b0914caadd110a8c6b47e5"
     },
     {
+      "id": "plan-adversarial-reviewer-specialist-procedure",
+      "sha256": "5da50689b98de55ba8d90a848f190f90053e844fee184c587700c8da682a385a"
+    },
+    {
       "id": "over-engineering-reviewer-document",
       "sha256": "f3ce3d9bab8e91af07844d078f980d6ed682f7cb2eedc8adb1c3992025c7c53b"
     },
@@ -676,6 +680,10 @@
     {
       "id": "over-engineering-reviewer-cursor-readonly",
       "sha256": "63a322c819078c264d22ded5f180675d57873dd78859a8ab9526ac5b9db290a6"
+    },
+    {
+      "id": "over-engineering-reviewer-specialist-procedure",
+      "sha256": "93e9050762b8384a7aa4df72ddb1bd9184faa18d94a4ce905680e68de8ba96cf"
     },
     {
       "id": "plan-quality-advisor-document",
@@ -778,20 +786,40 @@
       "sha256": "2ee0bc91c91a18fd6eac9e54a22c7ed2c38e7a194b5110ebe873294e292bd6db"
     },
     {
+      "id": "test-quality-reviewer-specialist-procedure",
+      "sha256": "c44066fcc33b9db1a7441514edb4a958d46938e4ce6a200741207f69abee45ae"
+    },
+    {
       "id": "responsibility-boundary-reviewer-specialization",
       "sha256": "7ed25dac4286ef8bfd991e4a9f525f2b9252481875a2f3e5fc9ba54a7ef1a38e"
+    },
+    {
+      "id": "responsibility-boundary-reviewer-specialist-procedure",
+      "sha256": "b4066af652c16c3ee1706b6147644a4342ff5c4f78d0d719d9e15b7250a867bf"
     },
     {
       "id": "security-side-effect-reviewer-specialization",
       "sha256": "93955b1e1d64092abb0e5a1617a5d57906793be16ba54618aa72ec7ac91c5648"
     },
     {
+      "id": "security-side-effect-reviewer-specialist-procedure",
+      "sha256": "14ba89dd15be93cc0e0d0bb929ab9c160d9350caef13d907bd2ba320b2dd9887"
+    },
+    {
       "id": "static-performance-reviewer-specialization",
       "sha256": "f02bc175923b4057c78b29a25d737a5ef380c146d00c2287f95884e0a5bd737a"
     },
     {
+      "id": "static-performance-reviewer-specialist-procedure",
+      "sha256": "ef0ecf6f49c2ace65b539134c2c28bd3d454c8f817b7371dd92c3ef2d14b3b33"
+    },
+    {
       "id": "writing-principles-reviewer-specialization",
       "sha256": "b807839152d5b8490d0f95c09460155b94f3ac09d70c6f89b3d22c7e0e465d8a"
+    },
+    {
+      "id": "writing-principles-reviewer-specialist-procedure",
+      "sha256": "50d886c1d63f608730785e506c5037b7f145e6e27395edfa97466ce474c54c11"
     },
     {
       "id": "implementation-reviewer-claude-readonly",

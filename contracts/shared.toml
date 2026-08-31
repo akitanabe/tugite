@@ -970,6 +970,17 @@ count = 1
 paths = ["plugins/cursor/agents/plan-adversarial-reviewer.md"]
 applies_to = ["cursor"]
 
+[contracts.plan-adversarial-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "claim / assumption → evidence → failure trigger → affected obligation"
+count = 1
+paths = [
+  "plugins/claude/agents/plan-adversarial-reviewer.md",
+  "plugins/codex/install/agents/plan-adversarial-reviewer.toml",
+  "plugins/cursor/agents/plan-adversarial-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.over-engineering-reviewer-document]
 kind = "occurrences"
 pattern = "# over-engineering-reviewer"
@@ -1020,6 +1031,17 @@ pattern = "readonly: true"
 count = 1
 paths = ["plugins/cursor/agents/over-engineering-reviewer.md"]
 applies_to = ["cursor"]
+
+[contracts.over-engineering-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "obligation → candidate → remaining witness → candidate interaction"
+count = 1
+paths = [
+  "plugins/claude/agents/over-engineering-reviewer.md",
+  "plugins/codex/install/agents/over-engineering-reviewer.toml",
+  "plugins/cursor/agents/over-engineering-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-document]
 kind = "occurrences"
@@ -1294,9 +1316,31 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.test-quality-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "obligation → independently derived Expected Observation → test artifact → mutation evidence"
+count = 1
+paths = [
+  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/cursor/agents/test-quality-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.responsibility-boundary-reviewer-specialization]
 kind = "occurrences"
 pattern = "specialization = responsibility placement / mixed concerns / side-effect separation"
+count = 1
+paths = [
+  "plugins/claude/agents/responsibility-boundary-reviewer.md",
+  "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
+  "plugins/cursor/agents/responsibility-boundary-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.responsibility-boundary-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "changed obligation → decision → Data → Action → failure ownership"
 count = 1
 paths = [
   "plugins/claude/agents/responsibility-boundary-reviewer.md",
@@ -1316,6 +1360,17 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.security-side-effect-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "source → guard / control → side-effect sink → postcondition / recovery"
+count = 1
+paths = [
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.static-performance-reviewer-specialization]
 kind = "occurrences"
 pattern = "specialization = I/O amplification / computation / retention / query shape"
@@ -1327,9 +1382,31 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.static-performance-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "input scale → operation count / retained amount → affected resource"
+count = 1
+paths = [
+  "plugins/claude/agents/static-performance-reviewer.md",
+  "plugins/codex/install/agents/static-performance-reviewer.toml",
+  "plugins/cursor/agents/static-performance-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.writing-principles-reviewer-specialization]
 kind = "occurrences"
 pattern = "specialization = code How / test What / commit Why / comment and DocBlock Why Not"
+count = 1
+paths = [
+  "plugins/claude/agents/writing-principles-reviewer.md",
+  "plugins/codex/install/agents/writing-principles-reviewer.toml",
+  "plugins/cursor/agents/writing-principles-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.writing-principles-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "statement → artifact responsibility → observable mismatch → minimal relocation / rewrite"
 count = 1
 paths = [
   "plugins/claude/agents/writing-principles-reviewer.md",
