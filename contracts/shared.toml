@@ -1170,7 +1170,8 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.implementer-writable-scope-boundary]
 kind = "occurrences"
-pattern = "valid な assignment と caller-confirmed target membership の両方がある"
+pattern = '''caller が Writable Scope Method に従って確定した assignment と target membership を transient execution Data として受け取ります。
+確定済み Data が target を write eligible とする場合だけ変更し、それ以外は write Action を開始せず caller へ返します。'''
 count = 1
 paths = [
   "plugins/claude/agents/focused-implementer.md",
@@ -1339,15 +1340,21 @@ applies_to = ["claude", "codex", "cursor"]
 
 [contracts.implementation-reviewer-claude-readonly]
 kind = "occurrences"
-pattern = "disallowedTools:"
+pattern = "disallowedTools: Edit, Write, NotebookEdit"
 count = 1
 paths = [
   "plugins/claude/agents/test-quality-reviewer.md",
   "plugins/claude/agents/responsibility-boundary-reviewer.md",
   "plugins/claude/agents/security-side-effect-reviewer.md",
   "plugins/claude/agents/static-performance-reviewer.md",
-  "plugins/claude/agents/writing-principles-reviewer.md",
 ]
+applies_to = ["claude"]
+
+[contracts.writing-principles-reviewer-claude-readonly]
+kind = "occurrences"
+pattern = "disallowedTools: Bash, Edit, Write, NotebookEdit"
+count = 1
+paths = ["plugins/claude/agents/writing-principles-reviewer.md"]
 applies_to = ["claude"]
 
 [contracts.implementation-reviewer-codex-readonly]

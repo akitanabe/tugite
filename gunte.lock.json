@@ -747,7 +747,7 @@
     },
     {
       "id": "implementer-writable-scope-boundary",
-      "sha256": "e60ddb4b1c695d032f3172fd32a92cc73d71fbc78df3a9b069244b3861f7a223"
+      "sha256": "0466ede68cb57800e9438dcd342d6dd19c29361a8a72e975e3d2fbe07bba8f3f"
     },
     {
       "id": "focused-implementer-tier",
@@ -795,7 +795,11 @@
     },
     {
       "id": "implementation-reviewer-claude-readonly",
-      "sha256": "6dc00d5fda5e414e4cdb4cee665bd36798467123f23c22766f5ebfdc9fcd3c96"
+      "sha256": "577b01b5a581c6c96da7ac0cb6160f7ea2bd88f54db50ebe1260d512447129ce"
+    },
+    {
+      "id": "writing-principles-reviewer-claude-readonly",
+      "sha256": "c086b3f42880d9544ee7ede08d67d63cac680e028ce16d0c9ec7cdb0310e3e94"
     },
     {
       "id": "implementation-reviewer-codex-readonly",

@@ -42,9 +42,9 @@ Unit 内で repository と関連 test を読み、不確実性を分離しなが
 
 ## Writable Scope
 
-Writable Scope は caller が明示する transient execution Data です。valid な assignment と caller-confirmed target membership の両方がある
-target だけを変更します。assignment が missing / invalid / unknown、または target が未割当なら write Action を開始しません。追加 region が必要なら
-暗黙に拡張せず caller へ返し、valid な explicit update と membership confirmation の後だけ対象にします。path、ownership、membership は推測しません。
+caller が Writable Scope Method に従って確定した assignment と target membership を transient execution Data として受け取ります。
+確定済み Data が target を write eligible とする場合だけ変更し、それ以外は write Action を開始せず caller へ返します。
+eligibility の決定、path / ownership / membership の推測、scope update は行いません。
 
 ## Implementation と返却
 

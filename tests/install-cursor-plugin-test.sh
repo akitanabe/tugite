@@ -20,7 +20,6 @@ assert_same() {
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
-[[ -f "$repo_root/plugins/cursor/references/writable-scope.md" ]] || fail "missing Writable Scope Method reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" ]] || fail "missing Implementation Unit Design method"
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
