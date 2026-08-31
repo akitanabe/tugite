@@ -55,6 +55,7 @@ files = [
   "shared/skill/plan-agent/SKILL.md",
   "shared/skill/plan-interactive/SKILL.md",
   "shared/skill/review-refine/SKILL.md",
+  "shared/repository-guidelines.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
   "declarations/codex/plugin.json",
@@ -478,3 +479,11 @@ output_root = ".agents/plugins"
 match = "declarations/codex/marketplace.json"
 path = "marketplace.json"
 profile = "json-v1"
+
+[targets.agents-guidance]
+output_root = "."
+
+[[targets.agents-guidance.rules]]
+match = "shared/repository-guidelines.md"
+path = "AGENTS.md"
+profile = "markdown-v1"

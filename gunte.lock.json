@@ -47,6 +47,7 @@
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
+    "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
