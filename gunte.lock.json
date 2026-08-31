@@ -79,10 +79,6 @@
       "sha256": "7c2258184a6d7367a31fabe9c0c606e9b58654d0bbf6bce4ec7f58d435055932"
     },
     {
-      "id": "cursor-readme-generation-requires-e5ead29de2a3",
-      "sha256": "9da4b1fb29066725ca561b027590b019750b6be5b21d524e8051f6aa49e44d6a"
-    },
-    {
       "id": "cursor-readme-local-requires-aae0052f5b5a",
       "sha256": "78e32aac64da5d6441dfd95067ca63ae1d79e943f9035f5a711cce40d7a287d6"
     },
@@ -2606,11 +2602,6 @@
     {
       "kind": "span",
       "id": "cursor-readme-boundary",
-      "path": "shared/README.md"
-    },
-    {
-      "kind": "span",
-      "id": "cursor-readme-generation",
       "path": "shared/README.md"
     }
   ]

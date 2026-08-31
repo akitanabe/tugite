@@ -161,20 +161,6 @@ Cursor 用 Marketplace 配布はこの version の対象外です。
 <!-- @/only -->
 <!-- @/contract -->
 
-## 正本と生成
-
-skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
-
-<!-- @contract cursor-readme-generation -->
-変更後はリポジトリのルートで次を実行します。
-
-```text
-gunte emit
-gunte lock
-gunte check
-```
-<!-- @/contract -->
-
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
 
 ## License

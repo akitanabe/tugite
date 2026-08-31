@@ -21,14 +21,6 @@ slice = "readme-risk-directed-static-performance-reviewer"
 pattern = "リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.cursor-readme-generation-requires-e5ead29de2a3]
-kind = "requires"
-slice = "cursor-readme-generation"
-pattern = '''gunte emit
-gunte lock
-gunte check'''
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.cursor-readme-local-requires-aae0052f5b5a]
 kind = "requires"
 slice = "cursor-readme-boundary"
