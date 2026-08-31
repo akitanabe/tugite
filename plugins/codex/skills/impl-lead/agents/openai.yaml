@@ -1,6 +1,6 @@
 interface:
   display_name: "Impl Lead"
-  short_description: "Normalize implementation work before execution"
-  default_prompt: "Use $impl-lead only when explicitly requested to normalize implementation work into pre-execution Implementation Units, then return incomplete without starting execution."
+  short_description: "Implement scoped work, run QA, and complete acceptance"
+  default_prompt: "Use $impl-lead only when explicitly requested to normalize implementation work into Implementation Units, then orchestrate implementation, Parent QA, acceptance, final verification, and safe integration."
 policy:
   allow_implicit_invocation: false

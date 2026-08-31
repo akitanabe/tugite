@@ -42,14 +42,14 @@ owner = implementation-unit-design Method
 ```
 
 load、identity、required section の不足・不一致では partition reasoning を開始しない。この failure は Reality evidence の uncertainty と
-区別し、`impl-lead` の `incomplete` boundary へ返す。
+区別し、`impl-lead` の `stop-incomplete` boundary へ返す。
 
 この Method では RMO を mandatory に利用し、次の5入力を consumer mapping する。
 
 - **Target**: Target は Unit boundary、semantic dependency、independent acceptability に限定する。
 - **Relevant Authoritative Context**: supplied candidates、request / Plan / established direction、AC / verification、scope / constraints、repository / dependency evidence、accept / rollback reality。
 - **Available Evidence Surface**: grounding 内の authorized repository facts、verification / dependency / acceptability evidence。
-- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-lead`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は後続 Phaseが所有する。
+- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-lead`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は `impl-lead` の後続 Phase が所有する。
 - **Observer Boundary**: supplied evidence に接触し、Current Reality と bounded RMO judgment を構成する `impl-lead` 親 context。
 
 RMO result では observation / inference、Model Sufficiency / Observed Evidence Sufficiency、Target-relative Problem / Incidental Finding /
@@ -105,7 +105,7 @@ Unit を確定しない `blocking_gaps` として返す。判断を変えない 
 
 Method は candidates、理由 / qualification、blocking gaps を返して終了する。`impl-lead` は coverage、scope、blocking gap、Data boundary を
 確認するが、Method の partition judgment を再設計しない。Unit 確定後に Method へ戻る renormalization loop を作らない。設計前提が後続の
-execution 中に崩れた場合は current execution を継続せず、上流 / `incomplete` boundary へ返す。
+execution 中に崩れた場合は current execution を継続せず、上流 / `stop-incomplete` boundary へ返す。
 
 ## Representative contrasts
 

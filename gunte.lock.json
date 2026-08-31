@@ -37,6 +37,12 @@
     "shared/skill/how-it/SKILL.md",
     "shared/skill/impl-lead/SKILL.md",
     "shared/skill/impl-lead/references/implementation-unit-design.md",
+    "shared/skill/impl-lead/references/execution.md",
+    "shared/skill/impl-lead/references/parent-qa.md",
+    "shared/skill/impl-lead/references/risk-review.md",
+    "shared/skill/impl-lead/references/completion-gate.md",
+    "shared/skill/impl-lead/references/run-owned-lifecycle.md",
+    "shared/skill/impl-lead/references/external-effects.md",
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
@@ -1278,8 +1284,20 @@
       "sha256": "368114261fac38d658f611a091a4d44b02946e981a585608d33f0a58ec4acd9a"
     },
     {
-      "id": "impl-lead-phase-boundary-0d9311f165b3",
-      "sha256": "e7c9208879a7b5eda22fbf597ee4fe9e9c64e6fd3b2dca28cef2fd1eb3c9d88b"
+      "id": "impl-lead-execution-ownership-b6997e2e6d00",
+      "sha256": "c9f670149e561fdb2d9e8b3f5ccc5c44c1de8e6a47a20e7b40535dc71d6cfaea"
+    },
+    {
+      "id": "impl-lead-parent-qa-91915483584c",
+      "sha256": "679b4aeeb85132ee9bf14ab11e1f312ae80efa23f7e871c0645e346055cfadc0"
+    },
+    {
+      "id": "impl-lead-completion-gate-ea573660215c",
+      "sha256": "877254a865f1476957749460f8df38c1eac4f43f450b2b7d8d7b84d734c5aa40"
+    },
+    {
+      "id": "impl-lead-final-verification-a7bdf3865161",
+      "sha256": "17545ee000dd451829b14db95b6d580198a2bef9f8037a8867e9d2e8e3cd3af1"
     },
     {
       "id": "impl-lead-document-before-intake",
@@ -1292,6 +1310,14 @@
     {
       "id": "impl-lead-flow-before-return",
       "sha256": "6c831c74d0b19d6c4badf42ae3c8780d9714d60a03e0bf0c1e450c0040faddfe"
+    },
+    {
+      "id": "impl-lead-execution-before-intake",
+      "sha256": "fe61903b0071b49df80bd1a0212476849692a5951afd216a81861531a2154f43"
+    },
+    {
+      "id": "impl-lead-execution-before-final-verification",
+      "sha256": "df6972d0a3295a589dcd253a56d0e0baa342c17d54565343a9960d2be55ef354"
     },
     {
       "id": "impl-lead-method-before-rmo",
@@ -2147,6 +2173,16 @@
     },
     {
       "kind": "span",
+      "id": "impl-lead-execution-ownership",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-execution-ownership-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-lead-intake-ownership",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -2182,7 +2218,12 @@
     },
     {
       "kind": "span",
-      "id": "impl-lead-phase-boundary",
+      "id": "impl-lead-final-verification",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-final-verification-relation",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -2209,6 +2250,16 @@
       "kind": "anchor",
       "id": "impl-lead-method-partition-relation",
       "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-parent-qa",
+      "path": "shared/skill/impl-lead/references/parent-qa.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-completion-gate",
+      "path": "shared/skill/impl-lead/references/completion-gate.md"
     },
     {
       "kind": "anchor",

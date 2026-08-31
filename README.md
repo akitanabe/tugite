@@ -8,7 +8,7 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 
 ### 公開 skill
 
-- `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化する Phase 8-1 workflow です。明示起動時だけ使い、現在は execution を開始せず `incomplete` として返します。
+- `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化し、serial implementation、Parent QA、risk-directed review、Completion Gate、final verification、安全な integration / closeout まで所有する workflow です。明示起動時だけ使います。
 - `plan-agent`: 要求とリポジトリの観測から実装 plan の候補を作り、回数を制限したレビューと親の裁定へ渡します。
 - `plan-interactive`: 人間と方向性を freeze したあと、必須の common Plan synthesis、構造 gate、bounded review へ進む人間参加型の計画ワークフローです。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。

@@ -80,10 +80,28 @@ slice = "impl-lead-return-integrity"
 pattern = "run 内で一意な `id` を付与し、Method が返した semantic dependency relation を"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-phase-boundary-0d9311f165b3]
+[contracts.impl-lead-execution-ownership-b6997e2e6d00]
 kind = "requires"
-slice = "impl-lead-phase-boundary"
-pattern = "execution、verification、acceptance を開始せず `incomplete` を返す。"
+slice = "impl-lead-execution-ownership"
+pattern = "Phase 8-3 の execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-parent-qa-91915483584c]
+kind = "requires"
+slice = "impl-lead-parent-qa"
+pattern = "親は obligation、oracle、validation plane を確定し、reviewer の Pass や Implementer の report を Unit acceptance の根拠にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-completion-gate-ea573660215c]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、code の How、test の What、commit の Why、comment / DocBlock の Why Not を確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-verification-a7bdf3865161]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "全 Unit の acceptance 後に run-wide final verification を実行する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-document-before-intake]
@@ -102,6 +120,18 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "order"
 before = "impl-lead-pre-execution-flow-relation"
 after = "impl-lead-return-integrity-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-execution-before-intake]
+kind = "order"
+before = "impl-lead-execution-ownership-relation"
+after = "impl-lead-intake-ownership-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-execution-before-final-verification]
+kind = "order"
+before = "impl-lead-execution-ownership-relation"
+after = "impl-lead-final-verification-relation"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-method-before-rmo]

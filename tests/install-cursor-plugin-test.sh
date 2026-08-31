@@ -21,7 +21,9 @@ assert_same() {
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
-[[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" ]] || fail "missing Implementation Unit Design method"
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+  [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/$reference.md" ]] || fail "missing impl-lead reference: $reference"
+done
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 
 tmp_dir="$(mktemp -d)"
@@ -58,7 +60,9 @@ for skill in explorer-this how-it impl-lead plan-agent plan-interactive review-r
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 
-assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" "$dest_dir/skills/impl-lead/references/implementation-unit-design.md"
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+  assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/$reference.md" "$dest_dir/skills/impl-lead/references/$reference.md"
+done
 
 for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"

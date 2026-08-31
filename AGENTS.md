@@ -78,7 +78,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `impl-lead`（execution 前の Implementation Unit normalization）、`plan-agent`（実装を開始しない計画成果物）、
+現行の public workflow skill は `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（実装を開始しない計画成果物）、
 `plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`code-review`（専門 reviewer の routing と evidence 検証済み findings 報告）、`test-report`（指定範囲のテスト群を検証体系として再構成する観測）の6つです。internal skill は `plan-candidate-producer` と `structural-health-gate` の2つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 

@@ -272,9 +272,9 @@ test quality judgment、remediation、planning、implementation は行わない�
 
 ### impl-lead
 
-`impl-lead` は明示起動された implementation work を execution 前の Implementation Unit へ正規化する public workflow とする。
+`impl-lead` は明示起動された implementation work を execution 前の Implementation Unit へ正規化し、default serial execution、mandatory Parent QA、risk-directed review、writing Completion Gate、Unit acceptance、run-wide final verification、安全な integration / closeout までを所有する public workflow とする。run 全体で一つの run-owned worktree を使い、1 Unit を1 accepted commit に対応させる。
 
-v7 core では Model Construction Method を必須化しない。Phase 8-1 は outcome / scope / coverage の親 ownership と consumer-specific Implementation Unit Design を接続し、Unit Data を確定しても execution を開始せず `incomplete` として返す。worker dispatch、implementation、verification、acceptance は後続 Phase の責務である。
+v7 core では Model Construction Method を必須化しない。Phase 8-1 は outcome / scope / coverage の親 ownership と consumer-specific Implementation Unit Design を接続し、Phase 8-2 の Implementer / Reviewer / Writable Scope capability を経て、Phase 8-3 が worker dispatch、implementation、verification、acceptance、closeout を閉じる。
 
 `impl-lead + Local Model` は v7 完了後に実験し、実装品質、context consumption、overhead を観測して採否を判断する。
 
@@ -502,7 +502,9 @@ Public Workflows
 ├─ test-report
 │    └─ observation-only / BMO based
 └─ impl-lead
-     └─ Implementation Unit Design
+     ├─ Implementation Unit Design
+     ├─ Execution Orchestration / Parent QA / Risk-directed Review
+     └─ Completion Gate / Run-owned Lifecycle / External Effects
 
 Shared Methods
 ├─ Model Construction
@@ -590,7 +592,7 @@ v7 core に含めない事項:
 11. review-refine
 12. code-review
 13. test-report
-14. impl-lead + consumer-specific Implementation Unit Design
+14. impl-lead + consumer-specific Implementation Unit Design + execution / QA / acceptance / closeout
 15. integration / release cleanup
 ```
 

@@ -45,6 +45,12 @@ files = [
   "shared/skill/how-it/SKILL.md",
   "shared/skill/impl-lead/SKILL.md",
   "shared/skill/impl-lead/references/implementation-unit-design.md",
+  "shared/skill/impl-lead/references/execution.md",
+  "shared/skill/impl-lead/references/parent-qa.md",
+  "shared/skill/impl-lead/references/risk-review.md",
+  "shared/skill/impl-lead/references/completion-gate.md",
+  "shared/skill/impl-lead/references/run-owned-lifecycle.md",
+  "shared/skill/impl-lead/references/external-effects.md",
   "shared/skill/plan-agent/SKILL.md",
   "shared/skill/plan-interactive/SKILL.md",
   "shared/skill/review-refine/SKILL.md",
@@ -166,8 +172,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/skill/impl-lead/references/implementation-unit-design.md"
-path = "skills/impl-lead/references/implementation-unit-design.md"
+match = "shared/skill/impl-lead/references/*.md"
+path = "skills/impl-lead/references/{1}.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -295,8 +301,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/skill/impl-lead/references/implementation-unit-design.md"
-path = "skills/impl-lead/references/implementation-unit-design.md"
+match = "shared/skill/impl-lead/references/*.md"
+path = "skills/impl-lead/references/{1}.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -425,8 +431,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/skill/impl-lead/references/implementation-unit-design.md"
-path = "skills/impl-lead/references/implementation-unit-design.md"
+match = "shared/skill/impl-lead/references/*.md"
+path = "skills/impl-lead/references/{1}.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
