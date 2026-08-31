@@ -534,7 +534,7 @@ plan-interactive specific
 
 ## Construction Surface
 
-v7 は `develop/v7` 上で canonical `shared/` を最初から v7 用としてゼロベース構築する。current v6 `shared/` は開発期間中の参照用として `shared-v6/` へ一時退避する。
+v7 は `develop/v7` 上で canonical `shared/` を最初から v7 用としてゼロベース構築する。current v6 の source tree は開発期間中の参照用として一時退避していたが、現在の repository surface には含めない。
 
 ```text
 develop/v7
@@ -542,9 +542,8 @@ develop/v7
 shared/
   → v7 canonical construction surface
 
-shared-v6/
-  → v6 temporary reference only
-  → delete on v7 release
+v6 temporary reference tree
+  → removed after v7 construction
 ```
 
 `shared/` は v6 source tree の clone-and-prune にしない。
@@ -563,7 +562,7 @@ v6 artifact は開発中の evidence として参照できるが、v7 artifact �
 
 「出力しない」ことを説明する obsolete README は v7 construction surface から削除する。
 
-v7 完成時に repository-wide verification を行い、`shared-v6/` を削除する。release 後の canonical `shared/` は v7 architecture だけで理解可能な current-state surface とする。
+v7 完成後の canonical `shared/` は v7 architecture だけで理解可能な current-state surface とする。
 
 ## v7 Core Scope
 
