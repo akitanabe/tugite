@@ -47,6 +47,7 @@
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
+    "shared/README.md",
     "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
@@ -68,6 +69,50 @@
     {
       "id": "shared-model-document",
       "sha256": "e0b92092eb6f499c816bfb4c6bd57effb5ae09b8a66d18a21fe88b25387dbbc1"
+    },
+    {
+      "id": "cursor-readme-title-requires-6507a8c77d3e",
+      "sha256": "9997f03ebc4566a3fe1aeae614e679e29ed121c748e52a24adc42f1c24825ef7"
+    },
+    {
+      "id": "readme-risk-directed-static-performance-reviewer-f796ec8d2285",
+      "sha256": "7c2258184a6d7367a31fabe9c0c606e9b58654d0bbf6bce4ec7f58d435055932"
+    },
+    {
+      "id": "cursor-readme-generation-requires-e5ead29de2a3",
+      "sha256": "9da4b1fb29066725ca561b027590b019750b6be5b21d524e8051f6aa49e44d6a"
+    },
+    {
+      "id": "cursor-readme-local-requires-b2980322ccb5",
+      "sha256": "4ecf97e98b594c3a157cddb2a34a1d6b9390445ec9e4469f9995d576135b9dd4"
+    },
+    {
+      "id": "cursor-readme-ps1-requires-7af2ee1f3ea1",
+      "sha256": "cfc0931db750c9fe10ca899bc0c288716258856e273818cca9c0b7745204ed8b"
+    },
+    {
+      "id": "cursor-readme-main-requires-548b0cc16c14",
+      "sha256": "0d3c94a1d4d7bbc283d4ed60c63036ee03e50623739f73747cca201c12373bcc"
+    },
+    {
+      "id": "cursor-readme-no-symlink-requires-4934509e688d",
+      "sha256": "db85568b4c8df0f849724526a885176712c1b7246db6d2cd113210ae5577e259"
+    },
+    {
+      "id": "cursor-readme-reload-requires-9ca66917c268",
+      "sha256": "080485de2ac136d2c28c26c237f36441ea5796108cac55df106c5a3cf8e0dfb9"
+    },
+    {
+      "id": "cursor-readme-cli-requires-dabd5bd48f58",
+      "sha256": "52f7650651d7812bd97422f0f398c2d99146aece91d3857fd13eb24d5e6b5eb5"
+    },
+    {
+      "id": "cursor-readme-public-skills-requires-1e133b67f042",
+      "sha256": "a00e48fe73b1490d59904129a44df47e932cf01442c871e5e825b064f3400209"
+    },
+    {
+      "id": "cursor-readme-unsupported-requires-54418bb345ac",
+      "sha256": "b1e3e07e7402cecbdb62a85e47a669582ed26cc4a02fb4dba4b4adc56765898a"
     },
     {
       "id": "shared-model-owner-0a06937163a7",
@@ -2527,6 +2572,26 @@
       "kind": "anchor",
       "id": "review-refine-responsibility-relation",
       "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "cursor-readme-title",
+      "path": "shared/README.md"
+    },
+    {
+      "kind": "span",
+      "id": "readme-risk-directed-static-performance-reviewer",
+      "path": "shared/README.md"
+    },
+    {
+      "kind": "span",
+      "id": "cursor-readme-generation",
+      "path": "shared/README.md"
+    },
+    {
+      "kind": "span",
+      "id": "cursor-readme-boundary",
+      "path": "shared/README.md"
     }
   ]
 }

@@ -1,6 +1,6 @@
-<!-- @contract cursor-readme-title -->
+<!-- Generated from shared/. Do not edit directly. -->
+
 # Tugite v7.0.0b1
-<!-- @/contract -->
 
 Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Implementation Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
@@ -25,9 +25,7 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 
 Implementation Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
-<!-- @contract readme-risk-directed-static-performance-reviewer -->
 リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。
-<!-- @/contract -->
 
 Plan の品質について読み取り専用で助言する advisor は `plan-quality-advisor` です。reviewer と advisor は判断材料を返し、最終受け入れは親エージェントが行います。
 
@@ -35,7 +33,6 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 
 skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
 
-<!-- @contract cursor-readme-generation -->
 変更後はリポジトリのルートで次を実行します。
 
 ```text
@@ -43,7 +40,6 @@ gunte emit
 gunte lock
 gunte check
 ```
-<!-- @/contract -->
 
 ## 導入と起動
 
@@ -55,7 +51,6 @@ Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-le
 
 内部 skill は、公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
 
-<!-- @contract cursor-readme-boundary -->
 ### Cursor local plugin
 
 Cursor では Git の main 先端にある `plugins/cursor` を user scope の `~/.cursor/plugins/local/tugite` へ copy して導入します。symlink は使いません。既存の local plugin がある場合は内容を確認してから `--force` / `-Force` で置き換えてください。導入後は Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。
@@ -96,7 +91,6 @@ public skill は次のコマンドで明示起動できます。
 ```
 
 Cursor 用 Marketplace 配布はこの version の対象外です。
-<!-- @/contract -->
 
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
 
