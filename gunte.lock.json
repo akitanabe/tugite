@@ -71,8 +71,8 @@
       "sha256": "e0b92092eb6f499c816bfb4c6bd57effb5ae09b8a66d18a21fe88b25387dbbc1"
     },
     {
-      "id": "cursor-readme-title-requires-6f99fe3c7aaf",
-      "sha256": "022a304579cbdda3e77a50830117ebb92faf965f91bec8a36983240957c949dc"
+      "id": "readme-title-requires-659967575a1a",
+      "sha256": "5b5d16320d5f0a58c246e861c3b974437e8b185a8df31900205786cd054d8ab0"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-f796ec8d2285",
@@ -83,36 +83,36 @@
       "sha256": "9da4b1fb29066725ca561b027590b019750b6be5b21d524e8051f6aa49e44d6a"
     },
     {
-      "id": "cursor-readme-local-requires-b2980322ccb5",
-      "sha256": "4ecf97e98b594c3a157cddb2a34a1d6b9390445ec9e4469f9995d576135b9dd4"
+      "id": "cursor-readme-local-requires-aae0052f5b5a",
+      "sha256": "78e32aac64da5d6441dfd95067ca63ae1d79e943f9035f5a711cce40d7a287d6"
     },
     {
-      "id": "cursor-readme-ps1-requires-7af2ee1f3ea1",
-      "sha256": "cfc0931db750c9fe10ca899bc0c288716258856e273818cca9c0b7745204ed8b"
+      "id": "cursor-readme-ps1-requires-821e06580953",
+      "sha256": "fdba4029029fda5eec42e3ea44d4541b4ed27d31fba4cad6856f2a6369344c47"
     },
     {
-      "id": "cursor-readme-main-requires-548b0cc16c14",
-      "sha256": "0d3c94a1d4d7bbc283d4ed60c63036ee03e50623739f73747cca201c12373bcc"
+      "id": "cursor-readme-main-requires-7260a52ca5b8",
+      "sha256": "1e80d5822fe43037b0806333f8a1583b9c4718c6428d9412303bc07ca090a1fd"
     },
     {
-      "id": "cursor-readme-no-symlink-requires-4934509e688d",
-      "sha256": "db85568b4c8df0f849724526a885176712c1b7246db6d2cd113210ae5577e259"
+      "id": "cursor-readme-no-symlink-requires-8d7e64656bf0",
+      "sha256": "c2622b7431cbc772072ccb0c40e3cc8d6e6a1cee70464426a84ac0fe94217dcb"
     },
     {
-      "id": "cursor-readme-reload-requires-9ca66917c268",
-      "sha256": "080485de2ac136d2c28c26c237f36441ea5796108cac55df106c5a3cf8e0dfb9"
+      "id": "cursor-readme-reload-requires-b627f39fae48",
+      "sha256": "279b531a425c9c8680497e251993412b82c313c3fec30acfcc6d7cbf745dd092"
     },
     {
-      "id": "cursor-readme-cli-requires-dabd5bd48f58",
-      "sha256": "52f7650651d7812bd97422f0f398c2d99146aece91d3857fd13eb24d5e6b5eb5"
+      "id": "cursor-readme-cli-requires-bf11ad3e2e12",
+      "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-1e133b67f042",
-      "sha256": "a00e48fe73b1490d59904129a44df47e932cf01442c871e5e825b064f3400209"
+      "id": "cursor-readme-public-skills-requires-460ad550874b",
+      "sha256": "680fbf3ef9e1542fc51cf743b595dbb67021605a319d7502328b4ce27bcf8bc0"
     },
     {
-      "id": "cursor-readme-unsupported-requires-54418bb345ac",
-      "sha256": "b1e3e07e7402cecbdb62a85e47a669582ed26cc4a02fb4dba4b4adc56765898a"
+      "id": "cursor-readme-unsupported-requires-d94e0540f495",
+      "sha256": "1dae7919620f1510f84461ea45bf1ccb5b6154acfc3f90cc64e2b3e39346bb34"
     },
     {
       "id": "shared-model-owner-0a06937163a7",
@@ -2595,7 +2595,7 @@
     },
     {
       "kind": "span",
-      "id": "cursor-readme-title",
+      "id": "readme-title",
       "path": "shared/README.md"
     },
     {
@@ -2605,12 +2605,12 @@
     },
     {
       "kind": "span",
-      "id": "cursor-readme-generation",
+      "id": "cursor-readme-boundary",
       "path": "shared/README.md"
     },
     {
       "kind": "span",
-      "id": "cursor-readme-boundary",
+      "id": "cursor-readme-generation",
       "path": "shared/README.md"
     }
   ]

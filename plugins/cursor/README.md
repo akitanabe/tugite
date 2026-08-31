@@ -29,17 +29,6 @@ Implementation Unit worker は `focused-implementer`、`implementer`、`senior-i
 
 Plan の品質について読み取り専用で助言する advisor は `plan-quality-advisor` です。reviewer と advisor は判断材料を返し、最終受け入れは親エージェントが行います。
 
-## 正本と生成
-
-skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
-
-変更後はリポジトリのルートで次を実行します。
-
-```text
-gunte emit
-gunte lock
-gunte check
-```
 
 ## 導入と起動
 
@@ -91,6 +80,18 @@ public skill は次のコマンドで明示起動できます。
 ```
 
 Cursor 用 Marketplace 配布はこの version の対象外です。
+
+## 正本と生成
+
+skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
+
+変更後はリポジトリのルートで次を実行します。
+
+```text
+gunte emit
+gunte lock
+gunte check
+```
 
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
 

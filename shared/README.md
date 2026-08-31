@@ -1,8 +1,24 @@
-<!-- @contract cursor-readme-title -->
+<!-- @contract readme-title -->
+<!-- @only claude -->
+# Tugite for Claude Code
+<!-- @/only -->
+<!-- @only codex -->
+# Tugite for Codex
+<!-- @/only -->
+<!-- @only cursor -->
 # Tugite v7.0.0
+<!-- @/only -->
 <!-- @/contract -->
 
+<!-- @only claude -->
+Tugite は、親 Claude エージェントが plan、Implementation Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+<!-- @/only -->
+<!-- @only codex -->
+Tugite は、親 Codex エージェントが plan、Implementation Unit の route、QA、受け入れ、最終検証を保持しながら実装を worker へ依頼する plugin です。
+<!-- @/only -->
+<!-- @only cursor -->
 Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Implementation Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
+<!-- @/only -->
 
 ## 現行の構成
 
@@ -31,20 +47,67 @@ Implementation Unit worker は `focused-implementer`、`implementer`、`senior-i
 
 Plan の品質について読み取り専用で助言する advisor は `plan-quality-advisor` です。reviewer と advisor は判断材料を返し、最終受け入れは親エージェントが行います。
 
-## 正本と生成
+<!-- @only claude -->
+## Install and launch
 
-skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
-
-<!-- @contract cursor-readme-generation -->
-変更後はリポジトリのルートで次を実行します。
+Claude Code で marketplace を登録し、plugin を導入します。
 
 ```text
-gunte emit
-gunte lock
-gunte check
+/plugin marketplace add akitanabe/tugite
+/plugin install tugite@tugite
+/reload-plugins
 ```
-<!-- @/contract -->
 
+導入後、public skill は次のコマンドで明示起動できます。
+
+```text
+/tugite:how-it <相談したい進め方>
+/tugite:explorer-this <探索タスク>
+/tugite:impl-lead <実装タスク>
+/tugite:plan-agent <plan task>
+/tugite:plan-interactive <human-directed plan task>
+/tugite:review-refine <artifact review task>
+```
+<!-- @/only -->
+<!-- @only codex -->
+## Install and launch
+
+Git marketplace を登録して plugin を導入します。
+
+```text
+codex plugin marketplace add akitanabe/tugite
+codex plugin add tugite@tugite
+```
+
+ローカル checkout を使う場合は repository root で `codex plugin marketplace add .agents/plugins` を実行してから `codex plugin add tugite@tugite` を実行します。導入後は Codex session を再起動してください。
+
+Public skill は次のコマンドで明示起動できます。
+
+```text
+$how-it <相談したい進め方>
+$explorer-this <探索タスク>
+$impl-lead <実装タスク>
+$plan-agent <plan task>
+$plan-interactive <human-directed plan task>
+$review-refine <artifact review task>
+```
+
+## Custom agents
+
+`install/agents/*.toml` は配布素材です。user scope または project scope へ導入する前に状態を確認します。
+
+新しい Codex session では `$install-custom-agents` を使って対象 scope の状態確認と導入を依頼できます。導入または更新後は session を再起動してください。
+
+```text
+plugins/codex/install/install-agents.sh --check --user
+plugins/codex/install/install-agents.sh --check --repo <repo>
+```
+
+導入後は Codex session を再起動してください。既存定義を更新する場合は内容を確認してから `--force` を指定します。
+<!-- @/only -->
+
+<!-- @contract cursor-readme-boundary -->
+<!-- @only cursor -->
 ## 導入と起動
 
 - [Claude Code plugin](https://github.com/akitanabe/tugite/blob/main/plugins/claude/README.md)
@@ -55,7 +118,6 @@ Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-le
 
 内部 skill は、公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
 
-<!-- @contract cursor-readme-boundary -->
 ### Cursor local plugin
 
 Cursor では Git の main 先端にある `plugins/cursor` を user scope の `~/.cursor/plugins/local/tugite` へ copy して導入します。symlink は使いません。既存の local plugin がある場合は内容を確認してから `--force` / `-Force` で置き換えてください。導入後は Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。
@@ -96,6 +158,21 @@ public skill は次のコマンドで明示起動できます。
 ```
 
 Cursor 用 Marketplace 配布はこの version の対象外です。
+<!-- @/only -->
+<!-- @/contract -->
+
+## 正本と生成
+
+skill と agent の正本は `shared/`、バージョンは `shared/VERSION`、platform ごとの宣言定義の正本は `declarations/`、契約レジストリは `contracts/*.toml`、Gunte のプロジェクト設定は `gunte.toml` です。source と生成物の inventory、構造、byte drift は `gunte check` が検証します。
+
+<!-- @contract cursor-readme-generation -->
+変更後はリポジトリのルートで次を実行します。
+
+```text
+gunte emit
+gunte lock
+gunte check
+```
 <!-- @/contract -->
 
 親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
