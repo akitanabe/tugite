@@ -11,7 +11,7 @@ Tugite の Skill、Agent、Issue、実装で同じ語を同じ意味で使うた
 内容の妥当性は判断しません。
 
 - 正本: `contracts/*.toml`（選択順は `gunte.toml` の `[contracts].files`）
-- 契約 ID の規約と運用: `CLAUDE.md` / `AGENTS.md`
+- 契約 ID の規約と運用: `AGENTS.md`
 
 ## Task Specification
 
@@ -31,7 +31,7 @@ pattern では正式名だけを使います。
 ## Programmatic Flow
 
 Agentic workflow 内の局所的な deterministic procedure です。共通の意味と境界は
-`shared/repository-guidelines.md` の `Programmability Boundary contract`、個別の procedure は各 Skill の
+`AGENTS.md` の `Programmability Boundary contract`、個別の procedure は各 Skill の
 `Programmatic Flows` sectionを、共有 publication procedure は `shared/plan-artifact-publication.md` を正本とします。
 
 ## Resolution Point

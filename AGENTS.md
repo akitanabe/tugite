@@ -35,30 +35,14 @@ verification にせず、残存 risk または editorial review として扱い�
 宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
 列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
-## Kernel injection contract
+## コーディングスタイルと命名
 
-Kernel は複数の role が共有する判断原則を定義する正本です。Kernel の選択、読み込み、検証、注入は親 Skill の責務とし、
-Agent は注入された Kernel を自分の責務内で適用するだけとします。Agent は Kernel の package / plugin 相対 path を
-自分で解決しないこととし、Kernel の探索・読み込み・更新も行いません。
-
-- 親 Skill はその実行に必要な Kernel を読み、identity と必要本文を検証してから使います。
-- 注入は Agent の既存入力（`判定基準`、`必要な周辺 context` など）へ行うのを基本形とし、Kernel 専用の channel や
-  返却 field を増やしません。
-- 読み込み失敗、identity 不一致、必要本文不足では推測で継続せず、親の既存停止経路（呼び出し元へ返す、producer では
-  `stop-incomplete`）へ返します。
-- 複数 Kernel を使う場合の依存解決、競合処理、注入順序も親責務とし、Agent 側で個別に参照させません。
-- Kernel の適用結果による最終的な採否・裁定が親責務である既存 workflow では、その責務境界を維持します。
-- Kernel は親が持つ round budget、termination、verdict field の責務へ踏み込みません。
-
-`reality-model-observation-kernel-v1`（正本は `shared/reality-model-observation-kernel.md`、配布物では `references/reality-model-observation-kernel.md`）がこの
-contract の標準例です。
-
-## v7 Skill Coding Rules と lint:skills
-
-v7 の新規作業として Skill、shared component、contract、test、lint rule を作成・変更するときは、repository root の
+Skill、shared component、contract、test、lint rule を作成・変更するときは、repository root の
 `skill-coding-rules.md` を正本として適用します。規範本文を `AGENTS.md`、contract、lint rule へ複製しません。
 
-v7 の `SKILL.md`、または Programmatic Flow を含む Skill-local reference Markdown を作成・変更した場合は、対象ファイルを明示して `lint:skills` を実行します。
+platform 差分は `gunte.toml` の terms または明示的な `@only` marker で表現します。
+
+`SKILL.md`、または Programmatic Flow を含む Skill-local reference Markdown を作成・変更した場合は、対象ファイルを明示して `lint:skills` を実行します。
 
 ```text
 npm ci
@@ -66,7 +50,10 @@ npm run lint:skills -- path/to/SKILL.md path/to/references/flow.md
 ```
 
 `lint:skills` は共通 `skill-lint` rule と Tugite 専用 Programmatic Flow rule で機械判定可能なリスクを検出する補助層であり、shared component、contract、test の保証や、
-repository-wide な lint の成功を意味しません。既存 v6 artifact の lint finding を、この v7 baseline 導入の scope へ取り込みません。
+repository-wide な lint の成功を意味しません。変更していない既存 artifact の lint finding は、明示的に要求されない限り変更 scope へ取り込みません。
+
+Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な `snake_case` 名を使用します。Bash は既存スタイルに
+従い、変数展開を引用符で囲みます。skill directory と agent file は小文字の kebab-case で命名します。原稿を複製しません。
 
 ## 追加・変更時に触れる場所
 
@@ -78,15 +65,10 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（実装を開始しない計画成果物）、
-`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）、`code-review`（専門 reviewer の routing と evidence 検証済み findings 報告）、`test-report`（指定範囲のテスト群を検証体系として再構成する観測）の6つです。internal skill は `plan-candidate-producer` と `structural-health-gate` の2つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、
+`impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（実装を開始しない計画成果物）、
+`plan-interactive`（人間参加型の計画成果物）、`review-refine`（不変 snapshot に対する bounded review）の6つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
-
-## コーディングスタイルと命名
-
-Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な `snake_case` 名を使用します。Bash は既存スタイルに
-従い、変数展開を引用符で囲みます。skill directory と agent file は小文字の kebab-case で命名します。原稿を複製せず、
-platform 差分は `gunte.toml` の terms または明示的な `@only` marker で表現します。
 
 ## テスト指針
 
