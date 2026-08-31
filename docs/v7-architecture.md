@@ -272,11 +272,25 @@ test quality judgment、remediation、planning、implementation は行わない�
 
 ### impl-lead
 
-`impl-lead` は execution workflow として維持する。
+`impl-lead` は明示起動された implementation work を execution 前の Implementation Unit へ正規化する public workflow とする。
 
-v7 core では Model Construction Method を必須化しない。Implementation Unit Design を利用して execution unit を正規化し、worker dispatch、implementation、verification、acceptance を担う。
+v7 core では Model Construction Method を必須化しない。Phase 8-1 は outcome / scope / coverage の親 ownership と consumer-specific Implementation Unit Design を接続し、Unit Data を確定しても execution を開始せず `incomplete` として返す。worker dispatch、implementation、verification、acceptance は後続 Phase の責務である。
 
 `impl-lead + Local Model` は v7 完了後に実験し、実装品質、context consumption、overhead を観測して採否を判断する。
+
+#### Implementation Unit Design
+
+`impl-lead` 配下の `references/implementation-unit-design.md` を正本とする consumer-specific Method とする。public / internal Skill または shared reusable Method にはしない。
+
+責務:
+
+* independently acceptable outcome の boundary を設計する
+* split / merge を判断する
+* semantic dependency を構成する
+* AC / verification / accept / rollback boundary を揃える
+* implementer が再設計せず着手できる単位に正規化する
+
+task の再設計、worker selection、execution order、implementation は所有しない。
 
 ## Shared Methods
 
@@ -356,20 +370,6 @@ required normal `plan-adversarial-reviewer` による strengthening / bounded re
 Planning Core は Local Model、Planning Synthesis の judgment、`review-refine` の adjudication / mutation / completion、top-level workflow の
 final acceptance を所有しない。synthesis gap または安全に閉じない review / verification は latest verified candidate があれば保持した
 `incomplete` とし、nested review が返した candidate を後処理で変更しない。
-
-### Implementation Unit Design
-
-`impl-lead` が利用する shared Method とする。
-
-責務:
-
-* independently acceptable outcome の boundary を設計する
-* split / merge を判断する
-* semantic dependency を構成する
-* AC / verification / accept / rollback boundary を揃える
-* implementer が再設計せず着手できる単位に正規化する
-
-task の再設計、worker selection、execution order、implementation は所有しない。
 
 ### Model Construction Artifact Layout
 
@@ -502,18 +502,17 @@ Public Workflows
 ├─ test-report
 │    └─ observation-only / BMO based
 └─ impl-lead
-     └─ execution
+     └─ Implementation Unit Design
 
 Shared Methods
 ├─ Model Construction
 │    ├─ Core: Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration
 │    ├─ Agentic Model Construction
 │    └─ Interactive Model Construction
-├─ Planning Core
+└─ Planning Core
 │    ├─ Planning Synthesis
 │    ├─ required normal review: plan-adversarial-reviewer
 │    └─ mandatory final trim: over-engineering-reviewer
-└─ Implementation Unit Design
 
 Observation Methods
 ├─ Model Observation
@@ -591,9 +590,8 @@ v7 core に含めない事項:
 11. review-refine
 12. code-review
 13. test-report
-14. Implementation Unit Design
-15. impl-lead
-16. integration / release cleanup
+14. impl-lead + consumer-specific Implementation Unit Design
+15. integration / release cleanup
 ```
 
 最初に `Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration` の共通 Model Construction Core を成立させ、その Core 上で Agentic Model Construction を構築する。その後に delegated evidence acquisition として Research Agent、必要な concrete observation specialization として BMO / RMO consumer semantics を接続する。Interactive Model Construction は同じ Core に Human judgment boundary を追加する独立 Method として構築する。

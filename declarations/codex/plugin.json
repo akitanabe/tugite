@@ -33,7 +33,7 @@
       "Use $plan-interactive only when explicitly requested to establish Human-confirmed planning direction and return the common Planning Core result without starting implementation.",
       "Use $review-refine to review and coherently refine a verified artifact snapshot, then return converged or incomplete with the latest verified candidate.",
       "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
-      "Use $impl-lead to run bounded Implementation Unit implementation loops with parent QA.",
+      "Use $impl-lead only when explicitly requested to normalize implementation work into pre-execution Implementation Units, then return incomplete without starting execution.",
       "Use $install-custom-agents to check, install, or update the bundled custom agents."
     ]
   }

@@ -8,6 +8,7 @@
     "contracts/plan-agent.toml",
     "contracts/plan-interactive.toml",
     "contracts/review-refine.toml",
+    "contracts/impl-lead.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -24,6 +25,8 @@
     "shared/agents/over-engineering-reviewer.md",
     "shared/skill/explorer-this/SKILL.md",
     "shared/skill/how-it/SKILL.md",
+    "shared/skill/impl-lead/SKILL.md",
+    "shared/skill/impl-lead/references/implementation-unit-design.md",
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
@@ -41,7 +44,6 @@
     "declarations/codex/skills/review-refine/openai.yaml",
     "declarations/codex/skills/structural-health-gate/openai.yaml",
     "declarations/codex/skills/test-report/openai.yaml",
-    "declarations/codex/skills/implementation-unit-design/openai.yaml",
     "declarations/cursor/plugin.json"
   ],
   "contracts": [
@@ -1112,6 +1114,90 @@
     {
       "id": "review-refine-convergence-before-responsibility",
       "sha256": "b06dbb5ecfbb7e46a66729471ce74b084d705abd9ab3395dd400cb26e9ecbf4a"
+    },
+    {
+      "id": "impl-lead-document",
+      "sha256": "e8f2a94bc059d990906928d052e4be5d69a807e50a0ccb91e87d8a87d5060334"
+    },
+    {
+      "id": "impl-lead-method-document",
+      "sha256": "d9cf2b51ce81a0b2207b1314e34adac40cb1f796a88f4f80eebb630a4daa84ed"
+    },
+    {
+      "id": "impl-lead-intake-ownership-4429dc189bf2",
+      "sha256": "a177137efd50b2ac4b2f00dcc958dc2c6d97c910f9423d9240a07dd93db10bed"
+    },
+    {
+      "id": "impl-lead-unit-data-e545ea040b0f",
+      "sha256": "dfe3a0f25115b0cb6eb1c8f2c267d5987d4044553852c80b965cfdaefd1423b5"
+    },
+    {
+      "id": "impl-lead-pre-execution-flow-327c7f4ed16b",
+      "sha256": "ffc2f8973a7697b68a4f02c18a1dcae92b84d4a1f2870ed560cb44aa8c5f5883"
+    },
+    {
+      "id": "impl-lead-method-identity-d002189e5100",
+      "sha256": "66774e610d40dcc3a962d789edf762a1469b40122d8fd83bc5d020109b328830"
+    },
+    {
+      "id": "impl-lead-method-boundary-816670dec2a3",
+      "sha256": "31c30919a7a36c563862aa453126c7e7cbcc722fb0c08d65adde4dd60e586862"
+    },
+    {
+      "id": "impl-lead-method-rmo-loader-a2dfd87bc962",
+      "sha256": "1e57549d53edf7414563a9c0e517470d483350b18d07e7384337eb6d2485ac8d"
+    },
+    {
+      "id": "impl-lead-method-rmo-target-8bcbaf7ee23a",
+      "sha256": "3123ea5f4e39fdf31ac60836e4a1387a458ba971b925d693e6d7ad04c7824f51"
+    },
+    {
+      "id": "impl-lead-method-rmo-inputs-79d01e973d0e",
+      "sha256": "af09148ada6a6e587c1187804cf77304d2c44ffcbeacb0a735d77440fe413255"
+    },
+    {
+      "id": "impl-lead-return-integrity-163cb42c514f",
+      "sha256": "269be0bdf46c43640a291b65401f31e75287ae12ae4925f8e65cf2369fc2d767"
+    },
+    {
+      "id": "impl-lead-return-identity-20deafb2fa25",
+      "sha256": "368114261fac38d658f611a091a4d44b02946e981a585608d33f0a58ec4acd9a"
+    },
+    {
+      "id": "impl-lead-phase-boundary-0d9311f165b3",
+      "sha256": "e7c9208879a7b5eda22fbf597ee4fe9e9c64e6fd3b2dca28cef2fd1eb3c9d88b"
+    },
+    {
+      "id": "impl-lead-document-before-intake",
+      "sha256": "15a364fac3c3b355f04a807aa379accdeb5874ab900b30366a7eddf829b65dcc"
+    },
+    {
+      "id": "impl-lead-intake-before-flow",
+      "sha256": "83e4e7f04c8f96e9ef4aff69580cc58f488de49c70cdf5979dffac2cefbfeb53"
+    },
+    {
+      "id": "impl-lead-flow-before-return",
+      "sha256": "6c831c74d0b19d6c4badf42ae3c8780d9714d60a03e0bf0c1e450c0040faddfe"
+    },
+    {
+      "id": "impl-lead-method-before-rmo",
+      "sha256": "6078669d529bf59b044f69485e2cf0e6c1c1742d26fa4dab26c205aaa40200c7"
+    },
+    {
+      "id": "impl-lead-rmo-before-partition",
+      "sha256": "36a30b4891b098f08970a791334e483c46b73e65ab9da728cebfafa76a950311"
+    },
+    {
+      "id": "impl-lead-claude-invocation-policy",
+      "sha256": "cfa5990efcfd1b1742df915bf7c74ee18bde01f79bb1d4a4081a7e8030983344"
+    },
+    {
+      "id": "impl-lead-codex-invocation-policy",
+      "sha256": "edefdcedb3e17e1d876ae1d028c38166cd9b7c22a0b9035b523f57c22ae0901c"
+    },
+    {
+      "id": "impl-lead-cursor-invocation-policy",
+      "sha256": "428d80ea01b7928f047e0aa7502adf2ae00e852f9ebc960057f1134d87911b90"
     }
   ],
   "declarations": [
@@ -1939,6 +2025,76 @@
       "kind": "anchor",
       "id": "how-it-completion-output-relation",
       "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-document-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-intake-ownership",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-intake-ownership-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-unit-data",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-pre-execution-flow",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-pre-execution-flow-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-return-integrity",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-return-integrity-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-phase-boundary",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-method-boundary",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-method-boundary-relation",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-method-rmo",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-method-rmo-relation",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "impl-lead-method-partition-relation",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
     },
     {
       "kind": "anchor",

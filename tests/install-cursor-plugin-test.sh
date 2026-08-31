@@ -20,6 +20,8 @@ assert_same() {
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
+[[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
+[[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" ]] || fail "missing Implementation Unit Design method"
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 
 tmp_dir="$(mktemp -d)"
@@ -52,9 +54,11 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
 
-for skill in explorer-this how-it plan-agent plan-interactive review-refine; do
+for skill in explorer-this how-it impl-lead plan-agent plan-interactive review-refine; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
+
+assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/implementation-unit-design.md" "$dest_dir/skills/impl-lead/references/implementation-unit-design.md"
 
 for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"

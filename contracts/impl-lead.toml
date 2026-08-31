@@ -1,0 +1,138 @@
+[contracts.impl-lead-document]
+kind = "occurrences"
+pattern = "# impl-lead"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/SKILL.md",
+  "plugins/codex/skills/impl-lead/SKILL.md",
+  "plugins/cursor/skills/impl-lead/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-document]
+kind = "occurrences"
+pattern = "# Implementation Unit Design"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-lead/references/implementation-unit-design.md",
+  "plugins/codex/skills/impl-lead/references/implementation-unit-design.md",
+  "plugins/cursor/skills/impl-lead/references/implementation-unit-design.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-intake-ownership-4429dc189bf2]
+kind = "requires"
+slice = "impl-lead-intake-ownership"
+pattern = "outcome candidate の抽出、implementation scope、要求 coverage の最終責任を保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-unit-data-e545ea040b0f]
+kind = "requires"
+slice = "impl-lead-unit-data"
+pattern = "`id`、`purpose`、`acceptance_criteria`、`scope`、`implementation_freedom`、`constraints`、`depends_on`、`verification`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-pre-execution-flow-327c7f4ed16b]
+kind = "requires"
+slice = "impl-lead-pre-execution-flow"
+pattern = "non-empty の候補集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-identity-d002189e5100]
+kind = "requires"
+slice = "impl-lead-pre-execution-flow"
+pattern = "expected identity `impl-lead implementation-unit-design v1`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-boundary-816670dec2a3]
+kind = "requires"
+slice = "impl-lead-method-boundary"
+pattern = "`impl-lead` 専用の consumer-specific Method"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-rmo-loader-a2dfd87bc962]
+kind = "requires"
+slice = "impl-lead-method-rmo"
+pattern = "partition reasoning の直前に一度 load"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-rmo-target-8bcbaf7ee23a]
+kind = "requires"
+slice = "impl-lead-method-rmo"
+pattern = "Target は Unit boundary、semantic dependency、independent acceptability"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-rmo-inputs-79d01e973d0e]
+kind = "requires"
+slice = "impl-lead-method-rmo"
+pattern = "次の5入力を consumer mapping する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-return-integrity-163cb42c514f]
+kind = "requires"
+slice = "impl-lead-return-integrity"
+pattern = "Method の split / merge judgment を再設計しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-return-identity-20deafb2fa25]
+kind = "requires"
+slice = "impl-lead-return-integrity"
+pattern = "run 内で一意な `id` を付与し、Method が返した semantic dependency relation を"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-phase-boundary-0d9311f165b3]
+kind = "requires"
+slice = "impl-lead-phase-boundary"
+pattern = "execution、verification、acceptance を開始せず `incomplete` を返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-document-before-intake]
+kind = "order"
+before = "impl-lead-document-relation"
+after = "impl-lead-intake-ownership-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-intake-before-flow]
+kind = "order"
+before = "impl-lead-intake-ownership-relation"
+after = "impl-lead-pre-execution-flow-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-flow-before-return]
+kind = "order"
+before = "impl-lead-pre-execution-flow-relation"
+after = "impl-lead-return-integrity-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-before-rmo]
+kind = "order"
+before = "impl-lead-method-boundary-relation"
+after = "impl-lead-method-rmo-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-rmo-before-partition]
+kind = "order"
+before = "impl-lead-method-rmo-relation"
+after = "impl-lead-method-partition-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-claude-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/claude/skills/impl-lead/SKILL.md"]
+applies_to = ["claude"]
+
+[contracts.impl-lead-codex-invocation-policy]
+kind = "occurrences"
+pattern = "allow_implicit_invocation: false"
+count = 1
+paths = ["plugins/codex/skills/impl-lead/agents/openai.yaml"]
+applies_to = ["codex"]
+
+[contracts.impl-lead-cursor-invocation-policy]
+kind = "occurrences"
+pattern = "disable-model-invocation: true"
+count = 1
+paths = ["plugins/cursor/skills/impl-lead/SKILL.md"]
+applies_to = ["cursor"]
