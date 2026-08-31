@@ -594,8 +594,28 @@
       "sha256": "bbe85261e9a7572bcd4014d6c5031484dc2fbda91ba9779fce8af52b58e40a76"
     },
     {
-      "id": "plan-adversarial-reviewer-context-ee076628d448",
-      "sha256": "2f63f9811f0bc8096f023679f0f55d66198e0b1b0585f6aef15c7f2f13a99211"
+      "id": "plan-adversarial-reviewer-modes-271138b58969",
+      "sha256": "c86bd0d36ca5b57771d527ce27777bddfa2fb1c6d03c394c365ab759636d9f65"
+    },
+    {
+      "id": "plan-adversarial-reviewer-input-boundary-5b47c1a1cc2f",
+      "sha256": "61279cd7b72d3fda049bb8048f21a0ae42cf7473492ad9a41821b69bfbc0e158"
+    },
+    {
+      "id": "plan-adversarial-reviewer-fresh-36ca293edaad",
+      "sha256": "d9deb93a2fcbac801f673e4f7bb977d3a9244927b9a23d60b90ac867d6f26e06"
+    },
+    {
+      "id": "plan-adversarial-reviewer-continuation-477dc0fe3a3f",
+      "sha256": "0683080407d648e060a100b2f546bda755f0ec1da7edcb8055a0c7e9434d8427"
+    },
+    {
+      "id": "plan-adversarial-reviewer-continuation-scope-f8d201a76d97",
+      "sha256": "56fe1c2a19cac6aca15fd9226b10b962a86f22c00b5b295077908ccebc876d82"
+    },
+    {
+      "id": "plan-adversarial-reviewer-current-evidence-912072c9c9cd",
+      "sha256": "e3b22d9925997cdded8c6b48f11ab65d4219270ce0faecbc84a6ef05d88737c7"
     },
     {
       "id": "plan-adversarial-reviewer-result-4565300f18da",
@@ -1006,6 +1026,54 @@
       "sha256": "bf6040146b1bb982656fd3ccdbb833ed14c1278fdf32c10d8e08394bf81663bc"
     },
     {
+      "id": "review-refine-fresh-input-boundary-e210305f033c",
+      "sha256": "a7385f26d694ba7479faaba2d8dd48f5c8583ada1194345685b3bdb92e25c717"
+    },
+    {
+      "id": "review-refine-reviewer-batch-e7cc8e31b4f3",
+      "sha256": "0e7226a1c4f632420e55bd5c356e158a71e9db7b629212e66a547eace21ac43e"
+    },
+    {
+      "id": "review-refine-reviewer-batch-next-f8948fc62aec",
+      "sha256": "beecac15c3b0434bc0f8df705b955e6d19a0e8cb1b92617410d5940537f2a57d"
+    },
+    {
+      "id": "review-refine-initial-fresh-be19c5f5fd8a",
+      "sha256": "5e32837f95a9a9e9058051333dff8acfcc65a5febc9877ac45a49c660e4a8d1e"
+    },
+    {
+      "id": "review-refine-contextual-resolution-f4d898c916a4",
+      "sha256": "26e19309e56515d58247d8f4abd42bc541480e7f28b6f85703a9f0c294125449"
+    },
+    {
+      "id": "review-refine-contextual-input-c55aaae4c2f9",
+      "sha256": "2bce17274f38269c00191c8aaa13f3ad24f0e9ba90a9856871439ae61e0292a5"
+    },
+    {
+      "id": "review-refine-contextual-incomplete-edd164928f4f",
+      "sha256": "3b221ed4226599eea8cc816ef823cc3890aebabdccde5382aacf63d0cc0a0b39"
+    },
+    {
+      "id": "review-refine-origin-resolution-4c45ab55df43",
+      "sha256": "1f27f706619b0c550854e55d9a730a677ed70ca83efd9425ea69ba51a4f0ad20"
+    },
+    {
+      "id": "review-refine-additional-fresh-f22e70df7ac2",
+      "sha256": "433848df813348d4ca9a4f5d37b30702f1da3f39fba68cd2c2c29c7917ff795f"
+    },
+    {
+      "id": "review-refine-no-correction-closure-5e9d82b5a6b0",
+      "sha256": "0341f7ff03ba6bff7b12a405be72efd91d5b3c6773f95b67eb0121c8cf58be44"
+    },
+    {
+      "id": "review-refine-review-action-entry-55cc8bdf5240",
+      "sha256": "2b127fba197ff0f72091626f262247730fdf992edf6fed12982b4cadc860defc"
+    },
+    {
+      "id": "review-refine-normal-review-scope-3c72f1112572",
+      "sha256": "5a7ef92fbe699b1109e917868c9693ec666e5c90f3644a5f3b2c8d7c767ebaa9"
+    },
+    {
       "id": "review-refine-convergence-e41632fab2fe",
       "sha256": "74d7d2fbc0180852fc8fa4e45e630f18c8c882ec2e5a2dc9ce3bff3015aca031"
     },
@@ -1034,8 +1102,12 @@
       "sha256": "c544708143680b2be5c0e4c9a00bf7aa6e2280b993caef2e20f5f3c9e15938e5"
     },
     {
-      "id": "review-refine-promotion-before-convergence",
-      "sha256": "6616bf1f052179170b2eb7e05e35eafd92cdcb6158dca48d1ea287e7ee957466"
+      "id": "review-refine-promotion-before-review-action-routing",
+      "sha256": "72bc234969cecaad63b5a41f3a576d699c231a50a12248d55e9b507092516e31"
+    },
+    {
+      "id": "review-refine-review-action-routing-before-convergence",
+      "sha256": "a7c41c7e5af68dba493c6c73bdba5215114cd52d98df5a1812fe0c46272bf747"
     },
     {
       "id": "review-refine-convergence-before-responsibility",
@@ -1700,6 +1772,31 @@
     },
     {
       "kind": "span",
+      "id": "plan-adversarial-reviewer-input-boundary",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-fresh",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-continuation",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-continuation-scope",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-adversarial-reviewer-current-evidence",
+      "path": "shared/agents/plan-adversarial-reviewer.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-adversarial-reviewer-result-boundary",
       "path": "shared/agents/plan-adversarial-reviewer.md"
     },
@@ -2010,6 +2107,46 @@
     },
     {
       "kind": "span",
+      "id": "review-refine-initial-fresh",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-fresh-input-boundary",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-reviewer-batch",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-contextual-resolution",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-contextual-input",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-contextual-incomplete",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-origin-resolution",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-additional-fresh",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "review-refine-adjudication",
       "path": "shared/skill/review-refine/SKILL.md"
     },
@@ -2026,6 +2163,21 @@
     {
       "kind": "anchor",
       "id": "review-refine-promotion-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-review-action-entry",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "review-refine-review-action-routing-relation",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-no-correction-closure",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {

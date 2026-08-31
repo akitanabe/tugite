@@ -63,6 +63,78 @@ slice = "review-refine-promotion"
 pattern = "failure を安全に閉じられない場合は working state を破棄して prior latest verified snapshot を維持する。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.review-refine-fresh-input-boundary-e210305f033c]
+kind = "requires"
+slice = "review-refine-fresh-input-boundary"
+pattern = "fresh reviewer input は current immutable snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、observation scope に閉じる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-reviewer-batch-e7cc8e31b4f3]
+kind = "requires"
+slice = "review-refine-reviewer-batch"
+pattern = "`reviewer Batch` は review context 内の局所 Data で、同じ current immutable snapshot に対する一つの normal-review reviewer Action の全 origin reviewer context の findings を parent が全件裁定する単位である。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-reviewer-batch-next-f8948fc62aec]
+kind = "requires"
+slice = "review-refine-reviewer-batch"
+pattern = "continuation / additional fresh の返却は次の reviewer Batch を形成する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-initial-fresh-be19c5f5fd8a]
+kind = "requires"
+slice = "review-refine-initial-fresh"
+pattern = "initial fresh は `S0`、fixed purpose / criteria、authority obligations、necessary evidence、bound が成立すれば、additional fresh 用の risk packet を要求せず起動する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-contextual-resolution-f4d898c916a4]
+kind = "requires"
+slice = "review-refine-contextual-resolution"
+pattern = "contextual resolution continuation は、同じ semantic subject、fixed purpose / criteria、origin reviewer responsibility を維持し、origin reviewer と同じ runtime instance が再利用可能な場合だけ成立する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-contextual-input-c55aaae4c2f9]
+kind = "requires"
+slice = "review-refine-contextual-input"
+pattern = "continuation input は current immutable snapshot、prior finding identity と内容、parent adjudication、adopted coherent refinement、verification evidence、affected scope、維持された authority obligations を含む。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-contextual-incomplete-edd164928f4f]
+kind = "requires"
+slice = "review-refine-contextual-incomplete"
+pattern = "required な origin reviewer context を継続できない場合、additional fresh で代替せず、latest verified candidate と material reason を伴う `incomplete` とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-origin-resolution-4c45ab55df43]
+kind = "requires"
+slice = "review-refine-origin-resolution"
+pattern = "複数 reviewer の finding が adopted refinement に material に関係する場合は、必要な全 origin context の resolution observation を閉じる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-additional-fresh-f22e70df7ac2]
+kind = "requires"
+slice = "review-refine-additional-fresh"
+pattern = "additional fresh は、必要な origin resolution observation がすべて閉じた後、parent が independent observation を必要とする具体的 risk と必要 evidence を確定し、bound が残る場合だけ新しい reviewer context で起動する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-no-correction-closure-5e9d82b5a6b0]
+kind = "requires"
+slice = "review-refine-no-correction-closure"
+pattern = "adopted correction がない Batch は全裁定の closure を確認し、current verified snapshot を維持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-review-action-entry-55cc8bdf5240]
+kind = "requires"
+slice = "review-refine-review-action-entry"
+pattern = "initial fresh は reviewer Batch closure 前の入口とし、Batch 開始後の route は `verified-promotion-control` の applicable な closure evidence を受け取った後にだけ選ぶ。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-normal-review-scope-3c72f1112572]
+kind = "requires"
+slice = "review-refine-review-action-entry"
+pattern = "normal-review reviewer Action selection と normal review closure の唯一の deterministic witness はこの Flow である。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.review-refine-convergence-e41632fab2fe]
 kind = "requires"
 slice = "review-refine-convergence"
@@ -105,9 +177,15 @@ before = "review-refine-adjudication-relation"
 after = "review-refine-promotion-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.review-refine-promotion-before-convergence]
+[contracts.review-refine-promotion-before-review-action-routing]
 kind = "order"
 before = "review-refine-promotion-relation"
+after = "review-refine-review-action-routing-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-review-action-routing-before-convergence]
+kind = "order"
+before = "review-refine-review-action-routing-relation"
 after = "review-refine-convergence-relation"
 applies_to = ["claude", "codex", "cursor"]
 

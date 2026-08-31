@@ -900,10 +900,40 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-adversarial-reviewer-context-ee076628d448]
+[contracts.plan-adversarial-reviewer-modes-271138b58969]
 kind = "requires"
 slice = "plan-adversarial-reviewer-context-boundary"
-pattern = "呼び出し元が渡す immutable Plan snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、必要なら affected re-review scope だけを対象にする fresh / context-isolated read-only Agent です。"
+pattern = "caller は `fresh` または `continuation` の invocation mode を選ぶ。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adversarial-reviewer-input-boundary-5b47c1a1cc2f]
+kind = "requires"
+slice = "plan-adversarial-reviewer-input-boundary"
+pattern = "両 mode の observation boundary は supplied immutable Plan snapshot、fixed purpose / criteria、direction / authority obligations、necessary evidence、observation scope に閉じる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adversarial-reviewer-fresh-36ca293edaad]
+kind = "requires"
+slice = "plan-adversarial-reviewer-fresh"
+pattern = "`fresh` は prior reviewer conversation と prior review invocation を持たない context-isolated observation です。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adversarial-reviewer-continuation-477dc0fe3a3f]
+kind = "requires"
+slice = "plan-adversarial-reviewer-continuation"
+pattern = "`continuation` は origin reviewer と同じ runtime context で、supplied prior finding、parent adjudication、adopted refinement、verification evidence、affected scope を利用する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adversarial-reviewer-continuation-scope-f8d201a76d97]
+kind = "requires"
+slice = "plan-adversarial-reviewer-continuation-scope"
+pattern = "`continuation` の observation scope は supplied affected semantics と relevant dependencies に限定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-adversarial-reviewer-current-evidence-912072c9c9cd]
+kind = "requires"
+slice = "plan-adversarial-reviewer-current-evidence"
+pattern = "prior finding は current immutable snapshot 上で未解消と観測できる場合、またはその finding に新しい repository evidence がある場合だけ再提出する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-adversarial-reviewer-result-4565300f18da]
