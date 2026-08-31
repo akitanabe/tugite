@@ -9,10 +9,10 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.cursor-readme-title-requires-6507a8c77d3e]
+[contracts.cursor-readme-title-requires-6f99fe3c7aaf]
 kind = "requires"
 slice = "cursor-readme-title"
-pattern = "# Tugite v7.0.0b1"
+pattern = "# Tugite v7.0.0"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.readme-risk-directed-static-performance-reviewer-f796ec8d2285]

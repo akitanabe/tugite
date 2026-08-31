@@ -1,6 +1,6 @@
 {
   "name": "tugite",
-  "version": "7.0.0b1",
+  "version": "7.0.0",
   "description": "Use how-it for explicit Interactive requested-output workflows, explorer-this for explicit exploration, and impl-lead, plan-agent, plan-interactive, review-refine, code-review, and test-report with internal skills, Implementation Unit workers, reviewers, and advisors while the parent Codex agent owns planning, QA, and final verification.",
   "author": {
     "name": "akitanabe"
