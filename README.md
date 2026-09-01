@@ -16,10 +16,6 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 
 `plan-agent` は review applicability と explicit opt-out を判断し、nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は strict review route へ進みます。
 
-### 内部 skill
-
-`plan-candidate-producer` と `structural-health-gate` は公開ワークフローと同じ親エージェントのコンテキストで使う内部 skill です。`implementation-unit-design` は `impl-lead` 配下の consumer-specific Method です。いずれも直接起動や暗黙のワークフロー切替は行いません。
-
 ### Worker / reviewer / advisor
 
 Implementation Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
@@ -37,8 +33,6 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
 Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$review-refine` を明示して起動できます。
-
-内部 skill は、公開ワークフローが同じ親エージェントのコンテキスト内で使用します。
 
 <!-- @contract cursor-readme-boundary -->
 ### Cursor local plugin
