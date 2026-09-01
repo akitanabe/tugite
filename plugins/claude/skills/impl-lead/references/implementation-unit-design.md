@@ -15,7 +15,7 @@ execution、worker / reviewer、acceptance、persistence を所有しない。
 
 ## Inputs and outputs
 
-入力は `impl-lead` が固定した non-empty outcome candidates と、request / Plan / established direction、Acceptance Criteria の素材、
+入力は `impl-lead` が固定した non-empty initial outcome candidates と、request / Plan / established direction、Acceptance Criteria の素材、
 scope / constraints、repository evidence、known dependency、verification reality、accept / rollback reality からなる grounding である。
 Method は追加 evidence acquisition を開始しない。
 
@@ -106,6 +106,10 @@ Unit を確定しない `blocking_gaps` として返す。判断を変えない 
 Method は candidates、理由 / qualification、blocking gaps を返して終了する。`impl-lead` は coverage、scope、blocking gap、Data boundary を
 確認するが、Method の partition judgment を再設計しない。Unit 確定後に Method へ戻る renormalization loop を作らない。設計前提が後続の
 execution 中に崩れた場合は current execution を継続せず、上流 / `stop-incomplete` boundary へ返す。
+
+run-wide final verification 後の Final Correction Unit は、既存 accepted Unit の boundary から親が一意に導出する bounded exception であり、
+この Method の対象に含めない。Unit boundary、split / merge、semantic dependency、independent acceptability の再判断が必要になった時点で eligibility を失う。
+親は Method を再 invocation せず `stop-incomplete` とする。
 
 ## Representative contrasts
 

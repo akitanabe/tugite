@@ -101,10 +101,10 @@ slice = "impl-lead-dispatch-integrity"
 pattern = "current HEAD が expected accepted baseline と一致し、明示的に許可した既存 state 以外の tracked change がないことを確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-pre-execution-flow-327c7f4ed16b]
+[contracts.impl-lead-pre-execution-initial-c0127de2507f]
 kind = "requires"
 slice = "impl-lead-pre-execution-flow"
-pattern = "non-empty の候補集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。"
+pattern = "non-empty の initial outcome candidate 集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-method-identity-d002189e5100]
@@ -231,6 +231,36 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "impl-lead-final-verification"
 pattern = "accepted commit 全体で名称、comment、DocBlock、document の意味が相互に矛盾しないことを確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-correction-admission-f8690359e997]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "8条件をすべて満たす場合だけ、親は Final Correction Unit を直接構成できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-correction-owner-fec43a300579]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "owner を一つの既存 accepted Unit に一意に帰属できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-correction-scope-cec5b619f882]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "owner Unit の既存 `scope.change` の内側だけで修正でき、`scope.exclude` に触れない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-correction-terminal-4e6859477e1c]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "Final Correction Unit は同じ run で1つだけ構成できる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-method-final-correction-04e14f9d9dc4]
+kind = "requires"
+slice = "impl-lead-method-final-correction-boundary"
+pattern = "Unit boundary、split / merge、semantic dependency、independent acceptability の再判断が必要になった時点で eligibility を失う。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-monitoring-human-priority-02d878a01ba8]

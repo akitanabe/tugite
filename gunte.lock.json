@@ -1255,8 +1255,8 @@
       "sha256": "76ca419e093a73c7ee1971b56e83fe95f108505217ebcc5546913b1d16729767"
     },
     {
-      "id": "impl-lead-pre-execution-flow-327c7f4ed16b",
-      "sha256": "ffc2f8973a7697b68a4f02c18a1dcae92b84d4a1f2870ed560cb44aa8c5f5883"
+      "id": "impl-lead-pre-execution-initial-c0127de2507f",
+      "sha256": "162239cf982c7ca39a9f1c5b813a7316c5c98726f76a50034f1c6fcdd267bb28"
     },
     {
       "id": "impl-lead-method-identity-d002189e5100",
@@ -1341,6 +1341,26 @@
     {
       "id": "impl-lead-final-writing-consistency-f3cce66a81fa",
       "sha256": "f9fbe6947f27fa05cea4a3ce2d859fbf4ad8ead75624a40655445898a1c3f6b0"
+    },
+    {
+      "id": "impl-lead-final-correction-admission-f8690359e997",
+      "sha256": "8e1ffeb37c7de79d2edc801eeed106e0aab998291afbf6b4fde41ddf446afe0f"
+    },
+    {
+      "id": "impl-lead-final-correction-owner-fec43a300579",
+      "sha256": "410d04f0fb19dba7d82e915b6cadebbebbe9d897adb1de888a02c3277ac8b759"
+    },
+    {
+      "id": "impl-lead-final-correction-scope-cec5b619f882",
+      "sha256": "49dffd5a4c593149316f3da8fba2c5b5011bbaf5222b6c288f03a69b90024586"
+    },
+    {
+      "id": "impl-lead-final-correction-terminal-4e6859477e1c",
+      "sha256": "7d1178cc07c45f3620145953aa36848d9b0c0f132a3827a54cc2a6dd02cf5aa3"
+    },
+    {
+      "id": "impl-lead-method-final-correction-04e14f9d9dc4",
+      "sha256": "92f054cbfc6a15e787e89b46c3c616378d8dd353b1cb80cd91364bef0dc0bbe3"
     },
     {
       "id": "impl-lead-monitoring-human-priority-02d878a01ba8",
@@ -2306,6 +2326,11 @@
     {
       "kind": "anchor",
       "id": "impl-lead-method-partition-relation",
+      "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-method-final-correction-boundary",
       "path": "shared/skill/impl-lead/references/implementation-unit-design.md"
     },
     {

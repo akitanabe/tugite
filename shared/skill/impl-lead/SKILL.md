@@ -60,20 +60,20 @@ Implementation Unit Data は invocation 内の transient Data であり、`id`�
 - `verification`: Acceptance Criteria ごとの focused verification と必要な run-wide final gate。
 <!-- @/contract -->
 
-grounding には request / Plan / established direction、Acceptance Criteria の素材、scope / constraints、repository evidence、known dependency、verification reality、accept / rollback reality を含める。親は non-empty target を固定し、`references/implementation-unit-design.md` の `impl-lead implementation-unit-design v1` を load・検証して execution 前に exactly once 適用する。
+grounding には request / Plan / established direction、Acceptance Criteria の素材、scope / constraints、repository evidence、known dependency、verification reality、accept / rollback reality を含める。親は non-empty の initial outcome candidates を固定し、`references/implementation-unit-design.md` の `impl-lead implementation-unit-design v1` を load・検証して execution 前に exactly once 適用する。
 
 <!-- @contract impl-lead-pre-execution-flow -->
 <!-- @anchor impl-lead-pre-execution-flow-relation -->
 ### pre-execution-unit-design-control
 
-Trigger: non-empty の outcome candidates と grounding が固定され、execution が未開始である。
+Trigger: non-empty の initial outcome candidates と grounding が固定され、execution が未開始である。
 
 Inputs: 固定済み target、Method path `references/implementation-unit-design.md`、expected identity `impl-lead implementation-unit-design v1`、execution-not-started evidence。
 
 Procedure:
 
 1. Method identity と required section を検証する。不足・不一致では judgment と execution を開始しない。
-2. non-empty の候補集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。execution 後の再 invocation は作らない。
+2. non-empty の initial outcome candidate 集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。execution 後の再 invocation は作らない。
 3. result の coverage、scope、blocking gap、Unit Data と execution Data の分離を親が確認する。
 4. 各 candidate に run 内で一意の ID を付与し、返された semantic dependency をその ID に束縛する。
 
@@ -109,7 +109,20 @@ execution 前に integration target と selected isolation の repository / work
 <!-- @anchor impl-lead-final-verification-relation -->
 全 Unit の acceptance 後に run-wide final verification を実行する。全 accepted commit を含む selected execution tip を対象に、各 Unit の run-wide verification と repository-native required gate を実行する。結果は `passed`、`failed`、`not run`、`unverified` を区別し、external environment を利用できない結果は `unverified` とする。required gate が `failed`、`not run`、`unverified` のいずれかなら Green としない。親は累積 diff と commit range を一次情報として、accepted commit 全体で名称、comment、DocBlock、document の意味が相互に矛盾しないことを確認する。
 
-failure が入力 authority の内側で8 fieldすべてを閉じられる単一の minor / local correction なら、run 内一意 ID と既存 Unit ID への dependency を持つ new Unit として fresh `focused-implementer` に渡し、新 commit、Parent QA、必要な risk review、Completion Gate、final verification を通常どおり行う。それ以外、または進展しない failure は `stop-incomplete` とする。
+accepted Unit は reopen、amend、renormalize しない。Final Correction Unit は run-wide final verification 後の bounded exception であり、Implementation Unit Design の軽量版ではない。次の8条件をすべて満たす場合だけ、親は Final Correction Unit を直接構成できる。
+
+1. failure が一つの具体的な correction obligation に閉じている。
+2. owner を一つの既存 accepted Unit に一意に帰属できる。
+3. correction が input authority の内側にある。
+4. owner Unit の purpose、Acceptance Criteria、responsibility boundary を変更しない。
+5. owner Unit の既存 `scope.change` の内側だけで修正でき、`scope.exclude` に触れない。
+6. owner Unit の semantic dependency、public contract、external effect、accept / rollback boundary を変更しない。
+7. observable な correction postcondition に対応する focused verification と run-wide final verification を事前に確定できる。
+8. split / merge、Unit boundary、semantic dependency、independent acceptability の再判断を必要としない。
+
+Final Correction Unit の8 fieldは既存 boundary と failure evidence から一意に導出する。`id` は run 内一意、`purpose` は具体的な failure の局所解消、`acceptance_criteria` は failure observation の解消を証明する observable postcondition、`scope` は owner Unit の既存 `scope.change` 内、`implementation_freedom` は局所的な実装方法、`constraints` は owner Unit と input authority から継承する制約、`depends_on` は owner Unit への semantic dependency と全 accepted commit を含む selected execution tip の repository precondition、`verification` は確定済みの focused verification と run-wide final verification とする。Final Correction Unit 自体の accept / revert boundary は新しい correction commit とする。
+
+Final Correction Unit は同じ run で1つだけ構成できる。fresh `focused-implementer` が新しい commit として実装し、Parent QA、必要な risk review、Completion Gate を通常どおり行う。accepted 後に run-wide final verification を再実行し、`passed` でなければ新しい Final Correction Unit を連鎖させず `stop-incomplete` とする。8条件の一つでも満たさない failure も `stop-incomplete` とする。
 <!-- @/contract -->
 
 final verification が Green の場合だけ、run-owned route では `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定し、Human 指定 route では明示された ownership / authority の内側だけで closeout する。external Action がある場合は `references/external-effects.md` を適用する。
