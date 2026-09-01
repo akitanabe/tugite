@@ -18,4 +18,4 @@ fresh specialized reviewer を起動する場合は `fork_turns = "none"` を指
 
 adopted finding は元 Implementer または boundary と correction に適した fresh Implementer へ渡し、変更後に Parent QA と applicable verification を再実行する。diff が変わった場合、影響を受ける review goal だけを fresh reviewer に再 review させ、影響しない goal を反復しない。
 
-unresolved finding は concrete risk と acceptance を変える expected evidence が残る間だけ追加観測または correction を選べる。authority 内で閉じない、同じ evidence で進展しない、Plan 外 material work を要する場合は `stop-incomplete` とする。
+unresolved finding は concrete risk と acceptance を変える expected evidence が残る間だけ追加観測または correction を選べる。input authority 内で閉じない、同じ evidence で進展しない、または要求成果を成立させるために input authority 外の material work を要する場合は `stop-incomplete` とする。要求成果と独立した input authority 外の finding は obligation に昇格させず final report に残す。

@@ -8,7 +8,7 @@
 
 ## Dispatch readiness
 
-親は dependency が accepted または外部 precondition が満たされ、Unit の8 field、run-owned worktree、明示した Writable Scope assignment と target membership、verification environment が実行可能であることを確認する。不足が結果を変える場合は dispatch せず `stop-incomplete` とする。
+親は dependency が accepted または外部 precondition が満たされ、Unit の8 field、selected isolation、明示した Writable Scope assignment と target membership、verification environment が実行可能であることを確認する。dispatch 直前に current HEAD が expected accepted baseline と一致し、明示的に許可した既存 state 以外の tracked change がないことを確認する。expected accepted baseline は最初の Unit では固定した run base、後続 Unit では直前の accepted commit とする。不足、不一致、または material repository / execution drift が結果を変える場合は dispatch せず `stop-incomplete` とする。
 
 default は delegation である。責任境界と検証が狭く parent context から分離する利得がなく、delegation overhead が明白に上回る局所変更だけ direct execution を選べる。Human の route / model / agent constraint は優先する。
 
@@ -22,6 +22,6 @@ Implementer は Red → Green → Refactor で外部から観測可能な振る�
 
 ## Monitoring
 
-monitoring の elapsed time は最後の meaningful progress、output、state change を起点にする。そこから15分未満は status inquiry を行わず、15分経過は inquiry を許すだけで abnormality や mandatory poll を意味しない。elapsed time だけでは interrupt しない。tool failure、明示された block、contradictory evidence、user interruptionなど concrete signal がある場合だけ必要な介入を判断する。
+Human が明示した monitoring / intervention criteria は15分の既定より優先する。既定の elapsed time は最後の meaningful progress、output、state change を起点にする。そこから15分未満は status inquiry を行わず、15分経過は inquiry を許すだけで abnormality や mandatory poll を意味しない。elapsed time だけでは interrupt しない。tool failure、明示された block、contradictory evidence、user interruptionなど concrete signal がある場合だけ必要な介入を判断する。
 
 返却された diff と evidence は worker report を真と仮定せず、親が repository state から再観測して Parent QA へ渡す。

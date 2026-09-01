@@ -1223,6 +1223,38 @@
       "sha256": "dfe3a0f25115b0cb6eb1c8f2c267d5987d4044553852c80b965cfdaefd1423b5"
     },
     {
+      "id": "impl-lead-unit-scope-63462434f320",
+      "sha256": "716615d39dd37d3a2306d3a17bc4034402c26dd3967b5a61dcc8264b461ec3b9"
+    },
+    {
+      "id": "impl-lead-unit-dependency-63415ee9b07e",
+      "sha256": "a066ac3293a7f2c5d97406f4a7c3242b714a24be4ef9ce79aa0eeb1521d9595d"
+    },
+    {
+      "id": "impl-lead-unit-verification-966c01073530",
+      "sha256": "e4d036e8dfc581c2613e68ae976e6866dcb31ea4718f40c4f97000d898d654ec"
+    },
+    {
+      "id": "impl-lead-authority-blocking-f9f89e62a71d",
+      "sha256": "675b6268d67e0ad0dedcdbac08e7c301eb533b4358e94ad6f4febab24f5f011c"
+    },
+    {
+      "id": "impl-lead-authority-incidental-c0c033733fd0",
+      "sha256": "4202310ddae4f347768bc4002ef488849e78f75ae9eebb522306ca395639fa2f"
+    },
+    {
+      "id": "impl-lead-isolation-human-priority-00e2da39dc4a",
+      "sha256": "095862e759197ef0cc0e5df6db8b1e779e5fee7555ad5d3c02f3a340c2ffe175"
+    },
+    {
+      "id": "impl-lead-run-owned-route-bba03030c829",
+      "sha256": "c03004a4d811beaeea29e9cd819fd054a47a5e6c21a852874e52398cd68b5e24"
+    },
+    {
+      "id": "impl-lead-dispatch-integrity-49c227deba84",
+      "sha256": "76ca419e093a73c7ee1971b56e83fe95f108505217ebcc5546913b1d16729767"
+    },
+    {
       "id": "impl-lead-pre-execution-flow-327c7f4ed16b",
       "sha256": "ffc2f8973a7697b68a4f02c18a1dcae92b84d4a1f2870ed560cb44aa8c5f5883"
     },
@@ -1263,12 +1295,56 @@
       "sha256": "679b4aeeb85132ee9bf14ab11e1f312ae80efa23f7e871c0645e346055cfadc0"
     },
     {
+      "id": "impl-lead-parent-qa-bmo-applicability-9cbe10556e15",
+      "sha256": "5e872f064589ffff3d3c94ba949ed5901a2a53e3c357648f62648dce1871bffd"
+    },
+    {
+      "id": "impl-lead-parent-qa-mutation-applicability-28a571bbe75b",
+      "sha256": "ef5db2c62760bc16e6f021b82205fd5d59bc6429610c27503d5dd0faddef39d0"
+    },
+    {
       "id": "impl-lead-completion-gate-ea573660215c",
       "sha256": "877254a865f1476957749460f8df38c1eac4f43f450b2b7d8d7b84d734c5aa40"
     },
     {
+      "id": "impl-lead-completion-clean-fdffbe4fb757",
+      "sha256": "c84ba77193bd27c7068190dd520a35e2e4c9896a3137cc8cf6ad3af7426944d4"
+    },
+    {
+      "id": "impl-lead-completion-adjudication-6c78d91cfb35",
+      "sha256": "5e7461c473d193ee8fc3dc2c4792ab75517463f21173dfdadc438980d7d3cd31"
+    },
+    {
+      "id": "impl-lead-completion-rejected-025c49eb5f12",
+      "sha256": "05bc3695184e0b44b5e1181988f840038d4419e748e5a55b085a8508398c2cdf"
+    },
+    {
+      "id": "impl-lead-completion-snapshot-06caf152104d",
+      "sha256": "880ef7befbb8e5f1386b4026cdfd500437c3ab0ac932b12186eabe1f0d7dc6e8"
+    },
+    {
+      "id": "impl-lead-completion-message-owner-5ff6e3544a31",
+      "sha256": "c5f7627c95e10c20c6c339c80548ae7b22268e85213a0958d880124105627f9f"
+    },
+    {
       "id": "impl-lead-final-verification-a7bdf3865161",
       "sha256": "17545ee000dd451829b14db95b6d580198a2bef9f8037a8867e9d2e8e3cd3af1"
+    },
+    {
+      "id": "impl-lead-final-verification-target-7a895d03222c",
+      "sha256": "9b771a73e516d776475fc80c8a3d14f80274c9d2f29d9290cd5c57c4e7510064"
+    },
+    {
+      "id": "impl-lead-final-verification-state-75df9525b517",
+      "sha256": "a555912826f7e1c8136743ceda5fa801132e76998c90da1c8d4103785b1d9dc4"
+    },
+    {
+      "id": "impl-lead-final-writing-consistency-f3cce66a81fa",
+      "sha256": "f9fbe6947f27fa05cea4a3ce2d859fbf4ad8ead75624a40655445898a1c3f6b0"
+    },
+    {
+      "id": "impl-lead-monitoring-human-priority-02d878a01ba8",
+      "sha256": "7a510d4bc76c5424d1700618f0f60b7e9b8937864bae42f44cfe99988e1dd867"
     },
     {
       "id": "impl-lead-document-before-intake",
@@ -2154,6 +2230,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-lead-authority-boundary",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-lead-intake-ownership",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -2185,6 +2266,11 @@
     {
       "kind": "anchor",
       "id": "impl-lead-return-integrity-relation",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-isolation-selection",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
     {
@@ -2224,13 +2310,33 @@
     },
     {
       "kind": "span",
+      "id": "impl-lead-dispatch-integrity",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-monitoring",
+      "path": "shared/skill/impl-lead/references/execution.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-lead-parent-qa",
+      "path": "shared/skill/impl-lead/references/parent-qa.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-parent-qa-applicability",
       "path": "shared/skill/impl-lead/references/parent-qa.md"
     },
     {
       "kind": "span",
       "id": "impl-lead-completion-gate",
       "path": "shared/skill/impl-lead/references/completion-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-run-owned-route",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {
       "kind": "anchor",

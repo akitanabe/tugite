@@ -34,7 +34,9 @@ disable-model-invocation: true
 親は Phase 8-1 の Implementation Unit normalization、Phase 8-2 の execution capability、Phase 8-3 の execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。Model Construction は mandatory phase にしない。
 <!-- @/contract -->
 
-入力 Plan、request、established direction の outcome、Acceptance Criteria、scope、constraints、authority を run の上限とする。execution evidence や finding から Plan 外の material work を追加しない。Plan 内で閉じない material item は実装せず、上流または Human へ返して `stop-incomplete` とし final report に残す。
+<!-- @contract impl-lead-authority-boundary -->
+入力 Plan、request、established direction の outcome、Acceptance Criteria、scope、constraints、authority を input authority とし、run の上限にする。要求成果を成立させるために input authority 外の material work が必要なら、blocking authority gap として上流または Human へ返し、`stop-incomplete` とする。要求成果と独立した input authority 外の material finding は obligation へ昇格させず report-only incidental finding として保持し、run acceptance を阻止しない。
+<!-- @/contract -->
 
 `references/external-effects.md` が、implementation、verification、integration、cleanup を含む run 全体に適用する external Action の cross-cutting pre-action safety boundary と適用手順を所有する。親は各 Action に同 reference を適用し、実行 eligibility と result safety を裁定する。Git / worktree 固有の procedure は `references/run-owned-lifecycle.md`、post-diff specialized review は `references/risk-review.md` が所有する。
 
@@ -47,6 +49,15 @@ disable-model-invocation: true
 
 <!-- @contract impl-lead-unit-data -->
 Implementation Unit Data は invocation 内の transient Data であり、`id`、`purpose`、`acceptance_criteria`、`scope`、`implementation_freedom`、`constraints`、`depends_on`、`verification` の8 fieldを持つ。worker、reviewer、route、execution result、finding、QA result、persistence は execution Data であり Unit identity に含めない。
+
+- `id`: run 内で Unit を識別する transient identity。
+- `purpose`: 単一の outcome purpose。
+- `acceptance_criteria`: 外部から観測可能で検証可能な受入候補条件であり、accept の確定結果ではない。
+- `scope`: `change` と `exclude` からなる実装境界。
+- `implementation_freedom`: Implementer に委ねる局所判断。
+- `constraints`: Human 指定、互換性、依存、実行環境を含む established constraints。
+- `depends_on`: Unit 間の semantic dependency と外部・repository・environment precondition を区別した記述。
+- `verification`: Acceptance Criteria ごとの focused verification と必要な run-wide final gate。
 <!-- @/contract -->
 
 grounding には request / Plan / established direction、Acceptance Criteria の素材、scope / constraints、repository evidence、known dependency、verification reality、accept / rollback reality を含める。親は non-empty target を固定し、`references/implementation-unit-design.md` の `impl-lead implementation-unit-design v1` を load・検証して execution 前に exactly once 適用する。
@@ -78,7 +89,11 @@ Outcomes: execution-ready な Unit 集合、または material reason を伴う 
 
 ## Run lifecycle
 
-execution 前に integration target の start identity と current identity、tracked state、collision reality を capture し、run 全体で一つの task-owned branch と run-owned worktree を使う。通常は Unit を dependency order で serial execution する。parallel implementation はこの workflow の policy に含めない。
+<!-- @contract impl-lead-isolation-selection -->
+execution 前に integration target と selected isolation の repository / worktree identity、canonical path、base / current HEAD、tracked / untracked / ignored state、task path collision、ownership、single-writer 条件、integration / cleanup authority を確認する。Human の checkout / isolation constraint がある場合は、安全性を確認したうえでその指定を既定より優先する。指定された user-owned resource の作成、integration、cleanup は `impl-lead` の暗黙の所有範囲にせず、個別に与えられた authority の内側だけで扱う。Human の指定がない場合は `references/run-owned-lifecycle.md` の run-owned route を選ぶ。
+<!-- @/contract -->
+
+通常は Unit を dependency order で serial execution する。parallel implementation はこの workflow の policy に含めない。
 
 各 Unit は次の順で閉じる。
 
@@ -92,16 +107,18 @@ execution 前に integration target の start identity と current identity、tr
 
 <!-- @contract impl-lead-final-verification -->
 <!-- @anchor impl-lead-final-verification-relation -->
-全 Unit の acceptance 後に run-wide final verification を実行する。failure が入力 authority の内側で8 fieldすべてを閉じられる単一の minor / local correction なら、run 内一意 ID と既存 Unit ID への dependency を持つ new Unit として fresh `focused-implementer` に渡し、新 commit、Parent QA、必要な risk review、Completion Gate、final verification を通常どおり行う。それ以外、または進展しない failure は `stop-incomplete` とする。
+全 Unit の acceptance 後に run-wide final verification を実行する。全 accepted commit を含む selected execution tip を対象に、各 Unit の run-wide verification と repository-native required gate を実行する。結果は `passed`、`failed`、`not run`、`unverified` を区別し、external environment を利用できない結果は `unverified` とする。required gate が `failed`、`not run`、`unverified` のいずれかなら Green としない。親は累積 diff と commit range を一次情報として、accepted commit 全体で名称、comment、DocBlock、document の意味が相互に矛盾しないことを確認する。
+
+failure が入力 authority の内側で8 fieldすべてを閉じられる単一の minor / local correction なら、run 内一意 ID と既存 Unit ID への dependency を持つ new Unit として fresh `focused-implementer` に渡し、新 commit、Parent QA、必要な risk review、Completion Gate、final verification を通常どおり行う。それ以外、または進展しない failure は `stop-incomplete` とする。
 <!-- @/contract -->
 
-final verification が Green の場合だけ `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定する。external Action がある場合は `references/external-effects.md` を適用する。
+final verification が Green の場合だけ、run-owned route では `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定し、Human 指定 route では明示された ownership / authority の内側だけで closeout する。external Action がある場合は `references/external-effects.md` を適用する。
 
 ## Completion and report
 
-`accepted` は全 Unit accepted、run-wide final verification Green、要求された integration が確認済みで、必須 external Action が verified `実行済み` または Human により明示的に不要化され、Plan 外 material item がない場合だけ返す。必須 external Action が `未実行` または `結果不明` なら evidence / retention state を保持して `stop-incomplete` とする。`stop-incomplete` となった run の accepted commits は task-owned branch に保持し、部分 integration しない。
+`accepted` は全 Unit accepted、run-wide final verification Green、要求された integration が確認済みで、必須 external Action が verified `実行済み` または Human により明示的に不要化され、blocking authority gap がない場合だけ返す。必須 external Action が `未実行` または `結果不明` なら evidence / retention state を保持して `stop-incomplete` とする。`stop-incomplete` となった run の accepted commits は selected execution ref に保持し、部分 integration しない。
 
-conversation final report には Unit 状態、commit / branch / integration、Parent QA / verification、risk review disposition、Completion Gate、external effect state、final verification、residual risk、cleanup / retention、Plan 外 material item を記す。固定 ledger や persistent report schema は作らない。
+conversation final report には Unit 状態、commit / branch / integration、Parent QA / verification、risk review disposition、Completion Gate、external effect state、final verification、residual risk、cleanup / retention、blocking authority gap、report-only incidental finding を記す。固定 ledger や persistent report schema は作らない。
 
 ## Reference ownership
 

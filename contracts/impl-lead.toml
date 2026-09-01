@@ -53,6 +53,54 @@ slice = "impl-lead-unit-data"
 pattern = "`id`、`purpose`、`acceptance_criteria`、`scope`、`implementation_freedom`、`constraints`、`depends_on`、`verification`"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.impl-lead-unit-scope-63462434f320]
+kind = "requires"
+slice = "impl-lead-unit-data"
+pattern = "`scope`: `change` と `exclude` からなる実装境界。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-unit-dependency-63415ee9b07e]
+kind = "requires"
+slice = "impl-lead-unit-data"
+pattern = "`depends_on`: Unit 間の semantic dependency と外部・repository・environment precondition を区別した記述。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-unit-verification-966c01073530]
+kind = "requires"
+slice = "impl-lead-unit-data"
+pattern = "`verification`: Acceptance Criteria ごとの focused verification と必要な run-wide final gate。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-authority-blocking-f9f89e62a71d]
+kind = "requires"
+slice = "impl-lead-authority-boundary"
+pattern = "blocking authority gap として上流または Human へ返し、`stop-incomplete` とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-authority-incidental-c0c033733fd0]
+kind = "requires"
+slice = "impl-lead-authority-boundary"
+pattern = "obligation へ昇格させず report-only incidental finding として保持し、run acceptance を阻止しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-isolation-human-priority-00e2da39dc4a]
+kind = "requires"
+slice = "impl-lead-isolation-selection"
+pattern = "Human の checkout / isolation constraint がある場合は、安全性を確認したうえでその指定を既定より優先する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-run-owned-route-bba03030c829]
+kind = "requires"
+slice = "impl-lead-run-owned-route"
+pattern = "この reference は run-owned route を選択した場合だけ適用する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-dispatch-integrity-49c227deba84]
+kind = "requires"
+slice = "impl-lead-dispatch-integrity"
+pattern = "current HEAD が expected accepted baseline と一致し、明示的に許可した既存 state 以外の tracked change がないことを確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-lead-pre-execution-flow-327c7f4ed16b]
 kind = "requires"
 slice = "impl-lead-pre-execution-flow"
@@ -113,16 +161,82 @@ slice = "impl-lead-parent-qa"
 pattern = "親は obligation、oracle、validation plane を確定し、reviewer の Pass や Implementer の report を Unit acceptance の根拠にしない。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.impl-lead-parent-qa-bmo-applicability-9cbe10556e15]
+kind = "requires"
+slice = "impl-lead-parent-qa-applicability"
+pattern = "meaningful Red または changed behavioral test の妥当性を acceptance evidence に使う場合だけ BMO を適用する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-parent-qa-mutation-applicability-28a571bbe75b]
+kind = "requires"
+slice = "impl-lead-parent-qa-applicability"
+pattern = "mutation evidence は behavior、test、executable contract に applicable な場合だけ必須とする。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-lead-completion-gate-ea573660215c]
 kind = "requires"
 slice = "impl-lead-completion-gate"
 pattern = "候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、code の How、test の What、commit の Why、comment / DocBlock の Why Not を確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.impl-lead-completion-clean-fdffbe4fb757]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "HEAD が candidate commit と一致し、index と working tree が clean であることを確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-completion-adjudication-6c78d91cfb35]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "親は各 finding を `adopted`、`rejected`、`unresolved` に裁定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-completion-rejected-025c49eb5f12]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "finding がないか全 finding が `rejected` なら、candidate commit を変更せず gate-complete とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-completion-snapshot-06caf152104d]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "reviewed snapshot と amended snapshot の before / after diff から adopted finding 対応以外の変更がないことを親が確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-completion-message-owner-5ff6e3544a31]
+kind = "requires"
+slice = "impl-lead-completion-gate"
+pattern = "`commit-message-only correction` は commit owner である親が行う。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.impl-lead-final-verification-a7bdf3865161]
 kind = "requires"
 slice = "impl-lead-final-verification"
 pattern = "全 Unit の acceptance 後に run-wide final verification を実行する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-verification-target-7a895d03222c]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "全 accepted commit を含む selected execution tip を対象に、各 Unit の run-wide verification と repository-native required gate を実行する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-verification-state-75df9525b517]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "required gate が `failed`、`not run`、`unverified` のいずれかなら Green としない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-final-writing-consistency-f3cce66a81fa]
+kind = "requires"
+slice = "impl-lead-final-verification"
+pattern = "accepted commit 全体で名称、comment、DocBlock、document の意味が相互に矛盾しないことを確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-monitoring-human-priority-02d878a01ba8]
+kind = "requires"
+slice = "impl-lead-monitoring"
+pattern = "Human が明示した monitoring / intervention criteria は15分の既定より優先する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-document-before-intake]
