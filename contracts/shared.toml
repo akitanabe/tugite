@@ -57,14 +57,13 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-460ad550874b]
+[contracts.cursor-readme-public-skills-requires-8d9a01d3301b]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/how-it <相談したい進め方>
 /explorer-this <探索タスク>
 /impl-lead <実装タスク>
 /plan-agent <plan task>
-/plan-interactive <human-directed plan task>
 /review-refine <artifact review task>'''
 applies_to = ["cursor"]
 
