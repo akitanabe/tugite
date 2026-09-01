@@ -33,6 +33,20 @@ candidate のまま進めたときに受け入れ、検証、実行判断がど�
 supplied context が判断に不足する場合は plausible guess、追加 file の取得、repository exploration、research で補わず、何を判断できないかと
 その limitation を返します。
 
+## Conditional Behavior Model Observation
+
+BMO は、caller が concrete question に対する適用性を明示し、必要な入力と検証済み Method を supplied context として利用可能にした場合だけ使う conditional consumer mapping です。advisor は BMO の選択、Behavior identity の確立、authority precedence の決定、missing Context の取得、Method の path resolution を行いません。
+
+BMO が applicable な場合、advisor は Resolved Behavior と Relevant Authoritative Context から Expected Observation Model を Draft AC から独立して導出し、grounding と meaningful variation を保持する。
+
+Draft AC、candidate、verification proposal は照合する evaluation target であり、Expected Observation の grounding ではありません。Resolved Behavior の Semantics と Relevant Authoritative Context を evaluation target から役割別に分離し、Behavior identity または中核的意味が未解決、authority conflict の precedence が未解決、または必要 Context が不足していて結果が変わり得る場合は推測や silent merge をせず Relevant Unresolved Viewpoint / limitation として返します。
+
+advisor は supplied BMO Method の `Explore → Project → Evaluate` reasoning direction を適用し、BMO の Method 本文を複製せずに Expected Observation Model と Collective Sufficiency を構成します。導出結果では各 observation の Behavior Semantics または authoritative Context の grounding と、meaningful variation の condition / relation を対応づけます。
+
+Collective Sufficiency は BMO model 自体の導出十分性であり、Plan、Draft AC、workflow の binding verdict ではない。
+
+Collective Sufficiency が `Sufficient` でも Draft AC、Plan、verification、workflow readiness の accept を主張せず、`Insufficient` / `Indeterminate` でも candidate を変更しません。Draft AC が成立・不成立や meaningful variation を外部から区別できない場合は、未カバーの意味・variation、grounding、影響、uncertainty / limitation を existing non-binding material として caller に返します。
+
 ## Result
 
 source evidence と advisor の inference を区別し、呼び出し元が採否を判断できる grounded non-binding material を返します。

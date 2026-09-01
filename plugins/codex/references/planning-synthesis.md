@@ -28,6 +28,20 @@ fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を�
 
 Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。
 
+## Conditional Behavior Model Observation
+
+Planning Synthesis は、concrete advisory question が planned Behavior、Draft Acceptance Criteria、または verification の観測可能性・意味上の区別可能性を material に問う場合だけ、BMO を使う route を選びます。BMO は全 invocation の mandatory phase ではありません。
+
+Planning Synthesis は BMO の適用性、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、検証済みの BMO Method availability を caller-owned input として固定し、Expected Observations 自体は事前導出しない。
+
+この BMO route では、Planning Synthesis が `plan-quality-advisor` の caller として、route の選択と入力準備を所有します。
+
+BMO が material でない question では、Planning Synthesis は BMO を起動せず既存の bounded advisory route を使える。
+
+advisor invocation 前に、concrete question、評価対象である current candidate / Draft AC / verification proposal の範囲、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、および current canonical BMO Method の検証済み本文を caller-owned Data として揃えます。Draft AC、candidate、verification proposal は評価対象として Behavior と Context から分離し、Expected Observations を事前に答えとして作りません。Behavior identity、authority precedence、必要な Context が未解決で Expected Observation を変え得る場合は、その signal と影響を input に保持します。
+
+BMO Method の選択・読み込み・identity / required semantics の確認と、advisor が利用できる状態への準備は caller Action です。advisor に package-relative path の探索、missing Context の取得、Behavior の解決を委ねません。BMO が適用できない decomposition、ordering / dependency、scope、complexity、または evidence interpretation の question は、既存の bounded quality observation として扱います。
+
 ## Result boundary
 
 返す結果は requested artifact に material な semantics を持つ coherent candidate、または candidate coherence を妨げる具体的な material input gap である。
