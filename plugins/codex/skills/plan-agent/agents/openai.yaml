@@ -1,6 +1,6 @@
 interface:
   display_name: "Plan Agent"
-  short_description: "Build a verified plan from Agent-side direction"
-  default_prompt: "Use $plan-agent only when explicitly requested to establish Agent-side planning direction and return the common Planning Core result without starting implementation."
+  short_description: "Create free-form plans with conditional review"
+  default_prompt: "Use $plan-agent only when explicitly requested to create a recommendation-first free-form planning or design artifact from normal context without starting implementation; use review only when applicable and not opted out."
 policy:
   allow_implicit_invocation: false

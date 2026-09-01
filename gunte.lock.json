@@ -7,7 +7,6 @@
     "contracts/how-it.toml",
     "contracts/explorer-this.toml",
     "contracts/plan-agent.toml",
-    "contracts/plan-interactive.toml",
     "contracts/review-refine.toml",
     "contracts/impl-lead.toml",
     "shared/VERSION",
@@ -45,7 +44,6 @@
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/impl-lead/references/external-effects.md",
     "shared/skill/plan-agent/SKILL.md",
-    "shared/skill/plan-interactive/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
     "shared/README.md",
     "shared/repository-guidelines.md",
@@ -58,7 +56,6 @@
     "declarations/codex/skills/how-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
-    "declarations/codex/skills/plan-interactive/openai.yaml",
     "declarations/codex/skills/plan-candidate-producer/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
     "declarations/codex/skills/structural-health-gate/openai.yaml",
@@ -103,8 +100,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-460ad550874b",
-      "sha256": "680fbf3ef9e1542fc51cf743b595dbb67021605a319d7502328b4ce27bcf8bc0"
+      "id": "cursor-readme-public-skills-requires-8d9a01d3301b",
+      "sha256": "3e5a70a89f1290e72ca1305ff6d0d3f8a6d897e154929817e364b34acaa06c39"
     },
     {
       "id": "cursor-readme-unsupported-requires-d94e0540f495",
@@ -551,16 +548,16 @@
       "sha256": "9ce531732f8c10138a60b00900a0c3384149b74fda55b752771254b65dd2810b"
     },
     {
-      "id": "planning-synthesis-input-7697f1534b2c",
-      "sha256": "7cfd73738beea29aac023d433959c1a00ff34a36fd17268b5f1e8f358b63f029"
+      "id": "planning-synthesis-input-908acc2eb59a",
+      "sha256": "08ba431ea9de43a92d6dc51e64c94ef9ae71e1f882faddbdd147775eb7247ee6"
     },
     {
       "id": "planning-synthesis-authority-642de1243f45",
       "sha256": "282f8eaef32c9c57331f264c0622fdcc052c6bc170e32e5a047bb9d0f53213ea"
     },
     {
-      "id": "planning-synthesis-result-7ee695cb77fa",
-      "sha256": "41864e9fd2deae366880d236c86d89d515c22275d7f55e345e76ad1b84db349f"
+      "id": "planning-synthesis-result-1201c11eabda",
+      "sha256": "9ca15c32b8dce2783e62efa714fad4229b6522677a40aab5db01b80d573f0552"
     },
     {
       "id": "planning-synthesis-advisor-0bb36870d564",
@@ -571,60 +568,40 @@
       "sha256": "b0aa341124345123a0daa8860074c22716c902025b942fa88874fdc2f29c0bc9"
     },
     {
-      "id": "planning-synthesis-advice-case-ac1a8bec94c2",
-      "sha256": "99599926d6e512d6fcf90b33f42e5d29350ec291996570791aadcc5f1f472e69"
+      "id": "planning-synthesis-materiality-032bb9a90a12",
+      "sha256": "3081d30e68952f0c46a900c5a6e92866bc9a61c3fbf3e354c01c0433b4513f55"
     },
     {
-      "id": "planning-synthesis-gap-case-7fbcdabc0985",
-      "sha256": "83c793f3716eb85a91a69e5838175a2b204eda37a686f182fbc9e5f0538919ee"
+      "id": "planning-synthesis-gap-case-64f51395e3cd",
+      "sha256": "d387597c1e21c4a91b31efb2e03eecbe41fd1703737eb58414522cfea09ac5d9"
     },
     {
       "id": "planning-core-document",
       "sha256": "4e2b6b802caf5b78e3b9838cde9fbd2643e0c0e272bcee323faf393dcda25886"
     },
     {
-      "id": "planning-core-input-60b9abb9549f",
-      "sha256": "fac8f96f71b0b6969b0d12f3410e11d21e4236149a9b5ca05ea39d17b016ae62"
+      "id": "planning-core-input-29f2028c8834",
+      "sha256": "18f108081585ac2740e099718db0511f7cbe3e50263c44d1e757c9bc76727feb"
     },
     {
-      "id": "planning-core-synthesis-gap-5d685524a0cf",
-      "sha256": "f0b0f05de1b0b3e6ee7ac7f5692d42a257893c016b271826533e9279f4c3c994"
+      "id": "planning-core-synthesis-gap-b65a2cc0645e",
+      "sha256": "84c17d7e9e620e5fc356fb8da14ddd46059a9fc90dc3caf4d6873d80f42fd196"
     },
     {
-      "id": "planning-core-s0-1a8a4d2aebc3",
-      "sha256": "c3134754ff11182669e84e361b6f30b040b64eb4979fc04e9ca452793c949b90"
+      "id": "planning-core-review-routing-567e368735cf",
+      "sha256": "385a5aed9ab887acd36736d9723ad1b257f51563e7924ad7e6f4a79690e2bc09"
     },
     {
-      "id": "planning-core-review-input-f0ab5dfed8f1",
-      "sha256": "3aff5c6e6ac2bfc7650b809737215fbe457e4d27281e1b5b4c78d2562855f651"
+      "id": "planning-core-review-input-552e1e2b4845",
+      "sha256": "bde9054f3bf4239875239cd6f05b6b76dcc79dac8cfd57c2e82be8ba1859872d"
     },
     {
-      "id": "planning-core-sequence-787c5367ea52",
-      "sha256": "0d2796beecc7f710944b52883426548fdc407fa6186674f979e241bb798bf90d"
+      "id": "planning-core-sequence-c7614f660551",
+      "sha256": "ed5c57ee4d931323563cd8d30b9a12fba960d79d7128e7ba5f6ad0aa2691ad83"
     },
     {
-      "id": "planning-core-result-71d5753bca1c",
-      "sha256": "1740729b5006ea905ed0ae7a6a3faf6c6229685dee3ba8c5dd2a3da402738870"
-    },
-    {
-      "id": "planning-core-strengthen-trim-c4728ee002fa",
-      "sha256": "bd525eaca54dff4492722eea5eb5188eeefa791678f5143bb625bcce930435bf"
-    },
-    {
-      "id": "planning-core-gap-case-390677ec727a",
-      "sha256": "61556cef3fa1b494c3147b4de41b4da0cda56676bd9196b545f4027f050934c9"
-    },
-    {
-      "id": "planning-core-adversarial-incomplete-0cc44678af50",
-      "sha256": "8d6d8de84de32eebaf3dda2f48c1e51a207c0e995334836b28056bf158bf18de"
-    },
-    {
-      "id": "planning-core-trim-defect-aa2a737ff2c5",
-      "sha256": "4cf63f15bceef61bcbf7af0e0393934f665a417796ac3bce92c2a6efa7244c3d"
-    },
-    {
-      "id": "planning-core-authority-case-5b3b4ef6e479",
-      "sha256": "a2ee75e575ce335d82efd586e90d34f47a94051e2c6ea51549d5e6124a59d34c"
+      "id": "planning-core-result-092905faf52a",
+      "sha256": "7590629d6f238b265f02c8e26241239df0e65f7c0d8442a0ec06347dffef8d2d"
     },
     {
       "id": "deletion-test-document",
@@ -1015,52 +992,72 @@
       "sha256": "d1d6827efef2a22a60a11e007d66a27f38f4fb13c563735c2e4da88b684aeeb3"
     },
     {
+      "id": "plan-agent-responsibility-8a968afcc985",
+      "sha256": "2a90913c94d5ba2f42a4efbbca896cfaf44b46ad8fc9dff47da8d245c0d1779e"
+    },
+    {
       "id": "plan-agent-ownership-4f1870ace344",
       "sha256": "5d1bb2f24db949bf28ada1fb4b8be2d9904873ee57b3104b2fb521b45488793f"
     },
     {
-      "id": "plan-agent-direction-a8fbd46c1841",
-      "sha256": "4c6ba55b6d8694720fdbf125c00efa922d7bda8fa58ef53aea564aba3e704e00"
+      "id": "plan-agent-core-input-1b0812bae186",
+      "sha256": "aaf871ab2f2e4a16b754aaf7faec2402be85ebae42e2d059b13054df2cf7dd01"
     },
     {
-      "id": "plan-agent-qualified-stop-01d9a08d4122",
-      "sha256": "884b342a0e4c8a115d4c3b646a902b0829e43c77e66bc1848d295b456868882a"
+      "id": "plan-agent-gap-result-3825e66f8677",
+      "sha256": "95653d9a44e4946972b142720ee9f4fecd77fbadad27fb422dbf709ae1291042"
     },
     {
-      "id": "plan-agent-core-input-119f47c030fb",
-      "sha256": "6b182e8e8cf442980c0e30082f1250d8cb0ba15c9266dd50e1c620445003205f"
+      "id": "plan-agent-gap-retry-13fc32e444dc",
+      "sha256": "2b5303dc98a9df738528e79248228aa21252dca05f1923443dbed9ea741d730f"
     },
     {
-      "id": "plan-agent-result-d47b2dd8e5b1",
-      "sha256": "96b7b756a2e6f121f14f7e7b192c238b3d2f1c5babcbb8c94322093a0e5bfbb3"
+      "id": "plan-agent-result-285f7f97afa5",
+      "sha256": "2d3da7de63f2788f9e11ab443fc372ff7ea690293475fef1afcefa8b4df7e9f5"
+    },
+    {
+      "id": "plan-agent-publication-7c08ddfde27c",
+      "sha256": "4d2242cf814280fbd9e1f4586414bbc2b653f5826aa3b6c61502ccc77a581639"
     },
     {
       "id": "plan-agent-plan-only-4a1cfc3e08d3",
       "sha256": "74d24cfb099297014068fc9bf0f341d641cbebe7ebb59cc9f622b93ea9adcb52"
     },
     {
-      "id": "plan-agent-document-before-ownership",
-      "sha256": "16e1034f603d195bcc979a0c34df58f7097687a0963adf936d35adbe59924a9c"
+      "id": "plan-agent-document-before-responsibility",
+      "sha256": "fe5e129ec9b531b9fc534a2435a222fbe51caf3c6f2abcb16dc94de0dc2b40e2"
     },
     {
-      "id": "plan-agent-ownership-before-direction",
-      "sha256": "e0a36af8e22979d762ba2a80ec141f505cea654a8a7fcaef84491590544f59aa"
+      "id": "plan-agent-responsibility-before-ownership",
+      "sha256": "ec32186439f5ae56d0d987d656d21034abae066e21cb1ce5009f1e97a031bb30"
     },
     {
-      "id": "plan-agent-direction-before-stop",
-      "sha256": "21fab6150863733276ba02c3add0543499d745594bfbf9bf3206c6cc4fea1658"
+      "id": "plan-agent-ownership-before-core",
+      "sha256": "237204e375562327a1eb511c820cb4ca0fe07d86a466ae490d6236e472cc1009"
     },
     {
-      "id": "plan-agent-stop-before-core",
-      "sha256": "565b077e0581a372e235573ad5cc58d2023ec149e8b192eba28cbd1c95ab9825"
+      "id": "plan-agent-core-before-gap",
+      "sha256": "26edc8fa4f9cd0e7dae5015bb01d9956984ce44aa05e73b899cd5ddac37b9de9"
     },
     {
-      "id": "plan-agent-core-before-result",
-      "sha256": "7752493068637ce1f51b5433526b7d5ec0c1def43d9ddea533df0e2a7093dd7d"
+      "id": "plan-agent-gap-retry-before-result",
+      "sha256": "1770659502f18f9b91c172702dc7beee473d1dfe403333efe0f1fd28f5472736"
+    },
+    {
+      "id": "plan-agent-gap-before-result",
+      "sha256": "749eab05a653f049a55ce9ffbfd39aa22020d423b7b6681484ea31d286ccf817"
     },
     {
       "id": "plan-agent-result-before-completion",
       "sha256": "0075ace1fb39c583f6ad37584255c05e6ca256e66eda5c039800bd44b4071602"
+    },
+    {
+      "id": "plan-agent-result-before-publication",
+      "sha256": "ddc39b7e3604e35a24c641bbdb289eab4c595152e6356a77f107d0c8178f05dc"
+    },
+    {
+      "id": "plan-agent-publication-before-completion",
+      "sha256": "123817f61db2231151b98333a0f93dedf102e3678cbad4abb302d0013b5594e6"
     },
     {
       "id": "plan-agent-claude-invocation-policy",
@@ -1073,86 +1070,6 @@
     {
       "id": "plan-agent-cursor-invocation-policy",
       "sha256": "0e6f0ce6ba1901a2347d14d3dca46ae5e4bbe562c1b37ef8ad6dd3a221a580ac"
-    },
-    {
-      "id": "plan-interactive-document",
-      "sha256": "b47a39d7fd7e1913b5f282afb65e4e71875e5c10de34ce391a52c69b6e6c3c65"
-    },
-    {
-      "id": "plan-interactive-ownership-e59db0d27680",
-      "sha256": "0d439f2ab8fbb3968446433117b20d90847c4553c18a81fd9ef0f672bd09a391"
-    },
-    {
-      "id": "plan-interactive-authority-4fcffc0dc724",
-      "sha256": "2b22de75aa48d8fadcd9112d0d0ee9db457d429da552007ae13e1a8590b8a3d8"
-    },
-    {
-      "id": "plan-interactive-core-input-f09a90a98fb9",
-      "sha256": "5eb9d4d5a635dc7d1f690ae1a7fbeafb8023fc093f77adf147a2318e4eb1ea38"
-    },
-    {
-      "id": "plan-interactive-authority-preservation-3efbe97c71e7",
-      "sha256": "65cc219f5ecab29ce01065bfb5539ca9ffba0007852b3738169eca18b261c49c"
-    },
-    {
-      "id": "plan-interactive-incomplete-627dfd75fd1a",
-      "sha256": "0c8ccc48ea041bcd5746c690a4d3fa9b449a7e4c0df49c3a15c79c9a2be9f8e4"
-    },
-    {
-      "id": "plan-interactive-human-boundary-270d3e1ef25a",
-      "sha256": "defb12121b7655622fa83ab61dc8e6d89004bdc9a2b5e8b978a28afc96b81245"
-    },
-    {
-      "id": "plan-interactive-result-09c971fed184",
-      "sha256": "05e2dccb5cf14acc889b4f7d4c8cf09aed98cb230013014dbc3952f420f048a0"
-    },
-    {
-      "id": "plan-interactive-plan-only-99c5358fe59a",
-      "sha256": "983acb40a3d0a48311a96786e099611dc5e6cfc9c3c94f960d73ef5b316b9650"
-    },
-    {
-      "id": "plan-interactive-document-before-ownership",
-      "sha256": "9bff2882bdb3014277342fbc091e1177cf9df2f3201ccdd80b1777efb020aca0"
-    },
-    {
-      "id": "plan-interactive-ownership-before-authority",
-      "sha256": "091dd1c155b06d5916eb38a0562662cf23dc2732b1000e24a0b90aba100c0aea"
-    },
-    {
-      "id": "plan-interactive-authority-before-core",
-      "sha256": "cbe9c3975152960f5cddde60958e8c8ebfc3db7614c2e288bb99feaf1941324c"
-    },
-    {
-      "id": "plan-interactive-core-before-preservation",
-      "sha256": "45ff8af11798cc6fbefb6afba2460863108ec27232974678a61b02d516da6470"
-    },
-    {
-      "id": "plan-interactive-preservation-before-incomplete",
-      "sha256": "db609417397438b9d13f8eefd7d263ef856fa193d893298970f563fc43f2547d"
-    },
-    {
-      "id": "plan-interactive-incomplete-before-human",
-      "sha256": "4c668b6dfd1162c56264f2b11d66bc269b11fbf881e2002ff92d3c823dc324d1"
-    },
-    {
-      "id": "plan-interactive-human-before-result",
-      "sha256": "ad1592cd2095bbb02300419de944f810fbf7074dcdfd2db201df54767826330d"
-    },
-    {
-      "id": "plan-interactive-result-before-completion",
-      "sha256": "f563d90a2861867ccb6c0042c48a86a935d3d791dfd267ab691bf65b0859a2dd"
-    },
-    {
-      "id": "plan-interactive-claude-invocation-policy",
-      "sha256": "5e52eeba4e73d0f48f9ce8e81231a6e683965c13ffb49f54d7af4286e0e3192f"
-    },
-    {
-      "id": "plan-interactive-codex-invocation-policy",
-      "sha256": "0328184e90abe54035edea543511b35347e03e930199f4c570b8e9385ae21690"
-    },
-    {
-      "id": "plan-interactive-cursor-invocation-policy",
-      "sha256": "11d07614c94d428de2a07229a5a35139b63345571bda54d4c0dcab6ce794f3be"
     },
     {
       "id": "review-refine-document",
@@ -1640,6 +1557,11 @@
     },
     {
       "kind": "span",
+      "id": "planning-synthesis-materiality",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
       "id": "planning-synthesis-authority-boundary",
       "path": "shared/planning-synthesis.md"
     },
@@ -1660,11 +1582,6 @@
     },
     {
       "kind": "span",
-      "id": "planning-synthesis-advice-case",
-      "path": "shared/planning-synthesis.md"
-    },
-    {
-      "kind": "span",
       "id": "planning-synthesis-gap-case",
       "path": "shared/planning-synthesis.md"
     },
@@ -1680,7 +1597,7 @@
     },
     {
       "kind": "span",
-      "id": "planning-core-s0-boundary",
+      "id": "planning-core-review-routing",
       "path": "shared/planning-core.md"
     },
     {
@@ -1696,31 +1613,6 @@
     {
       "kind": "span",
       "id": "planning-core-result-boundary",
-      "path": "shared/planning-core.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-core-strengthen-trim-case",
-      "path": "shared/planning-core.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-core-gap-case",
-      "path": "shared/planning-core.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-core-adversarial-incomplete-case",
-      "path": "shared/planning-core.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-core-trim-defect-case",
-      "path": "shared/planning-core.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-core-authority-case",
       "path": "shared/planning-core.md"
     },
     {
@@ -2370,32 +2262,22 @@
     },
     {
       "kind": "span",
+      "id": "plan-agent-responsibility",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-responsibility-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-agent-ownership",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "plan-agent-ownership-relation",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-agent-direction",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-direction-relation",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-agent-qualified-stop",
-      "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-agent-qualified-stop-relation",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
@@ -2410,12 +2292,42 @@
     },
     {
       "kind": "span",
+      "id": "plan-agent-gap-retry",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-gap-retry-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-gap-result",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-gap-result-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "plan-agent-result",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "plan-agent-result-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-publication",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "plan-agent-publication-relation",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {
@@ -2427,91 +2339,6 @@
       "kind": "anchor",
       "id": "plan-agent-plan-only-relation",
       "path": "shared/skill/plan-agent/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-document-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-ownership",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-ownership-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-authority",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-authority-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-core-input",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-core-input-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-authority-preservation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-authority-preservation-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-incomplete",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-incomplete-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-human-boundary",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-human-boundary-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-result",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-result-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-interactive-plan-only",
-      "path": "shared/skill/plan-interactive/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "plan-interactive-plan-only-relation",
-      "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
       "kind": "span",

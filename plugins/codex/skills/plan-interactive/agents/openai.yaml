@@ -1,6 +1,0 @@
-interface:
-  display_name: "Plan Interactive"
-  short_description: "Build a verified plan within Human-confirmed authority"
-  default_prompt: "Use $plan-interactive only when explicitly requested to establish Human-confirmed planning direction and return the common Planning Core result without starting implementation."
-policy:
-  allow_implicit_invocation: false

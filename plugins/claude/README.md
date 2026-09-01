@@ -11,11 +11,10 @@ Tugite は、親 Claude エージェントが plan、Implementation Unit の rou
 - `how-it`: 未確定な request の前提、選択肢、成立条件を Human とともに構築し、current understanding を requested output へ接続します。明示起動時だけ使います。
 - `explorer-this`: Agentic Model Construction を first route とする探索 workflow で、Human-owned material gap の場合だけ Interactive Model Construction を利用します。明示起動時だけ使います。
 - `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化し、実装、Parent QA、受入、final verification、安全な統合まで所有します。明示起動時だけ使います。
-- `plan-agent`: 要求とリポジトリの観測から実装 plan の候補を作り、回数を制限したレビューと親の裁定へ渡します。
-- `plan-interactive`: Human-confirmed direction と constraints を受け取り、Interactive Model Construction と common Planning Core を経て Plan candidate または incomplete を返します。
+- `plan-agent`: normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作り、必要な場合だけ review します。明示起動時だけ使います。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
 
-`plan-agent` は適用可能なら既定 review を行い、明示的な review skip は通常の起草確定へ進みます。`plan-interactive` は適用可能なら既定 review を行い、明示的な skip と reviewer 非適用は Human final acceptance へ進みます。readiness 不足は review-not-established とします。両者とも既定 `plan-adversarial-reviewer` が非適用なら `review-refine` を bypass して通常の起草確定へ進みます。
+`plan-agent` は review applicability と explicit opt-out を判断し、nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は `plan-adversarial-reviewer` と `over-engineering-reviewer` を使う strict review route へ進みます。
 
 ### 内部 skill
 
@@ -46,7 +45,6 @@ Claude Code で marketplace を登録し、plugin を導入します。
 /tugite:explorer-this <探索タスク>
 /tugite:impl-lead <実装タスク>
 /tugite:plan-agent <plan task>
-/tugite:plan-interactive <human-directed plan task>
 /tugite:review-refine <artifact review task>
 ```
 

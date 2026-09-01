@@ -115,7 +115,7 @@ remediation を開始しません。finding は requested output の内容や qu
 
 - Model Construction Core、Agentic Model Construction、Interactive Model Construction の redesign
 - Human resolution route、`how-it`、または generic Model Construction router
-- Planning Synthesis、`plan-agent`、`plan-interactive`
+- Planning Synthesis、`plan-agent`
 - fixed exploration workflow、universal exploration report、fixed input / output / gap schema
 - generic exploration framework、generic public Skill framework、または固定 Human interaction framework
 - Local Model serialization、handoff schema、transition state、second Local Model

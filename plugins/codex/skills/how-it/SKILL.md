@@ -59,5 +59,5 @@ requested output の境界を維持します。
 - `explorer-this` の変更、`explorer-this` からの Interactive fallback、または新しい clarification / dialogue / exploration architecture
 - generic router、generic workflow framework、汎用 public Skill framework
 - fixed dialogue schema、state machine、question queue、decision ledger、Interactive 専用 Local Model / Research Agent / projection
-- Planning、`plan-agent`、`plan-interactive`、downstream artifact / plan の acceptance
+- Planning、`plan-agent`、downstream artifact / plan の acceptance
 - `how-it` による repository remediation、実装、scope expansion、未指定 write、または `shared/VERSION` の更新
