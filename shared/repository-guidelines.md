@@ -5,8 +5,7 @@
 Tugite は Claude Code、Codex、Cursor 向けの agent・skill 定義を配布します。正本は `shared/` で、skill は
 `shared/skill/`、agent は `shared/agents/` に置きます。Gunte の project 設定は `gunte.toml`、決定論的な契約 registry は
 `contracts/*.toml`、platform manifest と platform 固有 metadata の宣言は `declarations/` が正本です。配布物は
-`plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/` にあります。`Contract`、
-`Task Specification`、`Implementation Unit` など近接する語の定義と正本の所在は `docs/ubiquitous-language.md` にまとめています。
+`plugins/` に生成され、原稿は日本語で書かれています。自動テストは `tests/` にあります。
 
 ## ビルド・テスト・開発コマンド
 
