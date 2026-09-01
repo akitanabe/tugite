@@ -29,6 +29,24 @@ slice = "shared-researcher-web-result-trace"
 pattern = "Web-derived evidence は source basis とともに追跡可能に保持し、直接観測、bounded inference、source conflict、unresolved point を区別して返します。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.researcher-source-quality-judgment]
+kind = "occurrences"
+pattern = '''material claim では、利用可能な範囲で authoritative な primary / official source を優先し、source identity とともに
+version、revision、publication / update date、対象時点を保持します。古い source または cached result を current state と自動的に同一視しません。
+
+source conflict では、authority、directness、independence、freshness、対象 version との一致を比較します。解消できない conflict を単一結論へ
+flatten せず、各 source が示す範囲と unresolved point を分離します。
+
+search または source traversal で evidence を発見できないことは、absence を直接観測できた場合を除き、不存在の証明ではなく observability
+limitation として扱います。'''
+count = 1
+paths = [
+  "plugins/claude/agents/researcher.md",
+  "plugins/codex/install/agents/researcher.toml",
+  "plugins/cursor/agents/researcher.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.shared-research-claude-web-tools]
 kind = "occurrences"
 pattern = "tools: Read, Grep, Glob, Bash, WebFetch, WebSearch"
@@ -290,6 +308,30 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.implementer-applicable-test-behavior]
+kind = "occurrences"
+pattern = '''Acceptance Criteria、constraints、public contract、明示された risk から、current Unit に applicable な正常、境界、異常、failure path を
+実装前に確認します。
+
+observable な code behavior を持つ変更では、すべての類型を機械的に test 化せず、Unit の受入判断を変え得る behavior を Red → Green → Refactor で
+実装します。test は private API、incidental call order、現在の実装手順を仕様として固定せず、外部から観測可能な behavior を確認します。'''
+count = 1
+paths = [
+  "plugins/claude/agents/focused-implementer.md",
+  "plugins/claude/agents/implementer.md",
+  "plugins/claude/agents/senior-implementer.md",
+  "plugins/claude/agents/expert-implementer.md",
+  "plugins/codex/install/agents/focused-implementer.toml",
+  "plugins/codex/install/agents/implementer.toml",
+  "plugins/codex/install/agents/senior-implementer.toml",
+  "plugins/codex/install/agents/expert-implementer.toml",
+  "plugins/cursor/agents/focused-implementer.md",
+  "plugins/cursor/agents/implementer.md",
+  "plugins/cursor/agents/senior-implementer.md",
+  "plugins/cursor/agents/expert-implementer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.focused-implementer-tier]
 kind = "occurrences"
 pattern = "tier_freedom = empty or narrowly local implementation choice with clear verification"
@@ -442,6 +484,21 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.security-side-effect-reviewer-specialist-procedure]
 kind = "occurrences"
 pattern = "source → guard / control → side-effect sink → postcondition / recovery"
+count = 1
+paths = [
+  "plugins/claude/agents/security-side-effect-reviewer.md",
+  "plugins/codex/install/agents/security-side-effect-reviewer.toml",
+  "plugins/cursor/agents/security-side-effect-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.security-side-effect-reviewer-version-migration-boundary]
+kind = "occurrences"
+pattern = '''versioned code、schema、configuration、message、external contract が関係する場合は、rolling / partial deployment、version skew、migration order、
+rollback compatibility によって認可、機密性、破壊安全性、冪等性、partial failure、recovery が損なわれる具体的な経路を確認します。
+
+destructive または不可逆な side-effect sink では、principal、authority、target identity に加えて、required な explicit intent / confirmation が
+実行前の全経路で成立するか確認します。'''
 count = 1
 paths = [
   "plugins/claude/agents/security-side-effect-reviewer.md",

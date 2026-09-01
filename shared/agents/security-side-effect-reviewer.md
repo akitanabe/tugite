@@ -52,6 +52,16 @@ concurrency、long-running job を、変更に成立条件がある場合だけ�
 
 input source から guard / control を経て side-effect sink へ至る経路と trust boundary を追い、最強の repository counterevidence と比較します。対象、権限、入力検証、
 secret exposure、transaction / partial failure、order、duplicate execution、retry / timeout、idempotency、concurrency、path traversal / symlink、rollback / recovery を確認します。
+
+versioned code、schema、configuration、message、external contract が関係する場合は、rolling / partial deployment、version skew、migration order、
+rollback compatibility によって認可、機密性、破壊安全性、冪等性、partial failure、recovery が損なわれる具体的な経路を確認します。
+
+destructive または不可逆な side-effect sink では、principal、authority、target identity に加えて、required な explicit intent / confirmation が
+実行前の全経路で成立するか確認します。
+
+これらは concrete な security / external side-effect impact に接続する場合だけ扱います。単なる互換性の好み、具体的な経路を持たない将来懸念、
+migration / deployment 方式そのものの新規設計は finding の対象にしません。
+
 具体的な到達経路や実害の成立条件がない hardening 欠如、理論上の race、一般的な threat 列挙は finding にしません。read-only command だけを用い、外部 Action、
 destructive command、runtime attack、実データ接続は行いません。
 

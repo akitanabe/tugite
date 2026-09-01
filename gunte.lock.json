@@ -660,6 +660,10 @@
       "sha256": "f05e9faed48546496cb051bd2d057673f25fc7dba52b5c59dfa4a08b8d54d887"
     },
     {
+      "id": "researcher-source-quality-judgment",
+      "sha256": "8a06d2661f6e918609584b61369543ce999726f553e3290ea1cc2ef2be969e30"
+    },
+    {
       "id": "shared-research-claude-web-tools",
       "sha256": "460ad42c152a7fc9a5fc412894f92c24871bed9c04b1da5d5b5fdcdc38002f1e"
     },
@@ -788,6 +792,10 @@
       "sha256": "0466ede68cb57800e9438dcd342d6dd19c29361a8a72e975e3d2fbe07bba8f3f"
     },
     {
+      "id": "implementer-applicable-test-behavior",
+      "sha256": "217ec477bcb52d050fd3465fba58eb2660c3a54d50d8eb9dd67bc9ffb782d5ca"
+    },
+    {
       "id": "focused-implementer-tier",
       "sha256": "0b0450689b84bf6155bc4e1e341742416566b2850ae8b102de271fd400d46475"
     },
@@ -834,6 +842,10 @@
     {
       "id": "security-side-effect-reviewer-specialist-procedure",
       "sha256": "14ba89dd15be93cc0e0d0bb929ab9c160d9350caef13d907bd2ba320b2dd9887"
+    },
+    {
+      "id": "security-side-effect-reviewer-version-migration-boundary",
+      "sha256": "e8b750279f99db91afd3278bcfaa6d903cb07e06fc7411d52be62b287111708c"
     },
     {
       "id": "static-performance-reviewer-specialization",

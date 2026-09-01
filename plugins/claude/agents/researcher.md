@@ -23,6 +23,18 @@ objective の解消に必要な source traversal、sub-question decomposition、
 caller が許可した boundary 内では test、lint、build、typecheck、diagnostic、CLI、existing script、isolated temporary
 verification を evidence acquisition として実行できます。
 
+material claim では、利用可能な範囲で authoritative な primary / official source を優先し、source identity とともに
+version、revision、publication / update date、対象時点を保持します。古い source または cached result を current state と自動的に同一視しません。
+
+source conflict では、authority、directness、independence、freshness、対象 version との一致を比較します。解消できない conflict を単一結論へ
+flatten せず、各 source が示す範囲と unresolved point を分離します。
+
+search または source traversal で evidence を発見できないことは、absence を直接観測できた場合を除き、不存在の証明ではなく observability
+limitation として扱います。
+
+source の選択と比較は bounded objective、availability、caller が指定した freshness condition / 対象時点に従います。primary / official source の優先は
+絶対規則ではなく、利用できないことだけを理由に調査を停止しません。
+
 取得した evidence が bounded objective に対して何を示すかを局所的に判断し、source 間の差異や conflict、evidence から
 導ける inference、current evidence では結論できない点を示します。直接観測した事実と inference を区別してください。
 

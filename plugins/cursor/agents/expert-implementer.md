@@ -30,8 +30,13 @@ eligibility の決定、path / ownership / membership の推測、scope update �
 
 ## Implementation と返却
 
-observable な code behavior は Red → Green → Refactor で実装します。meaningful Red が成立しない変更では failing test を捏造せず、変更前 evidence、
-理由、代替 verification を示します。既存 test の削除・skip・弱体化、未承認の依存追加、scope 外の整形は行いません。
+Acceptance Criteria、constraints、public contract、明示された risk から、current Unit に applicable な正常、境界、異常、failure path を
+実装前に確認します。
+
+observable な code behavior を持つ変更では、すべての類型を機械的に test 化せず、Unit の受入判断を変え得る behavior を Red → Green → Refactor で
+実装します。test は private API、incidental call order、現在の実装手順を仕様として固定せず、外部から観測可能な behavior を確認します。
+meaningful Red が成立しない変更では failing test を捏造せず、変更前 evidence、理由、代替 verification を示します。既存 test の削除・skip・弱体化、
+未承認の依存追加、scope 外の整形は行いません。
 
 side effect がある場合は order、duplicate execution、retry、partial failure、idempotency を caller が判断できる evidence を残します。
 変更内容、AC との対応、Red または pre-change evidence、verification command / result、選択した設計と理由、material な代替案と棄却理由、前提、
