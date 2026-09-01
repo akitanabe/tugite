@@ -51,15 +51,11 @@
     "declarations/claude/marketplace.json",
     "declarations/codex/plugin.json",
     "declarations/codex/marketplace.json",
-    "declarations/codex/skills/code-review/openai.yaml",
     "declarations/codex/skills/explorer-this/openai.yaml",
     "declarations/codex/skills/how-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
-    "declarations/codex/skills/plan-candidate-producer/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
-    "declarations/codex/skills/structural-health-gate/openai.yaml",
-    "declarations/codex/skills/test-report/openai.yaml",
     "declarations/cursor/plugin.json"
   ],
   "contracts": [

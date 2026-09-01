@@ -1,6 +1,0 @@
-interface:
-  display_name: "Internal Structural Health Gate"
-  short_description: "Assess candidate structure and return evidence"
-  default_prompt: "Use $structural-health-gate only inside an explicitly invoked plan-family public workflow parent context with caller_context={workflow_family: plan-family, invocation: explicit-public-parent}; reject missing or invalid caller_context before assessment, and return evidence without editing, routing, or making the final decision."
-policy:
-  allow_implicit_invocation: true
