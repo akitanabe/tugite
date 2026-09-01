@@ -149,10 +149,10 @@ slice = "impl-lead-return-integrity"
 pattern = "run 内で一意な `id` を付与し、Method が返した semantic dependency relation を"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-execution-ownership-b6997e2e6d00]
+[contracts.impl-lead-execution-ownership-a2f56e0d5071]
 kind = "requires"
 slice = "impl-lead-execution-ownership"
-pattern = "Phase 8-3 の execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。"
+pattern = "Implementation Unit normalization、execution capability、execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-parent-qa-91915483584c]

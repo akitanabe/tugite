@@ -11,7 +11,7 @@ description: >-
 
 `impl-lead` は Human が明示的に起動した場合だけ、request、Plan、または established direction から implementation work を受け取る public workflow である。自然言語の実装依頼だけから暗黙に起動せず、別 workflow から自動遷移しない。
 
-親は Phase 8-1 の Implementation Unit normalization、Phase 8-2 の execution capability、Phase 8-3 の execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。Model Construction は mandatory phase にしない。
+親は Implementation Unit normalization、execution capability、execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。Model Construction は mandatory phase にしない。
 
 入力 Plan、request、established direction の outcome、Acceptance Criteria、scope、constraints、authority を input authority とし、run の上限にする。要求成果を成立させるために input authority 外の material work が必要なら、blocking authority gap として上流または Human へ返し、`stop-incomplete` とする。要求成果と独立した input authority 外の material finding は obligation へ昇格させず report-only incidental finding として保持し、run acceptance を阻止しない。
 

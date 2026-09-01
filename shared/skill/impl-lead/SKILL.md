@@ -31,7 +31,7 @@ disable-model-invocation: true
 
 <!-- @contract impl-lead-execution-ownership -->
 <!-- @anchor impl-lead-execution-ownership-relation -->
-親は Phase 8-1 の Implementation Unit normalization、Phase 8-2 の execution capability、Phase 8-3 の execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。Model Construction は mandatory phase にしない。
+親は Implementation Unit normalization、execution capability、execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。Model Construction は mandatory phase にしない。
 <!-- @/contract -->
 
 <!-- @contract impl-lead-authority-boundary -->
