@@ -1163,128 +1163,36 @@
       "sha256": "e80df2533240c2137e9d327cfec82b56a28623b7d7627b73aef2ecd7e458a511"
     },
     {
-      "id": "review-refine-local-standalone-994ee5455250",
-      "sha256": "0556364fa23d892a4077dd8dce2809972f0551adb3595b0014e489ac3e91db2a"
+      "id": "review-refine-local-model-7f04ec277686",
+      "sha256": "62bfb9818c144e940f28d4af1292aac3b33885409aefc33ff8e6f6196dcd7649"
     },
     {
-      "id": "review-refine-local-standalone-d6e48319fbb6",
-      "sha256": "76a6edadf60b177029b1802ef2ee361f6d50cf6053d026ba52e9da1fac296641"
+      "id": "review-refine-reviewer-actions-8c30625fb08b",
+      "sha256": "d21b0524581326337964108319a06d6516b8ffb09dae8bb7ed0811594195d3ce"
     },
     {
-      "id": "review-refine-local-nested-b1a39889a2a4",
-      "sha256": "0856b3647ee5d8359192807927f067f3a96358429e55842a89f1c09652452d78"
+      "id": "review-refine-adjudication-2c87cf970db2",
+      "sha256": "14e52c72cd624d40b5330a7755c1bd35df03e6da953eab9e45abf80ccf299639"
     },
     {
-      "id": "review-refine-local-nested-non-71038f0172e1",
-      "sha256": "99f62a711d594950bdcfa5f75e20eba9b6c907dfadf60f592e4f74dd9eb9556f"
+      "id": "review-refine-promotion-8edccfd9b440",
+      "sha256": "31b03abe6ebc00bb288072894923fb3e68dbf947d8f2a382c07dac42aee6c5a2"
     },
     {
-      "id": "review-refine-adjudication-7fbc25e30beb",
-      "sha256": "242c9eaf2d46c05240cf3c7c80eadd805de210cb75485adecda3e4abae2bc585"
+      "id": "review-refine-routing-bd64cc0e6ee8",
+      "sha256": "4749fcf13cb0e2a84699aaefaa47eddbcb30a2d59cd8dbbac8aafca91800637c"
     },
     {
-      "id": "review-refine-adjudication-four-e9881efe6054",
-      "sha256": "ab0264f3907487c925809d6b34b34d586ed2b0b5c6485ab6b65b7ccb6f5f2001"
+      "id": "review-refine-convergence-ef67860ecdbb",
+      "sha256": "3bed917477aecdb5e09d44a72677de05739fbb0cfe7422a8bacd5fbe9bfcacee"
     },
     {
-      "id": "review-refine-adjudication-coherent-a9c73d6a3ff6",
-      "sha256": "c36908fb61cfb3d933b9d66bf254af1dca8e718444652b17b9345a25af03b84b"
+      "id": "review-refine-final-trim-0f38b24ef6dc",
+      "sha256": "115f57209a086cba588c30dbbc9034e9373b4d5921c4325e7ac9b4aae90c1d4c"
     },
     {
-      "id": "review-refine-promotion-ee2d590b05ad",
-      "sha256": "141df6f99c12f162750d8512d4f772805c5e1c8c8e4a2d3b3466b29220be7eb3"
-    },
-    {
-      "id": "review-refine-promotion-b468374e54f6",
-      "sha256": "bf6040146b1bb982656fd3ccdbb833ed14c1278fdf32c10d8e08394bf81663bc"
-    },
-    {
-      "id": "review-refine-fresh-input-boundary-e210305f033c",
-      "sha256": "a7385f26d694ba7479faaba2d8dd48f5c8583ada1194345685b3bdb92e25c717"
-    },
-    {
-      "id": "review-refine-reviewer-batch-e7cc8e31b4f3",
-      "sha256": "0e7226a1c4f632420e55bd5c356e158a71e9db7b629212e66a547eace21ac43e"
-    },
-    {
-      "id": "review-refine-reviewer-batch-next-f8948fc62aec",
-      "sha256": "beecac15c3b0434bc0f8df705b955e6d19a0e8cb1b92617410d5940537f2a57d"
-    },
-    {
-      "id": "review-refine-initial-fresh-be19c5f5fd8a",
-      "sha256": "5e32837f95a9a9e9058051333dff8acfcc65a5febc9877ac45a49c660e4a8d1e"
-    },
-    {
-      "id": "review-refine-contextual-resolution-f4d898c916a4",
-      "sha256": "26e19309e56515d58247d8f4abd42bc541480e7f28b6f85703a9f0c294125449"
-    },
-    {
-      "id": "review-refine-contextual-input-c55aaae4c2f9",
-      "sha256": "2bce17274f38269c00191c8aaa13f3ad24f0e9ba90a9856871439ae61e0292a5"
-    },
-    {
-      "id": "review-refine-contextual-incomplete-edd164928f4f",
-      "sha256": "3b221ed4226599eea8cc816ef823cc3890aebabdccde5382aacf63d0cc0a0b39"
-    },
-    {
-      "id": "review-refine-origin-resolution-4c45ab55df43",
-      "sha256": "1f27f706619b0c550854e55d9a730a677ed70ca83efd9425ea69ba51a4f0ad20"
-    },
-    {
-      "id": "review-refine-additional-fresh-f22e70df7ac2",
-      "sha256": "433848df813348d4ca9a4f5d37b30702f1da3f39fba68cd2c2c29c7917ff795f"
-    },
-    {
-      "id": "review-refine-no-correction-closure-5e9d82b5a6b0",
-      "sha256": "0341f7ff03ba6bff7b12a405be72efd91d5b3c6773f95b67eb0121c8cf58be44"
-    },
-    {
-      "id": "review-refine-review-action-entry-55cc8bdf5240",
-      "sha256": "2b127fba197ff0f72091626f262247730fdf992edf6fed12982b4cadc860defc"
-    },
-    {
-      "id": "review-refine-normal-review-scope-3c72f1112572",
-      "sha256": "5a7ef92fbe699b1109e917868c9693ec666e5c90f3644a5f3b2c8d7c767ebaa9"
-    },
-    {
-      "id": "review-refine-convergence-e41632fab2fe",
-      "sha256": "74d7d2fbc0180852fc8fa4e45e630f18c8c882ec2e5a2dc9ce3bff3015aca031"
-    },
-    {
-      "id": "review-refine-convergence-2f1ba07e7262",
-      "sha256": "67ab13627a0eb0e4b79342391bdd695bde061c4bee7d33d13392f90cb20a6317"
-    },
-    {
-      "id": "review-refine-responsibility-30e02b6b9747",
-      "sha256": "328fa34439e22870b2921ef167db58d06932ce58bf22231296c66671fb65e9e6"
-    },
-    {
-      "id": "review-refine-final-trim-a1f6db7039e0",
-      "sha256": "342c5a93baeae16a0a2e4aafad893b7d01a22738f8cb839a0367729584efd4ba"
-    },
-    {
-      "id": "review-refine-document-before-local-model",
-      "sha256": "0fd8dd91e9e549c5d1df763951925f8c11bb7e0462bf79ca20de9df930fd05bc"
-    },
-    {
-      "id": "review-refine-local-model-before-adjudication",
-      "sha256": "41178f937e3e9a5e548eec2f72a77ba9ddd4223be1359fcc09c03091dbe5ad9c"
-    },
-    {
-      "id": "review-refine-adjudication-before-promotion",
-      "sha256": "c544708143680b2be5c0e4c9a00bf7aa6e2280b993caef2e20f5f3c9e15938e5"
-    },
-    {
-      "id": "review-refine-promotion-before-review-action-routing",
-      "sha256": "72bc234969cecaad63b5a41f3a576d699c231a50a12248d55e9b507092516e31"
-    },
-    {
-      "id": "review-refine-review-action-routing-before-convergence",
-      "sha256": "a7c41c7e5af68dba493c6c73bdba5215114cd52d98df5a1812fe0c46272bf747"
-    },
-    {
-      "id": "review-refine-convergence-before-responsibility",
-      "sha256": "b06dbb5ecfbb7e46a66729471ce74b084d705abd9ab3395dd400cb26e9ecbf4a"
+      "id": "review-refine-responsibility-1f506694caa3",
+      "sha256": "8d9bade5b8185f1cd3371defdcd1cad212ec0fe914072d5b9753dba990c1b19d"
     },
     {
       "id": "impl-lead-document",
@@ -2475,58 +2383,13 @@
       "path": "shared/skill/plan-interactive/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "review-refine-document",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
       "kind": "span",
       "id": "review-refine-local-model",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "review-refine-local-model-relation",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
       "kind": "span",
-      "id": "review-refine-initial-fresh",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-fresh-input-boundary",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-reviewer-batch",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-contextual-resolution",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-contextual-input",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-contextual-incomplete",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-origin-resolution",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-additional-fresh",
+      "id": "review-refine-reviewer-actions",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
@@ -2535,33 +2398,13 @@
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "review-refine-adjudication-relation",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
       "kind": "span",
       "id": "review-refine-promotion",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "review-refine-promotion-relation",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
       "kind": "span",
-      "id": "review-refine-review-action-entry",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "review-refine-review-action-routing-relation",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "review-refine-no-correction-closure",
+      "id": "review-refine-routing",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
@@ -2570,23 +2413,13 @@
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
-      "kind": "anchor",
-      "id": "review-refine-convergence-relation",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
       "kind": "span",
-      "id": "review-refine-final-trim-reviewer",
+      "id": "review-refine-final-trim",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
       "kind": "span",
       "id": "review-refine-responsibility",
-      "path": "shared/skill/review-refine/SKILL.md"
-    },
-    {
-      "kind": "anchor",
-      "id": "review-refine-responsibility-relation",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
