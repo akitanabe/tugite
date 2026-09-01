@@ -42,7 +42,7 @@ Agent-side の bounded route を尽くしても material な gap が残り、そ
 
 ## Human-owned resolution
 
-Human interaction は現在の task / domain に必要な入力を、次の意味上異なる二つの source として扱う。
+Human interaction から現在の task / domain に必要な semantic input を得る場合、その入力は次の意味上異なる二つの source として扱う。
 
 <!-- @contract shared-interactive-human-boundary -->
 <!-- @anchor shared-interactive-human-relation -->
@@ -59,7 +59,6 @@ direction を選ぶ必要がある判断である。既に成立している tec
 を factual evidence として扱わない。
 Human の判断は current task に対する binding input として同じ Local Model に統合するが、それだけを理由に未許可の operation や scope
 expansion を始めない。
-<!-- @/contract -->
 
 ### Human-facing interaction
 
@@ -67,12 +66,21 @@ Human には、現在の task / domain language で判断対象、必要な理�
 Local Model、Exploration Projection、Projection Sufficiency、gap、Reintegration、Recomposition などの内部語彙の理解を質問の前提に
 しない。固定された質問 schema、question queue、dialogue state machine、decision ledger で task-specific な判断を置き換えない。
 
+`ex` は、現在の unresolved context / current understanding を維持したまま、同じ判断対象を Human が理解しやすい形で再提示する interaction control であり、
+Local Model への semantic input ではない。Human-held fact / context または Human authority judgment として扱わず、Reintegration しない。
+`ex` は shorthand であり、「説明して」「よくわからない」など同等の自然言語要求も同じ interaction control として有効とする。
+
+Agent は再提示のために表現、抽象度、具体例、背景説明を変えられるが、新しい unrelated decision context を追加せず、元の grounded rationale、
+premise、evidence、qualification を暗黙に差し替えない。再提示後も同じ final Human judgment boundary に留まり、説明だけを理由に Method completion しない。
+<!-- @/contract -->
+
 ## Reintegration and semantic effect
 
 <!-- @contract shared-interactive-reintegration -->
 <!-- @anchor shared-interactive-reintegration-relation -->
-Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration する。応答が
-返ったこと自体は Recomposition の trigger ではない。Reintegration 後に semantic effect を評価し、必要な範囲だけを更新する。
+Human interaction から得た Human-held fact / context または Human authority judgment は result として扱い、calling workflow が所有する同じ
+task-local Local Model へ Reintegration する。semantic input が返ったこと自体は Recomposition の trigger ではない。Reintegration 後に
+semantic effect を評価し、必要な範囲だけを更新する。
 <!-- @/contract -->
 
 - current semantics が維持される、または non-material な局所更新で足りる場合は、同じ Local Model の local repair / Reintegration と
@@ -88,7 +96,7 @@ uncertainty を保持したまま追加の判断または確認へ戻す。
 
 <!-- @contract shared-interactive-completion -->
 <!-- @anchor shared-interactive-completion-relation -->
-Agent-side resolution、Human response の Reintegration、必要な repair と bounded re-observation の後、Interactive Method は current
+Agent-side resolution、semantic input の Reintegration、必要な repair と bounded re-observation の後、Interactive Method は current
 understanding と retained material uncertainty / qualification を Human が判断できる形で提示する。
 
 Human がその current understanding を downstream の前提として採用し、次へ進むことを明示的に認めるまで、Interactive Method は completion

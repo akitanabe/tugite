@@ -254,10 +254,18 @@ pattern = '''これは preference、trade-off、direction、responsibility、sco
 direction を選ぶ必要がある判断である。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-same-model-reintegration-fbf4213baf9f]
+[contracts.shared-interactive-explanation-control-8273682e0f36]
+kind = "requires"
+slice = "shared-interactive-human-boundary"
+pattern = '''`ex` は、現在の unresolved context / current understanding を維持したまま、同じ判断対象を Human が理解しやすい形で再提示する interaction control であり、
+Local Model への semantic input ではない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-same-model-reintegration-0b5b9b06602f]
 kind = "requires"
 slice = "shared-interactive-reintegration"
-pattern = "Human response または judgment は結果として扱い、calling workflow が所有する同じ task-local Local Model へ Reintegration する。"
+pattern = '''Human interaction から得た Human-held fact / context または Human authority judgment は result として扱い、calling workflow が所有する同じ
+task-local Local Model へ Reintegration する。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-interactive-human-completion-050abfec7604]

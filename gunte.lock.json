@@ -216,8 +216,12 @@
       "sha256": "3f20f6077b8b9bdcb5f3fcf12e2eb4d00b0bf6ac3ab83613c16d6ea636407946"
     },
     {
-      "id": "shared-interactive-same-model-reintegration-fbf4213baf9f",
-      "sha256": "69ca735e55a6ddb93478e731f5f3a0854c8e8101f1a5f761c220f23b3adb6135"
+      "id": "shared-interactive-explanation-control-8273682e0f36",
+      "sha256": "76430ff185e401a6ed89fabd463dd695ad9c4c59b6291a0d7e4c2051f203c471"
+    },
+    {
+      "id": "shared-interactive-same-model-reintegration-0b5b9b06602f",
+      "sha256": "94adde627e59d224f45add3d7fb1e0a27f8e305e78fb4aeaf6dca2fa2d8d875c"
     },
     {
       "id": "shared-interactive-human-completion-050abfec7604",
