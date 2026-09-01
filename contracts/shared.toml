@@ -254,11 +254,10 @@ pattern = '''これは preference、trade-off、direction、responsibility、sco
 direction を選ぶ必要がある判断である。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-explanation-control-8273682e0f36]
+[contracts.shared-interactive-explanation-control-467964f27790]
 kind = "requires"
 slice = "shared-interactive-human-boundary"
-pattern = '''`ex` は、現在の unresolved context / current understanding を維持したまま、同じ判断対象を Human が理解しやすい形で再提示する interaction control であり、
-Local Model への semantic input ではない。'''
+pattern = "`ex` と同等の自然言語要求は、現在の unresolved context / current understanding を変えず、同じ判断対象を理解しやすく再提示する interaction control である。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-interactive-same-model-reintegration-0b5b9b06602f]

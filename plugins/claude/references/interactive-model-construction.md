@@ -62,12 +62,10 @@ Human には、現在の task / domain language で判断対象、必要な理�
 Local Model、Exploration Projection、Projection Sufficiency、gap、Reintegration、Recomposition などの内部語彙の理解を質問の前提に
 しない。固定された質問 schema、question queue、dialogue state machine、decision ledger で task-specific な判断を置き換えない。
 
-`ex` は、現在の unresolved context / current understanding を維持したまま、同じ判断対象を Human が理解しやすい形で再提示する interaction control であり、
-Local Model への semantic input ではない。Human-held fact / context または Human authority judgment として扱わず、Reintegration しない。
-`ex` は shorthand であり、「説明して」「よくわからない」など同等の自然言語要求も同じ interaction control として有効とする。
-
-Agent は再提示のために表現、抽象度、具体例、背景説明を変えられるが、新しい unrelated decision context を追加せず、元の grounded rationale、
-premise、evidence、qualification を暗黙に差し替えない。再提示後も同じ final Human judgment boundary に留まり、説明だけを理由に Method completion しない。
+`ex` と同等の自然言語要求は、現在の unresolved context / current understanding を変えず、同じ判断対象を理解しやすく再提示する interaction control である。
+Human-held fact / context、Human authority judgment、Local Model への semantic input として扱わない。表現、抽象度、具体例、背景説明は変えられるが、
+新しい unrelated decision context を加えたり、元の rationale、premise、evidence、qualification を差し替えたりしない。再提示後も同じ final Human
+judgment boundary に留まり、説明だけで completion しない。
 
 ## Reintegration and semantic effect
 
