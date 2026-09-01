@@ -1,0 +1,6 @@
+interface:
+  display_name: "How It"
+  short_description: "Build how to proceed through Interactive Model Construction"
+  default_prompt: "Use $how-it only for an explicit public workflow; use Interactive Model Construction to build how to proceed or make the request viable, keep one task-local Local Model, and connect directly to the requested output."
+policy:
+  allow_implicit_invocation: false

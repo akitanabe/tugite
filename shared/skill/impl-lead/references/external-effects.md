@@ -1,34 +1,29 @@
-# impl-lead external effects v1
+# External Effects
 
-この reference は、`impl-lead` が扱う外部副作用の Action 状態管理、partial failure 後の retry、conditional persistence の
-operation 詳細（filesystem / repository / PR / Issue / API）を定義する。親は `SKILL.md` で指定された時点に全文を読み、
-判断と Action を自身の execution data として扱う。
+## Cross-cutting pre-action boundary
 
-## External side effects
+この boundary は implementation、verification、integration、cleanup を含む run 全体の Action に適用する。filesystem、Git、API、Issue / PR、message、database など外部状態を変える操作は Action として、判断する Calculation から分離する。親は Action ごとに identity、authority、target、input、precondition、idempotency key / duplicate semantics、verification、compensation、safe retry、sensitivity、retention、cleanup を確定する。
 
-外部副作用は worktree と別に execution data で管理する。各 Action に `未実行`、`実行済み`、`結果不明`、resource、
-idempotency、照合方法、補償または rollback を記録する。partial failure または context loss 後の retry は、親が状態と
-safe-retry eligibility を確定して `external-side-effect-retry` へ渡す。共有 resource の順序や競合がある場合は並列化しない。
-未実行の外部 Action について、選択済み review goal の結果が実行可否、対象 / 入力、
-authorization、idempotency、compensation / rollback を変えうる場合、その review 完了と関連 finding の解決を当該 Action の
-precondition にする。外部副作用を伴わない code 作成、および外部 Action を含まない local / read-only verification だけは先行できる。
-verification command 内に外部 Action が含まれる場合も、同じ review 完了と関連 finding 解決の precondition を適用する。外部 Action 後に初めて risk が判明した場合は
-外部状態と result identity を再観測し、既存の外部副作用契約に従って補償、確認または `stop-incomplete` を選ぶ。事後 review を
-実行前保証として扱わない。
+親は各 Action 前に Task Spec、current state、current risk evidence から、その Action の eligibility、target、input、authority、idempotency、compensation を review result が変え得るか pre-action disposition を行う。変え得ると裁定して選択した review は当該 Action 前に完了する。specialized reviewer が post-implementation diff を必要とする場合、task-owned local implementation または read-only verification 自体の eligibility をその review が変えないと親が裁定できる範囲だけ先行できる。実 external effect と影響対象 Action は review と finding 解決まで待つ。Git / worktree lifecycle 固有の手順は `run-owned-lifecycle.md`、post-diff specialized review は `risk-review.md` に残し、この reference は各 Action の precondition と result safety だけを横断的に評価する。
 
-<!-- @contract impl-programmatic-flow-external-side-effect-retry -->
-### external-side-effect-retry
+Action state は `未実行`、`実行済み`、`結果不明` を区別する。実行応答だけで成功とせず、可能なら independent read で target state を確認する。partial failure は完了済み effect、未実行 effect、結果不明 effect を分離する。
 
-Trigger: 外部 Action の partial failure または context loss 後に、親が retry 可否の固定判定を要求したとき。
-Inputs: fresh context で再観測した resource / result identity、`未実行` / `実行済み` / `結果不明`、idempotency、照合方法、authorization、compensation / rollback、親が確定した safe-retry eligibility。
-Procedure: `結果不明` または安全な照合不能なら retry せず `blocked` とする。`未実行` かつ safe-retry eligibility 成立時だけ一回再実行して結果を照合し、`実行済み` は再実行しない。
-Outcomes: 照合済み `実行済み` Data、または `blocked`。unknown result を blind retry せず、補償、確認、`stop-incomplete` の意味判断は Agentic な親へ返す。
-<!-- @/contract -->
+## Programmatic Flow
 
-## Conditional persistence operations
+### external-action-control
 
-保存時は resource の purpose / content、identity、ownership / authorization、sensitivity、current state、idempotency、照合方法、
-retention / lifetime、update / cleanup / compensation を確定する。filesystem / repository では path、tracked / untracked、
-protected dirty state、overwrite の有無、書き込み後の content / status を確認する。PR / Issue / API / artifact store では URL、
-resource ID、revision、remote state、API result を確認する。ユーザー所有 resource を無断で上書きまたは削除しない。必須の永続化を
-安全に実行・照合できなければ確認または `stop-incomplete` とする。artifact が存在すること自体を quality evidence にしない。
+Trigger: authorized outcome に external Action が必要である。
+
+Inputs: Action identity、authority、precondition、current state、idempotency / duplicate semantics、verification、compensation、retry safety、sensitivity / retention / cleanup Data、risk disposition。
+
+Procedure:
+
+1. Task Spec、current state、current risk evidence に基づく pre-action disposition と、必要な review / finding が解決済みであることを確認する。
+2. state が `未実行` で条件が成立する場合だけ Action を一度実行する。
+3. independent verification で effect identity と target state を再観測し、`実行済み` または `結果不明` を確定する。
+4. `結果不明` では duplicate semantics と safe retry が証明できるまで再実行しない。
+5. failure / partial result では authorized compensation の可否、sensitive Data の retention と cleanup を別々に裁定する。
+
+Outcomes: verified `実行済み`、安全に保持された `未実行`、または evidence と retention state を伴う `結果不明` / `stop-incomplete`。必須 Action の `未実行` / `結果不明` は run acceptance に進めず、Human が明示的に不要化した場合だけ obligation から外せる。
+
+blind retry、authority の推測、destructive compensation、sensitive artifact の無期限保持を行わない。

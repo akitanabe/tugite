@@ -1,0 +1,85 @@
+[contracts.review-refine-document]
+kind = "occurrences"
+pattern = "# review-refine"
+count = 1
+paths = [
+  "plugins/claude/skills/review-refine/SKILL.md",
+  "plugins/codex/skills/review-refine/SKILL.md",
+  "plugins/cursor/skills/review-refine/SKILL.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-codex-fresh-reviewer-invocation]
+kind = "occurrences"
+pattern = '''fresh reviewer を起動する場合は `fork_turns = "none"` を指定する。'''
+count = 1
+paths = ["plugins/codex/skills/review-refine/SKILL.md"]
+applies_to = ["codex"]
+
+[contracts.review-refine-local-model-7f04ec277686]
+kind = "requires"
+slice = "review-refine-local-model"
+pattern = '''standalone → exactly one task-local Local Model
+nested → caller-owned Local Model projection; no local construction
+both → `S0` / purpose / criteria / authority obligations fixed at invocation boundary'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-reviewer-actions-8c30625fb08b]
+kind = "requires"
+slice = "review-refine-reviewer-actions"
+pattern = '''reviewer → findings
+parent → adjudication / refinement / routing / completion
+initial-fresh → `S0` + fixed review packet → fresh context
+contextual-resolution → required origin context + continuation packet → same runtime context; unavailable: `incomplete`
+additional-fresh → all required origin resolutions closed + independent risk + evidence + remaining bound → fresh context'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-adjudication-2c87cf970db2]
+kind = "requires"
+slice = "review-refine-adjudication"
+pattern = '''same immutable snapshot findings → all `adopted / rejected / out-of-scope / unresolved` adjudications
+all adjudications → coherent refinement → mutation'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-promotion-8edccfd9b440]
+kind = "requires"
+slice = "review-refine-promotion"
+pattern = '''no adopted refinement → keep current verified snapshot
+adopted refinement + verification + semantic progress → promote
+otherwise → discard working state; keep prior verified snapshot; `incomplete`'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-routing-bd64cc0e6ee8]
+kind = "requires"
+slice = "review-refine-routing"
+pattern = '''initial fresh pending → `initial-fresh`
+required origin resolution pending → all eligible `contextual-resolution`; unavailable: `incomplete`
+normal review closed → `normal-review-closed`
+independent risk + evidence + remaining bound → `additional-fresh`
+otherwise → `incomplete`'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-convergence-ef67860ecdbb]
+kind = "requires"
+slice = "review-refine-convergence"
+pattern = '''normal closure + no material unresolved + verified candidate + no pending refinement + applicable final trim complete → `converged`
+otherwise at stop → `incomplete`'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-0f38b24ef6dc]
+kind = "requires"
+slice = "review-refine-final-trim"
+pattern = '''off → skip
+applicable → designated reviewer or existing selection → one pass
+new material over-engineering exposed by trim + remaining bound → one additional pass
+capability / input / verification failure → `incomplete`
+final trim → never normal review'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-responsibility-1f506694caa3]
+kind = "requires"
+slice = "review-refine-responsibility"
+pattern = '''review-refine → invocation-local review / adjudication / refinement / verification / completion
+caller → persistence / publication / adoption / downstream workflow
+Human interaction / external persistent write → not owned by review-refine'''
+applies_to = ["claude", "codex", "cursor"]

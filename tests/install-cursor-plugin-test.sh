@@ -18,8 +18,13 @@ assert_same() {
 [[ "$plugin_version" == "$expected_version" ]] || fail "plugin and shared versions differ: $plugin_version vs $expected_version"
 [[ -f "$installer" ]] || fail "missing installer: $installer"
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
-[[ -f "$repo_root/plugins/cursor/skills/install-plugin/SKILL.md" ]] || fail "missing install-plugin skill"
-grep -q '^name: install-plugin$' "$repo_root/plugins/cursor/skills/install-plugin/SKILL.md" || fail "install-plugin skill name mismatch"
+[[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
+[[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
+[[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+  [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/$reference.md" ]] || fail "missing impl-lead reference: $reference"
+done
+[[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
@@ -50,12 +55,21 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-commit")" == "$source_commit" ]] || fail "commit marker mismatch"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
-assert_same "$source_repo/plugins/cursor/skills/impl-lead/SKILL.md" "$dest_dir/skills/impl-lead/SKILL.md"
-assert_same "$source_repo/plugins/cursor/references/upstream/clarify-it/SKILL.md" "$dest_dir/references/upstream/clarify-it/SKILL.md"
-assert_same "$source_repo/plugins/cursor/references/upstream/clarify-it/references/philosophy.md" "$dest_dir/references/upstream/clarify-it/references/philosophy.md"
 
-for reference in clarification observation pre-freeze-advisor direction-freeze synthesis freeze-integrity structural-gate review final-acceptance publication; do
-  assert_same "$source_repo/plugins/cursor/skills/plan-interactive/references/$reference.md" "$dest_dir/skills/plan-interactive/references/$reference.md"
+for skill in explorer-this how-it impl-lead plan-agent review-refine; do
+  assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
+done
+
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+  assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/$reference.md" "$dest_dir/skills/impl-lead/references/$reference.md"
+done
+
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope; do
+  assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
+done
+
+for agent in expert-implementer focused-implementer implementer over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher responsibility-boundary-reviewer security-side-effect-reviewer senior-implementer static-performance-reviewer test-quality-reviewer writing-principles-reviewer; do
+  assert_same "$source_repo/plugins/cursor/agents/$agent.md" "$dest_dir/agents/$agent.md"
 done
 
 [[ ! -e "$dest_dir/skills/clarify-it" ]] || fail "public clarify-it skill was installed"

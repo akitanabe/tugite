@@ -1,62 +1,71 @@
-<!-- @contract deletion-test-method-v1 -->
-# Deletion Test Method v1
+# Deletion Test Method
+<!-- @anchor deletion-test-document -->
 
-Deletion Test Method identity: `deletion-test-method-v1`.
+## Identity and trigger
 
-この reference は、一つの識別された deletion candidate を仮想除去し、残る witness と obligation への影響だけを判定する reusable procedure である。Kernel ではない。Kernel identity と Kernel injection mapping を持たない。
+<!-- @contract deletion-test-trigger -->
+<!-- @anchor deletion-test-trigger-relation -->
+`Deletion Test Method` は、stable verified snapshot 上の concrete deletion candidate が、consumer から渡された obligations / constraints を維持するかを observable evidence により判定する deletion-triggered shared Method である。
+<!-- @/contract -->
 
-正本はこのファイルであり、各 platform の配布物では `references/deletion-test-method.md` として生成される。caller は判定 procedure を複製しない。
+normal refinement と final trim のどちらからも利用できるが、concrete deletion を含まない変更には起動しない。
+Method は repository 全体の不要性や一般的な単純さを判定せず、candidate として特定された削除の意味だけを扱う。
 
 ## Inputs
 
-入力は次に限る。
+consumer は次を渡す。
 
-- **stable snapshot**
-- **deletion candidate**
-- **consumer-supplied obligations / constraints**
-- **observable evidence**
+- **stable verified snapshot**: candidate の観測基準となる不変な content identity と検証済み状態。
+- **concrete deletion candidate**: 削除する対象と、削除後に残る状態を識別できる bounded な候補。
+- **obligations / constraints**: 削除後も維持すべき current responsibility、behavior、interface、compatibility、safety boundary。
+- **observable evidence**: obligation の成立・不成立を区別できる source、test、contract、runtime observation、または caller-authorized evidence surface。
 
-snapshot と candidate は caller が識別する。obligation / constraint の意味と範囲も caller が供給する。Method は Target を定義せず、Task Specification を所有しない。
+input が不足し、削除後の obligation を十分に判定できない場合は、推測で `preserves` にしない。
 
-## Procedure
+## Result
 
-固定手順は次である。
+Method は次のいずれかを、根拠となる evidence と limitation を区別できる形で返す。
 
-1. 識別された deletion candidate だけを仮想的に除去した更新前提を置く。
-2. 除去後に残る具体的な remaining witness を、observable evidence から確認する。
-3. consumer-supplied obligations / constraints が壊れるかを確認する。
+- **`deleting preserves obligations`**: deletion 後も supplied obligations / constraints が成立することを observable evidence で判定できる。
+- **`deletion breaks obligations`**: deletion により supplied obligation / constraint が成立しなくなることを observable evidence で判定できる。
+- **`indeterminate`**: evidence、snapshot、candidate boundary、または obligation の関係が不足・競合し、安全にどちらとも判定できない。
 
-同じ selected batch 内の別 candidate を stable remaining witness とみなさない。A と B が互いを唯一の witness にする mutual witness は、両方の同時削除を `deletion preserves obligations` として認めない。mutual witness、evidence 不足、obligation 不明を独立した `preserves` に昇格させず、解消不能なら `indeterminate` とする。
+結果は deletion candidate に対する observation であり、変更の採否ではない。
 
-判定対象を除去・採用する前に caller が候補を更新した場合は、更新後の stable snapshot で再判定する。古い snapshot の witness を更新後へ持ち越さない。
+## Method
 
-## Semantic Results
+1. stable verified snapshot、candidate identity、supplied obligations / constraints、evidence conditions を固定する。
+2. candidate が current snapshot で担う obligation と、削除後に残る independent witness を observable evidence 上で照合する。
+3. witness が同じ selected set 内で同時に削除される別 candidate、candidate 自身への循環参照、または現在の snapshot と一致しない stale evidence でないことを確認する。
+4. supplied obligations / constraints をすべて維持できる場合だけ `deleting preserves obligations` とし、具体的な破壊が観測できる場合は `deletion breaks obligations`、十分に区別できない場合は `indeterminate` とする。
 
-意味結果は次の3つで閉じる。
+obligation を満たす replacement design を Method 内で発明せず、削除以外の remediation が必要なら caller に返す。
 
-### `deletion preserves obligations`
+## Multiple deletion safety
 
-除去後にも、残る具体的な remaining witness と、その witness が担保する obligation を特定できる。大きさ、複雑さ、行数、一般的な好みだけを根拠にしない。
+<!-- @contract deletion-test-selected-set -->
+<!-- @anchor deletion-test-selected-set-relation -->
+複数 candidate はそれぞれを個別に Test し、`deleting preserves obligations` と判定された候補から coherent selected deletion set を構成した後、その集合全体を一つの deletion candidate として同じ stable snapshot 上で再 Test する。
+<!-- @/contract -->
 
-### `deletion breaks obligations`
+selected set 全体が `deleting preserves obligations` の場合だけ、caller は apply 候補として扱える。`deletion breaks obligations` または
+`indeterminate` の場合は、Method が一部を自動採用せず、caller が selected set、obligations、evidence のいずれを見直すかを判断する。
+個別判定だけで同時削除の安全性を推論しない。
 
-除去すると obligation が壊れ、具体的な Failure と Evidence を示せる。
+## Caller ownership
 
-### `indeterminate`
+<!-- @contract deletion-test-caller-ownership -->
+<!-- @anchor deletion-test-caller-relation -->
+Deletion Test Method は scope admission、finding の採否、replacement design、削除の apply、workflow routing、review continuation / completion を所有せず、consumer が Method result と current responsibility に基づいてこれらを裁定する。
+<!-- @/contract -->
 
-remaining witness、Broken Obligation、Failure、Evidence、または obligation 自体を確認できず、削除判定を安全に分類できない。mutual witness を解消できない場合も `indeterminate` とする。自動採用・自動却下をしない。
-
-`deletion preserves obligations` / `deletion breaks obligations` / `indeterminate` は新共通 verdict field ではない。caller は既存の返却 Data を使い、親が既存の裁定語彙へ最終裁定する。
+Method は artifact を変更せず、persistent history や固定 ledger schema を作らない。consumer は apply 後の verification と verified snapshot の更新を所有する。
 
 ## Non-goals
 
-Deletion Test Method は次を行わない。
-
-- Target membership の判定
-- scope admission
-- accept / reject の裁定
-- replacement design の提案
-- workflow routing
-- 複数 candidate や snapshot 全体を一括して「きれいにする」判断への置換
-- Kernel identity または Kernel injection mapping の所有
-<!-- @/contract -->
+- concrete deletion を伴わない変更の quality review
+- repository または artifact 全体の minimality 判定
+- obligation / constraint の自律追加
+- deletion candidate の生成、scope 拡張、replacement proposal
+- Method result からの自動 accept / reject
+- workflow の continuation、completion、status の決定
