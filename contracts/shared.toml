@@ -797,10 +797,10 @@ count = 1
 paths = ["plugins/codex/references/planning-synthesis.md"]
 applies_to = ["codex"]
 
-[contracts.planning-synthesis-input-7697f1534b2c]
+[contracts.planning-synthesis-input-908acc2eb59a]
 kind = "requires"
 slice = "planning-synthesis-input-boundary"
-pattern = "caller は一つの task-local Local Model の owner のまま、planning に必要な current understanding、established planning direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。"
+pattern = "caller は一つの task-local Local Model の owner のまま、requested artifact responsibility、current understanding、established direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-synthesis-authority-642de1243f45]
@@ -809,10 +809,10 @@ slice = "planning-synthesis-authority-boundary"
 pattern = "Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-result-7ee695cb77fa]
+[contracts.planning-synthesis-result-1201c11eabda]
 kind = "requires"
 slice = "planning-synthesis-result-boundary"
-pattern = "返す結果は current task に material な planning semantics を持つ coherent Plan candidate、または candidate coherence を妨げる具体的な material input gap である。"
+pattern = "返す結果は requested artifact に material な semantics を持つ coherent candidate、または candidate coherence を妨げる具体的な material input gap である。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-synthesis-advisor-0bb36870d564]
@@ -827,16 +827,16 @@ slice = "planning-synthesis-direct-case"
 pattern = "input が coherent synthesis に十分なら、advisor を起動せず Planning Synthesis が必要な判断を行い candidate を返せる。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-advice-case-ac1a8bec94c2]
+[contracts.planning-synthesis-materiality-032bb9a90a12]
 kind = "requires"
-slice = "planning-synthesis-advice-case"
-pattern = "supplied Researcher evidence が局所 trade-off に関係する場合、concrete question と必要 context だけの fresh advisor request を使い、Planning Synthesis が advice を裁定する。"
+slice = "planning-synthesis-materiality"
+pattern = "非実装 artifact に Acceptance Criteria、rollback、work decomposition、execution order を儀式的に要求せず"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-gap-case-7fbcdabc0985]
+[contracts.planning-synthesis-gap-case-64f51395e3cd]
 kind = "requires"
 slice = "planning-synthesis-gap-case"
-pattern = "candidate coherence に material な fact が input にない場合、その fact と影響を gap として caller へ返す。"
+pattern = "その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-core-document]
@@ -850,70 +850,40 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-input-60b9abb9549f]
+[contracts.planning-core-input-29f2028c8834]
 kind = "requires"
 slice = "planning-core-input-boundary"
-pattern = "top-level planning workflow は一つの task-local Local Model の owner のまま、current planning projection、established direction、authority constraints、resolved upstream evidence を Planning Core へ渡す。"
+pattern = "review applicability、explicit opt-out を Planning Core へ渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-synthesis-gap-5d685524a0cf]
+[contracts.planning-core-synthesis-gap-b65a2cc0645e]
 kind = "requires"
 slice = "planning-core-synthesis-gap"
-pattern = "Planning Synthesis が material input gap を返した場合、Planning Core は candidate、S0、review invocation を作らず `incomplete` と gap を返す。"
+pattern = "gap、candidate を作れない理由、affected semantics を caller-actionable result として返す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-s0-1a8a4d2aebc3]
+[contracts.planning-core-review-routing-567e368735cf]
 kind = "requires"
-slice = "planning-core-s0-boundary"
-pattern = "Planning Core は coherent candidate の content identity と immutable bytes を固定し、content consistency と applicable existing syntactic / repository-native structural evidence を確認した S0 を作るが、Plan quality または semantic verification の完了を主張しない。"
+slice = "planning-core-review-routing"
+pattern = "review nonapplicable または explicit opt-out では review を起動せず、applicable かつ opt-out なしの場合だけ S0 を作って nested `review-refine` へ進む。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-review-input-f0ab5dfed8f1]
+[contracts.planning-core-review-input-552e1e2b4845]
 kind = "requires"
 slice = "planning-core-review-input"
-pattern = "Planning Core は parent projection、fixed review purpose / criteria、direction / authority obligations、S0、necessary evidence、required normal reviewer `plan-adversarial-reviewer`、`final_trim = applicable`、`final_trim_reviewer = over-engineering-reviewer` を nested `review-refine` へ渡す。"
+pattern = "`final_trim = applicable`、final trim の obligations / constraints / evidence context、`final_trim_reviewer = over-engineering-reviewer` を nested `review-refine` へ渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-sequence-787c5367ea52]
+[contracts.planning-core-sequence-c7614f660551]
 kind = "requires"
 slice = "planning-core-review-sequence"
-pattern = "品質順序は adversarial strengthening、adjudication / coherent refinement / verification / bounded affected-semantics re-review、normal convergence、over-engineering final trim、Deletion Test / apply / verification である。"
+pattern = "実装前 plan の品質順序は adversarial review、親裁定 / coherent refinement / verification / affected-semantics re-review、normal convergence、over-engineering final trim、Deletion Test / apply / verification である。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-result-71d5753bca1c]
+[contracts.planning-core-result-092905faf52a]
 kind = "requires"
 slice = "planning-core-result-boundary"
-pattern = "`review-refine` の `converged` は final verified Plan candidate として吸収し、`incomplete` は latest verified candidate があれば material reason とともに返し、返却 candidate を後処理で変更しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-strengthen-trim-c4728ee002fa]
-kind = "requires"
-slice = "planning-core-strengthen-trim-case"
-pattern = "weakness と excess を持つ coherent candidate は adversarial refinement が converged した後だけ mandatory final trim と Deletion Test を通り、verified final candidate になる。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-gap-case-390677ec727a]
-kind = "requires"
-slice = "planning-core-gap-case"
-pattern = "coherent candidate を妨げる synthesis gap は speculative candidate と review Action を生まず、candidate なしの `incomplete` になる。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-adversarial-incomplete-0cc44678af50]
-kind = "requires"
-slice = "planning-core-adversarial-incomplete-case"
-pattern = "current authority 内で解決できない normal finding は direction を変更せず、latest verified candidate と material reason を持つ `incomplete` になる。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-trim-defect-aa2a737ff2c5]
-kind = "requires"
-slice = "planning-core-trim-defect-case"
-pattern = "final trim が additive redesign を要する material defect を見つけた場合、normal review を再開せず、unsafe trim を昇格せず、pre-trim verified candidate と `incomplete` を返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-authority-case-5b3b4ef6e479]
-kind = "requires"
-slice = "planning-core-authority-case"
-pattern = "全 consumer と reviewer は parent projection と direction / authority obligations を使い、top-level workflow が唯一の task-local Local Model owner のままである。"
+pattern = "reviewed / unreviewed route の semantic completion を満たす candidate は `final-candidate` として返し、review 実行の有無を保持し、返却 candidate を後処理で変更しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.deletion-test-document]

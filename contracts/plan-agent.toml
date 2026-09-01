@@ -9,34 +9,46 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-agent-responsibility-8a968afcc985]
+kind = "requires"
+slice = "plan-agent-responsibility"
+pattern = "normal context から request-relative な自由形式の planning / design artifact を recommendation-first で作る"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-ownership-4f1870ace344]
 kind = "requires"
 slice = "plan-agent-ownership"
 pattern = "exactly one の task-local Local Model を所有"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-direction-a8fbd46c1841]
-kind = "requires"
-slice = "plan-agent-direction"
-pattern = "planning direction を workflow-local judgment として確立"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-qualified-stop-01d9a08d4122]
-kind = "requires"
-slice = "plan-agent-qualified-stop"
-pattern = "`incomplete` を返し、Interactive fallback、Planning Core invocation、speculative direction の選択を行いません。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-core-input-119f47c030fb]
+[contracts.plan-agent-core-input-1b0812bae186]
 kind = "requires"
 slice = "plan-agent-core-input"
-pattern = "established direction、authority constraints、resolved upstream evidence を共通の Planning Core へ渡します。"
+pattern = "review applicability と explicit opt-out は `plan-agent` が判断します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-result-d47b2dd8e5b1]
+[contracts.plan-agent-gap-result-3825e66f8677]
+kind = "requires"
+slice = "plan-agent-gap-result"
+pattern = "Human へ質問せず別 workflow も起動せず、unresolved gap を持つ `incomplete` を返します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gap-retry-13fc32e444dc]
+kind = "requires"
+slice = "plan-agent-gap-retry"
+pattern = "更新済み projection / evidence で Planning Core を再実行し、Planning Synthesis の再実行と後続 routing は Planning Core に残します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-result-285f7f97afa5]
 kind = "requires"
 slice = "plan-agent-result"
-pattern = "後処理で candidate を変更しません。"
+pattern = "Planning Core の `final-candidate` または `incomplete` を変更せず受け取り"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-publication-7c08ddfde27c]
+kind = "requires"
+slice = "plan-agent-publication"
+pattern = "frozen bytes を exclusive create した self-owned file へ書き、close 後に read-back して byte equality を確認した場合だけ publication success とします。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-plan-only-4a1cfc3e08d3]
@@ -45,39 +57,57 @@ slice = "plan-agent-plan-only"
 pattern = "implementation、delegation、Issue / PR 更新、downstream workflow を開始しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-document-before-ownership]
+[contracts.plan-agent-document-before-responsibility]
 kind = "order"
 before = "plan-agent-document-relation"
+after = "plan-agent-responsibility-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-responsibility-before-ownership]
+kind = "order"
+before = "plan-agent-responsibility-relation"
 after = "plan-agent-ownership-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-ownership-before-direction]
+[contracts.plan-agent-ownership-before-core]
 kind = "order"
 before = "plan-agent-ownership-relation"
-after = "plan-agent-direction-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-direction-before-stop]
-kind = "order"
-before = "plan-agent-direction-relation"
-after = "plan-agent-qualified-stop-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.plan-agent-stop-before-core]
-kind = "order"
-before = "plan-agent-qualified-stop-relation"
 after = "plan-agent-core-input-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-agent-core-before-result]
+[contracts.plan-agent-core-before-gap]
 kind = "order"
 before = "plan-agent-core-input-relation"
+after = "plan-agent-gap-retry-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gap-retry-before-result]
+kind = "order"
+before = "plan-agent-gap-retry-relation"
+after = "plan-agent-gap-result-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-gap-before-result]
+kind = "order"
+before = "plan-agent-gap-result-relation"
 after = "plan-agent-result-relation"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-agent-result-before-completion]
 kind = "order"
 before = "plan-agent-result-relation"
+after = "plan-agent-plan-only-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-result-before-publication]
+kind = "order"
+before = "plan-agent-result-relation"
+after = "plan-agent-publication-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-publication-before-completion]
+kind = "order"
+before = "plan-agent-publication-relation"
 after = "plan-agent-plan-only-relation"
 applies_to = ["claude", "codex", "cursor"]
 

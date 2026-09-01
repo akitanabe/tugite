@@ -194,9 +194,9 @@ repository write は caller が repository artifact を成果物として明示�
 
 ### plan-agent
 
-`plan-agent` は discretionary authority entrypoint である。
+`plan-agent` は normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作る public planning workflow である。
 
-Human が途中判断を追わず Agent に方向性を委ねる planning workflow とし、task-local Local Model を構築したうえで Planning Synthesis へ進む。
+一回の invocation で一つの task-local Local Model を構築し、artifact kind を fixed enum / schema にしない。review applicability と explicit opt-out は `plan-agent` が判断する。nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は strict review route とする。
 
 ```text
 plan-agent
@@ -207,36 +207,14 @@ Agent-owned direction
   ↓
 Planning Synthesis
   ↓
-review-refine
+conditional review
 ```
-
-### plan-interactive
-
-`plan-interactive` は Human / constrained authority entrypoint である。
-
-Interactive Model Construction により repository-grounded な task understanding を形成する。repository から解消できる事項は Agent-side で先に解消し、必要な Human 判断を統合したうえで、統合後の現在理解について Human の最終確認を必ず得る。Human がその理解を planning の前提として採用するまで Planning Synthesis へ進まない。探索中に見つかった追加課題は、それだけで planning scope や authority を拡張しない。Plan candidate の構成と対象範囲の最終責任は `plan-interactive` / Planning Synthesis 側に残す。
-
-```text
-plan-interactive
-  ↓
-Interactive Model Construction
-  ↓
-planning-ready Local Model / Human-confirmed direction
-  ↓
-Planning Synthesis
-  ↓
-Authority Integrity Verification
-  ↓
-review-refine
-```
-
-`plan-agent` と `plan-interactive` は別 planning engine ではなく、**同じ planning capability に対する異なる authority entrypoint** とする。
 
 ### review-refine
 
 `review-refine` は artifact / proposal / plan 等を対象に、目的・criteria・evidence に照らして finding を得て、採用した改善を反映する review workflow である。
 
-単独 top-level invocation の場合は自身の task-local Local Model を構築する。`plan-agent` / `plan-interactive` の nested consumer として利用される場合は、親の Local Model から review に必要な projection を受け取り、独自 Local Model を作らない。
+単独 top-level invocation の場合は自身の task-local Local Model を構築する。`plan-agent` の nested consumer として利用される場合は、親の Local Model から review に必要な projection を受け取り、独自 Local Model を作らない。
 
 structural non-locality は独立 gate ではなく review viewpoint の一つとして扱う。
 
@@ -341,13 +319,14 @@ plan-family の共通 planning capability とする。
 
 入力:
 
-* task-local Local Model または必要な projection
+* requested artifact responsibility、task-local Local Model または必要な projection
 * authority
 * authority constraints
 
 責務:
 
-* current understanding と authority から coherent な Plan candidate を構成する
+* current understanding と authority から request-relative な coherent planning / design artifact candidate を構成する
+* requested artifact に material な semantics だけを選び、非実装 artifact に implementation ceremony を強制しない
 
 所有しない責務:
 
@@ -362,14 +341,10 @@ plan-family の共通 planning capability とする。
 
 plan-family の shared orchestration Method とする。
 
-top-level planning workflow が所有する一つの task-local Local Model から planning-relevant projection、established direction、authority
-constraints を受け取り、Planning Synthesis と nested `review-refine` を接続する。coherent candidate だけを stable S0 review target とし、
-required normal `plan-adversarial-reviewer` による strengthening / bounded re-review の convergence 後に、mandatory
-`over-engineering-reviewer` final trim と Deletion Test を行う。
+top-level planning workflow が所有する一つの task-local Local Model から artifact responsibility、planning-relevant projection、established direction、authority constraints、review applicability、explicit opt-out を受け取る。nonapplicable / opt-out は review を起動せず、applicable / no opt-out の coherent candidate だけを stable S0 review target として nested `review-refine` へ接続する。実装前 plan の review は required normal `plan-adversarial-reviewer` による strengthening / bounded re-review の convergence 後に `over-engineering-reviewer` final trim と Deletion Test を行う。
 
 Planning Core は Local Model、Planning Synthesis の judgment、`review-refine` の adjudication / mutation / completion、top-level workflow の
-final acceptance を所有しない。synthesis gap または安全に閉じない review / verification は latest verified candidate があれば保持した
-`incomplete` とし、nested review が返した candidate を後処理で変更しない。
+final acceptance を所有しない。synthesis gap は candidate を作れない理由と affected semantics を caller-actionable に返す。review / verification が安全に閉じない場合は latest verified candidate があれば保持した `incomplete` とし、返却 candidate を後処理で変更しない。
 
 ### Model Construction Artifact Layout
 
@@ -446,30 +421,6 @@ reviewer は次を所有しない。
 
 専門 lens の分離自体を context isolation の価値として維持し、一つの万能 reviewer に統合しない。
 
-## plan-interactive Authority Protection
-
-Human-confirmed direction は downstream synthesis / refinement で意味変更されてはならない。
-
-そのため `plan-interactive` は Authority Integrity Verification を所有する。
-
-```text
-Human-confirmed authority
-        ↓
-Planning Synthesis
-        ↓
-candidate
-        ↓
-Authority Integrity Verification
-        ↓
-review / refinement
-        ↓
-Authority Integrity Verification
-```
-
-Authority Integrity Verification は authority constraint と candidate の semantic preservation だけを照合し、plan quality、improvement proposal、direction change、新仕様を所有しない。
-
-fresh context が必要な場合は専用 observer を execution mechanism として使えるが、多目的 advisor role は作らない。
-
 ## Artifact Taxonomy
 
 v7 では `kernel` を first-class concept として使わない。
@@ -495,8 +446,6 @@ Public Workflows
 ├─ explorer-this
 ├─ plan-agent
 │    └─ discretionary authority
-├─ plan-interactive
-│    └─ Human / constrained authority
 ├─ review-refine
 ├─ code-review
 ├─ test-report
@@ -528,8 +477,6 @@ Agents
 ├─ Plan Adversarial Reviewer
 └─ Over-engineering Reviewer
 
-plan-interactive specific
-└─ Authority Integrity Verification
 ```
 
 ## Construction Surface
@@ -587,12 +534,11 @@ v7 core に含めない事項:
 7. Planning Synthesis
 8. plan-agent
 9. explorer-this
-10. plan-interactive
-11. review-refine
-12. code-review
-13. test-report
-14. impl-lead + consumer-specific Implementation Unit Design + execution / QA / acceptance / closeout
-15. integration / release cleanup
+10. review-refine
+11. code-review
+12. test-report
+13. impl-lead + consumer-specific Implementation Unit Design + execution / QA / acceptance / closeout
+14. integration / release cleanup
 ```
 
 最初に `Local Model → Model Observation → Exploration Projection → Gap Resolution → Reintegration` の共通 Model Construction Core を成立させ、その Core 上で Agentic Model Construction を構築する。その後に delegated evidence acquisition として Research Agent、必要な concrete observation specialization として BMO / RMO consumer semantics を接続する。Interactive Model Construction は同じ Core に Human judgment boundary を追加する独立 Method として構築する。

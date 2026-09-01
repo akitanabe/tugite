@@ -1,57 +1,32 @@
 # Planning Synthesis
 
-Planning Synthesis は、plan-family workflow が確立した方向を実行可能で coherent な Plan candidate へ構成するための共有 Method です。
-単なる formatter ではなく、与えられた authority の内側で必要な planning judgment を担います。
+Planning Synthesis は、caller が確立した理解と authority から request-relative な coherent planning / design artifact candidate を構成する共有 Method です。単なる formatter ではなく、与えられた authority の内側で必要な planning judgment を担います。
 
 ## Input and ownership
 
 <!-- @contract planning-synthesis-input-boundary -->
-caller は一つの task-local Local Model の owner のまま、planning に必要な current understanding、established planning direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。
+caller は一つの task-local Local Model の owner のまま、requested artifact responsibility、current understanding、established direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。
 <!-- @/contract -->
 
-current understanding は current task に planning-relevant な projection であり、Planning Synthesis は別の Local Model を構築しません。
-planning direction、authority constraints、Researcher evidence に固定 serialized schema や永続 artifact は要求しません。Researcher
-evidence が supplied input に含まれる場合は、observed evidence、source basis、bounded inference、limitation など、upstream ですでに
-成立している区別を判断材料として維持します。
-
-Planning Synthesis は repository exploration、research、Researcher invocation、Model Construction、Human clarification を行いません。
-追加 evidence が material に必要なら、取得経路を自分で開始せず、具体的な gap を caller へ返します。
+Planning Synthesis は別の Local Model、artifact kind の fixed enum / schema、永続 artifact を作りません。repository exploration、research、Researcher invocation、Model Construction、Human clarification、review、workflow status の決定も行いません。
 
 ## Synthesis responsibility
 
-established direction の内側で、current task に必要な次の planning semantics を自律的に判断します。
+request と artifact responsibility に material な semantics だけを選びます。実装 plan なら work / dependency / acceptance / verification、設計判断なら context / decision / rationale / alternatives / consequences、比較検討なら comparison axes / evidence / trade-off / recommendation など、requested artifact が必要とする意味を coherent に構成します。
 
-- work decomposition
-- ordering と semantic dependency
-- established direction 内の work scope
-- 外部から観測可能な Acceptance Criteria
-- repository-native な verification strategy
-- material に必要な risk と rollback boundary
-- requested planning artifact に適した composition
+<!-- @contract planning-synthesis-materiality -->
+非実装 artifact に Acceptance Criteria、rollback、work decomposition、execution order を儀式的に要求せず、requested artifact に material な semantics だけを選ぶ。
+<!-- @/contract -->
 
-これらは複数の受容可能な結果から current task に対して coherent な構成を選ぶ planning judgment です。固定 procedure、score、required section
-一覧、expected-output oracle へ変換しません。実装者が goal、中心方向、受入境界を再設計しなくても実行と受入へ進めるだけの material
-semantics を candidate に含めますが、task に不要な risk や rollback section を儀式的に追加しません。
+十分な evidence がある場合は recommendation-first で一案と理由を示し、material な代替案だけを残します。section 構成、serialization、completeness score、expected-output oracle は固定しません。
 
-## Authority boundary
+## Authority and advisory boundary
 
 <!-- @contract planning-synthesis-authority-boundary -->
 Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。
 <!-- @/contract -->
 
-goal や scope を変更・拡張せず、別の design direction へ切り替えず、Human-confirmed constraint を緩和または独自再解釈しません。
-current authority の外に新しい specification を作らず、material な fact の不足を推測で補いません。input 間の conflict が candidate
-coherence または authority の保持を妨げる場合も、一方を無断で優先せず gap として扱います。
-
-## Bounded advisory Action
-
-local planning decision に第二の観点が material に有用だと Planning Synthesis が判断した場合だけ、`plan-quality-advisor` を使えます。
-advisor は mandatory phase、comprehensive review、gate ではありません。
-
-各 invocation は一つの concrete advisory question と、その question に必要な current planning projection / candidate context、必要なら supplied
-upstream Researcher evidence だけを渡す fresh / context-isolated request とします。異なる question は独立した invocation に分け、prior
-advisor conversation や advisor output を次の invocation へ暗黙に継承しません。複数回使うか、どの question を渡すかは Planning
-Synthesis が判断し、advisor に loop、next question、continuation、round limit の所有を移しません。
+局所判断に第二の観点が material に有用な場合だけ fresh / context-isolated な `plan-quality-advisor` を使えます。各 invocation は concrete question と必要 context だけを渡し、advice の採否は Planning Synthesis が所有します。
 <!-- @only codex -->
 
 fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を指定する。
@@ -61,53 +36,20 @@ fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を�
 Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。
 <!-- @/contract -->
 
-advice を得たこと自体は candidate を変更する理由になりません。supplied evidence と inference の区別を保ち、current input、authority、
-candidate coherence に照らして採用、部分採用、または不採用を判断します。
-
 ## Result boundary
 
 <!-- @contract planning-synthesis-result-boundary -->
-返す結果は current task に material な planning semantics を持つ coherent Plan candidate、または candidate coherence を妨げる具体的な material input gap である。
+返す結果は requested artifact に material な semantics を持つ coherent candidate、または candidate coherence を妨げる具体的な material input gap である。
 <!-- @/contract -->
 
-Plan candidate の serialization や section 構成は固定しません。material input gap は、何が不足または矛盾しているか、それが established
-direction 内の synthesis をどう妨げるかを caller が判断できる形で返します。gap の解消経路、Human interaction、workflow-level status、
-review、verification の完了、final acceptance は caller が所有します。
-
-Planning Synthesis の completion boundary は、coherent Plan candidate の構成または material input gap の特定までです。返した candidate を
-review または verification 済みの final candidate として扱わず、後続の review と workflow continuation の判断は caller に残します。
-
-## Representative cases
-
-### Direct synthesis
+gap には candidate を作れない理由と affected planning semantics を含め、caller が次の Action を判断できる形にします。gap の解消 Action、Human interaction、review、workflow status、final acceptance は caller に残します。
 
 <!-- @contract planning-synthesis-direct-case -->
 input が coherent synthesis に十分なら、advisor を起動せず Planning Synthesis が必要な判断を行い candidate を返せる。
 <!-- @/contract -->
 
-この経路では、advisor 利用を品質条件にせず、Planning Synthesis が decomposition、dependency、Acceptance Criteria、verification など
-必要な judgment を直接所有します。output を input の並べ替えだけに縮退させません。
-
-### Bounded advice with supplied Researcher evidence
-
-<!-- @contract planning-synthesis-advice-case -->
-supplied Researcher evidence が局所 trade-off に関係する場合、concrete question と必要 context だけの fresh advisor request を使い、Planning Synthesis が advice を裁定する。
-<!-- @/contract -->
-
-たとえば複数の ordering 候補があり、upstream evidence が trade-off の一部を示す場合、advisor は source evidence と advisor 自身の inference
-を区別した non-binding material を返します。Planning Synthesis は advisory Action を comprehensive review や Researcher invocation へ
-広げず、authority の内側でその material を candidate に採用するか判断します。
-
-### Material input gap
-
 <!-- @contract planning-synthesis-gap-case -->
-candidate coherence に material な fact が input にない場合、その fact と影響を gap として caller へ返す。
+candidate coherence に material な fact が input にない場合、その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。
 <!-- @/contract -->
 
-たとえば direction 内の Acceptance Criteria や verification を確定するための fact が欠けている場合、推測で補わず、repository exploration、
-research、Human interaction を開始せずに停止します。caller が gap の解消方法と workflow-level status を所有します。
-
-## Responsibility boundary
-
-Planning Synthesis は plan-family の public entrypoint、review/refinement loop、structural gate、Authority Integrity Verification、final acceptance
-ではありません。fixed Plan schema、planning-direction schema、lifecycle state machine、completeness score、advisor ledger を定義しません。
+Planning Synthesis は public entrypoint、review loop、Local Model owner、final acceptance owner ではありません。
