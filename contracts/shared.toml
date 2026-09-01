@@ -838,6 +838,30 @@ slice = "planning-synthesis-gap-case"
 pattern = "その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.planning-synthesis-bmo-caller-7023c30e82ea]
+kind = "requires"
+slice = "planning-synthesis-bmo-caller-boundary"
+pattern = "Planning Synthesis は BMO の適用性、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、検証済みの BMO Method availability を caller-owned input として固定し、Expected Observations 自体は事前導出しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-bmo-optional-06af6e87e536]
+kind = "requires"
+slice = "planning-synthesis-bmo-optional-route"
+pattern = "BMO が material でない question では、Planning Synthesis は BMO を起動せず既存の bounded advisory route を使える。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-bmo-0a637587fcff]
+kind = "requires"
+slice = "plan-quality-advisor-bmo-consumer"
+pattern = "BMO が applicable な場合、advisor は Resolved Behavior と Relevant Authoritative Context から Expected Observation Model を Draft AC から独立して導出し、grounding と meaningful variation を保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-quality-advisor-bmo-non-09d280ad6db6]
+kind = "requires"
+slice = "plan-quality-advisor-bmo-non-binding"
+pattern = "Collective Sufficiency は BMO model 自体の導出十分性であり、Plan、Draft AC、workflow の binding verdict ではない。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.planning-core-document]
 kind = "occurrences"
 pattern = "# Planning Core"
