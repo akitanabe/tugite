@@ -22,6 +22,7 @@
     "shared/deletion-test-method.md",
     "shared/researcher-delegation.md",
     "shared/writable-scope.md",
+    "shared/external-effects.md",
     "shared/agents/focused-implementer.md",
     "shared/agents/implementer.md",
     "shared/agents/senior-implementer.md",
@@ -44,7 +45,6 @@
     "shared/skill/impl-lead/references/risk-review.md",
     "shared/skill/impl-lead/references/completion-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
-    "shared/skill/impl-lead/references/external-effects.md",
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/test-report/SKILL.md",
     "shared/skill/review-refine/SKILL.md",
@@ -734,6 +734,34 @@
     {
       "id": "writable-scope-assignment-relation",
       "sha256": "2a1dc51f1d93e1d69acccb311d615bd56ab0f72c1e25e3d9036885ce299908f3"
+    },
+    {
+      "id": "external-effects-document",
+      "sha256": "38f2ab44e0805ee1a31ebbccabbcc1a13ba55e27da7f4c015663ec236c06d8a4"
+    },
+    {
+      "id": "external-effects-boundary-07867d4c438c",
+      "sha256": "5a49a36a0f482ddde1cb286903dcf3603db513648deb88bdb0ec4d96fdf08959"
+    },
+    {
+      "id": "external-effects-action-input-6d6752a114f6",
+      "sha256": "1ff7e58e287cc77cabddba52f96715c56b01fbfea052d2a81ade12fa9b2c7456"
+    },
+    {
+      "id": "external-effects-result-safety-f53d2ffb67eb",
+      "sha256": "ccca7e00fd49fdf0e399e62f679e4b42b962868bbf28a60a800e854ac1cf8d04"
+    },
+    {
+      "id": "external-effects-data-lifecycle-508dbb7c468c",
+      "sha256": "498f339a39f3dc75d6979772e06be151a531860c6272fb0af711e72abd6febff"
+    },
+    {
+      "id": "external-effects-states-afbbae76abab",
+      "sha256": "e00fe8a2bbbe330207601cad766a1b257eee69c7aa4dd742bbcf85906db0cb90"
+    },
+    {
+      "id": "external-effects-flow-ae0470a3b666",
+      "sha256": "9ed0de910898df27b0fb79a8f7959820cc6e0f66380cd86d03399e0c74825901"
     },
     {
       "id": "shared-researcher-retained-e9f44941dc1d",
@@ -1498,6 +1526,14 @@
     {
       "id": "impl-lead-cursor-invocation-policy",
       "sha256": "428d80ea01b7928f047e0aa7502adf2ae00e852f9ebc960057f1134d87911b90"
+    },
+    {
+      "id": "impl-lead-external-effects-pointer-cb20de0606b2",
+      "sha256": "d092885d2d515a5fb13adfcb7530c182c4b1c004d5b4d35da92eaa04966452a8"
+    },
+    {
+      "id": "impl-lead-run-owned-external-effects-pointer-78192957f781",
+      "sha256": "778d8371ba48a3d40931f72028efeba4bfa584af9de5f99d2df33ee1da6758cd"
     }
   ],
   "declarations": [
@@ -2188,6 +2224,36 @@
     },
     {
       "kind": "span",
+      "id": "external-effects-boundary",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "external-effects-action-input",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "external-effects-result-safety",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "external-effects-data-lifecycle",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "external-effects-states",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
+      "id": "external-effects-flow",
+      "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "span",
       "id": "shared-researcher-web-input",
       "path": "shared/agents/researcher.md"
     },
@@ -2433,6 +2499,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-lead-external-effects-pointer",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-lead-intake-ownership",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -2539,6 +2610,11 @@
     {
       "kind": "span",
       "id": "impl-lead-run-owned-route",
+      "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-run-owned-external-effects-pointer",
       "path": "shared/skill/impl-lead/references/run-owned-lifecycle.md"
     },
     {

@@ -4,7 +4,9 @@
 
 ## Run isolation
 
-この reference は run-owned route を選択した場合だけ適用する。親は実装前に integration target の repository / worktree identity、canonical path、exact full ref / head、tracked state、task path collision reality を capture する。run 全体で一つの task-owned branch と repository root 外の run-owned worktree を作り、全 Unit と final verification をその中で行う。user-owned checkout の dirty / untracked / ignored state を変更しない。この reference は run-owned resource の作成、integration、cleanup を含む Git / worktree lifecycle 固有 procedure を所有し、各 Action の cross-cutting eligibility は `external-effects.md` に従う。
+この reference は run-owned route を選択した場合だけ適用する。親は実装前に integration target の repository / worktree identity、canonical path、exact full ref / head、tracked state、task path collision reality を capture する。run 全体で一つの task-owned branch と repository root 外の run-owned worktree を作り、全 Unit と final verification をその中で行う。user-owned checkout の dirty / untracked / ignored state を変更しない。この reference は run-owned resource の作成、integration、cleanup を含む Git / worktree lifecycle 固有 procedure を所有する。
+
+run-owned lifecycle の各 Action の cross-cutting eligibility は `../../../references/external-effects.md` に従う。
 
 `stop-incomplete` となった run は accepted commits を task-owned branch に保持するが integration target へ部分 integration しない。cleanup eligibility は integration result と分離し、保持が必要な branch / worktree / artifact を先に報告する。
 
@@ -28,7 +30,7 @@ Procedure:
 
 Outcomes: verified fast-forward と独立した cleanup decision、または task branch を保持した `stop-incomplete`。Action failure / result unknown では force / retryせず branch を保持する。
 
-precondition を merge、rebase、reset、stash、force、tracked-file overwrite で突破しない。result が不明なら再実行せず external-effects の verification boundary に従う。
+precondition を merge、rebase、reset、stash、force、tracked-file overwrite で突破しない。result が不明なら再実行せず `../../../references/external-effects.md` の verification boundary に従う。
 
 ## Cleanup execution
 

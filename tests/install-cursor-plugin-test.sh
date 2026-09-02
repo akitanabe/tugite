@@ -19,9 +19,10 @@ assert_same() {
 [[ -f "$installer" ]] || fail "missing installer: $installer"
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
 [[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
+[[ -f "$repo_root/plugins/cursor/references/external-effects.md" ]] || fail "missing External Effects reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
-for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle; do
   [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/$reference.md" ]] || fail "missing impl-lead reference: $reference"
 done
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
@@ -60,11 +61,11 @@ for skill in explorer-this how-it impl-lead plan-agent review-refine test-report
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 
-for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle external-effects; do
+for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle; do
   assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/$reference.md" "$dest_dir/skills/impl-lead/references/$reference.md"
 done
 
-for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope; do
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope external-effects; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 
@@ -91,10 +92,18 @@ set -e
 [[ "$refusal_output" == *"--force"* ]] || fail "refusal did not require explicit overwrite"
 [[ "$(cat "$dest_dir/.tugite-version")" == "0.0.0-test" ]] || fail "refused install mutated version marker"
 
+# A forced update must remove a retired packaged path left by an older install.
+stale_local_reference="$dest_dir/skills/impl-lead/references/external-effects.md"
+mkdir -p "$(dirname "$stale_local_reference")"
+printf '%s\n' "stale local reference" > "$stale_local_reference"
+[[ -f "$stale_local_reference" ]] || fail "failed to seed stale local reference"
+
 force_output="$(install_with_home --force)"
 [[ "$(cat "$dest_dir/.tugite-version")" == "$expected_version" ]] || fail "forced install did not restore version"
 [[ "$(cat "$dest_dir/.tugite-commit")" == "$source_commit" ]] || fail "forced install did not restore commit"
 [[ "$force_output" == *"Installed Tugite Cursor plugin"* ]] || fail "forced install output missing success text"
+[[ ! -e "$stale_local_reference" ]] || fail "forced install retained retired local reference"
+assert_same "$source_repo/plugins/cursor/references/external-effects.md" "$dest_dir/references/external-effects.md"
 
 # Symlinked destination must be refused.
 rm -rf "$dest_dir"

@@ -1117,3 +1117,50 @@ paths = [
   "plugins/cursor/references/writable-scope.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-document]
+kind = "occurrences"
+pattern = "# External Effects"
+count = 1
+paths = [
+  "plugins/claude/references/external-effects.md",
+  "plugins/codex/references/external-effects.md",
+  "plugins/cursor/references/external-effects.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-boundary-07867d4c438c]
+kind = "requires"
+slice = "external-effects-boundary"
+pattern = "caller-neutral shared boundary として特定 consumer の lifecycle / review procedure を所有しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-action-input-6d6752a114f6]
+kind = "requires"
+slice = "external-effects-action-input"
+pattern = "caller は各 Action の identity、authority、target、input、precondition を入力として確定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-result-safety-f53d2ffb67eb]
+kind = "requires"
+slice = "external-effects-result-safety"
+pattern = "caller は各 Action の idempotency key / duplicate semantics、independent verification、compensation、safe retry を入力として確定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-data-lifecycle-508dbb7c468c]
+kind = "requires"
+slice = "external-effects-data-lifecycle"
+pattern = "caller は各 Action の sensitivity、retention、cleanup、および consumer-specific risk / lifecycle disposition を入力として確定する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-states-afbbae76abab]
+kind = "requires"
+slice = "external-effects-states"
+pattern = "Action state は `未実行`、`実行済み`、`結果不明` を区別する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.external-effects-flow-ae0470a3b666]
+kind = "requires"
+slice = "external-effects-flow"
+pattern = "### external-action-control"
+applies_to = ["claude", "codex", "cursor"]
