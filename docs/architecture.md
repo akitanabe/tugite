@@ -226,7 +226,7 @@ structural non-locality は独立 gate ではなく review viewpoint の一つ�
 
 ### test-report
 
-`test-report` は Model Construction Method の consumer ではない observation-only public Skill とする。
+`test-report` は exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Human-owned material gap の場合だけ Interactive Model Construction を conditional route とする observation-only public Skill である。BMO の consumer として、独立 grounding できた Expected Observation と static Case / Evidence の関係、および独立 grounding できない部分の observation limit を Verification Topology に投影する。
 
 ```text
 test-report

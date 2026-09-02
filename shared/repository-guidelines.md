@@ -69,7 +69,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、
 `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`review-refine`（不変 snapshot に対する bounded review）の5つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`review-refine`（不変 snapshot に対する bounded review）の6つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
