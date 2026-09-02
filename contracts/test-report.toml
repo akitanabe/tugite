@@ -21,22 +21,29 @@ slice = "test-report-responsibility"
 pattern = "静的 evidence から Verification Topology を再構成する public Skill です。他 workflow の工程として自動起動しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-ownership-a9ea10494cfe]
+[contracts.test-report-ownership-9d9a672d141a]
 kind = "requires"
 slice = "test-report-ownership"
-pattern = "exactly one の task-local Local Model を所有し、scope resolution、BMO、Verification Topology、report projection は同じ Local Model の bounded projection を利用します。"
+pattern = "exactly one の task-local Local Model を所有し、scope resolution、static read、input preparation、static interpretation、report projection は同じ Local Model の bounded projection を利用します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-agentic-first-d77aeaa309a0]
+[contracts.test-report-agentic-first-d5c89556f797]
 kind = "requires"
 slice = "test-report-agentic-first"
-pattern = "Agentic Model Construction を first route とし、repository / source の静的観測、scope resolution、Behavior と authoritative Context の解決を Agent-side で先に行います。"
+pattern = "Agentic Model Construction を first route とし、repository / source の静的観測、scope resolution、Behavior / Context candidate と provenance の acquisition scope を Agent-side で先に決めます。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-interactive-boundary-93b3056abdb8]
 kind = "requires"
 slice = "test-report-interactive-boundary"
 pattern = "残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、同じ Local Model のまま Interactive Model Construction を composition します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-acquisition-scope-4c6040e1623f]
+kind = "requires"
+slice = "test-report-acquisition-scope"
+pattern = '''これは取得範囲の決定であり、Behavior grounding や
+authority を持つ Context 間の semantic precedence の解決ではありません。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-completeness-9450a11ecf5c]
@@ -51,46 +58,23 @@ slice = "test-report-zero-tests"
 pattern = "解決済み test scope が zero tests であることは有効な観測結果であり、scope 自体を解決できない結果と区別して報告します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-independent-grounding-e7068e1ddb99]
+[contracts.test-report-topology-input-f722cdcae0ec]
 kind = "requires"
-slice = "test-report-independent-grounding"
-pattern = "対象 test 自身を Behavior または Expected Observation の grounding に使わず、test-only で独立 grounding できない Behavior は Case / Evidence と grounding limitation を保持しますが、Expected Observation や absence observation を発明しません。"
+slice = "test-report-topology-input"
+pattern = '''Behavior candidate、authority を持ち得る Context、Case / Evidence / config facts、resolved / observed membership と completeness basis、各 provenance / source location を
+consumer input として準備します。対象 test は discovery signal、Case、Evidence、scope fact としてだけ渡します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-bmo-input-a20177b8de36]
+[contracts.test-report-candidate-preservation-4d641dd018af]
 kind = "requires"
-slice = "test-report-bmo-input"
-pattern = "BMO には Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary を渡します。"
+slice = "test-report-candidate-preservation"
+pattern = "acquisition scope 内で観測した Behavior / Context candidate は semantic authority の採否を決めず、provenance と適用範囲を失わずに渡します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-bmo-result-6daad6da4353]
+[contracts.test-report-topology-method-068013a5153d]
 kind = "requires"
-slice = "test-report-bmo-result"
-pattern = "Expected Observations、meaningful variations / conditions、各 grounding、Collective Sufficiency、Relevant Unresolved Viewpoints、uncovered semantics を欠落させず consumer Data に保持します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-bmo-reintegration-8238008161ad]
-kind = "requires"
-slice = "test-report-bmo-reintegration"
-pattern = "affected Behavior だけ BMO を再適用し、stale result を置換します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-bmo-partial-boundary-d9c992e5217c]
-kind = "requires"
-slice = "test-report-bmo-partial-boundary"
-pattern = "partial model を complete な Expected Observation 集合として扱わず、unresolved / uncovered semantics から absence observation を作りません。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-topology-96dbb4a86895]
-kind = "requires"
-slice = "test-report-topology"
-pattern = "`Behavior → Expected Observation ↔ Case → Evidence` の many-to-many relation として構成し"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-observation-states-49fd38c4d5ec]
-kind = "requires"
-slice = "test-report-observation-states"
-pattern = "usable corresponding Evidence、correspondence 確定かつ statically non-executed、bounded observed scope 内で no corresponding Evidence observed、correspondence unresolved、execution state indeterminate を区別します。"
+slice = "test-report-topology-method"
+pattern = "準備した consumer input を `Verification Topology` Method に渡し、返された Topology Data を同じ Local Model へ reintegrate します。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-static-boundary-634298f39a09]

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Test Verify"
+  short_description: "Verify and causally remediate a bounded test target"
+  default_prompt: "Use $test-verify only when explicitly requested to verify a bounded test target from grounded runtime evidence, directly remediate only target-causal Problems, pass the mandatory consumer-specific Completion Gate, and run final verification."
+policy:
+  allow_implicit_invocation: false

@@ -226,27 +226,43 @@ structural non-locality は独立 gate ではなく review viewpoint の一つ�
 
 ### test-report
 
-`test-report` は exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Human-owned material gap の場合だけ Interactive Model Construction を conditional route とする observation-only public Skill である。BMO の consumer として、独立 grounding できた Expected Observation と static Case / Evidence の関係、および独立 grounding できない部分の observation limit を Verification Topology に投影する。
+`test-report` は exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Human-owned material gap の場合だけ Interactive Model Construction を conditional route とする observation-only public Skill である。resolved scope の candidate / provenance / static Case / Evidence / config Data を準備し、shared Verification Topology が grounding、semantic precedence、BMO、relation、state を所有する。返された Topology と observation limits を用途に適応した report へ投影する。
 
 ```text
 test-report
   ↓
-scope resolution
+scope resolution and static Data preparation
   ↓
-Behavior Model Observation
+shared Verification Topology
   ↓
-Verification Topology
-  ↓
-Human
+report projection → Human
 ```
 
 責務は次に限定する。
 
 * test / target code の static observation
-* Verification Topology の再構成
+* Verification Topology consumer input の準備と返却結果の report projection
 * observation limits の提示
 
 test quality judgment、remediation、planning、implementation は行わない。
+
+### test-verify
+
+`test-verify` は明示された bounded test target を shared Verification Topology と grounded runtime evidence で検証し、top-level で `test-verify` を実行する agent が direct owner として target-causal Problem だけを Red → Green → Refactor で修復する public Skill である。その agent は repository Test QA baseline の parent responsibility（obligation、common oracle、validation plane、final adjudication）を baseline self-QA として履行する。`test-report` や `impl-lead` は nested invocation せず、独立した Parent QA phase、parent / worker hierarchy、Implementation Unit、Implementer delegation を導入しない。
+
+```text
+test-verify
+  ↓
+shared Verification Topology
+  ↓
+runtime evidence and causal Problem
+  ↓
+direct remediation
+  ↓
+candidate commit → Completion Gate → final verification
+```
+
+baseline identity と failure disposition を lifecycle 全体で固定し、missing / ineffective / non-executed / flaky / test-side / implementation discrepancy を区別する。execution identity の drift、結果の不安定、causal attribution の未確定のいずれかが target judgment を阻む場合は qualified incomplete とし、target chain と因果的に独立と判断できる観測だけを incidental finding として扱う。risk review と Completion Gate は consumer-specific であり、shared External Effects boundary を pre-action safety に利用する。local Flow の `stop-incomplete` は invocation 外向きに `qualified incomplete` へ投影する。
 
 ### impl-lead
 

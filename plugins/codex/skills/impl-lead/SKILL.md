@@ -15,7 +15,9 @@ description: >-
 
 入力 Plan、request、established direction の outcome、Acceptance Criteria、scope、constraints、authority を input authority とし、run の上限にする。要求成果を成立させるために input authority 外の material work が必要なら、blocking authority gap として上流または Human へ返し、`stop-incomplete` とする。要求成果と独立した input authority 外の material finding は obligation へ昇格させず report-only incidental finding として保持し、run acceptance を阻止しない。
 
-`references/external-effects.md` が、implementation、verification、integration、cleanup を含む run 全体に適用する external Action の cross-cutting pre-action safety boundary と適用手順を所有する。親は各 Action に同 reference を適用し、実行 eligibility と result safety を裁定する。Git / worktree 固有の procedure は `references/run-owned-lifecycle.md`、post-diff specialized review は `references/risk-review.md` が所有する。
+`../../references/external-effects.md` が、implementation、verification、integration、cleanup を含む run 全体に適用する external Action の cross-cutting pre-action safety boundary と適用手順を所有する。
+
+親は各 Action に同 reference を適用し、実行 eligibility と result safety を裁定する。Git / worktree 固有の procedure は `references/run-owned-lifecycle.md`、post-diff specialized review は `references/risk-review.md` が所有する。
 
 ## Intake and Implementation Unit normalization
 
@@ -86,7 +88,7 @@ Final Correction Unit の8 fieldは既存 boundary と failure evidence から�
 
 Final Correction Unit は同じ run で1つだけ構成できる。fresh `focused-implementer` が新しい commit として実装し、Parent QA、必要な risk review、Completion Gate を通常どおり行う。accepted 後に run-wide final verification を再実行し、`passed` でなければ新しい Final Correction Unit を連鎖させず `stop-incomplete` とする。8条件の一つでも満たさない failure も `stop-incomplete` とする。
 
-final verification が Green の場合だけ、run-owned route では `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定し、Human 指定 route では明示された ownership / authority の内側だけで closeout する。external Action がある場合は `references/external-effects.md` を適用する。
+final verification が Green の場合だけ、run-owned route では `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定し、Human 指定 route では明示された ownership / authority の内側だけで closeout する。external Action がある場合は `../../references/external-effects.md` を適用する。
 
 ## Completion and report
 
@@ -102,7 +104,7 @@ conversation final report には Unit 状態、commit / branch / integration、P
 - `references/risk-review.md`: risk-directed specialized review
 - `references/completion-gate.md`: final writing review と Unit commit closure
 - `references/run-owned-lifecycle.md`: worktree、integration、cleanup
-- `references/external-effects.md`: repository 外も含む side-effect safety
+- `../../references/external-effects.md`: repository 外も含む side-effect safety
 
 ## Non-goals
 

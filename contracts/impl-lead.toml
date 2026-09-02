@@ -331,3 +331,15 @@ pattern = "disable-model-invocation: true"
 count = 1
 paths = ["plugins/cursor/skills/impl-lead/SKILL.md"]
 applies_to = ["cursor"]
+
+[contracts.impl-lead-external-effects-pointer-cb20de0606b2]
+kind = "requires"
+slice = "impl-lead-external-effects-pointer"
+pattern = "`../../references/external-effects.md`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-run-owned-external-effects-pointer-78192957f781]
+kind = "requires"
+slice = "impl-lead-run-owned-external-effects-pointer"
+pattern = "run-owned lifecycle の各 Action の cross-cutting eligibility は `../../../references/external-effects.md` に従う。"
+applies_to = ["claude", "codex", "cursor"]
