@@ -12,6 +12,7 @@ files = [
   "contracts/explorer-this.toml",
   "contracts/plan-agent.toml",
   "contracts/test-report.toml",
+  "contracts/test-verify.toml",
   "contracts/review-refine.toml",
   "contracts/impl-lead.toml",
 ]
@@ -55,6 +56,9 @@ files = [
   "shared/skill/impl-lead/references/run-owned-lifecycle.md",
   "shared/skill/plan-agent/SKILL.md",
   "shared/skill/test-report/SKILL.md",
+  "shared/skill/test-verify/SKILL.md",
+  "shared/skill/test-verify/references/risk-review.md",
+  "shared/skill/test-verify/references/completion-gate.md",
   "shared/skill/review-refine/SKILL.md",
   "shared/README.md",
   "shared/repository-guidelines.md",
@@ -67,6 +71,7 @@ files = [
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-agent/openai.yaml",
   "declarations/codex/skills/test-report/openai.yaml",
+  "declarations/codex/skills/test-verify/openai.yaml",
   "declarations/codex/skills/review-refine/openai.yaml",
   "declarations/cursor/plugin.json",
 ]
@@ -199,6 +204,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 match = "shared/skill/test-report/SKILL.md"
 path = "skills/test-report/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/test-verify/SKILL.md"
+path = "skills/test-verify/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/test-verify/references/*.md"
+path = "skills/test-verify/references/{1}.md"
+profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
@@ -349,6 +366,18 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
+match = "shared/skill/test-verify/SKILL.md"
+path = "skills/test-verify/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/test-verify/references/*.md"
+path = "skills/test-verify/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
 match = "shared/skill/review-refine/SKILL.md"
 path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -494,6 +523,18 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 match = "shared/skill/test-report/SKILL.md"
 path = "skills/test-report/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/test-verify/SKILL.md"
+path = "skills/test-verify/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/test-verify/references/*.md"
+path = "skills/test-verify/references/{1}.md"
+profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]

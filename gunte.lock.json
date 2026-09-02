@@ -8,6 +8,7 @@
     "contracts/explorer-this.toml",
     "contracts/plan-agent.toml",
     "contracts/test-report.toml",
+    "contracts/test-verify.toml",
     "contracts/review-refine.toml",
     "contracts/impl-lead.toml",
     "shared/VERSION",
@@ -47,6 +48,9 @@
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/test-report/SKILL.md",
+    "shared/skill/test-verify/SKILL.md",
+    "shared/skill/test-verify/references/risk-review.md",
+    "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
     "shared/README.md",
     "shared/repository-guidelines.md",
@@ -59,6 +63,7 @@
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
     "declarations/codex/skills/test-report/openai.yaml",
+    "declarations/codex/skills/test-verify/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
     "declarations/cursor/plugin.json"
   ],
@@ -176,8 +181,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-34fa20bdc844",
-      "sha256": "b26f13bd33e985a864ab2deb18e93db2f587efe7a7dda3eab180a10767e746a4"
+      "id": "cursor-readme-public-skills-requires-f97bca5d144c",
+      "sha256": "0936b1f2f8db6fdab78350a74556a4dc9ef7b6f0fa91879e3e0909d6724da981"
     },
     {
       "id": "cursor-readme-unsupported-requires-d94e0540f495",
@@ -1274,6 +1279,146 @@
     {
       "id": "test-report-codex-invocation-policy",
       "sha256": "d9c7930acbe776914281a00490fec9dba2f3da2c9932606487986925347e0648"
+    },
+    {
+      "id": "test-verify-document",
+      "sha256": "d744df3658048c0c5d55950fe058bcc010f240f5675c2e580337093ea021cb65"
+    },
+    {
+      "id": "test-verify-codex-invocation-policy",
+      "sha256": "dafb97997f4ea957657a1abdf2695295b670e335c1f1d8caea1ac31d3ce16a27"
+    },
+    {
+      "id": "test-verify-model-invocation-policy",
+      "sha256": "1b471577261f2269212f9cdd9aafb689116475ceb4c15c4185d2a94c0c67004a"
+    },
+    {
+      "id": "test-verify-risk-review-document",
+      "sha256": "90ad9f6d12922db46ce95cd9bb181a99138e822fa0d1a433f71a567679ad9bfe"
+    },
+    {
+      "id": "test-verify-completion-gate-document",
+      "sha256": "2ea2612f989d67f942e760768deef16fc5c41cf054317f16d7acfc63d7f2d2b1"
+    },
+    {
+      "id": "test-verify-explicit-only-a02991736c7a",
+      "sha256": "2acbce956333c6f36bca6fd3042397315fda7bcbe84daea493ad1c75f6098aa2"
+    },
+    {
+      "id": "test-verify-direct-ownership-6194ad90b253",
+      "sha256": "403d43e8744a22f1f4e475124dbc6665789135b84099974878f32f38ec795eb8"
+    },
+    {
+      "id": "test-verify-baseline-parent-self-qa-c68cbff59c47",
+      "sha256": "e8e938d58299f9fc749ee2e187c40dc6dd3adcec238b65161361e0a005a5c42a"
+    },
+    {
+      "id": "test-verify-local-model-4822ace736c6",
+      "sha256": "aa4066573f83583958d2b85900449aa2570c407284581d7f5f4817635fc82bc8"
+    },
+    {
+      "id": "test-verify-model-recomposition-1b7a1844726e",
+      "sha256": "cda16e2fc694f50a84d4e6d1b696f88ec48f01e235862203155a229f537acfe5"
+    },
+    {
+      "id": "test-verify-consumer-boundary-2c4a8caff8c3",
+      "sha256": "2830fafeb09b7ac5d63ed17fbd0e3c2397f9b74b02b4af56a9bc188570937a76"
+    },
+    {
+      "id": "test-verify-invocation-identity-89e1808d8d8a",
+      "sha256": "143a875bc13bb2fdbdaa7a4a1588ffd5e0d5daa60cec4dc801e9ef3b4ba5ae80"
+    },
+    {
+      "id": "test-verify-authority-drift-4a8a4dff7203",
+      "sha256": "a7039a1b1ecfebde17720a5069fa4f3167f70236e60cedf4bb20482cdf536626"
+    },
+    {
+      "id": "test-verify-runtime-attribution-72721b304eb1",
+      "sha256": "7620681dad0fb48131c15cd313303af3ff73612f081b9e08045755e41820b73d"
+    },
+    {
+      "id": "test-verify-topology-method-b4b8260545b8",
+      "sha256": "fcc4b2b5b70138faaf13fbaa1eec17a40f05b2b8574729b00cb5689f5792d57e"
+    },
+    {
+      "id": "test-verify-baseline-identity-92aa7653cbbe",
+      "sha256": "4a7deff97f5deec2f5a3e000b6038b6f4ae5a99a387e67e12ada91fbee766afa"
+    },
+    {
+      "id": "test-verify-problem-classification-ee595e7ce58e",
+      "sha256": "ef5c549dc7e82984a94c4466288f84bfd5312e40a8b0f967fef9fadd2b1d1dcf"
+    },
+    {
+      "id": "test-verify-causal-remediation-a737b52ab3d8",
+      "sha256": "cff84a1b8426ca33a71fef002f6fb77bfa38eaeb6c6e5eb71f31ca40f2b1f03a"
+    },
+    {
+      "id": "test-verify-temporary-mutation-f856c87a2e4a",
+      "sha256": "bbdb2ff12871c279159a4a01f6807ee78b24432c670ef3070ffb287e9287571d"
+    },
+    {
+      "id": "test-verify-restore-blocking-992e55f51497",
+      "sha256": "f29dce0cbdb413e9f1c725fe45c1c136bea19f1c774d3c9db24f93705fd02bbf"
+    },
+    {
+      "id": "test-verify-pass-boundary-d5f1b4ada4d2",
+      "sha256": "3d6386edee0bc79924afe6754796ce32d56afc11d461b7c9faf117c143e94a7d"
+    },
+    {
+      "id": "test-verify-external-effects-2389da937a2c",
+      "sha256": "f43057daf1621d78a3900f3365c096ee5a4a29dd5679a9bb0867fa0b532c32bf"
+    },
+    {
+      "id": "test-verify-destructive-effect-3964c03b2444",
+      "sha256": "af1d0bfa19ec06bfe27a860aea4bba6ab8259413bef49210a58816a43217ab19"
+    },
+    {
+      "id": "test-verify-effect-confirmation-1f422749c6ee",
+      "sha256": "479f50bf7525a5e35a31eb3cac596b6f9fd40622e43a4f8ee7b1a5ac1d33a07c"
+    },
+    {
+      "id": "test-verify-completion-sequence-a901c56e5eb7",
+      "sha256": "a73378fa7a82eb118481cdc5d29294541f19383a635fcab6b5aed326412e1638"
+    },
+    {
+      "id": "test-verify-post-final-state-fb2e4b3a82db",
+      "sha256": "86a697b6acba1c3ecc7dbaf2994f3cbbe2b814a662404cd7827c4cec7e1bfa8a"
+    },
+    {
+      "id": "test-verify-post-final-blocking-ffcbe48f2055",
+      "sha256": "c671468eb798927764275c379f34f89fc1a067cdf7f95f92c06fedc6fd62d255"
+    },
+    {
+      "id": "test-verify-incomplete-83789f53f7e7",
+      "sha256": "2e67f1e563fdf77cc982b148fe5d25eb2c74309cf0410230ed4c9c6c0340d511"
+    },
+    {
+      "id": "test-verify-risk-review-flow-a1114d2d042e",
+      "sha256": "f9936293dd21cc2887604f2f641af20676805940655f3195fb1d8591794a5c48"
+    },
+    {
+      "id": "test-verify-risk-baseline-f907374efbd4",
+      "sha256": "76390883497e0e26c78011d27df65b265a1b9446ae5f458cd896d9902274ebdc"
+    },
+    {
+      "id": "test-verify-risk-flow-result-6a5d73274d65",
+      "sha256": "a043e020ab30d278cd0f0f86968241e7d06a0273c1705b04f8fe11eab841eca3"
+    },
+    {
+      "id": "test-verify-completion-flow-db873ceb849f",
+      "sha256": "74e84070ada9af18f6aa90a71fd74323184160f0351eae87ac7931cbdf45e76a"
+    },
+    {
+      "id": "test-verify-completion-integrity-dea7b9acb3b5",
+      "sha256": "2d65d458830cef8f6669e4f7dd6149c0a55888b00b9844783a22efeb7ab948d6"
+    },
+    {
+      "id": "test-verify-completion-writing-scope-2fc0e46b7bdc",
+      "sha256": "9d7fd82e052fe2ccb98588054e3fb56964b4d33a277e2898327193bd45845a6e"
+    },
+    {
+      "id": "test-verify-flow-incomplete-projection-8dc215778931",
+      "sha256": "9bbd0a6edf4c49bf8796eb97547f167f5c282c666c4d7d4d73c408c2aab9d233"
     },
     {
       "id": "review-refine-document",
@@ -2776,6 +2921,121 @@
       "kind": "span",
       "id": "test-report-default-output",
       "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-explicit-only",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-direct-ownership",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-baseline-parent-self-qa",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-local-model",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-consumer-boundary",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-invocation-identity",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-topology-method",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-baseline-identity",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-runtime-attribution",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-problem-classification",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-temporary-mutation",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-causal-remediation",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-pass-boundary",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-external-effects",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-destructive-effect",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-completion-sequence",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-flow-incomplete-projection",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-post-final-state",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-incomplete",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-risk-baseline",
+      "path": "shared/skill/test-verify/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-risk-review-flow",
+      "path": "shared/skill/test-verify/references/risk-review.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-completion-flow",
+      "path": "shared/skill/test-verify/references/completion-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-completion-writing-scope",
+      "path": "shared/skill/test-verify/references/completion-gate.md"
     },
     {
       "kind": "span",

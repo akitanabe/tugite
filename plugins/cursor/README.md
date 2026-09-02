@@ -2,7 +2,7 @@
 
 # Tugite v7.0.0
 
-Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Implementation Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
+Tugite は Claude Code、Codex、Cursor 向けに複数の public workflow、agent、skill を配布する plugin です。各 workflow は固有の責務境界と起動条件に従い、必要に応じて agent、reviewer、advisor を組み合わせます。
 
 ## 現行の構成
 
@@ -13,6 +13,7 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 - `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化し、実装、Parent QA、受入、final verification、安全な統合まで所有します。明示起動時だけ使います。
 - `plan-agent`: normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作り、必要な場合だけ review します。明示起動時だけ使います。
 - `test-report`: 指定範囲を静的に観測し、独立 grounding できた Expected Observation と Case / Evidence の対応、および grounding できない場合の limitation を、評価や remediation なしで Verification Topology として報告します。
+- `test-verify`: 明示された bounded test target を grounded runtime evidence で検証し、target-causal Problem だけを直接修復して Completion Gate と final verification まで閉じます。明示起動時だけ使います。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
 
 `plan-agent` は review applicability と explicit opt-out を判断し、nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は `plan-adversarial-reviewer` と `over-engineering-reviewer` を使う strict review route へ進みます。
@@ -32,7 +33,7 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 - [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:test-report`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$test-report`、`$review-refine` を起動できます。
+Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:test-report`、`/tugite:test-verify`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$test-report`、`$test-verify`、`$review-refine` を起動できます。
 
 ### Cursor local plugin
 
@@ -70,6 +71,7 @@ public skill は次のコマンドで明示起動できます。
 /impl-lead <実装タスク>
 /plan-agent <plan task>
 /test-report <test scope>
+/test-verify <test target>
 /review-refine <artifact review task>
 ```
 
