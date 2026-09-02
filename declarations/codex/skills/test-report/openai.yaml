@@ -1,0 +1,6 @@
+interface:
+  display_name: "Test Report"
+  short_description: "Reconstruct a static Verification Topology without evaluation"
+  default_prompt: "Use $test-report to statically observe the requested test scope, independently resolve Behavior from authoritative Context, pass that Resolved Behavior to BMO to derive Expected Observations, preserve the many-to-many Verification Topology and observation limits, and report without executing, evaluating, or remediating tests."
+policy:
+  allow_implicit_invocation: true
