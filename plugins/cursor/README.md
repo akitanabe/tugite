@@ -1,6 +1,6 @@
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Tugite v7.0.0
+# Tugite v7.1.0
 
 Tugite は Claude Code、Codex、Cursor 向けに複数の public workflow、agent、skill を配布する plugin です。各 workflow は固有の責務境界と起動条件に従い、必要に応じて agent、reviewer、advisor を組み合わせます。
 
