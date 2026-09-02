@@ -15,6 +15,7 @@
     "shared/agentic-model-construction.md",
     "shared/interactive-model-construction.md",
     "shared/behavior-model-observation.md",
+    "shared/verification-topology.md",
     "shared/planning-synthesis.md",
     "shared/planning-core.md",
     "shared/reality-model-observation.md",
@@ -65,6 +66,82 @@
     {
       "id": "shared-model-document",
       "sha256": "e0b92092eb6f499c816bfb4c6bd57effb5ae09b8a66d18a21fe88b25387dbbc1"
+    },
+    {
+      "id": "shared-verification-topology-document",
+      "sha256": "b687f015e07d3bd2abc69d69bcff2d2c0fd37a2d82d0995190660aff11ce5e3d"
+    },
+    {
+      "id": "shared-verification-topology-identity-5f8663f6f848",
+      "sha256": "a525a72217bcaa24d996440b83637382f0186af4610cec952222a523cabd6916"
+    },
+    {
+      "id": "shared-verification-topology-provenance-3cbaa6181562",
+      "sha256": "0f2da90fd92d1604be38ab868dc461b2c865158305ef8e37059883f57e282af2"
+    },
+    {
+      "id": "shared-verification-topology-test-authority-5b51db18264a",
+      "sha256": "d10e3316061f1ac219fae75b0f1bc908bcee74d02c56298caad504420be3904a"
+    },
+    {
+      "id": "shared-verification-topology-precedence-resolution-bca93f1f92b4",
+      "sha256": "80982a3885bfe068c9f3ecc80bed04dc8dcef80dc7f84c8fcee315f640ed4dcb"
+    },
+    {
+      "id": "shared-verification-topology-precedence-limit-a416d4f9df9d",
+      "sha256": "94f017d13fecdf29c3afa1b8773e2e459f3893af35829fd118099567a17310ab"
+    },
+    {
+      "id": "shared-verification-topology-test-only-limit-aefaaacf1362",
+      "sha256": "1a2bed0d31128e260a381542da4a5e7340920192910a80a7f168917be1dd8ce5"
+    },
+    {
+      "id": "shared-verification-topology-bmo-input-e822477574cb",
+      "sha256": "60b177b67cdfae34094222262e57777af87c108c946f949593db0a13b9a95be4"
+    },
+    {
+      "id": "shared-verification-topology-bmo-result-2e3eb67c12b5",
+      "sha256": "2b93dce3a19e12ced576065b74fde760d4d4c5c29d5c72629a348701aeacbd99"
+    },
+    {
+      "id": "shared-verification-topology-bmo-partial-boundary-2e0141c642dc",
+      "sha256": "15ab552e2ba88314ef7dc6d8707686284247ce2ba7a3ec8d7af112b883420c32"
+    },
+    {
+      "id": "shared-verification-topology-bmo-reintegration-c8a56d65ce77",
+      "sha256": "a1f7bc191c9637a5bad08ef4e883ceee031a585b95203440e7b37146c3e5591d"
+    },
+    {
+      "id": "shared-verification-topology-relation-abd89928b825",
+      "sha256": "08441606c9a7544a8c6c4747983ba3070c9bd8b58c64813b7a1656d449df0876"
+    },
+    {
+      "id": "shared-verification-topology-states-c1aff76e4259",
+      "sha256": "2f66b42777ae26d0ba8eaa2cf962740d3e8d799f4e0f0af8e0b01f39710b5fbc"
+    },
+    {
+      "id": "shared-verification-topology-usable-state-a074ccde6cbe",
+      "sha256": "37d70b0129a31cddf900213ba223fb01f71ccaa4f0eef4f23e8b8607b4cbcc52"
+    },
+    {
+      "id": "shared-verification-topology-non-executed-state-fa03f27ee1d4",
+      "sha256": "613700d1ca123d18361d399b74241d2fb5a5ae2c2b13b69040fa6006112ebcef"
+    },
+    {
+      "id": "shared-verification-topology-unknown-state-3f7f69ba2009",
+      "sha256": "d0fce2d1e9becd77a73de6169cc62045ab6944600eefbe63f7d9f397125c307d"
+    },
+    {
+      "id": "shared-verification-topology-absence-state-a649b62a6694",
+      "sha256": "71b89dc681ef0e2e87a27660e4f5cc8363deb24ce4a25d52b2f995fe20c46ca7"
+    },
+    {
+      "id": "shared-verification-topology-result-cc1454b9558b",
+      "sha256": "f6693f226070356102083f296b15bb36440c3bc85912cb111b6ce194e422f2f5"
+    },
+    {
+      "id": "shared-verification-topology-stop-boundary-b58220a44af7",
+      "sha256": "e3ff4a5c124f458ffc413e0129cfe438b7ccc31fe4830935b474f372a503c4bf"
     },
     {
       "id": "readme-title-requires-659967575a1a",
@@ -1115,16 +1192,20 @@
       "sha256": "226d664968bb597d5cd8ef41e45fb193bca1ba90162877ba49595d84e0d52c8f"
     },
     {
-      "id": "test-report-ownership-a9ea10494cfe",
-      "sha256": "d0c70199d99cfcfd83ab74938c94f61cb71c46f519ac5f48bbf905cf6eacf5eb"
+      "id": "test-report-ownership-9d9a672d141a",
+      "sha256": "4a5570ab24bdce4c18a7d9fc29d3e40719a8547231f67dbc0e27e30b4ca4ad1d"
     },
     {
-      "id": "test-report-agentic-first-d77aeaa309a0",
-      "sha256": "fa3ac31482595ee82e941a3dd18a8f85d7cb081ee2a4befb356fe333ad794cd7"
+      "id": "test-report-agentic-first-d5c89556f797",
+      "sha256": "e11ae4b56fe0363470fcf710e2b2d7547b4e1cf4f7cabe511dc70c20378546b5"
     },
     {
       "id": "test-report-interactive-boundary-93b3056abdb8",
       "sha256": "6d75822e5d1d73045922627e7b9f1bb8524538b4878f296a5fe028156a79c0c8"
+    },
+    {
+      "id": "test-report-acquisition-scope-4c6040e1623f",
+      "sha256": "5de317ee36184ed6122b6c83773853ea56557c3a80bdbd777ce5952081cc0a3a"
     },
     {
       "id": "test-report-completeness-9450a11ecf5c",
@@ -1135,32 +1216,16 @@
       "sha256": "b5104ec6c7d7b1802cb9e33d73f8d9c670b880e00a641a238f5ff875b3c175a0"
     },
     {
-      "id": "test-report-independent-grounding-e7068e1ddb99",
-      "sha256": "c03f28f74772ef875ec25ba0120c762ef68fb8ab0127df7ea3afa4ee98d2ad4b"
+      "id": "test-report-topology-input-f722cdcae0ec",
+      "sha256": "919fc39062f25b219fc216898b9a59bccf87199e66f7d8e42ea87c9cd46f1afb"
     },
     {
-      "id": "test-report-bmo-input-a20177b8de36",
-      "sha256": "056707ad6d0878c96d5b6dbc59f241c74fc5bfcb83774c43ea5e449d48a84bb3"
+      "id": "test-report-candidate-preservation-4d641dd018af",
+      "sha256": "ee9ebb29262d6b9e2252dcd252749a06c39d103b44e899d22617b8e691bc8318"
     },
     {
-      "id": "test-report-bmo-result-6daad6da4353",
-      "sha256": "7b144371007682faa6f4cd5660e9a945553d659df49f7119aa36c4be6e460480"
-    },
-    {
-      "id": "test-report-bmo-reintegration-8238008161ad",
-      "sha256": "de19ad265f0aff337dd7310fd560b9cb48630194b805307f19b0cf7eda37e48b"
-    },
-    {
-      "id": "test-report-bmo-partial-boundary-d9c992e5217c",
-      "sha256": "cad6556796eff90026ddf085e157249796375a261a666f70c164efbee0e4bb7d"
-    },
-    {
-      "id": "test-report-topology-96dbb4a86895",
-      "sha256": "4378dd4017fcb4a1b13a23f4cd2546118d7d3c81cbfd82bb17c0d2813d6bdc9b"
-    },
-    {
-      "id": "test-report-observation-states-49fd38c4d5ec",
-      "sha256": "477a0d9465c946733f69db809ee1948e6a715c7982c2b0f7fc7e7ebe7602a12a"
+      "id": "test-report-topology-method-068013a5153d",
+      "sha256": "f50b462cf882f985696fa30aaa6b4b3b775cf3345f4ccd3bc765700cac9eab6f"
     },
     {
       "id": "test-report-static-boundary-634298f39a09",
@@ -1660,6 +1725,96 @@
       "kind": "anchor",
       "id": "shared-bmo-stop-relation",
       "path": "shared/behavior-model-observation.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-identity",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-provenance",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-test-authority",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-precedence-resolution",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-precedence-limit",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-test-only-limit",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-bmo-input",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-bmo-result",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-bmo-partial-boundary",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-bmo-reintegration",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-relation",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-states",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-usable-state",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-non-executed-state",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-unknown-state",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-absence-state",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-result",
+      "path": "shared/verification-topology.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-verification-topology-stop-boundary",
+      "path": "shared/verification-topology.md"
     },
     {
       "kind": "span",
@@ -2498,6 +2653,11 @@
     },
     {
       "kind": "span",
+      "id": "test-report-acquisition-scope",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-report-completeness",
       "path": "shared/skill/test-report/SKILL.md"
     },
@@ -2508,37 +2668,17 @@
     },
     {
       "kind": "span",
-      "id": "test-report-independent-grounding",
+      "id": "test-report-topology-input",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "test-report-bmo-input",
+      "id": "test-report-candidate-preservation",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "test-report-bmo-result",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-bmo-reintegration",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-bmo-partial-boundary",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-topology",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-observation-states",
+      "id": "test-report-topology-method",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
