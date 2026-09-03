@@ -1,6 +1,6 @@
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Tugite v7.2.0
+# Tugite v7.2.1
 
 Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エージェント、スキルを配布するプラグインです。それぞれの作業手順は決められた役割と起動条件に従い、必要に応じて実装、レビュー、助言を担うエージェントを組み合わせます。
 
