@@ -18,8 +18,7 @@ Tugite は Claude Code、Codex、Cursor 向けの agent・skill 定義を配布�
 実装の最後には、変更した対象ファイルに対する適切な lint（Skill 文書などでは `npm run lint:skills -- <対象ファイル>`）を実行し、
 Gunte 管理対象の整合性を `gunte check` で確認します。
 
-Gunte には Go 1.26.5 以上が必要です。公開版は `go install github.com/akitanabe/gunte/cmd/gunte@latest` で
-導入します。生成物を伴う変更では、repository root で `gunte emit`、`gunte lock`、target/full `gunte check`、installer、diff check の順に実行します。
+Gunte は [Gunte Releases](https://github.com/akitanabe/gunte/releases/latest) から release binary を取得して導入します。導入後は `gunte check` で確認します。生成物を伴う変更では、repository root で `gunte emit`、`gunte lock`、target/full `gunte check`、installer、diff check の順に実行します。
 
 ## Gunte の運用
 
