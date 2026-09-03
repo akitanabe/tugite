@@ -33,7 +33,14 @@ consumer-specific projection、解決済み purpose / criteria、必要な evide
 
 invocation Data は、review request と artifact responsibility、`S0` と baseline evidence、construction context または Local Model
 projection、required reviewer と利用可能な specialized capability / evidence surface、caller 指定または invocation-local な operational
-bound、`final_trim = off | applicable` と applicable 時の obligations / constraints / evidence、optional な `final_trim_reviewer` である。
+bound、`final_trim = off | applicable` と applicable 時の final-trim context、applicable 時の final-trim context とは別の `caller-owned final-trim validity / stop result`、optional な `final_trim_reviewer` である。
+
+<!-- @contract review-refine-final-trim-context -->
+caller-owned opaque final-trim context（plan-family では necessity context と comparison frame を含む具体形）を受領した場合、review-refine は invocation 中に欠落なく保持し、意味を再分類・再判定せず designated reviewer へ同じ context と frame を渡す。
+<!-- @/contract -->
+
+この context と frame は `S0` とは別の caller Data です。review-refine はその分類、integrity、completeness、materiality、target、base を解釈・再判定せず、
+欠落・置換・推測も行いません。plan 固有の whole-candidate / base / evidence selection と necessity semantics は Planning Core に残します。
 
 shared Method は generated path を基準に次を解決する。
 
@@ -185,8 +192,15 @@ otherwise at stop → `incomplete`
 
 ## Final trim
 
-`final_trim` は default `off` である。caller が `applicable` と obligations / constraints / evidence context を渡した場合だけ normal
+`final_trim` は default `off` である。caller が `applicable` と final-trim context を渡した場合だけ normal
 closure 後に実行し、`review-refine` は applicability を追加・変更しない。
+
+<!-- @contract review-refine-final-trim-routing -->
+final-trim stage では `caller-owned final-trim validity / stop result` が進行可能なら latest verified snapshot 全体を caller が指定した target と comparison frame に bind し、進行不可ならその stop result に従う。
+<!-- @/contract -->
+
+review-refine は context / comparison frame の分類、integrity、completeness、materiality、
+whole-candidate / base / evidence selection を決めず、opaque context を解釈・再判定しません。plan 固有 semantics を normal review や別 caller の一般契約へ拡張しません。
 
 <!-- @contract review-refine-final-trim -->
 ```text

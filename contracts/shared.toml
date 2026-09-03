@@ -1027,10 +1027,10 @@ slice = "planning-core-review-routing"
 pattern = "review nonapplicable または explicit opt-out では review を起動せず、applicable かつ opt-out なしの場合だけ S0 を作って nested `review-refine` へ進む。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-core-review-input-552e1e2b4845]
+[contracts.planning-core-review-input-aa2834ffedaa]
 kind = "requires"
 slice = "planning-core-review-input"
-pattern = "`final_trim = applicable`、final trim の obligations / constraints / evidence context、`final_trim_reviewer = over-engineering-reviewer` を nested `review-refine` へ渡す。"
+pattern = "applicable review では parent projection、artifact-relative review purpose / criteria、authority obligations、S0、necessary evidence、required normal reviewer `plan-adversarial-reviewer`、`final_trim = applicable`、final-trim necessity context（final trim の obligations / constraints / evidence context の plan-family における具体形であり、final trim の唯一の意味 input）、`final_trim_reviewer = over-engineering-reviewer` を nested `review-refine` へ渡す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-core-sequence-c7614f660551]
@@ -1043,6 +1043,30 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "planning-core-result-boundary"
 pattern = "reviewed / unreviewed route の semantic completion を満たす candidate は `final-candidate` として返し、review 実行の有無を保持し、返却 candidate を後処理で変更しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-necessity-owner-2143a2f12c84]
+kind = "requires"
+slice = "planning-core-necessity-context-owner"
+pattern = "Planning Core は final-trim 用 necessity context を構成・所有し、`required outcomes / obligations`、`binding decisions / must-preserve concepts`、`current scope / explicit excludes`、`permitted-but-optional` を意味上区別し、各分類を deletion judgment に必要な意味と bounded provenance とともに保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-necessity-integrity-dfd29e1fa2e6]
+kind = "requires"
+slice = "planning-core-necessity-integrity"
+pattern = "necessity context は `S0` と別の invocation-local Data とし、projection integrity が安全に成立せず omission が deletion judgment を変え得る場合、Planning Core は review-refine を起動せず `incomplete` を返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-necessity-frame-fd4281f86b93]
+kind = "requires"
+slice = "planning-core-necessity-comparison-frame"
+pattern = "final-trim の comparison frame は `review target = final-trim stage の latest verified candidate 全体`、`comparison base = plan がまだ存在しない no-plan state` とし、`S0` を base にしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-necessity-freeze-7f5dfebbeaf6]
+kind = "requires"
+slice = "planning-core-necessity-invocation-freeze"
+pattern = "necessity semantics と comparison-frame selection rule は review-refine 起動時に固定し、invocation 中の normal refinement では変更せず、final trim 前に current evidence に対する validity を再確認する。その再確認から `caller-owned final-trim validity / stop result` を構成して review-refine へ渡し、進行可能なら current verified state の repository evidence / remaining witness を併せて保持し、binding direction、scope、authority の material change なら pre-trim latest verified candidate と `incomplete` の stop result を保持する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.deletion-test-document]
