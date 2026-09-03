@@ -36,7 +36,7 @@ verification にせず、残存 risk または editorial review として扱い�
 宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
 列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
-## コーディングスタイルと命名
+## 開発時のコーディングルール
 
 Skill、shared component、contract、test、lint rule を作成・変更するときは、
 `docs/skill-coding-rules.md` を正本として適用します。規範本文を `AGENTS.md`、contract、lint rule へ複製しません。
