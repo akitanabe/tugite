@@ -628,6 +628,16 @@ match = "declarations/codex/marketplace.json"
 path = "marketplace.json"
 profile = "json-v1"
 
+[targets.repository-guidelines]
+output_root = "docs"
+managed_roots = ["repository-guidelines.md"]
+
+[[targets.repository-guidelines.rules]]
+match = "shared/repository-guidelines.md"
+path = "repository-guidelines.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
 [targets.agents-guidance]
 output_root = "."
 
@@ -635,3 +645,4 @@ output_root = "."
 match = "shared/repository-guidelines.md"
 path = "AGENTS.md"
 profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. --> 詳細なガイドラインは [docs/repository-guidelines.md](docs/repository-guidelines.md) を参照してください。"
