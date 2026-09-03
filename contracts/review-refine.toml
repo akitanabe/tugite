@@ -83,3 +83,15 @@ pattern = '''review-refine → invocation-local review / adjudication / refineme
 caller → persistence / publication / adoption / downstream workflow
 Human interaction / external persistent write → not owned by review-refine'''
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-context-e4288b9030d4]
+kind = "requires"
+slice = "review-refine-final-trim-context"
+pattern = "caller-owned opaque final-trim context（plan-family では necessity context と comparison frame を含む具体形）を受領した場合、review-refine は invocation 中に欠落なく保持し、意味を再分類・再判定せず designated reviewer へ同じ context と frame を渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-refine-final-trim-routing-9180d1a2a2a3]
+kind = "requires"
+slice = "review-refine-final-trim-routing"
+pattern = "final-trim stage では `caller-owned final-trim validity / stop result` が進行可能なら latest verified snapshot 全体を caller が指定した target と comparison frame に bind し、進行不可ならその stop result に従う。"
+applies_to = ["claude", "codex", "cursor"]

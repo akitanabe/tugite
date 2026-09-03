@@ -693,8 +693,8 @@
       "sha256": "385a5aed9ab887acd36736d9723ad1b257f51563e7924ad7e6f4a79690e2bc09"
     },
     {
-      "id": "planning-core-review-input-552e1e2b4845",
-      "sha256": "bde9054f3bf4239875239cd6f05b6b76dcc79dac8cfd57c2e82be8ba1859872d"
+      "id": "planning-core-review-input-aa2834ffedaa",
+      "sha256": "b2bfd4b1e0b04b6496e001f17e697e4d211d9d95d981a510ea924655db27fed3"
     },
     {
       "id": "planning-core-sequence-c7614f660551",
@@ -703,6 +703,22 @@
     {
       "id": "planning-core-result-092905faf52a",
       "sha256": "7590629d6f238b265f02c8e26241239df0e65f7c0d8442a0ec06347dffef8d2d"
+    },
+    {
+      "id": "planning-core-necessity-owner-2143a2f12c84",
+      "sha256": "4cc44a016d2ff671ec68c7fc1c1e43eeb96c57ddf203ea776a57b829d6b5f2b0"
+    },
+    {
+      "id": "planning-core-necessity-integrity-dfd29e1fa2e6",
+      "sha256": "84bdd145ca848a064b8e591380b0000c947e2dc1ec58f81c3c416fa78f6ff695"
+    },
+    {
+      "id": "planning-core-necessity-frame-fd4281f86b93",
+      "sha256": "97025dcb8fef44b6e294689eb28027df4be3deca0dc029835af01494d13725ac"
+    },
+    {
+      "id": "planning-core-necessity-freeze-7f5dfebbeaf6",
+      "sha256": "60a058e08b2d620fe2c86ed1c10ed051cd0f8ad9fe823f81f5227c9398c6ad71"
     },
     {
       "id": "deletion-test-document",
@@ -1461,6 +1477,14 @@
       "sha256": "8d9bade5b8185f1cd3371defdcd1cad212ec0fe914072d5b9753dba990c1b19d"
     },
     {
+      "id": "review-refine-final-trim-context-e4288b9030d4",
+      "sha256": "603f5ff3052972eac121eef2614ac76233ef17b74fb25759649236efbd5b9bc6"
+    },
+    {
+      "id": "review-refine-final-trim-routing-9180d1a2a2a3",
+      "sha256": "a40b24aeed7bfc1607083d41635b8ccba8c18532aa5fa5a6adf6fd65920cd7fb"
+    },
+    {
       "id": "impl-lead-document",
       "sha256": "e8f2a94bc059d990906928d052e4be5d69a807e50a0ccb91e87d8a87d5060334"
     },
@@ -2045,6 +2069,26 @@
     {
       "kind": "span",
       "id": "planning-core-input-boundary",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-necessity-context-owner",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-necessity-integrity",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-necessity-comparison-frame",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-necessity-invocation-freeze",
       "path": "shared/planning-core.md"
     },
     {
@@ -3044,6 +3088,11 @@
     },
     {
       "kind": "span",
+      "id": "review-refine-final-trim-context",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "review-refine-reviewer-actions",
       "path": "shared/skill/review-refine/SKILL.md"
     },
@@ -3065,6 +3114,11 @@
     {
       "kind": "span",
       "id": "review-refine-convergence",
+      "path": "shared/skill/review-refine/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "review-refine-final-trim-routing",
       "path": "shared/skill/review-refine/SKILL.md"
     },
     {
