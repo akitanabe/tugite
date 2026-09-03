@@ -33,10 +33,6 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 - [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:wayfind`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$wayfind`、`$review-refine` を明示して起動できます。
-
-親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
-
 ## License
 
 MIT License. See [LICENSE](https://github.com/akitanabe/tugite/blob/main/LICENSE).
