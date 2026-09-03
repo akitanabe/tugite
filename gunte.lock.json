@@ -11,6 +11,7 @@
     "contracts/test-verify.toml",
     "contracts/review-refine.toml",
     "contracts/impl-lead.toml",
+    "contracts/destination-selection.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -24,6 +25,7 @@
     "shared/researcher-delegation.md",
     "shared/writable-scope.md",
     "shared/external-effects.md",
+    "shared/destination-selection.md",
     "shared/agents/focused-implementer.md",
     "shared/agents/implementer.md",
     "shared/agents/senior-implementer.md",
@@ -1703,6 +1705,86 @@
     {
       "id": "impl-lead-run-owned-external-effects-pointer-78192957f781",
       "sha256": "778d8371ba48a3d40931f72028efeba4bfa584af9de5f99d2df33ee1da6758cd"
+    },
+    {
+      "id": "destination-selection-document",
+      "sha256": "e107ae00027e3ca3e29bf098876c35bb91ed78169c430ddf0468fc280d3be956"
+    },
+    {
+      "id": "destination-selection-d252aec5a6b0",
+      "sha256": "de22710fb000c92feac6cf5337de20a3611563843ec507b3748160fa9eeb23a0"
+    },
+    {
+      "id": "destination-selection-1daf093e79ef",
+      "sha256": "3726a96bd0df2f1dadcab95ee36ce5b7b474bd2dab3b07613006d7b4631725bc"
+    },
+    {
+      "id": "destination-selection-flow-7c6694f0476b",
+      "sha256": "959be9b5d0d6e383e723fc61f240bfc0b4477f726103dcf97289a4d2dd466717"
+    },
+    {
+      "id": "destination-selection-3521c129c466",
+      "sha256": "f36d8a15d950ac0bb1181a9ac1696fcc725c2ddc01f29d06377d0da72ff1a86a"
+    },
+    {
+      "id": "destination-selection-resume-31eb33bb6623",
+      "sha256": "350c5f138e3e785d52b16fd6d29ec581fc6746b0a7edff87b7c3710aa66ff15f"
+    },
+    {
+      "id": "destination-selection-0b0fde2c72fb",
+      "sha256": "abed252ad68ccad3845d5e9ebde09dfcf23966936f9a56c33e2905506857d557"
+    },
+    {
+      "id": "destination-selection-04197bb29acc",
+      "sha256": "04d294e32b5eaad47803a12375d37a27cdfa15a27d7ac0bc6182becb8a61ac5c"
+    },
+    {
+      "id": "destination-selection-d24a28a83a4d",
+      "sha256": "fc0826752be31cec079f3d2a84e987a2dba6eff2455d5c425728504d493b6270"
+    },
+    {
+      "id": "destination-selection-84d610f7ab28",
+      "sha256": "f3e11337815ddece9713bbcd54539d06b310ca5f07b47b12d962ae3a70baf167"
+    },
+    {
+      "id": "destination-selection-resume-16c75e01515f",
+      "sha256": "b0d4a51bd98f43958a15d4829e4d65a16826a70c18373e438524e0e91a58b58c"
+    },
+    {
+      "id": "destination-selection-state-92269a6aa562",
+      "sha256": "c6a312e7183f4f47e4f28bf5352cd7bfd8edd9d0ed8fda9bd11a64326898fcc0"
+    },
+    {
+      "id": "destination-selection-boundary-before-trigger",
+      "sha256": "90c82edfbac3c58bc994a95a025be19da78fdf3ecb17b014d1dc4b250aaf0faa"
+    },
+    {
+      "id": "destination-selection-trigger-before-flow-inputs",
+      "sha256": "8be7c07770f52de516ba4bdbdc2c82705909b521ed09d7525ed46ee1bd0625ea"
+    },
+    {
+      "id": "destination-selection-flow-inputs-before-resume",
+      "sha256": "4d1a7772968b9b220ac5f717cae6cfd297765e035bd1d9fab5afc858fb2b5dcc"
+    },
+    {
+      "id": "destination-selection-resume-before-result",
+      "sha256": "7ef07487d78cf9c5a8b33f389825d98463e0e904c02bcc709ef060b7ca494d1a"
+    },
+    {
+      "id": "destination-selection-resume-result-before-qualification",
+      "sha256": "0db5b3108cde48cf286737e3522a12422d7b9eec275daa1d5f5832ba1730404f"
+    },
+    {
+      "id": "destination-selection-qualification-before-requested",
+      "sha256": "f3db6277fd479c7bdf35549ce774554ed453520c69a1a9edc6c4186c1b883798"
+    },
+    {
+      "id": "destination-selection-requested-before-cardinality",
+      "sha256": "8a4378bec942437254a77e1167940a888b02a676707d48b4f77b94637e5425d4"
+    },
+    {
+      "id": "destination-selection-cardinality-before-outcomes",
+      "sha256": "335a973b9524ec98b4878a2953740096153e7316e62c3e4c7a85d8d0fc446fc1"
     }
   ],
   "declarations": [
@@ -2440,6 +2522,106 @@
       "kind": "span",
       "id": "external-effects-flow",
       "path": "shared/external-effects.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-boundary-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-boundary",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-trigger-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-trigger",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-flow-inputs-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-flow-inputs",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-resume-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-resume",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-resume-result-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-resume-result",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-qualification-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-qualification",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-requested-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-requested",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-cardinality-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-cardinality",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "destination-selection-outcomes-relation",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-outcomes",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-resume-outcome",
+      "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "destination-selection-state-ownership",
+      "path": "shared/destination-selection.md"
     },
     {
       "kind": "span",

@@ -1,0 +1,124 @@
+[contracts.destination-selection-document]
+kind = "occurrences"
+pattern = "# Destination Selection"
+count = 1
+paths = [
+  "plugins/claude/references/destination-selection.md",
+  "plugins/codex/references/destination-selection.md",
+  "plugins/cursor/references/destination-selection.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-d252aec5a6b0]
+kind = "requires"
+slice = "destination-selection-boundary"
+pattern = "`Destination Selection` は caller-neutral な shared Method として、caller/harness が観測した Data に対する `persistent_reopenable` destination の qualification と supplied resume reference / locator の same-state resolution result の deterministic 分岐だけを扱います。compatible resolver の実行や外部 state への接触は caller/harness の Action とし、この Method は実行しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-1daf093e79ef]
+kind = "requires"
+slice = "destination-selection-trigger"
+pattern = "Trigger: caller/harness が観測済み candidate facts または supplied resume resolution result を Destination Selection の deterministic branch へ渡せる。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-flow-7c6694f0476b]
+kind = "requires"
+slice = "destination-selection-flow-inputs"
+pattern = "Inputs: requested destination、runtime が観測した candidate facts（persistence、stable scope、repeatable resolution、current accessibility、ownership、containment evidence）、および supplied resume reference / locator に対する caller/harness-observed resolution result（resolved same-state identity / invalid / unavailable / unknown と evidence）。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-3521c129c466]
+kind = "requires"
+slice = "destination-selection-resume"
+pattern = "1. supplied resume reference / locator がある場合、caller/harness が渡した resolution result を使い、Destination Selection は compatible resolver を実行せず、destination selector を再実行しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-resume-31eb33bb6623]
+kind = "requires"
+slice = "destination-selection-resume-result"
+pattern = "2. resolution result が resolved same-state identity ならそれを caller へ返す。invalid、unavailable、unknown なら reason と evidence を伴う `incomplete` を返し、relocation / migration をしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-0b0fde2c72fb]
+kind = "requires"
+slice = "destination-selection-qualification"
+pattern = "3. resume reference / locator がない場合、persistence、stable scope、repeatable resolution、current accessibility、ownership、containment evidence がすべて揃う candidate だけを qualified とする。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-04197bb29acc]
+kind = "requires"
+slice = "destination-selection-requested"
+pattern = "4. requested destination がある場合、その指定先が qualified ならそれだけを selected destination とし、不適格なら他の candidate へ silent fallback せず reason と evidence を伴う `incomplete` を caller へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-d24a28a83a4d]
+kind = "requires"
+slice = "destination-selection-cardinality"
+pattern = "5. requested destination がない場合、固定 category 順位や OS temp による tie-break をせず qualified set を caller へ返す。qualified set が1件ならその destination を確定し、0件なら `incomplete`、複数なら unresolved destination gap を caller へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-84d610f7ab28]
+kind = "requires"
+slice = "destination-selection-outcomes"
+pattern = "- selected destination、qualified set、unresolved destination gap、または reason と evidence を伴う `incomplete` を返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-resume-16c75e01515f]
+kind = "requires"
+slice = "destination-selection-resume-outcome"
+pattern = "- resume resolution result は resolved same-state identity、invalid、unavailable、unknown と evidence の違いを保持して扱い、後三者は reason と evidence を伴う `incomplete` に投影する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-state-92269a6aa562]
+kind = "requires"
+slice = "destination-selection-state-ownership"
+pattern = "compatible resolver の実行、外部 state への接触、resolution result の取得は caller/harness の Action とし、persistent state schema、state lifecycle、state write、retention / cleanup は caller-specific responsibility とする。Destination Selection は caller/harness が渡した resolution result Data を deterministic に分岐するだけで、これらを定義・所有・実行しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-boundary-before-trigger]
+kind = "order"
+before = "destination-selection-boundary-relation"
+after = "destination-selection-trigger-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-trigger-before-flow-inputs]
+kind = "order"
+before = "destination-selection-trigger-relation"
+after = "destination-selection-flow-inputs-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-flow-inputs-before-resume]
+kind = "order"
+before = "destination-selection-flow-inputs-relation"
+after = "destination-selection-resume-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-resume-before-result]
+kind = "order"
+before = "destination-selection-resume-relation"
+after = "destination-selection-resume-result-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-resume-result-before-qualification]
+kind = "order"
+before = "destination-selection-resume-result-relation"
+after = "destination-selection-qualification-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-qualification-before-requested]
+kind = "order"
+before = "destination-selection-qualification-relation"
+after = "destination-selection-requested-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-requested-before-cardinality]
+kind = "order"
+before = "destination-selection-requested-relation"
+after = "destination-selection-cardinality-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.destination-selection-cardinality-before-outcomes]
+kind = "order"
+before = "destination-selection-cardinality-relation"
+after = "destination-selection-outcomes-relation"
+applies_to = ["claude", "codex", "cursor"]
