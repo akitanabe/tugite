@@ -210,9 +210,9 @@ Planning Synthesis
 conditional review
 ```
 
-### wayfind
+### navigate-way
 
-`wayfind` は明示起動だけで Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返す public pre-planning workflow である。一回の invocation は Destination-wide な exactly one の task-local Local Model を所有し、breadth-first な low-resolution current-state Map に Destination、Work Units、Decision Units、Planning Fog、Out of scope を保持する。
+`navigate-way` は明示起動だけで Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返す public pre-planning workflow である。一回の invocation は Destination-wide な exactly one の task-local Local Model を所有し、breadth-first な low-resolution current-state Map に Destination、Work Units、Decision Units、Planning Fog、Out of scope を保持する。
 
 ```text
 Destination-wide Local Model

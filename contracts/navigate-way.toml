@@ -1,201 +1,201 @@
-[contracts.wayfind-document]
+[contracts.navigate-way-document]
 kind = "occurrences"
-pattern = "# wayfind"
+pattern = "# navigate-way"
 count = 1
 paths = [
-  "plugins/claude/skills/wayfind/SKILL.md",
-  "plugins/codex/skills/wayfind/SKILL.md",
-  "plugins/cursor/skills/wayfind/SKILL.md",
+  "plugins/claude/skills/navigate-way/SKILL.md",
+  "plugins/codex/skills/navigate-way/SKILL.md",
+  "plugins/cursor/skills/navigate-way/SKILL.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-claude-cursor-invocation-policy]
+[contracts.navigate-way-claude-cursor-invocation-policy]
 kind = "occurrences"
 pattern = "disable-model-invocation: true"
 count = 1
 paths = [
-  "plugins/claude/skills/wayfind/SKILL.md",
-  "plugins/cursor/skills/wayfind/SKILL.md",
+  "plugins/claude/skills/navigate-way/SKILL.md",
+  "plugins/cursor/skills/navigate-way/SKILL.md",
 ]
 applies_to = ["claude", "cursor"]
 
-[contracts.wayfind-codex-invocation-policy]
+[contracts.navigate-way-codex-invocation-policy]
 kind = "occurrences"
 pattern = "allow_implicit_invocation: false"
 count = 1
-paths = ["plugins/codex/skills/wayfind/agents/openai.yaml"]
+paths = ["plugins/codex/skills/navigate-way/agents/openai.yaml"]
 applies_to = ["codex"]
 
-[contracts.wayfind-explicit-only-b72ac5d38b26]
+[contracts.navigate-way-explicit-only-246639712cce]
 kind = "requires"
-slice = "wayfind-explicit-only"
-pattern = "`wayfind` は Human が明示した場合だけ開始する public pre-planning workflow です。request の Destination 全体にある Planning Fog と planning 前の Decision blocker を解像し、1..N の self-contained な Work Units を返します。"
+slice = "navigate-way-explicit-only"
+pattern = "`navigate-way` は Human が明示した場合だけ開始する public pre-planning workflow です。request の Destination 全体にある Planning Fog と planning 前の Decision blocker を解像し、1..N の self-contained な Work Units を返します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-non-goals-9f8a0a8cd572]
+[contracts.navigate-way-non-goals-f46b4469370b]
 kind = "requires"
-slice = "wayfind-non-goals"
-pattern = "`wayfind` は plan、plan review、implementation、production work、deliverable completion、complete 後の reopen、または特定 downstream workflow への routing / auto-transition を開始しません。他 workflow は `wayfind` を推奨できますが、暗黙起動しません。"
+slice = "navigate-way-non-goals"
+pattern = "`navigate-way` は plan、plan review、implementation、production work、deliverable completion、complete 後の reopen、または特定 downstream workflow への routing / auto-transition を開始しません。他 workflow は `navigate-way` を推奨できますが、暗黙起動しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-destination-selection-b88451e06aa4]
+[contracts.navigate-way-destination-selection-12c3cc8cf124]
 kind = "requires"
-slice = "wayfind-destination-selection"
+slice = "navigate-way-destination-selection"
 pattern = "新規 invocation では caller / harness が観測した candidate facts と requested destination を shared Destination Selection へ渡し、返された selection result を変更せず、selected destination は state lifecycle に、unresolved gap / incomplete は workflow result に使用します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-local-model-08c4c5d891d0]
+[contracts.navigate-way-local-model-e10a00004ef1]
 kind = "requires"
-slice = "wayfind-local-model"
+slice = "navigate-way-local-model"
 pattern = "一回の invocation は Destination 全体を semantic subject とする exactly one の task-local Local Model を所有します。Agentic Model Construction を first route とし、Human-owned blocker が残り、Agent-side で独立した semantic progress route がない場合だけ Interactive Model Construction を同じ Local Model へ composition します。Decision Unit、Research Agent、nested consumer は別 Local Model を持ちません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-map-54eb46db008e]
+[contracts.navigate-way-map-b95f82c72103]
 kind = "requires"
-slice = "wayfind-map"
+slice = "navigate-way-map"
 pattern = "初期観測は breadth-first に主要 uncertainty / decision boundary を横断し、Destination、Work Units、Decision Units、Planning Fog、Out of scope からなる low-resolution current-state Map を構成します。Map は index であり、detail、推論履歴、append-only history を重複保持しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-decision-unit-c4bbfeb4b30f]
+[contracts.navigate-way-decision-unit-151860441495]
 kind = "requires"
-slice = "wayfind-decision-unit"
+slice = "navigate-way-decision-unit"
 pattern = "sharp かつ bounded な question だけを Decision Unit とし、canonical state は `open | resolved` だけとします。`actionable | blocked` は open state と material dependency の resolved / unresolved から導出し、第三の canonical state にしません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-resolution-boundary-66a252a931df]
+[contracts.navigate-way-resolution-boundary-5aa0ac926580]
 kind = "requires"
-slice = "wayfind-resolution-boundary"
+slice = "navigate-way-resolution-boundary"
 pattern = "bounded conclusion により question の残部を一つの成立済み WU 内の downstream planning 責務へ局所化できた場合は Decision Unit を resolved にし、material unresolved matter をその WU の `remaining gap` または `established context` へ一度だけ投影します。WU boundary が未形成の Planning Fog は remaining gap へ移しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-reintegration-c85f03aeed3c]
+[contracts.navigate-way-reintegration-fdc4e18c2b0d]
 kind = "requires"
-slice = "wayfind-reintegration"
+slice = "navigate-way-reintegration"
 pattern = "resolution は same Local Model へ Reintegration し、material invalidation がある場合だけ affected region を Recomposition します。Map は current evidence に合わせ、Fog の縮小、Decision Unit の形成 / 解消、WU の形成 / split / merge / boundary adjustment、Out of scope の更新を stale state への追記ではなく置換として反映します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-work-unit-c50137d1dac7]
+[contracts.navigate-way-work-unit-c259c6f8378e]
 kind = "requires"
-slice = "wayfind-work-unit"
+slice = "navigate-way-work-unit"
 pattern = "各 Work Unit は fresh downstream workflow が Map を読み直さず、他 WU の planning を同時に抱えず扱える self-contained な planning context とします。Data は id、name、scope、`planning-bounded | planning-ready`、established context、planning-bounded 時の remaining gap、material dependencies を持ちます。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-work-unit-readiness-ec872aafc4fa]
+[contracts.navigate-way-work-unit-readiness-c11219c8001c]
 kind = "requires"
-slice = "wayfind-work-unit"
+slice = "navigate-way-work-unit"
 pattern = "`planning-bounded` は WU boundary は成立しているが planning 開始前に material な理解不足が残り、additional refinement が扱う `remaining gap` があることを表します。`planning-ready` は additional premise construction なしに planning へ進める状態であり、planning 内で扱う trade-off や選択が残らないことを意味しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-persistence-6484f2d42f49]
+[contracts.navigate-way-persistence-643981fe0e73]
 kind = "requires"
-slice = "wayfind-persistence"
+slice = "navigate-way-persistence"
 pattern = "保存と read-back に成功した場合だけ、destination と same state identity を再解決できる `resume_reference` を `incomplete` result の外部へ明示的に返します。reference は Human-visible または caller-held Data とし、state object 内だけに閉じません。write / read-back failure は partial / unknown state と evidence を伴う `incomplete` とし、広域 scan、silent discovery、relocation / migration を resume 前提にしません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-completion-disposition-e57db5df2955]
+[contracts.navigate-way-completion-disposition-e334054afbdb]
 kind = "requires"
-slice = "wayfind-completion-disposition"
+slice = "navigate-way-completion-disposition"
 pattern = "`resume_reference` から再開した persisted unfinished state について `complete` を返す前に、exact state と `resume_reference` が再開可能な unfinished state として残らない disposition を確定します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-a86a6247bf41]
+[contracts.navigate-way-flow-ad007c400406]
 kind = "requires"
-slice = "wayfind-flow"
-pattern = "Trigger: 親 `wayfind` が current Map の semantic judgment と completion facts を確定した。"
+slice = "navigate-way-flow"
+pattern = "Trigger: 親 `navigate-way` が current Map の semantic judgment と completion facts を確定した。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-inputs-29fbf1b254a7]
+[contracts.navigate-way-flow-inputs-69d5c17c7737]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "Inputs: Destination coverage、WU count / readiness、Planning Fog の有無、active open Decision Unit の有無、Agent-side progress route の有無、Human-owned blocker の有無、persistence eligibility、resumed persisted unfinished state / resume_reference の有無、completion-time disposition authority / eligibility。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-complete-7e9147cea87f]
+[contracts.navigate-way-flow-complete-07ce9c32006d]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "1. Destination coverage が 1..N WU で成立し、Planning Fog と active open Decision Unit がない completion invariant を評価する。planning-bounded WU は成立を妨げない。成立時は `disposition not required → complete / WU boundary freeze`、`disposition required + authority / eligibility established → shared External Effects boundary の下で completion-time disposition Action → result Data → exact state / resume_reference の independent verification`、`disposition required + authority / eligibility absent | unknown → evidence 付き incomplete` とし、Action branch は `verified non-resumable → complete / freeze`、`failure | unknown → evidence 付き incomplete` に投影する。未成立時は形成済み WU を provisional として step 2 へ進む。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-continue-70a12b2d2b23]
+[contracts.navigate-way-flow-continue-f8d6032838db]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "2. それ以外で Agent-side progress route があれば、same invocation / same Local Model で semantic judgment へ戻る。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-interactive-aa5bfa703833]
+[contracts.navigate-way-flow-interactive-dc56e6544cdc]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "3. 進行 route がなく Human-owned blocker があれば、同じ Local Model に Interactive Model Construction を composition する。gap が解消された result は same Local Model へ Reintegration して same invocation の semantic judgment へ戻し、未解消 result は limitation / evidence 付き `incomplete` へ投影する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-persistence-d4cc222df30c]
+[contracts.navigate-way-flow-persistence-a705f414cd21]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "4. それ以外は persistence eligibility に従う。`eligible` は shared External Effects boundary に従って state create / update / read-back Action を実行し、その後に result Data を得る。`ineligible` は保存せず evidence 付き `incomplete` とする。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-action-result-c31bbb95e005]
+[contracts.navigate-way-flow-action-result-02e7f54fdc98]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "5. `eligible` branch で Action 後に得た result Data を `success → resume_reference を伴う incomplete`、`failure | unknown → evidence 付き incomplete` に投影する。`ineligible` branch は step 4 の `incomplete` をそのまま返し、Action result Data を要求しない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-public-results-849f100c5247]
+[contracts.navigate-way-flow-public-results-c9199b765fd4]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "Flow が terminal に返す public result は `complete | incomplete` とします。step 2 と gap 解消済みの step 3 は terminal result を作らず、親の autonomous semantic judgment へ戻ります。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-complete-outcome-28578834b5c8]
+[contracts.navigate-way-flow-complete-outcome-31cb9e22a2af]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "- `complete`: required な completion-time disposition の independent verification を通過したうえで、freeze した stable Work Units を返す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-incomplete-outcome-d70b3e046dfd]
+[contracts.navigate-way-flow-incomplete-outcome-b1be48b9c74c]
 kind = "requires"
-slice = "wayfind-flow"
+slice = "navigate-way-flow"
 pattern = "- `incomplete`: completion invariant 未成立時の provisional Work Units、current limitation、persistence / disposition result を返し、unfinished state の保存成功時だけ externally returned `resume_reference` を含める。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-trigger-before-inputs]
+[contracts.navigate-way-flow-trigger-before-inputs]
 kind = "order"
-before = "wayfind-flow-trigger"
-after = "wayfind-flow-inputs"
+before = "navigate-way-flow-trigger"
+after = "navigate-way-flow-inputs"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-inputs-before-step-1]
+[contracts.navigate-way-flow-inputs-before-step-1]
 kind = "order"
-before = "wayfind-flow-inputs"
-after = "wayfind-flow-step-1"
+before = "navigate-way-flow-inputs"
+after = "navigate-way-flow-step-1"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-step-1-before-step-2]
+[contracts.navigate-way-flow-step-1-before-step-2]
 kind = "order"
-before = "wayfind-flow-step-1"
-after = "wayfind-flow-step-2"
+before = "navigate-way-flow-step-1"
+after = "navigate-way-flow-step-2"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-step-2-before-step-3]
+[contracts.navigate-way-flow-step-2-before-step-3]
 kind = "order"
-before = "wayfind-flow-step-2"
-after = "wayfind-flow-step-3"
+before = "navigate-way-flow-step-2"
+after = "navigate-way-flow-step-3"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-step-3-before-step-4]
+[contracts.navigate-way-flow-step-3-before-step-4]
 kind = "order"
-before = "wayfind-flow-step-3"
-after = "wayfind-flow-step-4"
+before = "navigate-way-flow-step-3"
+after = "navigate-way-flow-step-4"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-step-4-before-step-5]
+[contracts.navigate-way-flow-step-4-before-step-5]
 kind = "order"
-before = "wayfind-flow-step-4"
-after = "wayfind-flow-step-5"
+before = "navigate-way-flow-step-4"
+after = "navigate-way-flow-step-5"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.wayfind-flow-step-5-before-outcomes]
+[contracts.navigate-way-flow-step-5-before-outcomes]
 kind = "order"
-before = "wayfind-flow-step-5"
-after = "wayfind-flow-outcomes"
+before = "navigate-way-flow-step-5"
+after = "navigate-way-flow-outcomes"
 applies_to = ["claude", "codex", "cursor"]

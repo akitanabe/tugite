@@ -12,7 +12,7 @@
     "contracts/review-refine.toml",
     "contracts/impl-lead.toml",
     "contracts/destination-selection.toml",
-    "contracts/wayfind.toml",
+    "contracts/navigate-way.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -50,7 +50,7 @@
     "shared/skill/impl-lead/references/completion-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-agent/SKILL.md",
-    "shared/skill/wayfind/SKILL.md",
+    "shared/skill/navigate-way/SKILL.md",
     "shared/skill/test-report/SKILL.md",
     "shared/skill/test-verify/SKILL.md",
     "shared/skill/test-verify/references/risk-review.md",
@@ -67,7 +67,7 @@
     "declarations/codex/skills/how-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
-    "declarations/codex/skills/wayfind/openai.yaml",
+    "declarations/codex/skills/navigate-way/openai.yaml",
     "declarations/codex/skills/test-report/openai.yaml",
     "declarations/codex/skills/test-verify/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
@@ -195,8 +195,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-b7a8bc9ed799",
-      "sha256": "7324837b01daed2c20af794827d28d829c6304a24033de48298793f63458826d"
+      "id": "cursor-readme-public-skills-requires-3a129bfe7bcf",
+      "sha256": "4add5b912d9f960728ff2d2b5f81a8de0e7b62055a2f244ddcb6424612fbe3c6"
     },
     {
       "id": "cursor-readme-unsupported-requires-d94e0540f495",
@@ -1799,132 +1799,132 @@
       "sha256": "335a973b9524ec98b4878a2953740096153e7316e62c3e4c7a85d8d0fc446fc1"
     },
     {
-      "id": "wayfind-document",
-      "sha256": "d6c9f94888c3683877541cabf034c905df2a143302639b00d3c179f3a3b1c573"
+      "id": "navigate-way-document",
+      "sha256": "d4a852bcb0a24cf8917ba641f7099e1a425f5840340eb285d13e495e4b36f1ec"
     },
     {
-      "id": "wayfind-claude-cursor-invocation-policy",
-      "sha256": "291db676915ea237701d3acaee7200e94676b74c8ca96724a3d676bfc8ba377f"
+      "id": "navigate-way-claude-cursor-invocation-policy",
+      "sha256": "e131a78a6b3eabbff7d7e635f65363fb8ecc4f58b903f5fd93594dcba3ea9005"
     },
     {
-      "id": "wayfind-codex-invocation-policy",
-      "sha256": "57cec041b421e3cd403d4726d1649fc37a7a32024ff9e95358e67478f6c47323"
+      "id": "navigate-way-codex-invocation-policy",
+      "sha256": "9a9b507fe4904a547ae033964a5d43740fad561be33f384bacec4594b8434550"
     },
     {
-      "id": "wayfind-explicit-only-b72ac5d38b26",
-      "sha256": "186d73b1774c305c3b2aa7f9deb2ea3909c9752a8996f1255683e2639f7d06eb"
+      "id": "navigate-way-explicit-only-246639712cce",
+      "sha256": "5b750e5d1eb14ddb4f03a35cdab87cfce809755891783c5bf7df5a2b0aa9f3df"
     },
     {
-      "id": "wayfind-non-goals-9f8a0a8cd572",
-      "sha256": "135be714613d3656b9e525cfa08b36990b7153abdc5cd1c4a41d6415440d08a1"
+      "id": "navigate-way-non-goals-f46b4469370b",
+      "sha256": "cb779b4c3f031f959654b9827f3ae7862b4dae077f8e8c3cceb372da9825a4e1"
     },
     {
-      "id": "wayfind-destination-selection-b88451e06aa4",
-      "sha256": "6c466ffa65bccc64bd8bd7c4238381b7803b66565ebab56bac9c52002b08bba0"
+      "id": "navigate-way-destination-selection-12c3cc8cf124",
+      "sha256": "cf71ebc757b94b49daa1d3230ffed1d34e736477c100ae832493f4fcf4821132"
     },
     {
-      "id": "wayfind-local-model-08c4c5d891d0",
-      "sha256": "58f25a6ae4dbe44ebb46038e758727b64c2c9df838874893038b434860fd733c"
+      "id": "navigate-way-local-model-e10a00004ef1",
+      "sha256": "9d55db7e18ac178aa3b7945c4fdd8e740d839ef1dccdb53cc1160f21117c2615"
     },
     {
-      "id": "wayfind-map-54eb46db008e",
-      "sha256": "84816f508f293676a5825b3104aab9213fc111ced9f80f6c7b7faf8e228fc236"
+      "id": "navigate-way-map-b95f82c72103",
+      "sha256": "1e93a7ba84cf457c5da898d141e72843ebbffbdec817915527c5c3e2addb7dc2"
     },
     {
-      "id": "wayfind-decision-unit-c4bbfeb4b30f",
-      "sha256": "22d473bb8a7dfbad68d3acfaee357728e89e24dfefadb150d49479b1b191639c"
+      "id": "navigate-way-decision-unit-151860441495",
+      "sha256": "e39686793c81bbf206273625275e6c90d7105142ad079dd0801b3cd595fe7db8"
     },
     {
-      "id": "wayfind-resolution-boundary-66a252a931df",
-      "sha256": "cf56cf1210933cbbd14bec08f8554edc3bd5986fc0a1b3601168049313c9bc98"
+      "id": "navigate-way-resolution-boundary-5aa0ac926580",
+      "sha256": "651b4683f8f8f612c429314ae8c44b24e23b7c2582106e8eb07cbfbad73e029c"
     },
     {
-      "id": "wayfind-reintegration-c85f03aeed3c",
-      "sha256": "3d26193d770cff61441ab12912bae4929429d3d26a7b3ad6efc7e80432327bd3"
+      "id": "navigate-way-reintegration-fdc4e18c2b0d",
+      "sha256": "63b7216dc279c9246feb62ffdc7c025e121d35027adfd02e1d288ac22a13a97c"
     },
     {
-      "id": "wayfind-work-unit-c50137d1dac7",
-      "sha256": "ece44a076107b6f5aa37d6fe50e5abaeb11c53532c223bbec7c95ecc85e2d291"
+      "id": "navigate-way-work-unit-c259c6f8378e",
+      "sha256": "9ea04e4d045b6432489f0bbd9983968d2032cff1c35607e2592da70c6c4e89b5"
     },
     {
-      "id": "wayfind-work-unit-readiness-ec872aafc4fa",
-      "sha256": "85e8c812ddcfb290264306cba2c8d171bafce2173ae3ad5331dace12c160d02c"
+      "id": "navigate-way-work-unit-readiness-c11219c8001c",
+      "sha256": "6c16e9865bc7d46c1f9b04d6f338549e9f5bb9912ef54f8b9af86399dc9586a2"
     },
     {
-      "id": "wayfind-persistence-6484f2d42f49",
-      "sha256": "ffb48ca38e4f52236fbde0fb44c2208fc45ade321d72ccb9dcbc292ccb5842c5"
+      "id": "navigate-way-persistence-643981fe0e73",
+      "sha256": "993cf52ebffe12386ec7bf73ba565046e19357804c2f83bba13c0aba0c3bda62"
     },
     {
-      "id": "wayfind-completion-disposition-e57db5df2955",
-      "sha256": "fcfa6d3a3c9ce4d4d2f48016cccf161b8accaa5e56e4ae0400237ca7aa39c06f"
+      "id": "navigate-way-completion-disposition-e334054afbdb",
+      "sha256": "d03d20681f9ed1383f417da1c6598838d7aa79ba4fc2f8ed58f6426982a837eb"
     },
     {
-      "id": "wayfind-flow-a86a6247bf41",
-      "sha256": "d91085ee53368e70ad621367f26d9d5b5330e0095e4d33f14aceb4770808ef06"
+      "id": "navigate-way-flow-ad007c400406",
+      "sha256": "cc05fecd21a09d2efa74160fd7487d04329de08120fb11c688aa0a74ede9cdd1"
     },
     {
-      "id": "wayfind-flow-inputs-29fbf1b254a7",
-      "sha256": "d103f1b1cdb2e24d8cc92ee80bb25a355961b14fab9668d968ad3e7eeb50aead"
+      "id": "navigate-way-flow-inputs-69d5c17c7737",
+      "sha256": "35b95232b1ddf97d12f63205cc3f3ce53ba51e6ca47a1903b5feafbec189b4d7"
     },
     {
-      "id": "wayfind-flow-complete-7e9147cea87f",
-      "sha256": "b613aee07427dfedfaa25e9babfba019e024e2f4823c61965dd89f06286a0e99"
+      "id": "navigate-way-flow-complete-07ce9c32006d",
+      "sha256": "6c3371dbb9eed494d5d46190992317a19aeedd380a2650bdf5e9bc39eaf0b317"
     },
     {
-      "id": "wayfind-flow-continue-70a12b2d2b23",
-      "sha256": "b96e3df9b7124ec3733bc2848d9b3fe57baa56fd57c6de581ece19f87124b43a"
+      "id": "navigate-way-flow-continue-f8d6032838db",
+      "sha256": "e04f6a6c09892f6b4fb86e1cd6e4cdbfa6e6c882370c555d762b77ccc745292b"
     },
     {
-      "id": "wayfind-flow-interactive-aa5bfa703833",
-      "sha256": "1b391d386a9fc0acdb6e37259753677bf2698e3cb0ab1e2eebac30e2ffa2b8da"
+      "id": "navigate-way-flow-interactive-dc56e6544cdc",
+      "sha256": "003b432e6d8505b3e09a8044e8bc0e2c1d72fd7aacb2ef1efc5da097d68e4bda"
     },
     {
-      "id": "wayfind-flow-persistence-d4cc222df30c",
-      "sha256": "744faa613ee3956aa7035c4f6d99b692d359d0e117b41b5bd9605d500c4600b4"
+      "id": "navigate-way-flow-persistence-a705f414cd21",
+      "sha256": "1870925140b50f762010489ada21d753c41b0c56e102d0882589a5e35135be51"
     },
     {
-      "id": "wayfind-flow-action-result-c31bbb95e005",
-      "sha256": "edc2a15bf535243ad121e73caba1fbe2a222fad274419c9bc45178fdd05da55c"
+      "id": "navigate-way-flow-action-result-02e7f54fdc98",
+      "sha256": "24d4073e10738f523e01889793b41d08c6ef9256fdd1dddaf99fee3dc3321ab5"
     },
     {
-      "id": "wayfind-flow-public-results-849f100c5247",
-      "sha256": "4e40def8d85441c66cb2f15da8e8dcd96382031e52d0f7aa5533a70acf2994d5"
+      "id": "navigate-way-flow-public-results-c9199b765fd4",
+      "sha256": "e1bab594cfc4130e28f6e922554e653ef05a7c0f8eb05e5343661422bb63d321"
     },
     {
-      "id": "wayfind-flow-complete-outcome-28578834b5c8",
-      "sha256": "47d7f7204fa68e43d25186c53dc206f6b559ed76c22eb890c3915621f14887a3"
+      "id": "navigate-way-flow-complete-outcome-31cb9e22a2af",
+      "sha256": "bf6f19f6bc29e627a0fdbd59a240862361321bafb4a0ee822f25611a542e8ce3"
     },
     {
-      "id": "wayfind-flow-incomplete-outcome-d70b3e046dfd",
-      "sha256": "e4526b8b2e2b5471e3c54b56c38b83e2f9b6ad9d00b17561f1a57c0898d518f9"
+      "id": "navigate-way-flow-incomplete-outcome-b1be48b9c74c",
+      "sha256": "adbc09b0360b30dfc9113f4f868ddee67666fb557552988a808c62ab22d22f5b"
     },
     {
-      "id": "wayfind-flow-trigger-before-inputs",
-      "sha256": "44516b3bf360d2ded23b9c6f5f35a6f50ae64ad88e3b66a5a01a90827f714f0d"
+      "id": "navigate-way-flow-trigger-before-inputs",
+      "sha256": "a55099f20c108af5a42dd95efb4c31a77a7d22693eac011f6a7fe01eaebdca82"
     },
     {
-      "id": "wayfind-flow-inputs-before-step-1",
-      "sha256": "8c1f7ac45cca7277f6748b7c827e18ee5bbc2d0c1e80824e353a2accaa98ce94"
+      "id": "navigate-way-flow-inputs-before-step-1",
+      "sha256": "4374f2c9bf267b959db178be810264237c0475a1f5ca8f7b7253d9288395c3da"
     },
     {
-      "id": "wayfind-flow-step-1-before-step-2",
-      "sha256": "978fa14c197d38fce2a5fd8e22c48cd2462c947fc05540bd197b100c9b28882b"
+      "id": "navigate-way-flow-step-1-before-step-2",
+      "sha256": "c28e0db94514aac37b7c4d0cd92b15c414e1c6407e5e505264f2de4cfa82346c"
     },
     {
-      "id": "wayfind-flow-step-2-before-step-3",
-      "sha256": "9e62d04c78b23ce4411d9a0d2555afdeb8aafdb124440ab03a8149c6ded09a4e"
+      "id": "navigate-way-flow-step-2-before-step-3",
+      "sha256": "417bcedc46955aed7e1f0bc406707e0572693f4569364f4cd27c7eecfb5325d5"
     },
     {
-      "id": "wayfind-flow-step-3-before-step-4",
-      "sha256": "7f826404ea622d9d974ce9b49c4ee01e13f074eda3ad7962537d966b3f688f09"
+      "id": "navigate-way-flow-step-3-before-step-4",
+      "sha256": "862cf7104d3a6fe7e7eb68341a13a9eec1b1d60a54aeea7dfb88ee87523403c2"
     },
     {
-      "id": "wayfind-flow-step-4-before-step-5",
-      "sha256": "2e1663a5227ab1b750139f30ecf0e13866196ab82caa4e98509c192c52c634cb"
+      "id": "navigate-way-flow-step-4-before-step-5",
+      "sha256": "9c4e5461d8ffa335a920a1442ee7eada8787742afa3346d90bfbb21fd8c59d0f"
     },
     {
-      "id": "wayfind-flow-step-5-before-outcomes",
-      "sha256": "c7a9a4e27c5cef4e95b0ee7d8c4402f17bdacb612603b598b08a9b883933a79d"
+      "id": "navigate-way-flow-step-5-before-outcomes",
+      "sha256": "666028e4e3d04b2b3070bb7438c84dccbd3d1fdc79482379ddf437004bc970fb"
     }
   ],
   "declarations": [
@@ -3215,103 +3215,103 @@
     },
     {
       "kind": "span",
-      "id": "wayfind-explicit-only",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-explicit-only",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-destination-selection",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-destination-selection",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-non-goals",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-non-goals",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-local-model",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-local-model",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-map",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-map",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-decision-unit",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-decision-unit",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-resolution-boundary",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-resolution-boundary",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-reintegration",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-reintegration",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-work-unit",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-work-unit",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-persistence",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-persistence",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-completion-disposition",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-completion-disposition",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "wayfind-flow",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-trigger",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-trigger",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-inputs",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-inputs",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-step-1",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-step-1",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-step-2",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-step-2",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-step-3",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-step-3",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-step-4",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-step-4",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-step-5",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-step-5",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "wayfind-flow-outcomes",
-      "path": "shared/skill/wayfind/SKILL.md"
+      "id": "navigate-way-flow-outcomes",
+      "path": "shared/skill/navigate-way/SKILL.md"
     },
     {
       "kind": "span",

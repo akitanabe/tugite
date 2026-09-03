@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "version": "*.*.*",
-  "description": "Use the explicit workflows how-it, explorer-this, impl-lead, plan-agent, wayfind, and test-verify, plus review-refine, code-review, and test-report with internal skills, workers, reviewers, and advisors.",
+  "description": "Use the explicit workflows how-it, explorer-this, impl-lead, plan-agent, navigate-way, and test-verify, plus review-refine, code-review, and test-report with internal skills, workers, reviewers, and advisors.",
   "author": {
     "name": "akitanabe"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install workflows, agents, and skills.",
-    "longDescription": "Codex skills for how-it, explorer-this, impl-lead, plan-agent, wayfind, review-refine, code-review, test-report, and explicit-only test-verify, plus their internal skills, workers, reviewers, and advisors. Wayfind resolves Destination-wide pre-planning fog into self-contained Work Units without starting downstream work. Test-report statically observes tests through the shared Verification Topology. Test-verify uses the same shared topology with grounded runtime evidence, directly repairs only target-causal Problems, and requires its own Completion Gate and final verification.",
+    "longDescription": "Codex skills for how-it, explorer-this, impl-lead, plan-agent, navigate-way, review-refine, code-review, test-report, and explicit-only test-verify, plus their internal skills, workers, reviewers, and advisors. Navigate Way resolves Destination-wide pre-planning fog into self-contained Work Units without starting downstream work. Test-report statically observes tests through the shared Verification Topology. Test-verify uses the same shared topology with grounded runtime evidence, directly repairs only target-causal Problems, and requires its own Completion Gate and final verification.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -31,7 +31,7 @@
       "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
       "Use $test-verify only when explicitly requested; verify a bounded test target from grounded runtime evidence, directly remediate only target-causal Problems, then pass its Completion Gate and final verification.",
       "Use $plan-agent only when explicitly requested to create a recommendation-first free-form planning or design artifact from normal context without starting implementation; use review only when applicable and not opted out.",
-      "Use $wayfind only when explicitly requested to resolve Destination-wide Planning Fog and Decision blockers into self-contained Work Units without starting planning, review, implementation, delivery, or downstream routing.",
+      "Use $navigate-way only when explicitly requested to resolve Destination-wide Planning Fog and Decision blockers into self-contained Work Units without starting planning, review, implementation, delivery, or downstream routing.",
       "Use $review-refine to review and coherently refine a verified artifact snapshot, then return converged or incomplete with the latest verified candidate.",
       "Use $code-review when explicitly requested or when the user clearly wants a Tugite code-review of a change set; capture an immutable snapshot, route specialist reviewers, and report evidence-checked findings without fixing, adjudicating, or writing to the review target. Do not start during impl-lead or plan-family public workflows.",
       "Use $impl-lead only when explicitly requested to normalize implementation work into Implementation Units, then orchestrate implementation, Parent QA, acceptance, final verification, and safe integration.",
