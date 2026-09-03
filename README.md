@@ -4,6 +4,8 @@
 
 Tugite は Claude Code、Codex、Cursor のための実装ワークフロープラグインです。親エージェントが要求を Implementation Unit に正規化し、必要な worker へ実装を依頼し、親 QA と最終検証まで責任を持ちます。
 
+細かな実装時のルールは [リポジトリガイドライン](shared/repository-guidelines.md) を参照してください。
+
 ## 現行の構成
 
 ### 公開 skill
