@@ -4,6 +4,9 @@ spec_version = 2
 id = "tugite"
 version_from = "shared/VERSION"
 
+[body_values.release]
+from = "project:version"
+
 [contracts]
 files = [
   "contracts/shared.toml",
@@ -64,7 +67,8 @@ files = [
   "shared/skill/test-verify/references/risk-review.md",
   "shared/skill/test-verify/references/completion-gate.md",
   "shared/skill/review-refine/SKILL.md",
-  "shared/README.md",
+  "shared/plugins-readme.md",
+  "shared/root-readme.md",
   "shared/repository-guidelines.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
@@ -82,7 +86,7 @@ files = [
 ]
 managed_roots = ["shared", "contracts", "declarations"]
 allow_files = [
-  "shared/README.md",
+  "shared/plugins-readme.md",
 ]
 
 # Why Not: v7 は canonical shared/ を選択的に再構築中のため、旧 v6 plugin の未再構築ファイルを managed inventory に含めない。
@@ -242,7 +246,7 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/README.md"
+match = "shared/plugins-readme.md"
 path = "README.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
@@ -413,7 +417,7 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/README.md"
+match = "shared/plugins-readme.md"
 path = "README.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
@@ -585,7 +589,7 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/README.md"
+match = "shared/plugins-readme.md"
 path = "README.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
@@ -597,6 +601,16 @@ profile = "json-v1"
 metadata = [
   { field = "version", from = "project:version", type = "string" },
 ]
+
+[targets.root-readme]
+output_root = "."
+managed_roots = ["README.md"]
+
+[[targets.root-readme.rules]]
+match = "shared/root-readme.md"
+path = "README.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [targets.claude-marketplace]
 output_root = ".claude-plugin"
@@ -614,6 +628,16 @@ match = "declarations/codex/marketplace.json"
 path = "marketplace.json"
 profile = "json-v1"
 
+[targets.repository-guidelines]
+output_root = "docs"
+managed_roots = ["repository-guidelines.md"]
+
+[[targets.repository-guidelines.rules]]
+match = "shared/repository-guidelines.md"
+path = "repository-guidelines.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
 [targets.agents-guidance]
 output_root = "."
 
@@ -621,3 +645,4 @@ output_root = "."
 match = "shared/repository-guidelines.md"
 path = "AGENTS.md"
 profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. --> 詳細なガイドラインは [docs/repository-guidelines.md](docs/repository-guidelines.md) を参照してください。"

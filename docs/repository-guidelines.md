@@ -1,4 +1,4 @@
-<!-- Generated from shared/. Do not edit directly. --> 詳細なガイドラインは [docs/repository-guidelines.md](docs/repository-guidelines.md) を参照してください。
+<!-- Generated from shared/. Do not edit directly. -->
 
 # Repository Guidelines
 

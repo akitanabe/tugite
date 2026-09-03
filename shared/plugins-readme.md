@@ -6,7 +6,7 @@
 # Tugite for Codex
 <!-- @/only -->
 <!-- @only cursor -->
-# Tugite v7.1.0
+# Tugite v{{release}}
 <!-- @/only -->
 <!-- @/contract -->
 

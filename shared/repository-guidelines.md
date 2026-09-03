@@ -36,7 +36,7 @@ verification にせず、残存 risk または editorial review として扱い�
 宣言順の `applies_to` を固定 key 順の compact canonical JSON と LF にし、UTF-8 byte 列の SHA-256 先頭12桁で表します。
 列挙順の連番は使いません。`slice` を持たない単独の契約には、意味を表す安定した ID を使用できます。
 
-## コーディングスタイルと命名
+## 開発時のコーディングルール
 
 Skill、shared component、contract、test、lint rule を作成・変更するときは、
 `docs/skill-coding-rules.md` を正本として適用します。規範本文を `AGENTS.md`、contract、lint rule へ複製しません。
@@ -88,15 +88,13 @@ EVAL は Human が明示したとき、または既存 EVAL 成果物の変更�
 ## Version 更新指針
 
 v6 以降の version は個々の change ではなく release snapshot の属性です。通常の change、PR、main 統合では
-`shared/VERSION` を更新しません。Human が release を明示した場合だけ、恒久正本の
-`docs/version-release-policy.md` を読み、release Action を開始します。
+`shared/VERSION` を更新しません。Human が release を明示した場合だけ release Action を開始します。
 
 ```toml
 policy_id = "version-release-policy-v1"
 applies_from = "v6.0.0"
 ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
 release_trigger = "Human が release を明示した場合だけ release Action を開始する"
-canonical_policy = "docs/version-release-policy.md"
 ```
 
 ## Commit・Pull Request 指針
