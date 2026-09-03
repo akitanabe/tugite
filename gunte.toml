@@ -19,7 +19,7 @@ files = [
   "contracts/review-refine.toml",
   "contracts/impl-lead.toml",
   "contracts/destination-selection.toml",
-  "contracts/wayfind.toml",
+  "contracts/navigate-way.toml",
 ]
 
 [sources]
@@ -61,7 +61,7 @@ files = [
   "shared/skill/impl-lead/references/completion-gate.md",
   "shared/skill/impl-lead/references/run-owned-lifecycle.md",
   "shared/skill/plan-agent/SKILL.md",
-  "shared/skill/wayfind/SKILL.md",
+  "shared/skill/navigate-way/SKILL.md",
   "shared/skill/test-report/SKILL.md",
   "shared/skill/test-verify/SKILL.md",
   "shared/skill/test-verify/references/risk-review.md",
@@ -78,7 +78,7 @@ files = [
   "declarations/codex/skills/how-it/openai.yaml",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-agent/openai.yaml",
-  "declarations/codex/skills/wayfind/openai.yaml",
+  "declarations/codex/skills/navigate-way/openai.yaml",
   "declarations/codex/skills/test-report/openai.yaml",
   "declarations/codex/skills/test-verify/openai.yaml",
   "declarations/codex/skills/review-refine/openai.yaml",
@@ -216,8 +216,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
-match = "shared/skill/wayfind/SKILL.md"
-path = "skills/wayfind/SKILL.md"
+match = "shared/skill/navigate-way/SKILL.md"
+path = "skills/navigate-way/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -387,8 +387,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/skill/wayfind/SKILL.md"
-path = "skills/wayfind/SKILL.md"
+match = "shared/skill/navigate-way/SKILL.md"
+path = "skills/navigate-way/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -559,8 +559,8 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/skill/wayfind/SKILL.md"
-path = "skills/wayfind/SKILL.md"
+match = "shared/skill/navigate-way/SKILL.md"
+path = "skills/navigate-way/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
