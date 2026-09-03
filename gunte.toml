@@ -15,6 +15,8 @@ files = [
   "contracts/test-verify.toml",
   "contracts/review-refine.toml",
   "contracts/impl-lead.toml",
+  "contracts/destination-selection.toml",
+  "contracts/wayfind.toml",
 ]
 
 [sources]
@@ -32,6 +34,7 @@ files = [
   "shared/researcher-delegation.md",
   "shared/writable-scope.md",
   "shared/external-effects.md",
+  "shared/destination-selection.md",
   "shared/agents/focused-implementer.md",
   "shared/agents/implementer.md",
   "shared/agents/senior-implementer.md",
@@ -55,6 +58,7 @@ files = [
   "shared/skill/impl-lead/references/completion-gate.md",
   "shared/skill/impl-lead/references/run-owned-lifecycle.md",
   "shared/skill/plan-agent/SKILL.md",
+  "shared/skill/wayfind/SKILL.md",
   "shared/skill/test-report/SKILL.md",
   "shared/skill/test-verify/SKILL.md",
   "shared/skill/test-verify/references/risk-review.md",
@@ -70,6 +74,7 @@ files = [
   "declarations/codex/skills/how-it/openai.yaml",
   "declarations/codex/skills/impl-lead/openai.yaml",
   "declarations/codex/skills/plan-agent/openai.yaml",
+  "declarations/codex/skills/wayfind/openai.yaml",
   "declarations/codex/skills/test-report/openai.yaml",
   "declarations/codex/skills/test-verify/openai.yaml",
   "declarations/codex/skills/review-refine/openai.yaml",
@@ -157,6 +162,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.claude.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
 match = "shared/agents/*.md"
 path = "agents/{1}.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -197,6 +208,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.claude.rules]]
 match = "shared/skill/plan-agent/SKILL.md"
 path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/wayfind/SKILL.md"
+path = "skills/wayfind/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -314,6 +331,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
 match = "shared/agents/*.md"
 path = "install/agents/{1}.toml"
 profile = "toml-v1"
@@ -356,6 +379,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/skill/plan-agent/SKILL.md"
 path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/wayfind/SKILL.md"
+path = "skills/wayfind/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -484,6 +513,12 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
+match = "shared/destination-selection.md"
+path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
 match = "shared/agents/*.md"
 path = "agents/{1}.md"
 profile = "markdown+yaml-frontmatter-v1"
@@ -516,6 +551,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/skill/plan-agent/SKILL.md"
 path = "skills/plan-agent/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/wayfind/SKILL.md"
+path = "skills/wayfind/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
