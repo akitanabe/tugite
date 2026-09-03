@@ -210,6 +210,26 @@ Planning Synthesis
 conditional review
 ```
 
+### wayfind
+
+`wayfind` は明示起動だけで Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返す public pre-planning workflow である。一回の invocation は Destination-wide な exactly one の task-local Local Model を所有し、breadth-first な low-resolution current-state Map に Destination、Work Units、Decision Units、Planning Fog、Out of scope を保持する。
+
+```text
+Destination-wide Local Model
+  ↓ breadth-first current-state Map
+Decision Unit / Planning Fog resolution
+  ↓ Reintegration and affected-region Recomposition
+1..N self-contained Work Units
+  ↓
+complete freeze | provisional incomplete + optional resume_reference
+```
+
+Decision Unit の canonical state は `open | resolved`、`actionable | blocked` は dependency からの derived view とする。Work Unit は `planning-bounded | planning-ready` と established context、remaining gap、material dependencies を持ち、Destination coverage が成立して Planning Fog と active open Decision Unit がなくなった場合だけ stable boundary を freeze する。
+
+Agentic Model Construction を first route とし、Agent-side progress route がなく Human-owned blocker がある場合だけ Interactive Model Construction を同じ Local Model へ composition する。exploration は bounded resolution に閉じ、plan、review、implementation、delivery、complete 後の reopen、downstream routing は開始しない。
+
+unfinished state は External Effects boundary と shared Destination Selection に従い caller-specific lifecycle で保存する。保存と read-back に成功した場合だけ externally returned `resume_reference` を返し、resume 時は same-state current Data と current evidence から fresh Local Model を構築する。Local Model や推論履歴は serialize しない。
+
 ### review-refine
 
 `review-refine` は artifact / proposal / plan 等を対象に、目的・criteria・evidence に照らして finding を得て、採用した改善を反映する review workflow である。
