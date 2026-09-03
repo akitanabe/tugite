@@ -56,7 +56,7 @@
     "shared/skill/test-verify/references/risk-review.md",
     "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
-    "shared/README.md",
+    "shared/plugins-readme.md",
     "shared/root-readme.md",
     "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
@@ -3556,17 +3556,17 @@
     {
       "kind": "span",
       "id": "readme-title",
-      "path": "shared/README.md"
+      "path": "shared/plugins-readme.md"
     },
     {
       "kind": "span",
       "id": "readme-risk-directed-static-performance-reviewer",
-      "path": "shared/README.md"
+      "path": "shared/plugins-readme.md"
     },
     {
       "kind": "span",
       "id": "cursor-readme-boundary",
-      "path": "shared/README.md"
+      "path": "shared/plugins-readme.md"
     },
     {
       "kind": "span",

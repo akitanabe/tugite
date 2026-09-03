@@ -67,7 +67,7 @@ release Action は bounded な repository inventory と readback により、少
 - 正本: `shared/VERSION`
 - 手編集する contract: `contracts/shared.toml` の README title contract
 - Gunte 生成物: root `README.md`、Claude / Codex / Cursor plugin manifest、`plugins/codex/install/VERSION`、
-  `shared/README.md` から生成する `plugins/cursor/README.md`
+  `shared/plugins-readme.md` から生成する `plugins/cursor/README.md`
 - Gunte 管理外: `plugins/claude/README.md` と `plugins/codex/README.md` の version 表示
 
 declaration manifest の template version scalar は project version metadata で上書きされるため、現行の Gunte 設計では
