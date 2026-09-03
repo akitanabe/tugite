@@ -90,15 +90,13 @@ EVAL は Human が明示したとき、または既存 EVAL 成果物の変更�
 ## Version 更新指針
 
 v6 以降の version は個々の change ではなく release snapshot の属性です。通常の change、PR、main 統合では
-`shared/VERSION` を更新しません。Human が release を明示した場合だけ、恒久正本の
-`docs/version-release-policy.md` を読み、release Action を開始します。
+`shared/VERSION` を更新しません。Human が release を明示した場合だけ release Action を開始します。
 
 ```toml
 policy_id = "version-release-policy-v1"
 applies_from = "v6.0.0"
 ordinary_change = "通常の change、PR、main 統合では shared/VERSION を更新しない"
 release_trigger = "Human が release を明示した場合だけ release Action を開始する"
-canonical_policy = "docs/version-release-policy.md"
 ```
 
 ## Commit・Pull Request 指針
