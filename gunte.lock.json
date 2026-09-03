@@ -57,6 +57,7 @@
     "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
     "shared/README.md",
+    "shared/root-readme.md",
     "shared/repository-guidelines.md",
     "declarations/claude/plugin.json",
     "declarations/claude/marketplace.json",
@@ -156,6 +157,14 @@
     {
       "id": "readme-title-requires-659967575a1a",
       "sha256": "5b5d16320d5f0a58c246e861c3b974437e8b185a8df31900205786cd054d8ab0"
+    },
+    {
+      "id": "root-readme-title-bde58813c7c4",
+      "sha256": "6da19e498e179b37c3fff0c5a0754b4d2c2fc373746b39ba2741333d21081339"
+    },
+    {
+      "id": "root-readme-risk-e4242864ca39",
+      "sha256": "777a119af830b53bc54adc557e45efe9518254855a1ed8cf1b6255f26cd23a5d"
     },
     {
       "id": "readme-risk-directed-static-performance-reviewer-f796ec8d2285",
@@ -3558,6 +3567,16 @@
       "kind": "span",
       "id": "cursor-readme-boundary",
       "path": "shared/README.md"
+    },
+    {
+      "kind": "span",
+      "id": "root-readme-title",
+      "path": "shared/root-readme.md"
+    },
+    {
+      "kind": "span",
+      "id": "root-readme-risk",
+      "path": "shared/root-readme.md"
     }
   ]
 }

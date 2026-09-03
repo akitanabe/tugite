@@ -142,6 +142,18 @@ slice = "readme-title"
 pattern = "# Tugite"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.root-readme-title-bde58813c7c4]
+kind = "requires"
+slice = "root-readme-title"
+pattern = "# Tugite"
+applies_to = ["root-readme"]
+
+[contracts.root-readme-risk-e4242864ca39]
+kind = "requires"
+slice = "root-readme-risk"
+pattern = "リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。"
+applies_to = ["root-readme"]
+
 [contracts.readme-risk-directed-static-performance-reviewer-f796ec8d2285]
 kind = "requires"
 slice = "readme-risk-directed-static-performance-reviewer"

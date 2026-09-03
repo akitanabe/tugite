@@ -65,10 +65,9 @@ version 編集前と最終受け入れ前に、candidate identity と release-on
 release Action は bounded な repository inventory と readback により、少なくとも次の surface を同期する。
 
 - 正本: `shared/VERSION`
-- 手編集する表示・contract: root `README.md` の title、`contracts/repository.toml` の Cursor manifest version assertion と
-  Cursor README title contract
-- Gunte 生成物: Claude / Codex / Cursor plugin manifest、`plugins/codex/install/VERSION`、root README から生成する
-  `plugins/cursor/README.md`
+- 手編集する contract: `contracts/shared.toml` の README title contract
+- Gunte 生成物: root `README.md`、Claude / Codex / Cursor plugin manifest、`plugins/codex/install/VERSION`、
+  `shared/README.md` から生成する `plugins/cursor/README.md`
 - Gunte 管理外: `plugins/claude/README.md` と `plugins/codex/README.md` の version 表示
 
 declaration manifest の template version scalar は project version metadata で上書きされるため、現行の Gunte 設計では

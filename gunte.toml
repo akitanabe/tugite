@@ -4,6 +4,9 @@ spec_version = 2
 id = "tugite"
 version_from = "shared/VERSION"
 
+[body_values.release]
+from = "project:version"
+
 [contracts]
 files = [
   "contracts/shared.toml",
@@ -65,6 +68,7 @@ files = [
   "shared/skill/test-verify/references/completion-gate.md",
   "shared/skill/review-refine/SKILL.md",
   "shared/README.md",
+  "shared/root-readme.md",
   "shared/repository-guidelines.md",
   "declarations/claude/plugin.json",
   "declarations/claude/marketplace.json",
@@ -597,6 +601,16 @@ profile = "json-v1"
 metadata = [
   { field = "version", from = "project:version", type = "string" },
 ]
+
+[targets.root-readme]
+output_root = "."
+managed_roots = ["README.md"]
+
+[[targets.root-readme.rules]]
+match = "shared/root-readme.md"
+path = "README.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [targets.claude-marketplace]
 output_root = ".claude-plugin"
