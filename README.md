@@ -12,6 +12,7 @@ Tugite は Claude Code、Codex、Cursor のための実装ワークフロープ�
 - `explorer-this`: Agentic Model Construction を first route とする探索 workflow で、Human-owned material gap の場合だけ Interactive Model Construction を利用します。明示起動時だけ使います。
 - `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化し、実装、Parent QA、受入、final verification、安全な統合まで所有します。明示起動時だけ使います。
 - `plan-agent`: normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作り、必要な場合だけ review します。
+- `wayfind`: Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返します。明示起動時だけ使います。
 - `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
 
 `plan-agent` は review applicability と explicit opt-out を判断し、nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は strict review route へ進みます。
@@ -32,7 +33,7 @@ Plan の品質について読み取り専用で助言する advisor は `plan-qu
 - [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$review-refine` を明示して起動できます。
+Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:wayfind`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$wayfind`、`$review-refine` を明示して起動できます。
 
 <!-- @contract cursor-readme-boundary -->
 ### Cursor local plugin
@@ -70,6 +71,7 @@ public skill は次のコマンドで明示起動できます。
 /explorer-this <探索タスク>
 /impl-lead <実装タスク>
 /plan-agent <plan task>
+/wayfind <destination>
 /review-refine <artifact review task>
 /install-plugin
 ```
