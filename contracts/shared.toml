@@ -148,16 +148,16 @@ slice = "root-readme-title"
 pattern = "# Tugite"
 applies_to = ["root-readme"]
 
-[contracts.root-readme-risk-e4242864ca39]
+[contracts.root-readme-risk-446069194c71]
 kind = "requires"
 slice = "root-readme-risk"
-pattern = "リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。"
+pattern = "リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
 applies_to = ["root-readme"]
 
-[contracts.readme-risk-directed-static-performance-reviewer-f796ec8d2285]
+[contracts.readme-risk-directed-static-performance-reviewer-546b1f0779ae]
 kind = "requires"
 slice = "readme-risk-directed-static-performance-reviewer"
-pattern = "リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。"
+pattern = "リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.cursor-readme-local-requires-aae0052f5b5a]
@@ -172,16 +172,16 @@ slice = "cursor-readme-boundary"
 pattern = "plugins/cursor/install/install-plugin.ps1 -User"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-main-requires-7260a52ca5b8]
+[contracts.cursor-readme-main-requires-6e95cfd1bde6]
 kind = "requires"
 slice = "cursor-readme-boundary"
-pattern = "main 先端"
+pattern = "main ブランチの最新版"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-no-symlink-requires-8d7e64656bf0]
+[contracts.cursor-readme-no-symlink-requires-02e6d10f79ad]
 kind = "requires"
 slice = "cursor-readme-boundary"
-pattern = "symlink は使いません"
+pattern = "シンボリックリンクは使いません"
 applies_to = ["cursor"]
 
 [contracts.cursor-readme-reload-requires-b627f39fae48]
@@ -196,23 +196,23 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-3a129bfe7bcf]
+[contracts.cursor-readme-public-skills-requires-46457642c990]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/how-it <相談したい進め方>
 /explorer-this <探索タスク>
 /impl-lead <実装タスク>
-/plan-agent <plan task>
-/navigate-way <destination>
-/test-report <test scope>
-/test-verify <test target>
-/review-refine <artifact review task>'''
+/plan-agent <計画タスク>
+/navigate-way <目標>
+/test-report <確認するテスト範囲>
+/test-verify <検証するテスト対象>
+/review-refine <レビュー対象>'''
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-unsupported-requires-d94e0540f495]
+[contracts.cursor-readme-unsupported-requires-13d1036fbb45]
 kind = "requires"
 slice = "cursor-readme-boundary"
-pattern = "Cursor 用 Marketplace 配布はこの version の対象外です。"
+pattern = "Cursor Marketplace からの配布はこのバージョンの対象外です。"
 applies_to = ["cursor"]
 
 [contracts.shared-model-owner-0a06937163a7]

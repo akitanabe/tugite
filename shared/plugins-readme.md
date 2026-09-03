@@ -1,9 +1,9 @@
 <!-- @contract readme-title -->
 <!-- @only claude -->
-# Tugite for Claude Code
+# Tugite（Claude Code 用）
 <!-- @/only -->
 <!-- @only codex -->
-# Tugite for Codex
+# Tugite（Codex 用）
 <!-- @/only -->
 <!-- @only cursor -->
 # Tugite v{{release}}
@@ -11,44 +11,44 @@
 <!-- @/contract -->
 
 <!-- @only claude -->
-Tugite は Claude Code、Codex、Cursor 向けに複数の public workflow、agent、skill を配布する plugin です。各 workflow は固有の責務境界と起動条件に従い、必要に応じて agent、reviewer、advisor を組み合わせます。
+Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エージェント、スキルを配布するプラグインです。それぞれの作業手順は決められた役割と起動条件に従い、必要に応じて実装、レビュー、助言を担うエージェントを組み合わせます。
 <!-- @/only -->
 <!-- @only codex -->
-Tugite は Claude Code、Codex、Cursor 向けに複数の public workflow、agent、skill を配布する plugin です。各 workflow は固有の責務境界と起動条件に従い、必要に応じて agent、reviewer、advisor を組み合わせます。
+Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エージェント、スキルを配布するプラグインです。それぞれの作業手順は決められた役割と起動条件に従い、必要に応じて実装、レビュー、助言を担うエージェントを組み合わせます。
 <!-- @/only -->
 <!-- @only cursor -->
-Tugite は Claude Code、Codex、Cursor 向けに複数の public workflow、agent、skill を配布する plugin です。各 workflow は固有の責務境界と起動条件に従い、必要に応じて agent、reviewer、advisor を組み合わせます。
+Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エージェント、スキルを配布するプラグインです。それぞれの作業手順は決められた役割と起動条件に従い、必要に応じて実装、レビュー、助言を担うエージェントを組み合わせます。
 <!-- @/only -->
 
 ## 現行の構成
 
-### 公開 skill
+### 公開スキル
 
-- `how-it`: 未確定な request の前提、選択肢、成立条件を Human とともに構築し、current understanding を requested output へ接続します。明示起動時だけ使います。
-- `explorer-this`: Agentic Model Construction を first route とする探索 workflow で、Human-owned material gap の場合だけ Interactive Model Construction を利用します。明示起動時だけ使います。
-- `impl-lead`: implementation work を execution 前の Implementation Unit へ正規化し、実装、Parent QA、受入、final verification、安全な統合まで所有します。明示起動時だけ使います。
-- `plan-agent`: normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作り、必要な場合だけ review します。明示起動時だけ使います。
-- `navigate-way`: Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返します。明示起動時だけ使います。
-- `test-report`: 指定範囲を静的に観測し、独立 grounding できた Expected Observation と Case / Evidence の対応、および grounding できない場合の limitation を、評価や remediation なしで Verification Topology として報告します。
-- `test-verify`: 明示された bounded test target を grounded runtime evidence で検証し、target-causal Problem だけを直接修復して Completion Gate と final verification まで閉じます。明示起動時だけ使います。
-- `review-refine`: 不変 snapshot を指定回数の範囲でレビューし、指摘の採否と受け入れ結果を呼び出し元の親へ返します。
+- `how-it`: 進め方が決まっていない依頼について、前提、選択肢、成立条件を利用者と一緒に整理し、求められた形で回答します。利用者が指定したときだけ使います。
+- `explorer-this`: まずエージェント自身で調査し、判断に必要な情報や方針を人にしか確認できない場合に限って質問します。調査結果は依頼された形式で返します。利用者が指定したときだけ使います。
+- `impl-lead`: 実装依頼を着手前に明確な作業単位へ整理し、実装、品質確認、受け入れ判断、最終検証、安全な取り込みまで責任を持ちます。利用者が指定したときだけ使います。
+- `plan-agent`: 会話や提示資料をもとに、依頼に合った自由形式の計画・設計資料を、推奨案を中心に作ります。必要な場合だけレビューします。利用者が指定したときだけ使います。
+- `navigate-way`: 目標全体の不明点と判断待ちの事項を整理し、1つ以上の自己完結した作業単位に分けて返します。利用者が指定したときだけ使います。
+- `test-report`: 指定されたテスト範囲を実行せずに読み取り、期待する動作とテストケース・根拠の対応、および確認できない点を報告します。評価や修正は行いません。
+- `test-verify`: 指定されたテスト対象を実行結果などの根拠に基づいて検証し、その対象が原因の問題だけを修正して、完了条件の確認と最終検証まで行います。利用者が指定したときだけ使います。
+- `review-refine`: 途中で内容が変わらない対象を指定回数までレビューし、指摘を採用するかどうかと受け入れ結果を呼び出し元の親エージェントへ返します。
 
-`plan-agent` は review applicability と explicit opt-out を判断し、nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は `plan-adversarial-reviewer` と `over-engineering-reviewer` を使う strict review route へ進みます。
+`plan-agent` は計画にレビューが必要か、利用者がレビュー不要と指定したかを判断します。レビューが不要な場合はそのまま最終候補を返します。レビューが必要で、利用者も不要と指定していない場合は `plan-adversarial-reviewer` と `over-engineering-reviewer` による厳格なレビューへ進みます。
 
-### Worker / reviewer / advisor
+### 実装・レビュー・助言を担うエージェント
 
-Implementation Unit worker は `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
+実装を担うエージェントは `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
 <!-- @contract readme-risk-directed-static-performance-reviewer -->
-リスクに応じて選択する reviewer は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は実行終了時の最終文章レビューとして使います。
+リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
 <!-- @/contract -->
 
-Plan の品質について読み取り専用で助言する advisor は `plan-quality-advisor` です。reviewer と advisor は判断材料を返し、最終受け入れは親エージェントが行います。
+計画の品質について、内容を変更せずに助言する担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、最終的な受け入れは親エージェントが行います。
 
 <!-- @only claude -->
-## Install and launch
+## 導入と起動
 
-Claude Code で marketplace を登録し、plugin を導入します。
+Claude Code でマーケットプレイスを登録し、プラグインを導入します。
 
 ```text
 /plugin marketplace add akitanabe/tugite
@@ -56,71 +56,71 @@ Claude Code で marketplace を登録し、plugin を導入します。
 /reload-plugins
 ```
 
-導入後、public skill は次のコマンドで明示起動できます。
+導入後、公開スキルは次のコマンドで直接起動できます。
 
 ```text
 /tugite:how-it <相談したい進め方>
 /tugite:explorer-this <探索タスク>
 /tugite:impl-lead <実装タスク>
-/tugite:plan-agent <plan task>
-/tugite:navigate-way <destination>
-/tugite:test-report <test scope>
-/tugite:test-verify <test target>
-/tugite:review-refine <artifact review task>
+/tugite:plan-agent <計画タスク>
+/tugite:navigate-way <目標>
+/tugite:test-report <確認するテスト範囲>
+/tugite:test-verify <検証するテスト対象>
+/tugite:review-refine <レビュー対象>
 ```
 <!-- @/only -->
 <!-- @only codex -->
-## Install and launch
+## 導入と起動
 
-Git marketplace を登録して plugin を導入します。
+Git リポジトリをマーケットプレイスとして登録し、プラグインを導入します。
 
 ```text
 codex plugin marketplace add akitanabe/tugite
 codex plugin add tugite@tugite
 ```
 
-ローカル checkout を使う場合は repository root で `codex plugin marketplace add .agents/plugins` を実行してから `codex plugin add tugite@tugite` を実行します。導入後は Codex session を再起動してください。
+ローカルの作業コピーを使う場合は、リポジトリのルートで `codex plugin marketplace add .agents/plugins` を実行してから `codex plugin add tugite@tugite` を実行します。導入後は Codex セッションを再起動してください。
 
-Public skill は次のコマンドで明示起動できます。
+公開スキルは次のコマンドで直接起動できます。
 
 ```text
 $how-it <相談したい進め方>
 $explorer-this <探索タスク>
 $impl-lead <実装タスク>
-$plan-agent <plan task>
-$navigate-way <destination>
-$test-report <test scope>
-$test-verify <test target>
-$review-refine <artifact review task>
+$plan-agent <計画タスク>
+$navigate-way <目標>
+$test-report <確認するテスト範囲>
+$test-verify <検証するテスト対象>
+$review-refine <レビュー対象>
 ```
 
-## Custom agents
+## カスタムエージェント
 
-`install/agents/*.toml` は配布素材です。user scope または project scope へ導入する前に状態を確認します。
+`install/agents/*.toml` は配布用のファイルです。ユーザー単位またはプロジェクト単位で導入する前に、現在の状態を確認してください。
 
-新しい Codex session では `$install-custom-agents` を使って対象 scope の状態確認と導入を依頼できます。導入または更新後は session を再起動してください。
+新しい Codex セッションでは `$install-custom-agents` を使って、導入先の状態確認と導入を依頼できます。導入または更新後はセッションを再起動してください。
 
 ```text
 plugins/codex/install/install-agents.sh --check --user
-plugins/codex/install/install-agents.sh --check --repo <repo>
+plugins/codex/install/install-agents.sh --check --repo <リポジトリ>
 ```
 
-導入後は Codex session を再起動してください。既存定義を更新する場合は内容を確認してから `--force` を指定します。
+導入後は Codex セッションを再起動してください。既存の定義を更新する場合は、内容を確認してから `--force` を指定します。
 <!-- @/only -->
 
 <!-- @contract cursor-readme-boundary -->
 <!-- @only cursor -->
 ## 導入と起動
 
-- [Claude Code plugin](https://github.com/akitanabe/tugite/blob/main/plugins/claude/README.md)
-- [Codex plugin](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
-- [Cursor plugin](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
+- [Claude Code プラグイン](https://github.com/akitanabe/tugite/blob/main/plugins/claude/README.md)
+- [Codex プラグイン](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
+- [Cursor プラグイン](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
 Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:navigate-way`、`/tugite:test-report`、`/tugite:test-verify`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$navigate-way`、`$test-report`、`$test-verify`、`$review-refine` を起動できます。
 
-### Cursor local plugin
+### Cursor のローカルプラグイン
 
-Cursor では Git の main 先端にある `plugins/cursor` を user scope の `~/.cursor/plugins/local/tugite` へ copy して導入します。symlink は使いません。既存の local plugin がある場合は内容を確認してから `--force` / `-Force` で置き換えてください。導入後は Cursor を再起動するか `Developer: Reload Window` を実行して再読込します。
+Cursor では Git の main ブランチの最新版にある `plugins/cursor` を、ユーザー単位の `~/.cursor/plugins/local/tugite` へコピーして導入します。シンボリックリンクは使いません。既存のローカルプラグインがある場合は、内容を確認してから `--force` / `-Force` で置き換えてください。導入後は Cursor を再起動するか `Developer: Reload Window` を実行して再読み込みします。
 
 Linux / macOS / WSL / Git Bash:
 
@@ -140,31 +140,31 @@ plugins/cursor/install/install-plugin.ps1 -Force -User
 
 更新後は Cursor を再起動するか `Developer: Reload Window` を実行してください。
 
-repository checkout を直接検証する場合は、repository root で次を実行します。
+リポジトリの作業コピーを直接検証する場合は、リポジトリのルートで次を実行します。
 
 ```text
 agent --plugin-dir plugins/cursor
 ```
 
-public skill は次のコマンドで明示起動できます。
+公開スキルは次のコマンドで直接起動できます。
 
 ```text
 /how-it <相談したい進め方>
 /explorer-this <探索タスク>
 /impl-lead <実装タスク>
-/plan-agent <plan task>
-/navigate-way <destination>
-/test-report <test scope>
-/test-verify <test target>
-/review-refine <artifact review task>
+/plan-agent <計画タスク>
+/navigate-way <目標>
+/test-report <確認するテスト範囲>
+/test-verify <検証するテスト対象>
+/review-refine <レビュー対象>
 ```
 
-Cursor 用 Marketplace 配布はこの version の対象外です。
+Cursor Marketplace からの配布はこのバージョンの対象外です。
 <!-- @/only -->
 <!-- @/contract -->
 
-親エージェントは変更前の状態、受け入れ条件（AC）、対象範囲、依存関係、差分、テスト結果を確認し、Green（全テスト成功）を再現できるときだけ受け入れます。
+親エージェントは変更前の状態、受け入れ条件、対象範囲、依存関係、差分、テスト結果を確認し、すべてのテストが成功する状態を再現できるときだけ変更を受け入れます。
 
-## License
+## ライセンス
 
-MIT License. See [LICENSE](https://github.com/akitanabe/tugite/blob/main/LICENSE).
+MIT License です。詳細は [LICENSE](https://github.com/akitanabe/tugite/blob/main/LICENSE) を参照してください。

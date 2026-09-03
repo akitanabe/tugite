@@ -163,12 +163,12 @@
       "sha256": "6da19e498e179b37c3fff0c5a0754b4d2c2fc373746b39ba2741333d21081339"
     },
     {
-      "id": "root-readme-risk-e4242864ca39",
-      "sha256": "777a119af830b53bc54adc557e45efe9518254855a1ed8cf1b6255f26cd23a5d"
+      "id": "root-readme-risk-446069194c71",
+      "sha256": "f8f2dc47be6121dfd916d9d714f06ebb691f3b7f56f461ca2ab4e664f1f01d41"
     },
     {
-      "id": "readme-risk-directed-static-performance-reviewer-f796ec8d2285",
-      "sha256": "7c2258184a6d7367a31fabe9c0c606e9b58654d0bbf6bce4ec7f58d435055932"
+      "id": "readme-risk-directed-static-performance-reviewer-546b1f0779ae",
+      "sha256": "bda79196405661c4723a468e46f5793c06691228fd30c5a5cb0e1d8454a612a5"
     },
     {
       "id": "cursor-readme-local-requires-aae0052f5b5a",
@@ -179,12 +179,12 @@
       "sha256": "fdba4029029fda5eec42e3ea44d4541b4ed27d31fba4cad6856f2a6369344c47"
     },
     {
-      "id": "cursor-readme-main-requires-7260a52ca5b8",
-      "sha256": "1e80d5822fe43037b0806333f8a1583b9c4718c6428d9412303bc07ca090a1fd"
+      "id": "cursor-readme-main-requires-6e95cfd1bde6",
+      "sha256": "b10b29813d106d2c896f740391132dd799dfaeab52d6892fa1a0b002be9718c8"
     },
     {
-      "id": "cursor-readme-no-symlink-requires-8d7e64656bf0",
-      "sha256": "c2622b7431cbc772072ccb0c40e3cc8d6e6a1cee70464426a84ac0fe94217dcb"
+      "id": "cursor-readme-no-symlink-requires-02e6d10f79ad",
+      "sha256": "e69e2199972b8c663fb59b1b815ca919e62d792bac4a7faa0cfba19e3f61092c"
     },
     {
       "id": "cursor-readme-reload-requires-b627f39fae48",
@@ -195,12 +195,12 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-3a129bfe7bcf",
-      "sha256": "4add5b912d9f960728ff2d2b5f81a8de0e7b62055a2f244ddcb6424612fbe3c6"
+      "id": "cursor-readme-public-skills-requires-46457642c990",
+      "sha256": "b4ae4000cb19e4f3d902639487ff9107df2a7a447774598b9d336c7dd3ecb5c2"
     },
     {
-      "id": "cursor-readme-unsupported-requires-d94e0540f495",
-      "sha256": "1dae7919620f1510f84461ea45bf1ccb5b6154acfc3f90cc64e2b3e39346bb34"
+      "id": "cursor-readme-unsupported-requires-13d1036fbb45",
+      "sha256": "54944f8d81932eb03b3daae7f9dd6d7c2f9bf9b3e3b730c50004ca94d4b90d71"
     },
     {
       "id": "shared-model-owner-0a06937163a7",
