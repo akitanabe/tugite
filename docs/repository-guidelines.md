@@ -70,7 +70,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、
 `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`navigate-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の8つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の8つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
@@ -128,7 +128,7 @@ programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
 programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
-programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "navigate-way"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way"]
 programmatic_flow_excluded_skills = ["code-review", "structural-health-gate", "test-report"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
