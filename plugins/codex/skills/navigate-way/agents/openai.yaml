@@ -1,6 +1,0 @@
-interface:
-  display_name: "Navigate Way"
-  short_description: "Resolve pre-planning fog into bounded work units"
-  default_prompt: "Use $navigate-way only when explicitly requested to resolve Destination-wide Planning Fog and Decision blockers into self-contained Work Units without starting planning, review, implementation, delivery, or downstream routing."
-policy:
-  allow_implicit_invocation: false

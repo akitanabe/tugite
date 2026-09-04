@@ -12,7 +12,7 @@
     "contracts/review-refine.toml",
     "contracts/impl-lead.toml",
     "contracts/destination-selection.toml",
-    "contracts/navigate-way.toml",
+    "contracts/find-way.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -50,7 +50,7 @@
     "shared/skill/impl-lead/references/completion-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
     "shared/skill/plan-agent/SKILL.md",
-    "shared/skill/navigate-way/SKILL.md",
+    "shared/skill/find-way/SKILL.md",
     "shared/skill/test-report/SKILL.md",
     "shared/skill/test-verify/SKILL.md",
     "shared/skill/test-verify/references/risk-review.md",
@@ -67,7 +67,7 @@
     "declarations/codex/skills/how-it/openai.yaml",
     "declarations/codex/skills/impl-lead/openai.yaml",
     "declarations/codex/skills/plan-agent/openai.yaml",
-    "declarations/codex/skills/navigate-way/openai.yaml",
+    "declarations/codex/skills/find-way/openai.yaml",
     "declarations/codex/skills/test-report/openai.yaml",
     "declarations/codex/skills/test-verify/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
@@ -195,8 +195,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-46457642c990",
-      "sha256": "b4ae4000cb19e4f3d902639487ff9107df2a7a447774598b9d336c7dd3ecb5c2"
+      "id": "cursor-readme-public-skills-requires-365bfbfcb751",
+      "sha256": "735e83089dec064406e6d2c6cd58a0a6533089bc4c39023fc1b35c7635ff9da8"
     },
     {
       "id": "cursor-readme-unsupported-requires-13d1036fbb45",
@@ -1831,132 +1831,132 @@
       "sha256": "335a973b9524ec98b4878a2953740096153e7316e62c3e4c7a85d8d0fc446fc1"
     },
     {
-      "id": "navigate-way-document",
-      "sha256": "d4a852bcb0a24cf8917ba641f7099e1a425f5840340eb285d13e495e4b36f1ec"
+      "id": "find-way-document",
+      "sha256": "af142dfd32e14780eddce2438cddf2bfa9bb4fd5a25bb49ea7be5d8a0f44d61f"
     },
     {
-      "id": "navigate-way-claude-cursor-invocation-policy",
-      "sha256": "e131a78a6b3eabbff7d7e635f65363fb8ecc4f58b903f5fd93594dcba3ea9005"
+      "id": "find-way-claude-cursor-invocation-policy",
+      "sha256": "80c59aa203368370425a647cd8ba5211add6a5310a8ecad9eedabe101890813a"
     },
     {
-      "id": "navigate-way-codex-invocation-policy",
-      "sha256": "9a9b507fe4904a547ae033964a5d43740fad561be33f384bacec4594b8434550"
+      "id": "find-way-codex-invocation-policy",
+      "sha256": "3afdf0d0ec9d30cd0cb98459aa40c1ce0b3bd133bc9629908909c0ec4c0016ba"
     },
     {
-      "id": "navigate-way-explicit-only-246639712cce",
-      "sha256": "5b750e5d1eb14ddb4f03a35cdab87cfce809755891783c5bf7df5a2b0aa9f3df"
+      "id": "find-way-explicit-only-0c9b49cbd47b",
+      "sha256": "a023a369cde62522cb8634c8ed5213550ec6758da6f8a5c35f3c22a0c10a4065"
     },
     {
-      "id": "navigate-way-non-goals-f46b4469370b",
-      "sha256": "cb779b4c3f031f959654b9827f3ae7862b4dae077f8e8c3cceb372da9825a4e1"
+      "id": "find-way-non-goals-aff00efca1af",
+      "sha256": "6bd36d3d83746b733444994585e8cacaed749ae00d00861bc7e23e177b414ecf"
     },
     {
-      "id": "navigate-way-destination-selection-12c3cc8cf124",
-      "sha256": "cf71ebc757b94b49daa1d3230ffed1d34e736477c100ae832493f4fcf4821132"
+      "id": "find-way-destination-selection-3f1b0b52c32e",
+      "sha256": "5cc85feaf35fff54cc7b13f9943972b48e4b4115f900f06a56c43725137ee178"
     },
     {
-      "id": "navigate-way-local-model-e10a00004ef1",
-      "sha256": "9d55db7e18ac178aa3b7945c4fdd8e740d839ef1dccdb53cc1160f21117c2615"
+      "id": "find-way-local-model-dfcd8e5af4cd",
+      "sha256": "2cfc48b7550a2182231528793e81d83fd1e49218fd0bb929d39045f0e6a2a2ba"
     },
     {
-      "id": "navigate-way-map-b95f82c72103",
-      "sha256": "1e93a7ba84cf457c5da898d141e72843ebbffbdec817915527c5c3e2addb7dc2"
+      "id": "find-way-map-d843906938c9",
+      "sha256": "acfc7c8118cbd9acfe17e2fe81c609341075816a45fe71357db05aee2d81f4e0"
     },
     {
-      "id": "navigate-way-decision-unit-151860441495",
-      "sha256": "e39686793c81bbf206273625275e6c90d7105142ad079dd0801b3cd595fe7db8"
+      "id": "find-way-decision-unit-2d5b32240f05",
+      "sha256": "5cf9a5c5de7e5c97ab400edd6e1e1098de7f5eefcad5c66d4e93b91776eecd6f"
     },
     {
-      "id": "navigate-way-resolution-boundary-5aa0ac926580",
-      "sha256": "651b4683f8f8f612c429314ae8c44b24e23b7c2582106e8eb07cbfbad73e029c"
+      "id": "find-way-resolution-boundary-d95e89793f2c",
+      "sha256": "1b908c61e7c508f3e4f0e03bfd7a11cfb4e534586d11854ee324eb499c869033"
     },
     {
-      "id": "navigate-way-reintegration-fdc4e18c2b0d",
-      "sha256": "63b7216dc279c9246feb62ffdc7c025e121d35027adfd02e1d288ac22a13a97c"
+      "id": "find-way-reintegration-86f142cde212",
+      "sha256": "18af758817ac80379d8c6fa88091211214fb6a8a39d82baedb559078cc04a530"
     },
     {
-      "id": "navigate-way-work-unit-c259c6f8378e",
-      "sha256": "9ea04e4d045b6432489f0bbd9983968d2032cff1c35607e2592da70c6c4e89b5"
+      "id": "find-way-work-unit-18227355e777",
+      "sha256": "40c8f450ffbde5c8e767759bd28d29c20492db43eef1c6d2f0c45ba3f59579a8"
     },
     {
-      "id": "navigate-way-work-unit-readiness-c11219c8001c",
-      "sha256": "6c16e9865bc7d46c1f9b04d6f338549e9f5bb9912ef54f8b9af86399dc9586a2"
+      "id": "find-way-work-unit-readiness-98d3d66487d1",
+      "sha256": "7dfba8c78deb75865f002247105220250cabb86b5e02a2c9659dbc5fb4dd265f"
     },
     {
-      "id": "navigate-way-persistence-643981fe0e73",
-      "sha256": "993cf52ebffe12386ec7bf73ba565046e19357804c2f83bba13c0aba0c3bda62"
+      "id": "find-way-persistence-a44a929da4df",
+      "sha256": "d9da5818b08adfdd3ad4ac0414bdec934d321b1c03355a94ca5aeb777e6f66a5"
     },
     {
-      "id": "navigate-way-completion-disposition-e334054afbdb",
-      "sha256": "d03d20681f9ed1383f417da1c6598838d7aa79ba4fc2f8ed58f6426982a837eb"
+      "id": "find-way-completion-disposition-7c8eef625ee6",
+      "sha256": "713b488c48d19dd525190bd374ac6a9d4a171e419a527e4defe6aefb73b8fabd"
     },
     {
-      "id": "navigate-way-flow-ad007c400406",
-      "sha256": "cc05fecd21a09d2efa74160fd7487d04329de08120fb11c688aa0a74ede9cdd1"
+      "id": "find-way-flow-6f580e09b781",
+      "sha256": "71b044aaf8f03b31726a5e276c06382cb1b9552b484600632edaf61dd6dc6366"
     },
     {
-      "id": "navigate-way-flow-inputs-69d5c17c7737",
-      "sha256": "35b95232b1ddf97d12f63205cc3f3ce53ba51e6ca47a1903b5feafbec189b4d7"
+      "id": "find-way-flow-inputs-58b9c61f1d89",
+      "sha256": "78934902074d7f39fcafa546cd2417ebc0d52cce2fcdd271518ed84d085394d3"
     },
     {
-      "id": "navigate-way-flow-complete-07ce9c32006d",
-      "sha256": "6c3371dbb9eed494d5d46190992317a19aeedd380a2650bdf5e9bc39eaf0b317"
+      "id": "find-way-flow-complete-f3e05751aad4",
+      "sha256": "7b9a17a611490d9ef001504303ffd7ec770982aaa5080a2c9fb9f631af42ade2"
     },
     {
-      "id": "navigate-way-flow-continue-f8d6032838db",
-      "sha256": "e04f6a6c09892f6b4fb86e1cd6e4cdbfa6e6c882370c555d762b77ccc745292b"
+      "id": "find-way-flow-continue-0ecc2c6a81e7",
+      "sha256": "255029457dba3a032bf37d05de1de7de5bd57fc42327577bf173ed1553d900fa"
     },
     {
-      "id": "navigate-way-flow-interactive-dc56e6544cdc",
-      "sha256": "003b432e6d8505b3e09a8044e8bc0e2c1d72fd7aacb2ef1efc5da097d68e4bda"
+      "id": "find-way-flow-interactive-c1799283bf84",
+      "sha256": "07527f11295d479d8d053159006b574b3e9131b1f8526b686cf5f421c64b82f4"
     },
     {
-      "id": "navigate-way-flow-persistence-a705f414cd21",
-      "sha256": "1870925140b50f762010489ada21d753c41b0c56e102d0882589a5e35135be51"
+      "id": "find-way-flow-persistence-e19702c9fe16",
+      "sha256": "23d9fcc54a00cd3defac9ad058a25880d12186ceedf9145e8db21a85519a2cf2"
     },
     {
-      "id": "navigate-way-flow-action-result-02e7f54fdc98",
-      "sha256": "24d4073e10738f523e01889793b41d08c6ef9256fdd1dddaf99fee3dc3321ab5"
+      "id": "find-way-flow-action-result-ec126deced5c",
+      "sha256": "bf8f452f49dffe9a2628517978025e11d820bc143657fd0a085853c6704983d3"
     },
     {
-      "id": "navigate-way-flow-public-results-c9199b765fd4",
-      "sha256": "e1bab594cfc4130e28f6e922554e653ef05a7c0f8eb05e5343661422bb63d321"
+      "id": "find-way-flow-public-results-a4e319d81431",
+      "sha256": "fea19d4b55595627d056e8bfcea1e4550dfcbcc5f95dee70fe0ba65787a2aefd"
     },
     {
-      "id": "navigate-way-flow-complete-outcome-31cb9e22a2af",
-      "sha256": "bf6f19f6bc29e627a0fdbd59a240862361321bafb4a0ee822f25611a542e8ce3"
+      "id": "find-way-flow-complete-outcome-72396289fd2b",
+      "sha256": "61fd4ed99a1b4c24b3fd0d8159b948d5923fe4c3769c5431fc8c8da32dd557ef"
     },
     {
-      "id": "navigate-way-flow-incomplete-outcome-b1be48b9c74c",
-      "sha256": "adbc09b0360b30dfc9113f4f868ddee67666fb557552988a808c62ab22d22f5b"
+      "id": "find-way-flow-incomplete-outcome-37863a987563",
+      "sha256": "3ec751082dfd32397c1023e59a0441b3b9298d81c37957db9e36be8ecc826330"
     },
     {
-      "id": "navigate-way-flow-trigger-before-inputs",
-      "sha256": "a55099f20c108af5a42dd95efb4c31a77a7d22693eac011f6a7fe01eaebdca82"
+      "id": "find-way-flow-trigger-before-inputs",
+      "sha256": "cc8824f7dfc57e2f9fed034f94992216a60390d3dd16ba9a0b886367c1e7f967"
     },
     {
-      "id": "navigate-way-flow-inputs-before-step-1",
-      "sha256": "4374f2c9bf267b959db178be810264237c0475a1f5ca8f7b7253d9288395c3da"
+      "id": "find-way-flow-inputs-before-step-1",
+      "sha256": "950501f5f6c73b47da8f394e8279707f3348d7855582097d6832de83b4af9152"
     },
     {
-      "id": "navigate-way-flow-step-1-before-step-2",
-      "sha256": "c28e0db94514aac37b7c4d0cd92b15c414e1c6407e5e505264f2de4cfa82346c"
+      "id": "find-way-flow-step-1-before-step-2",
+      "sha256": "68f0757a64f0a895961e3e7e57231b2fbc2650cb2d0a92badc78556a47bfd3ad"
     },
     {
-      "id": "navigate-way-flow-step-2-before-step-3",
-      "sha256": "417bcedc46955aed7e1f0bc406707e0572693f4569364f4cd27c7eecfb5325d5"
+      "id": "find-way-flow-step-2-before-step-3",
+      "sha256": "0b2d16a6ffa4553ec82eaeb43cc4b6489c564fb9d0b0c49ecb092cabf056c49a"
     },
     {
-      "id": "navigate-way-flow-step-3-before-step-4",
-      "sha256": "862cf7104d3a6fe7e7eb68341a13a9eec1b1d60a54aeea7dfb88ee87523403c2"
+      "id": "find-way-flow-step-3-before-step-4",
+      "sha256": "370dd2f6061da7550f54c931dc08aa2c399ffea0c5cd7dc5a266d8ff0fbc9a19"
     },
     {
-      "id": "navigate-way-flow-step-4-before-step-5",
-      "sha256": "9c4e5461d8ffa335a920a1442ee7eada8787742afa3346d90bfbb21fd8c59d0f"
+      "id": "find-way-flow-step-4-before-step-5",
+      "sha256": "277abc344c327c98a0866257b2fbb27d99da272b6fbbce29f675e78517b6fe06"
     },
     {
-      "id": "navigate-way-flow-step-5-before-outcomes",
-      "sha256": "666028e4e3d04b2b3070bb7438c84dccbd3d1fdc79482379ddf437004bc970fb"
+      "id": "find-way-flow-step-5-before-outcomes",
+      "sha256": "bd92cad92325cae3df50f0fd1aea4e237f0bff513087a59a0e8135af8771b788"
     }
   ],
   "declarations": [
@@ -3292,103 +3292,103 @@
     },
     {
       "kind": "span",
-      "id": "navigate-way-explicit-only",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-explicit-only",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-destination-selection",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-destination-selection",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-non-goals",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-non-goals",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-local-model",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-local-model",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-map",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-map",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-decision-unit",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-decision-unit",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-resolution-boundary",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-resolution-boundary",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-reintegration",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-reintegration",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-work-unit",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-work-unit",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-persistence",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-persistence",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-completion-disposition",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-completion-disposition",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "navigate-way-flow",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-trigger",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-trigger",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-inputs",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-inputs",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-step-1",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-step-1",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-step-2",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-step-2",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-step-3",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-step-3",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-step-4",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-step-4",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-step-5",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-step-5",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "navigate-way-flow-outcomes",
-      "path": "shared/skill/navigate-way/SKILL.md"
+      "id": "find-way-flow-outcomes",
+      "path": "shared/skill/find-way/SKILL.md"
     },
     {
       "kind": "span",

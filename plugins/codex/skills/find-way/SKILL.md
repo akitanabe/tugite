@@ -1,22 +1,21 @@
 ---
-name: navigate-way
+name: find-way
 description: >-
   Destination 全体の Planning Fog と Decision blocker を解像し、self-contained な Work Units を返す明示起動の pre-planning workflow。
-disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# navigate-way
+# find-way
 
 ## Identity and boundary
 
-`navigate-way` は Human が明示した場合だけ開始する public pre-planning workflow です。request の Destination 全体にある Planning Fog と planning 前の Decision blocker を解像し、1..N の self-contained な Work Units を返します。
+`find-way` は Human が明示した場合だけ開始する public pre-planning workflow です。request の Destination 全体にある Planning Fog と planning 前の Decision blocker を解像し、1..N の self-contained な Work Units を返します。
 
 入力は request、available context / evidence、optional な `resume_reference`、および state persistence に対する明示 authority / requested destination です。新規 invocation では request から Destination を確立します。一意に推定できる場合は進み、複数の妥当な Destination が material に scope を変える場合は Human-owned gap とします。
 
 新規 invocation では caller / harness が観測した candidate facts と requested destination を shared Destination Selection へ渡し、返された selection result を変更せず、selected destination は state lifecycle に、unresolved gap / incomplete は workflow result に使用します。
 
-`navigate-way` は plan、plan review、implementation、production work、deliverable completion、complete 後の reopen、または特定 downstream workflow への routing / auto-transition を開始しません。他 workflow は `navigate-way` を推奨できますが、暗黙起動しません。
+`find-way` は plan、plan review、implementation、production work、deliverable completion、complete 後の reopen、または特定 downstream workflow への routing / auto-transition を開始しません。他 workflow は `find-way` を推奨できますが、暗黙起動しません。
 
 生成された Skill から、各 platform の generated path を基準に次を参照します。
 
@@ -43,7 +42,7 @@ sharp かつ bounded な question だけを Decision Unit とし、canonical sta
 
 bounded conclusion により question の残部を一つの成立済み WU 内の downstream planning 責務へ局所化できた場合は Decision Unit を resolved にし、material unresolved matter をその WU の `remaining gap` または `established context` へ一度だけ投影します。WU boundary が未形成の Planning Fog は remaining gap へ移しません。
 
-actionable な Decision Unit または Fog を縮小できる Agent-side route から、Planning Fog の縮小と WU boundary 確立への情報価値が高いものを親 `navigate-way` が選びます。repository / source exploration、Research Agent 等の bounded evidence acquisition は resolution の bounded conclusion のためだけに行います。resolution、Fog 分類、Map recomposition、WU boundary、completion の semantic judgment は親が保持します。
+actionable な Decision Unit または Fog を縮小できる Agent-side route から、Planning Fog の縮小と WU boundary 確立への情報価値が高いものを親 `find-way` が選びます。repository / source exploration、Research Agent 等の bounded evidence acquisition は resolution の bounded conclusion のためだけに行います。resolution、Fog 分類、Map recomposition、WU boundary、completion の semantic judgment は親が保持します。
 
 resolution は same Local Model へ Reintegration し、material invalidation がある場合だけ affected region を Recomposition します。Map は current evidence に合わせ、Fog の縮小、Decision Unit の形成 / 解消、WU の形成 / split / merge / boundary adjustment、Out of scope の更新を stale state への追記ではなく置換として反映します。
 
@@ -55,7 +54,7 @@ Work Unit は実装量、file、commit、Implementation Unit 数では split し
 
 ## Persistence and continuation
 
-state の create / update / read-back は `navigate-way` が caller-specific lifecycle として所有します。repository、Human、external evidence、persistent storage との接触は Action とし、shared External Effects boundary に従って Action identity、authority、target、precondition、duplicate semantics、independent verification、retention / cleanup が成立する場合だけ実行します。
+state の create / update / read-back は `find-way` が caller-specific lifecycle として所有します。repository、Human、external evidence、persistent storage との接触は Action とし、shared External Effects boundary に従って Action identity、authority、target、precondition、duplicate semantics、independent verification、retention / cleanup が成立する場合だけ実行します。
 
 保存と read-back に成功した場合だけ、destination と same state identity を再解決できる `resume_reference` を `incomplete` result の外部へ明示的に返します。reference は Human-visible または caller-held Data とし、state object 内だけに閉じません。write / read-back failure は partial / unknown state と evidence を伴う `incomplete` とし、広域 scan、silent discovery、relocation / migration を resume 前提にしません。
 
@@ -65,9 +64,9 @@ state の create / update / read-back は `navigate-way` が caller-specific lif
 
 ## Programmatic Flow
 
-### navigate-way-progression
+### find-way-progression
 
-Trigger: 親 `navigate-way` が current Map の semantic judgment と completion facts を確定した。
+Trigger: 親 `find-way` が current Map の semantic judgment と completion facts を確定した。
 
 Inputs: Destination coverage、WU count / readiness、Planning Fog の有無、active open Decision Unit の有無、Agent-side progress route の有無、Human-owned blocker の有無、persistence eligibility、resumed persisted unfinished state / resume_reference の有無、completion-time disposition authority / eligibility。
 
