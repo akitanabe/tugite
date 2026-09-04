@@ -224,7 +224,7 @@ Decision Unit / Planning Fog resolution
 complete freeze | provisional incomplete + optional resume_reference
 ```
 
-Decision Unit の canonical state は `open | resolved`、`actionable | blocked` は dependency からの derived view とする。Work Unit は `planning-bounded | planning-ready` と established context、remaining gap、material dependencies を持ち、Destination coverage が成立して Planning Fog と active open Decision Unit がなくなった場合だけ stable boundary を freeze する。
+Decision Unit の canonical state は `open | resolved`、`actionable | blocked` は dependency からの derived view とする。Work Unit は readiness と、その WU が成立させる Outcome を単独で判別でき、Scope、established context、必要な remaining gap / material dependencies を handoff context として保持する。Binding decisions / constraints、explicit excludes、evidence / provenance は再構築に material な場合だけ補い、Destination coverage が成立して Planning Fog と active open Decision Unit がなくなった場合だけ stable boundary を freeze する。
 
 Agentic Model Construction を first route とし、Agent-side progress route がなく Human-owned blocker がある場合だけ Interactive Model Construction を同じ Local Model へ composition する。exploration は bounded resolution に閉じ、plan、review、implementation、delivery、complete 後の reopen、downstream routing は開始しない。
 

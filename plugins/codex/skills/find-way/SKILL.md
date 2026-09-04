@@ -48,9 +48,15 @@ resolution は same Local Model へ Reintegration し、material invalidation �
 
 ## Work Units
 
-各 Work Unit は fresh downstream workflow が Map を読み直さず、他 WU の planning を同時に抱えず扱える self-contained な planning context とします。Data は id、name、scope、`planning-bounded | planning-ready`、established context、planning-bounded 時の remaining gap、material dependencies を持ちます。
+各 Work Unit は fresh downstream workflow が Map を読み直さず、他 WU の planning を同時に抱えず扱える self-contained な planning context とします。Data は id、name、scope、`planning-bounded | planning-ready`、established context、planning-bounded 時の remaining gap、material dependencies を持ちます。Scope、established context、material dependencies は単独の handoff に必要な context として保持します。
 
 Work Unit は実装量、file、commit、Implementation Unit 数では split しません。material な planning responsibility の抜けや二重 ownership を避け、context / constraint / dependency の共有は許容します。`planning-bounded` は WU boundary は成立しているが planning 開始前に material な理解不足が残り、additional refinement が扱う `remaining gap` があることを表します。`planning-ready` は additional premise construction なしに planning へ進める状態であり、planning 内で扱う trade-off や選択が残らないことを意味しません。
+
+Human-facing output では、各 Work Unit の `planning-ready | planning-bounded` と、その WU が成立させる planning に渡す結果である Outcome を個別に判別できるようにします。Outcome は Acceptance Criteria、downstream action、implementation design、test plan、decision history、または特定 Skill / routing の指定ではありません。
+
+`planning-bounded` の各 Work Unit では planning 前に残る material な Remaining gap を示し、可能な場合は何が成立すれば `planning-ready` になるかという条件も示します。WU boundary 未形成の Planning Fog は Remaining gap に移しません。
+
+Binding decisions / constraints、Explicit excludes、Evidence / provenance は handoff の再構築に material な場合だけ補います。Material dependency は、必要な場合に planning input、実装順序、独立可否など関係の意味を保持します。
 
 ## Persistence and continuation
 

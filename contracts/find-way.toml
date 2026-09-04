@@ -74,16 +74,34 @@ slice = "find-way-reintegration"
 pattern = "resolution は same Local Model へ Reintegration し、material invalidation がある場合だけ affected region を Recomposition します。Map は current evidence に合わせ、Fog の縮小、Decision Unit の形成 / 解消、WU の形成 / split / merge / boundary adjustment、Out of scope の更新を stale state への追記ではなく置換として反映します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.find-way-work-unit-18227355e777]
+[contracts.find-way-work-unit-ed182cb24af5]
 kind = "requires"
 slice = "find-way-work-unit"
-pattern = "各 Work Unit は fresh downstream workflow が Map を読み直さず、他 WU の planning を同時に抱えず扱える self-contained な planning context とします。Data は id、name、scope、`planning-bounded | planning-ready`、established context、planning-bounded 時の remaining gap、material dependencies を持ちます。"
+pattern = "各 Work Unit は fresh downstream workflow が Map を読み直さず、他 WU の planning を同時に抱えず扱える self-contained な planning context とします。Data は id、name、scope、`planning-bounded | planning-ready`、established context、planning-bounded 時の remaining gap、material dependencies を持ちます。Scope、established context、material dependencies は単独の handoff に必要な context として保持します。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.find-way-work-unit-readiness-98d3d66487d1]
 kind = "requires"
 slice = "find-way-work-unit"
 pattern = "`planning-bounded` は WU boundary は成立しているが planning 開始前に material な理解不足が残り、additional refinement が扱う `remaining gap` があることを表します。`planning-ready` は additional premise construction なしに planning へ進める状態であり、planning 内で扱う trade-off や選択が残らないことを意味しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.find-way-work-unit-220b5d401bd3]
+kind = "requires"
+slice = "find-way-work-unit-handoff"
+pattern = "Human-facing output では、各 Work Unit の `planning-ready | planning-bounded` と、その WU が成立させる planning に渡す結果である Outcome を個別に判別できるようにします。Outcome は Acceptance Criteria、downstream action、implementation design、test plan、decision history、または特定 Skill / routing の指定ではありません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.find-way-work-unit-bounded-dc1ce70dcfee]
+kind = "requires"
+slice = "find-way-work-unit-bounded-gap"
+pattern = "`planning-bounded` の各 Work Unit では planning 前に残る material な Remaining gap を示し、可能な場合は何が成立すれば `planning-ready` になるかという条件も示します。WU boundary 未形成の Planning Fog は Remaining gap に移しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.find-way-work-unit-material-16dcdd1eb300]
+kind = "requires"
+slice = "find-way-work-unit-material-context"
+pattern = "Binding decisions / constraints、Explicit excludes、Evidence / provenance は handoff の再構築に material な場合だけ補います。Material dependency は、必要な場合に planning input、実装順序、独立可否など関係の意味を保持します。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.find-way-persistence-a44a929da4df]
