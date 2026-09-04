@@ -27,6 +27,48 @@ slice = "how-it-interactive-connection"
 pattern = "`how-it` は既存の `Interactive Model Construction` を construction Method として利用します。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.how-it-decision-support-boundary-fa23c276fc28]
+kind = "requires"
+slice = "how-it-decision-support-boundary"
+pattern = "Human-owned resolution を開始した後、`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-context-982b0c0545d1]
+kind = "requires"
+slice = "how-it-decision-context"
+pattern = "原則は一問一答であり、一度に扱うのも原則として一つの独立した decision context です。これらは別の要件です。同じ decision context の解消に複数の問いが必要な場合は、一つの turn に複数の問いを含められ、固定した質問数は持ちません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-selection-7ac77c7bec80]
+kind = "requires"
+slice = "how-it-decision-selection"
+pattern = "`how-it` は FIFO、事前に作った queue、固定 score で順番を決めず、より上位の判断、後続判断を多く消去または拘束すること、判断空間を安定させること、重要な不整合を解消することを基準に current decision context を選びます。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-authority-presentation-5cff08aa84b4]
+kind = "requires"
+slice = "how-it-authority-presentation"
+pattern = "Human authority judgment を求めるときは、比較可能性を保つため同一の対象・軸・抽象度の選択肢と主要差分を示し、圧縮した判断材料を添えます。提示の標準原則は選択肢を先にすることであり、推奨を選択肢より先にすることを標準にはしません。evidence が推奨を支える場合だけ理由付きで推奨し、必要な主要対案も示します。優劣が evidence から定まらない場合は、特定の案を誘導せず、選択を分ける中立な価値軸を示します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-response-reintegration-0eb5d1f8ec47]
+kind = "requires"
+slice = "how-it-response-reintegration"
+pattern = "Human の response を既存の Interactive Reintegration に統合した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-continuity-fb4d70aaf6a0]
+kind = "requires"
+slice = "how-it-decision-continuity"
+pattern = "evidence または premise の変化で優劣が変わった場合は、current context の推奨と理由を更新します。短い承認は、応答対象が一意に特定できる current context の採否だけに限定し、Local Model 全体、未提示の context、downstream artifact / plan の acceptance には拡張しません。context が不連続に切り替わる場合だけ、current understanding または遷移理由を最小限添え、確定済みの説明・前提・判断を毎 turn 定型的に繰り返しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-support-integrity-37bc11e1aff4]
+kind = "requires"
+slice = "how-it-decision-support-integrity"
+pattern = "この caller-side support は fixed dialogue schema、fixed question sequence、pre-generated queue、fixed option count、score、decision ledger、Programmatic Flow を導入しません。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.how-it-reintegration-dea8815c5b7a]
 kind = "requires"
 slice = "how-it-reintegration"
@@ -57,9 +99,15 @@ before = "how-it-ownership-relation"
 after = "how-it-interactive-connection-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.how-it-interactive-before-reintegration]
+[contracts.how-it-interactive-before-decision-support]
 kind = "order"
 before = "how-it-interactive-connection-relation"
+after = "how-it-decision-support-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-support-end-before-reintegration]
+kind = "order"
+before = "how-it-decision-support-end-relation"
 after = "how-it-reintegration-relation"
 applies_to = ["claude", "codex", "cursor"]
 
