@@ -1055,6 +1055,34 @@
       "sha256": "4529f521f050d0dd43725917e10286ff35fcdced60009f25285526d3709b5ebf"
     },
     {
+      "id": "how-it-decision-support-boundary-fa23c276fc28",
+      "sha256": "74afff2ccac7a0e6133b46c4ff378ddcb43cca40e20fa4e897d60f4f8103b65c"
+    },
+    {
+      "id": "how-it-decision-context-982b0c0545d1",
+      "sha256": "040d92a95e78f6d70ed3152966c63f79c5e63f1a2b49b7cc52f855f71f305fbe"
+    },
+    {
+      "id": "how-it-decision-selection-7ac77c7bec80",
+      "sha256": "a25bc44c64beec69fe00845ad2ea9849735a5d9f522abaf0cfebba871c0fea0f"
+    },
+    {
+      "id": "how-it-authority-presentation-5cff08aa84b4",
+      "sha256": "42075124942b013b35a718dc868f3023af34ade3cc92b958a96471d445a745b9"
+    },
+    {
+      "id": "how-it-response-reintegration-0eb5d1f8ec47",
+      "sha256": "ab190c257c6566e20a60a85b665c5d9bc2f8528d3ba0b5c3aea2d7d52a3a2a46"
+    },
+    {
+      "id": "how-it-decision-continuity-fb4d70aaf6a0",
+      "sha256": "2422ac2794799235d391b516feffc228a4732a40aca19438865f64884050bd8f"
+    },
+    {
+      "id": "how-it-decision-support-integrity-37bc11e1aff4",
+      "sha256": "264920238855a76a1d6686d662dc60ccc360ff1e237bb63674590bcb1fde5af5"
+    },
+    {
       "id": "how-it-reintegration-dea8815c5b7a",
       "sha256": "d605286f7f40539139b60c66ecf1d98ce2852ac52711c9c85b2f1ac293336cc2"
     },
@@ -1075,8 +1103,12 @@
       "sha256": "f4ffbaf27140a03c9608fd3e5540587ce8becb5036e18f490e78c21af364b5e8"
     },
     {
-      "id": "how-it-interactive-before-reintegration",
-      "sha256": "ead28e7086f98c28cf736510401b961b2022f735f4c0c51192b5ee929ce68fbf"
+      "id": "how-it-interactive-before-decision-support",
+      "sha256": "ab16f7952b1264d43a22ef429f28bca1936e7fbef9d2e7e4031eafa340c0004b"
+    },
+    {
+      "id": "how-it-decision-support-end-before-reintegration",
+      "sha256": "6ad46b2083cd2d8cbb89c91a14a7a0eb1dca92c94c6275d89120d1734ca6048a"
     },
     {
       "id": "how-it-reintegration-before-completion",
@@ -2966,6 +2998,51 @@
     {
       "kind": "anchor",
       "id": "how-it-interactive-connection-relation",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-decision-support-boundary",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "how-it-decision-support-relation",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-decision-context",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-decision-selection",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-authority-presentation",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-response-reintegration",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-decision-continuity",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-decision-support-integrity",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "anchor",
+      "id": "how-it-decision-support-end-relation",
       "path": "shared/skill/how-it/SKILL.md"
     },
     {

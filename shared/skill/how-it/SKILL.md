@@ -64,6 +64,38 @@ workflow 全体の completion を caller として保持します。
 - `../../references/interactive-model-construction.md`
 - `../../references/researcher-delegation.md`
 
+## Human-facing decision support
+
+<!-- @contract how-it-decision-support-boundary -->
+<!-- @anchor how-it-decision-support-relation -->
+Human-owned resolution を開始した後、`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。
+<!-- @/contract -->
+
+<!-- @contract how-it-decision-context -->
+原則は一問一答であり、一度に扱うのも原則として一つの独立した decision context です。これらは別の要件です。同じ decision context の解消に複数の問いが必要な場合は、一つの turn に複数の問いを含められ、固定した質問数は持ちません。
+<!-- @/contract -->
+
+<!-- @contract how-it-decision-selection -->
+`how-it` は FIFO、事前に作った queue、固定 score で順番を決めず、より上位の判断、後続判断を多く消去または拘束すること、判断空間を安定させること、重要な不整合を解消することを基準に current decision context を選びます。
+<!-- @/contract -->
+
+<!-- @contract how-it-authority-presentation -->
+Human authority judgment を求めるときは、比較可能性を保つため同一の対象・軸・抽象度の選択肢と主要差分を示し、圧縮した判断材料を添えます。提示の標準原則は選択肢を先にすることであり、推奨を選択肢より先にすることを標準にはしません。evidence が推奨を支える場合だけ理由付きで推奨し、必要な主要対案も示します。優劣が evidence から定まらない場合は、特定の案を誘導せず、選択を分ける中立な価値軸を示します。
+<!-- @/contract -->
+
+<!-- @contract how-it-response-reintegration -->
+Human の response を既存の Interactive Reintegration に統合した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。
+<!-- @/contract -->
+
+<!-- @contract how-it-decision-continuity -->
+evidence または premise の変化で優劣が変わった場合は、current context の推奨と理由を更新します。短い承認は、応答対象が一意に特定できる current context の採否だけに限定し、Local Model 全体、未提示の context、downstream artifact / plan の acceptance には拡張しません。context が不連続に切り替わる場合だけ、current understanding または遷移理由を最小限添え、確定済みの説明・前提・判断を毎 turn 定型的に繰り返しません。
+<!-- @/contract -->
+
+<!-- @contract how-it-decision-support-integrity -->
+この caller-side support は fixed dialogue schema、fixed question sequence、pre-generated queue、fixed option count、score、decision ledger、Programmatic Flow を導入しません。
+<!-- @/contract -->
+<!-- @anchor how-it-decision-support-end-relation -->
+
 ## Reintegration and semantic effect
 
 <!-- @contract how-it-reintegration -->
