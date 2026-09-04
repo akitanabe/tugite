@@ -1875,12 +1875,24 @@
       "sha256": "18af758817ac80379d8c6fa88091211214fb6a8a39d82baedb559078cc04a530"
     },
     {
-      "id": "find-way-work-unit-18227355e777",
-      "sha256": "40c8f450ffbde5c8e767759bd28d29c20492db43eef1c6d2f0c45ba3f59579a8"
+      "id": "find-way-work-unit-ed182cb24af5",
+      "sha256": "996d0e9e71173e567ae369d7de87f6128370a758618382773b7a42f4abcddb8e"
     },
     {
       "id": "find-way-work-unit-readiness-98d3d66487d1",
       "sha256": "7dfba8c78deb75865f002247105220250cabb86b5e02a2c9659dbc5fb4dd265f"
+    },
+    {
+      "id": "find-way-work-unit-220b5d401bd3",
+      "sha256": "f2654b95565c415ac2ab2d5340b1c48d0545cb7bd9443d3bf12cf2f2f0e4da2f"
+    },
+    {
+      "id": "find-way-work-unit-bounded-dc1ce70dcfee",
+      "sha256": "fb878491a113107b08c6ac14667403ef9ff635f93662700c78b93a1d65a0fbdd"
+    },
+    {
+      "id": "find-way-work-unit-material-16dcdd1eb300",
+      "sha256": "ffe94b191fafff493fa24d3a15d25636443090961cfe5bf070d987899c705831"
     },
     {
       "id": "find-way-persistence-a44a929da4df",
@@ -3333,6 +3345,21 @@
     {
       "kind": "span",
       "id": "find-way-work-unit",
+      "path": "shared/skill/find-way/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "find-way-work-unit-handoff",
+      "path": "shared/skill/find-way/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "find-way-work-unit-bounded-gap",
+      "path": "shared/skill/find-way/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "find-way-work-unit-material-context",
       "path": "shared/skill/find-way/SKILL.md"
     },
     {
