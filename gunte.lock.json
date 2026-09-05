@@ -28,6 +28,7 @@
     "shared/writable-scope.md",
     "shared/external-effects.md",
     "shared/destination-selection.md",
+    "shared/human-facing-projection.md",
     "shared/agents/focused-implementer.md",
     "shared/agents/implementer.md",
     "shared/agents/senior-implementer.md",
@@ -806,6 +807,94 @@
     {
       "id": "external-effects-flow-ae0470a3b666",
       "sha256": "9ed0de910898df27b0fb79a8f7959820cc6e0f66380cd86d03399e0c74825901"
+    },
+    {
+      "id": "shared-human-facing-projection-document",
+      "sha256": "7a61ed776d09c31c0413a88e25ce98b35a970f49404c486dd636ad823675d70c"
+    },
+    {
+      "id": "shared-human-facing-projection-identity-9b82c4d43584",
+      "sha256": "a640a3a2b2794fe637b0eea872f57dc6ebd55cba84ceb8abf9e611d826da25c7"
+    },
+    {
+      "id": "shared-human-facing-projection-input-3d65ed79a20d",
+      "sha256": "d3a015f6816818d4e9f3ddae3ecc0096773ae2b141700e6af9bbe579357628f0"
+    },
+    {
+      "id": "shared-human-facing-projection-semantic-boundary-f775406ab677",
+      "sha256": "6fed84f03758e1dd83a0b6d3b2c9988e523cdca53c7b92901f9d28e1df59f17f"
+    },
+    {
+      "id": "shared-human-facing-projection-result-9106b5e1a74f",
+      "sha256": "3a778398fdd0fc4d820d06f9472f33cd2fb380193b70c362481d8594a9c8bfaf"
+    },
+    {
+      "id": "shared-human-facing-projection-data-boundary-0bb0af651fba",
+      "sha256": "6ee833e4d9babae9bc4b494cca99bab1a80161f46197e4581c9face2ff461e90"
+    },
+    {
+      "id": "shared-human-facing-projection-operations-6fc6908663bb",
+      "sha256": "bb1cd91612e4a59f7341f11fc487617b8e409a4094d9183b6ff5fa90f62b7aa1"
+    },
+    {
+      "id": "shared-human-facing-projection-meaning-4f2043fd69c2",
+      "sha256": "488c9bd16183edbe3ae8e77b930a447d971a09f7f9117829f361320ed42e6c08"
+    },
+    {
+      "id": "shared-human-facing-projection-names-67508eec723d",
+      "sha256": "d042c64e36cc0cf92d91b9c5fb1fafc4eddba373e9411a95e626ff7b51630ba0"
+    },
+    {
+      "id": "shared-human-facing-projection-internal-language-135729570d82",
+      "sha256": "6ea5279956293263236d780a0462d5d78ee457198be9b7ee7b1a780309768d8a"
+    },
+    {
+      "id": "shared-human-facing-projection-no-dictionary-507342ec788f",
+      "sha256": "d40b9a40ce07c22e7122dc29da219fe8dfeb16a74b6063b94d94a5cf6eac3774"
+    },
+    {
+      "id": "shared-human-facing-projection-minimal-8abe81f10136",
+      "sha256": "60e0750d94012d0ef8a7a37ff716da46e044267534b48abd845aa095a897e01f"
+    },
+    {
+      "id": "shared-human-facing-projection-safe-559be6a9e870",
+      "sha256": "bad6fbf6ef0935256875424d6286d23faa7e8b1ab3f38d5406698bc8d39a1ad2"
+    },
+    {
+      "id": "shared-human-facing-projection-code-f990e011f617",
+      "sha256": "a0713d3252feaade319be3fc9332250d9fa661be34f84b196676d62171795ed2"
+    },
+    {
+      "id": "shared-human-facing-projection-signals-ffa724661669",
+      "sha256": "100107bf89fc1f257fdf7b17bee8e39970f598f99e3ea56e91f9699b2ac67708"
+    },
+    {
+      "id": "shared-human-facing-projection-dialogue-2bf768066a0a",
+      "sha256": "89650ac6e4f5b94bef8c4bfb76eb8b7a4051db0c6736d5af0fe14676d14f78d2"
+    },
+    {
+      "id": "shared-human-facing-projection-artifact-70199246a3f4",
+      "sha256": "a9b075e5bc4fccd5db85f10b325b9c4221a0aa5e666da3aac46e2a40d78219cf"
+    },
+    {
+      "id": "shared-human-facing-projection-use-f44d73c7b298",
+      "sha256": "523dd624225e3c7e812462fdb513d3245788539dd046d6342b5f395e7aaf367f"
+    },
+    {
+      "id": "shared-human-facing-projection-autonomous-107b1a3719e5",
+      "sha256": "26d30a1e48b8a04f09b19e92bd5a5d7a8595d57d14167817b1de8f26aa0afe84"
+    },
+    {
+      "id": "shared-human-facing-projection-noaction-96a5f80d025d",
+      "sha256": "1b3788fbc4a08c30b3b3d03188dd36690a2bd52f104582ddb461b46767212601"
+    },
+    {
+      "id": "shared-human-facing-projection-caller-boundary-b1efaa9d5627",
+      "sha256": "93993a4f027383bde82a0f05f78b4e30e83d5ec31bb614809ba5b0690ab15664"
+    },
+    {
+      "id": "shared-human-facing-projection-noflow-550b56b8c6af",
+      "sha256": "9487aec627badd787e791beb5bf31076a90aacc49029b0f178996199c91b23d9"
     },
     {
       "id": "shared-researcher-retained-e9f44941dc1d",
@@ -2951,6 +3040,111 @@
       "kind": "span",
       "id": "destination-selection-state-ownership",
       "path": "shared/destination-selection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-identity",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-input",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-semantic-boundary",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-result",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-data-boundary",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-noaction",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-meaning",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-operations",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-names",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-internal-language",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-no-dictionary",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-minimal",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-safe",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-code",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-signals",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-dialogue",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-artifact",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-use",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-autonomous",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-caller-boundary",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-noflow",
+      "path": "shared/human-facing-projection.md"
     },
     {
       "kind": "span",
