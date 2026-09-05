@@ -27,7 +27,7 @@
     ],
     "defaultPrompt": [
       "Use $how-it only for an explicit public workflow; use Interactive Model Construction to build how to proceed or make the request viable, keep one task-local Local Model, and connect directly to the requested output.",
-      "Use $explorer-this only for explicit public exploration requests; keep one task-local Local Model, use Agentic Model Construction first, compose Interactive Model Construction only for unresolved Human-owned material gaps, and connect the result directly to the requested output.",
+      "Use $explorer-this only for explicit public exploration requests; keep one task-local Local Model, use Agentic Model Construction first, locally confirm only material Human-owned facts, scope, or authority after a qualified stop, and connect the result directly to the requested output.",
       "Use $visualize-that only when explicitly requested; turn arbitrary supplied material into meaning-preserving standalone visual HTML, then return verified or render-unverified according to available launch, capture, and actual inspection capability.",
       "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
       "Use $test-verify only when explicitly requested; verify a bounded test target from grounded runtime evidence, directly remediate only target-causal Problems, then pass its Completion Gate and final verification.",

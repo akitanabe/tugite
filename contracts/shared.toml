@@ -382,11 +382,12 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-human-gate-4d2eae08514a]
+[contracts.shared-interactive-assigned-scope-cb05b8620bce]
 kind = "requires"
-slice = "shared-interactive-resolution-boundary"
-pattern = '''Agent-side の bounded route を尽くしても material な gap が残り、その resolution source または binding authority が Human にある場合
-だけ、Human-owned resolution を開始できる。'''
+slice = "shared-interactive-assigned-scope"
+pattern = '''Interactive は caller-selected assigned semantic scope を入力として受け、その scope を再審査、拡張、縮小せず、scope 内で必要な
+Human input と複数 turn の共同構築を扱う。caller が渡していない task-wide gap、workflow completion、downstream artifact の acceptance を
+Interactive の completion 対象に含めない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-interactive-human-fact-boundary-cbe3ae518c85]
@@ -403,12 +404,6 @@ pattern = '''これは preference、trade-off、direction、responsibility、sco
 direction を選ぶ必要がある判断である。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-explanation-control-467964f27790]
-kind = "requires"
-slice = "shared-interactive-human-boundary"
-pattern = "`ex` と同等の自然言語要求は、現在の unresolved context / current understanding を変えず、同じ判断対象を理解しやすく再提示する interaction control である。"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.shared-interactive-same-model-reintegration-0b5b9b06602f]
 kind = "requires"
 slice = "shared-interactive-reintegration"
@@ -416,11 +411,18 @@ pattern = '''Human interaction から得た Human-held fact / context または 
 task-local Local Model へ Reintegration する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-human-completion-050abfec7604]
+[contracts.shared-interactive-fact-completion-b5148ca1c70d]
 kind = "requires"
-slice = "shared-interactive-completion"
-pattern = '''Human がその current understanding を downstream の前提として採用し、次へ進むことを明示的に認めるまで、Interactive Method は completion
-しない。'''
+slice = "shared-interactive-fact-completion"
+pattern = '''Human-held fact / context だけを含む assigned scope は、正しい Reintegration と必要な更新・再観測により解消した時点で result / qualification を
+caller に返し、追加の Human approval を completion 条件にしない。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-interactive-authority-completion-a90710186584]
+kind = "requires"
+slice = "shared-interactive-authority-completion"
+pattern = '''Human authority judgment を含む assigned scope は、必要な更新・再観測後、その scope の current understanding と qualification に対する
+final Human judgment を得てから result を caller に返す。この judgment を workflow 全体、downstream artifact、plan、最終 Work Units の acceptance へ広げない。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.shared-interactive-switching-owner-01db52f9bcca]
@@ -430,15 +432,15 @@ pattern = '''Agentic から Interactive への switching、Method の順序、
 および複数 Method を同じ invocation で組み合わせる判断は calling workflow が所有する。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-document-before-resolution]
+[contracts.shared-interactive-document-before-assigned-scope]
 kind = "order"
 before = "shared-interactive-document"
-after = "shared-interactive-resolution-relation"
+after = "shared-interactive-assigned-scope-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.shared-interactive-resolution-before-human]
+[contracts.shared-interactive-assigned-scope-before-human]
 kind = "order"
-before = "shared-interactive-resolution-relation"
+before = "shared-interactive-assigned-scope-relation"
 after = "shared-interactive-human-relation"
 applies_to = ["claude", "codex", "cursor"]
 

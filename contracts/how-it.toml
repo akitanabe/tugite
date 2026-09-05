@@ -27,10 +27,31 @@ slice = "how-it-interactive-connection"
 pattern = "`how-it` は既存の `Interactive Model Construction` を construction Method として利用します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.how-it-decision-support-boundary-fa23c276fc28]
+[contracts.how-it-caller-resolution-f40d8d6779d0]
+kind = "requires"
+slice = "how-it-caller-resolution"
+pattern = '''`how-it` は Human interaction 前の reasoning / analysis、available context、repository / source exploration、必要な bounded evidence acquisition を
+caller-side で先に進めます。局所確認だけで足りる fact / scope / authority / continuation と effect confirmation は caller が直接扱い、Human と
+意味を共同構築する必要がある scope だけを選んで Interactive に渡します。Interactive は assigned scope 内の入力分類、Reintegration、必要な更新と completion boundary を担います。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-decision-support-boundary-5a1a126f49a7]
 kind = "requires"
 slice = "how-it-decision-support-boundary"
-pattern = "Human-owned resolution を開始した後、`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。"
+pattern = "`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-explanation-control-53ef5be07562]
+kind = "requires"
+slice = "how-it-explanation-control"
+pattern = '''`ex` と同等の自然言語要求は、同じ判断対象・premise・rationale・evidence・qualification を保った再説明として `how-it` が扱います。
+表現、抽象度、例、背景を調整して同じ unresolved context に戻し、新しい semantic input や別の decision context として扱いません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-explanation-not-approval-2a09798ccb12]
+kind = "requires"
+slice = "how-it-explanation-not-approval"
+pattern = "再説明自体を approval として扱いません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.how-it-decision-context-982b0c0545d1]
@@ -51,10 +72,10 @@ slice = "how-it-authority-presentation"
 pattern = "Human authority judgment を求めるときは、比較可能性を保つため同一の対象・軸・抽象度の選択肢と主要差分を示し、圧縮した判断材料を添えます。提示の標準原則は選択肢を先にすることであり、推奨を選択肢より先にすることを標準にはしません。evidence が推奨を支える場合だけ理由付きで推奨し、必要な主要対案も示します。優劣が evidence から定まらない場合は、特定の案を誘導せず、選択を分ける中立な価値軸を示します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.how-it-response-reintegration-0eb5d1f8ec47]
+[contracts.how-it-response-reintegration-66a9bd656fbf]
 kind = "requires"
 slice = "how-it-response-reintegration"
-pattern = "Human の response を既存の Interactive Reintegration に統合した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。"
+pattern = "caller-side の local confirmation response または Interactive の assigned-scope result を同じ Local Model へ Reintegration した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.how-it-decision-continuity-fb4d70aaf6a0]
@@ -75,10 +96,10 @@ slice = "how-it-reintegration"
 pattern = "`how-it` は Interactive の result を、calling workflow が所有する同じ task-local Local Model に戻し、別の Local Model や独立した report state を作りません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.how-it-completion-output-7cf310af5553]
+[contracts.how-it-completion-output-9ee3374964d5]
 kind = "requires"
 slice = "how-it-completion-output"
-pattern = "`how-it` は Interactive の completion boundary を通過した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。"
+pattern = "`how-it` は caller-side resolution / local confirmation または Interactive の assigned-scope result を統合した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、workflow completion と requested-output acceptance を判断します。write authority は invocation 時点で明示された output / destination を越えません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.how-it-document-before-explicit-invocation]
@@ -138,10 +159,10 @@ count = 1
 paths = ["plugins/cursor/skills/how-it/SKILL.md"]
 applies_to = ["cursor"]
 
-[contracts.how-it-projection-dialogue-4a681b6211b3]
+[contracts.how-it-projection-dialogue-37632ca0710e]
 kind = "requires"
 slice = "how-it-decision-support-boundary"
-pattern = "decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成と最終出力責任は `how-it` に残し、Interactive の入力分類、Reintegration、`ex`、final Human judgment は既存 Method の責務を維持します。"
+pattern = "decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成、対話と最終出力の責任は `how-it` に残し、Interactive は assigned scope 内の入力分類、Reintegration、必要な更新と completion を担います。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.how-it-projection-output-da55049654c2]

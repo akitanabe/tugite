@@ -313,8 +313,8 @@
       "sha256": "5719e2db265c541aab412fe23de74e9ccfd7c08ed4d2a96caf9ebc191b1804a7"
     },
     {
-      "id": "shared-interactive-human-gate-4d2eae08514a",
-      "sha256": "d8945deeb60ecc5678e8af07ed04f9123b0f4cb207cff56e8e0c9e3d8a2be3ac"
+      "id": "shared-interactive-assigned-scope-cb05b8620bce",
+      "sha256": "0b1e006b5cd53dea62e22ec4193fb525072404f756869e67ff9dc1e9fd5532d8"
     },
     {
       "id": "shared-interactive-human-fact-boundary-cbe3ae518c85",
@@ -325,28 +325,28 @@
       "sha256": "3f20f6077b8b9bdcb5f3fcf12e2eb4d00b0bf6ac3ab83613c16d6ea636407946"
     },
     {
-      "id": "shared-interactive-explanation-control-467964f27790",
-      "sha256": "1e01f817b36a4aeef9b7ede55db61e511f0332a1491ee28c04e3c4bba65aee5a"
-    },
-    {
       "id": "shared-interactive-same-model-reintegration-0b5b9b06602f",
       "sha256": "94adde627e59d224f45add3d7fb1e0a27f8e305e78fb4aeaf6dca2fa2d8d875c"
     },
     {
-      "id": "shared-interactive-human-completion-050abfec7604",
-      "sha256": "9be5e589fd7a58dce9034cfb5ea3998fc64b1324c0a6a23cc00c890201a95555"
+      "id": "shared-interactive-fact-completion-b5148ca1c70d",
+      "sha256": "533b0212829aedd2dd33cd2c37a6c46d299031fb382d0ebeac1d641f0622a480"
+    },
+    {
+      "id": "shared-interactive-authority-completion-a90710186584",
+      "sha256": "73806743ce6fdf98117a7d9a6ebe11de481fe2ddd17ce3dad7ed5294ffd1ec08"
     },
     {
       "id": "shared-interactive-switching-owner-01db52f9bcca",
       "sha256": "5d98d8b399d29b821589d65e571859a8ced3ba3c8802c62cb0671ecd59cc964e"
     },
     {
-      "id": "shared-interactive-document-before-resolution",
-      "sha256": "644c80bb062181a6a2591dd33f2fa55600fcbd92cb01809e9e78e18f96f19c87"
+      "id": "shared-interactive-document-before-assigned-scope",
+      "sha256": "c951946af9f441523be1e3f03565add8cdbafc3588f4c77ff8bf1633a1ddb0f7"
     },
     {
-      "id": "shared-interactive-resolution-before-human",
-      "sha256": "050608ea6739bc954fbff3b770f8362e5c0cc8549394e0e737504757a194676a"
+      "id": "shared-interactive-assigned-scope-before-human",
+      "sha256": "c717691ee0d745a0ee27266e36ea94b5940c92372e2193172225d631226f7209"
     },
     {
       "id": "shared-interactive-human-before-reintegration",
@@ -1153,8 +1153,20 @@
       "sha256": "4529f521f050d0dd43725917e10286ff35fcdced60009f25285526d3709b5ebf"
     },
     {
-      "id": "how-it-decision-support-boundary-fa23c276fc28",
-      "sha256": "74afff2ccac7a0e6133b46c4ff378ddcb43cca40e20fa4e897d60f4f8103b65c"
+      "id": "how-it-caller-resolution-f40d8d6779d0",
+      "sha256": "13e79c7999b8543e4a50524dd2594f938f74145a23c8941913bafd714d3bc0c6"
+    },
+    {
+      "id": "how-it-decision-support-boundary-5a1a126f49a7",
+      "sha256": "7189acfbcaefd322d0ca6b68dec98f4368603216499d2a3fbf219b06ed9d9810"
+    },
+    {
+      "id": "how-it-explanation-control-53ef5be07562",
+      "sha256": "cd37fabbe77d433d0c5335272b427f3039af669e4465c4658a526f82cabdd49c"
+    },
+    {
+      "id": "how-it-explanation-not-approval-2a09798ccb12",
+      "sha256": "1a5ac60bea116b3c82ae0a17f4a7f665ee977ff741700746ab527314ce778de8"
     },
     {
       "id": "how-it-decision-context-982b0c0545d1",
@@ -1169,8 +1181,8 @@
       "sha256": "42075124942b013b35a718dc868f3023af34ade3cc92b958a96471d445a745b9"
     },
     {
-      "id": "how-it-response-reintegration-0eb5d1f8ec47",
-      "sha256": "ab190c257c6566e20a60a85b665c5d9bc2f8528d3ba0b5c3aea2d7d52a3a2a46"
+      "id": "how-it-response-reintegration-66a9bd656fbf",
+      "sha256": "1de78c3d46a907f8c5b76d7641f759e9a3908d7068b3f2265132444d0330f0a4"
     },
     {
       "id": "how-it-decision-continuity-fb4d70aaf6a0",
@@ -1185,8 +1197,8 @@
       "sha256": "d605286f7f40539139b60c66ecf1d98ce2852ac52711c9c85b2f1ac293336cc2"
     },
     {
-      "id": "how-it-completion-output-7cf310af5553",
-      "sha256": "ffc89560835d0b809cf5b0d4d11d51dc6f1af165268660f119e5f1ce236052bf"
+      "id": "how-it-completion-output-9ee3374964d5",
+      "sha256": "97b2841c91d031eb91f46af0cb50d52ba8d9004d64a025cbed2f3662436489f9"
     },
     {
       "id": "how-it-document-before-explicit-invocation",
@@ -1225,8 +1237,8 @@
       "sha256": "561850818442aaa20efd928f7948a5319db60cdcaea03bd373c3f0d0ede1f90d"
     },
     {
-      "id": "how-it-projection-dialogue-4a681b6211b3",
-      "sha256": "b12823bedc6d5a763480fa7813bb6f7deaf0abd82365fb5470a3a3262525f4e9"
+      "id": "how-it-projection-dialogue-37632ca0710e",
+      "sha256": "b891309123bd9e2e7c24ed48b9e5df4e488028427b2ba338bdfcd2400d626a28"
     },
     {
       "id": "how-it-projection-output-da55049654c2",
@@ -1237,40 +1249,40 @@
       "sha256": "45652338046ab49c372e03ae9cdece4fb5854fb84cf5ea9cb5a55b248f48cd7a"
     },
     {
-      "id": "explorer-this-agentic-first-f7726fdb98b3",
-      "sha256": "7d8ace0a6d763125a24a799686d90601f950863ad80316af7346d7bde5c2ef5f"
+      "id": "explorer-this-agentic-first-adf2d805f723",
+      "sha256": "f367f420931b39424e5438d76e3a74d648eaba4197d7f59adda9aa7f15b227d7"
     },
     {
-      "id": "explorer-this-fallback-boundary-2f0e78869ab4",
-      "sha256": "b366b3f7b79e0cb26d667124ba10e7bcd0aaac13fb7930139608f1ef1a84b2e9"
+      "id": "explorer-this-local-confirmation-2b33cc33c673",
+      "sha256": "549c9568b1a1cb772ca161b696e512441cabcbd8ea349ef286b1d4cc361311a2"
     },
     {
-      "id": "explorer-this-nonhuman-stop-b7450dd0304d",
-      "sha256": "25524c96ceb39a9c61e6ffda9b171fa93d745916ee1991f6770d6b2e123a1d13"
+      "id": "explorer-this-nonhuman-stop-c50ef54e78f3",
+      "sha256": "36cb5746b9fe65db4c211dfa10a8d07721f2cf89a45d9f9eed8e45171edab88b"
     },
     {
-      "id": "explorer-this-continuity-f34cebd89ba8",
-      "sha256": "5922ad6e43101f911246e0fd9132e7de447d60ddbb6bba8f976a8a462a2681d2"
+      "id": "explorer-this-continuity-ef0e680ceedd",
+      "sha256": "327b9f1c69ba18dc884fd6dca4be18b29165b11838af76e6f531c05a9db3b366"
     },
     {
-      "id": "explorer-this-authority-7a10fe33e865",
-      "sha256": "900b47f0d339203462ea9c8a0e64347375d072011f646f4a3e8a540b1d55b90b"
+      "id": "explorer-this-authority-79656a944b4b",
+      "sha256": "325a5ef27726ce33a317607a76c2691ba10414cdc9c18ace565f8f8b4b8a2035"
     },
     {
-      "id": "explorer-this-output-337180f80846",
-      "sha256": "da6798b465d6dc622459be730f50027f873b129cb76680dc1aeda6a26075e95c"
+      "id": "explorer-this-output-95f771f10ba2",
+      "sha256": "571518761715a03f370b5c27341eacaf2867cd464c82b394e7761b37e70e30eb"
     },
     {
       "id": "explorer-this-document-before-agentic",
       "sha256": "33939801b772503df19eaafc61183df14d7284a2a5651bcccd31fa3929b39073"
     },
     {
-      "id": "explorer-this-agentic-before-fallback",
-      "sha256": "6601200f407b3c3cb12893658e89445fccaf1c1cabd8abf8fa11f030e4d2eb4d"
+      "id": "explorer-this-agentic-before-local-confirmation",
+      "sha256": "4816e481e10823ebd927de7cc61fedb2226417945084a86114c22726534aa11e"
     },
     {
-      "id": "explorer-this-fallback-before-nonhuman",
-      "sha256": "9962a2a7e43dbbd3fc3350a0ab5f9491cee3405245109a1aa316dc556d813de1"
+      "id": "explorer-this-local-confirmation-before-nonhuman",
+      "sha256": "bf35823a4129ebc1df1e95c13450a031eeb060972819009fecf1c2762b3ccbf0"
     },
     {
       "id": "explorer-this-nonhuman-before-continuity",
@@ -1401,8 +1413,12 @@
       "sha256": "e11ae4b56fe0363470fcf710e2b2d7547b4e1cf4f7cabe511dc70c20378546b5"
     },
     {
-      "id": "test-report-interactive-boundary-93b3056abdb8",
-      "sha256": "6d75822e5d1d73045922627e7b9f1bb8524538b4878f296a5fe028156a79c0c8"
+      "id": "test-report-local-confirmation-48dd7d3bcc1d",
+      "sha256": "e8f8f5eadaa05b7826814f5a64a4317d962d3a89f8814762ff6159b4e688cdcd"
+    },
+    {
+      "id": "test-report-limitation-boundary-14d9c2d3ae3d",
+      "sha256": "63e2e2136c93528f8ea6f2ffa538701dfea72405c8e17567832f8f4c3ad1b9db"
     },
     {
       "id": "test-report-acquisition-scope-4c6040e1623f",
@@ -1961,8 +1977,8 @@
       "sha256": "5cc85feaf35fff54cc7b13f9943972b48e4b4115f900f06a56c43725137ee178"
     },
     {
-      "id": "find-way-local-model-dfcd8e5af4cd",
-      "sha256": "2cfc48b7550a2182231528793e81d83fd1e49218fd0bb929d39045f0e6a2a2ba"
+      "id": "find-way-local-model-77596290e9f2",
+      "sha256": "6bca7ee8df2c093341a9a67ef9624d1b838fbbf686ae72d369242a65db76dd50"
     },
     {
       "id": "find-way-map-d843906938c9",
@@ -2025,8 +2041,8 @@
       "sha256": "255029457dba3a032bf37d05de1de7de5bd57fc42327577bf173ed1553d900fa"
     },
     {
-      "id": "find-way-flow-interactive-c1799283bf84",
-      "sha256": "07527f11295d479d8d053159006b574b3e9131b1f8526b686cf5f421c64b82f4"
+      "id": "find-way-flow-interactive-870b3dc344b9",
+      "sha256": "db3e9074e3d8547e89c1b586d43a63f69db501b2acfcd29666d9806229995509"
     },
     {
       "id": "find-way-flow-persistence-e19702c9fe16",
@@ -2098,7 +2114,7 @@
     },
     {
       "id": "visualize-that-codex-plugin-metadata",
-      "sha256": "8f821de2ee8a61ad06f82855f11c523fc441b83e8e0c824b61ce1ed395c5f508"
+      "sha256": "bce8564e291989ecca2e5dbbe28ad81eecf47374454f422da35c05365c003673"
     },
     {
       "id": "visualize-that-claude-cursor-plugin-metadata",
@@ -2117,12 +2133,20 @@
       "sha256": "7898c82d22b21450902e958f26e586fe7867090038607630f506a9ca97f5e6c1"
     },
     {
-      "id": "visualize-that-local-model-f1f4063b8c8d",
-      "sha256": "bd7abde37b04afe31ac99b8df79c14ca84a78bd380b23824b07d38ed70ad8b00"
+      "id": "visualize-that-local-model-dd830d5dc078",
+      "sha256": "5402d0cc1ebcf8eadae534c9f5b9e78037073ca1b028b07b5666f9bcbf9070a5"
     },
     {
-      "id": "visualize-that-final-human-judgment-f9a55670d74b",
-      "sha256": "a9bb0de26eaf7a79e10eebd7ffda43c87de73ccc23075c91ba9c63884ca66f6d"
+      "id": "visualize-that-interactive-scope-84408c02182c",
+      "sha256": "ba5c13da7c1cf052e10eae6d6cfe87602cc8ec313daae3ef30af3868e2645d94"
+    },
+    {
+      "id": "visualize-that-fact-completion-0021249845d3",
+      "sha256": "c13eb36c62d40739d97c18da2af562f053f9c418d5cfd1abf260d59a065f97f4"
+    },
+    {
+      "id": "visualize-that-authority-completion-fa859fa91f0e",
+      "sha256": "f642b738faef2941e23a26c291ad901c1bb8c530156a30373105b72d63c526b5"
     },
     {
       "id": "visualize-that-meaning-eb1c171d3749",
@@ -2348,12 +2372,12 @@
     },
     {
       "kind": "span",
-      "id": "shared-interactive-resolution-boundary",
+      "id": "shared-interactive-assigned-scope",
       "path": "shared/interactive-model-construction.md"
     },
     {
       "kind": "anchor",
-      "id": "shared-interactive-resolution-relation",
+      "id": "shared-interactive-assigned-scope-relation",
       "path": "shared/interactive-model-construction.md"
     },
     {
@@ -2377,13 +2401,18 @@
       "path": "shared/interactive-model-construction.md"
     },
     {
-      "kind": "span",
-      "id": "shared-interactive-completion",
+      "kind": "anchor",
+      "id": "shared-interactive-completion-relation",
       "path": "shared/interactive-model-construction.md"
     },
     {
-      "kind": "anchor",
-      "id": "shared-interactive-completion-relation",
+      "kind": "span",
+      "id": "shared-interactive-fact-completion",
+      "path": "shared/interactive-model-construction.md"
+    },
+    {
+      "kind": "span",
+      "id": "shared-interactive-authority-completion",
       "path": "shared/interactive-model-construction.md"
     },
     {
@@ -3288,12 +3317,12 @@
     },
     {
       "kind": "span",
-      "id": "explorer-this-fallback-boundary",
+      "id": "explorer-this-local-confirmation",
       "path": "shared/skill/explorer-this/SKILL.md"
     },
     {
       "kind": "anchor",
-      "id": "explorer-this-fallback-boundary-relation",
+      "id": "explorer-this-local-confirmation-relation",
       "path": "shared/skill/explorer-this/SKILL.md"
     },
     {
@@ -3373,12 +3402,27 @@
     },
     {
       "kind": "span",
+      "id": "how-it-caller-resolution",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "how-it-decision-support-boundary",
       "path": "shared/skill/how-it/SKILL.md"
     },
     {
       "kind": "anchor",
       "id": "how-it-decision-support-relation",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-explanation-control",
+      "path": "shared/skill/how-it/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "how-it-explanation-not-approval",
       "path": "shared/skill/how-it/SKILL.md"
     },
     {
@@ -3798,7 +3842,12 @@
     },
     {
       "kind": "span",
-      "id": "test-report-interactive-boundary",
+      "id": "test-report-local-confirmation",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-limitation-boundary",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
@@ -4038,7 +4087,17 @@
     },
     {
       "kind": "span",
-      "id": "visualize-that-final-human-judgment",
+      "id": "visualize-that-interactive-scope",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-fact-completion",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-authority-completion",
       "path": "shared/skill/visualize-that/SKILL.md"
     },
     {
