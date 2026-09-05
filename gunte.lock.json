@@ -2036,8 +2036,8 @@
       "sha256": "792eeeb87feec3d2e20230b890c201871ca3286ccd793b9c8862b688faaf6a36"
     },
     {
-      "id": "visualize-that-identifiers-83460ac632ad",
-      "sha256": "4381475e59bba89cd10f47154728d2aa221553e6e91453721d3f41942d278bbe"
+      "id": "visualize-that-identifiers-59989d2e94ad",
+      "sha256": "b936e9b3f6424f814e57ab166c65e95b82df1c59a5a091c528a8b11df677dfc1"
     },
     {
       "id": "visualize-that-output-safety-57f877c561f9",
@@ -2046,6 +2046,42 @@
     {
       "id": "visualize-that-result-6b8ceefa33a2",
       "sha256": "4e608995b065ae9616813605ed14105bb3a9d4fea2de380744a83ff7e15aaae3"
+    },
+    {
+      "id": "visualize-that-composition-f65a0c3d1d1f",
+      "sha256": "36bc203ed854591a4ce027d517a335d093b950e37924e377f1e082e6aaf51e7d"
+    },
+    {
+      "id": "visualize-that-primary-structure-e9ab47af742e",
+      "sha256": "3479295af4fa40f840782e2f926898deb00685a9bb740e600ad56e0821a3fe1a"
+    },
+    {
+      "id": "visualize-that-supporting-detail-b9cc5e4c7a8b",
+      "sha256": "227bf2d558d594fad0b85ef842322e6f8d8514c3c8037decd6de226dd3dde49f"
+    },
+    {
+      "id": "visualize-that-source-recomposition-013770cf2710",
+      "sha256": "410f1ae52bfe8812b18476951941c638d5b0f8ce63b903e5b6d7718619b734b8"
+    },
+    {
+      "id": "visualize-that-semantic-fit-bccbf201c33f",
+      "sha256": "b5d40a2701dd391485203444ce188dfd0659a7719564bf0833caa29f7a653c79"
+    },
+    {
+      "id": "visualize-that-render-inspection-a0c74af92277",
+      "sha256": "64a1819c0eec2bdbc8dc384e6ecc3cf5c9a25a992bf72db605a4871cc1e40abb"
+    },
+    {
+      "id": "visualize-that-bounded-correction-ee49933938d8",
+      "sha256": "59933388ba2cd875b0981059741b62abf53bafe015bb5ea3e038592d749ad482"
+    },
+    {
+      "id": "visualize-that-composition-failure-3f3598a200c0",
+      "sha256": "28f06c40937bd8e6d3f01d0d06cb18119a0088fff0700558a16a554ddbae799b"
+    },
+    {
+      "id": "visualize-that-deep-dive-composition-44d58a0111aa",
+      "sha256": "3b0de2e03127145f1ad4297ae1b0f46137981c3f2590bd7cebc61bff6f82a609"
     },
     {
       "id": "visualize-that-flow-trigger-81dc361a42bc",
@@ -2070,6 +2106,14 @@
     {
       "id": "visualize-that-flow-outcomes-d863f77e5655",
       "sha256": "b7966d32cde027640e2ed99aafe56810460d413e6c87f0035c464655fa9d1f03"
+    },
+    {
+      "id": "visualize-that-template-identifier-a",
+      "sha256": "9add023d6c38cb56a0ee7ffd7dfaa17fb81c7c239bdb5a610655195f9252711e"
+    },
+    {
+      "id": "visualize-that-template-identifier-b",
+      "sha256": "958fb93c90f06ac5caacd5eeaa8af58ae2998ec04c23c447718cdac2d9145b97"
     }
   ],
   "declarations": [
@@ -3785,6 +3829,31 @@
     },
     {
       "kind": "span",
+      "id": "visualize-that-composition",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-primary-structure",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-supporting-detail",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-source-recomposition",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-semantic-fit",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "visualize-that-optional-rendering-dependency",
       "path": "shared/skill/visualize-that/SKILL.md"
     },
@@ -3800,7 +3869,27 @@
     },
     {
       "kind": "span",
+      "id": "visualize-that-deep-dive-composition",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "visualize-that-output-safety",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-render-inspection",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-bounded-correction",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-composition-failure",
       "path": "shared/skill/visualize-that/SKILL.md"
     },
     {
