@@ -53,7 +53,11 @@ disable-model-invocation: true
 `how-it` は既存の `Interactive Model Construction` を construction Method として利用します。
 <!-- @/contract -->
 
-Interactive 固有の意味、Agent-side resolution、Human interaction、必要な evidence acquisition、およびその completion boundary は、次の shared source に従います。
+<!-- @contract how-it-caller-resolution -->
+`how-it` は Human interaction 前の reasoning / analysis、available context、repository / source exploration、必要な bounded evidence acquisition を
+caller-side で先に進めます。局所確認だけで足りる fact / scope / authority / continuation と effect confirmation は caller が直接扱い、Human と
+意味を共同構築する必要がある scope だけを選んで Interactive に渡します。Interactive は assigned scope 内の入力分類、Reintegration、必要な更新と completion boundary を担います。
+<!-- @/contract -->
 `how-it` は Interactive の内部 phase、Human question schema、completion 判定を別名で再実装せず、Method の選択・切り替え・順序と
 workflow 全体の completion を caller として保持します。
 
@@ -68,9 +72,18 @@ workflow 全体の completion を caller として保持します。
 
 <!-- @contract how-it-decision-support-boundary -->
 <!-- @anchor how-it-decision-support-relation -->
-Human-owned resolution を開始した後、`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。
+`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。
 
-decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成と最終出力責任は `how-it` に残し、Interactive の入力分類、Reintegration、`ex`、final Human judgment は既存 Method の責務を維持します。
+decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成、対話と最終出力の責任は `how-it` に残し、Interactive は assigned scope 内の入力分類、Reintegration、必要な更新と completion を担います。
+<!-- @/contract -->
+
+<!-- @contract how-it-explanation-control -->
+`ex` と同等の自然言語要求は、同じ判断対象・premise・rationale・evidence・qualification を保った再説明として `how-it` が扱います。
+表現、抽象度、例、背景を調整して同じ unresolved context に戻し、新しい semantic input や別の decision context として扱いません。
+<!-- @/contract -->
+
+<!-- @contract how-it-explanation-not-approval -->
+再説明自体を approval として扱いません。
 <!-- @/contract -->
 
 <!-- @contract how-it-decision-context -->
@@ -86,7 +99,7 @@ Human authority judgment を求めるときは、比較可能性を保つため�
 <!-- @/contract -->
 
 <!-- @contract how-it-response-reintegration -->
-Human の response を既存の Interactive Reintegration に統合した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。
+caller-side の local confirmation response または Interactive の assigned-scope result を同じ Local Model へ Reintegration した後、dependency と remaining context を再評価します。不要となった context の除去、新たな context の追加、context の統合、必要な範囲の再構成、または completion を選べます。質問列の完遂を completion の条件にしません。
 <!-- @/contract -->
 
 <!-- @contract how-it-decision-continuity -->
@@ -111,7 +124,7 @@ Interactive の semantic-effect rule に従った result を受け取った後�
 
 <!-- @contract how-it-completion-output -->
 <!-- @anchor how-it-completion-output-relation -->
-`how-it` は Interactive の completion boundary を通過した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。
+`how-it` は caller-side resolution / local confirmation または Interactive の assigned-scope result を統合した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、workflow completion と requested-output acceptance を判断します。write authority は invocation 時点で明示された output / destination を越えません。
 
 requested output の内容・構成・tone を確定した文章にも、`../../references/human-facing-projection.md` を実際の出力用途に応じて適用します。通常の説明はその用途、後から単独で判断根拠にする成果物は厳密な意味保持を基準とし、出力前の確認と最終出力責任は `how-it` が担います。
 <!-- @/contract -->
@@ -121,13 +134,13 @@ current understanding の acceptance と downstream artifact / plan の acceptan
 成果へ直接つなぎます。探索中に別の finding が見つかっても、それだけで task scope、repository write authority、implementation、remediation を
 拡張しません。指定された出力の qualification に反映できない変更は行いません。
 
-Human が correction、missing premise、または unresolved concern を返した場合は、既存の Interactive Method へ再接続し、同じ Local Model と
-requested output の境界を維持します。
+Human が correction、missing premise、または unresolved concern を返した場合は、同じ Local Model へ Reintegration して影響を再評価します。
+局所確認で解消できる場合は caller が扱い、共同構築が必要な場合だけ affected assigned scope を Interactive へ渡し、requested output の境界を維持します。
 
 ## Non-goals
 
 - Model Construction Core、Interactive Model Construction、Agentic Model Construction、Model Observation の redesign
-- `explorer-this` の変更、`explorer-this` からの Interactive fallback、または新しい clarification / dialogue / exploration architecture
+- `explorer-this` の局所確認責務、または新しい clarification / dialogue / exploration architecture
 - generic router、generic workflow framework、汎用 public Skill framework
 - fixed dialogue schema、state machine、question queue、decision ledger、Interactive 専用 Local Model / Research Agent / projection
 - Planning、`plan-agent`、downstream artifact / plan の acceptance

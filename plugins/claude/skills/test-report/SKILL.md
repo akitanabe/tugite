@@ -23,7 +23,6 @@ description: >-
 
 - `../../references/model-construction.md`
 - `../../references/agentic-model-construction.md`
-- `../../references/interactive-model-construction.md`
 - `../../references/behavior-model-observation.md`
 - `../../references/verification-topology.md`
 
@@ -34,10 +33,12 @@ Agentic Model Construction を first route とし、repository / source の静�
 Agent-side で bounded な分解・再観測を行っても material gap が残る場合、その gap が report の方向・範囲・意味を実質的に変えるか、
 resolution source と authority を確認します。
 
-残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、同じ Local Model のまま Interactive Model Construction を composition します。
+残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、`test-report` が caller-side で
+局所確認し、response を同じ Local Model へ Reintegration します。
 
-Human-owned でない evidence limitation、取得不能な source、execution capability の不足、または単なる Agent の不確かさは Human への
-質問で埋めず、current understanding、試した解消経路、limitation、qualification を返して停止します。
+Human-owned でない evidence limitation、取得不能な source、execution capability の不足、または単なる Agent の不確かさは Human の選択で
+埋めず、current understanding、試した解消経路、limitation、qualification を返して停止します。局所 response により scope / write authority を
+広げません。
 
 ## Static scope observation
 

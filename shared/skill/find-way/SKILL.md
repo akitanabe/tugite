@@ -52,7 +52,7 @@ disable-model-invocation: true
 ## One Local Model and current Map
 
 <!-- @contract find-way-local-model -->
-一回の invocation は Destination 全体を semantic subject とする exactly one の task-local Local Model を所有します。Agentic Model Construction を first route とし、Human-owned blocker が残り、Agent-side で独立した semantic progress route がない場合だけ Interactive Model Construction を同じ Local Model へ composition します。Decision Unit、Research Agent、nested consumer は別 Local Model を持ちません。
+一回の invocation は Destination 全体を semantic subject とする exactly one の task-local Local Model を所有します。Agentic Model Construction と独立した autonomous progress を先に進め、他に進行 route がなく Human-owned blocker が残る場合だけ、その blocker scope を Interactive Model Construction に渡します。Decision Unit、Research Agent、nested consumer は別 Local Model を持ちません。
 <!-- @/contract -->
 
 resume では supplied `resume_reference` に対する caller / harness の観測結果を shared Destination Selection の deterministic branch へ渡します。resolved same-state identity の保存済み current-state Data と current context / evidence から fresh Local Model を構築します。Local Model、Exploration Projection、推論履歴は serialize しません。
@@ -131,7 +131,7 @@ Procedure:
 <!-- @anchor find-way-flow-step-2 -->
 2. それ以外で Agent-side progress route があれば、same invocation / same Local Model で semantic judgment へ戻る。
 <!-- @anchor find-way-flow-step-3 -->
-3. 進行 route がなく Human-owned blocker があれば、同じ Local Model に Interactive Model Construction を composition する。gap が解消された result は same Local Model へ Reintegration して same invocation の semantic judgment へ戻し、未解消 result は limitation / evidence 付き `incomplete` へ投影する。
+3. 進行 route がなく Human-owned blocker があれば、その blocker scope を Interactive Model Construction に渡す。resolved result は same Local Model へ Reintegration し、Map / Decision Unit / Work Unit を再評価して same invocation の semantic judgment へ戻す。unresolved scope が返った場合は limitation / evidence 付き `incomplete` へ投影する。
 <!-- @anchor find-way-flow-step-4 -->
 4. それ以外は persistence eligibility に従う。`eligible` は shared External Effects boundary に従って state create / update / read-back Action を実行し、その後に result Data を得る。`ineligible` は保存せず evidence 付き `incomplete` とする。
 <!-- @anchor find-way-flow-step-5 -->

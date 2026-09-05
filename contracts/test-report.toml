@@ -33,10 +33,19 @@ slice = "test-report-agentic-first"
 pattern = "Agentic Model Construction を first route とし、repository / source の静的観測、scope resolution、Behavior / Context candidate と provenance の acquisition scope を Agent-side で先に決めます。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-interactive-boundary-93b3056abdb8]
+[contracts.test-report-local-confirmation-48dd7d3bcc1d]
 kind = "requires"
-slice = "test-report-interactive-boundary"
-pattern = "残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、同じ Local Model のまま Interactive Model Construction を composition します。"
+slice = "test-report-local-confirmation"
+pattern = '''残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、`test-report` が caller-side で
+局所確認し、response を同じ Local Model へ Reintegration します。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-limitation-boundary-14d9c2d3ae3d]
+kind = "requires"
+slice = "test-report-limitation-boundary"
+pattern = '''Human-owned でない evidence limitation、取得不能な source、execution capability の不足、または単なる Agent の不確かさは Human の選択で
+埋めず、current understanding、試した解消経路、limitation、qualification を返して停止します。局所 response により scope / write authority を
+広げません。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-acquisition-scope-4c6040e1623f]

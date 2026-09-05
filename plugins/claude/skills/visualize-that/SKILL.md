@@ -19,7 +19,9 @@ disable-model-invocation: true
 
 ## Meaning construction
 
-一回の invocation に対して exactly one の task-local Local Model を所有します。Agentic Model Construction を first route とし、Agent-side の bounded resolution 後にも Human-owned material gap が残る場合だけ Interactive Model Construction を同じ Local Model へ composition します。
+一回の invocation に対して exactly one の task-local Local Model を所有します。Agentic Model Construction を first route とし、Agent-side の bounded resolution 後に残る fact / scope / authority の局所確認は caller が扱います。
+
+Human と意味を共同構築する必要がある場合だけ、その assigned semantic scope を Interactive Model Construction に渡します。
 
 生成された Skill から参照する既存の正本は、各 platform の generated path を基準に解決します。
 
@@ -28,7 +30,9 @@ disable-model-invocation: true
 - `../../references/interactive-model-construction.md`
 - `../../references/researcher-delegation.md`
 
-Interactive Model Construction を利用した場合は、統合・再観測後の current understanding に対する final Human judgment を保持します。資料の取得不能や runtime capability の不足を Human authority judgment に置き換えません。
+Interactive に渡した scope が fact / context だけで解消した場合は、Reintegration と必要な更新・再観測後に追加 approval を求めません。
+
+Human authority judgment を含む場合だけ、その assigned scope の current understanding と qualification に対する final Human judgment を得ます。資料の取得不能や runtime capability の不足を Human authority judgment に置き換えません。
 
 ## Visual artifact
 

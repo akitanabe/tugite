@@ -3,12 +3,12 @@
 
 ## Identity
 
-`Interactive Model Construction` は、calling workflow が所有する task-local Local Model を、Model Construction Core に従って
-Human-owned resolution route と final Human judgment boundary 付きで構築する shared Method である。
+`Interactive Model Construction` は、calling workflow が選んだ assigned semantic scope を、Model Construction Core に従って
+Human と共同構築し、calling workflow が所有する task-local Local Model へ返す shared Method である。
 
 これは standalone public Skill ではない。共通の Local Model ownership、Model Observation、Exploration Projection、Gap Resolution、
 Reintegration、Recomposition、bounded re-observation の意味は `model-construction.md` を正本とし、この文書では Interactive 固有の
-Human boundary と completion boundary だけを定める。
+Human input、scope 内の共同構築、completion boundary だけを定める。
 
 ## Ownership and shared Core
 
@@ -16,28 +16,21 @@ Human boundary と completion boundary だけを定める。
 独自の Local Model、Exploration Projection、observation architecture、persistent model、fixed schema、state machine、score を作らない。
 Human response と Human judgment も、calling workflow の同じ Local Model に統合する。
 
-calling workflow は Local Model、task scope、requested output、Method の選択・切り替え・順序、workflow 全体の completion と
-downstream artifact / plan の acceptance を所有する。Interactive Method は assigned construction scope、Agent-side resolution first、
-Human-owned resolution、同じ Local Model への Reintegration、必要な Recomposition / bounded re-observation、および current understanding
-に対する final Human judgment boundary を所有する。
+calling workflow は Local Model、task scope、requested output、Interactive に渡す assigned semantic scope、Human に聞く必要性、
+Method の選択・切り替え・順序、workflow 全体の completion と downstream artifact / plan の acceptance を所有する。Interactive Method は
+渡された scope 内で Human-held fact / context と Human authority judgment を区別し、Human と意味を共同構築して同じ Local Model へ
+Reintegration し、必要な Recomposition / bounded re-observation を経た result / qualification または unresolved scope を caller に返す。
 
 Model Observation、BMO、RMO、Research Agent は、それぞれ caller が与えた対象に対する観測または evidence acquisition の責務だけを持つ。
 これらは Local Model の ownership / mutation、Human judgment、Reintegration、Recomposition、Method completion を所有しない。
 
-## Agent-side resolution first
+## Assigned semantic scope
 
-Exploration Projection から construction gap または qualification が観測された場合、Human に入力や判断を求める前に、Agent-side で
-解消できる範囲を処理する。利用可能な route は、reasoning / analysis、available context、repository / source exploration、bounded な
-Research Agent による evidence acquisition / local analysis である。Research Agent を使う場合の caller-side delegation と operation は
-`researcher-delegation.md`、agent の evidence-relative boundary は `agents/researcher.md` に従う。
-
-Agent が分からないこと、複数の案があること、Research Agent を利用できることだけでは Human interaction を開始しない。Agent-side の
-resolution で得た grounded result は、task-wide な意味判断を外部へ移さず、Interactive Method が同じ Local Model へ Reintegration する。
-
-<!-- @contract shared-interactive-resolution-boundary -->
-<!-- @anchor shared-interactive-resolution-relation -->
-Agent-side の bounded route を尽くしても material な gap が残り、その resolution source または binding authority が Human にある場合
-だけ、Human-owned resolution を開始できる。Human interaction を、単なる不足感や推測の補強のために使わない。
+<!-- @contract shared-interactive-assigned-scope -->
+<!-- @anchor shared-interactive-assigned-scope-relation -->
+Interactive は caller-selected assigned semantic scope を入力として受け、その scope を再審査、拡張、縮小せず、scope 内で必要な
+Human input と複数 turn の共同構築を扱う。caller が渡していない task-wide gap、workflow completion、downstream artifact の acceptance を
+Interactive の completion 対象に含めない。
 <!-- @/contract -->
 
 ## Human-owned resolution
@@ -60,16 +53,6 @@ direction を選ぶ必要がある判断である。既に成立している tec
 Human の判断は current task に対する binding input として同じ Local Model に統合するが、それだけを理由に未許可の operation や scope
 expansion を始めない。
 
-### Human-facing interaction
-
-Human には、現在の task / domain language で判断対象、必要な理由、既知の前提、残る uncertainty または qualification を提示する。
-Local Model、Exploration Projection、Projection Sufficiency、gap、Reintegration、Recomposition などの内部語彙の理解を質問の前提に
-しない。固定された質問 schema、question queue、dialogue state machine、decision ledger で task-specific な判断を置き換えない。
-
-`ex` と同等の自然言語要求は、現在の unresolved context / current understanding を変えず、同じ判断対象を理解しやすく再提示する interaction control である。
-Human-held fact / context、Human authority judgment、Local Model への semantic input として扱わない。表現、抽象度、具体例、背景説明は変えられるが、
-新しい unrelated decision context を加えたり、元の rationale、premise、evidence、qualification を差し替えたりしない。再提示後も同じ final Human
-judgment boundary に留まり、説明だけで completion しない。
 <!-- @/contract -->
 
 ## Reintegration and semantic effect
@@ -90,21 +73,22 @@ semantic effect を評価し、必要な範囲だけを更新する。
 Human response、correction、missing premise、unresolved concern の semantic effect が不明な場合は、unknown を確定事実へ変換せず、必要な
 uncertainty を保持したまま追加の判断または確認へ戻す。
 
-## Final Human judgment and completion
+## Completion
 
-<!-- @contract shared-interactive-completion -->
 <!-- @anchor shared-interactive-completion-relation -->
-Agent-side resolution、semantic input の Reintegration、必要な repair と bounded re-observation の後、Interactive Method は current
-understanding と retained material uncertainty / qualification を Human が判断できる形で提示する。
-
-Human がその current understanding を downstream の前提として採用し、次へ進むことを明示的に認めるまで、Interactive Method は completion
-しない。これは current understanding の acceptance であり、downstream plan や artifact 自体の acceptance ではない。uncertainty を残した
-状態で進む判断は可能だが、Human の approval によって unknown fact を known fact に変えない。
+<!-- @contract shared-interactive-fact-completion -->
+Human-held fact / context だけを含む assigned scope は、正しい Reintegration と必要な更新・再観測により解消した時点で result / qualification を
+caller に返し、追加の Human approval を completion 条件にしない。
 <!-- @/contract -->
 
-Human が correction、missing premise、または unresolved concern を返した場合は、同じ Local Model へ再度 Reintegration し、semantic effect
-に応じて local repair または affected region の Recomposition と bounded re-observation を行ったうえで、current understanding の final
-Human judgment を取り直す。
+<!-- @contract shared-interactive-authority-completion -->
+Human authority judgment を含む assigned scope は、必要な更新・再観測後、その scope の current understanding と qualification に対する
+final Human judgment を得てから result を caller に返す。この judgment を workflow 全体、downstream artifact、plan、最終 Work Units の acceptance へ広げない。
+<!-- @/contract -->
+
+Human が correction、missing premise、または unresolved concern を返した場合は同じ assigned scope に戻し、同じ Local Model への
+Reintegration、必要な local repair または affected region の Recomposition と bounded re-observation を続ける。scope が解消できない場合は、
+unresolved scope と retained qualification を caller に返す。Human の approval によって unknown fact を known fact に変えない。
 
 ## Method composition
 
@@ -133,5 +117,5 @@ Interactive Method は、`explorer-this`、`how-it`、または任意の downstr
 - standalone public Skill、platform invocation metadata、plugin manifest、generic Human interaction framework
 - fixed dialogue schema、state machine、question queue、decision ledger
 - Interactive 専用 Research Agent、Human による探索 architecture、または独自の Local Model / projection
-- Method switching、`explorer-this` からの fallback、`how-it`、Planning Synthesis、downstream artifact / plan の acceptance
+- Human に聞く必要性の判断、Agent-side resolution、対話の presentation、`ex`、Method switching、`how-it`、Planning Synthesis、downstream artifact / plan の acceptance
 - Human approval による unknown fact の確定、または materiality を無視した全域 Recomposition
