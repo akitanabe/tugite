@@ -13,6 +13,7 @@
     "contracts/impl-lead.toml",
     "contracts/destination-selection.toml",
     "contracts/find-way.toml",
+    "contracts/visualize-that.toml",
     "shared/VERSION",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
@@ -56,6 +57,9 @@
     "shared/skill/test-verify/references/risk-review.md",
     "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
+    "shared/skill/visualize-that/SKILL.md",
+    "shared/skill/visualize-that/assets/template.html",
+    "shared/skill/visualize-that/references/render-verification.md",
     "shared/plugins-readme.md",
     "shared/root-readme.md",
     "shared/repository-guidelines.md",
@@ -71,6 +75,7 @@
     "declarations/codex/skills/test-report/openai.yaml",
     "declarations/codex/skills/test-verify/openai.yaml",
     "declarations/codex/skills/review-refine/openai.yaml",
+    "declarations/codex/skills/visualize-that/openai.yaml",
     "declarations/cursor/plugin.json"
   ],
   "contracts": [
@@ -195,8 +200,12 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-365bfbfcb751",
-      "sha256": "735e83089dec064406e6d2c6cd58a0a6533089bc4c39023fc1b35c7635ff9da8"
+      "id": "cursor-readme-public-skills-requires-2bfbba89d524",
+      "sha256": "112a1315ad74858b4d525af9f842038dc9090f75d62ebd290583482ecd032bf9"
+    },
+    {
+      "id": "repository-programmatic-flow-skills-ff8e73c1963b",
+      "sha256": "c40449c1e39c4d2c8e9ca4449480393fa8f0e08fcb00b867a23a5705f56e1d97"
     },
     {
       "id": "cursor-readme-unsupported-requires-13d1036fbb45",
@@ -1969,6 +1978,98 @@
     {
       "id": "find-way-flow-step-5-before-outcomes",
       "sha256": "bd92cad92325cae3df50f0fd1aea4e237f0bff513087a59a0e8135af8771b788"
+    },
+    {
+      "id": "visualize-that-document",
+      "sha256": "f42fa1d9ff76554de2735861f4138aa04a71c8e7b8e48c6cd985978892bbfcd9"
+    },
+    {
+      "id": "visualize-that-template",
+      "sha256": "0fa8ef66c4b58f21519eb80626cec047bf6ee112615bd197416add8d2f64e268"
+    },
+    {
+      "id": "visualize-that-render-document",
+      "sha256": "12c4a933b4f91546c59408530cb2e4f59a3273dd6188582add8d43cdcebed4f0"
+    },
+    {
+      "id": "visualize-that-codex-invocation-policy",
+      "sha256": "571432db3f355c1565336a8564c9cc3650877b048c5e8d63f9a4bbaa9fe24eac"
+    },
+    {
+      "id": "visualize-that-model-invocation-policy",
+      "sha256": "b1c94f59e14fb713ceb3fb8cfd3be7646c66aaa26436a663e51e9a51f4d73e71"
+    },
+    {
+      "id": "visualize-that-codex-plugin-metadata",
+      "sha256": "8f821de2ee8a61ad06f82855f11c523fc441b83e8e0c824b61ce1ed395c5f508"
+    },
+    {
+      "id": "visualize-that-claude-cursor-plugin-metadata",
+      "sha256": "74c566ab079ec2432e1db865639c341e9995f91211ddc55d4074ed4311a3beb9"
+    },
+    {
+      "id": "visualize-that-explicit-only-5286f930936d",
+      "sha256": "a69966868f2fb6a9df08a006db5d0fc51e0c157d5e403efae7c7cc16f2a228de"
+    },
+    {
+      "id": "visualize-that-responsibility-cdf9b2e281ea",
+      "sha256": "bc3a30ceef39f6e014b0146a75adc17483b137a233dc24158116a766ac98565d"
+    },
+    {
+      "id": "visualize-that-input-authority-e075ee26d9dd",
+      "sha256": "7898c82d22b21450902e958f26e586fe7867090038607630f506a9ca97f5e6c1"
+    },
+    {
+      "id": "visualize-that-local-model-f1f4063b8c8d",
+      "sha256": "bd7abde37b04afe31ac99b8df79c14ca84a78bd380b23824b07d38ed70ad8b00"
+    },
+    {
+      "id": "visualize-that-final-human-judgment-f9a55670d74b",
+      "sha256": "a9bb0de26eaf7a79e10eebd7ffda43c87de73ccc23075c91ba9c63884ca66f6d"
+    },
+    {
+      "id": "visualize-that-meaning-eb1c171d3749",
+      "sha256": "b89cf4207042a8fb042c1fd849133eba894883d37936a2b064ac925a14f9bbea"
+    },
+    {
+      "id": "visualize-that-optional-rendering-dependency-deaa8375a301",
+      "sha256": "792eeeb87feec3d2e20230b890c201871ca3286ccd793b9c8862b688faaf6a36"
+    },
+    {
+      "id": "visualize-that-identifiers-83460ac632ad",
+      "sha256": "4381475e59bba89cd10f47154728d2aa221553e6e91453721d3f41942d278bbe"
+    },
+    {
+      "id": "visualize-that-output-safety-57f877c561f9",
+      "sha256": "5efd152114530dfcca7fd85995369821dfc4a98f72036ef1bd479c60b8c83e58"
+    },
+    {
+      "id": "visualize-that-result-6b8ceefa33a2",
+      "sha256": "4e608995b065ae9616813605ed14105bb3a9d4fea2de380744a83ff7e15aaae3"
+    },
+    {
+      "id": "visualize-that-flow-trigger-81dc361a42bc",
+      "sha256": "7f10e972873266269fb6f668f60f5cd776103bd11a8daeeccec5aafdc0c89d13"
+    },
+    {
+      "id": "visualize-that-flow-inputs-6b9c29e0637b",
+      "sha256": "22d3f4eee9874059291d3710af8ebe83ff61093e81e7114901f4c62155a9597d"
+    },
+    {
+      "id": "visualize-that-flow-usable-browser-26873930878a",
+      "sha256": "1d70ff7546372baf528ddb81750de4ccc348c601ba1abeb854bb4ed750d809ff"
+    },
+    {
+      "id": "visualize-that-flow-inspection-7d81e7749db8",
+      "sha256": "cc0bc38ccfc72031b99bbe49760a4c464465287cbd09ae447adaa63807770edf"
+    },
+    {
+      "id": "visualize-that-flow-guidance-90e5d2b713da",
+      "sha256": "793103877f90105169dd4dab9cd85e0b38a0c8420765a9c7f03bf2a8a9130c51"
+    },
+    {
+      "id": "visualize-that-flow-outcomes-d863f77e5655",
+      "sha256": "b7966d32cde027640e2ed99aafe56810460d413e6c87f0035c464655fa9d1f03"
     }
   ],
   "declarations": [
@@ -3659,6 +3760,61 @@
     },
     {
       "kind": "span",
+      "id": "visualize-that-explicit-only",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-responsibility",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-input-authority",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-local-model",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-final-human-judgment",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-optional-rendering-dependency",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-meaning",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-identifiers",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-output-safety",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-result",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-render-flow",
+      "path": "shared/skill/visualize-that/references/render-verification.md"
+    },
+    {
+      "kind": "span",
       "id": "readme-title",
       "path": "shared/plugins-readme.md"
     },
@@ -3681,6 +3837,11 @@
       "kind": "span",
       "id": "root-readme-risk",
       "path": "shared/root-readme.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-programmatic-flow-skills",
+      "path": "shared/repository-guidelines.md"
     }
   ]
 }

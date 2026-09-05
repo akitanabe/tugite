@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "version": "7.2.2",
-  "description": "Use the explicit workflows how-it, explorer-this, impl-lead, plan-agent, find-way, and test-verify, plus review-refine, code-review, and test-report with internal skills, workers, reviewers, and advisors.",
+  "description": "Use the explicit workflows how-it, explorer-this, visualize-that, impl-lead, plan-agent, find-way, and test-verify, plus review-refine, code-review, and test-report with internal skills, workers, reviewers, and advisors.",
   "author": {
     "name": "akitanabe"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install workflows, agents, and skills.",
-    "longDescription": "Codex skills for how-it, explorer-this, impl-lead, plan-agent, find-way, review-refine, code-review, test-report, and explicit-only test-verify, plus their internal skills, workers, reviewers, and advisors. Find Way resolves Destination-wide pre-planning fog into self-contained Work Units without starting downstream work. Test-report statically observes tests through the shared Verification Topology. Test-verify uses the same shared topology with grounded runtime evidence, directly repairs only target-causal Problems, and requires its own Completion Gate and final verification.",
+    "longDescription": "Codex skills for how-it, explorer-this, visualize-that, impl-lead, plan-agent, find-way, review-refine, code-review, test-report, and explicit-only test-verify, plus their internal skills, workers, reviewers, and advisors. Visualize That turns arbitrary supplied material into meaning-preserving visual HTML and reports capability-relative render verification. Find Way resolves Destination-wide pre-planning fog into self-contained Work Units without starting downstream work. Test-report statically observes tests through the shared Verification Topology. Test-verify uses the same shared topology with grounded runtime evidence, directly repairs only target-causal Problems, and requires its own Completion Gate and final verification.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -28,6 +28,7 @@
     "defaultPrompt": [
       "Use $how-it only for an explicit public workflow; use Interactive Model Construction to build how to proceed or make the request viable, keep one task-local Local Model, and connect directly to the requested output.",
       "Use $explorer-this only for explicit public exploration requests; keep one task-local Local Model, use Agentic Model Construction first, compose Interactive Model Construction only for unresolved Human-owned material gaps, and connect the result directly to the requested output.",
+      "Use $visualize-that only when explicitly requested; turn arbitrary supplied material into meaning-preserving standalone visual HTML, then return verified or render-unverified according to available launch, capture, and actual inspection capability.",
       "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; observe them as a Verification Topology and report observed gaps without editing, running, or evaluating tests.",
       "Use $test-verify only when explicitly requested; verify a bounded test target from grounded runtime evidence, directly remediate only target-causal Problems, then pass its Completion Gate and final verification.",
       "Use $plan-agent only when explicitly requested to create a recommendation-first free-form planning or design artifact from normal context without starting implementation; use review only when applicable and not opted out.",
