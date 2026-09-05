@@ -40,6 +40,8 @@ workflow 全体の completion を caller として保持します。
 
 Human-owned resolution を開始した後、`how-it` は caller-side の Human-facing decision support を担い、current understanding に応じて提示と選択を調整します。
 
+decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成と最終出力責任は `how-it` に残し、Interactive の入力分類、Reintegration、`ex`、final Human judgment は既存 Method の責務を維持します。
+
 原則は一問一答であり、一度に扱うのも原則として一つの独立した decision context です。これらは別の要件です。同じ decision context の解消に複数の問いが必要な場合は、一つの turn に複数の問いを含められ、固定した質問数は持ちません。
 
 `how-it` は FIFO、事前に作った queue、固定 score で順番を決めず、より上位の判断、後続判断を多く消去または拘束すること、判断空間を安定させること、重要な不整合を解消することを基準に current decision context を選びます。
@@ -61,6 +63,8 @@ Interactive の semantic-effect rule に従った result を受け取った後�
 ## Completion and requested output
 
 `how-it` は Interactive の completion boundary を通過した current understanding と retained material uncertainty / qualification を requested output へ直接接続し、write authority は invocation 時点で明示された output / destination を越えません。
+
+requested output の内容・構成・tone を確定した文章にも、`../../references/human-facing-projection.md` を実際の出力用途に応じて適用します。通常の説明はその用途、後から単独で判断根拠にする成果物は厳密な意味保持を基準とし、出力前の確認と最終出力責任は `how-it` が担います。
 
 current understanding の acceptance と downstream artifact / plan の acceptance は分けます。
 出力は explanation、comparison、analysis、repository overview、investigation result、または invocation が明示した artifact など、要求された

@@ -1209,3 +1209,151 @@ kind = "requires"
 slice = "external-effects-flow"
 pattern = "### external-action-control"
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-document]
+kind = "occurrences"
+pattern = "# Human-facing Projection"
+count = 1
+paths = [
+  "plugins/claude/references/human-facing-projection.md",
+  "plugins/codex/references/human-facing-projection.md",
+  "plugins/cursor/references/human-facing-projection.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-identity-9b82c4d43584]
+kind = "requires"
+slice = "human-facing-projection-identity"
+pattern = "文章の表現を扱いますが、文章が伝える意味と、caller が決めた構成の owner にはなりません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-input-3d65ed79a20d]
+kind = "requires"
+slice = "human-facing-projection-input"
+pattern = "caller は意味・構成・tone と出力用途を確定した通常の文章を入力します。固定 schema、mode 指定、用語対応表、変換ログを要求しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-semantic-boundary-f775406ab677]
+kind = "requires"
+slice = "human-facing-projection-semantic-boundary"
+pattern = "Method は semantic model や structured data から新しい内容を生成せず、第二の Local Model も持ちません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-result-9106b5e1a74f]
+kind = "requires"
+slice = "human-facing-projection-result"
+pattern = '''通常は変換後の文章だけを返します。caller は返された文章を採用する責任と、用途に応じた意味保持の確認を所有し、必要な選択・判断・構成と、表示・保存・送信などの Action を担います。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-data-boundary-0bb0af651fba]
+kind = "requires"
+slice = "human-facing-projection-data-boundary"
+pattern = "入力と出力は文章を表す Data です。Method はその Data の表現だけを整え、出力を適用する Action は caller に残します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-operations-6fc6908663bb]
+kind = "requires"
+slice = "human-facing-projection-operations"
+pattern = '''文・段落の表現は一つの固定手順で決めず、次の操作を必要な範囲で組み合わせます。
+
+- 文を分ける、語順を変える、主語・対象・条件を明示する
+- 圧縮された意味を、元の意味を保つ最小限の範囲で展開する
+- 意味が重複する表現を統合する
+- 説明用の内部抽象語を、Human が使用する言語で意味の取れる表現へ言い換える'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-meaning-4f2043fd69c2]
+kind = "requires"
+slice = "human-facing-projection-meaning"
+pattern = "Method は新しい意味、条件、理由、判断を加えず、既存の意味要素を独自に削除しません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-names-67508eec723d]
+kind = "requires"
+slice = "human-facing-projection-names"
+pattern = '''名称そのものを読者が参照する必要がある正式名称や後続で参照する名称は保持します。
+`Parent QA`、`Completion Gate`、`RMO`、`Implementation Unit`、`composition` などを一律に言い換えません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-internal-language-135729570d82]
+kind = "requires"
+slice = "human-facing-projection-internal-language"
+pattern = "説明のためだけの内部語は、それを知らなくても意味が取れる文へ変えます。説明は Human が使用する言語で自然に読める状態を基本とします。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-no-dictionary-507342ec788f]
+kind = "requires"
+slice = "human-facing-projection-no-dictionary"
+pattern = "固定辞書による単語置換を主方式にしません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-minimal-8abe81f10136]
+kind = "requires"
+slice = "human-facing-projection-minimal"
+pattern = '''自然に理解できるところまでだけ展開します。平易化を理由に背景、例、理由を新しく補ったり、説明を無制限に増やしたりしません。すでに読みやすい candidate はそのまま返します。繰り返し適用しても不要な表現の揺れを生まないことを優先しますが、数学的な冪等性や byte equality は保証しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-safe-559be6a9e870]
+kind = "requires"
+slice = "human-facing-projection-safe"
+pattern = "安全に意味を展開できない箇所は元の表現を残します。他の箇所を安全に改善できるなら、その範囲で改善します。Method は調査、Human clarification、resolution loop を開始しません。残った読みにくさは caller が確認する手掛かりです。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-code-f990e011f617]
+kind = "requires"
+slice = "human-facing-projection-code"
+pattern = "code、command、path、identifier、machine-readable output、source quotation は変換対象に含めず、その内容を保持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-signals-ffa724661669]
+kind = "requires"
+slice = "human-facing-projection-signals"
+pattern = '''- 内部抽象語への依存
+- 説明目的の英語混在
+- 条件・対象・動作の過剰な圧縮
+- 追いにくい修飾関係
+- 主語・対象の不明瞭さ
+- 一文への条件・判断・動作の詰め込み'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-dialogue-2bf768066a0a]
+kind = "requires"
+slice = "human-facing-projection-dialogue"
+pattern = '''対話中の説明・補足では、主要な意味と読者の理解を保ちながら、理解に不要な細かなニュアンスを強く展開することや、毎 turn 独立した厳密確認工程を要求しません。意味や条件の独自削除は許可しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-artifact-70199246a3f4]
+kind = "requires"
+slice = "human-facing-projection-artifact"
+pattern = '''後から単独で判断根拠にする成果物では、条件・制約、必須 / 任意の強さ、不確実性、固有概念の関係、元の判断内容を厳密に保持します。caller は出力前にこれらの保持を確認します。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-use-f44d73c7b298]
+kind = "requires"
+slice = "human-facing-projection-use"
+pattern = "用途は caller の実際の使われ方から決め、固定 mode の指定へ置き換えません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-autonomous-107b1a3719e5]
+kind = "requires"
+slice = "human-facing-projection-autonomous"
+pattern = "文・段落の言い換えには複数の適切な結果があり、Human-facing Projection は autonomous な Method です。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-noaction-96a5f80d025d]
+kind = "requires"
+slice = "human-facing-projection-noaction"
+pattern = "Method は文章を保存、表示、送信せず、caller の完了や後続 Action も決めません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-caller-boundary-b1efaa9d5627]
+kind = "requires"
+slice = "human-facing-projection-caller-boundary"
+pattern = "Method は意味・構成・tone の判断を caller から引き取りません。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.shared-human-facing-projection-noflow-550b56b8c6af]
+kind = "requires"
+slice = "human-facing-projection-noflow"
+pattern = "固定 Procedure、Programmatic Flow、辞書置換器、読みやすさ validator、score、固定 schema は追加しません。"
+applies_to = ["claude", "codex", "cursor"]

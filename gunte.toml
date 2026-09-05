@@ -39,6 +39,7 @@ files = [
   "shared/writable-scope.md",
   "shared/external-effects.md",
   "shared/destination-selection.md",
+  "shared/human-facing-projection.md",
   "shared/agents/focused-implementer.md",
   "shared/agents/implementer.md",
   "shared/agents/senior-implementer.md",
@@ -173,6 +174,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.claude.rules]]
 match = "shared/destination-selection.md"
 path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/human-facing-projection.md"
+path = "references/human-facing-projection.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -359,6 +366,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/destination-selection.md"
 path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/human-facing-projection.md"
+path = "references/human-facing-projection.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
@@ -558,6 +571,12 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/destination-selection.md"
 path = "references/destination-selection.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/human-facing-projection.md"
+path = "references/human-facing-projection.md"
 profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
