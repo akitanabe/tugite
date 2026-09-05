@@ -133,10 +133,10 @@ slice = "visualize-that-optional-rendering-dependency"
 pattern = "追加の rendering dependency は bounded な visual need に必要な場合だけ使い、exact version に固定します。取得・実行できない場合も説明本文と関係の fallback を HTML / CSS だけで読める状態にし、その limitation を成果物に示します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.visualize-that-identifiers-83460ac632ad]
+[contracts.visualize-that-identifiers-59989d2e94ad]
 kind = "requires"
 slice = "visualize-that-identifiers"
-pattern = "主要項目には成果物内で stable な `viz-` prefix の識別子を割り当てます。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。"
+pattern = "主要項目には成果物内で stable な `viz:<kebab-case-slug>` 形式の識別子を割り当てます。HTML の主要項目 id、内部リンクの参照先、deep-dive target、表示する識別子と対応記述を同じ形式で一致させます。例は `id=\"viz:parent-ownership\"` と `href=\"#viz:parent-ownership\"` です。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.visualize-that-output-safety-57f877c561f9]
@@ -239,4 +239,18 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "visualize-that-render-flow"
 pattern = "Outcomes: launch・capture・actual inspection の evidence と確認範囲を持つ `verified-candidate`、または HTML を保持したまま failure stage・reason・observed result・conditional installation guidance を持つ `render-unverified`。どちらも親 Skill の autonomous judgment へ戻し、Flow 内で意味保持、修正内容、visual acceptance を決めない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.visualize-that-template-identifier-a]
+kind = "occurrences"
+pattern = "id=\"viz:example-a\">\n          <span class=\"id\">viz:example-a</span>"
+count = 1
+paths = ["plugins/claude/skills/visualize-that/assets/template.html", "plugins/codex/skills/visualize-that/assets/template.html", "plugins/cursor/skills/visualize-that/assets/template.html"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.visualize-that-template-identifier-b]
+kind = "occurrences"
+pattern = "id=\"viz:example-b\">\n          <span class=\"id\">viz:example-b</span>"
+count = 1
+paths = ["plugins/claude/skills/visualize-that/assets/template.html", "plugins/codex/skills/visualize-that/assets/template.html", "plugins/cursor/skills/visualize-that/assets/template.html"]
 applies_to = ["claude", "codex", "cursor"]

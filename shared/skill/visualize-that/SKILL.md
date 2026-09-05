@@ -91,7 +91,7 @@ semantic shape に適した表現を選びます。flow、table、matrix、layer
 <!-- @/contract -->
 
 <!-- @contract visualize-that-identifiers -->
-主要項目には成果物内で stable な `viz-` prefix の識別子を割り当てます。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。
+主要項目には成果物内で stable な `viz:<kebab-case-slug>` 形式の識別子を割り当てます。HTML の主要項目 id、内部リンクの参照先、deep-dive target、表示する識別子と対応記述を同じ形式で一致させます。例は `id="viz:parent-ownership"` と `href="#viz:parent-ownership"` です。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。
 <!-- @/contract -->
 
 <!-- @contract visualize-that-deep-dive-composition -->

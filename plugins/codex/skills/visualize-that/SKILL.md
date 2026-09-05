@@ -47,7 +47,7 @@ semantic shape に適した表現を選びます。flow、table、matrix、layer
 
 入力から確認できる事実・関係・根拠・制約・不確実性を保ちます。可視化のために補った解釈や未確認情報を読者が事実と混同し得る場合は、visual state と本文の両方で区別します。配置、線、色、強調によって、入力にない順序、因果、優劣、確実性を加えません。
 
-主要項目には成果物内で stable な `viz-` prefix の識別子を割り当てます。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。
+主要項目には成果物内で stable な `viz:<kebab-case-slug>` 形式の識別子を割り当てます。HTML の主要項目 id、内部リンクの参照先、deep-dive target、表示する識別子と対応記述を同じ形式で一致させます。例は `id="viz:parent-ownership"` と `href="#viz:parent-ownership"` です。識別子を指定した deep dive では、対象 overview と項目を解決し、元の識別子との対応を残した別 HTML を作り、元の overview を置換しません。
 
 overview と deep dive の両方に同じ composition obligation を適用します。識別子で指定された deep dive は target を中心命題として再評価し、target に適した primary structure と supporting detail を組み直します。overview の単純拡大を必須とせず、元 overview と識別子の対応を維持した別 HTML を作ります。
 

@@ -2036,8 +2036,8 @@
       "sha256": "792eeeb87feec3d2e20230b890c201871ca3286ccd793b9c8862b688faaf6a36"
     },
     {
-      "id": "visualize-that-identifiers-83460ac632ad",
-      "sha256": "4381475e59bba89cd10f47154728d2aa221553e6e91453721d3f41942d278bbe"
+      "id": "visualize-that-identifiers-59989d2e94ad",
+      "sha256": "b936e9b3f6424f814e57ab166c65e95b82df1c59a5a091c528a8b11df677dfc1"
     },
     {
       "id": "visualize-that-output-safety-57f877c561f9",
@@ -2106,6 +2106,14 @@
     {
       "id": "visualize-that-flow-outcomes-d863f77e5655",
       "sha256": "b7966d32cde027640e2ed99aafe56810460d413e6c87f0035c464655fa9d1f03"
+    },
+    {
+      "id": "visualize-that-template-identifier-a",
+      "sha256": "9add023d6c38cb56a0ee7ffd7dfaa17fb81c7c239bdb5a610655195f9252711e"
+    },
+    {
+      "id": "visualize-that-template-identifier-b",
+      "sha256": "958fb93c90f06ac5caacd5eeaa8af58ae2998ec04c23c447718cdac2d9145b97"
     }
   ],
   "declarations": [
