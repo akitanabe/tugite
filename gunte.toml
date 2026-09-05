@@ -20,6 +20,7 @@ files = [
   "contracts/impl-lead.toml",
   "contracts/destination-selection.toml",
   "contracts/find-way.toml",
+  "contracts/visualize-that.toml",
 ]
 
 [sources]
@@ -67,6 +68,9 @@ files = [
   "shared/skill/test-verify/references/risk-review.md",
   "shared/skill/test-verify/references/completion-gate.md",
   "shared/skill/review-refine/SKILL.md",
+  "shared/skill/visualize-that/SKILL.md",
+  "shared/skill/visualize-that/assets/template.html",
+  "shared/skill/visualize-that/references/render-verification.md",
   "shared/plugins-readme.md",
   "shared/root-readme.md",
   "shared/repository-guidelines.md",
@@ -82,6 +86,7 @@ files = [
   "declarations/codex/skills/test-report/openai.yaml",
   "declarations/codex/skills/test-verify/openai.yaml",
   "declarations/codex/skills/review-refine/openai.yaml",
+  "declarations/codex/skills/visualize-that/openai.yaml",
   "declarations/cursor/plugin.json",
 ]
 managed_roots = ["shared", "contracts", "declarations"]
@@ -244,6 +249,23 @@ match = "shared/skill/review-refine/SKILL.md"
 path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/visualize-that/SKILL.md"
+path = "skills/visualize-that/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/visualize-that/references/*.md"
+path = "skills/visualize-that/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/visualize-that/assets/*.html"
+path = "skills/visualize-that/assets/{1}.html"
+profile = "multiline-text-v1"
 
 [[targets.claude.rules]]
 match = "shared/plugins-readme.md"
@@ -417,6 +439,23 @@ profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
+match = "shared/skill/visualize-that/SKILL.md"
+path = "skills/visualize-that/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/visualize-that/references/*.md"
+path = "skills/visualize-that/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/visualize-that/assets/*.html"
+path = "skills/visualize-that/assets/{1}.html"
+profile = "multiline-text-v1"
+
+[[targets.codex.rules]]
 match = "shared/plugins-readme.md"
 path = "README.md"
 profile = "markdown-v1"
@@ -587,6 +626,23 @@ match = "shared/skill/review-refine/SKILL.md"
 path = "skills/review-refine/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/visualize-that/SKILL.md"
+path = "skills/visualize-that/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/visualize-that/references/*.md"
+path = "skills/visualize-that/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/visualize-that/assets/*.html"
+path = "skills/visualize-that/assets/{1}.html"
+profile = "multiline-text-v1"
 
 [[targets.cursor.rules]]
 match = "shared/plugins-readme.md"

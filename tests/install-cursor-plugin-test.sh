@@ -28,6 +28,9 @@ for reference in implementation-unit-design execution parent-qa risk-review comp
 done
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 [[ -f "$repo_root/plugins/cursor/skills/test-verify/SKILL.md" ]] || fail "missing test-verify skill"
+[[ -f "$repo_root/plugins/cursor/skills/visualize-that/SKILL.md" ]] || fail "missing visualize-that skill"
+[[ -f "$repo_root/plugins/cursor/skills/visualize-that/assets/template.html" ]] || fail "missing visualize-that template"
+[[ -f "$repo_root/plugins/cursor/skills/visualize-that/references/render-verification.md" ]] || fail "missing visualize-that render reference"
 for reference in risk-review completion-gate; do
   [[ -f "$repo_root/plugins/cursor/skills/test-verify/references/$reference.md" ]] || fail "missing test-verify reference: $reference"
 done
@@ -62,9 +65,12 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
 
-for skill in explorer-this how-it impl-lead find-way plan-agent review-refine test-report test-verify; do
+for skill in explorer-this how-it impl-lead find-way plan-agent review-refine test-report test-verify visualize-that; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
+
+assert_same "$source_repo/plugins/cursor/skills/visualize-that/assets/template.html" "$dest_dir/skills/visualize-that/assets/template.html"
+assert_same "$source_repo/plugins/cursor/skills/visualize-that/references/render-verification.md" "$dest_dir/skills/visualize-that/references/render-verification.md"
 
 for reference in risk-review completion-gate; do
   assert_same "$source_repo/plugins/cursor/skills/test-verify/references/$reference.md" "$dest_dir/skills/test-verify/references/$reference.md"

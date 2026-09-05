@@ -1,0 +1,5 @@
+interface:
+  display_name: "Visualize That"
+  short_description: "入力の意味を保つ図解 HTML を作成します"
+policy:
+  allow_implicit_invocation: false

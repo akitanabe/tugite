@@ -196,11 +196,12 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-365bfbfcb751]
+[contracts.cursor-readme-public-skills-requires-2bfbba89d524]
 kind = "requires"
 slice = "cursor-readme-boundary"
 pattern = '''/how-it <相談したい進め方>
 /explorer-this <探索タスク>
+/visualize-that <可視化する入力>
 /impl-lead <実装タスク>
 /plan-agent <計画タスク>
 /find-way <目標>
@@ -208,6 +209,12 @@ pattern = '''/how-it <相談したい進め方>
 /test-verify <検証するテスト対象>
 /review-refine <レビュー対象>'''
 applies_to = ["cursor"]
+
+[contracts.repository-programmatic-flow-skills-ff8e73c1963b]
+kind = "requires"
+slice = "repository-programmatic-flow-skills"
+pattern = '''programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way", "visualize-that"]'''
+applies_to = ["repository-guidelines", "agents-guidance"]
 
 [contracts.cursor-readme-unsupported-requires-13d1036fbb45]
 kind = "requires"

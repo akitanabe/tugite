@@ -192,6 +192,12 @@ Agentic Model Construction によって current repository に対する task-loc
 
 repository write は caller が repository artifact を成果物として明示した場合の requested-output authority に限定する。探索 finding 自体は authority を拡張せず、探索中に発見した実装問題を source / test / config へ自律的に修正しない。
 
+### visualize-that
+
+`visualize-that` は任意の supplied material を、人が理解しやすい順序の図と説明からなる単独 HTML にする明示起動の public Skill である。一回の invocation で exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Agent-side resolution 後にも Human-owned material gap が残る場合だけ Interactive Model Construction を同じ Local Model へ composition する。
+
+入力の事実、関係、制約、不確実性を保ち、主要項目に成果物内で stable な識別子を付ける。識別子による deep dive は元 overview を残した別 HTML とする。browser launch、screenshot capture、actual inspection を分けた local Programmatic Flow で描画を確認し、capability 不足や未修復の視認性問題では HTML を保持した `render-unverified` を返す。意味保持と visual acceptance は Agent の判断に残す。
+
 ### plan-agent
 
 `plan-agent` は normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作る public planning workflow である。

@@ -66,9 +66,9 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、
+現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、`visualize-that`（任意入力を意味を保った図解 HTML へ変換し capability-relative に描画確認）、
 `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の8つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
@@ -113,6 +113,7 @@ untracked artifact は保持します。
 横断的な workflow rule は、明示入力から結果が一意に決まる deterministic side と、複数の受容可能な結果から
 意味や価値を判断する autonomous side に分けます。次の stable Data は分類と保証の選択境界を定めます。
 
+<!-- @contract repository-programmatic-flow-skills -->
 ```toml
 policy_id = "programmability-boundary-v1"
 classifications = ["deterministic-mechanized", "deterministic-contract-only", "autonomous", "derived-duplicate"]
@@ -126,10 +127,11 @@ programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
 programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
-programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way"]
+programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way", "visualize-that"]
 programmatic_flow_excluded_skills = ["code-review", "structural-health-gate", "test-report"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
+<!-- @/contract -->
 
 deterministic rule は意味の正本と assurance plane を明確にし、未機械化なら owner Action、必要入力、利用可能な
 interception point、現在の非機械保証理由、延期または不能の理由、自然言語の正本を維持します。programmable で

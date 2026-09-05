@@ -10,6 +10,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 
 - `how-it`: 進め方が決まっていない依頼について、前提、選択肢、成立条件を利用者と一緒に整理し、求められた形で回答します。利用者が指定したときだけ使います。
 - `explorer-this`: まずエージェント自身で調査し、判断に必要な情報や方針を人にしか確認できない場合に限って質問します。調査結果は依頼された形式で返します。利用者が指定したときだけ使います。
+- `visualize-that`: 文書やデータなど任意の入力を、意味と不確実性を保った図解 HTML にします。利用可能な描画機能で実物を確認し、確認できない場合も HTML と理由を返します。利用者が指定したときだけ使います。
 - `impl-lead`: 実装依頼を着手前に明確な作業単位へ整理し、実装、品質確認、受け入れ判断、最終検証、安全な取り込みまで責任を持ちます。利用者が指定したときだけ使います。
 - `plan-agent`: 会話や提示資料をもとに、依頼に合った自由形式の計画・設計資料を、推奨案を中心に作ります。必要な場合だけレビューします。利用者が指定したときだけ使います。
 - `find-way`: 目標全体の不明点と判断待ちの事項を整理し、1つ以上の自己完結した作業単位に分けて返します。利用者が指定したときだけ使います。
@@ -34,7 +35,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 - [Codex プラグイン](https://github.com/akitanabe/tugite/blob/main/plugins/codex/README.md)
 - [Cursor プラグイン](https://github.com/akitanabe/tugite/blob/main/plugins/cursor/README.md)
 
-Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:find-way`、`/tugite:test-report`、`/tugite:test-verify`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$impl-lead`、`$plan-agent`、`$find-way`、`$test-report`、`$test-verify`、`$review-refine` を起動できます。
+Claude Code では `/tugite:how-it`、`/tugite:explorer-this`、`/tugite:visualize-that`、`/tugite:impl-lead`、`/tugite:plan-agent`、`/tugite:find-way`、`/tugite:test-report`、`/tugite:test-verify`、`/tugite:review-refine`、Codex では `$how-it`、`$explorer-this`、`$visualize-that`、`$impl-lead`、`$plan-agent`、`$find-way`、`$test-report`、`$test-verify`、`$review-refine` を起動できます。
 
 ### Cursor のローカルプラグイン
 
@@ -69,6 +70,7 @@ agent --plugin-dir plugins/cursor
 ```text
 /how-it <相談したい進め方>
 /explorer-this <探索タスク>
+/visualize-that <可視化する入力>
 /impl-lead <実装タスク>
 /plan-agent <計画タスク>
 /find-way <目標>
