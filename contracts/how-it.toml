@@ -137,3 +137,15 @@ pattern = "disable-model-invocation: true"
 count = 1
 paths = ["plugins/cursor/skills/how-it/SKILL.md"]
 applies_to = ["cursor"]
+
+[contracts.how-it-projection-dialogue-4a681b6211b3]
+kind = "requires"
+slice = "how-it-decision-support-boundary"
+pattern = "decision context、比較対象・軸、選択肢、推奨と理由、提示順、tone を確定した後、Human へ提示する文章に `../../references/human-facing-projection.md` の共有 Method を対話用途で軽く適用します。選択・比較・推奨・構成と最終出力責任は `how-it` に残し、Interactive の入力分類、Reintegration、`ex`、final Human judgment は既存 Method の責務を維持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.how-it-projection-output-da55049654c2]
+kind = "requires"
+slice = "how-it-completion-output"
+pattern = "requested output の内容・構成・tone を確定した文章にも、`../../references/human-facing-projection.md` を実際の出力用途に応じて適用します。通常の説明はその用途、後から単独で判断根拠にする成果物は厳密な意味保持を基準とし、出力前の確認と最終出力責任は `how-it` が担います。"
+applies_to = ["claude", "codex", "cursor"]
