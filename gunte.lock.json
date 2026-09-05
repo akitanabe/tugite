@@ -2133,6 +2133,14 @@
       "sha256": "792eeeb87feec3d2e20230b890c201871ca3286ccd793b9c8862b688faaf6a36"
     },
     {
+      "id": "visualize-that-human-facing-projection-f60d6be180c4",
+      "sha256": "9e775d9e934304ed48cda0ebf52db7320001df5bc897a68a4e7591514077f637"
+    },
+    {
+      "id": "visualize-that-human-facing-projection-d70e849b96f7",
+      "sha256": "27a794a3f17cd3958fc4a9b928cbacc1adb05b1e88a4790c69f65f37719df32b"
+    },
+    {
       "id": "visualize-that-identifiers-59989d2e94ad",
       "sha256": "b936e9b3f6424f814e57ab166c65e95b82df1c59a5a091c528a8b11df677dfc1"
     },
@@ -2167,6 +2175,10 @@
     {
       "id": "visualize-that-render-inspection-a0c74af92277",
       "sha256": "64a1819c0eec2bdbc8dc384e6ecc3cf5c9a25a992bf72db605a4871cc1e40abb"
+    },
+    {
+      "id": "visualize-that-human-facing-projection-e6a022ad33b9",
+      "sha256": "a8981e5d94c4e796b9b0604ec3d64a2fc445bb14e884ffa36d5bee7929e422db"
     },
     {
       "id": "visualize-that-bounded-correction-ee49933938d8",
@@ -4057,6 +4069,21 @@
     {
       "kind": "span",
       "id": "visualize-that-optional-rendering-dependency",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-human-facing-projection",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-human-facing-projection-preservation",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-human-facing-projection-verification",
       "path": "shared/skill/visualize-that/SKILL.md"
     },
     {

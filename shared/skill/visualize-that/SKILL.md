@@ -86,6 +86,18 @@ semantic shape に適した表現を選びます。flow、table、matrix、layer
 追加の rendering dependency は bounded な visual need に必要な場合だけ使い、exact version に固定します。取得・実行できない場合も説明本文と関係の fallback を HTML / CSS だけで読める状態にし、その limitation を成果物に示します。
 <!-- @/contract -->
 
+<!-- @contract visualize-that-human-facing-projection -->
+同じ task-local Local Model で意味・構成・文章内容・tone を確定した後、overview と deep dive の Human 向け説明文に `../../references/human-facing-projection.md` を厳密な意味保持を基準として適用します。projection は文章の表現だけを扱い、composition、primary structure、visual hierarchy、component selection、情報の取捨選択、section order を変更しません。
+<!-- @/contract -->
+
+<!-- @contract visualize-that-human-facing-projection-preservation -->
+projection は人向け説明文だけを対象とし、markup、CSS、script、URL、引用、`viz:<kebab-case-slug>` 識別子、HTML id、内部 link、deep-dive target、対応記述中および表示文中の識別子を保持します。
+<!-- @/contract -->
+
+<!-- @contract visualize-that-human-facing-projection-verification -->
+caller は projection 後の overview / deep dive の説明文が意味を保つことを確認し、HTML context に合わせて escape して組み込み、保存した candidate を既存の描画確認へ渡します。修正で説明文を作成または変更する場合も同じ Method を再適用し、確認済み HTML を返す直前に未確認の文面へ差し替えません。既存の render status、Flow、capability、出力責任は維持します。
+<!-- @/contract -->
+
 <!-- @contract visualize-that-meaning -->
 入力から確認できる事実・関係・根拠・制約・不確実性を保ちます。可視化のために補った解釈や未確認情報を読者が事実と混同し得る場合は、visual state と本文の両方で区別します。配置、線、色、強調によって、入力にない順序、因果、優劣、確実性を加えません。
 <!-- @/contract -->
