@@ -3,7 +3,7 @@
   "name": "tugite",
   "displayName": "Tugite",
   "description": "how-it、explorer-this、visualize-that、impl-lead、plan-agent、find-way、review-refine、code-review、test-report、test-verify と internal skill、worker、reviewer、advisor を配布する plugin。",
-  "version": "7.2.2",
+  "version": "7.3.0",
   "author": {
     "name": "akitanabe"
   },
