@@ -59,7 +59,16 @@
     "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
     "shared/skill/visualize-that/SKILL.md",
+    "shared/skill/visualize-that/assets/comparison.html",
+    "shared/skill/visualize-that/assets/flow.html",
+    "shared/skill/visualize-that/assets/freeform.html",
+    "shared/skill/visualize-that/assets/layers.html",
+    "shared/skill/visualize-that/assets/overview.html",
+    "shared/skill/visualize-that/assets/relationship.html",
     "shared/skill/visualize-that/assets/template.html",
+    "shared/skill/visualize-that/assets/timeline.html",
+    "shared/skill/visualize-that/assets/visual-language.css",
+    "shared/skill/visualize-that/references/layout-patterns.md",
     "shared/skill/visualize-that/references/render-verification.md",
     "shared/plugins-readme.md",
     "shared/root-readme.md",
@@ -2145,6 +2154,54 @@
       "sha256": "0fa8ef66c4b58f21519eb80626cec047bf6ee112615bd197416add8d2f64e268"
     },
     {
+      "id": "visualize-that-layout-patterns",
+      "sha256": "4c516fab04cabf2e76a44f5eb8391b9f9eb8a33d2e1695cada0ee22408ab8f54"
+    },
+    {
+      "id": "visualize-that-visual-language",
+      "sha256": "9a436235d1b6e87a7f63dcde08741e4191248827ce105781baab3968c8fad5b4"
+    },
+    {
+      "id": "visualize-that-layout-catalog",
+      "sha256": "31d183bdfbb46b0b124f06b2f84787e3a3d39942c63df97ddb4a06b6fb10e991"
+    },
+    {
+      "id": "visualize-that-pattern-css-reference",
+      "sha256": "6ac2f96f8f25dfa6e928e9ec5937a13c8b59b458b58e159675644acd695fec7b"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-base-645ec5f3fbc3",
+      "sha256": "cebcbc2e1b63e536e3df2b2134cc5c66bd3198a40f02f30e960a6d8e34a18481"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-flow-455e6d9665b3",
+      "sha256": "eacf96581118b2bfb0a0c880e7a60a226d66e3853c20ac2350362731d8fe24c0"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-comparison-b66ba3118520",
+      "sha256": "bbff2f2786e2a5bf63c4279b205ec92167c1a3ecaf4bd6c9aa361847c2b42cca"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-layers-7fe0a16f12d0",
+      "sha256": "5995266e9badf3ff7652e273ec89a12ad2ac0dc0cca9227f35b5656dec9d3de0"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-timeline-e387b4dfab4f",
+      "sha256": "6ceed2dfdcc7f8ed0e756669cf15a758aa66412cd9058ca34242f63a940bceb9"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-relationship-0c349c59c3d0",
+      "sha256": "85ec7d830c010177690991a97a11efa6b02990c5cd5ae77d21783592951ff816"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-overview-183ca36beda0",
+      "sha256": "4397c94cf22db2bac71763eff9099d72f66b22cc56eb14e177217ebe984c1743"
+    },
+    {
+      "id": "visualize-that-pattern-catalog-freeform-bfb18ebc9e8b",
+      "sha256": "7de467e21999b62ea69603bb35c963769b8444e02db3ecaaa6350fef723c1c7a"
+    },
+    {
       "id": "visualize-that-render-document",
       "sha256": "12c4a933b4f91546c59408530cb2e4f59a3273dd6188582add8d43cdcebed4f0"
     },
@@ -2241,6 +2298,18 @@
       "sha256": "b5d40a2701dd391485203444ce188dfd0659a7719564bf0833caa29f7a653c79"
     },
     {
+      "id": "visualize-that-layout-pattern-use-dad6da59b74e",
+      "sha256": "009dd890306b29e24d1fa6c5deb1237c9ef29a1293a667dab0c3eff9dc39bf27"
+    },
+    {
+      "id": "visualize-that-standalone-pattern-acddb99a160a",
+      "sha256": "39a168c55d153caf7d6d00b4eab0af602fea5fab7a66013d4c9cd91b9c16d006"
+    },
+    {
+      "id": "visualize-that-visual-language-meaning-40d4bddb1d6c",
+      "sha256": "c06931094d66433e689930b9992c23b5d4acf91206c26d450cc138fb3e149cba"
+    },
+    {
       "id": "visualize-that-render-inspection-a0c74af92277",
       "sha256": "64a1819c0eec2bdbc8dc384e6ecc3cf5c9a25a992bf72db605a4871cc1e40abb"
     },
@@ -2285,12 +2354,12 @@
       "sha256": "b7966d32cde027640e2ed99aafe56810460d413e6c87f0035c464655fa9d1f03"
     },
     {
-      "id": "visualize-that-template-identifier-a",
-      "sha256": "9add023d6c38cb56a0ee7ffd7dfaa17fb81c7c239bdb5a610655195f9252711e"
+      "id": "visualize-that-flow-build-target",
+      "sha256": "d3574264e488738f5e31325c1db780921e4b8ea96160531222654af6a390b427"
     },
     {
-      "id": "visualize-that-template-identifier-b",
-      "sha256": "958fb93c90f06ac5caacd5eeaa8af58ae2998ec04c23c447718cdac2d9145b97"
+      "id": "visualize-that-flow-build-return-link",
+      "sha256": "d18a8e1b554d84e5a1cfea0c10795af2a3465e4c516f66ca67aefad014ccd05f"
     }
   ],
   "declarations": [
@@ -4226,6 +4295,21 @@
     },
     {
       "kind": "span",
+      "id": "visualize-that-layout-pattern-use",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-visual-language-meaning",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-standalone-pattern",
+      "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "visualize-that-optional-rendering-dependency",
       "path": "shared/skill/visualize-that/SKILL.md"
     },
@@ -4283,6 +4367,11 @@
       "kind": "span",
       "id": "visualize-that-result",
       "path": "shared/skill/visualize-that/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "visualize-that-pattern-catalog",
+      "path": "shared/skill/visualize-that/references/layout-patterns.md"
     },
     {
       "kind": "span",

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-overview .overview-focus { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(16rem, 1fr); gap: var(--viz-space-3); margin-block-end: var(--viz-space-4); align-items: stretch; }
+    .layout-overview .overview-thesis { display: grid; align-content: center; min-height: 13rem; padding: var(--viz-space-4); background: linear-gradient(135deg, #fff, var(--viz-surface-soft)); }
+    .layout-overview .overview-thesis h2 { max-width: 22ch; margin-block-end: var(--viz-space-2); font-size: clamp(1.55rem, 3.5vw, 2.45rem); }
+    .layout-overview .overview-context { display: grid; gap: var(--viz-space-2); }
+    .layout-overview .overview-points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--viz-space-3); }
+    .layout-overview .overview-point { border-top: 0.2rem solid var(--viz-line-strong); }
+    .layout-overview .overview-point p { margin-block-end: 0; }
+    @media (max-width: 46rem) { .layout-overview .overview-focus, .layout-overview .overview-points { grid-template-columns: 1fr; } .layout-overview .overview-thesis { min-height: auto; } }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-overview">
+    <header class="viz-header"><p class="viz-eyebrow">Overview</p><h1>全体を一つの命題から読む</h1><p class="viz-lede">中心命題を最初に置き、補助観点はその理解を支える順序と強さで並べます。</p></header>
+    <section class="overview-focus" aria-label="中心命題と前提">
+      <article class="overview-thesis viz-primary" id="viz:overview-thesis"><span class="viz-id">viz:overview-thesis</span><h2>共通の見た目から、異なる構成を組み立てられる</h2><p>一つの visual language を保ちつつ、入力の semantic shape に合わせて layout を選べます。</p></article>
+      <div class="overview-context">
+        <aside class="viz-supporting"><h3>対象</h3><p>意味を保つ visual HTML の構成です。</p></aside>
+        <aside class="viz-state viz-state--qualified viz-note"><span class="viz-state__label">Qualified</span><h3>解釈の範囲</h3><p>Layout の適合は入力と読者の目的から判断します。</p></aside>
+      </div>
+    </section>
+    <section class="viz-section" aria-labelledby="points-heading">
+      <h2 id="points-heading">中心命題を支える観点</h2>
+      <div class="overview-points">
+        <article class="overview-point viz-supporting" id="viz:overview-composition"><span class="viz-id">viz:overview-composition</span><h3>構成が先</h3><p>中心命題と理解順を決めてから pattern を利用します。</p></article>
+        <article class="overview-point viz-supporting" id="viz:overview-language"><span class="viz-id">viz:overview-language</span><h3>表現は共通</h3><p>文字、余白、色、境界、状態表示を共有します。</p></article>
+        <article class="overview-point viz-supporting" id="viz:overview-mix"><span class="viz-id">viz:overview-mix</span><h3>必要な部分を組み合わせる</h3><p>Primary pattern を保ちながら他の component を部分利用できます。</p></article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

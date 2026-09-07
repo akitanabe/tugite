@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Layers pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-layers .layer-map { display: grid; grid-template-columns: minmax(0, 1fr) 10rem; gap: var(--viz-space-3); align-items: stretch; }
+    .layout-layers .layer-stack { display: grid; gap: var(--viz-space-2); }
+    .layout-layers .layer { padding: var(--viz-space-3); border: 1px solid var(--viz-line-strong); border-radius: var(--viz-radius); background: linear-gradient(90deg, var(--viz-surface), var(--viz-surface-soft)); }
+    .layout-layers .layer:nth-child(2) { margin-inline: 3%; background: #e8f4fb; }
+    .layout-layers .layer:nth-child(3) { margin-inline: 6%; background: #dceefa; }
+    .layout-layers .layer:nth-child(4) { margin-inline: 9%; background: #cfe7f6; }
+    .layout-layers .layer p { margin: 0; color: #48647c; }
+    .layout-layers .layer-axis { display: grid; grid-template-rows: auto 1fr auto; justify-items: center; color: var(--viz-muted); font-size: 0.82rem; text-align: center; }
+    .layout-layers .layer-axis__line { width: 1px; min-height: 8rem; background: var(--viz-accent); position: relative; }
+    .layout-layers .layer-axis__line::before, .layout-layers .layer-axis__line::after { content: ""; position: absolute; left: 50%; translate: -50%; border: 0.3rem solid transparent; }
+    .layout-layers .layer-axis__line::before { top: 0; border-bottom-color: var(--viz-accent); translate: -50% -50%; }
+    .layout-layers .layer-axis__line::after { bottom: 0; border-top-color: var(--viz-accent); translate: -50% 50%; }
+    @media (max-width: 34rem) { .layout-layers .layer-map { grid-template-columns: 1fr; } .layout-layers .layer-axis { display: none; } }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-layers">
+    <header class="viz-header"><p class="viz-eyebrow">Layers</p><h1>責務と境界の積み重なり</h1><p class="viz-lede">上位の目的から実行基盤までを帯として分け、隣接する層の関係を本文でも示します。</p></header>
+    <section class="viz-section" aria-labelledby="layers-heading">
+      <h2 id="layers-heading">構成する4つの層</h2>
+      <div class="layer-map">
+        <div class="layer-stack">
+          <article class="layer" id="viz:layer-experience"><span class="viz-id">viz:layer-experience</span><h3>利用者の体験</h3><p>読者が達成する目的を表します。</p></article>
+          <article class="layer" id="viz:layer-decision"><span class="viz-id">viz:layer-decision</span><h3>判断と規則</h3><p>目的から導かれる選択と境界を表します。</p></article>
+          <article class="layer" id="viz:layer-operation"><span class="viz-id">viz:layer-operation</span><h3>操作</h3><p>判断を受けて実行する処理を表します。</p></article>
+          <article class="layer" id="viz:layer-foundation"><span class="viz-id">viz:layer-foundation</span><h3>基盤</h3><p>上位の操作が利用する保存・通信・実行環境です。</p></article>
+        </div>
+        <aside class="layer-axis" aria-label="上位の目的から具体的な基盤へ"><span>目的に近い</span><span class="layer-axis__line" aria-hidden="true"></span><span>実行に近い</span></aside>
+      </div>
+      <aside class="viz-note" style="margin-top: var(--viz-space-3)"><strong>層をまたぐ関係</strong><p>上位層は直下の層へ必要な意図を渡し、結果を受け取ります。線だけで依存方向を決めません。</p></aside>
+    </section>
+  </main>
+</body>
+</html>

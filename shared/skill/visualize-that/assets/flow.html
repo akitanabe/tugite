@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flow pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-flow .flow-path { display: flex; gap: 2.25rem; margin: 0; padding: 0; list-style: none; }
+    .layout-flow .flow-step { position: relative; flex: 1 1 0; min-width: 0; }
+    .layout-flow .flow-step:not(:last-child)::after { content: "→"; position: absolute; top: 50%; left: calc(100% + 0.65rem); translate: 0 -50%; color: var(--viz-accent); font-size: 1.35rem; font-weight: 750; }
+    .layout-flow .flow-step__number { display: inline-grid; width: 1.8rem; height: 1.8rem; margin-block-end: var(--viz-space-2); place-items: center; border-radius: 50%; color: #fff; background: var(--viz-accent); font-size: 0.82rem; font-weight: 750; }
+    .layout-flow .flow-step details { margin-block-start: var(--viz-space-2); padding-block-start: var(--viz-space-2); border-top: 1px solid var(--viz-line); color: var(--viz-muted); font-size: 0.88rem; }
+    .layout-flow .flow-step summary { color: var(--viz-accent-deep); cursor: pointer; font-weight: 650; }
+    .layout-flow .flow-secondary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--viz-space-3); margin-block-start: var(--viz-space-4); }
+    .layout-flow .flow-cycle__path { display: flex; align-items: center; justify-content: center; gap: var(--viz-space-2); padding: var(--viz-space-2); border-radius: 999px; color: var(--viz-accent-deep); background: var(--viz-surface-soft); text-align: center; }
+    .layout-flow .flow-cycle__path span { font-size: 1.2rem; }
+    .layout-flow .flow-branches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--viz-space-2); }
+    .layout-flow .flow-branch { padding: var(--viz-space-2); border: 1px solid var(--viz-line); border-radius: var(--viz-radius); }
+    .layout-flow .flow-branch:not(.viz-state) { background: var(--viz-surface-soft); }
+    .layout-flow .flow-branch.viz-state--unverified { background: var(--viz-unverified-soft); }
+    .layout-flow .flow-branch__label { margin: 0 0 var(--viz-space-1); color: var(--viz-accent-deep); font-size: 0.78rem; font-weight: 750; }
+    @media (max-width: 46rem) {
+      .layout-flow .flow-path { flex-direction: column; gap: 2rem; overflow-x: visible; }
+      .layout-flow .flow-step { flex-basis: auto; }
+      .layout-flow .flow-step:not(:last-child)::after { content: "↓"; top: calc(100% + 0.25rem); left: 50%; translate: -50% 0; }
+      .layout-flow .flow-secondary { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 28rem) { .layout-flow .flow-branches { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-flow">
+    <header class="viz-header">
+      <p class="viz-eyebrow">Flow</p>
+      <h1>判断までの主経路</h1>
+      <p class="viz-lede">主経路を横に追い、各 step の条件や例外は近くで確認できます。狭い画面では同じ読み順のまま縦に並びます。</p>
+    </header>
+
+    <section class="viz-section" aria-labelledby="flow-heading">
+      <h2 id="flow-heading">入力から結果まで</h2>
+      <ol class="flow-path">
+        <li class="flow-step viz-primary" id="viz:flow-input">
+          <span class="flow-step__number">1</span>
+          <span class="viz-id">viz:flow-input</span>
+          <h3>入力を確認する</h3>
+          <p>事実、関係、制約、不確実性を読み取ります。</p>
+        </li>
+        <li class="flow-step viz-primary" id="viz:flow-compose">
+          <span class="flow-step__number">2</span>
+          <span class="viz-id">viz:flow-compose</span>
+          <h3>構成を決める</h3>
+          <p>中心命題と primary structure を定めます。</p>
+          <details open>
+            <summary>この step の詳細</summary>
+            <p>Supporting detail は主経路との関係が分かる位置に置きます。長い識別子も折り返して表示します。</p>
+          </details>
+        </li>
+        <li class="flow-step viz-primary" id="viz:flow-build">
+          <span class="flow-step__number">3</span>
+          <span class="viz-id">viz:flow-build</span>
+          <h3>HTML を組む</h3>
+          <p>本文と関係を markup と CSS で表します。</p>
+        </li>
+        <li class="flow-step viz-primary" id="viz:flow-result">
+          <span class="flow-step__number">4</span>
+          <span class="viz-id">viz:flow-result</span>
+          <h3>結果を確認する</h3>
+          <p>意味保持と表示範囲を実物で確認します。</p>
+        </li>
+      </ol>
+    </section>
+
+    <div class="flow-secondary">
+      <section class="viz-supporting flow-cycle" aria-labelledby="cycle-heading">
+        <h2 id="cycle-heading">局所 cycle</h2>
+        <p>表示上の問題があるときだけ、結果から対象 step へ戻ります。</p>
+        <div class="flow-cycle__path"><strong>修正</strong><span aria-hidden="true">↔</span><strong>再確認</strong></div>
+        <p class="viz-compact">戻り先: <a href="#viz:flow-build">HTML を組む</a>。表示上の問題がある箇所を修正します。</p>
+      </section>
+
+      <section class="viz-supporting" aria-labelledby="branch-heading">
+        <h2 id="branch-heading">条件による branch</h2>
+        <p>分岐元: <a href="#viz:flow-input">入力を確認する</a>。意味を確定できるかで、次の行き先を選びます。</p>
+        <div class="flow-branches">
+          <article class="flow-branch" id="viz:flow-continue">
+            <p class="flow-branch__label">意味を確定できる</p>
+            <h3><a href="#viz:flow-compose">構成を決めるへ進む</a></h3>
+            <p>確認できた内容で主経路を続けます。</p>
+          </article>
+          <article class="flow-branch viz-state viz-state--unverified" id="viz:flow-limit">
+            <p class="flow-branch__label viz-state__label">Unverified</p>
+            <h3>限界を明示する</h3>
+            <p>取得できない資料を未確認として本文にも残します。</p>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

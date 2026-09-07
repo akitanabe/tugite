@@ -46,7 +46,11 @@ Source の章立て、記述順、ファイル順に表示順を拘束させず�
 
 semantic shape に適した表現を選びます。flow、table、matrix、layers などと意味を固定対応させず、入力に応じて主構造、補助関係、文章、component の組み合わせを決めます。
 
-`assets/template.html` を visual language の正本として使います。typography、spacing、色の意味、基本 component は維持し、入力に応じて章、component、関係図、表、文章の選択と配列を変えます。固定 report schema に入力を当てはめず、基本の説明と関係は外部依存なしの HTML / CSS だけで読める状態にします。
+Reader-facing composition を確定した後、`references/layout-patterns.md` の catalog から primary pattern を選び、必要な component だけを組み合わせます。自然に適合する pattern がない場合は base または freeform を使います。pattern は編集可能な出発点であり、固定 schema、意味との固定対応、選択 score を定義しません。
+
+共通 visual language は primary structure を最も追いやすくし、supporting detail と compact detail の強調を下げます。識別子は通常の本文より弱い muted 表示にし、deep dive の焦点に必要な場合だけ強調します。`qualified` と `unverified` は色だけに依存せず、state 名と説明本文を併用し、success、failure、severity の意味を加えません。
+
+最終 HTML には `assets/visual-language.css` の共通 CSS と、利用した pattern HTML の scoped layout CSS を `<style>` として取り込みます。配布 asset への相対 link を成果物の必須依存に残さず、基本の説明と関係を単独 HTML で読める状態にします。
 
 追加の rendering dependency は bounded な visual need に必要な場合だけ使い、exact version に固定します。取得・実行できない場合も説明本文と関係の fallback を HTML / CSS だけで読める状態にし、その limitation を成果物に示します。
 

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timeline pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-timeline .timeline { position: relative; display: grid; gap: var(--viz-space-3); margin: 0; padding: 0; list-style: none; }
+    .layout-timeline .timeline::before { content: ""; position: absolute; top: 0.8rem; bottom: 0.8rem; left: 8.4rem; width: 1px; background: var(--viz-line-strong); }
+    .layout-timeline .timeline-item { display: grid; grid-template-columns: 7rem 1.5rem minmax(0, 1fr); gap: var(--viz-space-2); align-items: start; }
+    .layout-timeline .timeline-time { padding-top: 0.7rem; color: var(--viz-muted); font-size: 0.82rem; text-align: right; }
+    .layout-timeline .timeline-dot { z-index: 1; width: 0.9rem; height: 0.9rem; margin: 0.8rem auto 0; border: 0.2rem solid var(--viz-paper); border-radius: 50%; background: var(--viz-accent); box-shadow: 0 0 0 1px var(--viz-accent); }
+    .layout-timeline .timeline-item[aria-current="step"] .timeline-dot { background: #fff; box-shadow: 0 0 0 0.22rem var(--viz-accent); }
+    .layout-timeline .timeline-card p { margin-block-end: 0; color: #496078; }
+    @media (max-width: 34rem) { .layout-timeline .timeline::before { left: 0.72rem; } .layout-timeline .timeline-item { grid-template-columns: 1.5rem minmax(0, 1fr); } .layout-timeline .timeline-time { grid-column: 2; padding: 0; text-align: left; } .layout-timeline .timeline-dot { grid-column: 1; grid-row: 1 / span 2; } .layout-timeline .timeline-card { grid-column: 2; } }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-timeline">
+    <header class="viz-header"><p class="viz-eyebrow">Timeline</p><h1>変化を節目から読む</h1><p class="viz-lede">日時と出来事を対応させ、現在地と未確認の予定を本文で区別します。</p></header>
+    <section class="viz-section" aria-labelledby="timeline-heading">
+      <h2 id="timeline-heading">進行の節目</h2>
+      <ol class="timeline">
+        <li class="timeline-item"><time class="timeline-time">9月3日</time><span class="timeline-dot" aria-hidden="true"></span><article class="timeline-card viz-supporting" id="viz:timeline-discovery"><span class="viz-id">viz:timeline-discovery</span><h3>対象を確認</h3><p>目的と現在の状態を観測しました。</p></article></li>
+        <li class="timeline-item"><time class="timeline-time">9月5日</time><span class="timeline-dot" aria-hidden="true"></span><article class="timeline-card viz-supporting" id="viz:timeline-design"><span class="viz-id">viz:timeline-design</span><h3>構成を決定</h3><p>読者が先に追う関係を定めました。</p></article></li>
+        <li class="timeline-item" aria-current="step"><time class="timeline-time">現在</time><span class="timeline-dot" aria-hidden="true"></span><article class="timeline-card viz-primary" id="viz:timeline-build"><span class="viz-id">viz:timeline-build</span><h3>成果物を作成</h3><p>構成に沿って HTML を組み立てています。</p></article></li>
+        <li class="timeline-item"><time class="timeline-time">予定</time><span class="timeline-dot" aria-hidden="true"></span><article class="timeline-card viz-state viz-state--unverified"><span class="viz-state__label">Unverified</span><h3>描画を確認</h3><p>実行日時と結果はまだ確認されていません。</p></article></li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

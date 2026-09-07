@@ -70,7 +70,16 @@ files = [
   "shared/skill/test-verify/references/completion-gate.md",
   "shared/skill/review-refine/SKILL.md",
   "shared/skill/visualize-that/SKILL.md",
+  "shared/skill/visualize-that/assets/comparison.html",
+  "shared/skill/visualize-that/assets/flow.html",
+  "shared/skill/visualize-that/assets/freeform.html",
+  "shared/skill/visualize-that/assets/layers.html",
+  "shared/skill/visualize-that/assets/overview.html",
+  "shared/skill/visualize-that/assets/relationship.html",
   "shared/skill/visualize-that/assets/template.html",
+  "shared/skill/visualize-that/assets/timeline.html",
+  "shared/skill/visualize-that/assets/visual-language.css",
+  "shared/skill/visualize-that/references/layout-patterns.md",
   "shared/skill/visualize-that/references/render-verification.md",
   "shared/plugins-readme.md",
   "shared/root-readme.md",
@@ -275,6 +284,11 @@ path = "skills/visualize-that/assets/{1}.html"
 profile = "multiline-text-v1"
 
 [[targets.claude.rules]]
+match = "shared/skill/visualize-that/assets/*.css"
+path = "skills/visualize-that/assets/{1}.css"
+profile = "multiline-text-v1"
+
+[[targets.claude.rules]]
 match = "shared/plugins-readme.md"
 path = "README.md"
 profile = "markdown-v1"
@@ -466,6 +480,11 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.codex.rules]]
 match = "shared/skill/visualize-that/assets/*.html"
 path = "skills/visualize-that/assets/{1}.html"
+profile = "multiline-text-v1"
+
+[[targets.codex.rules]]
+match = "shared/skill/visualize-that/assets/*.css"
+path = "skills/visualize-that/assets/{1}.css"
 profile = "multiline-text-v1"
 
 [[targets.codex.rules]]
@@ -661,6 +680,11 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 [[targets.cursor.rules]]
 match = "shared/skill/visualize-that/assets/*.html"
 path = "skills/visualize-that/assets/{1}.html"
+profile = "multiline-text-v1"
+
+[[targets.cursor.rules]]
+match = "shared/skill/visualize-that/assets/*.css"
+path = "skills/visualize-that/assets/{1}.css"
 profile = "multiline-text-v1"
 
 [[targets.cursor.rules]]
