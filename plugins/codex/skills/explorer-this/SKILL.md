@@ -98,6 +98,10 @@ Human response や探索 finding は、明示された invocation authority の�
 
 ## Requested output and write authority
 
+current understanding、fact / inference / uncertainty、根拠、retained qualification と requested output の内容・構成・tone を確定した後、返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って requested output candidate に含まれる Human 向け prose 全体へ適用します。探索結果の事実、推論、不確実性、根拠、qualification、requested output の意味と、invocation 時点の destination / write authority は `explorer-this` が保持します。
+
+共通の Final output boundary に従う requested output の出力前確認では、current understanding、evidence、qualification、出力用途を保ち、探索範囲、task scope、write authority、completion または qualified stop を変更しません。
+
 `explorer-this` は局所確認の後も current understanding と retained qualification を元の requested output へ接続し、明示された destination / write authority を維持します。
 
 内部の探索結果を `explorer-this` 固有の固定 report schema や固定 gap schema に変換しません。出力の内容と形式は invocation

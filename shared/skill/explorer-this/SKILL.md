@@ -135,6 +135,14 @@ Human response や探索 finding は、明示された invocation authority の�
 
 ## Requested output and write authority
 
+<!-- @contract explorer-this-human-facing-projection -->
+current understanding、fact / inference / uncertainty、根拠、retained qualification と requested output の内容・構成・tone を確定した後、返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って requested output candidate に含まれる Human 向け prose 全体へ適用します。探索結果の事実、推論、不確実性、根拠、qualification、requested output の意味と、invocation 時点の destination / write authority は `explorer-this` が保持します。
+<!-- @/contract -->
+
+<!-- @contract explorer-this-human-facing-projection-verification -->
+共通の Final output boundary に従う requested output の出力前確認では、current understanding、evidence、qualification、出力用途を保ち、探索範囲、task scope、write authority、completion または qualified stop を変更しません。
+<!-- @/contract -->
+
 <!-- @contract explorer-this-output -->
 <!-- @anchor explorer-this-output-relation -->
 `explorer-this` は局所確認の後も current understanding と retained qualification を元の requested output へ接続し、明示された destination / write authority を維持します。

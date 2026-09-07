@@ -29,6 +29,12 @@ caller が意味・構成・tone を確定する前に、この Method が内容
 
 Method は文章を保存、表示、送信せず、caller の完了や後続 Action も決めません。
 
+## Final output boundary
+
+caller は意味・構成・文章内容・tone を確定した完成 candidate を用意し、candidate に含まれる Human が読む prose 全体へ、保存・表示・送信などの最終 Action の前に Human-facing Projection を適用します。prose が複数箇所に分かれていたり、machine-readable data と混在していたりしても、Human が読む説明を対象から恣意的に外しません。candidate の内容、構成、用途、最終 Action の責任は caller に残ります。
+
+projection 後に caller が candidate の prose を作成または変更した場合は、変更箇所へ同じ Method を再適用し、意味保持を確認してから candidate に取り込みます。その変更が影響する既存の検証がある場合は、caller がその検証へ戻ってから最終 Action を行います。
+
 Method は新しい意味、条件、理由、判断を加えず、既存の意味要素を独自に削除しません。文・段落の表現を整えるための言い換えと、同じ意味を重ねた表現の整理は、情報そのものの削除と区別します。
 
 ## Method

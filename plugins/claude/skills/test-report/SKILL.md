@@ -74,6 +74,10 @@ static interpretation は返された relation、state、limits、traceability �
 precedence、Expected Observation、correspondence、execution state、absence の意味は変更しません。BMO の内部分類は Human 向け report の中心語にせず、
 Observation Limits と evidence traceability に投影します。
 
+observed scope、Topology、Observation Limits、evidence traceability と retained qualification を含む report candidate の内容・構成・tone を確定した後、one-shot response の返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って report 全体の Human 向け prose へ適用します。scope、静的観測の範囲、未実行・未確認・対応未解決・absence の区別、relation、state、limits、source location の意味と caller の write authority は `test-report` が保持します。
+
+共通の Final output boundary に従う report の出力前確認では、observed evidence、scope、qualification、traceability を保ち、test、source、CI の実行、品質評価、remediation を開始しません。
+
 ## Report boundary
 
 test、target code、source、CI を実行せず、quality verdict、coverage verdict、severity、remediation、planning、implementation、後続 Action を開始しません。
