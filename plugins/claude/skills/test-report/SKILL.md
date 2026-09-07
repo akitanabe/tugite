@@ -80,6 +80,12 @@ observed scope、Topology、Observation Limits、evidence traceability と retai
 
 ## Report boundary
 
+Report は、対象ドメインの Behavior、Expected Observation、それを観測する semantic Case を中心に構成し、Evidence との対応、対応未解決、観測範囲に相対的な absence、Observation Limits を追跡可能にします。
+
+framework、runner/config、suite/directory、file/function identity、Unit / Integration / Feature / E2E 等の分類は、scope、静的実行状態、observation boundary、traceability の理解に必要な補助情報として提示します。これらを主要な分類軸にせず、個々の function / file の列挙や要約を report の主目的にしません。
+
+Method から返された Case の意味的シナリオ単位と Expected Observation ↔ Case の many-to-many relation を report でも保持します。一つの Case が複数の test / assertion に支えられる場合や、一つの test が複数の Expected Observation を支える場合を function 単位に平坦化しません。
+
 test、target code、source、CI を実行せず、quality verdict、coverage verdict、severity、remediation、planning、implementation、後続 Action を開始しません。
 
 observed scope、Topology、Behavior、Expected Observation、Case、Evidence、execution state、unresolved correspondence、scope-relative absence、BMO derivation limits を含む Observation Limits、source / config traceability を、request に適応した report へ投影します。

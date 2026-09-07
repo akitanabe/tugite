@@ -1469,6 +1469,18 @@
       "sha256": "808eec89b5ec86228c4fad5a058d7c56ca3614e814a07e97044bba935a1dcb92"
     },
     {
+      "id": "test-report-behavior-first-composition-64967bf4e6a4",
+      "sha256": "abf4ce0c6eb33109e731ccf376585caf2bf62771622698fc3c69f661912a8d43"
+    },
+    {
+      "id": "test-report-supporting-context-7439cb2a1747",
+      "sha256": "89fb727f1bb89d7d55f85bbf4666b3613f5ffe5b9c3184ba243d4d5ca50a131d"
+    },
+    {
+      "id": "test-report-case-relation-preservation-74b4b4d506f5",
+      "sha256": "97dccbecf568df9361f6b74f79681f6c816772311421f9aed7751fe5d6b0de58"
+    },
+    {
       "id": "test-report-human-facing-b0dbb1dd1bc0",
       "sha256": "64455c4ffc2b71e567ec3227bdc390be570434c03c1540fc390d5e96330d9ee9"
     },
@@ -3950,6 +3962,21 @@
     {
       "kind": "span",
       "id": "test-report-human-facing-projection-verification",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-behavior-first-composition",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-supporting-context",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-case-relation-preservation",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
