@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freeform pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-freeform .freeform-board { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(15rem, 0.65fr); gap: var(--viz-space-3); align-items: start; }
+    .layout-freeform .freeform-main, .layout-freeform .freeform-side { display: grid; gap: var(--viz-space-3); }
+    .layout-freeform .freeform-quote { margin: 0; padding: var(--viz-space-4); border: 1px solid var(--viz-line-strong); border-radius: var(--viz-radius); color: var(--viz-accent-deep); background: linear-gradient(135deg, var(--viz-surface-soft), #fff); font-size: clamp(1.15rem, 2.4vw, 1.55rem); }
+    .layout-freeform .freeform-pairs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--viz-space-2); }
+    .layout-freeform .freeform-list { margin: 0; padding-inline-start: 1.25rem; }
+    @media (max-width: 42rem) { .layout-freeform .freeform-board, .layout-freeform .freeform-pairs { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-freeform">
+    <header class="viz-header"><p class="viz-eyebrow">Freeform</p><h1>関係を決めすぎない構成</h1><p class="viz-lede">一つの定型へ合わない入力では、共通 primitive を小さく組み合わせて理解順を作ります。</p></header>
+    <section class="freeform-board" aria-label="自由な component の組み合わせ">
+      <div class="freeform-main">
+        <blockquote class="freeform-quote">読者が最初に持ち帰る一文を、周囲の detail より強く示します。</blockquote>
+        <article class="viz-primary" id="viz:freeform-context"><span class="viz-id">viz:freeform-context</span><h2>背景と中心的な説明</h2><p>文章で読むことが自然な内容は、無理に図へ変えず、関係を保った短い段落にまとめます。</p></article>
+        <div class="freeform-pairs">
+          <aside class="viz-note"><h3>補足</h3><p>中心的な説明の理解に必要な前提です。</p></aside>
+          <aside class="viz-state viz-state--unverified viz-note"><span class="viz-state__label">Unverified</span><h3>未確認の範囲</h3><p>資料を取得できず、現時点では確認していません。</p></aside>
+        </div>
+      </div>
+      <aside class="freeform-side">
+        <section class="viz-supporting"><h2>関連する項目</h2><ul class="freeform-list"><li>中心説明を補う事実</li><li>保持する制約</li><li>次に参照する detail</li></ul></section>
+        <section class="viz-compact"><strong>識別子</strong><p><a href="#viz:freeform-context"><span class="viz-id">viz:freeform-context</span></a> を deep dive との対応に使います。</p></section>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>

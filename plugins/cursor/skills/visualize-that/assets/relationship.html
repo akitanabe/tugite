@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relationship pattern</title>
+  <link rel="stylesheet" href="visual-language.css">
+  <style>
+    .layout-relationship .relationship-map { display: grid; justify-items: center; gap: var(--viz-space-2); }
+    .layout-relationship .relationship-node { width: min(100%, 25rem); text-align: center; }
+    .layout-relationship .relationship-node--hub { border-color: var(--viz-accent); background: var(--viz-surface-soft); }
+    .layout-relationship .relationship-connector { margin: 0; color: var(--viz-muted); font-size: 0.78rem; text-align: center; }
+    .layout-relationship .relationship-connector::after { content: "↓"; display: block; color: var(--viz-accent); font-size: 1.25rem; line-height: 1.2; }
+    .layout-relationship .relationship-branches { width: 100%; padding: var(--viz-space-2); border: 1px dashed var(--viz-line-strong); border-radius: var(--viz-radius); }
+    .layout-relationship .relationship-branches__label { margin: 0 0 var(--viz-space-2); color: var(--viz-accent-deep); font-size: 0.82rem; font-weight: 750; text-align: center; }
+    .layout-relationship .relationship-branch-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--viz-space-3); }
+    .layout-relationship .relationship-branch-grid .relationship-node { width: 100%; }
+    @media (max-width: 42rem) {
+      .layout-relationship .relationship-branch-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="viz-page layout-relationship">
+    <header class="viz-header"><p class="viz-eyebrow">Relationship</p><h1>要素間の関係をたどる</h1><p class="viz-lede">中心 node と接続先を分け、線が表す関係を各 node の本文でも確認できます。</p></header>
+    <section class="viz-section" aria-labelledby="relationship-heading">
+      <h2 id="relationship-heading">情報の受け渡し</h2>
+      <div class="relationship-map">
+        <article class="relationship-node viz-supporting" id="viz:relation-source"><span class="viz-id">viz:relation-source</span><h3>入力元</h3><p>観測した Data を判断へ渡します。</p></article>
+        <p class="relationship-connector">Data を渡す</p>
+        <article class="relationship-node relationship-node--hub viz-primary" id="viz:relation-hub"><span class="viz-id">viz:relation-hub</span><h3>判断</h3><p>入力を分類し、条件に応じて記録または通知を選びます。</p></article>
+        <p class="relationship-connector">条件に応じて分岐する</p>
+        <div class="relationship-branches" aria-label="判断から二つの宛先への分岐">
+          <p class="relationship-branches__label">判断から独立した二つの宛先</p>
+          <div class="relationship-branch-grid">
+            <article class="relationship-node viz-supporting" id="viz:relation-record"><span class="viz-id">viz:relation-record</span><h3>分岐先 A: 記録</h3><p>保持する Data がある場合に、判断から直接受け取ります。</p></article>
+            <article class="relationship-node viz-supporting" id="viz:relation-notify"><span class="viz-id">viz:relation-notify</span><h3>分岐先 B: 通知</h3><p>伝達する内容がある場合に、判断から直接受け取ります。</p></article>
+          </div>
+        </div>
+        <p class="relationship-connector">各宛先の結果をまとめる</p>
+        <article class="relationship-node viz-supporting" id="viz:relation-result"><span class="viz-id">viz:relation-result</span><h3>結果</h3><p>選ばれた宛先の結果を読者へ返します。</p></article>
+      </div>
+      <p class="viz-compact" style="margin-top: var(--viz-space-3)">関係: 入力元から判断へ Data を渡し、判断から記録または通知へ分岐します。記録と通知の間に順序や依存はありません。</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light;
+  --viz-paper: #f7fbfe;
+  --viz-surface: #ffffff;
+  --viz-surface-soft: #eef7fc;
+  --viz-surface-strong: #dceefa;
+  --viz-ink: #142844;
+  --viz-muted: #66778b;
+  --viz-line: #c8dce9;
+  --viz-line-strong: #91bdd8;
+  --viz-accent: #176fa6;
+  --viz-accent-deep: #0e4f7c;
+  --viz-qualified: #72591c;
+  --viz-qualified-soft: #fff8df;
+  --viz-unverified: #6f526b;
+  --viz-unverified-soft: #f8eef7;
+  --viz-radius: 0.55rem;
+  --viz-space-1: 0.45rem;
+  --viz-space-2: 0.8rem;
+  --viz-space-3: 1.2rem;
+  --viz-space-4: 1.8rem;
+  --viz-space-5: 2.8rem;
+  font-family: Inter, "Noto Sans JP", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.65;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--viz-paper); }
+body { margin: 0; color: var(--viz-ink); background: linear-gradient(145deg, #fff 0, var(--viz-paper) 58%, #eef8fd 100%); }
+.viz-page { width: min(76rem, calc(100% - 2rem)); margin-inline: auto; padding-block: var(--viz-space-5); }
+.viz-header { max-width: 62rem; margin-block-end: var(--viz-space-5); }
+.viz-eyebrow { margin: 0 0 var(--viz-space-1); color: var(--viz-accent); font-size: 0.78rem; font-weight: 750; letter-spacing: 0.11em; text-transform: uppercase; }
+h1, h2, h3 { color: var(--viz-ink); line-height: 1.25; text-wrap: balance; }
+h1 { margin: 0 0 var(--viz-space-2); font-size: clamp(2rem, 5vw, 3.8rem); letter-spacing: -0.04em; }
+h2 { margin: 0 0 var(--viz-space-3); font-size: clamp(1.3rem, 2.8vw, 1.8rem); }
+h3 { margin: 0 0 var(--viz-space-1); font-size: 1rem; }
+p { max-width: 72ch; }
+a { color: var(--viz-accent-deep); text-underline-offset: 0.16em; }
+code { overflow-wrap: anywhere; }
+.viz-lede { margin: 0; color: #455f78; font-size: clamp(1.03rem, 2vw, 1.22rem); }
+.viz-section { margin-block-end: var(--viz-space-5); }
+.viz-primary, .viz-supporting, .viz-compact, .viz-note, .viz-relation {
+  min-width: 0;
+  border: 1px solid var(--viz-line);
+  border-radius: var(--viz-radius);
+  background: var(--viz-surface);
+  padding: var(--viz-space-3);
+}
+.viz-primary { border-color: var(--viz-line-strong); box-shadow: 0 0.45rem 1.4rem rgba(36, 97, 135, 0.07); }
+.viz-supporting { color: #344d65; background: rgba(255, 255, 255, 0.78); }
+.viz-compact { color: var(--viz-muted); font-size: 0.9rem; background: var(--viz-surface-soft); }
+.viz-note { border-left: 0.28rem solid var(--viz-accent); background: var(--viz-surface-soft); }
+.viz-relation { border-style: dashed; }
+.viz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--viz-space-3); }
+.viz-id { display: inline-block; max-width: 100%; color: var(--viz-muted); font: 500 0.72rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+.viz-id--focus { color: var(--viz-accent-deep); font-weight: 700; }
+.viz-state { border-left-width: 0.28rem; }
+.viz-state__label { display: inline-block; margin-block-end: var(--viz-space-1); font-size: 0.78rem; font-weight: 750; }
+.viz-state--qualified { border-left-color: var(--viz-qualified); background: var(--viz-qualified-soft); }
+.viz-state--qualified .viz-state__label { color: var(--viz-qualified); }
+.viz-state--unverified { border-left-color: var(--viz-unverified); background: var(--viz-unverified-soft); }
+.viz-state--unverified .viz-state__label { color: var(--viz-unverified); }
+.viz-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--viz-line); border-radius: var(--viz-radius); background: var(--viz-surface); }
+.viz-table { width: 100%; border-collapse: collapse; }
+.viz-table th, .viz-table td { padding: var(--viz-space-2); border-right: 1px solid var(--viz-line); border-bottom: 1px solid var(--viz-line); text-align: left; vertical-align: top; }
+.viz-table th { color: var(--viz-accent-deep); background: var(--viz-surface-strong); }
+.viz-table tr:last-child > * { border-bottom: 0; }
+.viz-table tr > *:last-child { border-right: 0; }
+.viz-list { margin-block: var(--viz-space-1) 0; padding-inline-start: 1.25rem; }
+
+@media (max-width: 42rem) {
+  .viz-page { width: min(100% - 1.25rem, 76rem); padding-block: var(--viz-space-4); }
+  .viz-header, .viz-section { margin-block-end: var(--viz-space-4); }
+}
+
+@media print {
+  html, body { background: #fff; }
+  .viz-page { width: 100%; padding: 0; }
+  .viz-primary, .viz-supporting, .viz-compact, .viz-note, .viz-relation, .viz-state, .viz-table-wrap { break-inside: avoid; box-shadow: none; }
+  a { color: inherit; }
+}
