@@ -98,6 +98,18 @@ slice = "test-report-output"
 pattern = "observed scope、Topology、Behavior、Expected Observation、Case、Evidence、execution state、unresolved correspondence、scope-relative absence、BMO derivation limits を含む Observation Limits、source / config traceability を、request に適応した report へ投影します。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.test-report-human-facing-b0dbb1dd1bc0]
+kind = "requires"
+slice = "test-report-human-facing-projection"
+pattern = '''observed scope、Topology、Observation Limits、evidence traceability と retained qualification を含む report candidate の内容・構成・tone を確定した後、one-shot response の返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って report 全体の Human 向け prose へ適用します。scope、静的観測の範囲、未実行・未確認・対応未解決・absence の区別、relation、state、limits、source location の意味と caller の write authority は `test-report` が保持します。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-human-facing-projection-70956d587141]
+kind = "requires"
+slice = "test-report-human-facing-projection-verification"
+pattern = "共通の Final output boundary に従う report の出力前確認では、observed evidence、scope、qualification、traceability を保ち、test、source、CI の実行、品質評価、remediation を開始しません。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.test-report-write-boundary-f2ebde0dd435]
 kind = "requires"
 slice = "test-report-write-boundary"

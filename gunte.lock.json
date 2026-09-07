@@ -889,6 +889,14 @@
       "sha256": "1b3788fbc4a08c30b3b3d03188dd36690a2bd52f104582ddb461b46767212601"
     },
     {
+      "id": "shared-human-facing-projection-90b344d6f7f4",
+      "sha256": "f8d74b02403496c780c3c4f4c9ecbeaa5b490d87922c00c3b40e48e17727dc9a"
+    },
+    {
+      "id": "shared-human-facing-projection-745f3aacf436",
+      "sha256": "5b0a9ad89b048b8714006cb745441b14e593e07be60a2359d8ccd102240182dc"
+    },
+    {
       "id": "shared-human-facing-projection-caller-boundary-b1efaa9d5627",
       "sha256": "93993a4f027383bde82a0f05f78b4e30e83d5ec31bb614809ba5b0690ab15664"
     },
@@ -1273,6 +1281,14 @@
       "sha256": "571518761715a03f370b5c27341eacaf2867cd464c82b394e7761b37e70e30eb"
     },
     {
+      "id": "explorer-this-human-facing-3e066957af5d",
+      "sha256": "292fb36defcb694bd406d6d99fa6f1fafd7af9dab2715c68a829010f0539c101"
+    },
+    {
+      "id": "explorer-this-human-facing-projection-647875c62900",
+      "sha256": "059c0a9b9658512cbba370877a10778cbc3fe5e787c0c7cfb85d358723b49a99"
+    },
+    {
       "id": "explorer-this-document-before-agentic",
       "sha256": "33939801b772503df19eaafc61183df14d7284a2a5651bcccd31fa3929b39073"
     },
@@ -1451,6 +1467,14 @@
     {
       "id": "test-report-output-8b18af9fc6fa",
       "sha256": "808eec89b5ec86228c4fad5a058d7c56ca3614e814a07e97044bba935a1dcb92"
+    },
+    {
+      "id": "test-report-human-facing-b0dbb1dd1bc0",
+      "sha256": "64455c4ffc2b71e567ec3227bdc390be570434c03c1540fc390d5e96330d9ee9"
+    },
+    {
+      "id": "test-report-human-facing-projection-70956d587141",
+      "sha256": "4b9d7fcadb956c08a4632057605229dcda61cb0bcb2eebd906f0dd7d4acd4a69"
     },
     {
       "id": "test-report-write-boundary-f2ebde0dd435",
@@ -2025,6 +2049,14 @@
       "sha256": "713b488c48d19dd525190bd374ac6a9d4a171e419a527e4defe6aefb73b8fabd"
     },
     {
+      "id": "find-way-human-facing-25855703c6bc",
+      "sha256": "fb68b4f2473572614f6c87ff131d1ad13feca101134ab6ee50c8e8b772a9aacf"
+    },
+    {
+      "id": "find-way-human-facing-projection-ca6760417bcc",
+      "sha256": "7f83d433c87ce62c46209d92b5d63572d44811b5cb6428e732e0ccefd30ea802"
+    },
+    {
       "id": "find-way-flow-6f580e09b781",
       "sha256": "71b044aaf8f03b31726a5e276c06382cb1b9552b484600632edaf61dd6dc6366"
     },
@@ -2157,12 +2189,12 @@
       "sha256": "792eeeb87feec3d2e20230b890c201871ca3286ccd793b9c8862b688faaf6a36"
     },
     {
-      "id": "visualize-that-human-facing-projection-f60d6be180c4",
-      "sha256": "9e775d9e934304ed48cda0ebf52db7320001df5bc897a68a4e7591514077f637"
+      "id": "visualize-that-human-facing-projection-0e62c5520ff4",
+      "sha256": "33528ae77d67bb9505f738cfd98ffda6c7e2f0aa1e08a2bdcb9b95e3de30b84c"
     },
     {
-      "id": "visualize-that-human-facing-projection-d70e849b96f7",
-      "sha256": "27a794a3f17cd3958fc4a9b928cbacc1adb05b1e88a4790c69f65f37719df32b"
+      "id": "visualize-that-human-facing-projection-5f7e63f821e0",
+      "sha256": "0b4637a9a5fdcb0226290b8a154662af2f60af646509593f6153a6140a301fee"
     },
     {
       "id": "visualize-that-identifiers-59989d2e94ad",
@@ -2201,8 +2233,8 @@
       "sha256": "64a1819c0eec2bdbc8dc384e6ecc3cf5c9a25a992bf72db605a4871cc1e40abb"
     },
     {
-      "id": "visualize-that-human-facing-projection-e6a022ad33b9",
-      "sha256": "a8981e5d94c4e796b9b0604ec3d64a2fc445bb14e884ffa36d5bee7929e422db"
+      "id": "visualize-that-human-facing-projection-d2f5cf493cee",
+      "sha256": "079fb60f694f1286001deee1b61415cc52baee15fd5780dd60f813100c57a1e5"
     },
     {
       "id": "visualize-that-bounded-correction-ee49933938d8",
@@ -3122,6 +3154,16 @@
     },
     {
       "kind": "span",
+      "id": "human-facing-projection-candidate",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
+      "id": "human-facing-projection-reapplication",
+      "path": "shared/human-facing-projection.md"
+    },
+    {
+      "kind": "span",
       "id": "human-facing-projection-meaning",
       "path": "shared/human-facing-projection.md"
     },
@@ -3353,6 +3395,16 @@
     {
       "kind": "anchor",
       "id": "explorer-this-authority-relation",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-human-facing-projection",
+      "path": "shared/skill/explorer-this/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "explorer-this-human-facing-projection-verification",
       "path": "shared/skill/explorer-this/SKILL.md"
     },
     {
@@ -3822,6 +3874,16 @@
     },
     {
       "kind": "span",
+      "id": "find-way-human-facing-projection",
+      "path": "shared/skill/find-way/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "find-way-human-facing-projection-verification",
+      "path": "shared/skill/find-way/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-report-trigger",
       "path": "shared/skill/test-report/SKILL.md"
     },
@@ -3878,6 +3940,16 @@
     {
       "kind": "span",
       "id": "test-report-topology-method",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-human-facing-projection",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-human-facing-projection-verification",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {

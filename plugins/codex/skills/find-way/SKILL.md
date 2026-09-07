@@ -96,3 +96,7 @@ Flow は確定済み Data の fixed progression だけを所有します。Desti
 ## Result
 
 Result は supporting evidence、authority relation、material qualification を後続判断に必要な範囲で保持します。
+
+Work Unit の境界、readiness、Outcome、Remaining gap、dependency、evidence、`complete | incomplete` と必要な qualification を確定して Result candidate を完成させた後、Human に返す前に、`../../references/human-facing-projection.md` の Final output boundary に従って Result candidate に含まれる人が読む説明 prose 全体へ適用します。Work Unit の意味、freeze した WU の境界、内部 persistence state、`resume_reference`、completion disposition、Result の内容と write authority は `find-way` が保持します。
+
+共通の Final output boundary に従う Result の出力前確認では、Work Unit の readiness、Outcome、Remaining gap、dependency、evidence、qualification と `complete | incomplete` の意味を保ち、Work Unit の境界、内部 state、`resume_reference`、completion 判定、保存・read-back Action を変更しません。
