@@ -1558,6 +1558,26 @@
       "sha256": "143a875bc13bb2fdbdaa7a4a1588ffd5e0d5daa60cec4dc801e9ef3b4ba5ae80"
     },
     {
+      "id": "test-verify-requirement-derived-candidates-6ac48d4708f5",
+      "sha256": "142bb69806564c1961e2019a4b962702a520d16b8909859c93f12a0f78a8149e"
+    },
+    {
+      "id": "test-verify-requirement-scope-0a5bb81166cb",
+      "sha256": "c3deb893b680d44826fded1746cd3dca2fbd666a430d6d0715a0912f17de87b5"
+    },
+    {
+      "id": "test-verify-topology-requirement-input-8b1b789e0500",
+      "sha256": "19c7ee99230644e57445f09904c396de0c04c620d200f40e63901e1ca28ec24c"
+    },
+    {
+      "id": "test-verify-bidirectional-reconciliation-74226d662dc5",
+      "sha256": "251a672b49461aee6d90c6fa3926c934f9b4c2ace8b544265d340cf5e550d365"
+    },
+    {
+      "id": "test-verify-requirement-completion-ab4127ee6690",
+      "sha256": "d8f2affb1f2d2577653214bab14094510026128b586bf1d0a02e33cd10d8cc71"
+    },
+    {
       "id": "test-verify-authority-drift-4a8a4dff7203",
       "sha256": "a7039a1b1ecfebde17720a5069fa4f3167f70236e60cedf4bb20482cdf536626"
     },
@@ -4095,12 +4115,32 @@
     },
     {
       "kind": "span",
+      "id": "test-verify-requirement-derived-candidates",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-requirement-scope",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-verify-invocation-identity",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
       "kind": "span",
       "id": "test-verify-topology-method",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-topology-requirement-input",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-bidirectional-reconciliation",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
@@ -4131,6 +4171,11 @@
     {
       "kind": "span",
       "id": "test-verify-pass-boundary",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-requirement-completion",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
