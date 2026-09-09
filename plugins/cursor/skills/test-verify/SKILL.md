@@ -20,7 +20,11 @@ direct owner は invocation 全体で exactly one の task-local Local Model を
 
 `test-report` や `impl-lead` を nested invocation しない。Implementer delegation、Parent QA、Implementation Unit Design をこの Skill の責務へ導入しない。
 
-入力は request、repository / source / config、authoritative Context、test scope、runner / command / environment、write / commit authority である。最初に対象 test membership、対応し得る Behavior と provenance / precedence、execution surface、変更可能範囲を解決する。対象 test は discovery signal、Case、Evidence にはできるが、自身と照合する Behavior または Expected Observation の authority / grounding にはしない。
+入力は request、repository / source / config、要求と authoritative Context、test scope、runner / command / environment、write / commit authority である。最初に対象 test membership、対応し得る Behavior と provenance / precedence、execution surface、変更可能範囲を解決する。対象 test は discovery signal、Case、Evidence にはできるが、自身と照合する Behavior または Expected Observation の authority / grounding にはしない。
+
+bounded target に適用される要求・Context、その provenance、適用範囲、未解決点を取得し、その意味から Behavior candidate を構成する。candidate 集合を既存 test に現れる Behavior へ縮約せず、candidate 探索では test を discovery signal とし、要求・Context に独立して grounding できない candidate を採用しない。
+
+要求の意味範囲と対象 test membership を同じものと扱わず、scope 内の候補構成根拠と未解決の要求を task-local Local Model に保持する。関連要求の意味を調べても実行・修正範囲を拡張しない。
 
 invocation の開始時に bounded verification target、対象 membership、authority boundary を invocation identity として固定する。current state または authority の material drift が remediation direction や scope を変え得る場合は、guess や stale identity のままの継続をせず qualified incomplete とする。
 
@@ -37,6 +41,16 @@ invocation の開始時に bounded verification target、対象 membership、aut
 解決した bounded scope、Behavior / authoritative Context candidate と provenance、Case / Evidence / config facts、membership / completeness basis、source location、authority boundary を consumer input として唯一の semantic witness である shared `Verification Topology` Method に渡す。
 
 Method が返す grounded Expected Observation、many-to-many relation、execution state、grounding / correspondence / completeness limits を保持する。Behavior または authority の material gap が remediation direction を変え得る場合は推測で補わず qualified incomplete とする。
+
+要求から構成した Behavior candidate とその grounding / 未解決を Topology input として渡し、要求探索や対象範囲の解決を Topology / BMO に移さない。
+
+Topology が返す BMO の Collective Sufficiency は、渡された Behavior の Expected Observation Model の導出十分性として保持する。要求範囲から Behavior candidate を構成できたことや、要求全体を検証できたことの判定へ読み替えない。
+
+## Bidirectional reconciliation
+
+Topology が返した各 Expected Observation を取得した Case / Evidence と照合し、同時に bounded scope で取得した各 Case / Evidence を要求から導出した Behavior / Expected Observation へ逆照合する。missing condition、成立・違反を区別できない Evidence、要求にない制約や誤った期待、correspondence / grounding / execution / observed-scope の限界を区別して Local Model に保持する。
+
+照合結果と未読 membership の限界は Topology result のまま Local Model に保持し、対応不明や観測 scope 外を不在へ変換しない。
 
 ## Baseline and runtime evidence
 
@@ -66,6 +80,8 @@ test-side と production-side の修正方向は test を通しやすい側で�
 
 remediation 後は targeted runtime verification と必要な repository-native gate を再実行する。PASS だけを完了根拠にせず、元の Problem が解消され、Evidence が Expected Observation を意味的に区別することを確認する。
 
+remediation の有無にかかわらず、完了判断では bounded target の要求から導出した Expected Observation 全体と最終 Evidence に `Bidirectional reconciliation` の照合を適用する。全件 PASS や一部 Problem の解消だけで完了にせず、完了に影響する要求、grounding、correspondence、derivation、observation scope の不足が残る場合は qualified incomplete とする。非 material な限界も結果に保持する。
+
 ## External effects, review, and completion
 
 filesystem mutation、test runner、Git commit その他の external Action は、Action field と control の唯一の正本である shared `External Effects` boundary に従う。この lifecycle の baseline / causal / risk disposition と temporary / output artifact の retention / cleanup state を consumer-specific disposition として渡す。
@@ -84,6 +100,6 @@ final verification 後かつ complete の前に、gate-complete commit、HEAD、
 
 ## Outcomes
 
-完了時は bounded target、grounded Expected Observation、baseline identity / disposition、Derived Problem と causal basis、変更、runtime / gate / final evidence、candidate commit identity、incidental finding を返す。
+完了時は bounded target、要求から構成した Behavior candidate と未解決要求、grounded Expected Observation、Expected Observation ↔ Case / Evidence の双方向照合、baseline identity / disposition、Derived Problem と causal basis、変更、runtime / gate / final evidence、candidate commit identity、incidental finding、導出・grounding・観測範囲の限界を返す。
 
 runtime evidence が不足する、authority / scope が material に未解決である、必須 Action が未実行または結果不明である、または required remediation が bounded test-driven repair を超える場合は、別 implementation workflow へ自動遷移せず、成立済み evidence と未解決事項を伴う qualified incomplete を返す。

@@ -90,6 +90,36 @@ slice = "test-verify-invocation-identity"
 pattern = "invocation の開始時に bounded verification target、対象 membership、authority boundary を invocation identity として固定する。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.test-verify-requirement-derived-candidates-6ac48d4708f5]
+kind = "requires"
+slice = "test-verify-requirement-derived-candidates"
+pattern = "bounded target に適用される要求・Context、その provenance、適用範囲、未解決点を取得し、その意味から Behavior candidate を構成する。candidate 集合を既存 test に現れる Behavior へ縮約せず、candidate 探索では test を discovery signal とし、要求・Context に独立して grounding できない candidate を採用しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-requirement-scope-0a5bb81166cb]
+kind = "requires"
+slice = "test-verify-requirement-scope"
+pattern = "要求の意味範囲と対象 test membership を同じものと扱わず、scope 内の候補構成根拠と未解決の要求を task-local Local Model に保持する。関連要求の意味を調べても実行・修正範囲を拡張しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-topology-requirement-input-8b1b789e0500]
+kind = "requires"
+slice = "test-verify-topology-requirement-input"
+pattern = "要求から構成した Behavior candidate とその grounding / 未解決を Topology input として渡し、要求探索や対象範囲の解決を Topology / BMO に移さない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-bidirectional-reconciliation-74226d662dc5]
+kind = "requires"
+slice = "test-verify-bidirectional-reconciliation"
+pattern = "Topology が返した各 Expected Observation を取得した Case / Evidence と照合し、同時に bounded scope で取得した各 Case / Evidence を要求から導出した Behavior / Expected Observation へ逆照合する。missing condition、成立・違反を区別できない Evidence、要求にない制約や誤った期待、correspondence / grounding / execution / observed-scope の限界を区別して Local Model に保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-requirement-completion-ab4127ee6690]
+kind = "requires"
+slice = "test-verify-requirement-completion"
+pattern = "remediation の有無にかかわらず、完了判断では bounded target の要求から導出した Expected Observation 全体と最終 Evidence に `Bidirectional reconciliation` の照合を適用する。全件 PASS や一部 Problem の解消だけで完了にせず、完了に影響する要求、grounding、correspondence、derivation、observation scope の不足が残る場合は qualified incomplete とする。非 material な限界も結果に保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.test-verify-authority-drift-4a8a4dff7203]
 kind = "requires"
 slice = "test-verify-invocation-identity"
