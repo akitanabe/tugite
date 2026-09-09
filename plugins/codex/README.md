@@ -12,13 +12,13 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 - `explorer-this`: まずエージェント自身で調査し、判断に必要な情報や方針を人にしか確認できない場合に限って質問します。調査結果は依頼された形式で返します。利用者が指定したときだけ使います。
 - `visualize-that`: 文書やデータなど任意の入力を、意味と不確実性を保った図解 HTML にします。利用可能な描画機能で実物を確認し、確認できない場合も HTML と理由を返します。利用者が指定したときだけ使います。
 - `impl-lead`: 実装依頼を着手前に明確な作業単位へ整理し、実装、品質確認、受け入れ判断、最終検証、安全な取り込みまで責任を持ちます。利用者が指定したときだけ使います。
-- `plan-agent`: 会話や提示資料をもとに、依頼に合った自由形式の計画・設計資料を、推奨案を中心に作ります。必要な場合だけレビューします。利用者が指定したときだけ使います。
+- `plan-agent`: 会話や提示資料をもとに、依頼に合った自由形式の計画・設計資料を、推奨案を中心に作ります。実現方法に material な判断がある場合は、initial candidate 全体に対する別の実装視点を助言として確認し、review が必要ならその後に進みます。利用者が指定したときだけ使います。
 - `find-way`: 目標全体の不明点と判断待ちの事項を整理し、1つ以上の自己完結した作業単位に分けて返します。利用者が指定したときだけ使います。
 - `test-report`: 指定されたテスト範囲を実行せずに読み取り、期待する動作とテストケース・根拠の対応、および確認できない点を報告します。評価や修正は行いません。
 - `test-verify`: 指定されたテスト対象を実行結果などの根拠に基づいて検証し、その対象が原因の問題だけを修正して、完了条件の確認と最終検証まで行います。利用者が指定したときだけ使います。
 - `review-refine`: 途中で内容が変わらない対象を指定回数までレビューし、指摘を採用するかどうかと受け入れ結果を呼び出し元の親エージェントへ返します。
 
-`plan-agent` は計画にレビューが必要か、利用者がレビュー不要と指定したかを判断します。レビューが不要な場合はそのまま最終候補を返します。レビューが必要で、利用者も不要と指定していない場合は `plan-adversarial-reviewer` と `over-engineering-reviewer` による厳格なレビューへ進みます。
+`plan-agent` は計画にレビューが必要か、利用者がレビュー不要と指定したか、実現方法に material な判断があり alternative implementation perspective が必要かを判断します。advisor の適用は review の opt-out では解除されません。applicable な場合は coherent candidate 全体が成立した後に一度だけ助言を受け、親エージェントが採否を裁定して統合してから、必要な場合は `plan-adversarial-reviewer` と `over-engineering-reviewer` による厳格なレビューへ進みます。
 
 ### 実装・レビュー・助言を担うエージェント
 
@@ -26,7 +26,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 
 リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
 
-計画の品質について、内容を変更せずに助言する担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、最終的な受け入れは親エージェントが行います。
+initial candidate の実装方法について、内容を変更せずに別の視点を返す担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、採否と最終的な受け入れは親エージェントが行います。
 
 ## 導入と起動
 

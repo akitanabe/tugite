@@ -29,13 +29,23 @@ Agent-side で利用可能な reasoning、context、repository / source observat
 
 artifact responsibility、current Local Model projection、established direction、authority constraints、resolved evidence を Planning Core へ渡し、review applicability と explicit opt-out は `plan-agent` が判断します。
 
+## Alternative implementation perspective
+
+実現方法に material な判断がある Plan は advisor applicable とし、単純な機械変更または実現方法がほぼ一意な場合だけ nonapplicable とします。review の explicit opt-out は advisor applicability を解除しません。
+
+advisor applicability とその理由、current Local Model projection、established direction、authority constraints、resolved evidence、invocation-local advisor state を Planning Core へ渡します。
+
+top-level invocation の開始時に advisor state を未実施として初期化し、その state を reset せず保持します。Synthesis が適用性と candidate coherence に基づいて実施した result / state を Planning Core の再入でも同じ invocation で受け取ります。candidate 前の gap 解消中は advisor を起動しません。
+
+applicable な advisor の unavailable または invocation failure は skip、別 agent、呼び直しで bypass せず `incomplete` にします。advisor applicability、reason、invocation-local state が不足する場合も省略値で route を選ばず material input gap として扱います。
+
 Planning Core が material gap を返した場合は、gap の resolution source を判断します。Agent-side で解消可能なら同じ invocation の同じ Local Model へ evidence を Reintegration し、material invalidation 時だけ affected region を Recomposition して bounded に再観測します。その更新済み projection / evidence で Planning Core を再実行し、Planning Synthesis の再実行と後続 routing は Planning Core に残します。new evidence なしで同じ gap が再発する、meaningful semantic progress がない、利用可能な route を尽くす、または caller-supplied bound に達した場合は停止します。
 
 gap が Human-owned または Agent-side で解消不能なら、Human へ質問せず別 workflow も起動せず、unresolved gap を持つ `incomplete` を返します。
 
 ## Conditional review and result
 
-`plan-agent` は review applicability / explicit opt-out を判断して Planning Core へ渡します。Planning Core が nonapplicable / opt-out を unreviewed route、applicable / no opt-out を strict review route として処理し、semantic completion と `final-candidate` mapping を所有します。
+`plan-agent` は review applicability / explicit opt-out と advisor applicability / reason を判断して Planning Core へ渡します。review の opt-out は advisor route を解除しません。Planning Core が review route、advisor route、semantic completion と `final-candidate` mapping を supplied Data に従って処理し、Synthesis の advisor result / invocation state を同じ Local Model の caller-side context へ返します。
 
 `plan-agent` は Planning Core の `final-candidate` または `incomplete` を変更せず受け取り、review を通らない candidate を review verified と表現せず、review 後に candidate を変更しません。
 

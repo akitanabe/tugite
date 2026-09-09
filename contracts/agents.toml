@@ -225,16 +225,16 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-context-3d3d8441980e]
+[contracts.plan-quality-advisor-context-9d5ec53e1a21]
 kind = "requires"
 slice = "plan-quality-advisor-context-boundary"
-pattern = "一つの concrete advisory question と、その判断に必要な supplied context だけを対象にする fresh / context-isolated Agent です。"
+pattern = "initial coherent candidate 全体、固定された goal / direction / scope / constraints / required behavior、bounded evidence と指定された読取範囲だけを対象にする fresh / context-isolated Agent です。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-result-fcce2e7e65d5]
+[contracts.plan-quality-advisor-e91638e03645]
 kind = "requires"
 slice = "plan-quality-advisor-result-boundary"
-pattern = "source evidence と advisor の inference を区別し、呼び出し元が採否を判断できる grounded non-binding material を返します。"
+pattern = "比較材料を構成できる場合は source evidence と advisor の inference を区別し、parent candidate との差、採用条件、trade-off を含む grounded non-binding alternative implementation perspective を返します。根拠不足で比較できない場合は alternative を必須にせず、limitation と判断できない範囲を返します。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.plan-quality-advisor-responsibility-42eaeb862d3a]
