@@ -18,37 +18,53 @@ request と artifact responsibility に material な semantics だけを選び�
 
 十分な evidence がある場合は recommendation-first で一案と理由を示し、material な代替案だけを残します。section 構成、serialization、completeness score、expected-output oracle は固定しません。
 
-## Authority and advisory boundary
+## Authority and alternative perspective
 
 Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。
 
-局所判断に第二の観点が material に有用な場合だけ fresh / context-isolated な `plan-quality-advisor` を使えます。各 invocation は concrete question と必要 context だけを渡し、advice の採否は Planning Synthesis が所有します。
+Planning Synthesis は initial coherent candidate 全体に対する alternative implementation perspective の適用結果を扱います。applicability、advice の意味、採否、統合の判断は Agentic workflow に残し、次の Flow は supplied Data に応じた invocation と result routing を所有します。
+
+Planning Synthesis は initial coherent candidate 全体に対する advisor の non-binding perspective を受け、固定された goal、direction、scope、constraints、required behavior を保ったまま採否を裁定し、coherent に統合します。
+
+## Programmatic Flow
+
+Trigger: Planning Synthesis が initial candidate の構成結果、または parent disposition を受け取る。
+
+Inputs: initial coherent candidate または material input gap、固定された goal / direction / scope / constraints / required behavior、bounded evidence と読取範囲、advisor applicability と理由、invocation-local advisor state、advisor availability / raw result、parent-owned result classification（normal、no alternative を含む、material comparison insufficiency、invocation failure）、safe-continuation validity、adopted disposition、integrated coherent candidate。
+
+Procedure:
+
+1. initial required Data（advisor applicability、reason、invocation-local state、または構成結果）のいずれかが欠けている場合は、advisor を起動せず material input gap を caller へ返す。
+2. candidate coherence を妨げる material input gap がある場合は、advisor を起動せず gap を caller へ返す。
+3. coherent candidate があり advisor が nonapplicable の場合は、advisor を起動せず candidate を返す。
+4. coherent candidate があり advisor が applicable で state が未実施の場合は、実行直前に state を実施済みへ更新してから fresh / context-isolated advisor を一回起動する。
+5. parent-owned result classification が invocation failure または unavailable の場合は `incomplete` を返し、skip、別 agent、呼び直しを選択しない。
+6. parent disposition があり state が実施済みの場合は advisor を再起動せず、既存の advice または limitation を再利用する。
+7. re-entry で material comparison insufficiency または safe-continuation validity が invalid の場合は、stale advice を統合せず `incomplete` を返す。normal（no alternative を含む）で safe-continuation validity が valid、かつ integrated coherent candidate がある場合だけ coherent candidate を Core へ返す。
+8. raw advisor result は `parent-adjudication-required` として Synthesis 内に保持し、Core の completion candidate へ渡さない。採否・統合後の re-entry では、上記の supplied classification、disposition、integrated candidate だけを routing し、advisor を追加起動しない。
+
+Outcomes: advisor なしの coherent candidate、parent adjudication を要する fresh advisor result、統合後の coherent candidate、material input gap、または material reason を持つ `incomplete`。
+
+Flow の Outcomes で fresh raw result を受けた後、Planning Synthesis は Flow の外で bounded evidence と固定方向を比較し、result classification（normal、no alternative を含む、material comparison insufficiency、invocation failure）と safe-continuation validity を意味判断として構成します。その classification と validity を入力へ戻し、adopted disposition と integrated coherent candidate を構成して re-entry へ渡します。
+
+applicable な advisor の入力は candidate 全体、固定された goal / direction / scope / constraints / required behavior、bounded evidence とその読取範囲に限ります。prior reasoning、prior advisor result、範囲外探索、新規 research、外部状態変更は入力にも実行にも含めません。
+
 
 fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を指定する。
 
-Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。
+advisor は materially different な実装像を原則一つ返し、実装 approach、責務分割、分解、依存、順序、verification strategy の差と条件を示します。有力な alternative がない結果は正常です。
 
-## Conditional Behavior Model Observation
+Flow の Outcomes 後、Planning Synthesis は固定された goal、direction、scope、constraints、required behavior への適合、repository fit、complexity、dependency、verification cost、maintainability など今回 material な比較軸で advice を全面採用、部分採用、または不採用に裁定し、adopted disposition と integrated coherent candidate を構成します。採用した要素だけを coherent に統合し、棄却案は material な設計判断を説明する場合に限って最終 Plan へ簡潔に残します。これらの採否・統合判断は Flow の外で行い、再入時に supplied Data として渡します。
 
-Planning Synthesis は、concrete advisory question が planned Behavior、Draft Acceptance Criteria、または verification の観測可能性・意味上の区別可能性を material に問う場合だけ、BMO を使う route を選びます。BMO は全 invocation の mandatory phase ではありません。
-
-Planning Synthesis は BMO の適用性、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、検証済みの BMO Method availability を caller-owned input として固定し、Expected Observations 自体は事前導出しない。
-
-この BMO route では、Planning Synthesis が `plan-quality-advisor` の caller として、route の選択と入力準備を所有します。
-
-BMO が material でない question では、Planning Synthesis は BMO を起動せず既存の bounded advisory route を使える。
-
-advisor invocation 前に、concrete question、評価対象である current candidate / Draft AC / verification proposal の範囲、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、および current canonical BMO Method の検証済み本文を caller-owned Data として揃えます。Draft AC、candidate、verification proposal は評価対象として Behavior と Context から分離し、Expected Observations を事前に答えとして作りません。Behavior identity、authority precedence、必要な Context が未解決で Expected Observation を変え得る場合は、その signal と影響を input に保持します。
-
-BMO Method の選択・読み込み・identity / required semantics の確認と、advisor が利用できる状態への準備は caller Action です。advisor に package-relative path の探索、missing Context の取得、Behavior の解決を委ねません。BMO が適用できない decomposition、ordering / dependency、scope、complexity、または evidence interpretation の question は、既存の bounded quality observation として扱います。
+有力な alternative がない結果は正常として扱い、根拠不足で比較不能な結果は limitation として保持します。
 
 ## Result boundary
 
-返す結果は requested artifact に material な semantics を持つ coherent candidate、または candidate coherence を妨げる具体的な material input gap である。
+返す結果は requested artifact に material な semantics を持つ coherent candidate、candidate coherence を妨げる具体的な material input gap、または advisor route を安全に継続できない理由を持つ `incomplete` です。
+
+`parent-adjudication-required` は Synthesis 内の中間結果であり、Core の completion candidate ではありません。
 
 gap には candidate を作れない理由と affected planning semantics を含め、caller が次の Action を判断できる形にします。gap の解消 Action、Human interaction、review、workflow status、final acceptance は caller に残します。
-
-input が coherent synthesis に十分なら、advisor を起動せず Planning Synthesis が必要な判断を行い candidate を返せる。
 
 candidate coherence に material な fact が input にない場合、その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。
 

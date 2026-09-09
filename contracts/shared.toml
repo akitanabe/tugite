@@ -966,22 +966,10 @@ slice = "planning-synthesis-authority-boundary"
 pattern = "Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-result-1201c11eabda]
+[contracts.planning-synthesis-57a329696136]
 kind = "requires"
 slice = "planning-synthesis-result-boundary"
-pattern = "返す結果は requested artifact に material な semantics を持つ coherent candidate、または candidate coherence を妨げる具体的な material input gap である。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-0bb36870d564]
-kind = "requires"
-slice = "planning-synthesis-advisor-boundary"
-pattern = "Planning Synthesis は advice の採否を所有し、advisor output を新しい direction や binding conclusion として扱わない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-direct-case-90a8bb2a3a64]
-kind = "requires"
-slice = "planning-synthesis-direct-case"
-pattern = "input が coherent synthesis に十分なら、advisor を起動せず Planning Synthesis が必要な判断を行い candidate を返せる。"
+pattern = "返す結果は requested artifact に material な semantics を持つ coherent candidate、candidate coherence を妨げる具体的な material input gap、または advisor route を安全に継続できない理由を持つ `incomplete` です。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-synthesis-materiality-032bb9a90a12]
@@ -996,28 +984,40 @@ slice = "planning-synthesis-gap-case"
 pattern = "その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-bmo-caller-7023c30e82ea]
+[contracts.planning-synthesis-advisor-33f8d01edad2]
 kind = "requires"
-slice = "planning-synthesis-bmo-caller-boundary"
-pattern = "Planning Synthesis は BMO の適用性、Resolved Behavior、Relevant Authoritative Context、authority / responsibility boundary、検証済みの BMO Method availability を caller-owned input として固定し、Expected Observations 自体は事前導出しない。"
+slice = "planning-synthesis-advisor-boundary"
+pattern = "Planning Synthesis は initial coherent candidate 全体に対する advisor の non-binding perspective を受け、固定された goal、direction、scope、constraints、required behavior を保ったまま採否を裁定し、coherent に統合します。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-bmo-optional-06af6e87e536]
+[contracts.planning-synthesis-advisor-be3156e62f83]
 kind = "requires"
-slice = "planning-synthesis-bmo-optional-route"
-pattern = "BMO が material でない question では、Planning Synthesis は BMO を起動せず既存の bounded advisory route を使える。"
+slice = "planning-synthesis-advisor-flow"
+pattern = "Trigger: Planning Synthesis が initial candidate の構成結果、または parent disposition を受け取る。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-bmo-0a637587fcff]
+[contracts.planning-synthesis-advisor-2017cbc2f7c0]
 kind = "requires"
-slice = "plan-quality-advisor-bmo-consumer"
-pattern = "BMO が applicable な場合、advisor は Resolved Behavior と Relevant Authoritative Context から Expected Observation Model を Draft AC から独立して導出し、grounding と meaningful variation を保持する。"
+slice = "planning-synthesis-advisor-invocation"
+pattern = "coherent candidate があり advisor が applicable で state が未実施の場合は、実行直前に state を実施済みへ更新してから fresh / context-isolated advisor を一回起動する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.plan-quality-advisor-bmo-non-09d280ad6db6]
+[contracts.planning-synthesis-advisor-e89bcc861ac3]
 kind = "requires"
-slice = "plan-quality-advisor-bmo-non-binding"
-pattern = "Collective Sufficiency は BMO model 自体の導出十分性であり、Plan、Draft AC、workflow の binding verdict ではない。"
+slice = "planning-synthesis-advisor-result"
+pattern = "有力な alternative がない結果は正常として扱い、根拠不足で比較不能な結果は limitation として保持します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-advisor-f75a1931849d]
+kind = "requires"
+slice = "planning-synthesis-advisor-failure"
+pattern = "parent-owned result classification が invocation failure または unavailable の場合は `incomplete` を返し、skip、別 agent、呼び直しを選択しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-synthesis-advisor-15993568a68c]
+kind = "requires"
+slice = "planning-synthesis-advisor-reentry"
+pattern = "re-entry で material comparison insufficiency または safe-continuation validity が invalid の場合は、stale advice を統合せず `incomplete` を返す。normal（no alternative を含む）で safe-continuation validity が valid、かつ integrated coherent candidate がある場合だけ coherent candidate を Core へ返す。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-core-document]
@@ -1035,6 +1035,24 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "planning-core-input-boundary"
 pattern = "review applicability、explicit opt-out を Planning Core へ渡す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-advisor-9e4555e165af]
+kind = "requires"
+slice = "planning-core-advisor-relay"
+pattern = "Planning Core は advisor applicability とその理由、invocation-local advisor state を保持し、Planning Synthesis の再入にも同じ state を渡します。Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ返し、raw advisor advice は completion candidate として返しません。既存 advice は subsequent synthesis reuse の入力として保持できます。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-advisor-d10edd5c7e08]
+kind = "requires"
+slice = "planning-core-advisor-failure"
+pattern = "applicable な advisor の unavailable または invocation failure は review や `final-candidate` へ進めず `incomplete` として返します。advisor 実施後の固定方向・入力の material invalidation は、Planning Synthesis が返す `incomplete` result を無変更で伝播します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.planning-core-advisor-c8aa93b028e8]
+kind = "requires"
+slice = "planning-core-advisor-result"
+pattern = "Planning Core は Planning Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ伝播し、raw advisor advice を completion candidate として扱わず、`incomplete` を review や `final-candidate` として表現しません。既存 advice は subsequent synthesis reuse のために保持できます。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.planning-core-synthesis-gap-b65a2cc0645e]

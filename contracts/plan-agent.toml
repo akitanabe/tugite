@@ -27,6 +27,30 @@ slice = "plan-agent-core-input"
 pattern = "review applicability と explicit opt-out は `plan-agent` が判断します。"
 applies_to = ["claude", "codex", "cursor"]
 
+[contracts.plan-agent-advisor-5e1a87502d81]
+kind = "requires"
+slice = "plan-agent-advisor-applicability"
+pattern = "実現方法に material な判断がある Plan は advisor applicable とし、単純な機械変更または実現方法がほぼ一意な場合だけ nonapplicable とします。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-advisor-a3519ad02276]
+kind = "requires"
+slice = "plan-agent-advisor-input"
+pattern = "advisor applicability とその理由、current Local Model projection、established direction、authority constraints、resolved evidence、invocation-local advisor state を Planning Core へ渡します。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-advisor-7369cf81db48]
+kind = "requires"
+slice = "plan-agent-advisor-invocation"
+pattern = "top-level invocation の開始時に advisor state を未実施として初期化し、その state を reset せず保持します。Synthesis が適用性と candidate coherence に基づいて実施した result / state を Planning Core の再入でも同じ invocation で受け取ります。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-agent-advisor-3b3f5045e5a1]
+kind = "requires"
+slice = "plan-agent-advisor-failure"
+pattern = "applicable な advisor の unavailable または invocation failure は skip、別 agent、呼び直しで bypass せず `incomplete` にします。"
+applies_to = ["claude", "codex", "cursor"]
+
 [contracts.plan-agent-gap-result-3825e66f8677]
 kind = "requires"
 slice = "plan-agent-gap-result"

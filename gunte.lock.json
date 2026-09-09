@@ -674,16 +674,8 @@
       "sha256": "282f8eaef32c9c57331f264c0622fdcc052c6bc170e32e5a047bb9d0f53213ea"
     },
     {
-      "id": "planning-synthesis-result-1201c11eabda",
-      "sha256": "9ca15c32b8dce2783e62efa714fad4229b6522677a40aab5db01b80d573f0552"
-    },
-    {
-      "id": "planning-synthesis-advisor-0bb36870d564",
-      "sha256": "85c6d22f79e58eb070b7fb1420e9f1006c0820f2cad8a51426de0343a60ebe61"
-    },
-    {
-      "id": "planning-synthesis-direct-case-90a8bb2a3a64",
-      "sha256": "b0aa341124345123a0daa8860074c22716c902025b942fa88874fdc2f29c0bc9"
+      "id": "planning-synthesis-57a329696136",
+      "sha256": "b8176de06d2fd7553cf8f37c0267682764d5eced752a6f8e4b92b3173ecfb635"
     },
     {
       "id": "planning-synthesis-materiality-032bb9a90a12",
@@ -694,20 +686,28 @@
       "sha256": "d387597c1e21c4a91b31efb2e03eecbe41fd1703737eb58414522cfea09ac5d9"
     },
     {
-      "id": "planning-synthesis-bmo-caller-7023c30e82ea",
-      "sha256": "31a3151a0b5fbea99a5cb1c8ba402ed819e3aba48fed418ec9e6c51dbc327d0e"
+      "id": "planning-synthesis-advisor-33f8d01edad2",
+      "sha256": "ba34b0c1a6743cd6cdadc9ea81ec1799b6ab79b3449cb17575427ebd6e07505f"
     },
     {
-      "id": "planning-synthesis-bmo-optional-06af6e87e536",
-      "sha256": "1e659916b1381ac3ca5c09f6fdac5de76e7f410d9305a429c906cb4421739b59"
+      "id": "planning-synthesis-advisor-be3156e62f83",
+      "sha256": "3efbe9e1de709c7002012fb493e63b16445b94476d908afb95de1872f7baf289"
     },
     {
-      "id": "plan-quality-advisor-bmo-0a637587fcff",
-      "sha256": "02539e5ffcc2c9bd58d15a5d3c397e666e4fd91f75d0df43594d586288d9a5e9"
+      "id": "planning-synthesis-advisor-2017cbc2f7c0",
+      "sha256": "065109bea48ce7b69ce9129b0814184a1b99f262880fa9c92ad4c77ed5009b4a"
     },
     {
-      "id": "plan-quality-advisor-bmo-non-09d280ad6db6",
-      "sha256": "755aa18aceaa0409e83133cfaeb10d612de597f12116bcb3c0f37a494269b679"
+      "id": "planning-synthesis-advisor-e89bcc861ac3",
+      "sha256": "9c7c84a415226768aa3d4e349d5faae6e86c44aaa43f45434d87c53af97f3b0e"
+    },
+    {
+      "id": "planning-synthesis-advisor-f75a1931849d",
+      "sha256": "d9d8d8b50bfa9d2ee59ceb3a89d54f5b9a46f390d7fdcc6f242c5f01387c712f"
+    },
+    {
+      "id": "planning-synthesis-advisor-15993568a68c",
+      "sha256": "b87d5c8929f84c91c2c082a8bf0c56e6c0a0d004aa71d37561f78f6eb931d61f"
     },
     {
       "id": "planning-core-document",
@@ -716,6 +716,18 @@
     {
       "id": "planning-core-input-29f2028c8834",
       "sha256": "18f108081585ac2740e099718db0511f7cbe3e50263c44d1e757c9bc76727feb"
+    },
+    {
+      "id": "planning-core-advisor-9e4555e165af",
+      "sha256": "eb3c12172a3e49ca6db59efc375aa603884bbd32e3f3e97d0d418a0d6674c1b2"
+    },
+    {
+      "id": "planning-core-advisor-d10edd5c7e08",
+      "sha256": "327dfd4b39df4f0bee68192615f50cd0e5553de022163dec6db48bc6066e3a35"
+    },
+    {
+      "id": "planning-core-advisor-c8aa93b028e8",
+      "sha256": "e518e4d207d606055d7586105811251aee3b36393f8a7ab69e1b4a63fefa0acf"
     },
     {
       "id": "planning-core-synthesis-gap-b65a2cc0645e",
@@ -1034,12 +1046,12 @@
       "sha256": "277ce6f2efc42e66a2560d2c3be23766beed8985ccbb2bc0bc49efc032f39241"
     },
     {
-      "id": "plan-quality-advisor-context-3d3d8441980e",
-      "sha256": "8e1694a9fa6700cb5e5ab582f098a8e0869ecf14fb91007ed96905f7d217e20c"
+      "id": "plan-quality-advisor-context-9d5ec53e1a21",
+      "sha256": "69612a605e23bb6f0f179d4c207df7bfa51c46abfc72e74b1d50b0dcb051e78e"
     },
     {
-      "id": "plan-quality-advisor-result-fcce2e7e65d5",
-      "sha256": "22f6f6bb49ae9eaac354ff661100cab9a50c254c391c4dad8d6778fa1699a3f7"
+      "id": "plan-quality-advisor-e91638e03645",
+      "sha256": "7a572379752df4012d05db8f4a6ff690c03c25cd626faf5d01e6801d22b9fa8f"
     },
     {
       "id": "plan-quality-advisor-responsibility-42eaeb862d3a",
@@ -1348,6 +1360,22 @@
     {
       "id": "plan-agent-core-input-1b0812bae186",
       "sha256": "aaf871ab2f2e4a16b754aaf7faec2402be85ebae42e2d059b13054df2cf7dd01"
+    },
+    {
+      "id": "plan-agent-advisor-5e1a87502d81",
+      "sha256": "990c355db919ededda46f2d0479f058869d65ac0304625adfb92efabc41d22ae"
+    },
+    {
+      "id": "plan-agent-advisor-a3519ad02276",
+      "sha256": "073af71ee57eef3bdde5fa021615ceababba78add72cf1f702e29bd6b4846518"
+    },
+    {
+      "id": "plan-agent-advisor-7369cf81db48",
+      "sha256": "77ea1a28122283304640e34a63315af8978b08f5ab3837548d6ffaba7761f0e8"
+    },
+    {
+      "id": "plan-agent-advisor-3b3f5045e5a1",
+      "sha256": "52f2eb8764ee0eb4e5fcec852eaddaa3548af48f0611c26c1fbce0c8aa0689af"
     },
     {
       "id": "plan-agent-gap-result-3825e66f8677",
@@ -2725,22 +2753,32 @@
     },
     {
       "kind": "span",
-      "id": "planning-synthesis-bmo-caller-boundary",
+      "id": "planning-synthesis-advisor-flow",
       "path": "shared/planning-synthesis.md"
     },
     {
       "kind": "span",
-      "id": "planning-synthesis-bmo-optional-route",
+      "id": "planning-synthesis-advisor-invocation",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-advisor-failure",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-advisor-reentry",
+      "path": "shared/planning-synthesis.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-synthesis-advisor-result",
       "path": "shared/planning-synthesis.md"
     },
     {
       "kind": "span",
       "id": "planning-synthesis-result-boundary",
-      "path": "shared/planning-synthesis.md"
-    },
-    {
-      "kind": "span",
-      "id": "planning-synthesis-direct-case",
       "path": "shared/planning-synthesis.md"
     },
     {
@@ -2751,6 +2789,21 @@
     {
       "kind": "span",
       "id": "planning-core-input-boundary",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-advisor-relay",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-advisor-failure",
+      "path": "shared/planning-core.md"
+    },
+    {
+      "kind": "span",
+      "id": "planning-core-advisor-result",
       "path": "shared/planning-core.md"
     },
     {
@@ -3370,16 +3423,6 @@
     },
     {
       "kind": "span",
-      "id": "plan-quality-advisor-bmo-consumer",
-      "path": "shared/agents/plan-quality-advisor.md"
-    },
-    {
-      "kind": "span",
-      "id": "plan-quality-advisor-bmo-non-binding",
-      "path": "shared/agents/plan-quality-advisor.md"
-    },
-    {
-      "kind": "span",
       "id": "plan-quality-advisor-result-boundary",
       "path": "shared/agents/plan-quality-advisor.md"
     },
@@ -3806,6 +3849,26 @@
     {
       "kind": "anchor",
       "id": "plan-agent-core-input-relation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-advisor-applicability",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-advisor-input",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-advisor-invocation",
+      "path": "shared/skill/plan-agent/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "plan-agent-advisor-failure",
       "path": "shared/skill/plan-agent/SKILL.md"
     },
     {

@@ -10,6 +10,20 @@ top-level planning workflow は一つの task-local Local Model の owner のま
 
 Planning Core は supplied review applicability / opt-out を再判断せず、Local Model、candidate composition、advisor adjudication、final acceptance を所有しません。
 
+## Advisor relay and re-entry
+
+<!-- @contract planning-core-advisor-relay -->
+Planning Core は advisor applicability とその理由、invocation-local advisor state を保持し、Planning Synthesis の再入にも同じ state を渡します。Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ返し、raw advisor advice は completion candidate として返しません。既存 advice は subsequent synthesis reuse の入力として保持できます。
+<!-- @/contract -->
+
+<!-- @contract planning-core-advisor-failure -->
+applicable な advisor の unavailable または invocation failure は review や `final-candidate` へ進めず `incomplete` として返します。advisor 実施後の固定方向・入力の material invalidation は、Planning Synthesis が返す `incomplete` result を無変更で伝播します。
+<!-- @/contract -->
+
+<!-- @contract planning-core-advisor-result -->
+Planning Core は Planning Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ伝播し、raw advisor advice を completion candidate として扱わず、`incomplete` を review や `final-candidate` として表現しません。既存 advice は subsequent synthesis reuse のために保持できます。
+<!-- @/contract -->
+
 ## Final-trim necessity context
 
 top-level planning workflow が渡した Local Model projection、established direction、authority constraints、resolved evidence から、Planning Core は
