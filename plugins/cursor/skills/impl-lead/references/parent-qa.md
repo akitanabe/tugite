@@ -21,3 +21,5 @@ mutation evidence は behavior、test、executable contract に applicable な�
 changed test artifact は normal、boundary、error / exception、side-effect failure の applicable case、observable What、oracle independence、削除・skip・弱体化、mock / stub leakage を確認する。Gunte predicate は empty / overbroad slice、decoy、custom parser、Gunte 自身の projection / serialization / drift 保証との重複を避ける。
 
 Parent QA は diff 全体について AC coverage、scope / exclude、responsibility boundary、dependencies、TDD evidence、side-effect safety、focused / related verification、baseline failure と未実行事項を一次確認する。missing evidence は reviewer で補わない。
+
+Test Acceptance Gate は changed test artifact の追加観測であり、Parent QA を代替しない。obligation、oracle、validation plane、Expected Observation、necessary verification、mutation applicability と最終 adjudication は親が所有する。

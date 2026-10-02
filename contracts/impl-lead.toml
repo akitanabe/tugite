@@ -343,3 +343,94 @@ kind = "requires"
 slice = "impl-lead-run-owned-external-effects-pointer"
 pattern = "run-owned lifecycle の各 Action の cross-cutting eligibility は `../../../references/external-effects.md` に従う。"
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-policy-id-a1a23acb0ed5]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "policy_id = \"impl-lead-test-acceptance-v1\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-lifecycle-ce2b1df24a5f]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "lifecycle = [\"implementation\", \"parent-qa\", \"risk-directed-review\", \"candidate-commit\", \"test-acceptance-gate\", \"completion-gate\", \"unit-accepted\"]"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-applicability-37b4b7abb790]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "applicability = \"candidate diff changes automated test, fixture, oracle, or executable test contract\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-test-only-74a56894e298]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "test_only = \"applicable\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-production-only-6259e463ab09]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "production_only = \"not-applicable\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-reviewers-c83d11bc844f]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "reviewers = [\"test-coverage-reviewer\", \"test-validity-reviewer\"]"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-snapshot-85de21404f51]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "snapshot = \"same immutable candidate commit and comparison base\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-reviewer-access-987ecd306d67]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "reviewer_access = \"fresh / context-isolated; read-only / report-only\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-parent-ownership-bd9a903e2dce]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "parent_ownership = [\"obligation\", \"oracle\", \"validation plane\", \"Expected Observation\", \"necessary verification\", \"mutation applicability\", \"finding adjudication\", \"Unit acceptance\"]"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-correction-2fd0eda2ee21]
+kind = "requires"
+slice = "impl-lead-test-acceptance-policy"
+pattern = "correction = \"implementation correction; rerun Parent QA and affected Test Acceptance review\""
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-control-76a795983461]
+kind = "requires"
+slice = "impl-lead-test-acceptance-flow"
+pattern = "changed test artifact がない場合は `not-applicable` を返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-control-c232085d92ee]
+kind = "requires"
+slice = "impl-lead-test-acceptance-flow"
+pattern = "fresh / context-isolated な `test-coverage-reviewer` と `test-validity-reviewer` を起動し、read-only / report-only で finding Data を回収する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-control-c6c459cdf147]
+kind = "requires"
+slice = "impl-lead-test-acceptance-flow"
+pattern = "両結果を `parent-adjudication-required` として親へ返す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-acceptance-lifecycle-9df16ee09c77]
+kind = "requires"
+slice = "impl-lead-unit-lifecycle"
+pattern = "4. candidate commit を作り、`references/test-acceptance-gate.md` により changed test artifact がある場合は Test Acceptance Gate を通し、ない場合は `not-applicable` とする。\n5. `references/completion-gate.md` の mandatory Completion Gate を通す。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-codex-fresh-test-reviewer-invocation]
+kind = "occurrences"
+pattern = 'fresh test reviewer を起動する場合は `fork_turns = "none"` を指定する。'
+count = 1
+paths = ["plugins/codex/skills/impl-lead/references/test-acceptance-gate.md"]
+applies_to = ["codex"]

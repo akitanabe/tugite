@@ -17,7 +17,8 @@ required_agents=(
   security-side-effect-reviewer
   senior-implementer
   static-performance-reviewer
-  test-quality-reviewer
+  test-coverage-reviewer
+  test-validity-reviewer
   writing-principles-reviewer
 )
 
@@ -130,6 +131,7 @@ test_install_preserves_retired_agent_when_update_is_refused() {
   local retired_agents=(
     expert-selection-reviewer
     review-patch-refactorer
+    test-quality-reviewer
     writing-principles-refactorer
   )
   local retired_agent
@@ -160,6 +162,7 @@ test_force_update_removes_all_retired_agents() {
 
   [[ ! -e "$agent_dir/expert-selection-reviewer.toml" ]] || fail "forced update retained expert-selection-reviewer"
   [[ ! -e "$agent_dir/review-patch-refactorer.toml" ]] || fail "forced update retained review-patch-refactorer"
+  [[ ! -e "$agent_dir/test-quality-reviewer.toml" ]] || fail "forced update retained test-quality-reviewer"
   [[ ! -e "$agent_dir/writing-principles-refactorer.toml" ]] || fail "forced update retained writing-principles-refactorer"
   for required_agent in "${required_agents[@]}"; do
     assert_same "$repo_root/plugins/codex/install/agents/$required_agent.toml" "$agent_dir/$required_agent.toml"

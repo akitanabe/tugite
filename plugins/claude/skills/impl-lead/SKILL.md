@@ -67,10 +67,12 @@ execution 前に integration target と selected isolation の repository / work
 1. `references/execution.md` により readiness、route、tier、context、Writable Scope、TDD、monitoring を確定して実装する。
 2. `references/parent-qa.md` により mandatory Parent QA を行う。
 3. concrete risk が判断を変え得る場合だけ `references/risk-review.md` により specialized review と correction を行う。
-4. candidate commit を作り、`references/completion-gate.md` の mandatory Completion Gate を通す。
-5. Parent QA と gate が Green の commit を Unit の accepted immutable baseline とする。
+4. candidate commit を作り、`references/test-acceptance-gate.md` により changed test artifact がある場合は Test Acceptance Gate を通し、ない場合は `not-applicable` とする。
+5. `references/completion-gate.md` の mandatory Completion Gate を通す。
+6. Parent QA と applicable gate が Green の commit を Unit の accepted immutable baseline とする。
 
-1 Unit は1 commitに対応する。accepted Unit を amend、reopen、renormalize しない。Unit acceptance は親が ownership、evidence、risk disposition、Completion Gate を裁定した時点でだけ成立する。
+1 Unit は1 commitに対応する。accepted Unit を amend、reopen、renormalize しない。Unit acceptance は親が ownership、evidence、risk disposition、Test Acceptance Gate の結果 / applicability、Completion Gate を裁定した時点でだけ成立する。
+
 
 全 Unit の acceptance 後に run-wide final verification を実行する。全 accepted commit を含む selected execution tip を対象に、各 Unit の run-wide verification と repository-native required gate を実行する。結果は `passed`、`failed`、`not run`、`unverified` を区別し、external environment を利用できない結果は `unverified` とする。required gate が `failed`、`not run`、`unverified` のいずれかなら Green としない。親は累積 diff と commit range を一次情報として、accepted commit 全体で名称、comment、DocBlock、document の意味が相互に矛盾しないことを確認する。
 
@@ -87,7 +89,7 @@ accepted Unit は reopen、amend、renormalize しない。Final Correction Unit
 
 Final Correction Unit の8 fieldは既存 boundary と failure evidence から一意に導出する。`id` は run 内一意、`purpose` は具体的な failure の局所解消、`acceptance_criteria` は failure observation の解消を証明する observable postcondition、`scope` は owner Unit の既存 `scope.change` 内、`implementation_freedom` は局所的な実装方法、`constraints` は owner Unit と input authority から継承する制約、`depends_on` は owner Unit への semantic dependency と全 accepted commit を含む selected execution tip の repository precondition、`verification` は確定済みの focused verification と run-wide final verification とする。Final Correction Unit 自体の accept / revert boundary は新しい correction commit とする。
 
-Final Correction Unit は同じ run で1つだけ構成できる。fresh `focused-implementer` が新しい commit として実装し、Parent QA、必要な risk review、Completion Gate を通常どおり行う。accepted 後に run-wide final verification を再実行し、`passed` でなければ新しい Final Correction Unit を連鎖させず `stop-incomplete` とする。8条件の一つでも満たさない failure も `stop-incomplete` とする。
+Final Correction Unit は同じ run で1つだけ構成できる。fresh `focused-implementer` が新しい commit として実装し、Parent QA、必要な risk review、applicable な Test Acceptance Gate、Completion Gate を通常どおり行う。accepted 後に run-wide final verification を再実行し、`passed` でなければ新しい Final Correction Unit を連鎖させず `stop-incomplete` とする。8条件の一つでも満たさない failure も `stop-incomplete` とする。
 
 final verification が Green の場合だけ、run-owned route では `references/run-owned-lifecycle.md` により integration と cleanup eligibility を別々に裁定し、Human 指定 route では明示された ownership / authority の内側だけで closeout する。external Action がある場合は `../../references/external-effects.md` を適用する。
 
@@ -95,7 +97,7 @@ final verification が Green の場合だけ、run-owned route では `reference
 
 `accepted` は全 Unit accepted、run-wide final verification Green、要求された integration が確認済みで、必須 external Action が verified `実行済み` または Human により明示的に不要化され、blocking authority gap がない場合だけ返す。必須 external Action が `未実行` または `結果不明` なら evidence / retention state を保持して `stop-incomplete` とする。`stop-incomplete` となった run の accepted commits は selected execution ref に保持し、部分 integration しない。
 
-conversation final report には Unit 状態、commit / branch / integration、Parent QA / verification、risk review disposition、Completion Gate、external effect state、final verification、residual risk、cleanup / retention、blocking authority gap、report-only incidental finding を記す。固定 ledger や persistent report schema は作らない。
+conversation final report には Unit 状態、commit / branch / integration、Parent QA / verification、risk review disposition、Test Acceptance Gate の結果 / applicability、Completion Gate、external effect state、final verification、residual risk、cleanup / retention、blocking authority gap、report-only incidental finding を記す。固定 ledger や persistent report schema は作らない。
 
 ## Reference ownership
 
@@ -103,6 +105,7 @@ conversation final report には Unit 状態、commit / branch / integration、P
 - `references/execution.md`: implementation dispatch と monitoring
 - `references/parent-qa.md`: mandatory Parent QA と Test QA baseline
 - `references/risk-review.md`: risk-directed specialized review
+- `references/test-acceptance-gate.md`: changed test artifact の coverage / validity acceptance
 - `references/completion-gate.md`: final writing review と Unit commit closure
 - `references/run-owned-lifecycle.md`: worktree、integration、cleanup
 - `../../references/external-effects.md`: repository 外も含む side-effect safety
