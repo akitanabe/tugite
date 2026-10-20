@@ -8,7 +8,7 @@ effort = "high"
 
 [codex]
 description = "Implement a clear, bounded Implementation Unit with TDD and return decisions and evidence to the parent."
-model = "gpt-6.1-sol"
+model = "gpt-6.1-luna"
 model_reasoning_effort = "xhigh"
 nickname_candidates = ["Implementer", "Builder", "TDD Worker"]
 
