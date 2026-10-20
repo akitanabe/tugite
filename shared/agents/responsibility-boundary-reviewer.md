@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Read an implementation diff and review responsibility boundaries, mixed concerns, and side-effect placement. This agent reports findings only and must not edit files."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Boundary Reviewer", "Design Reviewer", "Responsibility Reviewer"]

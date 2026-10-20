@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review production-authoritative fixtures, quantitative input consistency, independent noncircular oracles, and discrimination between intended and plausible wrong behavior. Report findings only and do not edit files."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Test Validity Reviewer", "Oracle Reviewer", "Fixture Validity Reviewer"]

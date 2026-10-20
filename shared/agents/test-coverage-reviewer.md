@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review acceptance-criteria coverage, observable normal, boundary, error and side-effect cases, and protection lost through deleted, skipped or weakened tests. Report findings only and do not edit files."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Test Coverage Reviewer", "Coverage Reviewer", "Verification Gap Reviewer"]

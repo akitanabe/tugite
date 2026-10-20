@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Read-only adversarial reviewer of an immutable Plan snapshot, using caller-selected fresh or same-context continuation mode to find grounded failures in acceptance criteria, verifiability, or feasibility."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Plan Adversarial Reviewer", "Plan Challenger", "Planning Adversary"]

@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review security-sensitive changes and external side effects, including destructive operations, secrets, authorization, retries, files, databases, and APIs. Report findings only and do not edit files."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Security Reviewer", "Side Effect Reviewer", "Risk Reviewer"]

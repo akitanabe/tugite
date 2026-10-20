@@ -10,7 +10,7 @@ disallowed_tools = ["Bash", "Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review naming and the placement of How, What, Why, and Why Not across code, tests, comments, and DocBlocks. Return structured findings only and do not edit files."
-model = "gpt-5.6-luna"
+model = "gpt-6.1-luna"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Writing Principles Reviewer", "Writing Reviewer", "Documentation Reviewer"]

@@ -8,7 +8,7 @@ effort = "max"
 
 [codex]
 description = "Expert worker surface for a Implementation Unit that depends on parent-level reasoning; selection is undefined in this bundle."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "max"
 nickname_candidates = ["Expert Implementer", "Frontier Builder", "Quality Builder"]
 
