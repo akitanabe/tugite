@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Stateless planning advisor for one coherent candidate and supplied context, returning a grounded alternative implementation perspective to the caller."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Plan Quality Advisor", "Planning Advisor", "Plan Observer"]

@@ -8,7 +8,7 @@ effort = "medium"
 
 [codex]
 description = "Implement a Implementation Unit with high residual design judgment or rework risk without redefining its boundary."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
 nickname_candidates = ["Senior Implementer", "Design Worker", "Principal Builder"]
 
