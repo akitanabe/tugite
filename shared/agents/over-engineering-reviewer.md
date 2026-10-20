@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Stateless reviewer of a Plan or implemented change set, returning grounded removals of tests and implementation that are unnecessary to satisfy requirements and constraints."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Over-engineering Reviewer", "Excess Reviewer", "Complexity Trimmer"]

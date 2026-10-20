@@ -10,7 +10,7 @@ disallowed_tools = ["Edit", "Write", "NotebookEdit"]
 
 [codex]
 description = "Review implementation diffs for statically evidenced performance and resource-efficiency risks. Read related code, repository, ORM mappings, schemas, and indexes without editing files or claiming measured performance."
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Performance Reviewer", "Static Performance Reviewer", "Resource Reviewer"]
