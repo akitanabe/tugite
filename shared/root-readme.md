@@ -27,7 +27,7 @@ Tugite は Claude Code、Codex、Cursor で実装作業を進めるためのプ�
 実装を担うエージェントは `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
 <!-- @contract root-readme-risk -->
-リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
+レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。他の作業手順では具体的なリスクに応じて選択し、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
 <!-- @/contract -->
 
 initial candidate の実装方法について、内容を変更せずに別の視点を返す担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、採否と最終的な受け入れは親エージェントが行います。

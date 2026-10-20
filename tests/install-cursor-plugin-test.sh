@@ -23,7 +23,7 @@ assert_same() {
 [[ -f "$repo_root/plugins/cursor/references/verification-topology.md" ]] || fail "missing Verification Topology reference"
 [[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
-for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle; do
+for reference in implementation-unit-design execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
   [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/$reference.md" ]] || fail "missing impl-lead reference: $reference"
 done
 [[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
@@ -76,7 +76,7 @@ for reference in risk-review completion-gate; do
   assert_same "$source_repo/plugins/cursor/skills/test-verify/references/$reference.md" "$dest_dir/skills/test-verify/references/$reference.md"
 done
 
-for reference in implementation-unit-design execution parent-qa risk-review completion-gate run-owned-lifecycle; do
+for reference in implementation-unit-design execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
   assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/$reference.md" "$dest_dir/skills/impl-lead/references/$reference.md"
 done
 
@@ -84,7 +84,7 @@ for reference in model-construction agentic-model-construction interactive-model
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 
-for agent in expert-implementer focused-implementer implementer over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher responsibility-boundary-reviewer security-side-effect-reviewer senior-implementer static-performance-reviewer test-quality-reviewer writing-principles-reviewer; do
+for agent in expert-implementer focused-implementer implementer over-engineering-reviewer plan-adversarial-reviewer plan-quality-advisor researcher responsibility-boundary-reviewer security-side-effect-reviewer senior-implementer static-performance-reviewer test-coverage-reviewer test-validity-reviewer writing-principles-reviewer; do
   assert_same "$source_repo/plugins/cursor/agents/$agent.md" "$dest_dir/agents/$agent.md"
 done
 

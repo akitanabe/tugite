@@ -33,7 +33,8 @@
     "shared/agents/implementer.md",
     "shared/agents/senior-implementer.md",
     "shared/agents/expert-implementer.md",
-    "shared/agents/test-quality-reviewer.md",
+    "shared/agents/test-coverage-reviewer.md",
+    "shared/agents/test-validity-reviewer.md",
     "shared/agents/responsibility-boundary-reviewer.md",
     "shared/agents/security-side-effect-reviewer.md",
     "shared/agents/static-performance-reviewer.md",
@@ -48,6 +49,7 @@
     "shared/skill/impl-lead/references/implementation-unit-design.md",
     "shared/skill/impl-lead/references/execution.md",
     "shared/skill/impl-lead/references/parent-qa.md",
+    "shared/skill/impl-lead/references/test-acceptance-gate.md",
     "shared/skill/impl-lead/references/risk-review.md",
     "shared/skill/impl-lead/references/completion-gate.md",
     "shared/skill/impl-lead/references/run-owned-lifecycle.md",
@@ -178,12 +180,12 @@
       "sha256": "6da19e498e179b37c3fff0c5a0754b4d2c2fc373746b39ba2741333d21081339"
     },
     {
-      "id": "root-readme-risk-446069194c71",
-      "sha256": "f8f2dc47be6121dfd916d9d714f06ebb691f3b7f56f461ca2ab4e664f1f01d41"
+      "id": "root-readme-risk-530afa9c2491",
+      "sha256": "428575aea0d15328af3e045875c9fe0b0abfa4ee95b79286ffedf63ddb848e35"
     },
     {
-      "id": "readme-risk-directed-static-performance-reviewer-546b1f0779ae",
-      "sha256": "bda79196405661c4723a468e46f5793c06691228fd30c5a5cb0e1d8454a612a5"
+      "id": "readme-risk-directed-static-performance-reviewer-259dea2e13d8",
+      "sha256": "34fb723d8cc4d6688e96fcebc2b1a1227e82cd436497784b8b847d83bf45a41f"
     },
     {
       "id": "cursor-readme-local-requires-aae0052f5b5a",
@@ -926,6 +928,10 @@
       "sha256": "9487aec627badd787e791beb5bf31076a90aacc49029b0f178996199c91b23d9"
     },
     {
+      "id": "repository-test-qa-route-boundary-cb44810c1e2d",
+      "sha256": "0c8c84d998701795662ff1f4f2cb781cb13b57ad4c0362582af9228059b59a18"
+    },
+    {
       "id": "shared-researcher-retained-e9f44941dc1d",
       "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
     },
@@ -1099,19 +1105,27 @@
     },
     {
       "id": "implementation-reviewer-common-boundary",
-      "sha256": "0b5bc8400a939fcfcdf638b273c65d21caec5169c8decd43520c27cc1ad9d9a8"
+      "sha256": "644915c180fcbb8f34098f1a7d5c45ef54342704a0ab038bd1eb2afb9d291d96"
     },
     {
       "id": "implementation-reviewer-no-finding-path",
-      "sha256": "c6440b80fc605b8891732e55eb88e3889108900fb5b75310e03fda91fb4154e3"
+      "sha256": "6a91d48c42fb780514ead9e4ecf8515b18b750778df2ae1d44f3a9e50affd907"
     },
     {
-      "id": "test-quality-reviewer-specialization",
-      "sha256": "2ee0bc91c91a18fd6eac9e54a22c7ed2c38e7a194b5110ebe873294e292bd6db"
+      "id": "test-coverage-reviewer-specialization",
+      "sha256": "7642f68d1b52c688f13c52105a721bb9694858249fa7151850f3877c291eacdb"
     },
     {
-      "id": "test-quality-reviewer-specialist-procedure",
-      "sha256": "c44066fcc33b9db1a7441514edb4a958d46938e4ce6a200741207f69abee45ae"
+      "id": "test-coverage-reviewer-specialist-procedure",
+      "sha256": "011a8e7fffb6734cf7c648d65306a1273b9b22df27c1055d6b0518249734cd59"
+    },
+    {
+      "id": "test-validity-reviewer-specialization",
+      "sha256": "98291d1138c19de075d9dd8d619e504aa68c13a1e7889c52278815155591d0e0"
+    },
+    {
+      "id": "test-validity-reviewer-specialist-procedure",
+      "sha256": "41f9d3fe0b34a452f5562cb039eef8b68b5d9358abad3c885da5962f08b55243"
     },
     {
       "id": "responsibility-boundary-reviewer-specialization",
@@ -1151,7 +1165,7 @@
     },
     {
       "id": "implementation-reviewer-claude-readonly",
-      "sha256": "577b01b5a581c6c96da7ac0cb6160f7ea2bd88f54db50ebe1260d512447129ce"
+      "sha256": "dba427353f1184a48d2c8caea8e1c46e241cceb615fe537ba463b8eb6480092d"
     },
     {
       "id": "writing-principles-reviewer-claude-readonly",
@@ -1159,11 +1173,19 @@
     },
     {
       "id": "implementation-reviewer-codex-readonly",
-      "sha256": "6c1d6e64ec3916a92b81edc1a6474ba67c606d5944937557a848a8f73db57fe4"
+      "sha256": "c1a8f76ab4b0f45706411997b1984dc8071f7c30f8bef947508f375afe6cbf0f"
     },
     {
       "id": "implementation-reviewer-cursor-readonly",
-      "sha256": "011efdb44d51c4019e8b3c16720e85e65ac7a2d0541cc864ae0fa4c808a69a3f"
+      "sha256": "af453f182844ea7171659862a15719b2b9b757f03ff0f4278ba2f2b1d2219cf7"
+    },
+    {
+      "id": "test-reviewer-parent-authority",
+      "sha256": "edb2208830139e601296df2f3b52eb92b75eeac1aecab57b62a11f9ad579b8ca"
+    },
+    {
+      "id": "test-reviewer-static-observation",
+      "sha256": "3d9999b6519271671182ae9ef050a928674f11b96be5d38b163cc51d3858cbc8"
     },
     {
       "id": "how-it-document",
@@ -1964,6 +1986,66 @@
     {
       "id": "impl-lead-run-owned-external-effects-pointer-78192957f781",
       "sha256": "778d8371ba48a3d40931f72028efeba4bfa584af9de5f99d2df33ee1da6758cd"
+    },
+    {
+      "id": "impl-lead-test-acceptance-policy-id-a1a23acb0ed5",
+      "sha256": "b1a14b72c129c84e5c83482a7e3eb996172e9c606a0d16b23a991163bd5fa649"
+    },
+    {
+      "id": "impl-lead-test-acceptance-lifecycle-ce2b1df24a5f",
+      "sha256": "35108823c200978ae7d21aff3b43e8b67ee886f9816b24f374e33b0ea5998c1d"
+    },
+    {
+      "id": "impl-lead-test-acceptance-applicability-37b4b7abb790",
+      "sha256": "b09437ec20b0cd7e15e3ef9ee69121c97a2b54c98ad21c74a3ba9699ff1ff54e"
+    },
+    {
+      "id": "impl-lead-test-acceptance-test-only-74a56894e298",
+      "sha256": "64b82935d73c1275ce8dc90b060248c722c467e875862e6b0057131d2a59eaec"
+    },
+    {
+      "id": "impl-lead-test-acceptance-production-only-6259e463ab09",
+      "sha256": "70d68f83b0dd6efe45bf82ac89d60220bcfa6100741510631dbbcfea8bb4ecfe"
+    },
+    {
+      "id": "impl-lead-test-acceptance-reviewers-c83d11bc844f",
+      "sha256": "1fd6cd339b9eeeac9c83f5cf353c4c5cc250dafd8cf186027901d2fa58c52da9"
+    },
+    {
+      "id": "impl-lead-test-acceptance-snapshot-85de21404f51",
+      "sha256": "e0d7fb98871296e29c1fb65e72d0626d0fd8d54e5bc2b3ab3d25b37170755e98"
+    },
+    {
+      "id": "impl-lead-test-acceptance-reviewer-access-987ecd306d67",
+      "sha256": "1280bad893392e334e4326edfe8c365a805b350aa7aaa3117254b5c936ec05a2"
+    },
+    {
+      "id": "impl-lead-test-acceptance-parent-ownership-bd9a903e2dce",
+      "sha256": "0647e70561267068bf87d6e5212c49c2ce89b1f34dec1afa17a85fc9c5ab3cfc"
+    },
+    {
+      "id": "impl-lead-test-acceptance-correction-2fd0eda2ee21",
+      "sha256": "ac785f8e7d99783f3a8af3e26101da3d8229a1ebf9a40a9bb8f4bec54414714e"
+    },
+    {
+      "id": "impl-lead-test-acceptance-control-76a795983461",
+      "sha256": "7555708cdbbef13ebf8cbcd9e06ac9cea0abc54f6d49954f5d49cc6e3e6a78d7"
+    },
+    {
+      "id": "impl-lead-test-acceptance-control-c232085d92ee",
+      "sha256": "9d5dda38ab7d10875e3ec4ccf3f9fb22ed7f1d139cab5c81a33c8a67f7abfc87"
+    },
+    {
+      "id": "impl-lead-test-acceptance-control-c6c459cdf147",
+      "sha256": "99dbb0d77cf2c4c10a9965947068d7d95be8a9628a65ca72775d57f04b43a104"
+    },
+    {
+      "id": "impl-lead-test-acceptance-lifecycle-9df16ee09c77",
+      "sha256": "90edfe6381e98acbbeee674e46ecc14800c21b6e563fe60745692e4bdae66cd2"
+    },
+    {
+      "id": "impl-lead-codex-fresh-test-reviewer-invocation",
+      "sha256": "f4aa4ff07cfd99a38cef679a67f31d434ac150fcccf6e765cbc241738febcafb"
     },
     {
       "id": "destination-selection-document",
@@ -3743,6 +3825,11 @@
     },
     {
       "kind": "span",
+      "id": "impl-lead-unit-lifecycle",
+      "path": "shared/skill/impl-lead/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "impl-lead-final-verification",
       "path": "shared/skill/impl-lead/SKILL.md"
     },
@@ -3800,6 +3887,16 @@
       "kind": "span",
       "id": "impl-lead-parent-qa-applicability",
       "path": "shared/skill/impl-lead/references/parent-qa.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-test-acceptance-policy",
+      "path": "shared/skill/impl-lead/references/test-acceptance-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "impl-lead-test-acceptance-flow",
+      "path": "shared/skill/impl-lead/references/test-acceptance-gate.md"
     },
     {
       "kind": "span",
@@ -4514,6 +4611,11 @@
     {
       "kind": "span",
       "id": "repository-programmatic-flow-skills",
+      "path": "shared/repository-guidelines.md"
+    },
+    {
+      "kind": "span",
+      "id": "repository-test-qa-route-boundary",
       "path": "shared/repository-guidelines.md"
     }
   ]

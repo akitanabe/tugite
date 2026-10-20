@@ -61,8 +61,8 @@ Python は4空白インデント、型ヒント、`pathlib.Path`、説明的な 
 ## 追加・変更時に触れる場所
 
 agent を追加・削除するときは `shared/agents/` の正本、Gunte の `sources.files`、repository contract、installer の
-agent inventory を同じ変更で更新します。`code-review` の SKILL.md は対象 reviewer の名前集合を持つため、reviewer
-agent の追加・削除時は同じ変更でこの skill も更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
+agent inventory を同じ変更で更新します。reviewer agent の追加・削除時は、reviewer を選択する現行 workflow の名前集合も
+同じ変更で更新します。skill を追加・削除するときは通常、`shared/skill/<name>/SKILL.md`、対応する
 declarations、Gunte の `sources.files`、managed inventory を更新し、target rule は出力 path、profile、shape が
 変わる場合だけ更新します。生成後は installer test で runtime inventory も確認します。
 
@@ -156,10 +156,10 @@ common_evidence = ["evidence identity is fixed within each input variant", "pare
 owner = "parent QA"
 routes = ["impl-lead", "non-impl-lead"]
 baseline_self_qa = "required on every route"
-reviewer = "optional additional observation"
+reviewer = "additional observation; invocation requirement follows route-specific gate"
 reviewer_handoff = "pass baseline and reason in existing context; parent adjudicates findings"
 parent_responsibility = "obligation, oracle, validation plane, final adjudication"
-reviewer_scope = "changed mutation, structural test, EVAL case quality only"
+reviewer_scope = "changed-test coverage and validity within caller-supplied scope"
 gunte_antipattern_url = "https://github.com/akitanabe/gunte/blob/main/docs/gunte-antipatterns.md"
 gunte_antipattern_url_use = "provenance only; runtime retrieval is not required"
 minimum_checks = [
@@ -180,9 +180,13 @@ accept_prohibition = [
 `common_evidence` の input-variant identity / common parent oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
 `test_artifacts` は automated test、Gunte predicate/contract、fixture/oracle、EVAL であり、qa input と混同しません。
 EVAL を test_artifact に含むことは、計画へ EVAL corpus を追加する既定義務ではありません。
-reviewer を使う場合も baseline と起動理由を既存の確認観点・周辺
-context と一緒に渡し、reviewer は追加観測だけを返します。`obligation`、`oracle`、`validation plane` の責任と最終
-adjudication は親に残し、`test-quality-reviewer` は既存 scope 内の changed mutation、structural test、EVAL case の
-品質だけを見ます。baseline 不適用の failure を再現できない限り、`test-quality-reviewer` の原稿・contracts は変更しません。
+reviewer には baseline と起動理由を既存の確認観点・周辺 context と一緒に渡し、reviewer は追加観測だけを返します。
+`obligation`、`oracle`、`validation plane` の責任と最終 adjudication は親に残します。
+`test-coverage-reviewer` は独立した要件・振る舞いに対する test coverage の不足を、`test-validity-reviewer` は変更した
+test artifact が意図した失敗を検出する妥当性を、caller が与えた scope 内で確認します。
+
+`impl-lead` で test artifact を追加・変更・削除する Unit は、consumer-specific な `test-acceptance-gate` に従い両 reviewer の
+観測と親の adjudication を受入前に必須とします。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を
+選択します。いずれの route でも baseline self-QA、obligation、oracle、validation plane、最終 adjudication の owner は親です。
 reviewer の Pass、Gunte check の結果、または文章の配置そのものを受入根拠にせず、applicable mutation
 evidence を含む親 evidence が不足する場合は accept せず `stop-incomplete` とします。

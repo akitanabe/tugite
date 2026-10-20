@@ -6,11 +6,13 @@
 
 specialized review は concrete risk が Unit acceptance、external Action の可否、correction direction を変え得る場合だけ起動する。generic checklist や reviewer inventory を理由に全 reviewer を起動しない。`writing-principles-reviewer` はこの risk review に含めない。
 
-責務境界、security / external side effect、static performance / resource、changed test quality、change が導入した過剰実装の各 risk に応じて `responsibility-boundary-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer` を選ぶ。reviewer には Task Spec、base、AC、同一の immutable diff / evidence identity、surrounding context、Parent QA baseline と起動理由を渡し、fresh / context-isolated session で観測させる。
+責務境界、security / external side effect、static performance / resource、change が導入した過剰実装の各 risk に応じて `responsibility-boundary-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`over-engineering-reviewer` を選ぶ。reviewer には Task Spec、base、AC、同一の immutable diff / evidence identity、surrounding context、Parent QA baseline と起動理由を渡し、fresh / context-isolated session で観測させる。
 
 fresh specialized reviewer を起動する場合は `fork_turns = "none"` を指定する。
 
 同一 snapshot に対して選んだ reviewer の全結果を回収してから親が裁定する。batch 中は immutable read-only target に writer を入れず、全 result の回収と裁定後にだけ adopted finding の mutation を開始する。reviewer の Pass、finding 数、固定 round は accept / completion basis にしない。
+
+changed test artifact の通常の coverage / validity acceptance は `test-acceptance-gate.md` が所有し、concrete risk の認識を起動条件にしない。test-related な concrete risk の追加観測は可能だが、同 gate を代替しない。
 
 ## Adjudication and correction
 

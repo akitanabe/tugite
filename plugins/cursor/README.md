@@ -1,6 +1,6 @@
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Tugite v7.3.5
+# Tugite v7.3.6
 
 Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エージェント、スキルを配布するプラグインです。それぞれの作業手順は決められた役割と起動条件に従い、必要に応じて実装、レビュー、助言を担うエージェントを組み合わせます。
 
@@ -24,7 +24,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 
 実装を担うエージェントは `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
-リスクに応じて選択するレビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-quality-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
+レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。他の作業手順では具体的なリスクに応じて選択し、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
 
 initial candidate の実装方法について、内容を変更せずに別の視点を返す担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、採否と最終的な受け入れは親エージェントが行います。
 

@@ -82,12 +82,14 @@ required_agents=(
   security-side-effect-reviewer.toml
   senior-implementer.toml
   static-performance-reviewer.toml
-  test-quality-reviewer.toml
+  test-coverage-reviewer.toml
+  test-validity-reviewer.toml
   writing-principles-reviewer.toml
 )
 retired_agents=(
   expert-selection-reviewer.toml
   review-patch-refactorer.toml
+  test-quality-reviewer.toml
   writing-principles-refactorer.toml
 )
 
@@ -201,7 +203,8 @@ Installed agents:
   security-side-effect-reviewer
   senior-implementer
   static-performance-reviewer
-  test-quality-reviewer
+  test-coverage-reviewer
+  test-validity-reviewer
   writing-principles-reviewer
 
 IMPORTANT:

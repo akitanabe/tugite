@@ -385,17 +385,20 @@ finding_adjudication = caller
 workflow_ownership = caller'''
 count = 1
 paths = [
-  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/claude/agents/test-validity-reviewer.md",
   "plugins/claude/agents/responsibility-boundary-reviewer.md",
   "plugins/claude/agents/security-side-effect-reviewer.md",
   "plugins/claude/agents/static-performance-reviewer.md",
   "plugins/claude/agents/writing-principles-reviewer.md",
-  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
   "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
   "plugins/codex/install/agents/security-side-effect-reviewer.toml",
   "plugins/codex/install/agents/static-performance-reviewer.toml",
   "plugins/codex/install/agents/writing-principles-reviewer.toml",
-  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+  "plugins/cursor/agents/test-validity-reviewer.md",
   "plugins/cursor/agents/responsibility-boundary-reviewer.md",
   "plugins/cursor/agents/security-side-effect-reviewer.md",
   "plugins/cursor/agents/static-performance-reviewer.md",
@@ -408,17 +411,20 @@ kind = "occurrences"
 pattern = "material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。"
 count = 1
 paths = [
-  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/claude/agents/test-validity-reviewer.md",
   "plugins/claude/agents/responsibility-boundary-reviewer.md",
   "plugins/claude/agents/security-side-effect-reviewer.md",
   "plugins/claude/agents/static-performance-reviewer.md",
   "plugins/claude/agents/writing-principles-reviewer.md",
-  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
   "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
   "plugins/codex/install/agents/security-side-effect-reviewer.toml",
   "plugins/codex/install/agents/static-performance-reviewer.toml",
   "plugins/codex/install/agents/writing-principles-reviewer.toml",
-  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+  "plugins/cursor/agents/test-validity-reviewer.md",
   "plugins/cursor/agents/responsibility-boundary-reviewer.md",
   "plugins/cursor/agents/security-side-effect-reviewer.md",
   "plugins/cursor/agents/static-performance-reviewer.md",
@@ -426,25 +432,47 @@ paths = [
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-quality-reviewer-specialization]
+[contracts.test-coverage-reviewer-specialization]
 kind = "occurrences"
-pattern = "specialization = changed test quality and meaningful failure protection"
+pattern = "specialization = acceptance-criteria coverage and observable verification gaps"
 count = 1
 paths = [
-  "plugins/claude/agents/test-quality-reviewer.md",
-  "plugins/codex/install/agents/test-quality-reviewer.toml",
-  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-quality-reviewer-specialist-procedure]
+[contracts.test-coverage-reviewer-specialist-procedure]
 kind = "occurrences"
-pattern = "obligation → independently derived Expected Observation → test artifact → mutation evidence"
+pattern = "Acceptance Criteria → Expected Observation → test mapping → uncovered behavior"
 count = 1
 paths = [
-  "plugins/claude/agents/test-quality-reviewer.md",
-  "plugins/codex/install/agents/test-quality-reviewer.toml",
-  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-specialization]
+kind = "occurrences"
+pattern = "specialization = production-authoritative fixtures and independent discriminating oracles"
+count = 1
+paths = [
+  "plugins/claude/agents/test-validity-reviewer.md",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
+  "plugins/cursor/agents/test-validity-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-specialist-procedure]
+kind = "occurrences"
+pattern = "production input contract → fixture consistency → independent oracle → discriminating evidence"
+count = 1
+paths = [
+  "plugins/claude/agents/test-validity-reviewer.md",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
+  "plugins/cursor/agents/test-validity-reviewer.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
 
@@ -556,7 +584,8 @@ kind = "occurrences"
 pattern = "disallowedTools: Edit, Write, NotebookEdit"
 count = 1
 paths = [
-  "plugins/claude/agents/test-quality-reviewer.md",
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/claude/agents/test-validity-reviewer.md",
   "plugins/claude/agents/responsibility-boundary-reviewer.md",
   "plugins/claude/agents/security-side-effect-reviewer.md",
   "plugins/claude/agents/static-performance-reviewer.md",
@@ -575,7 +604,8 @@ kind = "occurrences"
 pattern = "sandbox_mode = \"read-only\""
 count = 1
 paths = [
-  "plugins/codex/install/agents/test-quality-reviewer.toml",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
   "plugins/codex/install/agents/responsibility-boundary-reviewer.toml",
   "plugins/codex/install/agents/security-side-effect-reviewer.toml",
   "plugins/codex/install/agents/static-performance-reviewer.toml",
@@ -588,10 +618,39 @@ kind = "occurrences"
 pattern = "readonly: true"
 count = 1
 paths = [
-  "plugins/cursor/agents/test-quality-reviewer.md",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+  "plugins/cursor/agents/test-validity-reviewer.md",
   "plugins/cursor/agents/responsibility-boundary-reviewer.md",
   "plugins/cursor/agents/security-side-effect-reviewer.md",
   "plugins/cursor/agents/static-performance-reviewer.md",
   "plugins/cursor/agents/writing-principles-reviewer.md",
 ]
 applies_to = ["cursor"]
+
+[contracts.test-reviewer-parent-authority]
+kind = "occurrences"
+pattern = "obligation、oracle、validation plane、Expected Observation、mutation applicability、finding の採否と最終 acceptance は親が所有します。"
+count = 1
+paths = [
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/claude/agents/test-validity-reviewer.md",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+  "plugins/cursor/agents/test-validity-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-reviewer-static-observation]
+kind = "occurrences"
+pattern = "read-only command だけを使い、test / code の編集、test 実行、mutation の作成・実行は行いません。"
+count = 1
+paths = [
+  "plugins/claude/agents/test-coverage-reviewer.md",
+  "plugins/claude/agents/test-validity-reviewer.md",
+  "plugins/codex/install/agents/test-coverage-reviewer.toml",
+  "plugins/codex/install/agents/test-validity-reviewer.toml",
+  "plugins/cursor/agents/test-coverage-reviewer.md",
+  "plugins/cursor/agents/test-validity-reviewer.md",
+]
+applies_to = ["claude", "codex", "cursor"]
