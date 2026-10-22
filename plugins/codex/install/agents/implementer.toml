@@ -1,7 +1,7 @@
 # Generated from shared/. Do not edit directly.
 name = "implementer"
 description = "Implement a clear, bounded Implementation Unit with TDD and return decisions and evidence to the parent."
-model = "gpt-6.1-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "xhigh"
 nickname_candidates = ["Implementer", "Builder", "TDD Worker"]
 developer_instructions = """

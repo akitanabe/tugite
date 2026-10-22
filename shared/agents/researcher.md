@@ -9,7 +9,7 @@ tools = ["Read", "Grep", "Glob", "Bash", "WebFetch", "WebSearch"]
 
 [codex]
 description = "Acquire caller-scoped local or external Web evidence and perform bounded analysis within a caller-defined objective, scope, and authority."
-model = "gpt-6.1-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "high"
 web_search = "cached"
 nickname_candidates = ["Research Agent", "Evidence Explorer", "Source Researcher"]
