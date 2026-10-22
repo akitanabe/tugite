@@ -8,7 +8,7 @@ effort = "medium"
 
 [codex]
 description = "Implement a narrow Implementation Unit with clear verification; use for general constrained changes, not only review fixes."
-model = "gpt-6.1-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "high"
 nickname_candidates = ["Focused Implementer", "Focused Builder", "Patch Worker"]
 
