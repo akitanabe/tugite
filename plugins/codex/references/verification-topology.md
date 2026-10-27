@@ -60,6 +60,9 @@ no corresponding Evidence observed、correspondence unresolved、execution state
 
 - correspondence が確定し、statically executable な Evidence が一つでもあれば usable とする。
 
+usable は静的な対応と実行可能性の state であり、実行済み、PASS、assertion の識別力、要求の検証完了を意味しない。
+診断・問題採否・実行と修復の判断は consumer が所有し、この Method の対応関係と区別する。
+
 - correspondence が確定し、対応 Evidence がすべて statically non-executed なら、その config fact と理由を保持する。
 
 - correspondence または execution state を静的 Data から確定できない場合は unresolved / indeterminate とし、absence へ変換しない。

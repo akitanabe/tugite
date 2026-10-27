@@ -3,7 +3,7 @@
 name: test-report
 description: >-
   ユーザーが `test-report` を明示した場合、または指定範囲のテスト群の理解・把握を求める意図が明確な場合に使う。
-  静的観測から Verification Topology を再構成し、実行・品質評価・remediation を行わず適応的に報告する。
+  指定範囲の全体像と振る舞い別詳細、根拠付きの静的診断、未確定事項を報告し、検証・修復する対象の判断を支える。
 ---
 <!-- @/only -->
 <!-- @only codex -->
@@ -11,7 +11,7 @@ description: >-
 name: test-report
 description: >-
   ユーザーが `test-report` を明示した場合、または指定範囲のテスト群の理解・把握を求める意図が明確な場合に使う。
-  静的観測から Verification Topology を再構成し、実行・品質評価・remediation を行わず適応的に報告する。
+  指定範囲の全体像と振る舞い別詳細、根拠付きの静的診断、未確定事項を報告し、検証・修復する対象の判断を支える。
 ---
 <!-- @/only -->
 <!-- @only cursor -->
@@ -19,7 +19,7 @@ description: >-
 name: test-report
 description: >-
   ユーザーが `test-report` を明示した場合、または指定範囲のテスト群の理解・把握を求める意図が明確な場合に使う。
-  静的観測から Verification Topology を再構成し、実行・品質評価・remediation を行わず適応的に報告する。
+  指定範囲の全体像と振る舞い別詳細、根拠付きの静的診断、未確定事項を報告し、検証・修復する対象の判断を支える。
 ---
 <!-- @/only -->
 
@@ -30,122 +30,99 @@ description: >-
 <!-- @/contract -->
 
 <!-- @contract test-report-responsibility -->
-静的 evidence から Verification Topology を再構成する public Skill です。他 workflow の工程として自動起動しません。
+指定範囲のテスト群について、全体像、振る舞い別詳細、根拠付きの静的診断、未確定事項を提示する public Skill です。検証・修復する対象の判断を支え、実行と修復は明示起動された `test-verify` が所有します。
 <!-- @/contract -->
 
-## Ownership and inputs
+## Inputs and ownership
 
-入力は invocation request、利用可能な context、repository / source、test scope、requested report、明示された destination / write authority
-です。path / directory の指定と機能・領域の自然言語指定を受け付けます。
+入力は request、repository / ref、source / test / config、要求・仕様と Context、bounded scope、requested report、明示された destination / write authority です。path / directory と機能・領域の自然言語指定を受け付けます。
 
 <!-- @contract test-report-ownership -->
-一回の invocation に対して exactly one の task-local Local Model を所有し、scope resolution、static read、input preparation、static interpretation、report projection は同じ Local Model の bounded projection を利用します。
+一回の invocation に対して exactly one の task-local Local Model を所有し、scope resolution、static read、Topology input、static diagnosis、report projection に同じ Model を利用します。
 <!-- @/contract -->
 
-生成された Skill から参照する既存の正本は、各 platform の generated path を基準に解決します。
+生成された Skill からの参照は各 platform の generated path を基準に解決します。
 
 - `../../references/model-construction.md`
 - `../../references/agentic-model-construction.md`
-- `../../references/behavior-model-observation.md`
 - `../../references/verification-topology.md`
+- `references/observation-and-diagnosis.md`：観測、診断、詳細出力の観点
 
-## Model Construction route
+## Scope and static observation
 
 <!-- @contract test-report-agentic-first -->
-Agentic Model Construction を first route とし、repository / source の静的観測、scope resolution、Behavior / Context candidate と provenance の acquisition scope を Agent-side で先に決めます。
+Agentic Model Construction を first route とし、repository / source の静的観測から bounded scope、要求・Context、test / target-code membership、runner / config の acquisition scope と根拠を Agent-side で先に決めます。
 <!-- @/contract -->
 
-Agent-side で bounded な分解・再観測を行っても material gap が残る場合、その gap が report の方向・範囲・意味を実質的に変えるか、
-resolution source と authority を確認します。
-
 <!-- @contract test-report-local-confirmation -->
-残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、`test-report` が caller-side で
-局所確認し、response を同じ Local Model へ Reintegration します。
+bounded な分解・再観測後に残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ局所確認し、response を同じ Local Model へ reintegrate します。
 <!-- @/contract -->
 
 <!-- @contract test-report-limitation-boundary -->
-Human-owned でない evidence limitation、取得不能な source、execution capability の不足、または単なる Agent の不確かさは Human の選択で
-埋めず、current understanding、試した解消経路、limitation、qualification を返して停止します。局所 response により scope / write authority を
-広げません。
+Human-owned でない取得不能や不確かさは Human の選択で埋めず、試した解消経路と limitation を保持します。方向・範囲・意味を確定できなければ qualified な部分報告で停止します。確認によって scope / write authority を暗黙に広げません。
 <!-- @/contract -->
-
-## Static scope observation
-
-最初の Action は invocation request と repository / config の静的構造から、test scope candidate、対応し得る target-code unit candidate、
-authority を持ち得る Context、runner / config evidence surface と各 source basis を取得します。この Action では candidate の採否を
-決めず、test、source、CI を実行しません。
 
 <!-- @contract test-report-acquisition-scope -->
-scope resolution Calculation は candidate Data から bounded test membership、対応する target-code units、Context candidate の acquisition / read scope、
-必要な observation surface を決め、その根拠を resolved-scope Data として保持します。これは取得範囲の決定であり、Behavior grounding や
-authority を持つ Context 間の semantic precedence の解決ではありません。
+resolved-scope Data は bounded test membership、target-code units、要求・Context の read scope、必要な observation surface と根拠を保持します。これは取得範囲の決定であり、Behavior grounding や semantic precedence の最終解決ではありません。
 <!-- @/contract -->
 
-read Action は決定済み membership に従って全 member を静的に読み、resolved / observed test files、resolved / observed target-code units、
-Context candidates、Case / Evidence / config facts、source locations を observation Data として返します。
+決定した membership を `references/observation-and-diagnosis.md` に従って静的に読み、条件、実際の assertion、config facts、source location を取得します。
 
 <!-- @contract test-report-completeness -->
-completeness Calculation は resolved set と observed set の一覧差から判定し、resolved membership とその basis を report の traceability まで保持します。
+resolved set と observed set の一覧差から completeness を判定し、両 membership と根拠を出力まで保持します。未読 member は再観測を試し、残れば明示します。未読を含む scope の absence を主張しません。
 <!-- @/contract -->
-
-除外済み candidate や Agent の relevance 自己申告を母集団にしません。未読 member がある場合は bounded decomposition と再観測を先に
-試します。Human-owned decision による scope reduction、decomposition、または qualified continuation が成立した場合だけ、実際に観測した
-scope に相対化して継続します。未読 member が残る間は absence observation を生成しません。
 
 <!-- @contract test-report-zero-tests -->
-解決済み test scope が zero tests であることは有効な観測結果であり、scope 自体を解決できない結果と区別して報告します。
+解決済み test scope が zero tests である結果と、scope 自体を解決できない結果を区別します。zero tests でも要求側の候補と観測限界を保持します。
 <!-- @/contract -->
 
-## Verification Topology Method mapping
+## Verification Topology
+
+<!-- @contract test-report-requirement-derived-candidates -->
+要求・仕様と authoritative Context の意味からも Behavior candidate を構成し、既存 test に現れる振る舞いだけを母集団にしません。対象 test は discovery signal、Case、Evidence、scope fact とし、自身の Behavior / Expected Observation の正当性の根拠にはしません。
+<!-- @/contract -->
 
 <!-- @contract test-report-topology-input -->
-Behavior candidate、authority を持ち得る Context、Case / Evidence / config facts、resolved / observed membership と completeness basis、各 provenance / source location を
-consumer input として準備します。対象 test は discovery signal、Case、Evidence、scope fact としてだけ渡します。
-<!-- @/contract -->
-
-<!-- @contract test-report-candidate-preservation -->
-acquisition scope 内で観測した Behavior / Context candidate は semantic authority の採否を決めず、provenance と適用範囲を失わずに渡します。
+Behavior / Context candidate、provenance と適用範囲、Case / Evidence / config facts、resolved / observed membership と completeness basis、source location を consumer input として準備します。要求側の未解決点と test-only candidate も失わずに渡します。
 <!-- @/contract -->
 
 <!-- @contract test-report-topology-method -->
-準備した consumer input を `Verification Topology` Method に渡し、返された Topology Data を同じ Local Model へ reintegrate します。
+consumer input を唯一の grounding・対応関係の正本である `Verification Topology` Method に渡し、Topology Data を同じ Local Model へ reintegrate します。grounding、precedence、Expected Observation、correspondence、execution state、absence の意味を変更しません。
 <!-- @/contract -->
 
-static interpretation は返された relation、state、limits、traceability を report の読者と requested scope に合わせて整理します。Method の grounding、
-precedence、Expected Observation、correspondence、execution state、absence の意味は変更しません。BMO の内部分類は Human 向け report の中心語にせず、
-Observation Limits と evidence traceability に投影します。
+## Static diagnosis
 
-<!-- @contract test-report-human-facing-projection -->
-observed scope、Topology、Observation Limits、evidence traceability と retained qualification を含む report candidate の内容・構成・tone を確定した後、one-shot response の返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って report 全体の Human 向け prose へ適用します。scope、静的観測の範囲、未実行・未確認・対応未解決・absence の区別、relation、state、limits、source location の意味と caller の write authority は `test-report` が保持します。
-<!-- @/contract -->
-
-<!-- @contract test-report-human-facing-projection-verification -->
-共通の Final output boundary に従う report の出力前確認では、observed evidence、scope、qualification、traceability を保ち、test、source、CI の実行、品質評価、remediation を開始しません。
-<!-- @/contract -->
-
-## Report boundary
-
-<!-- @contract test-report-behavior-first-composition -->
-Report は、対象ドメインの Behavior、Expected Observation、それを観測する semantic Case を中心に構成し、Evidence との対応、対応未解決、観測範囲に相対的な absence、Observation Limits を追跡可能にします。
-<!-- @/contract -->
-
-<!-- @contract test-report-supporting-context -->
-framework、runner/config、suite/directory、file/function identity、Unit / Integration / Feature / E2E 等の分類は、scope、静的実行状態、observation boundary、traceability の理解に必要な補助情報として提示します。これらを主要な分類軸にせず、個々の function / file の列挙や要約を report の主目的にしません。
-<!-- @/contract -->
-
-<!-- @contract test-report-case-relation-preservation -->
-Method から返された Case の意味的シナリオ単位と Expected Observation ↔ Case の many-to-many relation を report でも保持します。一つの Case が複数の test / assertion に支えられる場合や、一つの test が複数の Expected Observation を支える場合を function 単位に平坦化しません。
+<!-- @contract test-report-diagnosis -->
+Topology と観測した要求・test・source・config の根拠を照合し、静的に確認できた問題、実行確認が必要な疑い、判断材料の不足を区別します。各指摘に選択用の識別子、確認状態、根拠と location、見逃しうる問題、次に確認する点を残します。診断は `references/observation-and-diagnosis.md` に従い、静的診断を runtime 実証として扱いません。
 <!-- @/contract -->
 
 <!-- @contract test-report-static-boundary -->
-test、target code、source、CI を実行せず、quality verdict、coverage verdict、severity、remediation、planning、implementation、後続 Action を開始しません。
+test、target code、source、CI を実行せず、source / test / config の修正や remediation、`test-verify` への自動遷移を行いません。次に確認する点の提示は実行・修復の許可ではありません。
+<!-- @/contract -->
+
+## Report and handoff
+
+<!-- @contract test-report-full-scope-details -->
+概要だけで終了せず、問題のない箇所も含む observed scope 全体の Behavior → Expected Observation ↔ Case → Evidence を辿れる詳細を提示します。正常・境界・異常の観測された条件、実際の assertion、source location、未対応 Evidence、要求側の evidence gap、観測限界を保持します。優先度は表示順に使い、詳細を省く理由にしません。
+<!-- @/contract -->
+
+<!-- @contract test-report-case-relation-preservation -->
+Case の意味的シナリオ単位と Expected Observation ↔ Case の many-to-many relation を保持し、function / file 単位に平坦化しません。framework、runner、suite、test level は scope と traceability の補助情報です。
 <!-- @/contract -->
 
 <!-- @contract test-report-output -->
-observed scope、Topology、Behavior、Expected Observation、Case、Evidence、execution state、unresolved correspondence、scope-relative absence、BMO derivation limits を含む Observation Limits、source / config traceability を、request に適応した report へ投影します。
+観測した repository / ref、resolved / observed scope、要求根拠、Behavior、Expected Observation、Case / Evidence の参照先、execution state、対応不明、scope-relative absence、導出・grounding・観測限界と診断を出力します。未読、未実行、skip、対応不明、証拠なしは別の状態として残します。
 <!-- @/contract -->
 
-固定 heading、table、tree、report schema は要求しません。
+<!-- @contract test-report-handoff -->
+report 全体または識別子で選択した指摘を、Human が `test-verify` の入力にできます。report は事前実行の必須要件ではなく、直接の bounded target も verify の入口です。引き継ぎはこの report と参照先で足り、専用台帳や巨大な中間成果物を要求しません。
+<!-- @/contract -->
+
+<!-- @contract test-report-human-facing-projection -->
+report candidate を確定後、`../../references/human-facing-projection.md` の Final output boundary を適用します。observed scope 全体の詳細、診断の確認状態、qualification、relation、source location と write authority を保持して出力前に確認します。
+<!-- @/contract -->
+
+固定 heading、table、tree、report schema は要求しません。長い場合も概要から全文の詳細へ辿れる構成にし、詳細を単なる作成予定にしません。
 
 <!-- @contract test-report-write-boundary -->
 明示された destination と write authority がある場合だけ report artifact をその範囲へ書きます。report のために source、test、config、無関係 artifact を変更しません。
@@ -155,12 +132,6 @@ observed scope、Topology、Behavior、Expected Observation、Case、Evidence、
 既定では one-shot response を返します。
 <!-- @/contract -->
 
-`visualize-that` その他の Skill は依存要件ではありません。
+## Completion and stop
 
-## Non-goals
-
-- test execution、CI observation、runtime compliance の検証
-- test quality / sufficiency / coverage の評価、改善提案、remediation
-- fixed report tree、closed Case taxonomy、single-parent topology
-- BMO / Model Construction の意味や result contract の複製
-- RMO consumer、Reality verification、EVAL
+scope と観測限界を明示し、observed scope 全体の詳細と診断を traceable に返せたら終了します。未取得の範囲や未確定事項は解消済みとせず部分報告に残します。要求・根拠不足から独立 grounding できない場合も、取得した Case / Evidence を捨てず、判定不能な理由を返します。

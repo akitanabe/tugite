@@ -54,16 +54,16 @@ slice = "test-verify-explicit-only"
 pattern = "Human が明示した場合だけ開始する public Skill"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-direct-ownership-6194ad90b253]
+[contracts.test-verify-direct-ownership-e37fa84b3a38]
 kind = "requires"
 slice = "test-verify-direct-ownership"
-pattern = "top-level で `test-verify` を実行する agent が direct owner であり、bounded verification target の解決、runtime evidence の取得、Problem の採否、因果境界内の remediation、risk review、candidate commit、Completion Gate、final verification を一つの lifecycle で所有する。"
+pattern = "top-level で `test-verify` を実行する agent が direct owner であり、bounded verification target の解決、runtime evidence の取得、Problem の採否、因果境界内の remediation、risk review、changed-test acceptance、applicable Completion Gate、final verification を一つの lifecycle で所有する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-baseline-parent-self-qa-c68cbff59c47]
+[contracts.test-verify-baseline-parent-self-qa-2a1489151cb2]
 kind = "requires"
 slice = "test-verify-baseline-parent-self-qa"
-pattern = "その agent は repository Test QA baseline の parent responsibility（obligation、common oracle、validation plane、final adjudication）を baseline self-QA として履行する。"
+pattern = "その agent は repository Test QA baseline の owner responsibility（obligation、common oracle、validation plane、final adjudication）を baseline self-QA として履行する。この責務は独立した `impl-lead` 固有の Parent QA phase や parent / worker hierarchy、Implementation Unit を導入しない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-verify-local-model-4822ace736c6]
@@ -192,16 +192,16 @@ slice = "test-verify-destructive-effect"
 pattern = "principal、exact target、operation を示す effect 単位の Human explicit confirmation を blocking precondition とし、effect identity または target が不明なら qualified incomplete とする。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-completion-sequence-a901c56e5eb7]
+[contracts.test-verify-completion-sequence-ac11f4f28e2a]
 kind = "requires"
 slice = "test-verify-completion-sequence"
-pattern = "target-causal scope の exact change だけを candidate commit にし、必須の `references/completion-gate.md` を通過させた後、その gate-complete commit に repository-native final verification を実行する。"
+pattern = "変更があるときは target-causal scope の exact change を immutable candidate snapshot として固定し、`references/test-acceptance-gate.md` の applicability を判定する。test-accepted または not-applicable の snapshot を `references/completion-gate.md` へ渡し、gate-complete snapshot に repository-native final verification を実行する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-post-final-state-fb2e4b3a82db]
+[contracts.test-verify-post-final-state-652851bc8c8a]
 kind = "requires"
 slice = "test-verify-post-final-state"
-pattern = "final verification 後かつ complete の前に、gate-complete commit、HEAD、index、working tree、temporary / output artifact、retention / cleanup state を独立再観測して safe post-state を確認する。"
+pattern = "final verification 後かつ complete の前に、検証対象 snapshot、HEAD、index、working tree、temporary / output artifact、retention / cleanup state を独立再観測して safe post-state を確認する。既存の無関係な dirty state は baseline ownership と比較して保存する。state が unknown または unexpected dirty なら complete にしない。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-verify-post-final-blocking-ffcbe48f2055]
@@ -234,16 +234,16 @@ slice = "test-verify-risk-review-flow"
 pattern = "result を finding Data として direct owner へ返し、Flow 内では finding の採否、correction direction、acceptance を決めない。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-completion-flow-db873ceb849f]
+[contracts.test-verify-completion-flow-e5828c55c829]
 kind = "requires"
 slice = "test-verify-completion-flow"
-pattern = "Trigger: remediation と applicable verification が Green で、target-causal scope の candidate commit が存在する。"
+pattern = "Trigger: 変更ありの candidate snapshot に対する applicable verification と必要な review が完了し、Test Acceptance Gate が test-accepted または not-applicable である。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-completion-integrity-dea7b9acb3b5]
+[contracts.test-verify-completion-integrity-46d4eae1fa43]
 kind = "requires"
 slice = "test-verify-completion-flow"
-pattern = "candidate commit が verified baseline から target-causal scope の最終変更だけを含み、temporary mutation と mutation-only artifact を含まず、HEAD が candidate commit と一致し、index と working tree が clean であることを確認する。"
+pattern = "candidate snapshot が verified baseline から target-causal scope の最終変更だけを含み、temporary mutation と mutation-only artifact を含まず、current content / diff と一致し、既存 dirty state が baseline ownership と一致することを確認する。commit 済みなら HEAD が candidate commit と一致することも確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-verify-completion-writing-scope-2fc0e46b7bdc]
@@ -252,8 +252,77 @@ slice = "test-verify-completion-writing-scope"
 pattern = "public documentation / caller-facing contract accuracy に対する writing-only finding Data"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-verify-flow-incomplete-projection-8dc215778931]
+[contracts.test-verify-flow-incomplete-projection-6c7508f6bcd8]
 kind = "requires"
 slice = "test-verify-flow-incomplete-projection"
-pattern = "risk review と Completion Gate の local Flow が返す `stop-incomplete` は invocation 外向きには `qualified incomplete` へ投影し、別の terminal state は作らない。"
+pattern = "risk review、Test Acceptance Gate、Completion Gate の local Flow が返す `stop-incomplete` は invocation 外向きには `qualified incomplete` へ投影し、別の terminal state は作らない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-report-handoff-035dab839dc0]
+kind = "requires"
+slice = "test-verify-report-handoff"
+pattern = "report は任意の入口であり、事前実行を必要としない。report がある場合は repository / ref、観測 scope、要求根拠、Expected Observation、Case / Evidence 参照、選択した指摘 ID と確認状態を入力として受け取る。report の結論を採用済み Problem として扱わず、現在の repository / ref と根拠を再確認する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-selection-boundary-ef00c88fa292]
+kind = "requires"
+slice = "test-verify-selection-boundary"
+pattern = "report 全体を選んだ場合も実行・修正可能範囲を確認する。指摘の選択は scope の入力であり write / commit authority を付与しない。未選択の指摘は未選択のまま保持し、解決済みにしない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-no-change-409e099a8a63]
+kind = "requires"
+slice = "test-verify-no-change"
+pattern = "変更不要・問題不成立のときは baseline と最終 state の一致、bounded target の要求と最終 Evidence の双方向照合、applicable repository-native final verification を確認して complete にできる。変更レビュー、Test Acceptance Gate、Completion Gate、空コミットは要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-commit-authority-6ea43f23df86]
+kind = "requires"
+slice = "test-verify-commit-authority"
+pattern = "commit authority がある場合だけ candidate commit を作成・amend する。authority がない場合は base、exact diff / content identity、既存 dirty-state ownership を固定した uncommitted snapshot で gate と検証を行う。検証の成立と commit の実施を別々に報告し、commit しないことだけを verification failure にしない。依頼された必須 commit が未完了ならその action は pending と明記する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-finding-outcomes-79ee62d789f6]
+kind = "requires"
+slice = "test-verify-finding-outcomes"
+pattern = "report 由来の指摘は同じ ID を保持して、修正・検証済み／問題不成立／未解決とその根拠を説明する。直接指定から得た Problem も同様に追跡可能にし、未選択・incidental finding と区別する。未読、skip、未実行、対応不明、証拠なしの区別を保持する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-test-acceptance-policy-17eb6f13615e]
+kind = "requires"
+slice = "test-verify-test-acceptance-policy"
+pattern = "Test Acceptance Gate は changed test artifact の coverage / validity を受入前に確認する。automated test、fixture、oracle、executable test contract の追加・変更・削除（skip / assertion 弱体化を含む）がある場合に applicable とし、test-only も対象にする。production-only と no-change は not-applicable とし、既存テスト全体の再審査を要求しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-test-acceptance-ownership-92795dfdad4e]
+kind = "requires"
+slice = "test-verify-test-acceptance-ownership"
+pattern = "direct owner が obligation、oracle、validation plane、Expected Observation、necessary verification、mutation applicability、finding adjudication、acceptance を所有する。fresh / context-isolated な test-coverage-reviewer と test-validity-reviewer は同じ immutable candidate snapshot を read-only / report-only で観測する。reviewer Pass は受入根拠ではなく、baseline self-QA を代替しない。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-test-acceptance-flow-56536d80178c]
+kind = "requires"
+slice = "test-verify-test-acceptance-flow"
+pattern = "Trigger: baseline self-QA と必要な risk review 後、変更ありの immutable candidate snapshot が固定された。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-verification-method-document]
+kind = "occurrences"
+pattern = "# Verification and Causal Repair"
+count = 1
+paths = ["plugins/claude/skills/test-verify/references/verification-method.md", "plugins/codex/skills/test-verify/references/verification-method.md", "plugins/cursor/skills/test-verify/references/verification-method.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-execution-safety-document]
+kind = "occurrences"
+pattern = "# Execution Safety"
+count = 1
+paths = ["plugins/claude/skills/test-verify/references/execution-safety.md", "plugins/codex/skills/test-verify/references/execution-safety.md", "plugins/cursor/skills/test-verify/references/execution-safety.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-verify-test-acceptance-gate-document]
+kind = "occurrences"
+pattern = "# Test Acceptance Gate"
+count = 1
+paths = ["plugins/claude/skills/test-verify/references/test-acceptance-gate.md", "plugins/codex/skills/test-verify/references/test-acceptance-gate.md", "plugins/cursor/skills/test-verify/references/test-acceptance-gate.md"]
 applies_to = ["claude", "codex", "cursor"]

@@ -1390,10 +1390,13 @@ slice = "human-facing-projection-noflow"
 pattern = "固定 Procedure、Programmatic Flow、辞書置換器、読みやすさ validator、score、固定 schema は追加しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.repository-test-qa-route-boundary-cb44810c1e2d]
+[contracts.repository-test-qa-route-boundary-c871400408aa]
 kind = "requires"
 slice = "repository-test-qa-route-boundary"
 pattern = '''`impl-lead` で test artifact を追加・変更・削除する Unit は、consumer-specific な `test-acceptance-gate` に従い両 reviewer の
-観測と親の adjudication を受入前に必須とします。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を
-選択します。いずれの route でも baseline self-QA、obligation、oracle、validation plane、最終 adjudication の owner は親です。'''
+観測と親の adjudication を受入前に必須とします。`test-verify` で同じ test artifact を変更する場合も、専用の
+`test-acceptance-gate` に従い両 reviewer の観測と direct owner の adjudication を受入前に必須とします。
+production-only / no-change は変更テスト受入の対象外です。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
+baseline self-QA、obligation、oracle、validation plane、最終 adjudication は route の QA owner が所有します。
+`impl-lead` では親、`test-verify` では direct owner が担い、共通 baseline は Unit / Parent QA hierarchy を要求しません。'''
 applies_to = ["repository-guidelines", "agents-guidance"]

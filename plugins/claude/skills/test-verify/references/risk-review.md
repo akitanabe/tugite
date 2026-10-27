@@ -8,7 +8,9 @@ specialized review は、direct owner が baseline self-QA を完了した後、
 
 baseline self-QA は Task Specification、base、Acceptance Criteria、immutable diff / evidence identity、surrounding context、grounded Expected Observation、Derived Problem、causal membership、runtime evidence、baseline failure disposition に対して obligation、common oracle、validation plane、applicable mutation evidence を direct owner が確認する。reviewer の Pass は acceptance basis にならず、reviewer は oracle、finding adoption、correction、completion を所有しない。
 
-責務境界、security / external side effect、static performance / resource、changed-test coverage / validity、過剰実装の concrete risk に応じて、direct owner は `responsibility-boundary-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer` から必要最小限を選ぶ。この risk materiality と reviewer selection は autonomous judgment であり、Programmatic Flow の expected-output oracle にしない。
+責務境界、security / external side effect、static performance / resource、過剰実装の concrete risk に応じて、direct owner は `responsibility-boundary-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`over-engineering-reviewer` から必要最小限を選ぶ。この risk materiality と reviewer selection は autonomous judgment であり、Programmatic Flow の expected-output oracle にしない。
+
+changed test artifact の通常の coverage / validity acceptance は `test-acceptance-gate.md` が所有する。同じ観測を risk review で重複起動せず、test-related な追加 risk は既存の acceptance evidence と区別して必要最小限に扱う。
 
 ## Programmatic Flow
 

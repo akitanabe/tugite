@@ -70,7 +70,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、`visualize-that`（任意入力を意味を保った図解 HTML へ変換し capability-relative に描画確認）、
 `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から全体像・振る舞い別詳細・根拠付き問題を示す診断 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
@@ -143,27 +143,27 @@ autonomous outcome oracle の不存在を保証したとは扱いません。
 
 ## Test QA baseline contract
 
-この section は、実装の入口や reviewer の有無に依存しない親 QA の共通下限を定義します。次の stable Data がこの
+この section は、実装の入口や reviewer の有無に依存しない QA owner の共通下限を定義します。次の stable Data がこの
 section の判断基準であり、Gunte の URL は provenance の参照だけに使います。
 `test_artifacts` は適用対象、`qa_inputs` は全 route/reviewer variant で固定する判断 packet、`common_evidence` は input
-variant 内で固定する evidence identity と、全 input variant に共通する parent oracle を表します。
+variant 内で固定する evidence identity と、全 input variant に共通する common oracle を表します。
 
 ```toml
 policy_id = "test-qa-baseline-v1"
 test_artifacts = ["automated test", "Gunte predicate/contract", "fixture/oracle", "EVAL"]
 qa_inputs = ["Task Spec", "base", "acceptance criteria", "diff", "evidence", "surrounding context"]
-common_evidence = ["evidence identity is fixed within each input variant", "parent oracle is common across input variants"]
-owner = "parent QA"
+common_evidence = ["evidence identity is fixed within each input variant", "oracle is common across input variants"]
+owner = "route-specific QA owner"
 routes = ["impl-lead", "non-impl-lead"]
 baseline_self_qa = "required on every route"
 reviewer = "additional observation; invocation requirement follows route-specific gate"
-reviewer_handoff = "pass baseline and reason in existing context; parent adjudicates findings"
-parent_responsibility = "obligation, oracle, validation plane, final adjudication"
+reviewer_handoff = "pass baseline and reason in existing context; QA owner adjudicates findings"
+owner_responsibility = "obligation, oracle, validation plane, final adjudication"
 reviewer_scope = "changed-test coverage and validity within caller-supplied scope"
 gunte_antipattern_url = "https://github.com/akitanabe/gunte/blob/main/docs/gunte-antipatterns.md"
 gunte_antipattern_url_use = "provenance only; runtime retrieval is not required"
 minimum_checks = [
-  "obligation/oracle owner = parent QA",
+  "obligation/oracle owner = route-specific QA owner",
   "appropriate validation plane is explicit",
   "do not infer semantics from prose layout",
   "reject empty or overbroad slice, decoy, custom parser, and duplicate Gunte guarantee",
@@ -176,17 +176,20 @@ accept_prohibition = [
 ]
 ```
 
-全 route で親が `qa_inputs` の `Task Spec`、`base`、`acceptance criteria`、`diff`、`evidence`、`surrounding context` と
-`common_evidence` の input-variant identity / common parent oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
+全 route で QA owner が `qa_inputs` の `Task Spec`、`base`、`acceptance criteria`、`diff`、`evidence`、`surrounding context` と
+`common_evidence` の input-variant identity / common oracle を固定し、baseline self-QA を実行してから受入を裁定します。適用対象の
 `test_artifacts` は automated test、Gunte predicate/contract、fixture/oracle、EVAL であり、qa input と混同しません。
 EVAL を test_artifact に含むことは、計画へ EVAL corpus を追加する既定義務ではありません。
 reviewer には baseline と起動理由を既存の確認観点・周辺 context と一緒に渡し、reviewer は追加観測だけを返します。
-`obligation`、`oracle`、`validation plane` の責任と最終 adjudication は親に残します。
+`obligation`、`oracle`、`validation plane` の責任と最終 adjudication は QA owner に残します。
 `test-coverage-reviewer` は独立した要件・振る舞いに対する test coverage の不足を、`test-validity-reviewer` は変更した
 test artifact が意図した失敗を検出する妥当性を、caller が与えた scope 内で確認します。
 
 `impl-lead` で test artifact を追加・変更・削除する Unit は、consumer-specific な `test-acceptance-gate` に従い両 reviewer の
-観測と親の adjudication を受入前に必須とします。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を
-選択します。いずれの route でも baseline self-QA、obligation、oracle、validation plane、最終 adjudication の owner は親です。
+観測と親の adjudication を受入前に必須とします。`test-verify` で同じ test artifact を変更する場合も、専用の
+`test-acceptance-gate` に従い両 reviewer の観測と direct owner の adjudication を受入前に必須とします。
+production-only / no-change は変更テスト受入の対象外です。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
+baseline self-QA、obligation、oracle、validation plane、最終 adjudication は route の QA owner が所有します。
+`impl-lead` では親、`test-verify` では direct owner が担い、共通 baseline は Unit / Parent QA hierarchy を要求しません。
 reviewer の Pass、Gunte check の結果、または文章の配置そのものを受入根拠にせず、applicable mutation
-evidence を含む親 evidence が不足する場合は accept せず `stop-incomplete` とします。
+evidence を含む QA owner evidence が不足する場合は accept せず `stop-incomplete` とします。
