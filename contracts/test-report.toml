@@ -12,132 +12,127 @@ applies_to = ["claude", "codex", "cursor"]
 [contracts.test-report-trigger-0153196872e1]
 kind = "requires"
 slice = "test-report-trigger"
-pattern = "`test-report` の明示指定、または bounded test scope のテスト群を理解・把握したいことが明確な request で開始します。"
+pattern = '''`test-report` の明示指定、または bounded test scope のテスト群を理解・把握したいことが明確な request で開始します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-responsibility-78022590dfdf]
+[contracts.test-report-responsibility-19c739a6ff62]
 kind = "requires"
 slice = "test-report-responsibility"
-pattern = "静的 evidence から Verification Topology を再構成する public Skill です。他 workflow の工程として自動起動しません。"
+pattern = '''指定範囲のテスト群について、全体像、振る舞い別詳細、根拠付きの静的診断、未確定事項を提示する public Skill です。検証・修復する対象の判断を支え、実行と修復は明示起動された `test-verify` が所有します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-ownership-9d9a672d141a]
+[contracts.test-report-ownership-ab7ed5c38622]
 kind = "requires"
 slice = "test-report-ownership"
-pattern = "exactly one の task-local Local Model を所有し、scope resolution、static read、input preparation、static interpretation、report projection は同じ Local Model の bounded projection を利用します。"
+pattern = '''一回の invocation に対して exactly one の task-local Local Model を所有し、scope resolution、static read、Topology input、static diagnosis、report projection に同じ Model を利用します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-agentic-first-d5c89556f797]
+[contracts.test-report-agentic-first-c4e8af85eaf2]
 kind = "requires"
 slice = "test-report-agentic-first"
-pattern = "Agentic Model Construction を first route とし、repository / source の静的観測、scope resolution、Behavior / Context candidate と provenance の acquisition scope を Agent-side で先に決めます。"
+pattern = '''Agentic Model Construction を first route とし、repository / source の静的観測から bounded scope、要求・Context、test / target-code membership、runner / config の acquisition scope と根拠を Agent-side で先に決めます。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-local-confirmation-48dd7d3bcc1d]
+[contracts.test-report-local-confirmation-bcc918088dc5]
 kind = "requires"
 slice = "test-report-local-confirmation"
-pattern = '''残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ、`test-report` が caller-side で
-局所確認し、response を同じ Local Model へ Reintegration します。'''
+pattern = '''bounded な分解・再観測後に残る material gap の fact、scope intent、authority、または部分観測で継続する判断が Human-owned の場合だけ局所確認し、response を同じ Local Model へ reintegrate します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-limitation-boundary-14d9c2d3ae3d]
+[contracts.test-report-limitation-boundary-d29f67ff78be]
 kind = "requires"
 slice = "test-report-limitation-boundary"
-pattern = '''Human-owned でない evidence limitation、取得不能な source、execution capability の不足、または単なる Agent の不確かさは Human の選択で
-埋めず、current understanding、試した解消経路、limitation、qualification を返して停止します。局所 response により scope / write authority を
-広げません。'''
+pattern = '''Human-owned でない取得不能や不確かさは Human の選択で埋めず、試した解消経路と limitation を保持します。方向・範囲・意味を確定できなければ qualified な部分報告で停止します。確認によって scope / write authority を暗黙に広げません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-acquisition-scope-4c6040e1623f]
+[contracts.test-report-acquisition-scope-ac2206b9c192]
 kind = "requires"
 slice = "test-report-acquisition-scope"
-pattern = '''これは取得範囲の決定であり、Behavior grounding や
-authority を持つ Context 間の semantic precedence の解決ではありません。'''
+pattern = '''resolved-scope Data は bounded test membership、target-code units、要求・Context の read scope、必要な observation surface と根拠を保持します。これは取得範囲の決定であり、Behavior grounding や semantic precedence の最終解決ではありません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-completeness-9450a11ecf5c]
+[contracts.test-report-completeness-418aafc80861]
 kind = "requires"
 slice = "test-report-completeness"
-pattern = "completeness Calculation は resolved set と observed set の一覧差から判定し、resolved membership とその basis を report の traceability まで保持します。"
+pattern = '''resolved set と observed set の一覧差から completeness を判定し、両 membership と根拠を出力まで保持します。未読 member は再観測を試し、残れば明示します。未読を含む scope の absence を主張しません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-zero-tests-4773285011e7]
+[contracts.test-report-zero-tests-34a8eb2ad056]
 kind = "requires"
 slice = "test-report-zero-tests"
-pattern = "解決済み test scope が zero tests であることは有効な観測結果であり、scope 自体を解決できない結果と区別して報告します。"
+pattern = '''解決済み test scope が zero tests である結果と、scope 自体を解決できない結果を区別します。zero tests でも要求側の候補と観測限界を保持します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-topology-input-f722cdcae0ec]
+[contracts.test-report-requirement-derived-candidates-a5f50e100fb1]
+kind = "requires"
+slice = "test-report-requirement-derived-candidates"
+pattern = '''要求・仕様と authoritative Context の意味からも Behavior candidate を構成し、既存 test に現れる振る舞いだけを母集団にしません。対象 test は discovery signal、Case、Evidence、scope fact とし、自身の Behavior / Expected Observation の正当性の根拠にはしません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-topology-input-284b01508881]
 kind = "requires"
 slice = "test-report-topology-input"
-pattern = '''Behavior candidate、authority を持ち得る Context、Case / Evidence / config facts、resolved / observed membership と completeness basis、各 provenance / source location を
-consumer input として準備します。対象 test は discovery signal、Case、Evidence、scope fact としてだけ渡します。'''
+pattern = '''Behavior / Context candidate、provenance と適用範囲、Case / Evidence / config facts、resolved / observed membership と completeness basis、source location を consumer input として準備します。要求側の未解決点と test-only candidate も失わずに渡します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-candidate-preservation-4d641dd018af]
-kind = "requires"
-slice = "test-report-candidate-preservation"
-pattern = "acquisition scope 内で観測した Behavior / Context candidate は semantic authority の採否を決めず、provenance と適用範囲を失わずに渡します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-topology-method-068013a5153d]
+[contracts.test-report-topology-method-f0250f7508fc]
 kind = "requires"
 slice = "test-report-topology-method"
-pattern = "準備した consumer input を `Verification Topology` Method に渡し、返された Topology Data を同じ Local Model へ reintegrate します。"
+pattern = '''consumer input を唯一の grounding・対応関係の正本である `Verification Topology` Method に渡し、Topology Data を同じ Local Model へ reintegrate します。grounding、precedence、Expected Observation、correspondence、execution state、absence の意味を変更しません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-static-boundary-634298f39a09]
+[contracts.test-report-diagnosis-b4e0fe9fed4b]
+kind = "requires"
+slice = "test-report-diagnosis"
+pattern = '''Topology と観測した要求・test・source・config の根拠を照合し、静的に確認できた問題、実行確認が必要な疑い、判断材料の不足を区別します。各指摘に選択用の識別子、確認状態、根拠と location、見逃しうる問題、次に確認する点を残します。診断は `references/observation-and-diagnosis.md` に従い、静的診断を runtime 実証として扱いません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-static-boundary-268fc17a74f5]
 kind = "requires"
 slice = "test-report-static-boundary"
-pattern = "test、target code、source、CI を実行せず、quality verdict、coverage verdict、severity、remediation、planning、implementation、後続 Action を開始しません。"
+pattern = '''test、target code、source、CI を実行せず、source / test / config の修正や remediation、`test-verify` への自動遷移を行いません。次に確認する点の提示は実行・修復の許可ではありません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-output-8b18af9fc6fa]
+[contracts.test-report-full-scope-details-f01a770372a0]
 kind = "requires"
-slice = "test-report-output"
-pattern = "observed scope、Topology、Behavior、Expected Observation、Case、Evidence、execution state、unresolved correspondence、scope-relative absence、BMO derivation limits を含む Observation Limits、source / config traceability を、request に適応した report へ投影します。"
+slice = "test-report-full-scope-details"
+pattern = '''概要だけで終了せず、問題のない箇所も含む observed scope 全体の Behavior → Expected Observation ↔ Case → Evidence を辿れる詳細を提示します。正常・境界・異常の観測された条件、実際の assertion、source location、未対応 Evidence、要求側の evidence gap、観測限界を保持します。優先度は表示順に使い、詳細を省く理由にしません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-behavior-first-composition-64967bf4e6a4]
-kind = "requires"
-slice = "test-report-behavior-first-composition"
-pattern = "Report は、対象ドメインの Behavior、Expected Observation、それを観測する semantic Case を中心に構成し、Evidence との対応、対応未解決、観測範囲に相対的な absence、Observation Limits を追跡可能にします。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-supporting-context-7439cb2a1747]
-kind = "requires"
-slice = "test-report-supporting-context"
-pattern = "framework、runner/config、suite/directory、file/function identity、Unit / Integration / Feature / E2E 等の分類は、scope、静的実行状態、observation boundary、traceability の理解に必要な補助情報として提示します。これらを主要な分類軸にせず、個々の function / file の列挙や要約を report の主目的にしません。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-case-relation-preservation-74b4b4d506f5]
+[contracts.test-report-case-relation-preservation-3411721fd1df]
 kind = "requires"
 slice = "test-report-case-relation-preservation"
-pattern = "Method から返された Case の意味的シナリオ単位と Expected Observation ↔ Case の many-to-many relation を report でも保持します。一つの Case が複数の test / assertion に支えられる場合や、一つの test が複数の Expected Observation を支える場合を function 単位に平坦化しません。"
+pattern = '''Case の意味的シナリオ単位と Expected Observation ↔ Case の many-to-many relation を保持し、function / file 単位に平坦化しません。framework、runner、suite、test level は scope と traceability の補助情報です。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-human-facing-b0dbb1dd1bc0]
+[contracts.test-report-output-dcbab2e32471]
+kind = "requires"
+slice = "test-report-output"
+pattern = '''観測した repository / ref、resolved / observed scope、要求根拠、Behavior、Expected Observation、Case / Evidence の参照先、execution state、対応不明、scope-relative absence、導出・grounding・観測限界と診断を出力します。未読、未実行、skip、対応不明、証拠なしは別の状態として残します。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-handoff-68a9b4e09e27]
+kind = "requires"
+slice = "test-report-handoff"
+pattern = '''report 全体または識別子で選択した指摘を、Human が `test-verify` の入力にできます。report は事前実行の必須要件ではなく、直接の bounded target も verify の入口です。引き継ぎはこの report と参照先で足り、専用台帳や巨大な中間成果物を要求しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-human-facing-projection-63390b7ee78c]
 kind = "requires"
 slice = "test-report-human-facing-projection"
-pattern = '''observed scope、Topology、Observation Limits、evidence traceability と retained qualification を含む report candidate の内容・構成・tone を確定した後、one-shot response の返却または明示された destination への artifact write の前に、`../../references/human-facing-projection.md` の Final output boundary に従って report 全体の Human 向け prose へ適用します。scope、静的観測の範囲、未実行・未確認・対応未解決・absence の区別、relation、state、limits、source location の意味と caller の write authority は `test-report` が保持します。'''
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.test-report-human-facing-projection-70956d587141]
-kind = "requires"
-slice = "test-report-human-facing-projection-verification"
-pattern = "共通の Final output boundary に従う report の出力前確認では、observed evidence、scope、qualification、traceability を保ち、test、source、CI の実行、品質評価、remediation を開始しません。"
+pattern = '''report candidate を確定後、`../../references/human-facing-projection.md` の Final output boundary を適用します。observed scope 全体の詳細、診断の確認状態、qualification、relation、source location と write authority を保持して出力前に確認します。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-write-boundary-f2ebde0dd435]
 kind = "requires"
 slice = "test-report-write-boundary"
-pattern = "明示された destination と write authority がある場合だけ report artifact をその範囲へ書きます。report のために source、test、config、無関係 artifact を変更しません。"
+pattern = '''明示された destination と write authority がある場合だけ report artifact をその範囲へ書きます。report のために source、test、config、無関係 artifact を変更しません。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-default-output-72d411d412a3]
 kind = "requires"
 slice = "test-report-default-output"
-pattern = "既定では one-shot response を返します。"
+pattern = '''既定では one-shot response を返します。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-codex-invocation-policy]

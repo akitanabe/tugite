@@ -56,6 +56,7 @@
     "shared/skill/plan-agent/SKILL.md",
     "shared/skill/find-way/SKILL.md",
     "shared/skill/test-report/SKILL.md",
+    "shared/skill/test-report/references/observation-and-diagnosis.md",
     "shared/skill/test-verify/SKILL.md",
     "shared/skill/test-verify/references/risk-review.md",
     "shared/skill/test-verify/references/completion-gate.md",
@@ -1476,76 +1477,76 @@
       "sha256": "aee5e0007175c99d5cd4fb3592b7c42dc0ec76286eba08bde11bcb793cb57423"
     },
     {
-      "id": "test-report-responsibility-78022590dfdf",
-      "sha256": "226d664968bb597d5cd8ef41e45fb193bca1ba90162877ba49595d84e0d52c8f"
+      "id": "test-report-responsibility-19c739a6ff62",
+      "sha256": "2a4b56e9d8ff430b5db239ce5e1f1719327506f25822c2b24fa38ef22b76c529"
     },
     {
-      "id": "test-report-ownership-9d9a672d141a",
-      "sha256": "4a5570ab24bdce4c18a7d9fc29d3e40719a8547231f67dbc0e27e30b4ca4ad1d"
+      "id": "test-report-ownership-ab7ed5c38622",
+      "sha256": "9f59b38d9cbee4728c5b6b26460a6fc16747417e43f6b18a4d848afbe5843006"
     },
     {
-      "id": "test-report-agentic-first-d5c89556f797",
-      "sha256": "e11ae4b56fe0363470fcf710e2b2d7547b4e1cf4f7cabe511dc70c20378546b5"
+      "id": "test-report-agentic-first-c4e8af85eaf2",
+      "sha256": "6be7a69dcaf6fcbee6f48184adb1ec9ca38a53d206762e4d07f88ba0bb1f3b0f"
     },
     {
-      "id": "test-report-local-confirmation-48dd7d3bcc1d",
-      "sha256": "e8f8f5eadaa05b7826814f5a64a4317d962d3a89f8814762ff6159b4e688cdcd"
+      "id": "test-report-local-confirmation-bcc918088dc5",
+      "sha256": "34615aea60b122b8cf2bc23dfae9c4c490d0163981d2c8aae5ea663ffd347459"
     },
     {
-      "id": "test-report-limitation-boundary-14d9c2d3ae3d",
-      "sha256": "63e2e2136c93528f8ea6f2ffa538701dfea72405c8e17567832f8f4c3ad1b9db"
+      "id": "test-report-limitation-boundary-d29f67ff78be",
+      "sha256": "b5a252ed0cfdb4b5a5d8aaa1e8f9af957a33348d81d0da367941a707cc17acc5"
     },
     {
-      "id": "test-report-acquisition-scope-4c6040e1623f",
-      "sha256": "5de317ee36184ed6122b6c83773853ea56557c3a80bdbd777ce5952081cc0a3a"
+      "id": "test-report-acquisition-scope-ac2206b9c192",
+      "sha256": "6f00d06584bec5f86523f6cf1154b5b518aad3a8e2e8a14309c26cb355c7dab4"
     },
     {
-      "id": "test-report-completeness-9450a11ecf5c",
-      "sha256": "08a1906b8bee8a9ffa916a6df8d72bee7c46c715844b0fc76d02445e13d86ae7"
+      "id": "test-report-completeness-418aafc80861",
+      "sha256": "51342356fbe95acfb101edc747b24e1e2d3dbfef5c79aeea21791bcde72f6428"
     },
     {
-      "id": "test-report-zero-tests-4773285011e7",
-      "sha256": "b5104ec6c7d7b1802cb9e33d73f8d9c670b880e00a641a238f5ff875b3c175a0"
+      "id": "test-report-zero-tests-34a8eb2ad056",
+      "sha256": "10bdf165041c8e193d4c5c95de140d5481e19f2ac54cf1442b89cf1e17ecdb34"
     },
     {
-      "id": "test-report-topology-input-f722cdcae0ec",
-      "sha256": "919fc39062f25b219fc216898b9a59bccf87199e66f7d8e42ea87c9cd46f1afb"
+      "id": "test-report-requirement-derived-candidates-a5f50e100fb1",
+      "sha256": "9273546093a773c06523fb5b00cf17147e884a509c8baebc79d4c43b5e8b099b"
     },
     {
-      "id": "test-report-candidate-preservation-4d641dd018af",
-      "sha256": "ee9ebb29262d6b9e2252dcd252749a06c39d103b44e899d22617b8e691bc8318"
+      "id": "test-report-topology-input-284b01508881",
+      "sha256": "38ae40add9cbeca3845218c2c410914be25bf60e678a49b55502d037588510bc"
     },
     {
-      "id": "test-report-topology-method-068013a5153d",
-      "sha256": "f50b462cf882f985696fa30aaa6b4b3b775cf3345f4ccd3bc765700cac9eab6f"
+      "id": "test-report-topology-method-f0250f7508fc",
+      "sha256": "9659f40de82c82568b01ab5c7531976739726802b093fbc437280fbe034afea2"
     },
     {
-      "id": "test-report-static-boundary-634298f39a09",
-      "sha256": "c00bb8b899e33357def75ced2d079471e38284268c1fbdf0ccc6117b3e954192"
+      "id": "test-report-diagnosis-b4e0fe9fed4b",
+      "sha256": "69af2ab0ad3c0041763b5790f3f46a93da69cfc3512bb23e25d9751cec9be5ac"
     },
     {
-      "id": "test-report-output-8b18af9fc6fa",
-      "sha256": "808eec89b5ec86228c4fad5a058d7c56ca3614e814a07e97044bba935a1dcb92"
+      "id": "test-report-static-boundary-268fc17a74f5",
+      "sha256": "f8c47cf19a2d4b49e97736376f7aaaa04185d8d20ab4471a2b339867e6fc1e7b"
     },
     {
-      "id": "test-report-behavior-first-composition-64967bf4e6a4",
-      "sha256": "abf4ce0c6eb33109e731ccf376585caf2bf62771622698fc3c69f661912a8d43"
+      "id": "test-report-full-scope-details-f01a770372a0",
+      "sha256": "86b5a267f62675e0f668a85e275f6b82ff9ab3d4fd4589d395159ec22861ac37"
     },
     {
-      "id": "test-report-supporting-context-7439cb2a1747",
-      "sha256": "89fb727f1bb89d7d55f85bbf4666b3613f5ffe5b9c3184ba243d4d5ca50a131d"
+      "id": "test-report-case-relation-preservation-3411721fd1df",
+      "sha256": "badec8918d97abc6ae5c0bafa44c7db7518291d0d4d3dd70777606cb1f4a03cb"
     },
     {
-      "id": "test-report-case-relation-preservation-74b4b4d506f5",
-      "sha256": "97dccbecf568df9361f6b74f79681f6c816772311421f9aed7751fe5d6b0de58"
+      "id": "test-report-output-dcbab2e32471",
+      "sha256": "680db67c5e06242169c4564bc9a80cab10fea96fee6b5c1397f0e3afe85cbdfa"
     },
     {
-      "id": "test-report-human-facing-b0dbb1dd1bc0",
-      "sha256": "64455c4ffc2b71e567ec3227bdc390be570434c03c1540fc390d5e96330d9ee9"
+      "id": "test-report-handoff-68a9b4e09e27",
+      "sha256": "775b78cc2ba7b7ca0472781bd32e6286cfb1bda59aff20745cbed2683b49770d"
     },
     {
-      "id": "test-report-human-facing-projection-70956d587141",
-      "sha256": "4b9d7fcadb956c08a4632057605229dcda61cb0bcb2eebd906f0dd7d4acd4a69"
+      "id": "test-report-human-facing-projection-63390b7ee78c",
+      "sha256": "0423679e8b649bb77b8343ef8f6a20c192e0aa286517d0f27c93bc2d62d0ddfd"
     },
     {
       "id": "test-report-write-boundary-f2ebde0dd435",
@@ -4190,12 +4191,12 @@
     },
     {
       "kind": "span",
-      "id": "test-report-topology-input",
+      "id": "test-report-requirement-derived-candidates",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "test-report-candidate-preservation",
+      "id": "test-report-topology-input",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
@@ -4205,27 +4206,7 @@
     },
     {
       "kind": "span",
-      "id": "test-report-human-facing-projection",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-human-facing-projection-verification",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-behavior-first-composition",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-supporting-context",
-      "path": "shared/skill/test-report/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-report-case-relation-preservation",
+      "id": "test-report-diagnosis",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
@@ -4235,7 +4216,27 @@
     },
     {
       "kind": "span",
+      "id": "test-report-full-scope-details",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-case-relation-preservation",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-report-output",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-handoff",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-human-facing-projection",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {

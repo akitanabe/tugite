@@ -68,7 +68,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、`visualize-that`（任意入力を意味を保った図解 HTML へ変換し capability-relative に描画確認）、
 `impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から Verification Topology を再構成する非評価 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から全体像・振る舞い別詳細・根拠付き問題を示す診断 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
