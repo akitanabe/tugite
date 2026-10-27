@@ -58,6 +58,9 @@
     "shared/skill/test-report/SKILL.md",
     "shared/skill/test-report/references/observation-and-diagnosis.md",
     "shared/skill/test-verify/SKILL.md",
+    "shared/skill/test-verify/references/verification-method.md",
+    "shared/skill/test-verify/references/execution-safety.md",
+    "shared/skill/test-verify/references/test-acceptance-gate.md",
     "shared/skill/test-verify/references/risk-review.md",
     "shared/skill/test-verify/references/completion-gate.md",
     "shared/skill/review-refine/SKILL.md",
@@ -929,8 +932,8 @@
       "sha256": "9487aec627badd787e791beb5bf31076a90aacc49029b0f178996199c91b23d9"
     },
     {
-      "id": "repository-test-qa-route-boundary-cb44810c1e2d",
-      "sha256": "0c8c84d998701795662ff1f4f2cb781cb13b57ad4c0362582af9228059b59a18"
+      "id": "repository-test-qa-route-boundary-c871400408aa",
+      "sha256": "1eb606a6ba8d69920de2e1cf1460eef2fc05ea6066dea09b824cd2a377f6d889"
     },
     {
       "id": "shared-researcher-retained-e9f44941dc1d",
@@ -1585,12 +1588,12 @@
       "sha256": "2acbce956333c6f36bca6fd3042397315fda7bcbe84daea493ad1c75f6098aa2"
     },
     {
-      "id": "test-verify-direct-ownership-6194ad90b253",
-      "sha256": "403d43e8744a22f1f4e475124dbc6665789135b84099974878f32f38ec795eb8"
+      "id": "test-verify-direct-ownership-e37fa84b3a38",
+      "sha256": "6cd3184d45a2ca49bbad95c0e17d9e7414e87b3bddaa06b9c88e349a84aa2c5f"
     },
     {
-      "id": "test-verify-baseline-parent-self-qa-c68cbff59c47",
-      "sha256": "e8e938d58299f9fc749ee2e187c40dc6dd3adcec238b65161361e0a005a5c42a"
+      "id": "test-verify-baseline-parent-self-qa-2a1489151cb2",
+      "sha256": "bd3c92b2670b66dd4f34e48cfa78f17f08c1dbd1a550de471d31cc017828d8a1"
     },
     {
       "id": "test-verify-local-model-4822ace736c6",
@@ -1677,12 +1680,12 @@
       "sha256": "479f50bf7525a5e35a31eb3cac596b6f9fd40622e43a4f8ee7b1a5ac1d33a07c"
     },
     {
-      "id": "test-verify-completion-sequence-a901c56e5eb7",
-      "sha256": "a73378fa7a82eb118481cdc5d29294541f19383a635fcab6b5aed326412e1638"
+      "id": "test-verify-completion-sequence-ac11f4f28e2a",
+      "sha256": "af81ab3614cd98c6edd7375fe0911541cff4fa1cb2a339a56d024d2c87099851"
     },
     {
-      "id": "test-verify-post-final-state-fb2e4b3a82db",
-      "sha256": "86a697b6acba1c3ecc7dbaf2994f3cbbe2b814a662404cd7827c4cec7e1bfa8a"
+      "id": "test-verify-post-final-state-652851bc8c8a",
+      "sha256": "dd756531c72b172b8718aafc523c02795f21c10c5ae5d49967370c6040b101cd"
     },
     {
       "id": "test-verify-post-final-blocking-ffcbe48f2055",
@@ -1705,20 +1708,64 @@
       "sha256": "a043e020ab30d278cd0f0f86968241e7d06a0273c1705b04f8fe11eab841eca3"
     },
     {
-      "id": "test-verify-completion-flow-db873ceb849f",
-      "sha256": "74e84070ada9af18f6aa90a71fd74323184160f0351eae87ac7931cbdf45e76a"
+      "id": "test-verify-completion-flow-e5828c55c829",
+      "sha256": "3b77a5b6cde1d56764f3e0aa94a4ec7729ac725f5a7cffad4c057ed03eecf98a"
     },
     {
-      "id": "test-verify-completion-integrity-dea7b9acb3b5",
-      "sha256": "2d65d458830cef8f6669e4f7dd6149c0a55888b00b9844783a22efeb7ab948d6"
+      "id": "test-verify-completion-integrity-46d4eae1fa43",
+      "sha256": "c28917d929249443e7c97a6817a5029fa98a85845ff3a174fd1688023ec16643"
     },
     {
       "id": "test-verify-completion-writing-scope-2fc0e46b7bdc",
       "sha256": "9d7fd82e052fe2ccb98588054e3fb56964b4d33a277e2898327193bd45845a6e"
     },
     {
-      "id": "test-verify-flow-incomplete-projection-8dc215778931",
-      "sha256": "9bbd0a6edf4c49bf8796eb97547f167f5c282c666c4d7d4d73c408c2aab9d233"
+      "id": "test-verify-flow-incomplete-projection-6c7508f6bcd8",
+      "sha256": "50632c4bd93badf05e19cf5a47074e8b7a6fdf03ad8ec3f3c5990435f581a550"
+    },
+    {
+      "id": "test-verify-report-handoff-035dab839dc0",
+      "sha256": "753116c36a5af0081f8d6e3702703e231c0c0cf7f70f5a8b9d0bf6d8fb0653eb"
+    },
+    {
+      "id": "test-verify-selection-boundary-ef00c88fa292",
+      "sha256": "72a4422e3313b13f38e46d14051b0dc94b861ed72e47890d986aa9c1fb03cb85"
+    },
+    {
+      "id": "test-verify-no-change-409e099a8a63",
+      "sha256": "5e05ca37ef6b491e3c0de22161dc0a61246304c9d57aa718526195f594e801ee"
+    },
+    {
+      "id": "test-verify-commit-authority-6ea43f23df86",
+      "sha256": "0fa41940d6a5250f2456d80b754f93cdbd9a26e70b04ab5a705cbcda1a9bee2b"
+    },
+    {
+      "id": "test-verify-finding-outcomes-79ee62d789f6",
+      "sha256": "e3544e39c7ea285a5f85761785d9f8e2a46a7085aeb2593c0f67e1e8adc34c36"
+    },
+    {
+      "id": "test-verify-test-acceptance-policy-17eb6f13615e",
+      "sha256": "c215c6f4126edbea7161005a9d77e29a62e73c487da7b082f9cb5af4c7e55b2c"
+    },
+    {
+      "id": "test-verify-test-acceptance-ownership-92795dfdad4e",
+      "sha256": "3f50742cbf1b0686feed9a5f017a4a7392d98fdd21a0748464d408f893a6c5f3"
+    },
+    {
+      "id": "test-verify-test-acceptance-flow-56536d80178c",
+      "sha256": "f78d192456001ebce70120d4aaff3aa71df0095d23d1d285a4687d2b0fdf4072"
+    },
+    {
+      "id": "test-verify-verification-method-document",
+      "sha256": "077d5835d447239c10940732d87f2d1c52bc1cf99b6fad417e949b9828383692"
+    },
+    {
+      "id": "test-verify-execution-safety-document",
+      "sha256": "a4f485887acfa94fa8c28c3a8fe97877214518ae11c105d55d4bd07fc1f8377a"
+    },
+    {
+      "id": "test-verify-test-acceptance-gate-document",
+      "sha256": "169be9590a80523c1928870ffc957859a72ace09e6cb9eb1d85171cbdba262b9"
     },
     {
       "id": "review-refine-document",
@@ -4291,62 +4338,17 @@
     },
     {
       "kind": "span",
-      "id": "test-verify-topology-method",
+      "id": "test-verify-report-handoff",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "test-verify-topology-requirement-input",
+      "id": "test-verify-selection-boundary",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
       "kind": "span",
-      "id": "test-verify-bidirectional-reconciliation",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-baseline-identity",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-runtime-attribution",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-problem-classification",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-temporary-mutation",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-causal-remediation",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-pass-boundary",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-requirement-completion",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-external-effects",
-      "path": "shared/skill/test-verify/SKILL.md"
-    },
-    {
-      "kind": "span",
-      "id": "test-verify-destructive-effect",
+      "id": "test-verify-no-change",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
@@ -4356,7 +4358,7 @@
     },
     {
       "kind": "span",
-      "id": "test-verify-flow-incomplete-projection",
+      "id": "test-verify-commit-authority",
       "path": "shared/skill/test-verify/SKILL.md"
     },
     {
@@ -4366,8 +4368,93 @@
     },
     {
       "kind": "span",
+      "id": "test-verify-flow-incomplete-projection",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-finding-outcomes",
+      "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-verify-incomplete",
       "path": "shared/skill/test-verify/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-topology-method",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-topology-requirement-input",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-bidirectional-reconciliation",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-baseline-identity",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-runtime-attribution",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-problem-classification",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-causal-remediation",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-pass-boundary",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-requirement-completion",
+      "path": "shared/skill/test-verify/references/verification-method.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-external-effects",
+      "path": "shared/skill/test-verify/references/execution-safety.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-destructive-effect",
+      "path": "shared/skill/test-verify/references/execution-safety.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-temporary-mutation",
+      "path": "shared/skill/test-verify/references/execution-safety.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-test-acceptance-policy",
+      "path": "shared/skill/test-verify/references/test-acceptance-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-test-acceptance-ownership",
+      "path": "shared/skill/test-verify/references/test-acceptance-gate.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-verify-test-acceptance-flow",
+      "path": "shared/skill/test-verify/references/test-acceptance-gate.md"
     },
     {
       "kind": "span",
