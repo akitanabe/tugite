@@ -252,43 +252,44 @@ structural non-locality は独立 gate ではなく review viewpoint の一つ�
 
 ### test-report
 
-`test-report` は exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Human-owned material gap の場合だけ Interactive Model Construction を conditional route とする observation-only public Skill である。resolved scope の candidate / provenance / static Case / Evidence / config Data を準備し、shared Verification Topology が grounding、semantic precedence、BMO、relation、state を所有する。返された Topology と observation limits を用途に適応した report へ投影する。
+`test-report` は exactly one の task-local Local Model を所有する静的診断の public Skill である。Agentic Model Construction を first route とし、Human-owned material gap だけを局所確認する。要求・仕様からも Behavior candidate を構成し、対象 test 自身を期待値の正当性の根拠にしない。shared Verification Topology は grounding、semantic precedence、BMO、many-to-many relation、state を所有し、診断と report は consumer が所有する。
 
 ```text
 test-report
   ↓
-scope resolution and static Data preparation
+scope resolution → requirements / tests / source / config observation
   ↓
 shared Verification Topology
   ↓
-report projection → Human
+static diagnosis → full-scope report → Human
 ```
 
-責務は次に限定する。
+概要に加え、問題のない箇所を含む observed scope 全体の Behavior → Expected Observation ↔ Case → Evidence、条件、実際の assertion、source location を辿れる詳細を示す。未対応 Evidence、要求側の evidence gap、未読・未実行・skip・対応不明・証拠なしと観測限界を保持する。静的に確認した問題、実行確認が必要な疑い、判断材料の不足を区別し、指摘の識別子、根拠、見逃しうる問題、次に確認する点を残す。
 
-* test / target code の static observation
-* Verification Topology consumer input の準備と返却結果の report projection
-* observation limits の提示
-
-test quality judgment、remediation、planning、implementation は行わない。
+report の repository / ref、scope、要求根拠と参照先は任意の `test-verify` 引き継ぎに利用できる。test / source / CI の実行、source / test / config の変更、verify への自動遷移は行わない。固定 schema や専用台帳は要求しない。
 
 ### test-verify
 
-`test-verify` は明示された bounded test target を shared Verification Topology と grounded runtime evidence で検証し、top-level で `test-verify` を実行する agent が direct owner として target-causal Problem だけを Red → Green → Refactor で修復する public Skill である。その agent は repository Test QA baseline の parent responsibility（obligation、common oracle、validation plane、final adjudication）を baseline self-QA として履行する。`test-report` や `impl-lead` は nested invocation せず、独立した Parent QA phase、parent / worker hierarchy、Implementation Unit、Implementer delegation を導入しない。
+`test-verify` は明示された report 全体・選択した指摘、または直接の bounded target を shared Verification Topology と grounded runtime evidence で検証し、direct owner が許可された target-causal Problem だけを Red → Green → Refactor で修復する public Skill である。report の根拠は現状と再照合し、変化・不足・未確定部分を補う。未選択の指摘は解決済みにしない。report の事前実行や nested invocation は必要としない。
 
 ```text
-test-verify
+report / selected findings / direct bounded target
   ↓
-shared Verification Topology
+current scope and authority → shared Verification Topology
   ↓
-runtime evidence and causal Problem
+baseline / runtime evidence → Problem and causal judgment
   ↓
-direct remediation
-  ↓
-candidate commit → Completion Gate → final verification
+authorized repair if needed → bidirectional reconciliation
+  ├─ no change → final verification
+  └─ changed immutable snapshot → applicable test acceptance
+                                 → Completion Gate → final verification
 ```
 
-baseline identity と failure disposition を lifecycle 全体で固定し、missing / ineffective / non-executed / flaky / test-side / implementation discrepancy を区別する。execution identity の drift、結果の不安定、causal attribution の未確定のいずれかが target judgment を阻む場合は qualified incomplete とし、target chain と因果的に独立と判断できる観測だけを incidental finding として扱う。risk review と Completion Gate は consumer-specific であり、shared External Effects boundary を pre-action safety に利用する。local Flow の `stop-incomplete` は invocation 外向きに `qualified incomplete` へ投影する。
+direct owner は repository Test QA baseline の obligation、common oracle、validation plane、final adjudication を履行する。test / fixture / oracle / executable test contract の変更には両 coverage / validity reviewer の観測と direct owner の採否を必要とし、production-only / no-change に既存テスト全体の再審査を要求しない。risk review は concrete risk の追加観測とし、変更テスト受入と重複させない。`impl-lead` の Parent QA phase、parent / worker hierarchy、Implementation Unit、Implementer delegation は導入しない。
+
+baseline identity と failure disposition を維持し、test-side defect と production-side discrepancy を独立した要求根拠から区別する。PASS や一部修正だけを完了根拠にせず、要求と最終 Evidence の双方向照合を行う。no-change は変更レビューや空コミットなしで閉じる。変更ありでは immutable candidate snapshot に applicable gate と final verification を行い、commit authority がなければ base / exact diff / content identity を固定した uncommitted snapshot を使う。検証の成立と commit の実施を別々に報告する。
+
+shared External Effects boundary を pre-action safety に利用する。material な evidence / authority / causal attribution の不足や、要求変更・大きな設計変更が必要な問題は qualified incomplete とし、自動的に対象を拡張しない。local Flow の `stop-incomplete` も同じ外向き状態へ投影する。
 
 ### impl-lead
 

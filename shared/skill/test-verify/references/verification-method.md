@@ -55,4 +55,3 @@ remediation 後は targeted runtime verification と必要な repository-native 
 <!-- @contract test-verify-requirement-completion -->
 remediation の有無にかかわらず、完了判断では bounded target の要求から導出した Expected Observation 全体と最終 Evidence に `Bidirectional reconciliation` の照合を適用する。全件 PASS や一部 Problem の解消だけで完了にせず、完了に影響する要求、grounding、correspondence、derivation、observation scope の不足が残る場合は qualified incomplete とする。非 material な限界も結果に保持する。
 <!-- @/contract -->
-

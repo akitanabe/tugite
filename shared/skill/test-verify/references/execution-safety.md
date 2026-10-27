@@ -18,4 +18,3 @@ runner failure、結果不明、authority drift、qualified incomplete を含む
 
 mutation と mutation-only test / fixture / helper / config / dependency は deliverable に含めず、candidate snapshot（commit 済みならその tree）でも不在を確認する。mutation result が不安定なら同一条件の bounded rerun で観測し、stable evidence が得られない場合は verification success や implementation discrepancy を結論しない。
 <!-- @/contract -->
-
