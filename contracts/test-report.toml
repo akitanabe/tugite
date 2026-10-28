@@ -141,3 +141,27 @@ pattern = "allow_implicit_invocation: true"
 count = 1
 paths = ["plugins/codex/skills/test-report/agents/openai.yaml"]
 applies_to = ["codex"]
+
+[contracts.test-report-counterexamples-27408eeffd78]
+kind = "requires"
+slice = "test-report-counterexamples"
+pattern = '''要求違反なのに成功する見逃しと、要求を満たす正当変種なのに失敗する誤拒否を、具体的な入力・変更・assertion の反例で探索します。要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲、成立条件、counterevidence、未確認事項を保持し、表面的な Test Smells や要求への非明記だけでは finding にしません。反例診断と品質判断はこの consumer が所有し、Verification Topology へ移しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-counterexample-grounding-f1c88dd96f13]
+kind = "requires"
+slice = "test-report-counterexample-grounding"
+pattern = '''見逃し（false negative）は、要求に違反する具体的な入力・実装変更でも対象 assertion が成功する条件を探します。誤拒否（false positive）は、独立した要求・契約を満たす具体的な変更でも対象 assertion が失敗する条件を探します。対象 test 自身の期待値や現実装だけから変種の正当性を導出しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-counterexample-finding-550483c996a7]
+kind = "requires"
+slice = "test-report-counterexample-finding"
+pattern = '''各反例 finding は、要求・契約 / Expected Observation の根拠と所在、存在する Case / Evidence と test / source / config location、具体的な入力・変更・assertion、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を保持します。静的に確認できた問題、実行確認が必要な疑い、判断材料不足を区別し、反例未発見を品質保証にしません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-missing-evidence-finding-2d8011868ef1]
+kind = "requires"
+slice = "test-report-missing-evidence-finding"
+pattern = '''対応 Case / Evidence がない欠落は架空の Case / Evidence で埋めず、要求 / Expected Observation の根拠と所在、absence を判断した bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を残します。未読、未実行、対応不明を absence に変換しません。'''
+applies_to = ["claude", "codex", "cursor"]

@@ -53,6 +53,8 @@ consumer input を唯一の grounding・対応関係の正本である `Verifica
 
 Topology と観測した要求・test・source・config の根拠を照合し、静的に確認できた問題、実行確認が必要な疑い、判断材料の不足を区別します。各指摘に選択用の識別子、確認状態、根拠と location、見逃しうる問題、次に確認する点を残します。診断は `references/observation-and-diagnosis.md` に従い、静的診断を runtime 実証として扱いません。
 
+要求違反なのに成功する見逃しと、要求を満たす正当変種なのに失敗する誤拒否を、具体的な入力・変更・assertion の反例で探索します。要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲、成立条件、counterevidence、未確認事項を保持し、表面的な Test Smells や要求への非明記だけでは finding にしません。反例診断と品質判断はこの consumer が所有し、Verification Topology へ移しません。
+
 test、target code、source、CI を実行せず、source / test / config の修正や remediation、`test-verify` への自動遷移を行いません。次に確認する点の提示は実行・修復の許可ではありません。
 
 ## Report and handoff

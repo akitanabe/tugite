@@ -654,3 +654,55 @@ paths = [
   "plugins/cursor/agents/test-validity-reviewer.md",
 ]
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-coverage-reviewer-counterexample-boundary]
+kind = "occurrences"
+pattern = '''要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲を確認し、要求への非明記だけで制約を不要としません。mock、assertion 数、長さ、fixture 共有などの形状は探索の手掛かりです。具体的な入力・変更・assertion と要求結果を対比し、別 Case / assertion や契約による counterevidence を調べます。静的に確認できた問題、実行確認が必要な疑い、判断材料不足を分け、既存ログと今回の観測を区別します。反例未発見は品質保証ではありません。
+専門外の重要な反例も根拠付きで返せますが、各 reviewer に両方向の網羅を要求しません。要求と無関係な制約と正当変更の誤拒否が同じ原因・影響なら一つの finding にまとめます。'''
+count = 1
+paths = ["plugins/claude/agents/test-coverage-reviewer.md", "plugins/codex/install/agents/test-coverage-reviewer.toml", "plugins/cursor/agents/test-coverage-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-coverage-reviewer-missing-evidence]
+kind = "occurrences"
+pattern = '''反例には要求・契約の所在、存在する Case / Evidence と source location、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を含めます。Case / Evidence のない欠落では架空の参照を作らず、要求 / Expected Observation の根拠と所在、bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を示します。未読、未実行、対応不明と absence を区別します。'''
+count = 1
+paths = ["plugins/claude/agents/test-coverage-reviewer.md", "plugins/codex/install/agents/test-coverage-reviewer.toml", "plugins/cursor/agents/test-coverage-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-coverage-reviewer-counterexample-focus]
+kind = "occurrences"
+pattern = '''主に要求違反でも対象 test が成功する具体的な反例と、対応 Case / Evidence の欠落を探します。例えば書込み失敗後の部分更新を禁止する契約に対し、例外だけを assert して残存状態を見なければ、禁止された部分更新を見逃す条件と他 Case の保護を調べます。対象 assertion の穴と suite 全体の穴を区別します。'''
+count = 1
+paths = ["plugins/claude/agents/test-coverage-reviewer.md", "plugins/codex/install/agents/test-coverage-reviewer.toml", "plugins/cursor/agents/test-coverage-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-counterexample-boundary]
+kind = "occurrences"
+pattern = '''要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲を確認し、要求への非明記だけで制約を不要としません。mock、assertion 数、長さ、fixture 共有などの形状は探索の手掛かりです。具体的な入力・変更・assertion と要求結果を対比し、別 Case / assertion や契約による counterevidence を調べます。静的に確認できた問題、実行確認が必要な疑い、判断材料不足を分け、既存ログと今回の観測を区別します。反例未発見は品質保証ではありません。
+専門外の重要な反例も根拠付きで返せますが、各 reviewer に両方向の網羅を要求しません。要求と無関係な制約と正当変更の誤拒否が同じ原因・影響なら一つの finding にまとめます。'''
+count = 1
+paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-missing-evidence]
+kind = "occurrences"
+pattern = '''反例には要求・契約の所在、存在する Case / Evidence と source location、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を含めます。Case / Evidence のない欠落では架空の参照を作らず、要求 / Expected Observation の根拠と所在、bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を示します。未読、未実行、対応不明と absence を区別します。'''
+count = 1
+paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-counterexample-focus]
+kind = "occurrences"
+pattern = '''6. 主に oracle の識別能力と、契約に根拠のない固定が正当変種を誤拒否する反例を観測します。値・順序・内部構造・回数・表現・環境の変更を独立した契約で正当化し、どの assertion が拒否するか示します。'''
+count = 1
+paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-applicable-finding-data]
+kind = "occurrences"
+pattern = '''各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、独立した要求・契約 / oracle の根拠、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。production input の根拠、fixture の値と数量関係は、その finding の成立に applicable な場合に示します。
+見逃しでは具体的な要求違反と、対象 assertion が正当な振る舞いとその違反を区別できない条件を示します。誤拒否では具体的な正当変種を支える独立した契約、その成立条件と拒否する assertion を示し、誤実装との同値や数量関係を一律に要求しません。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。'''
+count = 1
+paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]

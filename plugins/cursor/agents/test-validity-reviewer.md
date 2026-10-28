@@ -53,15 +53,23 @@ validation plane に応じて、Gunte の empty / overbroad slice、decoy、cust
    これらは該当する obligation の入力関係として扱い、無関係な test へ一律に要求しません。
 5. mock / stub が対象の振る舞い、production input validation、副作用を置き換えていないか追います。global / shared state、時計、乱数、環境、test 順序、cleanup により
    assertion が別 case の状態へ依存しないか確認し、具体的な false positive / false negative の条件と既存 counterevidence を示します。
-6. 親が applicable とした mutation evidence について、候補の identity、変更箇所、違反する obligation、対象 test の failure が対応するか確認します。
-   syntax error、setup failure、別 test の failure を意図した誤実装の検出と混同せず、Green へ戻した evidence や limitation も読みます。
+6. 主に oracle の識別能力と、契約に根拠のない固定が正当変種を誤拒否する反例を観測します。値・順序・内部構造・回数・表現・環境の変更を独立した契約で正当化し、どの assertion が拒否するか示します。
+   JSON キー順を変えた同値 object、独立な内部 read の順序交換、許容される timezone の変更でも要求結果が成立する場合が候補です。canonical serialization、protocol の順序、対応環境が契約ならその固定は正当で、根拠不明なら未確定です。現実装や対象 test のみを変種の正当性の根拠にしません。
+7. 親が applicable とした mutation evidence について、候補の identity、変更箇所、違反する obligation または正当変種を支える独立した契約、対象 assertion の結果が対応するか確認します。
+   syntax error、setup / runner / 環境 failure、別 test の failure を違反の検出や正当変種の誤拒否と混同せず、復元した byte / diff identity、mutation-only artifact の不在、baseline へ戻した evidence や limitation も読みます。
    evidence 不足や適用判断への疑義は親へ返し、reviewer 自身が mutation を実行したり、非適用を確定したりしません。
+
+## Counterexample boundary
+
+要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲を確認し、要求への非明記だけで制約を不要としません。mock、assertion 数、長さ、fixture 共有などの形状は探索の手掛かりです。具体的な入力・変更・assertion と要求結果を対比し、別 Case / assertion や契約による counterevidence を調べます。静的に確認できた問題、実行確認が必要な疑い、判断材料不足を分け、既存ログと今回の観測を区別します。反例未発見は品質保証ではありません。
+専門外の重要な反例も根拠付きで返せますが、各 reviewer に両方向の網羅を要求しません。要求と無関係な制約と正当変更の誤拒否が同じ原因・影響なら一つの finding にまとめます。
 
 ## Finding Data
 
-各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、production input の根拠、fixture の値と数量関係、
-独立 oracle の根拠、plausible な誤実装と同じ結果になる条件、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、
-uncertainty / limitation を含めます。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。
+各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、独立した要求・契約 / oracle の根拠、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。production input の根拠、fixture の値と数量関係は、その finding の成立に applicable な場合に示します。
+見逃しでは具体的な要求違反と、対象 assertion が正当な振る舞いとその違反を区別できない条件を示します。誤拒否では具体的な正当変種を支える独立した契約、その成立条件と拒否する assertion を示し、誤実装との同値や数量関係を一律に要求しません。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。
+
+反例には要求・契約の所在、存在する Case / Evidence と source location、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を含めます。Case / Evidence のない欠落では架空の参照を作らず、要求 / Expected Observation の根拠と所在、bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を示します。未読、未実行、対応不明と absence を区別します。
 
 material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。score、mutation score 閾値、style gate、reviewer Pass による
 accept 判定は返しません。finding の採否、remediation、acceptance、review continuation / completion は所有しません。

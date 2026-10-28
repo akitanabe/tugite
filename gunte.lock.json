@@ -849,6 +849,10 @@
       "sha256": "70643e6d7fb05bc9822ba01cd41f4ec621a2faf06776feb790cc364e1a725f88"
     },
     {
+      "id": "implementation-review-test-counterexamples",
+      "sha256": "3eec62998c3f47d081cf64699eee8892ee8f06b488bf921658204144233c5a0d"
+    },
+    {
       "id": "shared-researcher-retained-e9f44941dc1d",
       "sha256": "9c95ed8cf2df5a6c3a1c78332a25430bdbda8428afcfbb8d3516b04cc63feec3"
     },
@@ -1105,6 +1109,34 @@
       "sha256": "3d9999b6519271671182ae9ef050a928674f11b96be5d38b163cc51d3858cbc8"
     },
     {
+      "id": "test-coverage-reviewer-counterexample-boundary",
+      "sha256": "3ec7bd0f5f62427581e012c9f4f6c5940d79eae022f6257970c3be3eb4d9ad21"
+    },
+    {
+      "id": "test-coverage-reviewer-missing-evidence",
+      "sha256": "910b4d8441dbddb83e5a5c2b905e5002bc80e00071a13b0e63f7d4409eb19f03"
+    },
+    {
+      "id": "test-coverage-reviewer-counterexample-focus",
+      "sha256": "1d25e1bb246c7d3c220d19bcb42e202f67424991140c64b5f01d54348feb395f"
+    },
+    {
+      "id": "test-validity-reviewer-counterexample-boundary",
+      "sha256": "70b50d3628484e24874677a394d764572126b36e9919cca0c7dd72f8d71cc707"
+    },
+    {
+      "id": "test-validity-reviewer-missing-evidence",
+      "sha256": "2a2fb07b91ab50f0354707a78d7ee69fff2df2a7032c52b1d700277d3dd42203"
+    },
+    {
+      "id": "test-validity-reviewer-counterexample-focus",
+      "sha256": "aba5439034ef6542e8ad0f2a742ce956322a3d13ee25fecc3a9f1608b07202dc"
+    },
+    {
+      "id": "test-validity-reviewer-applicable-finding-data",
+      "sha256": "a92aca4e4062b4159a916565d80aa356724eac3d6dc5a69a73aef476b83eb2ef"
+    },
+    {
       "id": "test-report-document",
       "sha256": "bb7fe8091bbf60027b232203a88b44676c66ca488120240d2430fec0b10db740"
     },
@@ -1195,6 +1227,22 @@
     {
       "id": "test-report-codex-invocation-policy",
       "sha256": "d9c7930acbe776914281a00490fec9dba2f3da2c9932606487986925347e0648"
+    },
+    {
+      "id": "test-report-counterexamples-27408eeffd78",
+      "sha256": "6d871b5c679ddc24afe7a4a3e712e3351fa9cf00b4092a7b8af28dcf20c8f356"
+    },
+    {
+      "id": "test-report-counterexample-grounding-f1c88dd96f13",
+      "sha256": "983e4fa17ec2309affbddba262abe0295389daf2829c0ad4d5f5cf7c1e426367"
+    },
+    {
+      "id": "test-report-counterexample-finding-550483c996a7",
+      "sha256": "2858aca648c4c538690e36771a7fe7b1161e789cf6bfe8ab9386435720e48723"
+    },
+    {
+      "id": "test-report-missing-evidence-finding-2d8011868ef1",
+      "sha256": "69fd5cecc4bfdb8062b5ca1e7138d0cbbe34d7984e1701c87444515b4faae1c7"
     },
     {
       "id": "test-verify-document",
@@ -1401,6 +1449,22 @@
       "sha256": "169be9590a80523c1928870ffc957859a72ace09e6cb9eb1d85171cbdba262b9"
     },
     {
+      "id": "test-verify-temporary-mutation-67687529c7db",
+      "sha256": "3de37184ee76e82e6853103394da726ca3ed1c6e0cb12da6526edfdb276397ce"
+    },
+    {
+      "id": "test-verify-temporary-mutation-c0aacac1a138",
+      "sha256": "8352a68dc573757852feac06c4d4006840f4308e2b0366f64ed8b733f961cf7d"
+    },
+    {
+      "id": "test-verify-temporary-mutation-3c4b4b52ca7e",
+      "sha256": "28f8e58166138a77ba49d9e41a0495427874f24d8fdd231d69e5d4074aa9adbf"
+    },
+    {
+      "id": "test-verify-test-counterexamples",
+      "sha256": "47b3b508e7db9be929b2d84e0e22e1f49fc28b293e9aa3cbc2d6b5c5f7def1bc"
+    },
+    {
       "id": "impl-lead-document",
       "sha256": "e8f2a94bc059d990906928d052e4be5d69a807e50a0ccb91e87d8a87d5060334"
     },
@@ -1599,6 +1663,22 @@
     {
       "id": "impl-lead-plan-consumption-6067d6b04edf",
       "sha256": "490d77c8d96591f95e5ff09bd4ad44e80c2961bc0edb61ffd3d84940dd2a8e7e"
+    },
+    {
+      "id": "impl-lead-test-counterexamples",
+      "sha256": "936170d9ec7dac32959948457adbabdf64b1da5cb3e93df2ba84ac98c41e6a6c"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-directions-e3943807e679",
+      "sha256": "89c56787b367c4e164897e8c3dcfcde2eb20d65dcbca0eeedb4deaed9978b196"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-identity-c2a9a87be44c",
+      "sha256": "0b32732e497b2437738fb45040f99480829470ae1d0dbfd4e34305e9f2a81616"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-restoration-bb92fd6116ed",
+      "sha256": "c7e08c1d19e175d8458b5deb3c3c84e4cdea993f7368a1fe8926d6d943392c41"
     },
     {
       "id": "impl-plan-method-document",
@@ -3041,6 +3121,11 @@
     },
     {
       "kind": "span",
+      "id": "test-report-counterexamples",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
       "id": "test-report-static-boundary",
       "path": "shared/skill/test-report/SKILL.md"
     },
@@ -3078,6 +3163,21 @@
       "kind": "span",
       "id": "test-report-default-output",
       "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-counterexample-grounding",
+      "path": "shared/skill/test-report/references/observation-and-diagnosis.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-counterexample-finding",
+      "path": "shared/skill/test-report/references/observation-and-diagnosis.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-missing-evidence-finding",
+      "path": "shared/skill/test-report/references/observation-and-diagnosis.md"
     },
     {
       "kind": "span",

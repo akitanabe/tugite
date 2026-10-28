@@ -21,7 +21,8 @@ skip / assertion 弱体化、Gunte predicate / contract、EVAL case も含む。
 not-applicable は実装のテストが十分という判定ではない。
 
 共通 packet に changed artifact 一覧、Expected Observation、test execution evidence、mutation applicability と applicable mutation evidence、fixture の authoritative source と input consistency を確認する context を加える。
-coverage は必要な observable behavior と test artifact の対応、validity は誤実装を区別する verification evidence の妥当性を観測する。
+coverage は主に必要な observable behavior と test artifact の対応・欠落、要求違反でも成功する反例を観測する。validity は主に oracle の識別能力と、独立した契約を満たす正当変種でも失敗する反例を観測する。両者の専門観測を合わせて双方向を扱い、各 reviewer に双方の網羅を要求せず専門外の重要な発見も保持する。
+要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲、反例の成立条件、counterevidence と確認状態を packet / finding に保持する。Case / Evidence のない欠落は要求側の根拠と bounded observed scope / completeness basis で示し、架空の参照を作らない。
 framework / style の好みや固定 score は基準にしない。根拠不足を実行結果や reviewer Pass で補わない。
 mutation applicability と evidence generation は execution / QA owner の責務であり、reviewer は mutation を実行しない。恒久的・常時の mutation testing を要求しない。
 
