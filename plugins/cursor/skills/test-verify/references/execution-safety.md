@@ -9,7 +9,11 @@ destructive または irreversible な test effect は isolated かつ non-produ
 
 ## Temporary mutation
 
-temporary mutation は、Expected Observation 違反を対象 verification が検出できるか確認する必要がある場合だけ、識別 evidence を得るために bounded に使える。実行前に exact target、pre-mutation byte / diff identity、dirty-state ownership、restore procedure、restore verification を固定し、task-owned かつ安全に完全復元できる範囲に限定する。
+temporary mutation は、Expected Observation 違反を対象 verification が検出できるか、または独立した要求・契約に照らして正当な変種を誤拒否しないか確認する必要がある場合だけ、識別 evidence を得るために bounded に使える。実行前に exact target、pre-mutation byte / diff identity、dirty-state ownership、restore procedure、restore verification を固定し、task-owned かつ安全に完全復元できる範囲に限定する。
+
+変更前に検証方向、具体的な変種と成立条件、要求・契約の provenance / 適用範囲、対象 assertion と予測される観測を固定する。正当変種は公開契約、互換性、非機能要求、authoritative Context に独立して照合し、対象 test や現実装だけで正当化しない。根拠が不明なら実証済みとせず、材料不足を保持する。
+
+変更前の baseline と同じ runner / command / environment / membership で対象 assertion への到達と結果を記録する。違反が成功する場合も、正当変種が失敗する場合も、対象が実際に実行されたことと因果関係を確認する。対象 assertion による拒否と syntax / setup / runner / 環境 failure、別 test の failure を区別し、単なる失敗や skip を検出・誤拒否の実証にしない。
 
 runner failure、結果不明、authority drift、qualified incomplete を含むすべての exit で、remediation、review、outcome projection より前に finally 相当の restoration を行い、pre-mutation byte / diff identity と mutation-only artifact の不在を検証する。restore result が不明なら後続の write / commit を禁止し、retained state evidence を伴う qualified incomplete とする。
 

@@ -14,6 +14,8 @@ direct owner が obligation、oracle、validation plane、Expected Observation�
 
 同じ Task Spec、comparison base、candidate snapshot / exact diff、changed artifact 一覧、AC、Expected Observation、surrounding context、baseline self-QA、runtime evidence、mutation applicability と applicable mutation evidence を両 reviewer に渡す。fixture の authoritative source と input consistency を確認できる根拠も含める。必要な evidence がないことを reviewer Pass で補わない。
 
+coverage は主に要求違反でも対象 test が成功する反例と検証対象の欠落を、validity は主に oracle の識別能力と独立した契約を満たす正当変種の誤拒否を観測する。両者を合わせて双方向を扱い、各 reviewer に双方の網羅を課さず専門外の重要な発見も保持する。要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲、成立条件、counterevidence、静的確認 / 実行を要する疑い / 材料不足を保持する。欠落に Case / Evidence がなければ要求側の根拠と bounded observed scope / completeness basis を示し、架空の参照を作らない。
+
 coverage は normal / boundary / error / exception / side-effect failure の applicable behavior と artifact の対応、削除・skip・弱体化による hole、implementation detail への過剰固定を観測する。validity は oracle independence、fixture と production path の整合、input consistency、mock / shared state の影響と meaningful failure protection を観測する。数量0、単価と金額の同値、按分前後の同値等で意図した振る舞いと plausible incorrect behavior の差が消える場合は、該当 input / assertion と識別できない違反を根拠にする。fixed score や style preference は受入基準にしない。
 
 mutation の適用判断と evidence generation は direct owner が `execution-safety.md` に従って行い、reviewer 自身は実行しない。mutation 非適用なら理由と利用できる識別 evidence を明記する。
@@ -39,7 +41,7 @@ fresh test reviewer を起動する場合は `fork_turns = "none"` を指定す�
 
 ## Adjudication and correction
 
-direct owner は両 finding を evidence、AC、scope、risk に照合して adopted / rejected / unresolved に裁定する。必要な evidence が十分で、採用した correction が完了し、acceptance を妨げる unresolved finding がない場合だけ `test-accepted` とする。
+direct owner は制約の原因と誤拒否の影響の重複を整理し、両方向の反例と counterevidence を扱う。direct owner は両 finding を evidence、AC、scope、risk に照合して adopted / rejected / unresolved に裁定する。必要な evidence が十分で、採用した correction が完了し、acceptance を妨げる unresolved finding がない場合だけ `test-accepted` とする。
 
 semantic な test correction は direct owner が因果範囲内で行い、baseline self-QA、affected runtime verification、必要な risk review を確認して snapshot を更新する。新 snapshot に affected coverage / validity goal の fresh review を行い再裁定する。影響しない review evidence は before / after diff とともに保持できる。commit / amend は authority がある場合だけ行う。
 

@@ -309,3 +309,10 @@ kind = "requires"
 slice = "impl-lead-plan-consumption"
 pattern = "親は準備済み委譲計画の分解・担当・引継ぎ方針を保持し、無条件に Unit Design や委譲計画を作り直さない。"
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-lead-test-counterexamples]
+kind = "occurrences"
+pattern = '''親は共有基準に従う coverage の見逃し・欠落と validity の識別能力・正当変種の誤拒否を合わせ、双方向の反例と counterevidence を受入判断へ反映する。制約の原因と誤拒否の影響が同じ finding は重複を整理する。各 reviewer に両方向の網羅を課さず、obligation / Expected Observation と finding 採否は親に残す。静的確認、実行を要する疑い、材料不足を区別し、必要な実証の不足は Pass で埋めない。'''
+count = 1
+paths = ["plugins/claude/skills/impl-lead/references/test-acceptance-gate.md", "plugins/codex/skills/impl-lead/references/test-acceptance-gate.md", "plugins/cursor/skills/impl-lead/references/test-acceptance-gate.md"]
+applies_to = ["claude", "codex", "cursor"]

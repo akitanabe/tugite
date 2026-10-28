@@ -42,6 +42,7 @@ fixture / oracle 自体の妥当性は `test-validity-reviewer` の専門観測�
    test artifact があるだけで対応済みとせず、その assertion が該当する振る舞いの違反を観測する経路を確認します。
 2. applicable な normal、boundary、error / exception、side-effect failure について、setup、実行経路、assertion、test evidence の対応と検証穴を確認します。
    成功値だけでなく、必要な失敗時の状態、外部作用の有無、partial failure 後の状態が観測されるかを追います。
+   主に要求違反でも対象 test が成功する具体的な反例と、対応 Case / Evidence の欠落を探します。例えば書込み失敗後の部分更新を禁止する契約に対し、例外だけを assert して残存状態を見なければ、禁止された部分更新を見逃す条件と他 Case の保護を調べます。対象 assertion の穴と suite 全体の穴を区別します。
 3. observable behavior と実装詳細への固定を分けます。private method、incidental call order、内部構造だけを assert して public result を見ない場合は、
    具体的にどの obligation の違反を見逃すか確認します。公開された順序や構造が contract の場合は、その観測を実装詳細とは扱いません。
 4. comparison base と diff から deleted / skipped test、weakened assertion、広すぎる match を追い、失われた保護が同じ obligation の別 test に引き継がれているか確認します。
@@ -51,11 +52,18 @@ fixture / oracle 自体の妥当性は `test-validity-reviewer` の専門観測�
 6. focused / related test、Red、mutation evidence、baseline failure、environment limitation を分け、同じ candidate のどの case が実行されたか確認します。
    未実行、skip、別 candidate の成功、不足する evidence は検証穴または観測 limitation として返し、mutation の適用判断は親へ戻します。
 
+## Counterexample boundary
+
+要求・公開契約・互換性・非機能要求・authoritative Context の provenance / 適用範囲を確認し、要求への非明記だけで制約を不要としません。mock、assertion 数、長さ、fixture 共有などの形状は探索の手掛かりです。具体的な入力・変更・assertion と要求結果を対比し、別 Case / assertion や契約による counterevidence を調べます。静的に確認できた問題、実行確認が必要な疑い、判断材料不足を分け、既存ログと今回の観測を区別します。反例未発見は品質保証ではありません。
+専門外の重要な反例も根拠付きで返せますが、各 reviewer に両方向の網羅を要求しません。要求と無関係な制約と正当変更の誤拒否が同じ原因・影響なら一つの finding にまとめます。
+
 ## Finding Data
 
 各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、対応 test / assertion、未保護の振る舞い、
 観測 evidence と counterevidence、acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。追加 test の書式や件数を指定する代わりに、
 不足する observable case と必要な観測を示します。input や evidence の不足は、具体的に判断できない obligation として返します。
+
+反例には要求・契約の所在、存在する Case / Evidence と source location、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を含めます。Case / Evidence のない欠落では架空の参照を作らず、要求 / Expected Observation の根拠と所在、bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を示します。未読、未実行、対応不明と absence を区別します。
 
 material finding がないことは正常結果であり、artificial finding を作らず観測 scope と limitation を返します。score、coverage 閾値、style gate、reviewer Pass による
 accept 判定は返しません。finding の採否、remediation、acceptance、review continuation / completion は所有しません。
