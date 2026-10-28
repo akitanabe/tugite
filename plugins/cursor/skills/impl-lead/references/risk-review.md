@@ -4,17 +4,14 @@
 
 ## Selection and snapshot
 
-specialized review は concrete risk が Unit acceptance、external Action の可否、correction direction を変え得る場合だけ起動する。generic checklist や reviewer inventory を理由に全 reviewer を起動しない。`writing-principles-reviewer` はこの risk review に含めない。
+`../../../references/implementation-review.md` を読み、specialist selection、共通 input packet、fresh / context-isolated な read-only observation、finding handling を適用する。
 
-責務境界、security / external side effect、static performance / resource、change が導入した過剰実装の各 risk に応じて `responsibility-boundary-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`over-engineering-reviewer` を選ぶ。reviewer には Task Spec、base、AC、同一の immutable diff / evidence identity、surrounding context、Parent QA baseline と起動理由を渡し、fresh / context-isolated session で観測させる。
-
-同一 snapshot に対して選んだ reviewer の全結果を回収してから親が裁定する。batch 中は immutable read-only target に writer を入れず、全 result の回収と裁定後にだけ adopted finding の mutation を開始する。reviewer の Pass、finding 数、固定 round は accept / completion basis にしない。
-
-changed test artifact の通常の coverage / validity acceptance は `test-acceptance-gate.md` が所有し、concrete risk の認識を起動条件にしない。test-related な concrete risk の追加観測は可能だが、同 gate を代替しない。
+親は選んだ全 reviewer の結果を回収して裁定した後にだけ adopted finding の mutation を開始する。
+changed test artifact の通常の coverage / validity acceptance は `test-acceptance-gate.md` が所有し、specialist review で代替しない。
 
 ## Adjudication and correction
 
-親は各 finding を evidence、AC、scope、risk、rollback、verifiability、maintainability により `adopted`、`rejected`、`unresolved` へ裁定する。external Action の実行可否を変える unresolved risk は Action 前の blocking precondition とする。
+親は各 finding を 共有 reference の finding handling により `adopted`、`rejected`、`unresolved` へ裁定する。external Action の実行可否を変える unresolved risk は Action 前の blocking precondition とする。
 
 adopted finding は元 Implementer または boundary と correction に適した fresh Implementer へ渡し、変更後に Parent QA と applicable verification を再実行する。diff が変わった場合、影響を受ける review goal だけを fresh reviewer に再 review させ、影響しない goal を反復しない。
 

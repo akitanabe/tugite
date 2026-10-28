@@ -6,7 +6,7 @@
 
 Completion Gate は Parent QA、必要な risk review、Test Acceptance Gate（`test-accepted` または `not-applicable`）を通過した Unit を accepted commit に閉じる mandatory final-writing gate である。`writing-principles-reviewer` は read-only / report-only であり、finding の採否、correction、acceptance を所有しない。writing-level correction だけを扱い、risk review、Unit Design、一般 implementation review を反復しない。
 
-候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、code の How、test の What、commit の Why、comment / DocBlock の Why Not を確認する。
+候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、`../../../references/implementation-review.md` の Writing review と共通 input / finding handling を適用する。
 
 fresh `writing-principles-reviewer` を起動する場合は `fork_turns = "none"` を指定する。
 

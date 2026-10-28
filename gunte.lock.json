@@ -16,6 +16,9 @@
     "contracts/find-way.toml",
     "contracts/visualize-that.toml",
     "shared/VERSION",
+    "shared/implementation-review.md",
+    "shared/skill/impl-review/SKILL.md",
+    "declarations/codex/skills/impl-review/openai.yaml",
     "shared/skill/impl-plan/SKILL.md",
     "declarations/codex/skills/impl-plan/openai.yaml",
     "shared/skill/review-propose/SKILL.md",
@@ -1875,8 +1878,8 @@
       "sha256": "ef5db2c62760bc16e6f021b82205fd5d59bc6429610c27503d5dd0faddef39d0"
     },
     {
-      "id": "impl-lead-completion-gate-ea573660215c",
-      "sha256": "877254a865f1476957749460f8df38c1eac4f43f450b2b7d8d7b84d734c5aa40"
+      "id": "impl-lead-completion-gate-c7860db939d6",
+      "sha256": "92c725933214ecc7096c7a996ceab577dd7fce816609425b58a66058709dc2be"
     },
     {
       "id": "impl-lead-completion-clean-fdffbe4fb757",
