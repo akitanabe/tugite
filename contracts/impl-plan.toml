@@ -68,4 +68,3 @@ kind = "order"
 before = "impl-plan-method-rmo-relation"
 after = "impl-plan-method-partition-relation"
 applies_to = ["claude", "codex", "cursor"]
-
