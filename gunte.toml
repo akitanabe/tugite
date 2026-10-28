@@ -18,6 +18,7 @@ files = [
   "contracts/test-verify.toml",
   "contracts/review-refine.toml",
   "contracts/impl-lead.toml",
+  "contracts/impl-plan.toml",
   "contracts/destination-selection.toml",
   "contracts/find-way.toml",
   "contracts/visualize-that.toml",
@@ -25,6 +26,8 @@ files = [
 
 [sources]
 files = [
+  "shared/skill/impl-plan/SKILL.md",
+  "declarations/codex/skills/impl-plan/openai.yaml",
   "shared/skill/review-propose/SKILL.md",
   "declarations/codex/skills/review-propose/openai.yaml",
   "shared/skill/explain-this/SKILL.md",
@@ -61,7 +64,7 @@ files = [
   "shared/skill/explorer-this/SKILL.md",
   "shared/skill/how-it/SKILL.md",
   "shared/skill/impl-lead/SKILL.md",
-  "shared/skill/impl-lead/references/implementation-unit-design.md",
+  "shared/skill/impl-plan/references/implementation-unit-design.md",
   "shared/skill/impl-lead/references/execution.md",
   "shared/skill/impl-lead/references/parent-qa.md",
   "shared/skill/impl-lead/references/test-acceptance-gate.md",
@@ -808,4 +811,40 @@ header = "<!-- Generated from shared/. Do not edit directly. -->"
 match = "shared/skill/review-propose/SKILL.md"
 path = "skills/review-propose/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/impl-plan/SKILL.md"
+path = "skills/impl-plan/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/impl-plan/SKILL.md"
+path = "skills/impl-plan/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/impl-plan/SKILL.md"
+path = "skills/impl-plan/SKILL.md"
+profile = "markdown+yaml-frontmatter-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.claude.rules]]
+match = "shared/skill/impl-plan/references/*.md"
+path = "skills/impl-plan/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.codex.rules]]
+match = "shared/skill/impl-plan/references/*.md"
+path = "skills/impl-plan/references/{1}.md"
+profile = "markdown-v1"
+header = "<!-- Generated from shared/. Do not edit directly. -->"
+
+[[targets.cursor.rules]]
+match = "shared/skill/impl-plan/references/*.md"
+path = "skills/impl-plan/references/{1}.md"
+profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"

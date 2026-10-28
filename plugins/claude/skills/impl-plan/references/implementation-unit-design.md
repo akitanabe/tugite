@@ -1,36 +1,32 @@
-<!-- @contract impl-lead-method-boundary -->
-<!-- @anchor impl-lead-method-boundary-relation -->
+<!-- Generated from shared/. Do not edit directly. -->
+
 # Implementation Unit Design
 
-Method identity: `impl-lead implementation-unit-design v1`.
+Method identity: `impl-plan implementation-unit-design v1`.
 
 ## Identity and responsibility boundary
 
-この文書は `impl-lead` の同一 invocation 内だけで使う `impl-lead` 専用の consumer-specific Method である。独立した public / internal Skill、
-shared reusable Method、直接 invocation surface を持たない。
+この文書は `impl-plan` が委譲文書を構成するときに使う consumer-specific Method である。Unit の意味判断を所有し、実行時の readiness・起動・受入は所有しない。
 
 Method は supplied outcome candidates に対する Unit boundary、split / merge、semantic dependency、independent acceptability、
 Implementation Unit candidates の構成を所有する。raw request から outcome を追加せず、scope、要求 coverage、候補の最終採用、ID、
 execution、worker / reviewer、acceptance、persistence を所有しない。
-<!-- @/contract -->
 
 ## Inputs and outputs
 
-入力は `impl-lead` が固定した non-empty initial outcome candidates と、request / Plan / established direction、Acceptance Criteria の素材、
+入力は `impl-plan` が固定した non-empty initial outcome candidates と、request / Plan / established direction、Acceptance Criteria の素材、
 scope / constraints、repository evidence、known dependency、verification reality、accept / rollback reality からなる grounding である。
 Method は追加 evidence acquisition を開始しない。
 
-出力は次の会話内 execution data である。
+出力は次の計画 candidate Data である。
 
 - Implementation Unit candidates: `id` 以外の canonical Unit Data と、候補間の semantic dependency relation。
 - 判断理由 / qualification: split / merge、dependency、acceptability の根拠と non-blocking uncertainty。
 - `blocking_gaps`: Unit boundary、dependency、acceptabilityを安全に確定できない material gap。
 
 Unit field の一覧や意味をこの Method で再定義しない。worker、route、order、isolation、execution result、review、QA、保存先を出力へ
-混入させない。run-unique ID の付与と、返した dependency relation の ID への束縛は `impl-lead` 親へ残す。
+混入させない。run-unique ID の付与と、返した dependency relation の ID への束縛は `impl-plan` へ残す。
 
-<!-- @contract impl-lead-method-rmo -->
-<!-- @anchor impl-lead-method-rmo-relation -->
 ## RMO loading and mapping
 
 caller context を確定した後、partition reasoning の直前に一度 load する。
@@ -45,22 +41,20 @@ owner = implementation-unit-design Method
 ```
 
 load、identity、required section の不足・不一致では partition reasoning を開始しない。この failure は Reality evidence の uncertainty と
-区別し、`impl-lead` の `stop-incomplete` boundary へ返す。
+区別し、`impl-plan` の incomplete boundary へ返す。
 
 この Method では RMO を mandatory に利用し、次の5入力を consumer mapping する。
 
 - **Target**: Target は Unit boundary、semantic dependency、independent acceptability に限定する。
 - **Relevant Authoritative Context**: supplied candidates、request / Plan / established direction、AC / verification、scope / constraints、repository / dependency evidence、accept / rollback reality。
 - **Available Evidence Surface**: grounding 内の authorized repository facts、verification / dependency / acceptability evidence。
-- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-lead`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は `impl-lead` の後続 Phase が所有する。
-- **Observer Boundary**: supplied evidence に接触し、Current Reality と bounded RMO judgment を構成する `impl-lead` 親 context。
+- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-plan`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は `impl-lead` の後続 Phase が所有する。
+- **Observer Boundary**: supplied evidence に接触し、Current Reality と bounded RMO judgment を構成する `impl-plan` context。
 
 RMO result では observation / inference、Model Sufficiency / Observed Evidence Sufficiency、Target-relative Problem / Incidental Finding /
 Uncertainty を区別可能に保持する。RMO result を split / merge / dependency verdict へ直接変換せず、Incidental Finding を Unit や obligation へ
 昇格させない。RMO の一般 semantics は canonical RMO source を参照し、この文書へ複製しない。
-<!-- @/contract -->
 
-<!-- @anchor impl-lead-method-partition-relation -->
 ## Partition judgment
 
 1. 各 outcome candidate を grounding と照合し、purpose、AC、scope、dependency、focused verification、accept / rollback boundary を確認する。
@@ -108,15 +102,11 @@ generated surface、contract registry、verification surface などを共有す�
 material uncertainty が Unit boundary、semantic dependency、independent acceptability を変え得る場合は plausible inference で埋めず、
 Unit を確定しない `blocking_gaps` として返す。判断を変えない uncertainty は qualification として保持できる。
 
-Method は candidates、理由 / qualification、blocking gaps を返して終了する。`impl-lead` は coverage、scope、blocking gap、Data boundary を
+Method は candidates、理由 / qualification、blocking gaps を返して終了する。`impl-plan` は coverage、scope、blocking gap、Data boundary を
 確認するが、Method の partition judgment を再設計しない。Unit 確定後に Method へ戻る renormalization loop を作らない。設計前提が後続の
 execution 中に崩れた場合は current execution を継続せず、上流 / `stop-incomplete` boundary へ返す。
 
-<!-- @contract impl-lead-method-final-correction-boundary -->
-run-wide final verification 後の Final Correction Unit は、既存 accepted Unit の boundary から親が一意に導出する bounded exception であり、
-この Method の対象に含めない。Unit boundary、split / merge、semantic dependency、independent acceptability の再判断が必要になった時点で eligibility を失う。
-親は Method を再 invocation せず `stop-incomplete` とする。
-<!-- @/contract -->
+
 
 ## Representative contrasts
 

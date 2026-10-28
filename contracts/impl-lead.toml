@@ -30,47 +30,6 @@ count = 1
 paths = ["plugins/codex/skills/impl-lead/references/completion-gate.md"]
 applies_to = ["codex"]
 
-[contracts.impl-lead-method-document]
-kind = "occurrences"
-pattern = "# Implementation Unit Design"
-count = 1
-paths = [
-  "plugins/claude/skills/impl-lead/references/implementation-unit-design.md",
-  "plugins/codex/skills/impl-lead/references/implementation-unit-design.md",
-  "plugins/cursor/skills/impl-lead/references/implementation-unit-design.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-intake-ownership-4429dc189bf2]
-kind = "requires"
-slice = "impl-lead-intake-ownership"
-pattern = "outcome candidate の抽出、implementation scope、要求 coverage の最終責任を保持する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-unit-data-e545ea040b0f]
-kind = "requires"
-slice = "impl-lead-unit-data"
-pattern = "`id`、`purpose`、`acceptance_criteria`、`scope`、`implementation_freedom`、`constraints`、`depends_on`、`verification`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-unit-scope-63462434f320]
-kind = "requires"
-slice = "impl-lead-unit-data"
-pattern = "`scope`: `change` と `exclude` からなる実装境界。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-unit-dependency-63415ee9b07e]
-kind = "requires"
-slice = "impl-lead-unit-data"
-pattern = "`depends_on`: Unit 間の semantic dependency と外部・repository・environment precondition を区別した記述。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-unit-verification-966c01073530]
-kind = "requires"
-slice = "impl-lead-unit-data"
-pattern = "`verification`: Acceptance Criteria ごとの focused verification と必要な run-wide final gate。"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.impl-lead-authority-blocking-f9f89e62a71d]
 kind = "requires"
 slice = "impl-lead-authority-boundary"
@@ -101,58 +60,10 @@ slice = "impl-lead-dispatch-integrity"
 pattern = "current HEAD が expected accepted baseline と一致し、明示的に許可した既存 state 以外の tracked change がないことを確認する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-pre-execution-initial-c0127de2507f]
-kind = "requires"
-slice = "impl-lead-pre-execution-flow"
-pattern = "non-empty の initial outcome candidate 集合を、single / trivial を含めて execution 前に exactly once Method へ渡す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-identity-d002189e5100]
-kind = "requires"
-slice = "impl-lead-pre-execution-flow"
-pattern = "expected identity `impl-lead implementation-unit-design v1`"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-boundary-816670dec2a3]
-kind = "requires"
-slice = "impl-lead-method-boundary"
-pattern = "`impl-lead` 専用の consumer-specific Method"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-rmo-loader-a2dfd87bc962]
-kind = "requires"
-slice = "impl-lead-method-rmo"
-pattern = "partition reasoning の直前に一度 load"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-rmo-target-8bcbaf7ee23a]
-kind = "requires"
-slice = "impl-lead-method-rmo"
-pattern = "Target は Unit boundary、semantic dependency、independent acceptability"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-rmo-inputs-79d01e973d0e]
-kind = "requires"
-slice = "impl-lead-method-rmo"
-pattern = "次の5入力を consumer mapping する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-return-integrity-163cb42c514f]
-kind = "requires"
-slice = "impl-lead-return-integrity"
-pattern = "Method の split / merge judgment を再設計しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-return-identity-20deafb2fa25]
-kind = "requires"
-slice = "impl-lead-return-integrity"
-pattern = "run 内で一意な `id` を付与し、Method が返した semantic dependency relation を"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-execution-ownership-a2f56e0d5071]
+[contracts.impl-lead-execution-ownership-44c1e53b4b64]
 kind = "requires"
 slice = "impl-lead-execution-ownership"
-pattern = "Implementation Unit normalization、execution capability、execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。"
+pattern = "委譲計画の実行時 readiness、execution capability、execution orchestration、Parent QA、Unit acceptance、run-wide final verification、integration / closeout を一つの run として所有する。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-parent-qa-91915483584c]
@@ -257,58 +168,16 @@ slice = "impl-lead-final-verification"
 pattern = "Final Correction Unit は同じ run で1つだけ構成できる。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-method-final-correction-04e14f9d9dc4]
-kind = "requires"
-slice = "impl-lead-method-final-correction-boundary"
-pattern = "Unit boundary、split / merge、semantic dependency、independent acceptability の再判断が必要になった時点で eligibility を失う。"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.impl-lead-monitoring-human-priority-02d878a01ba8]
 kind = "requires"
 slice = "impl-lead-monitoring"
 pattern = "Human が明示した monitoring / intervention criteria は15分の既定より優先する。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.impl-lead-document-before-intake]
-kind = "order"
-before = "impl-lead-document-relation"
-after = "impl-lead-intake-ownership-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-intake-before-flow]
-kind = "order"
-before = "impl-lead-intake-ownership-relation"
-after = "impl-lead-pre-execution-flow-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-flow-before-return]
-kind = "order"
-before = "impl-lead-pre-execution-flow-relation"
-after = "impl-lead-return-integrity-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-execution-before-intake]
-kind = "order"
-before = "impl-lead-execution-ownership-relation"
-after = "impl-lead-intake-ownership-relation"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.impl-lead-execution-before-final-verification]
 kind = "order"
 before = "impl-lead-execution-ownership-relation"
 after = "impl-lead-final-verification-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-method-before-rmo]
-kind = "order"
-before = "impl-lead-method-boundary-relation"
-after = "impl-lead-method-rmo-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.impl-lead-rmo-before-partition]
-kind = "order"
-before = "impl-lead-method-rmo-relation"
-after = "impl-lead-method-partition-relation"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.impl-lead-claude-invocation-policy]
@@ -434,3 +303,9 @@ pattern = 'fresh test reviewer を起動する場合は `fork_turns = "none"` �
 count = 1
 paths = ["plugins/codex/skills/impl-lead/references/test-acceptance-gate.md"]
 applies_to = ["codex"]
+
+[contracts.impl-lead-plan-consumption-6067d6b04edf]
+kind = "requires"
+slice = "impl-lead-plan-consumption"
+pattern = "親は準備済み委譲計画の分解・担当・引継ぎ方針を保持し、無条件に Unit Design や委譲計画を作り直さない。"
+applies_to = ["claude", "codex", "cursor"]
