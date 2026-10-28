@@ -25,7 +25,7 @@ correction = "implementation correction; rerun Parent QA and affected Test Accep
 親は expected accepted baseline と candidate commit の差分に対して適用条件を確認し、共通 packet と Unit Data、Parent QA baseline evidence を両 reviewer に渡す。
 この gate は同一 candidate commit と comparison base に観測を束縛する。mutation applicability と evidence generation は Parent QA / execution に残す。
 
-## Programmatic Flow
+## Programmatic Flows
 
 <!-- @contract impl-lead-test-acceptance-flow -->
 ### test-acceptance-review-control

@@ -8,7 +8,7 @@ Completion Gate は Parent QA、必要な risk review、Test Acceptance Gate（`
 
 候補 snapshot を1 commitにし、その commit を fresh / context-isolated な `writing-principles-reviewer` に一度だけ渡して、`../../../references/implementation-review.md` の Writing review と共通 input / finding handling を適用する。
 
-## Programmatic Flow
+## Programmatic Flows
 
 ### unit-completion-control
 

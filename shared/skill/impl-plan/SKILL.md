@@ -39,6 +39,8 @@ disable-model-invocation: true
 この Method が Unit boundary、split / merge、semantic dependency、independent acceptability を判断する唯一の正本である。
 RMO の既存 semantics と loading contract を用い、モデル方式を独自に変更しない。impl-plan が要求 coverage、scope と不足を確認して ID を付与し、dependency をその ID に束縛する。
 
+## Programmatic Flows
+
 ### unit-design-control
 
 Trigger: 元プランと non-empty outcome candidates、grounding が確定し、Unit Design が未実施である。

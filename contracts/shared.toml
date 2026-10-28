@@ -148,16 +148,16 @@ slice = "root-readme-title"
 pattern = "# Tugite"
 applies_to = ["root-readme"]
 
-[contracts.root-readme-risk-530afa9c2491]
+[contracts.root-readme-risk-a73e9f61893d]
 kind = "requires"
 slice = "root-readme-risk"
-pattern = "レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。他の作業手順では具体的なリスクに応じて選択し、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
+pattern = "レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。`impl-review` でも変更テストには両レビューを適用し、修正候補として返します。その他の作業手順の起動条件は各 workflow に従い、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
 applies_to = ["root-readme"]
 
-[contracts.readme-risk-directed-static-performance-reviewer-259dea2e13d8]
+[contracts.readme-risk-directed-static-performance-reviewer-02a7e1e7d328]
 kind = "requires"
 slice = "readme-risk-directed-static-performance-reviewer"
-pattern = "レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。他の作業手順では具体的なリスクに応じて選択し、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
+pattern = "レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。`impl-review` でも変更テストには両レビューを適用し、修正候補として返します。その他の作業手順の起動条件は各 workflow に従い、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。"
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.cursor-readme-local-requires-aae0052f5b5a]
@@ -196,24 +196,23 @@ slice = "cursor-readme-boundary"
 pattern = "agent --plugin-dir plugins/cursor"
 applies_to = ["cursor"]
 
-[contracts.cursor-readme-public-skills-requires-2bfbba89d524]
+[contracts.cursor-readme-public-skills-requires-b4821bb43ea2]
 kind = "requires"
 slice = "cursor-readme-boundary"
-pattern = '''/how-it <相談したい進め方>
-/explorer-this <探索タスク>
+pattern = '''/explain-this <理解する実装>
+/review-propose <比較する元プラン>
+/impl-plan <具体化するプラン>
+/impl-review <実装差分（省略時はcontextから特定）>
 /visualize-that <可視化する入力>
 /impl-lead <実装タスク>
-/plan-agent <計画タスク>
-/find-way <目標>
 /test-report <確認するテスト範囲>
-/test-verify <検証するテスト対象>
-/review-refine <レビュー対象>'''
+/test-verify <検証するテスト対象>'''
 applies_to = ["cursor"]
 
-[contracts.repository-programmatic-flow-skills-ff8e73c1963b]
+[contracts.repository-programmatic-flow-skills-f507bb071fa9]
 kind = "requires"
 slice = "repository-programmatic-flow-skills"
-pattern = '''programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way", "visualize-that"]'''
+pattern = '''programmatic_flow_skills = ["impl-plan", "impl-lead", "test-verify", "visualize-that"]'''
 applies_to = ["repository-guidelines", "agents-guidance"]
 
 [contracts.cursor-readme-unsupported-requires-13d1036fbb45]
@@ -936,226 +935,6 @@ before = "shared-research-result-relation"
 after = "shared-research-web-result-relation"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.planning-synthesis-document]
-kind = "occurrences"
-pattern = "# Planning Synthesis"
-count = 1
-paths = [
-  "plugins/claude/references/planning-synthesis.md",
-  "plugins/codex/references/planning-synthesis.md",
-  "plugins/cursor/references/planning-synthesis.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-codex-fresh-advisor-invocation]
-kind = "occurrences"
-pattern = '''fresh `plan-quality-advisor` を起動する場合は `fork_turns = "none"` を指定する。'''
-count = 1
-paths = ["plugins/codex/references/planning-synthesis.md"]
-applies_to = ["codex"]
-
-[contracts.planning-synthesis-input-908acc2eb59a]
-kind = "requires"
-slice = "planning-synthesis-input-boundary"
-pattern = "caller は一つの task-local Local Model の owner のまま、requested artifact responsibility、current understanding、established direction、authority constraints、必要なら upstream Researcher evidence を Data として渡す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-authority-642de1243f45]
-kind = "requires"
-slice = "planning-synthesis-authority-boundary"
-pattern = "Planning Synthesis は supplied direction と authority constraints の意味を保持し、その内側でだけ planning decision を行う。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-57a329696136]
-kind = "requires"
-slice = "planning-synthesis-result-boundary"
-pattern = "返す結果は requested artifact に material な semantics を持つ coherent candidate、candidate coherence を妨げる具体的な material input gap、または advisor route を安全に継続できない理由を持つ `incomplete` です。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-materiality-032bb9a90a12]
-kind = "requires"
-slice = "planning-synthesis-materiality"
-pattern = "非実装 artifact に Acceptance Criteria、rollback、work decomposition、execution order を儀式的に要求せず"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-gap-case-64f51395e3cd]
-kind = "requires"
-slice = "planning-synthesis-gap-case"
-pattern = "その fact、candidate を作れない理由、affected semantics を gap として caller へ返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-33f8d01edad2]
-kind = "requires"
-slice = "planning-synthesis-advisor-boundary"
-pattern = "Planning Synthesis は initial coherent candidate 全体に対する advisor の non-binding perspective を受け、固定された goal、direction、scope、constraints、required behavior を保ったまま採否を裁定し、coherent に統合します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-be3156e62f83]
-kind = "requires"
-slice = "planning-synthesis-advisor-flow"
-pattern = "Trigger: Planning Synthesis が initial candidate の構成結果、または parent disposition を受け取る。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-2017cbc2f7c0]
-kind = "requires"
-slice = "planning-synthesis-advisor-invocation"
-pattern = "coherent candidate があり advisor が applicable で state が未実施の場合は、実行直前に state を実施済みへ更新してから fresh / context-isolated advisor を一回起動する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-e89bcc861ac3]
-kind = "requires"
-slice = "planning-synthesis-advisor-result"
-pattern = "有力な alternative がない結果は正常として扱い、根拠不足で比較不能な結果は limitation として保持します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-f75a1931849d]
-kind = "requires"
-slice = "planning-synthesis-advisor-failure"
-pattern = "parent-owned result classification が invocation failure または unavailable の場合は `incomplete` を返し、skip、別 agent、呼び直しを選択しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-synthesis-advisor-15993568a68c]
-kind = "requires"
-slice = "planning-synthesis-advisor-reentry"
-pattern = "re-entry で material comparison insufficiency または safe-continuation validity が invalid の場合は、stale advice を統合せず `incomplete` を返す。normal（no alternative を含む）で safe-continuation validity が valid、かつ integrated coherent candidate がある場合だけ coherent candidate を Core へ返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-document]
-kind = "occurrences"
-pattern = "# Planning Core"
-count = 1
-paths = [
-  "plugins/claude/references/planning-core.md",
-  "plugins/codex/references/planning-core.md",
-  "plugins/cursor/references/planning-core.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-input-29f2028c8834]
-kind = "requires"
-slice = "planning-core-input-boundary"
-pattern = "review applicability、explicit opt-out を Planning Core へ渡す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-advisor-9e4555e165af]
-kind = "requires"
-slice = "planning-core-advisor-relay"
-pattern = "Planning Core は advisor applicability とその理由、invocation-local advisor state を保持し、Planning Synthesis の再入にも同じ state を渡します。Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ返し、raw advisor advice は completion candidate として返しません。既存 advice は subsequent synthesis reuse の入力として保持できます。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-advisor-d10edd5c7e08]
-kind = "requires"
-slice = "planning-core-advisor-failure"
-pattern = "applicable な advisor の unavailable または invocation failure は review や `final-candidate` へ進めず `incomplete` として返します。advisor 実施後の固定方向・入力の material invalidation は、Planning Synthesis が返す `incomplete` result を無変更で伝播します。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-advisor-c8aa93b028e8]
-kind = "requires"
-slice = "planning-core-advisor-result"
-pattern = "Planning Core は Planning Synthesis の最終 coherent candidate、material input gap、または `incomplete` と state を caller-side context へ伝播し、raw advisor advice を completion candidate として扱わず、`incomplete` を review や `final-candidate` として表現しません。既存 advice は subsequent synthesis reuse のために保持できます。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-synthesis-gap-b65a2cc0645e]
-kind = "requires"
-slice = "planning-core-synthesis-gap"
-pattern = "gap、candidate を作れない理由、affected semantics を caller-actionable result として返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-review-routing-567e368735cf]
-kind = "requires"
-slice = "planning-core-review-routing"
-pattern = "review nonapplicable または explicit opt-out では review を起動せず、applicable かつ opt-out なしの場合だけ S0 を作って nested `review-refine` へ進む。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-review-input-aa2834ffedaa]
-kind = "requires"
-slice = "planning-core-review-input"
-pattern = "applicable review では parent projection、artifact-relative review purpose / criteria、authority obligations、S0、necessary evidence、required normal reviewer `plan-adversarial-reviewer`、`final_trim = applicable`、final-trim necessity context（final trim の obligations / constraints / evidence context の plan-family における具体形であり、final trim の唯一の意味 input）、`final_trim_reviewer = over-engineering-reviewer` を nested `review-refine` へ渡す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-sequence-c7614f660551]
-kind = "requires"
-slice = "planning-core-review-sequence"
-pattern = "実装前 plan の品質順序は adversarial review、親裁定 / coherent refinement / verification / affected-semantics re-review、normal convergence、over-engineering final trim、Deletion Test / apply / verification である。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-result-092905faf52a]
-kind = "requires"
-slice = "planning-core-result-boundary"
-pattern = "reviewed / unreviewed route の semantic completion を満たす candidate は `final-candidate` として返し、review 実行の有無を保持し、返却 candidate を後処理で変更しない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-necessity-owner-2143a2f12c84]
-kind = "requires"
-slice = "planning-core-necessity-context-owner"
-pattern = "Planning Core は final-trim 用 necessity context を構成・所有し、`required outcomes / obligations`、`binding decisions / must-preserve concepts`、`current scope / explicit excludes`、`permitted-but-optional` を意味上区別し、各分類を deletion judgment に必要な意味と bounded provenance とともに保持する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-necessity-integrity-dfd29e1fa2e6]
-kind = "requires"
-slice = "planning-core-necessity-integrity"
-pattern = "necessity context は `S0` と別の invocation-local Data とし、projection integrity が安全に成立せず omission が deletion judgment を変え得る場合、Planning Core は review-refine を起動せず `incomplete` を返す。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-necessity-frame-fd4281f86b93]
-kind = "requires"
-slice = "planning-core-necessity-comparison-frame"
-pattern = "final-trim の comparison frame は `review target = final-trim stage の latest verified candidate 全体`、`comparison base = plan がまだ存在しない no-plan state` とし、`S0` を base にしない。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.planning-core-necessity-freeze-7f5dfebbeaf6]
-kind = "requires"
-slice = "planning-core-necessity-invocation-freeze"
-pattern = "necessity semantics と comparison-frame selection rule は review-refine 起動時に固定し、invocation 中の normal refinement では変更せず、final trim 前に current evidence に対する validity を再確認する。その再確認から `caller-owned final-trim validity / stop result` を構成して review-refine へ渡し、進行可能なら current verified state の repository evidence / remaining witness を併せて保持し、binding direction、scope、authority の material change なら pre-trim latest verified candidate と `incomplete` の stop result を保持する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-document]
-kind = "occurrences"
-pattern = "# Deletion Test Method"
-count = 1
-paths = [
-  "plugins/claude/references/deletion-test-method.md",
-  "plugins/codex/references/deletion-test-method.md",
-  "plugins/cursor/references/deletion-test-method.md",
-]
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-6b243b405f74]
-kind = "requires"
-slice = "deletion-test-trigger"
-pattern = "deletion-triggered shared Method"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-selected-ae2434b6a7ae]
-kind = "requires"
-slice = "deletion-test-selected-set"
-pattern = "同じ stable snapshot 上で再 Test"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-c270339249b4]
-kind = "requires"
-slice = "deletion-test-caller-ownership"
-pattern = "consumer が Method result と current responsibility に基づいてこれらを裁定する。"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-document-before-trigger]
-kind = "order"
-before = "deletion-test-document"
-after = "deletion-test-trigger-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-trigger-before-selected-set]
-kind = "order"
-before = "deletion-test-trigger-relation"
-after = "deletion-test-selected-set-relation"
-applies_to = ["claude", "codex", "cursor"]
-
-[contracts.deletion-test-selected-set-before-caller]
-kind = "order"
-before = "deletion-test-selected-set-relation"
-after = "deletion-test-caller-relation"
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.writable-scope-document]
 kind = "occurrences"
 pattern = "# Writable Scope Method"
@@ -1390,13 +1169,35 @@ slice = "human-facing-projection-noflow"
 pattern = "固定 Procedure、Programmatic Flow、辞書置換器、読みやすさ validator、score、固定 schema は追加しません。"
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.repository-test-qa-route-boundary-c871400408aa]
+[contracts.repository-test-qa-route-boundary-df73c0d83acc]
 kind = "requires"
 slice = "repository-test-qa-route-boundary"
 pattern = '''`impl-lead` で test artifact を追加・変更・削除する Unit は、consumer-specific な `test-acceptance-gate` に従い両 reviewer の
 観測と親の adjudication を受入前に必須とします。`test-verify` で同じ test artifact を変更する場合も、専用の
 `test-acceptance-gate` に従い両 reviewer の観測と direct owner の adjudication を受入前に必須とします。
-production-only / no-change は変更テスト受入の対象外です。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
+production-only / no-change は変更テスト受入の対象外です。`impl-review` は同じ changed-test 適用条件で両 reviewer を用い、受入や修正を行わず修正表を返します。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
 baseline self-QA、obligation、oracle、validation plane、最終 adjudication は route の QA owner が所有します。
 `impl-lead` では親、`test-verify` では direct owner が担い、共通 baseline は Unit / Parent QA hierarchy を要求しません。'''
 applies_to = ["repository-guidelines", "agents-guidance"]
+
+[contracts.public-workflow-codex-metadata]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/.codex-plugin/plugin.json"]
+format = "json"
+applies_to = ["codex"]
+assertions = [
+  { path = "description", op = "equals", value = "Tugite workflows: explain-this, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included." },
+  { path = "interface.longDescription", op = "equals", value = "Tugite workflows: explain-this, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included." },
+  { path = "interface.defaultPrompt", op = "list_order", value = ["Use $visualize-that only when explicitly requested; turn arbitrary supplied material into meaning-preserving standalone visual HTML, then return verified or render-unverified according to available launch, capture, and actual inspection capability.", "Use $test-report when explicitly requested or when the user clearly wants to understand a specified set of tests; report full-scope behavior details and grounded static findings separately from runtime hypotheses and unknowns, with selectable handoff, without editing or running tests.", "Use $test-verify only when explicitly requested; revalidate a report or direct bounded target, verify from grounded runtime evidence, repair only authorized target-causal Problems, apply changed-test acceptance and Completion Gate when applicable, and run final verification. No-change needs no change review or empty commit; commit authority is separate from verification.", "Use $install-custom-agents to check, install, or update the bundled custom agents.", "Use $explain-this only when explicitly requested. Explain implementation flow and responsibilities from code, distinguishing runtime observations, intent, test expectations, and unknowns; stop after the explanation.", "Use $review-propose only when explicitly requested. Preserve the original plan; return a coherent alternative and grounded comparison for Human choice, without adopting or implementing it.", "Use $impl-plan only when explicitly requested. Concretize the supplied plan into faithful serial implementation units and delegation documents for Human inspection; stop before implementation.", "Use $impl-review only when explicitly requested. Review the designated or context-grounded implementation diff using shared specialist, test, and writing criteria; return a correction table and stop before changes.", "Use $impl-lead only when explicitly requested to execute prepared delegation documents after live readiness checks, with Parent QA, gates, final verification, and safe integration."] },
+]
+
+[contracts.public-workflow-claude-cursor-metadata]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/.claude-plugin/plugin.json", "plugins/cursor/.cursor-plugin/plugin.json"]
+format = "json"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "description", op = "equals", value = "Tugite workflows: explain-this, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included." },
+]

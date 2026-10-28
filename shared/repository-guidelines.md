@@ -66,9 +66,8 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `how-it`（Human と進め方を構築して requested output へ接続）、`explorer-this`（Agentic-first の探索を requested output へ接続）、`visualize-that`（任意入力を意味を保った図解 HTML へ変換し capability-relative に描画確認）、
-`impl-lead`（Implementation Unit normalization から実装、Parent QA、受入、final verification、安全な integration / closeout まで）、`plan-agent`（normal context から自由形式の planning / design artifact を作り、実装を開始しない計画成果物）、
-`find-way`（Destination 全体の Planning Fog と Decision blocker を self-contained な Work Units へ解像する pre-planning workflow）、`test-report`（静的観測から全体像・振る舞い別詳細・根拠付き問題を示す診断 report）、`test-verify`（grounded runtime evidence により bounded test target を検証・因果修復する明示起動 workflow）、`review-refine`（不変 snapshot に対する bounded review）の9つです。Implementation Unit Design は `impl-lead` 配下の consumer-specific Method です。
+現行の public workflow skill は `explain-this`（実装の理解）、`review-propose`（元案を保持した比較）、`impl-plan`（委譲文書の作成）、`impl-review`（実装差分の修正候補）、`impl-lead`（実行・QA・受入・最終検証）、`test-report`（テストの静的診断）、`test-verify`（明示起動の検証・因果修復）、`visualize-that`（図解 HTML）の8つです。
+Implementation Unit Design と担当・委譲計画は `impl-plan`、実行時 readiness・dispatch・monitoring・QA・gate・integration は `impl-lead` が所有します。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
 ## テスト指針
@@ -127,7 +126,7 @@ programmatic_flow_fields = ["Trigger", "Inputs", "Procedure", "Outcomes"]
 programmatic_flow_discretion = "fixed procedure, decision conditions, and outcomes; agent override, bypass, or replacement prohibited"
 programmatic_flow_return = "after Outcomes, return semantic judgment to the Agentic workflow when multiple acceptable actions remain"
 programmatic_flow_non_goals = ["single invariant/prohibition/validation need not become a Flow", "autonomous judgment must not enter a Flow"]
-programmatic_flow_skills = ["impl-lead", "plan-agent", "plan-candidate-producer", "review-refine", "test-verify", "find-way", "visualize-that"]
+programmatic_flow_skills = ["impl-plan", "impl-lead", "test-verify", "visualize-that"]
 programmatic_flow_excluded_skills = ["code-review", "structural-health-gate", "test-report"]
 sole_source_policy = "one deterministic procedure has one canonical witness; Flow pointers do not duplicate procedure text"
 ```
@@ -189,7 +188,7 @@ test artifact が意図した失敗を検出する妥当性を、caller が与�
 `impl-lead` で test artifact を追加・変更・削除する Unit は、consumer-specific な `test-acceptance-gate` に従い両 reviewer の
 観測と親の adjudication を受入前に必須とします。`test-verify` で同じ test artifact を変更する場合も、専用の
 `test-acceptance-gate` に従い両 reviewer の観測と direct owner の adjudication を受入前に必須とします。
-production-only / no-change は変更テスト受入の対象外です。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
+production-only / no-change は変更テスト受入の対象外です。`impl-review` は同じ changed-test 適用条件で両 reviewer を用い、受入や修正を行わず修正表を返します。その他の workflow は concrete risk に基づく任意の追加観測として reviewer を選択します。
 baseline self-QA、obligation、oracle、validation plane、最終 adjudication は route の QA owner が所有します。
 `impl-lead` では親、`test-verify` では direct owner が担い、共通 baseline は Unit / Parent QA hierarchy を要求しません。
 <!-- @/contract -->

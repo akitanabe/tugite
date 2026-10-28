@@ -25,7 +25,7 @@ Method は追加 evidence acquisition を開始しない。
 - `blocking_gaps`: Unit boundary、dependency、acceptabilityを安全に確定できない material gap。
 
 Unit field の一覧や意味をこの Method で再定義しない。worker、route、order、isolation、execution result、review、QA、保存先を出力へ
-混入させない。run-unique ID の付与と、返した dependency relation の ID への束縛は `impl-plan` へ残す。
+混入させない。文書内で一意な ID の付与と、返した dependency relation の ID への束縛は `impl-plan` へ残す。
 
 ## RMO loading and mapping
 
@@ -48,7 +48,7 @@ load、identity、required section の不足・不一致では partition reasoni
 - **Target**: Target は Unit boundary、semantic dependency、independent acceptability に限定する。
 - **Relevant Authoritative Context**: supplied candidates、request / Plan / established direction、AC / verification、scope / constraints、repository / dependency evidence、accept / rollback reality。
 - **Available Evidence Surface**: grounding 内の authorized repository facts、verification / dependency / acceptability evidence。
-- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-plan`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は `impl-lead` の後続 Phase が所有する。
+- **Authority / Responsibility Boundary**: outcome / scope / coverage は `impl-plan`、observation / Problem derivation は RMO、partition judgment は Method、execution / acceptance は 実行を依頼された `impl-lead` が所有する。
 - **Observer Boundary**: supplied evidence に接触し、Current Reality と bounded RMO judgment を構成する `impl-plan` context。
 
 RMO result では observation / inference、Model Sufficiency / Observed Evidence Sufficiency、Target-relative Problem / Incidental Finding /
@@ -105,8 +105,6 @@ Unit を確定しない `blocking_gaps` として返す。判断を変えない 
 Method は candidates、理由 / qualification、blocking gaps を返して終了する。`impl-plan` は coverage、scope、blocking gap、Data boundary を
 確認するが、Method の partition judgment を再設計しない。Unit 確定後に Method へ戻る renormalization loop を作らない。設計前提が後続の
 execution 中に崩れた場合は current execution を継続せず、上流 / `stop-incomplete` boundary へ返す。
-
-
 
 ## Representative contrasts
 

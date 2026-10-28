@@ -11,7 +11,7 @@ Completion Gate は Parent QA、必要な risk review、Test Acceptance Gate（`
 fresh `writing-principles-reviewer` を起動する場合は `fork_turns = "none"` を指定する。
 <!-- @/only -->
 
-## Programmatic Flow
+## Programmatic Flows
 
 ### unit-completion-control
 

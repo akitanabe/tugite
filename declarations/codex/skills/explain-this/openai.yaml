@@ -1,6 +1,6 @@
 interface:
   display_name: "Explain This"
-  short_description: "Explain implementation flow and responsibilities from code, "
+  short_description: "Explain implementation flow with grounded limits"
   default_prompt: "Use $explain-this only when explicitly requested. Explain implementation flow and responsibilities from code, distinguishing runtime observations, intent, test expectations, and unknowns; stop after the explanation."
 policy:
   allow_implicit_invocation: false

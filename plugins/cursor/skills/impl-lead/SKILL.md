@@ -28,6 +28,8 @@ impl-plan 単独の呼び出しは文書を返して終了する。文書の存�
 
 Unit Data の正本は `../impl-plan/SKILL.md` である。親は準備済み委譲計画の分解・担当・引継ぎ方針を保持し、無条件に Unit Design や委譲計画を作り直さない。
 
+## Programmatic Flows
+
 ### delegation-readiness-control
 
 Trigger: 委譲文書を受領し、実行が未開始である。

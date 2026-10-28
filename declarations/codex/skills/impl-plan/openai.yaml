@@ -1,6 +1,6 @@
 interface:
   display_name: "Impl Plan"
-  short_description: "Concretize the supplied plan into faithful serial implementa"
+  short_description: "Prepare faithful serial implementation and delegation plans"
   default_prompt: "Use $impl-plan only when explicitly requested. Concretize the supplied plan into faithful serial implementation units and delegation documents for Human inspection; stop before implementation."
 policy:
   allow_implicit_invocation: false
