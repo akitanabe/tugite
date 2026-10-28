@@ -13,4 +13,4 @@ impl-lead は準備済み計画を消費し、実行時の前提・権限を再�
 review-propose と impl-review の推奨は自動採用されない。Human が採否を判断し、修正はその後の依頼で進める。
 
 Model Construction、MO/RMO、共有の調査・権限境界と配布 agent は保持する。Planning Core / Planning Synthesis / Deletion Test は廃止入口だけから使われていた経路として整理した。
-test-report、test-verify、visualize-that とインストール補助 skill は引き続き利用できる。version・model・effort は変更しない。
+test-report、test-verify、visualize-that とインストール補助 skill は引き続き利用できる。この workflow 構成の配布 version は 7.5.0 とする。model・effort は変更しない。
