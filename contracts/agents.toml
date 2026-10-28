@@ -698,3 +698,11 @@ pattern = '''6. 主に oracle の識別能力と、契約に根拠のない固�
 count = 1
 paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-validity-reviewer-applicable-finding-data]
+kind = "occurrences"
+pattern = '''各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、独立した要求・契約 / oracle の根拠、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。production input の根拠、fixture の値と数量関係は、その finding の成立に applicable な場合に示します。
+見逃しでは具体的な要求違反と、対象 assertion が正当な振る舞いとその違反を区別できない条件を示します。誤拒否では具体的な正当変種を支える独立した契約、その成立条件と拒否する assertion を示し、誤実装との同値や数量関係を一律に要求しません。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。'''
+count = 1
+paths = ["plugins/claude/agents/test-validity-reviewer.md", "plugins/codex/install/agents/test-validity-reviewer.toml", "plugins/cursor/agents/test-validity-reviewer.md"]
+applies_to = ["claude", "codex", "cursor"]

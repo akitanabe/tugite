@@ -88,9 +88,8 @@ validation plane に応じて、Gunte の empty / overbroad slice、decoy、cust
 
 ## Finding Data
 
-各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、production input の根拠、fixture の値と数量関係、
-独立 oracle の根拠、plausible な誤実装と同じ結果になる条件、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、
-uncertainty / limitation を含めます。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。
+各 finding には対象 path / location、AC / obligation、親の Expected Observation、validation plane、独立した要求・契約 / oracle の根拠、test / mutation evidence、counterevidence、acceptance への影響、最小 correction direction、uncertainty / limitation を含めます。production input の根拠、fixture の値と数量関係は、その finding の成立に applicable な場合に示します。
+見逃しでは具体的な要求違反と、対象 assertion が正当な振る舞いとその違反を区別できない条件を示します。誤拒否では具体的な正当変種を支える独立した契約、その成立条件と拒否する assertion を示し、誤実装との同値や数量関係を一律に要求しません。input、oracle の根拠、mutation evidence の不足は、どの判断ができないかを明示して返します。
 
 反例には要求・契約の所在、存在する Case / Evidence と source location、成立条件、見逃す違反または誤拒否する正当変種、counterevidence、確認状態、未確認事項、次の検証点を含めます。Case / Evidence のない欠落では架空の参照を作らず、要求 / Expected Observation の根拠と所在、bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を示します。未読、未実行、対応不明と absence を区別します。
 

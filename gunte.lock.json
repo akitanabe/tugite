@@ -1133,6 +1133,10 @@
       "sha256": "aba5439034ef6542e8ad0f2a742ce956322a3d13ee25fecc3a9f1608b07202dc"
     },
     {
+      "id": "test-validity-reviewer-applicable-finding-data",
+      "sha256": "a92aca4e4062b4159a916565d80aa356724eac3d6dc5a69a73aef476b83eb2ef"
+    },
+    {
       "id": "test-report-document",
       "sha256": "bb7fe8091bbf60027b232203a88b44676c66ca488120240d2430fec0b10db740"
     },
@@ -1663,6 +1667,18 @@
     {
       "id": "impl-lead-test-counterexamples",
       "sha256": "936170d9ec7dac32959948457adbabdf64b1da5cb3e93df2ba84ac98c41e6a6c"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-directions-e3943807e679",
+      "sha256": "89c56787b367c4e164897e8c3dcfcde2eb20d65dcbca0eeedb4deaed9978b196"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-identity-c2a9a87be44c",
+      "sha256": "0b32732e497b2437738fb45040f99480829470ae1d0dbfd4e34305e9f2a81616"
+    },
+    {
+      "id": "impl-lead-parent-qa-variant-restoration-bb92fd6116ed",
+      "sha256": "c7e08c1d19e175d8458b5deb3c3c84e4cdea993f7368a1fe8926d6d943392c41"
     },
     {
       "id": "impl-plan-method-document",
