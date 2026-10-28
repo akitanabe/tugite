@@ -21,15 +21,11 @@ correction = "implementation correction; rerun Parent QA and affected Test Accep
 
 ## Applicability and input packet
 
-親は expected accepted baseline と candidate commit の diff から changed test artifact と変更の種別を識別する。automated test、fixture、oracle、executable test contract の追加・変更・削除を対象とし、skip / assertion 弱体化も変更に含む。Gunte predicate / contract や EVAL case も executable test contract として扱う。test-only Unit は必ず applicable とする。production code だけの Unit は `not-applicable` とし、既存テスト全体の再審査を要求しない。
+`../../../references/implementation-review.md` の Changed-test applicability and evidence を正本として適用する。
+親は expected accepted baseline と candidate commit の差分に対して適用条件を確認し、共通 packet と Unit Data、Parent QA baseline evidence を両 reviewer に渡す。
+この gate は同一 candidate commit と comparison base に観測を束縛する。mutation applicability と evidence generation は Parent QA / execution に残す。
 
-両 reviewer に同じ Unit Data、Task Spec、comparison base、candidate commit / immutable diff、changed artifact 一覧、AC、親が確定した Expected Observation、surrounding context、Parent QA baseline evidence、test execution evidence、mutation applicability と applicable mutation evidence を渡す。fixture の authoritative source と input consistency を確認できる context も含める。不足する evidence は実行結果や reviewer Pass で補わない。
-
-coverage reviewer は必要な observable behavior と test artifact の対応、validity reviewer はその artifact が信頼できる verification evidence かを観測する。test input は意図した振る舞いと対象となるもっともらしい誤実装の結果を区別できなければならない。test framework / style の好み、fixed quality score / threshold は受入基準にしない。
-
-mutation applicability と evidence generation は Parent QA / execution が所有する。reviewer は mutation を実行せず、渡された evidence が対象 obligation の meaningful failure protection を支えるか観測する。恒久的または常時の mutation testing は要求しない。
-
-## Programmatic Flow
+## Programmatic Flows
 
 <!-- @contract impl-lead-test-acceptance-flow -->
 ### test-acceptance-review-control

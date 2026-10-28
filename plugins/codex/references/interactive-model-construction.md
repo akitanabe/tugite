@@ -93,7 +93,7 @@ Interactive Model Construction
   ✕ autonomous Agentic invocation
 ```
 
-Interactive Method は、`explorer-this`、`how-it`、または任意の downstream workflow を自律的に起動しない。
+Interactive Method は、任意の downstream workflow を自律的に起動しない。
 
 ## Non-goals
 
@@ -101,5 +101,5 @@ Interactive Method は、`explorer-this`、`how-it`、または任意の downstr
 - standalone public Skill、platform invocation metadata、plugin manifest、generic Human interaction framework
 - fixed dialogue schema、state machine、question queue、decision ledger
 - Interactive 専用 Research Agent、Human による探索 architecture、または独自の Local Model / projection
-- Human に聞く必要性の判断、Agent-side resolution、対話の presentation、`ex`、Method switching、`how-it`、Planning Synthesis、downstream artifact / plan の acceptance
+- Human に聞く必要性の判断、Agent-side resolution、対話の presentation、Method switching、downstream artifact / plan の acceptance
 - Human approval による unknown fact の確定、または materiality を無視した全域 Recomposition

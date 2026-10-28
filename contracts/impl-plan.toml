@@ -1,0 +1,70 @@
+[contracts.impl-plan-method-document]
+kind = "occurrences"
+pattern = "# Implementation Unit Design"
+count = 1
+paths = [
+  "plugins/claude/skills/impl-plan/references/implementation-unit-design.md",
+  "plugins/codex/skills/impl-plan/references/implementation-unit-design.md",
+  "plugins/cursor/skills/impl-plan/references/implementation-unit-design.md",
+]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-unit-data-c3d92f914d82]
+kind = "requires"
+slice = "impl-plan-unit-data"
+pattern = "`id`、`purpose`、`acceptance_criteria`、`scope`、`implementation_freedom`、`constraints`、`depends_on`、`verification`"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-unit-scope-4b228f6934bd]
+kind = "requires"
+slice = "impl-plan-unit-data"
+pattern = "`scope`: `change` と `exclude` からなる実装境界。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-unit-dependency-06b610a68c66]
+kind = "requires"
+slice = "impl-plan-unit-data"
+pattern = "`depends_on`: Unit 間の semantic dependency と外部・repository・environment precondition を区別した記述。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-unit-verification-53e62a787b92]
+kind = "requires"
+slice = "impl-plan-unit-data"
+pattern = "`verification`: Acceptance Criteria ごとの focused verification と必要な run-wide final gate。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-method-boundary-03ddc0cde070]
+kind = "requires"
+slice = "impl-plan-method-boundary"
+pattern = "`impl-plan` が委譲文書を構成するときに使う consumer-specific Method"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-method-rmo-loader-6794ce8dacd0]
+kind = "requires"
+slice = "impl-plan-method-rmo"
+pattern = "partition reasoning の直前に一度 load"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-method-rmo-target-9f0c13088eb9]
+kind = "requires"
+slice = "impl-plan-method-rmo"
+pattern = "Target は Unit boundary、semantic dependency、independent acceptability"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-method-rmo-inputs-44221d6f89f2]
+kind = "requires"
+slice = "impl-plan-method-rmo"
+pattern = "次の5入力を consumer mapping する。"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-method-before-rmo]
+kind = "order"
+before = "impl-plan-method-boundary-relation"
+after = "impl-plan-method-rmo-relation"
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-rmo-before-partition]
+kind = "order"
+before = "impl-plan-method-rmo-relation"
+after = "impl-plan-method-partition-relation"
+applies_to = ["claude", "codex", "cursor"]

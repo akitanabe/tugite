@@ -1,6 +1,0 @@
-interface:
-  display_name: "Plan Agent"
-  short_description: "Create free-form plans with conditional review"
-  default_prompt: "Use $plan-agent only when explicitly requested to create a recommendation-first free-form planning or design artifact from normal context without starting implementation; use review only when applicable and not opted out."
-policy:
-  allow_implicit_invocation: false

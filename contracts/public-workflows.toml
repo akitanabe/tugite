@@ -1,0 +1,111 @@
+[contracts.explain-this-document]
+kind = "occurrences"
+pattern = "# explain-this"
+count = 1
+paths = ["plugins/claude/skills/explain-this/SKILL.md", "plugins/codex/skills/explain-this/SKILL.md", "plugins/cursor/skills/explain-this/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.explain-this-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/explain-this/SKILL.md", "plugins/cursor/skills/explain-this/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "explain-this" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.explain-this-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/explain-this/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]
+
+[contracts.review-propose-document]
+kind = "occurrences"
+pattern = "# review-propose"
+count = 1
+paths = ["plugins/claude/skills/review-propose/SKILL.md", "plugins/codex/skills/review-propose/SKILL.md", "plugins/cursor/skills/review-propose/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.review-propose-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/review-propose/SKILL.md", "plugins/cursor/skills/review-propose/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "review-propose" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.review-propose-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/review-propose/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]
+
+[contracts.impl-plan-document]
+kind = "occurrences"
+pattern = "# impl-plan"
+count = 1
+paths = ["plugins/claude/skills/impl-plan/SKILL.md", "plugins/codex/skills/impl-plan/SKILL.md", "plugins/cursor/skills/impl-plan/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-plan-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/impl-plan/SKILL.md", "plugins/cursor/skills/impl-plan/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "impl-plan" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.impl-plan-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/impl-plan/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]
+
+[contracts.impl-review-document]
+kind = "occurrences"
+pattern = "# impl-review"
+count = 1
+paths = ["plugins/claude/skills/impl-review/SKILL.md", "plugins/codex/skills/impl-review/SKILL.md", "plugins/cursor/skills/impl-review/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.impl-review-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/impl-review/SKILL.md", "plugins/cursor/skills/impl-review/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "impl-review" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.impl-review-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/impl-review/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]

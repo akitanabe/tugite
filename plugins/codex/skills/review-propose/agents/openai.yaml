@@ -1,0 +1,6 @@
+interface:
+  display_name: "Review Propose"
+  short_description: "Compare an original plan with a coherent recommendation"
+  default_prompt: "Use $review-propose only when explicitly requested. Preserve the original plan; return a coherent alternative and grounded comparison for Human choice, without adopting or implementing it."
+policy:
+  allow_implicit_invocation: false

@@ -18,15 +18,13 @@ assert_same() {
 [[ "$plugin_version" == "$expected_version" ]] || fail "plugin and shared versions differ: $plugin_version vs $expected_version"
 [[ -f "$installer" ]] || fail "missing installer: $installer"
 [[ -f "$repo_root/plugins/cursor/install/install-plugin.ps1" ]] || fail "missing PowerShell installer"
-[[ -f "$repo_root/plugins/cursor/references/deletion-test-method.md" ]] || fail "missing Deletion Test Method reference"
 [[ -f "$repo_root/plugins/cursor/references/external-effects.md" ]] || fail "missing External Effects reference"
 [[ -f "$repo_root/plugins/cursor/references/verification-topology.md" ]] || fail "missing Verification Topology reference"
-[[ -f "$repo_root/plugins/cursor/references/planning-core.md" ]] || fail "missing Planning Core reference"
+[[ -f "$repo_root/plugins/cursor/skills/impl-plan/references/implementation-unit-design.md" ]] || fail "missing impl-plan Unit Design reference"
 [[ -f "$repo_root/plugins/cursor/skills/impl-lead/SKILL.md" ]] || fail "missing impl-lead skill"
-for reference in implementation-unit-design execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
+for reference in execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
   [[ -f "$repo_root/plugins/cursor/skills/impl-lead/references/$reference.md" ]] || fail "missing impl-lead reference: $reference"
 done
-[[ -f "$repo_root/plugins/cursor/skills/review-refine/SKILL.md" ]] || fail "missing review-refine skill"
 [[ -f "$repo_root/plugins/cursor/skills/test-verify/SKILL.md" ]] || fail "missing test-verify skill"
 [[ -f "$repo_root/plugins/cursor/skills/visualize-that/SKILL.md" ]] || fail "missing visualize-that skill"
 [[ -f "$repo_root/plugins/cursor/skills/visualize-that/assets/template.html" ]] || fail "missing visualize-that template"
@@ -65,7 +63,7 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
 
-for skill in explorer-this how-it impl-lead find-way plan-agent review-refine test-report test-verify visualize-that; do
+for skill in explain-this review-propose impl-plan impl-review impl-lead test-report test-verify visualize-that; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 
@@ -76,11 +74,13 @@ for reference in risk-review completion-gate; do
   assert_same "$source_repo/plugins/cursor/skills/test-verify/references/$reference.md" "$dest_dir/skills/test-verify/references/$reference.md"
 done
 
-for reference in implementation-unit-design execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
+for reference in execution parent-qa test-acceptance-gate risk-review completion-gate run-owned-lifecycle; do
   assert_same "$source_repo/plugins/cursor/skills/impl-lead/references/$reference.md" "$dest_dir/skills/impl-lead/references/$reference.md"
 done
 
-for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation verification-topology planning-synthesis planning-core reality-model-observation deletion-test-method researcher-delegation writable-scope external-effects; do
+assert_same "$source_repo/plugins/cursor/skills/impl-plan/references/implementation-unit-design.md" "$dest_dir/skills/impl-plan/references/implementation-unit-design.md"
+
+for reference in model-construction agentic-model-construction interactive-model-construction behavior-model-observation verification-topology reality-model-observation researcher-delegation writable-scope external-effects implementation-review; do
   assert_same "$source_repo/plugins/cursor/references/$reference.md" "$dest_dir/references/$reference.md"
 done
 

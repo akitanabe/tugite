@@ -1,6 +1,6 @@
 <!-- Generated from shared/. Do not edit directly. -->
 
-# Tugite v7.4.0
+# Tugite v7.5.0
 
 Tugite は Claude Code、Codex、Cursor で実装作業を進めるためのプラグインです。親エージェントが依頼内容を実装単位に整理し、適切な担当へ実装を依頼して、品質確認と最終検証まで責任を持ちます。
 
@@ -10,25 +10,28 @@ Tugite は Claude Code、Codex、Cursor で実装作業を進めるためのプ�
 
 ### 公開スキル
 
-- `how-it`: 進め方が決まっていない依頼について、前提、選択肢、成立条件を利用者と一緒に整理し、求められた形で回答します。利用者が指定したときだけ使います。
-- `explorer-this`: まずエージェント自身で調査し、判断に必要な情報や方針を人にしか確認できない場合に限って質問します。調査結果は依頼された形式で返します。利用者が指定したときだけ使います。
+- `explain-this`: 実装の全体像・処理の流れ・各処理の意味を、コード根拠と観測の限界付きで説明します。
+- `review-propose`: 元プランを保持し、整合した推奨案と効果・複雑さ・負担の比較を返します。採用は利用者が判断します。
+- `impl-plan`: 与えられたプランを、実装単位・担当・依存順序・検証が分かる委譲文書へ具体化して終了します。全体規模と分担の最終判断は利用者に残します。
+- `impl-review`: 実装済み差分を専門・テスト・記法の共通基準でレビューし、修正表を返して変更前に停止します。
+
 - `visualize-that`: 文書やデータなど任意の入力を、意味と不確実性を保った図解 HTML にします。利用可能な描画機能で実物を確認し、確認できない場合も HTML と理由を返します。利用者が指定したときだけ使います。
-- `impl-lead`: 実装依頼を着手前に明確な作業単位へ整理し、実装、品質確認、受け入れ判断、最終検証、安全な取り込みまで責任を持ちます。利用者が指定したときだけ使います。
-- `plan-agent`: 会話や提示資料をもとに、依頼に合った自由形式の計画・設計資料を、推奨案を中心に作ります。実現方法に material な判断がある場合は、initial candidate 全体に対する別の実装視点を助言として確認し、review が必要ならその後に進みます。
-- `find-way`: 目標全体の不明点と判断待ちの事項を整理し、1つ以上の自己完結した作業単位に分けて返します。利用者が指定したときだけ使います。
+- `impl-lead`: 委譲文書の内容と実行時の前提を確認し、実装、品質確認、受け入れ判断、最終検証、安全な取り込みまで責任を持ちます。利用者が指定したときだけ使います。
 - `test-report`: 指定されたテスト範囲を実行せずに読み取り、全体像と振る舞い別の期待・条件・assertion・根拠、静的に確認した問題、実行確認が必要な疑い、判断材料の不足を報告します。実行や修正は行いません。
 - `test-verify`: report の全体・選択した指摘、または直接指定された対象を再確認し、実行結果などに基づいて検証・因果修復して最終検証まで行います。変更不要な場合も結果を返します。利用者が指定したときだけ使います。
-- `review-refine`: 途中で内容が変わらない対象を指定回数までレビューし、指摘を採用するかどうかと受け入れ結果を呼び出し元の親エージェントへ返します。
 
-`plan-agent` は計画にレビューが必要か、利用者がレビュー不要と指定したか、実現方法に material な判断があり alternative implementation perspective が必要かを判断します。advisor の適用は review の opt-out では解除されません。applicable な場合は coherent candidate 全体が成立した後に一度だけ助言を受け、親エージェントが採否を裁定して統合してから、必要な厳格なレビューへ進みます。
+
+調査・初期プラン作成は通常のエージェントへ依頼します。必要な skill だけを選び、各起動条件に従います。固定の自動チェーンにはしません。通常プランは `impl-plan` へ、委譲文書を指定した実装依頼は `impl-lead` へ渡します。
 
 ### 実装・レビュー・助言を担うエージェント
 
 実装を担うエージェントは `focused-implementer`、`implementer`、`senior-implementer`、`expert-implementer` です。
 
-レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。他の作業手順では具体的なリスクに応じて選択し、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
+レビュー担当は `plan-adversarial-reviewer`、`responsibility-boundary-reviewer`、`test-coverage-reviewer`、`test-validity-reviewer`、`over-engineering-reviewer`、`security-side-effect-reviewer`、`static-performance-reviewer`、`writing-principles-reviewer` です。`impl-lead` でテストを追加・変更・削除する実装単位は、coverage と validity の両レビューを受けてから親が受け入れを裁定します。`impl-review` でも変更テストには両レビューを適用し、修正候補として返します。その他の作業手順の起動条件は各 workflow に従い、`writing-principles-reviewer` は作業終了時の最終文章レビューに使います。
 
 initial candidate の実装方法について、内容を変更せずに別の視点を返す担当は `plan-quality-advisor` です。レビュー担当と助言担当は判断材料を返し、採否と最終的な受け入れは親エージェントが行います。
+
+入口の変更と使い分けは [workflow の利用先](docs/workflow-migration.md) を参照してください。
 
 ## 導入と起動
 

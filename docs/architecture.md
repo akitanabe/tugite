@@ -184,71 +184,11 @@ Behavior Model Observation / Reality Model Observation は concrete specializati
 
 ## Public Workflows
 
-### explorer-this
-
-`explorer-this` は明示起動のみの薄い public Skill とする。
-
-Agentic Model Construction によって current repository に対する task-local Local Model を構築し、探索レポート自体を目的にせず、caller が求める explanation / comparison / analysis / repository overview / requested artifact へ直接接続する。固定 output schema や固定 workflow は持たない。
-
-repository write は caller が repository artifact を成果物として明示した場合の requested-output authority に限定する。探索 finding 自体は authority を拡張せず、探索中に発見した実装問題を source / test / config へ自律的に修正しない。
-
 ### visualize-that
 
 `visualize-that` は任意の supplied material を、人が理解しやすい順序の図と説明からなる単独 HTML にする明示起動の public Skill である。一回の invocation で exactly one の task-local Local Model を所有し、Agentic Model Construction を first route、Agent-side resolution 後にも Human-owned material gap が残る場合だけ Interactive Model Construction を同じ Local Model へ composition する。
 
 入力の事実、関係、制約、不確実性を保ち、主要項目に成果物内で stable な識別子を付ける。識別子による deep dive は元 overview を残した別 HTML とする。browser launch、screenshot capture、actual inspection を分けた local Programmatic Flow で描画を確認し、capability 不足や未修復の視認性問題では HTML を保持した `render-unverified` を返す。意味保持と visual acceptance は Agent の判断に残す。
-
-### plan-agent
-
-`plan-agent` は normal context から request-relative な自由形式 planning / design artifact を recommendation-first で作る public planning workflow である。
-
-一回の invocation で一つの task-local Local Model を構築し、artifact kind を fixed enum / schema にしない。review applicability と explicit opt-out は `plan-agent` が判断する。nonapplicable / opt-out は unreviewed の normal final-candidate、applicable / no opt-out は strict review route とする。
-
-```text
-plan-agent
-  ↓
-Agentic Model Construction
-  ↓
-Agent-owned direction
-  ↓
-Planning Synthesis
-  ↓
-conditional review
-```
-
-### find-way
-
-`find-way` は明示起動だけで Destination 全体の Planning Fog と Decision blocker を解像し、1..N の self-contained な Work Units を返す public pre-planning workflow である。一回の invocation は Destination-wide な exactly one の task-local Local Model を所有し、breadth-first な low-resolution current-state Map に Destination、Work Units、Decision Units、Planning Fog、Out of scope を保持する。
-
-```text
-Destination-wide Local Model
-  ↓ breadth-first current-state Map
-Decision Unit / Planning Fog resolution
-  ↓ Reintegration and affected-region Recomposition
-1..N self-contained Work Units
-  ↓
-complete freeze | provisional incomplete + optional resume_reference
-```
-
-Decision Unit の canonical state は `open | resolved`、`actionable | blocked` は dependency からの derived view とする。Work Unit は readiness と、その WU が成立させる Outcome を単独で判別でき、Scope、established context、必要な remaining gap / material dependencies を handoff context として保持する。Binding decisions / constraints、explicit excludes、evidence / provenance は再構築に material な場合だけ補い、Destination coverage が成立して Planning Fog と active open Decision Unit がなくなった場合だけ stable boundary を freeze する。
-
-Agentic Model Construction を first route とし、Agent-side progress route がなく Human-owned blocker がある場合だけ Interactive Model Construction を同じ Local Model へ composition する。exploration は bounded resolution に閉じ、plan、review、implementation、delivery、complete 後の reopen、downstream routing は開始しない。
-
-unfinished state は External Effects boundary と shared Destination Selection に従い caller-specific lifecycle で保存する。保存と read-back に成功した場合だけ externally returned `resume_reference` を返し、resume 時は same-state current Data と current evidence から fresh Local Model を構築する。Local Model や推論履歴は serialize しない。
-
-### review-refine
-
-`review-refine` は artifact / proposal / plan 等を対象に、目的・criteria・evidence に照らして finding を得て、採用した改善を反映する review workflow である。
-
-単独 top-level invocation の場合は自身の task-local Local Model を構築する。`plan-agent` の nested consumer として利用される場合は、親の Local Model から review に必要な projection を受け取り、独自 Local Model を作らない。
-
-structural non-locality は独立 gate ではなく review viewpoint の一つとして扱う。
-
-### code-review
-
-`code-review` は change set / implementation に対する grounded finding を返す review workflow とする。
-
-`review-refine` と共通の Agentic Model Construction / observation mechanism を利用できるが、code-review 自身は remediation や finding adoption を所有しない。
 
 ### test-report
 
@@ -291,27 +231,31 @@ baseline identity と failure disposition を維持し、test-side defect と pr
 
 shared External Effects boundary を pre-action safety に利用する。material な evidence / authority / causal attribution の不足や、要求変更・大きな設計変更が必要な問題は qualified incomplete とし、自動的に対象を拡張しない。local Flow の `stop-incomplete` も同じ外向き状態へ投影する。
 
-### impl-lead
+### impl-plan と impl-lead
 
-`impl-lead` は明示起動された implementation work を execution 前の Implementation Unit へ正規化し、default serial execution、mandatory Parent QA、risk-directed review、writing Completion Gate、Unit acceptance、run-wide final verification、安全な integration / closeout までを所有する public workflow とする。run 全体で一つの run-owned worktree を使い、1 Unit を1 accepted commit に対応させる。
+`impl-plan` は supplied plan の意味を維持して実装単位・担当・文脈・依存順序・検証を委譲文書へ具体化する。
+Implementation Unit Design は impl-plan 配下で Unit boundary、split / merge、semantic dependency、independent acceptability を判断し、既存 RMO の semantics を用いる。
+Unit の8 field と担当・route 等の実行計画情報を区別する。規模適否と分担の最終採用は Human が所有する。
 
-v7 core では Model Construction Method を必須化しない。Phase 8-1 は outcome / scope / coverage の親 ownership と consumer-specific Implementation Unit Design を接続し、Phase 8-2 の Implementer / Reviewer / Writable Scope capability を経て、Phase 8-3 が worker dispatch、implementation、verification、acceptance、closeout を閉じる。
+`impl-lead` は準備済み委譲文書を消費し、現時点の readiness / authority / state を確認して依存順に直列実行する。
+委譲計画が未作成の場合だけ impl-plan の責務を利用する。準備済み計画を無条件に再作成せず、前提不一致は明示して停止する。
+実際の dispatch、monitoring、clarification / correction、Parent QA、review、受入 gate、commit、最終検証、integration / closeout は impl-lead に残る。
+最初の実装・別 Unit・独立観測は fresh、同じ Unit の同じ担当の clarification / correction だけ continuation とする。
 
-`impl-lead + Local Model` は v7 完了後に実験し、実装品質、context consumption、overhead を観測して採否を判断する。
+### explain-this と review-propose
 
-#### Implementation Unit Design
+`explain-this` はコードを主な根拠に一つの適応的 Local Model を構築し、Human へ実装の全体像・処理の意味を説明する。
+テスト期待値は補助根拠とし、実装・意図・実行観測・不確実性を区別する。必要で許可された小さな実行確認も使える。
+`review-propose` は元プランと推奨案を同じ Local Model のもとで比較し、MO で判断に必要な意味差を観測する。
+caller が根拠取得・指摘吟味・整合・比較を所有し、Human が採用を判断する。両 workflow とも RMO を必須にせず、実装修正へ自動遷移しない。
 
-`impl-lead` 配下の `references/implementation-unit-design.md` を正本とする consumer-specific Method とする。public / internal Skill または shared reusable Method にはしない。
+### impl-review
 
-責務:
+`impl-review` は明示対象、保持 context、必要時の Human 確認の順で実装済み差分を特定する。
+`shared/implementation-review.md` は impl-lead と共有する観点・適用条件・入力・指摘処理の正本であり、実行・受入工程を所有しない。
+専門 review は具体的 risk に応じ、変更テストには coverage / validity を適用し、writing review も行う。修正表を返して変更前に停止する。
 
-* independently acceptable outcome の boundary を設計する
-* split / merge を判断する
-* semantic dependency を構成する
-* AC / verification / accept / rollback boundary を揃える
-* implementer が再設計せず着手できる単位に正規化する
-
-task の再設計、worker selection、execution order、implementation は所有しない。
+調査・初期プラン作成は通常のエージェントへ依頼する。これらは用途別の入口であり、固定の自動実行チェーンではない。
 
 ## Shared Methods
 
@@ -355,39 +299,6 @@ shared Method とし、standalone Skill にはしない。
 Agentic と同じ Model Construction Core に Human resolution route と final Human judgment boundary を追加する。Agent-side で解消できる gap を先に処理し、Human-held fact / context または Human authority judgment が resolution basis である場合だけ Human interaction を利用する。
 
 Human response を same Local Model へ Reintegration し、material invalidation が成立した場合だけ Recomposition / bounded re-observation を行う。completion には、統合・再観測後の current understanding を Human が downstream の前提として採用する final judgment を必須とする。
-
-### Planning Synthesis
-
-plan-family の共通 planning capability とする。
-
-入力:
-
-* requested artifact responsibility、task-local Local Model または必要な projection
-* authority
-* authority constraints
-
-責務:
-
-* current understanding と authority から request-relative な coherent planning / design artifact candidate を構成する
-* requested artifact に material な semantics だけを選び、非実装 artifact に implementation ceremony を強制しない
-
-所有しない責務:
-
-* repository exploration
-* research
-* Model Construction
-* Human clarification
-* review
-* final acceptance
-
-### Planning Core
-
-plan-family の shared orchestration Method とする。
-
-top-level planning workflow が所有する一つの task-local Local Model から artifact responsibility、planning-relevant projection、established direction、authority constraints、review applicability、explicit opt-out を受け取る。nonapplicable / opt-out は review を起動せず、applicable / no opt-out の coherent candidate だけを stable S0 review target として nested `review-refine` へ接続する。実装前 plan の review は required normal `plan-adversarial-reviewer` による strengthening / bounded re-review の convergence 後に `over-engineering-reviewer` final trim と Deletion Test を行う。
-
-Planning Core は Local Model、Planning Synthesis の judgment、`review-refine` の adjudication / mutation / completion、top-level workflow の
-final acceptance を所有しない。synthesis gap は candidate を作れない理由と affected semantics を caller-actionable に返す。review / verification が安全に閉じない場合は latest verified candidate があれば保持した `incomplete` とし、返却 candidate を後処理で変更しない。
 
 ### Model Construction Artifact Layout
 
