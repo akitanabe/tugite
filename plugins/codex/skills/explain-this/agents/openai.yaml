@@ -1,6 +1,6 @@
 interface:
   display_name: "Explain This"
   short_description: "Explain implementation flow with grounded limits"
-  default_prompt: "Use $explain-this only when explicitly requested. Select major nodes in the requested processing flow and write one short identifier-first contribution statement for each. Match each statement to that unit's actual responsibility. Before returning, remove implementation-internal explanations; preserve essential handoffs, ordering and unknown bridges. Keep extra detail to explicit requests, then stop."
+  default_prompt: "Use $explain-this only when explicitly requested. Explain the requested flow with major implementation identifiers first, briefly stating what each unit accomplishes and its purpose within the flow, grounded in observed behavior. Do not invent business or author intent. Explain value passing only when essential to a connection. Remove mechanical walkthrough details, preserving necessary ordering, commitment boundaries and unknown bridges. Keep extra detail to explicit requests, then stop."
 policy:
   allow_implicit_invocation: false
