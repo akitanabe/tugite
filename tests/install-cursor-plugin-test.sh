@@ -63,7 +63,7 @@ install_output="$(install_with_home)"
 [[ "$(cat "$dest_dir/.tugite-ref")" == "main" ]] || fail "ref marker mismatch"
 assert_same "$source_repo/plugins/cursor/.cursor-plugin/plugin.json" "$dest_dir/.cursor-plugin/plugin.json"
 
-for skill in explain-this review-propose impl-plan impl-review impl-lead test-report test-verify visualize-that; do
+for skill in code-explain walkthrough-assist review-propose impl-plan impl-review impl-lead test-report test-verify visualize-that; do
   assert_same "$source_repo/plugins/cursor/skills/$skill/SKILL.md" "$dest_dir/skills/$skill/SKILL.md"
 done
 

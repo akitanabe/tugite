@@ -1,0 +1,6 @@
+interface:
+  display_name: "Walkthrough Assist"
+  short_description: "Discuss code and tests with Human judgment"
+  default_prompt: "Use $walkthrough-assist only when explicitly requested. Reuse current code-explain or test-report results, create missing foundations, and update only affected parts. Walk through meaningful units with Human questions, scope choice, next, skip, and stop. Keep findings and unresolved contradictions; explanation and skip are not approval. Do not edit source or tests or start test-verify."
+policy:
+  allow_implicit_invocation: false

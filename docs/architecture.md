@@ -242,9 +242,9 @@ Unit の8 field と担当・route 等の実行計画情報を区別する。規�
 実際の dispatch、monitoring、clarification / correction、Parent QA、review、受入 gate、commit、最終検証、integration / closeout は impl-lead に残る。
 最初の実装・別 Unit・独立観測は fresh、同じ Unit の同じ担当の clarification / correction だけ continuation とする。
 
-### explain-this と review-propose
+### code-explain と review-propose
 
-`explain-this` はコードを主な根拠に一つの適応的 Local Model を構築し、Human へ対象機能の全体像、処理の流れ、実際のコード実行フロー、各処理の意味・条件・副作用を全体から詳細へ説明する。
+`code-explain` はコードを主な根拠に一つの適応的 Local Model を構築し、Human へ対象機能の全体像、処理の流れ、実際のコード実行フロー、各処理の意味・条件・副作用を全体から詳細へ説明する。
 出力順は全体説明、コード実行経路、各処理の詳細説明とする。詳細説明は意味上の処理単位の役割・条件・作用を中心にし、主要なコード実行フローは根拠を辿るための参照として示す。補助呼び出しの全列挙を避け、実際の順序・入れ子・関数内処理・復帰後の継続・終了までの接続を保つ。
 調査の深さを保ちながら、フローは経路、本文は目的・重要な条件・作用・境界を担う。出力する詳細は対象理解への寄与で選び、経路の語り直しや周辺情報の列挙を避ける。
 全体理解をもとにコードを意味上の処理単位へ分解し、その役割を説明してコードを根拠として対応づける。
@@ -252,6 +252,13 @@ Unit の8 field と担当・route 等の実行計画情報を区別する。規�
 テスト期待値は補助根拠とし、実装・意図・実行観測・不確実性を区別する。必要で許可された小さな実行確認も使える。
 `review-propose` は元プランと推奨案を同じ Local Model のもとで比較し、MO で判断に必要な意味差を観測する。
 caller が根拠取得・指摘吟味・整合・比較を所有し、Human が採用を判断する。両 workflow とも RMO を必須にせず、実装修正へ自動遷移しない。
+
+### walkthrough-assist
+
+`walkthrough-assist` は `code-explain` / `test-report` の現状に適合する成果を利用し、コード・テストの理解と妥当性判断をHumanとの対話で支援する。不足時は基礎Skillを利用し、古い意味領域だけ更新する。
+対象と説明順はHumanの指定を優先し、目的・役割に基づく処理単位から個別のコード・assertionへ掘り下げる。基礎成果の範囲を対話の基準とし、質問中は現在の対象に留まる。
+Humanの次・skip・終了を受け付け、説明済みと妥当性の判断済みを区別する。既存・新規・Human由来の指摘を根拠付きで統合し、重複・矛盾を整理して未確定を残す。途中終了でも発見事項と未確認範囲を返す。
+基礎Skillの静的な説明・報告責務は維持し、source/test修正や実行を行わず、`test-verify`へ自動遷移しない。
 
 ### impl-review
 
