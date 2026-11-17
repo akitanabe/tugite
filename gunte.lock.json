@@ -20,6 +20,8 @@
     "shared/skill/review-propose/SKILL.md",
     "declarations/codex/skills/review-propose/openai.yaml",
     "shared/skill/explain-code/SKILL.md",
+    "shared/skill/plan-align/SKILL.md",
+    "declarations/codex/skills/plan-align/openai.yaml",
     "shared/skill/walkthrough-assist/SKILL.md",
     "declarations/codex/skills/walkthrough-assist/openai.yaml",
     "declarations/codex/skills/explain-code/openai.yaml",
@@ -211,8 +213,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-3dd228c4959f",
-      "sha256": "ebe69509ce4df943df24cae1304687661602dd8418f516af14ebf87d1a2327d0"
+      "id": "cursor-readme-public-skills-requires-a145abb90fbf",
+      "sha256": "a4ce5cbea99a6b4ba11cf35664e7a0cb40ed7da1d1aa8fc8893b2b44be352d10"
     },
     {
       "id": "repository-programmatic-flow-skills-f507bb071fa9",
@@ -796,11 +798,11 @@
     },
     {
       "id": "public-workflow-codex-metadata",
-      "sha256": "97bae7bf242e421d53d7a542bec5807bbd25096c4fd5a37f9912f261d352b1ff"
+      "sha256": "f988cd09135701915446512a32f720ad8796b724ae3ba2a25e4066e551ce630f"
     },
     {
       "id": "public-workflow-claude-cursor-metadata",
-      "sha256": "502d642109d5360616302e7fb91cfcb96aebb797b0c784d3715499222908d3be"
+      "sha256": "7397cee63fd3156e03a8d49557885fecfa674fd2921770dc8f7d77a4d7e8faf0"
     },
     {
       "id": "explain-code-document",
@@ -865,6 +867,18 @@
     {
       "id": "walkthrough-assist-codex-invocation",
       "sha256": "ed5f602077a7111489070aefbb8f69e8b27db8d9c99ba033d4f25cc865f9ded1"
+    },
+    {
+      "id": "plan-align-document",
+      "sha256": "b8b0e69495c6c2fa43d6a38e034fe744ae34d53d7d4789e26a1841b5c8c4ec25"
+    },
+    {
+      "id": "plan-align-explicit-invocation",
+      "sha256": "99ab33c31d526cd3209b18d7a98d220fdd75e2b06c0e3dbefa6526fe345e7661"
+    },
+    {
+      "id": "plan-align-codex-invocation",
+      "sha256": "5f2c2c453e1197e3d8c6fe1940afdb46f87f9ff619eef18da44650c5e3a0fb80"
     },
     {
       "id": "shared-researcher-retained-e9f44941dc1d",

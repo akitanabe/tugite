@@ -26,6 +26,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 
 - `explain-code`: 実装の全体像・処理の流れ・各処理の意味を、コード根拠と観測の限界付きで説明します。
 - `walkthrough-assist`: コード・テストの既存説明を利用し、処理の意味ごとに理解と妥当性をHumanと対話で確認します。質問・次・skip・終了を選び、発見事項と未確認範囲を整理します。
+- `plan-align`: ソフトウェア開発の要求から大枠を提案し、必要性・失敗の許容範囲・保証する振る舞いを短いフロー中心に対話で決め、単一のプランを返して停止します。利用者が指定したときだけ使います。
 - `review-propose`: 元プランを保持し、整合した推奨案と効果・複雑さ・負担の比較を返します。採用は利用者が判断します。
 - `impl-plan`: 与えられたプランを、実装単位・担当・依存順序・検証が分かる委譲文書へ具体化して終了します。全体規模と分担の最終判断は利用者に残します。
 - `impl-review`: 実装済み差分を専門・テスト・記法の共通基準でレビューし、修正表を返して変更前に停止します。
@@ -36,7 +37,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 - `test-verify`: report の全体・選択した指摘、または直接指定された対象を再確認し、実行結果などに基づいて検証・因果修復して最終検証まで行います。変更不要な場合も結果を返します。利用者が指定したときだけ使います。
 
 
-調査・初期プラン作成は通常のエージェントへ依頼します。必要な skill だけを選び、各起動条件に従います。固定の自動チェーンにはしません。通常プランは `impl-plan` へ、委譲文書を指定した実装依頼は `impl-lead` へ渡します。
+調査は通常のエージェントへ、要求から実装方針を対話で決める場合は `plan-align` へ依頼できます。必要な skill だけを選び、各起動条件に従います。固定の自動チェーンにはしません。通常プランは `impl-plan` へ、委譲文書を指定した実装依頼は `impl-lead` へ渡します。
 
 ### 実装・レビュー・助言を担うエージェント
 
@@ -64,6 +65,7 @@ Claude Code でマーケットプレイスを登録し、プラグインを導�
 ```text
 /tugite:explain-code <理解する実装>
 /tugite:walkthrough-assist <対話するコード・テストまたは既存成果>
+/tugite:plan-align <ソフトウェア開発の要求>
 /tugite:review-propose <比較する元プラン>
 /tugite:impl-plan <具体化するプラン>
 /tugite:impl-review <実装差分（省略時はcontextから特定）>
@@ -90,6 +92,7 @@ codex plugin add tugite@tugite
 ```text
 $explain-code <理解する実装>
 $walkthrough-assist <対話するコード・テストまたは既存成果>
+$plan-align <ソフトウェア開発の要求>
 $review-propose <比較する元プラン>
 $impl-plan <具体化するプラン>
 $impl-review <実装差分（省略時はcontextから特定）>
@@ -156,6 +159,7 @@ agent --plugin-dir plugins/cursor
 ```text
 /explain-code <理解する実装>
 /walkthrough-assist <対話するコード・テストまたは既存成果>
+/plan-align <ソフトウェア開発の要求>
 /review-propose <比較する元プラン>
 /impl-plan <具体化するプラン>
 /impl-review <実装差分（省略時はcontextから特定）>
