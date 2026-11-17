@@ -29,10 +29,10 @@ files = [
   "declarations/codex/skills/impl-plan/openai.yaml",
   "shared/skill/review-propose/SKILL.md",
   "declarations/codex/skills/review-propose/openai.yaml",
-  "shared/skill/code-explain/SKILL.md",
+  "shared/skill/explain-code/SKILL.md",
   "shared/skill/walkthrough-assist/SKILL.md",
   "declarations/codex/skills/walkthrough-assist/openai.yaml",
-  "declarations/codex/skills/code-explain/openai.yaml",
+  "declarations/codex/skills/explain-code/openai.yaml",
   "shared/VERSION",
   "shared/model-construction.md",
   "shared/agentic-model-construction.md",
@@ -622,20 +622,20 @@ profile = "markdown-v1"
 header = "<!-- Generated from shared/. Do not edit directly. --> 詳細なガイドラインは [docs/repository-guidelines.md](docs/repository-guidelines.md) を参照してください。"
 
 [[targets.claude.rules]]
-match = "shared/skill/code-explain/SKILL.md"
-path = "skills/code-explain/SKILL.md"
+match = "shared/skill/explain-code/SKILL.md"
+path = "skills/explain-code/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.codex.rules]]
-match = "shared/skill/code-explain/SKILL.md"
-path = "skills/code-explain/SKILL.md"
+match = "shared/skill/explain-code/SKILL.md"
+path = "skills/explain-code/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 
 [[targets.cursor.rules]]
-match = "shared/skill/code-explain/SKILL.md"
-path = "skills/code-explain/SKILL.md"
+match = "shared/skill/explain-code/SKILL.md"
+path = "skills/explain-code/SKILL.md"
 profile = "markdown+yaml-frontmatter-v1"
 header = "<!-- Generated from shared/. Do not edit directly. -->"
 

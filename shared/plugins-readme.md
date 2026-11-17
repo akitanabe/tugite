@@ -24,7 +24,7 @@ Tugite は Claude Code、Codex、Cursor 向けに、複数の作業手順、エ�
 
 ### 公開スキル
 
-- `code-explain`: 実装の全体像・処理の流れ・各処理の意味を、コード根拠と観測の限界付きで説明します。
+- `explain-code`: 実装の全体像・処理の流れ・各処理の意味を、コード根拠と観測の限界付きで説明します。
 - `walkthrough-assist`: コード・テストの既存説明を利用し、処理の意味ごとに理解と妥当性をHumanと対話で確認します。質問・次・skip・終了を選び、発見事項と未確認範囲を整理します。
 - `review-propose`: 元プランを保持し、整合した推奨案と効果・複雑さ・負担の比較を返します。採用は利用者が判断します。
 - `impl-plan`: 与えられたプランを、実装単位・担当・依存順序・検証が分かる委譲文書へ具体化して終了します。全体規模と分担の最終判断は利用者に残します。
@@ -62,7 +62,7 @@ Claude Code でマーケットプレイスを登録し、プラグインを導�
 導入後、公開スキルは次のコマンドで直接起動できます。
 
 ```text
-/tugite:code-explain <理解する実装>
+/tugite:explain-code <理解する実装>
 /tugite:walkthrough-assist <対話するコード・テストまたは既存成果>
 /tugite:review-propose <比較する元プラン>
 /tugite:impl-plan <具体化するプラン>
@@ -88,7 +88,7 @@ codex plugin add tugite@tugite
 公開スキルは次のコマンドで直接起動できます。
 
 ```text
-$code-explain <理解する実装>
+$explain-code <理解する実装>
 $walkthrough-assist <対話するコード・テストまたは既存成果>
 $review-propose <比較する元プラン>
 $impl-plan <具体化するプラン>
@@ -154,7 +154,7 @@ agent --plugin-dir plugins/cursor
 公開スキルは次のコマンドで直接起動できます。
 
 ```text
-/code-explain <理解する実装>
+/explain-code <理解する実装>
 /walkthrough-assist <対話するコード・テストまたは既存成果>
 /review-propose <比較する元プラン>
 /impl-plan <具体化するプラン>

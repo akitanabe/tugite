@@ -1,25 +1,25 @@
-[contracts.code-explain-document]
+[contracts.explain-code-document]
 kind = "occurrences"
-pattern = "# code-explain"
+pattern = "# explain-code"
 count = 1
-paths = ["plugins/claude/skills/code-explain/SKILL.md", "plugins/codex/skills/code-explain/SKILL.md", "plugins/cursor/skills/code-explain/SKILL.md"]
+paths = ["plugins/claude/skills/explain-code/SKILL.md", "plugins/codex/skills/explain-code/SKILL.md", "plugins/cursor/skills/explain-code/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.code-explain-explicit-invocation]
+[contracts.explain-code-explicit-invocation]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/claude/skills/code-explain/SKILL.md", "plugins/cursor/skills/code-explain/SKILL.md"]
+paths = ["plugins/claude/skills/explain-code/SKILL.md", "plugins/cursor/skills/explain-code/SKILL.md"]
 format = "yaml"
 applies_to = ["claude", "cursor"]
 assertions = [
-  { path = "name", op = "equals", value = "code-explain" },
+  { path = "name", op = "equals", value = "explain-code" },
   { path = "disable-model-invocation", op = "equals", value = true },
 ]
 
-[contracts.code-explain-codex-invocation]
+[contracts.explain-code-codex-invocation]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/codex/skills/code-explain/agents/openai.yaml"]
+paths = ["plugins/codex/skills/explain-code/agents/openai.yaml"]
 format = "yaml"
 applies_to = ["codex"]
 assertions = [

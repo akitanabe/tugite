@@ -1,12 +1,12 @@
 ---
-name: code-explain
+name: explain-code
 description: >-
   明示起動時、既存実装や実装後の変更について、全体像・処理の流れ・実際のコード実行フローを示し、各処理の意味・条件・副作用を根拠と限界付きでHumanへ説明する。
 disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# code-explain
+# explain-code
 
 ## 目的と境界
 
@@ -24,13 +24,13 @@ Human の意図が提示されていない場合は、実装から読み取っ�
 ## 理解の構築
 
 開始時に `../../references/model-construction.md` と `../../references/agentic-model-construction.md` を読む。
-一回の top-level invocation で code-explain が一つの task-local Local Model を所有し、Agentic Model Construction を基本に、問いに応じた理解を構築する。
+一回の top-level invocation で explain-code が一つの task-local Local Model を所有し、Agentic Model Construction を基本に、問いに応じた理解を構築する。
 処理順序、責務、データ・状態は同じモデルの目的に必要な見方として扱い、固定の処理フローモデルや永続台帳を作らない。RMO は必須依存ではない。
 
 依頼・対象・利用可能な context から理解したい問いを捉え、コードを主な根拠に構成、主要経路、各処理の役割を調べる。
 MO で現在の問いに必要な意味差と不足を観測し、caller が追加コード調査や許可された小さな確認を選ぶ。観測 projection から新しい事実や要求を追加しない。
 新しい根拠は同じ Local Model へ Reintegration し、意味領域が無効になった場合だけ Recomposition と影響範囲の再観測を行う。古い理解を矛盾したまま追記しない。
-説明の範囲・意味を変える Human 固有の意図や対象が不可欠なら、Method の外で code-explain が必要な点だけ確認する。調査不能を Human の選択で事実へ変換しない。
+説明の範囲・意味を変える Human 固有の意図や対象が不可欠なら、Method の外で explain-code が必要な点だけ確認する。調査不能を Human の選択で事実へ変換しない。
 これは適応的な理解の責務であり、全項目の固定チェックリストではない。説明内容・粒度・終了判断は caller が所有する。
 
 ### 実行経路・条件・副作用の調査

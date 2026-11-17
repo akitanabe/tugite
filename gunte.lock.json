@@ -19,10 +19,10 @@
     "declarations/codex/skills/impl-plan/openai.yaml",
     "shared/skill/review-propose/SKILL.md",
     "declarations/codex/skills/review-propose/openai.yaml",
-    "shared/skill/code-explain/SKILL.md",
+    "shared/skill/explain-code/SKILL.md",
     "shared/skill/walkthrough-assist/SKILL.md",
     "declarations/codex/skills/walkthrough-assist/openai.yaml",
-    "declarations/codex/skills/code-explain/openai.yaml",
+    "declarations/codex/skills/explain-code/openai.yaml",
     "shared/model-construction.md",
     "shared/agentic-model-construction.md",
     "shared/interactive-model-construction.md",
@@ -211,8 +211,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-c3b3124765a6",
-      "sha256": "1b9a75395a6725c4427a4c10d95cb88bd0e1fb55042ceecada27d479fca97088"
+      "id": "cursor-readme-public-skills-requires-3dd228c4959f",
+      "sha256": "ebe69509ce4df943df24cae1304687661602dd8418f516af14ebf87d1a2327d0"
     },
     {
       "id": "repository-programmatic-flow-skills-f507bb071fa9",
@@ -796,23 +796,23 @@
     },
     {
       "id": "public-workflow-codex-metadata",
-      "sha256": "0eb4d3ed87e13ff873adbc688fd7788acb06199ee299e6fc8a40e97ad08fa08d"
+      "sha256": "97bae7bf242e421d53d7a542bec5807bbd25096c4fd5a37f9912f261d352b1ff"
     },
     {
       "id": "public-workflow-claude-cursor-metadata",
-      "sha256": "ee3b31ddc69330bd7960d6eb1e8551e60c95082466e20763aba2439f59cc679d"
+      "sha256": "502d642109d5360616302e7fb91cfcb96aebb797b0c784d3715499222908d3be"
     },
     {
-      "id": "code-explain-document",
-      "sha256": "aa7fec13c507aae4c2879c67d0a563148c8128136982a71d583284037fc10d49"
+      "id": "explain-code-document",
+      "sha256": "963e50d9a645990a3aefb22147f7954d31a40f9da919a0bef7fb5596dcccc585"
     },
     {
-      "id": "code-explain-explicit-invocation",
-      "sha256": "c36633f304f620c64707a30094685015a84e12a0820c507ad4d14dfc86dc235c"
+      "id": "explain-code-explicit-invocation",
+      "sha256": "ed4591148d66a8c5fa60fe512620085037afa2e47f06d9477154224c3dfa7b85"
     },
     {
-      "id": "code-explain-codex-invocation",
-      "sha256": "20ae7b3938301b01ca7f476eb039f15ba06c9d2e7ed650921f254c00354886c6"
+      "id": "explain-code-codex-invocation",
+      "sha256": "4e7075f21e5d81351b7839028573d64dc339498964d647cce53cec6cf49049e9"
     },
     {
       "id": "review-propose-document",
