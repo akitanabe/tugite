@@ -1,12 +1,12 @@
 ---
-name: explain-this
+name: explain-code
 description: >-
   明示起動時、既存実装や実装後の変更について、全体像・処理の流れ・実際のコード実行フローを示し、各処理の意味・条件・副作用を根拠と限界付きでHumanへ説明する。
 disable-model-invocation: true
 ---
 <!-- Generated from shared/. Do not edit directly. -->
 
-# explain-this
+# explain-code
 
 ## 目的と境界
 
@@ -24,13 +24,13 @@ Human の意図が提示されていない場合は、実装から読み取っ�
 ## 理解の構築
 
 開始時に `../../references/model-construction.md` と `../../references/agentic-model-construction.md` を読む。
-一回の top-level invocation で explain-this が一つの task-local Local Model を所有し、Agentic Model Construction を基本に、問いに応じた理解を構築する。
+一回の top-level invocation で explain-code が一つの task-local Local Model を所有し、Agentic Model Construction を基本に、問いに応じた理解を構築する。
 処理順序、責務、データ・状態は同じモデルの目的に必要な見方として扱い、固定の処理フローモデルや永続台帳を作らない。RMO は必須依存ではない。
 
 依頼・対象・利用可能な context から理解したい問いを捉え、コードを主な根拠に構成、主要経路、各処理の役割を調べる。
 MO で現在の問いに必要な意味差と不足を観測し、caller が追加コード調査や許可された小さな確認を選ぶ。観測 projection から新しい事実や要求を追加しない。
 新しい根拠は同じ Local Model へ Reintegration し、意味領域が無効になった場合だけ Recomposition と影響範囲の再観測を行う。古い理解を矛盾したまま追記しない。
-説明の範囲・意味を変える Human 固有の意図や対象が不可欠なら、Method の外で explain-this が必要な点だけ確認する。調査不能を Human の選択で事実へ変換しない。
+説明の範囲・意味を変える Human 固有の意図や対象が不可欠なら、Method の外で explain-code が必要な点だけ確認する。調査不能を Human の選択で事実へ変換しない。
 これは適応的な理解の責務であり、全項目の固定チェックリストではない。説明内容・粒度・終了判断は caller が所有する。
 
 ### 実行経路・条件・副作用の調査
@@ -100,18 +100,18 @@ MO で現在の問いに必要な意味差と不足を観測し、caller が追�
 根拠を追う主要経路（補助的な呼び出しは省略）:
 
 ```text
-public/index.php → Router::dispatch() → Controller::run() → PublishController::handle()
+アプリケーション入口 → Router.dispatch() → Controller.run() → PublishController.handle()
   handle()内:
-    → Auth::requireUser() [認証]
-    → PublishService::publish() [記事を公開]
-        → DB::transaction() [公開状態と履歴の保存]
-    → Response::created() [publish()から正常復帰後]
-    → Response::withHeader('Location', 公開先) [公開先を付けた応答を返す]
+    → Auth.requireUser() [認証]
+    → PublishService.publish() [記事を公開]
+        → DB.transaction() [公開状態と履歴の保存]
+    → Response.created() [publish()から正常復帰後]
+    → Response.withHeader('Location', 公開先) [公開先を付けた応答を返す]
   → HTTPレスポンス送信
 ```
 
-- **公開対象の選別**: 認証済みの利用者による下書きの公開を受け付け、条件を満たさなければ公開せず中断する。根拠は `Auth::requireUser()`、`ArticleRepository::find()`、`Article::requireDraft()`。この処理単位は Controller と Service の呼び出し先にまたがる。
-- **履歴を伴う公開の確定**: 公開状態と履歴の更新は一体で成立し、履歴を欠いた公開状態は残らない。保存失敗時はこの二つの更新を取り消して例外を伝える。根拠は `DB::transaction()` 内の `ArticleRepository::markPublished()` と `RevisionRepository::append()`。
+- **公開対象の選別**: 認証済みの利用者による下書きの公開を受け付け、条件を満たさなければ公開せず中断する。根拠は `Auth.requireUser()`、`ArticleRepository.find()`、`Article.requireDraft()`。この処理単位は Controller と Service の呼び出し先にまたがる。
+- **履歴を伴う公開の確定**: 公開状態と履歴の更新は一体で成立し、履歴を欠いた公開状態は残らない。保存失敗時はこの二つの更新を取り消して例外を伝える。根拠は `DB.transaction()` 内の `ArticleRepository.markPublished()` と `RevisionRepository.append()`。
 - **公開結果の通知**: 呼び出し元へ公開成功と公開先を知らせる。根拠は `handle()` の `publish()` 正常復帰後にある応答生成・返却部分。
 
 ### 責務が混在した実装
@@ -122,17 +122,17 @@ public/index.php → Router::dispatch() → Controller::run() → PublishControl
 根拠を追う主要経路:
 
 ```text
-public/index.php → Router::dispatch() → Controller::run() → PublishController::handle()
+アプリケーション入口 → Router.dispatch() → Controller.run() → PublishController.handle()
   handle()内:
-    → Auth::requireUser() [認証]
+    → Auth.requireUser() [認証]
     → 公開条件の検証 [直接記述。不成立なら中断]
-    → DB::markPublished()、DB::appendRevision() [同関数内で順に公開状態と履歴を保存]
-    → Response::created()、Response::withHeader() [同関数内で応答を作り返す]
+    → DB.markPublished()、DB.appendRevision() [同関数内で順に公開状態と履歴を保存]
+    → Response.created()、Response.withHeader() [同関数内で応答を作り返す]
   → HTTPレスポンス送信
 ```
 
 - **公開対象の選別**: 公開できるのは、認証された利用者自身の下書きに限られる。根拠は `handle()` 前半の認証・記事取得と直接記述された条件判定。
-- **履歴を伴う公開の確定**: 公開状態とその履歴を残す。根拠は同じ `handle()` の `DB::markPublished()` と `DB::appendRevision()`。トランザクションと例外処理の詳細は未確認で、履歴保存の失敗時に公開状態が取り消されるかはDB層の調査を要する。
+- **履歴を伴う公開の確定**: 公開状態とその履歴を残す。根拠は同じ `handle()` の `DB.markPublished()` と `DB.appendRevision()`。トランザクションと例外処理の詳細は未確認で、履歴保存の失敗時に公開状態が取り消されるかはDB層の調査を要する。
 - **公開結果の通知**: 公開先を含めて成功を知らせる。根拠は同じ `handle()` 末尾の応答生成・返却部分。
 
 三つの説明単位は同じ関数の異なる範囲に対応する。説明上分けても、実行フローは一つの `handle()` 内の直接処理として示す。
@@ -144,10 +144,10 @@ public/index.php → Router::dispatch() → Controller::run() → PublishControl
 以下は根拠となる受付関数以降の主要経路。
 
 ```text
-DownloadController::handle()
-  → 帳票生成の依頼: ReportAdapter::render()
+DownloadController.handle()
+  → 帳票生成の依頼: ReportAdapter.render()
     → [生成内部は未確認]
-  → 生成結果をダウンロード応答にする: Response::attachment() [render()から正常復帰後]
+  → 生成結果をダウンロード応答にする: Response.attachment() [render()から正常復帰後]
   → ダウンロード応答を返す
 ```
 

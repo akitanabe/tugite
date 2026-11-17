@@ -68,7 +68,7 @@ declarations、Gunte の `sources.files`、managed inventory を更新し、targ
 
 ## workflow と agent の surface
 
-現行の public workflow skill は `explain-this`（実装の理解）、`review-propose`（元案を保持した比較）、`impl-plan`（委譲文書の作成）、`impl-review`（実装差分の修正候補）、`impl-lead`（実行・QA・受入・最終検証）、`test-report`（テストの静的診断）、`test-verify`（明示起動の検証・因果修復）、`visualize-that`（図解 HTML）の8つです。
+現行の public workflow skill は `explain-code`（実装の理解）、`walkthrough-assist`（理解と妥当性の対話）、`review-propose`（元案を保持した比較）、`impl-plan`（委譲文書の作成）、`impl-review`（実装差分の修正候補）、`impl-lead`（実行・QA・受入・最終検証）、`test-report`（テストの静的診断）、`test-verify`（明示起動の検証・因果修復）、`visualize-that`（図解 HTML）の9つです。
 Implementation Unit Design と担当・委譲計画は `impl-plan`、実行時 readiness・dispatch・monitoring・QA・gate・integration は `impl-lead` が所有します。
 agent の正本は `shared/agents/`、各 runtime の exact inventory は repository contract で確認し、Codex custom-agent installer の inventory は installer test でも確認します。
 
