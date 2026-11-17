@@ -147,3 +147,31 @@ applies_to = ["codex"]
 assertions = [
   { path = "policy.allow_implicit_invocation", op = "equals", value = false },
 ]
+
+[contracts.plan-align-document]
+kind = "occurrences"
+pattern = "# plan-align"
+count = 1
+paths = ["plugins/claude/skills/plan-align/SKILL.md", "plugins/codex/skills/plan-align/SKILL.md", "plugins/cursor/skills/plan-align/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-align-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/plan-align/SKILL.md", "plugins/cursor/skills/plan-align/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "plan-align" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.plan-align-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-align/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]

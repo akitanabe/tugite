@@ -1,0 +1,6 @@
+interface:
+  display_name: "Plan Align"
+  short_description: "Align implementation scope and guarantees through dialogue"
+  default_prompt: "Use $plan-align only when explicitly requested. Propose a provisional software implementation outline, align necessity, tolerated failures, and behavioral guarantees with Human through concise flows, and maintain one current plan. Preserve important unknowns and stop before implementation, verification, or delegation planning."
+policy:
+  allow_implicit_invocation: false

@@ -1,7 +1,7 @@
 {
   "name": "tugite",
   "version": "7.6.0",
-  "description": "Tugite workflows: explain-code, walkthrough-assist, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
+  "description": "Tugite workflows: explain-code, walkthrough-assist, plan-align, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
   "author": {
     "name": "akitanabe"
   },
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Tugite",
     "shortDescription": "Install workflows, agents, and skills.",
-    "longDescription": "Tugite workflows: explain-code, walkthrough-assist, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
+    "longDescription": "Tugite workflows: explain-code, walkthrough-assist, plan-align, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
     "developerName": "akitanabe",
     "category": "Productivity",
     "capabilities": [
@@ -35,7 +35,8 @@
       "Use $impl-plan only when explicitly requested. Concretize the supplied plan into faithful serial implementation units and delegation documents for Human inspection; stop before implementation.",
       "Use $impl-review only when explicitly requested. Review the designated or context-grounded implementation diff using shared specialist, test, and writing criteria; return a correction table and stop before changes.",
       "Use $impl-lead only when explicitly requested to execute prepared delegation documents after live readiness checks, with Parent QA, gates, final verification, and safe integration.",
-      "Use $walkthrough-assist only when explicitly requested. Reuse current explain-code or test-report results, create missing foundations, and update only affected parts. Walk through meaningful units with Human questions, scope choice, next, skip, and stop. Keep findings and unresolved contradictions; explanation and skip are not approval. Do not edit source or tests or start test-verify."
+      "Use $walkthrough-assist only when explicitly requested. Reuse current explain-code or test-report results, create missing foundations, and update only affected parts. Walk through meaningful units with Human questions, scope choice, next, skip, and stop. Keep findings and unresolved contradictions; explanation and skip are not approval. Do not edit source or tests or start test-verify.",
+      "Use $plan-align only when explicitly requested. Propose a provisional software implementation outline, align necessity, tolerated failures, and behavioral guarantees with Human through concise flows, and maintain one current plan. Preserve important unknowns and stop before implementation, verification, or delegation planning."
     ]
   }
 }
