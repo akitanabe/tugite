@@ -15,10 +15,10 @@ slice = "test-report-trigger"
 pattern = '''`test-report` の明示指定、または bounded test scope のテスト群を理解・把握したいことが明確な request で開始します。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-responsibility-19c739a6ff62]
+[contracts.test-report-responsibility-74030e0b1104]
 kind = "requires"
 slice = "test-report-responsibility"
-pattern = '''指定範囲のテスト群について、全体像、振る舞い別詳細、根拠付きの静的診断、未確定事項を提示する public Skill です。検証・修復する対象の判断を支え、実行と修復は明示起動された `test-verify` が所有します。'''
+pattern = '''対象機能のどこまでがテストで検証されているかを、Human が検証の十分性を判断できる粒度へ抽象化する public Skill です。条件・境界・未検証範囲・根拠と静的診断を保持し、十分性の最終判断は Human、実行と修復は明示起動された `test-verify` が所有します。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-ownership-ab7ed5c38622]
@@ -93,12 +93,6 @@ slice = "test-report-static-boundary"
 pattern = '''test、target code、source、CI を実行せず、source / test / config の修正や remediation、`test-verify` への自動遷移を行いません。次に確認する点の提示は実行・修復の許可ではありません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-full-scope-details-f01a770372a0]
-kind = "requires"
-slice = "test-report-full-scope-details"
-pattern = '''概要だけで終了せず、問題のない箇所も含む observed scope 全体の Behavior → Expected Observation ↔ Case → Evidence を辿れる詳細を提示します。正常・境界・異常の観測された条件、実際の assertion、source location、未対応 Evidence、要求側の evidence gap、観測限界を保持します。優先度は表示順に使い、詳細を省く理由にしません。'''
-applies_to = ["claude", "codex", "cursor"]
-
 [contracts.test-report-case-relation-preservation-3411721fd1df]
 kind = "requires"
 slice = "test-report-case-relation-preservation"
@@ -117,10 +111,10 @@ slice = "test-report-handoff"
 pattern = '''report 全体または識別子で選択した指摘を、Human が `test-verify` の入力にできます。report は事前実行の必須要件ではなく、直接の bounded target も verify の入口です。引き継ぎはこの report と参照先で足り、専用台帳や巨大な中間成果物を要求しません。'''
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.test-report-human-facing-projection-63390b7ee78c]
+[contracts.test-report-human-facing-projection-f445e24eb2ba]
 kind = "requires"
 slice = "test-report-human-facing-projection"
-pattern = '''report candidate を確定後、`../../references/human-facing-projection.md` の Final output boundary を適用します。observed scope 全体の詳細、診断の確認状態、qualification、relation、source location と write authority を保持して出力前に確認します。'''
+pattern = '''report candidate を確定後、`../../references/human-facing-projection.md` の Final output boundary を適用します。意味的に集約した全観測範囲、判断に必要な条件・境界・期待結果、診断の確認状態、qualification、根拠への relation・source location と write authority を保持して出力前に確認します。'''
 applies_to = ["claude", "codex", "cursor"]
 
 [contracts.test-report-write-boundary-f2ebde0dd435]
@@ -164,4 +158,16 @@ applies_to = ["claude", "codex", "cursor"]
 kind = "requires"
 slice = "test-report-missing-evidence-finding"
 pattern = '''対応 Case / Evidence がない欠落は架空の Case / Evidence で埋めず、要求 / Expected Observation の根拠と所在、absence を判断した bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を残します。未読、未実行、対応不明を absence に変換しません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-scope-abstraction-3e74c7af876e]
+kind = "requires"
+slice = "test-report-scope-abstraction"
+pattern = '''同一の要求振る舞いを検証する複数のテストを意味的に集約し、問題のない領域も含む全観測範囲を報告します。ファイル・クラス・関数・テストレベルを固定の集約単位にしません。Human の判断に必要な条件・境界・例外と実際の assertion の意味、期待する結果を保持し、観測した範囲を超える保証へ広げません。十分性を判断できる範囲で可能な限り抽象化し、判断できなければ分解します。件数・文字数・階層数を粒度の基準にしません。'''
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.test-report-evidence-states-cea325217fd2]
+kind = "requires"
+slice = "test-report-evidence-states"
+pattern = '''対応テストの存在、部分対応、対応 Evidence の不在、判定不能を区別します。execution state は別に扱い、未実行・skip・未読・対応不明を不在や成功に変換しません。不在は completeness を確認した bounded observed scope に限定します。要求に現れるが既存テストに現れない振る舞いも報告し、未検証範囲と追加検証の必要性を区別します。追加提案は要求または具体的リスクに基づけ、検証範囲の最大化を目標にしません。'''
 applies_to = ["claude", "codex", "cursor"]

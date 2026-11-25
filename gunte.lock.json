@@ -798,7 +798,7 @@
     },
     {
       "id": "public-workflow-codex-metadata",
-      "sha256": "f988cd09135701915446512a32f720ad8796b724ae3ba2a25e4066e551ce630f"
+      "sha256": "307bbdd5043d45c194bae981c1c02f46a95bfe7865939cdb90af8148a4637155"
     },
     {
       "id": "public-workflow-claude-cursor-metadata",
@@ -1173,8 +1173,8 @@
       "sha256": "aee5e0007175c99d5cd4fb3592b7c42dc0ec76286eba08bde11bcb793cb57423"
     },
     {
-      "id": "test-report-responsibility-19c739a6ff62",
-      "sha256": "2a4b56e9d8ff430b5db239ce5e1f1719327506f25822c2b24fa38ef22b76c529"
+      "id": "test-report-responsibility-74030e0b1104",
+      "sha256": "20ff42cff3cb66e4ee5b7e577222fb8230fe6f50c060c5c06b77dbf61e050fb6"
     },
     {
       "id": "test-report-ownership-ab7ed5c38622",
@@ -1225,10 +1225,6 @@
       "sha256": "f8c47cf19a2d4b49e97736376f7aaaa04185d8d20ab4471a2b339867e6fc1e7b"
     },
     {
-      "id": "test-report-full-scope-details-f01a770372a0",
-      "sha256": "86b5a267f62675e0f668a85e275f6b82ff9ab3d4fd4589d395159ec22861ac37"
-    },
-    {
       "id": "test-report-case-relation-preservation-3411721fd1df",
       "sha256": "badec8918d97abc6ae5c0bafa44c7db7518291d0d4d3dd70777606cb1f4a03cb"
     },
@@ -1241,8 +1237,8 @@
       "sha256": "775b78cc2ba7b7ca0472781bd32e6286cfb1bda59aff20745cbed2683b49770d"
     },
     {
-      "id": "test-report-human-facing-projection-63390b7ee78c",
-      "sha256": "0423679e8b649bb77b8343ef8f6a20c192e0aa286517d0f27c93bc2d62d0ddfd"
+      "id": "test-report-human-facing-projection-f445e24eb2ba",
+      "sha256": "b64c8c1329cbe4dc2b76b6a1641ef6122663d70938166cd3fe8e47c931142a05"
     },
     {
       "id": "test-report-write-boundary-f2ebde0dd435",
@@ -1271,6 +1267,14 @@
     {
       "id": "test-report-missing-evidence-finding-2d8011868ef1",
       "sha256": "69fd5cecc4bfdb8062b5ca1e7138d0cbbe34d7984e1701c87444515b4faae1c7"
+    },
+    {
+      "id": "test-report-scope-abstraction-3e74c7af876e",
+      "sha256": "7b8ef719100ebb7898be7c0017cb3444d7a24d5221ec0f337ad2dbd4e4455fcc"
+    },
+    {
+      "id": "test-report-evidence-states-cea325217fd2",
+      "sha256": "362003512a47e4d11d3b28d869d38820b590ff7260b8c4ec6cba65ac4b81402c"
     },
     {
       "id": "test-verify-document",
@@ -3159,7 +3163,12 @@
     },
     {
       "kind": "span",
-      "id": "test-report-full-scope-details",
+      "id": "test-report-scope-abstraction",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-evidence-states",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {
