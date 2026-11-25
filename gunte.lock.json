@@ -20,6 +20,8 @@
     "shared/skill/review-propose/SKILL.md",
     "declarations/codex/skills/review-propose/openai.yaml",
     "shared/skill/explain-code/SKILL.md",
+    "shared/skill/plan-align/SKILL.md",
+    "declarations/codex/skills/plan-align/openai.yaml",
     "shared/skill/walkthrough-assist/SKILL.md",
     "declarations/codex/skills/walkthrough-assist/openai.yaml",
     "declarations/codex/skills/explain-code/openai.yaml",
@@ -211,8 +213,8 @@
       "sha256": "768cbaf74c427216ba6b09950343c77d65c77b7e8c4bc4fdee9159179cfe48b5"
     },
     {
-      "id": "cursor-readme-public-skills-requires-3dd228c4959f",
-      "sha256": "ebe69509ce4df943df24cae1304687661602dd8418f516af14ebf87d1a2327d0"
+      "id": "cursor-readme-public-skills-requires-a145abb90fbf",
+      "sha256": "a4ce5cbea99a6b4ba11cf35664e7a0cb40ed7da1d1aa8fc8893b2b44be352d10"
     },
     {
       "id": "repository-programmatic-flow-skills-f507bb071fa9",
@@ -796,11 +798,11 @@
     },
     {
       "id": "public-workflow-codex-metadata",
-      "sha256": "97bae7bf242e421d53d7a542bec5807bbd25096c4fd5a37f9912f261d352b1ff"
+      "sha256": "307bbdd5043d45c194bae981c1c02f46a95bfe7865939cdb90af8148a4637155"
     },
     {
       "id": "public-workflow-claude-cursor-metadata",
-      "sha256": "502d642109d5360616302e7fb91cfcb96aebb797b0c784d3715499222908d3be"
+      "sha256": "7397cee63fd3156e03a8d49557885fecfa674fd2921770dc8f7d77a4d7e8faf0"
     },
     {
       "id": "explain-code-document",
@@ -865,6 +867,18 @@
     {
       "id": "walkthrough-assist-codex-invocation",
       "sha256": "ed5f602077a7111489070aefbb8f69e8b27db8d9c99ba033d4f25cc865f9ded1"
+    },
+    {
+      "id": "plan-align-document",
+      "sha256": "b8b0e69495c6c2fa43d6a38e034fe744ae34d53d7d4789e26a1841b5c8c4ec25"
+    },
+    {
+      "id": "plan-align-explicit-invocation",
+      "sha256": "99ab33c31d526cd3209b18d7a98d220fdd75e2b06c0e3dbefa6526fe345e7661"
+    },
+    {
+      "id": "plan-align-codex-invocation",
+      "sha256": "5f2c2c453e1197e3d8c6fe1940afdb46f87f9ff619eef18da44650c5e3a0fb80"
     },
     {
       "id": "shared-researcher-retained-e9f44941dc1d",
@@ -1159,8 +1173,8 @@
       "sha256": "aee5e0007175c99d5cd4fb3592b7c42dc0ec76286eba08bde11bcb793cb57423"
     },
     {
-      "id": "test-report-responsibility-19c739a6ff62",
-      "sha256": "2a4b56e9d8ff430b5db239ce5e1f1719327506f25822c2b24fa38ef22b76c529"
+      "id": "test-report-responsibility-74030e0b1104",
+      "sha256": "20ff42cff3cb66e4ee5b7e577222fb8230fe6f50c060c5c06b77dbf61e050fb6"
     },
     {
       "id": "test-report-ownership-ab7ed5c38622",
@@ -1211,10 +1225,6 @@
       "sha256": "f8c47cf19a2d4b49e97736376f7aaaa04185d8d20ab4471a2b339867e6fc1e7b"
     },
     {
-      "id": "test-report-full-scope-details-f01a770372a0",
-      "sha256": "86b5a267f62675e0f668a85e275f6b82ff9ab3d4fd4589d395159ec22861ac37"
-    },
-    {
       "id": "test-report-case-relation-preservation-3411721fd1df",
       "sha256": "badec8918d97abc6ae5c0bafa44c7db7518291d0d4d3dd70777606cb1f4a03cb"
     },
@@ -1227,8 +1237,8 @@
       "sha256": "775b78cc2ba7b7ca0472781bd32e6286cfb1bda59aff20745cbed2683b49770d"
     },
     {
-      "id": "test-report-human-facing-projection-63390b7ee78c",
-      "sha256": "0423679e8b649bb77b8343ef8f6a20c192e0aa286517d0f27c93bc2d62d0ddfd"
+      "id": "test-report-human-facing-projection-f445e24eb2ba",
+      "sha256": "b64c8c1329cbe4dc2b76b6a1641ef6122663d70938166cd3fe8e47c931142a05"
     },
     {
       "id": "test-report-write-boundary-f2ebde0dd435",
@@ -1257,6 +1267,14 @@
     {
       "id": "test-report-missing-evidence-finding-2d8011868ef1",
       "sha256": "69fd5cecc4bfdb8062b5ca1e7138d0cbbe34d7984e1701c87444515b4faae1c7"
+    },
+    {
+      "id": "test-report-scope-abstraction-3e74c7af876e",
+      "sha256": "7b8ef719100ebb7898be7c0017cb3444d7a24d5221ec0f337ad2dbd4e4455fcc"
+    },
+    {
+      "id": "test-report-evidence-states-cea325217fd2",
+      "sha256": "362003512a47e4d11d3b28d869d38820b590ff7260b8c4ec6cba65ac4b81402c"
     },
     {
       "id": "test-verify-document",
@@ -3145,7 +3163,12 @@
     },
     {
       "kind": "span",
-      "id": "test-report-full-scope-details",
+      "id": "test-report-scope-abstraction",
+      "path": "shared/skill/test-report/SKILL.md"
+    },
+    {
+      "kind": "span",
+      "id": "test-report-evidence-states",
       "path": "shared/skill/test-report/SKILL.md"
     },
     {

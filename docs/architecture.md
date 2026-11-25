@@ -192,7 +192,7 @@ Behavior Model Observation / Reality Model Observation は concrete specializati
 
 ### test-report
 
-`test-report` は exactly one の task-local Local Model を所有する静的診断の public Skill である。Agentic Model Construction を first route とし、Human-owned material gap だけを局所確認する。要求・仕様からも Behavior candidate を構成し、対象 test 自身を期待値の正当性の根拠にしない。shared Verification Topology は grounding、semantic precedence、BMO、many-to-many relation、state を所有し、診断と report は consumer が所有する。
+`test-report` は exactly one の task-local Local Model を所有する検証範囲の抽象化と静的診断の public Skill である。Agentic Model Construction を first route とし、Human-owned material gap だけを局所確認する。要求・仕様からも Behavior candidate を構成し、対象 test 自身を期待値の正当性の根拠にしない。shared Verification Topology は grounding、semantic precedence、BMO、many-to-many relation、state を所有し、診断と report は consumer が所有する。
 
 ```text
 test-report
@@ -201,10 +201,11 @@ scope resolution → requirements / tests / source / config observation
   ↓
 shared Verification Topology
   ↓
-static diagnosis → full-scope report → Human
+static diagnosis → verification scope abstraction → Human-facing report → Human
 ```
 
-概要に加え、問題のない箇所を含む observed scope 全体の Behavior → Expected Observation ↔ Case → Evidence、条件、実際の assertion、source location を辿れる詳細を示す。未対応 Evidence、要求側の evidence gap、未読・未実行・skip・対応不明・証拠なしと観測限界を保持する。静的に確認した問題、実行確認が必要な疑い、判断材料の不足を区別し、指摘の識別子、根拠、見逃しうる問題、次に確認する点を残す。
+主目的は、対象機能のどこまでが検証されているかを Human が十分性を判断できる粒度へ抽象化することである。同一の要求振る舞いに対応するテストを意味的に集約し、問題のない領域も含む全観測範囲を報告する。判断に必要な条件・境界・期待結果と未対応部分を保持し、要求、Expected Observation、Case / Evidence、source location へ追跡できるようにする。内部詳細の完全性と提示粒度を分け、個別詳細は Human の要求または理解・根拠確認の必要に応じて示す。
+未検証範囲、未読・未実行・skip・対応不明・判定不能と観測限界を区別し、追加確認は要求または具体的リスクに基づける。静的に確認した問題、実行確認が必要な疑い、判断材料の不足を区別し、指摘の識別子・成立条件・根拠・次の確認点を残す。十分性の最終判断は Human が所有する。
 
 report の repository / ref、scope、要求根拠と参照先は任意の `test-verify` 引き継ぎに利用できる。test / source / CI の実行、source / test / config の変更、verify への自動遷移は行わない。固定 schema や専用台帳は要求しない。
 

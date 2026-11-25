@@ -1,6 +1,6 @@
 # Static observation and diagnosis
 
-`test-report` が所有する静的観測・診断と詳細出力の観点です。grounding と対応関係の意味は shared `Verification Topology` に従います。
+`test-report` が所有する静的観測・診断、内部詳細の保持と Human 向け報告の観点です。grounding と対応関係の意味は shared `Verification Topology` に従います。
 
 ## Observe both requirements and tests
 
@@ -52,10 +52,14 @@ resolved / observed membership を分け、未読の file / unit と理由を残
 対応 Case / Evidence がない欠落は架空の Case / Evidence で埋めず、要求 / Expected Observation の根拠と所在、absence を判断した bounded observed scope と completeness basis、対応 Evidence が観測されなかった事実を残します。未読、未実行、対応不明を absence に変換しません。
 <!-- @/contract -->
 
-## Preserve full-scope detail
+## Preserve detail and project verification scope
 
-概要と問題一覧は入口です。本文または明示された report artifact に、observed scope 全体の Behavior、Expected Observation、Case、Evidence、条件、実際の assertion、source location を残し、概要から辿れるようにします。正常・境界・異常系は観測された意味に応じて扱い、存在しない Case を埋め合わせで発明しません。
+内部では observed scope 全体の Behavior、Expected Observation、Case、Evidence、条件、実際の assertion、source location と対応関係を保持します。Human 向けには同一の要求振る舞いを意味的に集約し、判断に必要な条件・境界・期待結果と未対応部分を残します。正常・境界・異常系は観測された意味に応じて扱い、存在しない Case を発明しません。
 
-根拠へのリンクだけで詳細の代用にはせず、何を期待し何を実際に assert しているかを読者が理解できる内容を添えます。共通 fixture や assertion は参照共有できますが、各対応と条件を失わせません。指摘の優先度や回答の短さを理由に問題のない領域・未対応 Evidence・evidence gap を削りません。
+例えば逐次実行で上限に達すると拒否するテストは、その条件と拒否結果を報告します。同時実行も含む利用回数の整合性全体を保証するとは表現しません。同時実行の Evidence が観測されない場合は、その不在を確認できた観測範囲と実行状態を分けて示します。未検証だから直ちに追加必須とはせず、要求または具体的なリスクに照らして必要性を判断します。
+
+条件名の列挙や根拠リンクだけで済ませず、その条件で何を期待し、実際の assertion が何を確かめるかの意味を添えます。判断できる最も抽象的なまとまりを選び、重要な差が隠れる場合は分解します。共通 fixture や assertion は参照共有できますが、各対応と条件を失わせません。未対応 Evidence、要求側の evidence gap、問題のない領域も報告対象です。
+
+個別テストの詳細は Human の要求、検証範囲の理解、指摘の根拠確認に応じて提示します。全件詳細の既定提示と内部情報の完全性を混同せず、抽象化した範囲から要求・Expected Observation・Case・Evidence・source location への追跡可能性を保ちます。
 
 report の repository / ref と dirty state が観測可能なら記録し、不明なら明示します。選択用の識別子を根拠・確認状態と結び付け、verify が古い報告を再確認できる参照先を残します。report の発見は修復権限ではありません。
