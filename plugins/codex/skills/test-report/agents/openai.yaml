@@ -1,6 +1,6 @@
 interface:
   display_name: "Test Report"
-  short_description: "Describe and diagnose the full observed test scope"
-  default_prompt: "Use $test-report to statically observe the requested test scope, ground requirement-derived candidates through Verification Topology, report full behavior details and evidence-backed static findings separately from runtime hypotheses and unknowns, and offer selectable handoff without executing or repairing tests."
+  short_description: "Explain verification scope and diagnose tests"
+  default_prompt: "Use $test-report to statically observe the requested test scope, ground requirement-derived candidates through Verification Topology, report semantically aggregated verification scope with decision-relevant conditions, boundaries, expected results, and traceable evidence and evidence-backed static findings separately from runtime hypotheses and unknowns, and offer selectable handoff without executing or repairing tests."
 policy:
   allow_implicit_invocation: true

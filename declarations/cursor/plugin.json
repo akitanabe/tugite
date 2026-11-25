@@ -2,7 +2,7 @@
   "name": "tugite",
   "displayName": "Tugite",
   "version": "*.*.*",
-  "description": "Tugite workflows: explain-this, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
+  "description": "Tugite workflows: explain-code, walkthrough-assist, plan-align, review-propose, impl-plan, impl-review, impl-lead, test-report, test-verify, visualize-that. Supporting workers, reviewers, and advisors are included.",
   "author": {
     "name": "akitanabe"
   },

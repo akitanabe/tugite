@@ -1,25 +1,25 @@
-[contracts.explain-this-document]
+[contracts.explain-code-document]
 kind = "occurrences"
-pattern = "# explain-this"
+pattern = "# explain-code"
 count = 1
-paths = ["plugins/claude/skills/explain-this/SKILL.md", "plugins/codex/skills/explain-this/SKILL.md", "plugins/cursor/skills/explain-this/SKILL.md"]
+paths = ["plugins/claude/skills/explain-code/SKILL.md", "plugins/codex/skills/explain-code/SKILL.md", "plugins/cursor/skills/explain-code/SKILL.md"]
 applies_to = ["claude", "codex", "cursor"]
 
-[contracts.explain-this-explicit-invocation]
+[contracts.explain-code-explicit-invocation]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/claude/skills/explain-this/SKILL.md", "plugins/cursor/skills/explain-this/SKILL.md"]
+paths = ["plugins/claude/skills/explain-code/SKILL.md", "plugins/cursor/skills/explain-code/SKILL.md"]
 format = "yaml"
 applies_to = ["claude", "cursor"]
 assertions = [
-  { path = "name", op = "equals", value = "explain-this" },
+  { path = "name", op = "equals", value = "explain-code" },
   { path = "disable-model-invocation", op = "equals", value = true },
 ]
 
-[contracts.explain-this-codex-invocation]
+[contracts.explain-code-codex-invocation]
 kind = "structure"
 subject = "artifact"
-paths = ["plugins/codex/skills/explain-this/agents/openai.yaml"]
+paths = ["plugins/codex/skills/explain-code/agents/openai.yaml"]
 format = "yaml"
 applies_to = ["codex"]
 assertions = [
@@ -119,3 +119,59 @@ mutation applicability と evidence generation は execution / QA owner の責�
 count = 1
 paths = ["plugins/claude/references/implementation-review.md", "plugins/codex/references/implementation-review.md", "plugins/cursor/references/implementation-review.md"]
 applies_to = ["claude", "codex", "cursor"]
+
+[contracts.walkthrough-assist-document]
+kind = "occurrences"
+pattern = "# walkthrough-assist"
+count = 1
+paths = ["plugins/claude/skills/walkthrough-assist/SKILL.md", "plugins/codex/skills/walkthrough-assist/SKILL.md", "plugins/cursor/skills/walkthrough-assist/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.walkthrough-assist-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/walkthrough-assist/SKILL.md", "plugins/cursor/skills/walkthrough-assist/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "walkthrough-assist" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.walkthrough-assist-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/walkthrough-assist/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]
+
+[contracts.plan-align-document]
+kind = "occurrences"
+pattern = "# plan-align"
+count = 1
+paths = ["plugins/claude/skills/plan-align/SKILL.md", "plugins/codex/skills/plan-align/SKILL.md", "plugins/cursor/skills/plan-align/SKILL.md"]
+applies_to = ["claude", "codex", "cursor"]
+
+[contracts.plan-align-explicit-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/claude/skills/plan-align/SKILL.md", "plugins/cursor/skills/plan-align/SKILL.md"]
+format = "yaml"
+applies_to = ["claude", "cursor"]
+assertions = [
+  { path = "name", op = "equals", value = "plan-align" },
+  { path = "disable-model-invocation", op = "equals", value = true },
+]
+
+[contracts.plan-align-codex-invocation]
+kind = "structure"
+subject = "artifact"
+paths = ["plugins/codex/skills/plan-align/agents/openai.yaml"]
+format = "yaml"
+applies_to = ["codex"]
+assertions = [
+  { path = "policy.allow_implicit_invocation", op = "equals", value = false },
+]
